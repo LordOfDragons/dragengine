@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeNVNode.h"
 #include "igdeNVNodeListener.h"
 #include "igdeNVSlot.h"
@@ -60,7 +56,8 @@ pBgColor(150.0f / 255.0f, 150.0f / 255.0f, 150.0f / 255.0f),
 pBorderColor(60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f),
 pActiveTitleBgColor(165.0f / 255.0f, 200.0f / 255.0f, 200.0f / 255.0f),
 pInactiveTitleBgColor(150.0f / 255.0f, 150.0f / 255.0f, 185.0f / 255.0f),
-pOwnerBoard(nullptr){
+pOwnerBoard(nullptr),
+pNativeNVNode(nullptr){
 }
 
 igdeNVNode::~igdeNVNode(){
@@ -159,11 +156,7 @@ void igdeNVNode::SetPosition(const decPoint &position){
 }
 
 decPoint igdeNVNode::GetSize() const{
-	if(!GetNativeWidget()){
-		return decPoint();
-	}
-	
-	return ((igdeNativeNVNode*)GetNativeWidget())->GetSize();
+	return pNativeNVNode ? pNativeNVNode->GetSize() : decPoint();
 }
 
 void igdeNVNode::SetOwnerBoard(igdeNVBoard *board){
@@ -219,7 +212,7 @@ void igdeNVNode::RemoveAllSlots(){
 }
 
 void igdeNVNode::ShowContextMenu(const decPoint &position){
-	if(!GetNativeWidget()){
+	if(!pNativeNVNode){
 		return;
 	}
 	
@@ -281,17 +274,6 @@ void igdeNVNode::NotifyDragEnd(){
 	});
 }
 
-void igdeNVNode::OnLanguageChanged(){
-	igdeContainer::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeNVNode * const native = (igdeNativeNVNode*)GetNativeWidget();
-		native->UpdateTitle();
-		native->UpdateDescription();
-		native->FitSizeToContent();
-	}
-}
-
 
 void igdeNVNode::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -300,6 +282,7 @@ void igdeNVNode::CreateNativeWidget(){
 	
 	igdeNativeNVNode * const native = igdeNativeNVNode::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeNVNode = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -316,46 +299,58 @@ void igdeNVNode::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeNVNode::DropNativeWidget(){
+	pNativeNVNode = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 void igdeNVNode::OnTitleChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->UpdateTitle();
+	if(pNativeNVNode){
+		pNativeNVNode->UpdateTitle();
 	}
 }
 
 void igdeNVNode::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->UpdateDescription();
+	if(pNativeNVNode){
+		pNativeNVNode->UpdateDescription();
 	}
 }
 
 void igdeNVNode::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeNVNode){
+		pNativeNVNode->UpdateEnabled();
 	}
 }
 
 void igdeNVNode::OnActiveChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->UpdateActive();
+	if(pNativeNVNode){
+		pNativeNVNode->UpdateActive();
 	}
 }
 
 void igdeNVNode::OnColorsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->UpdateColors();
+	if(pNativeNVNode){
+		pNativeNVNode->UpdateColors();
 	}
 }
 
 void igdeNVNode::OnSlotsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->FitSizeToContent();
+	if(pNativeNVNode){
+		pNativeNVNode->FitSizeToContent();
 	}
 }
 
 void igdeNVNode::OnPositionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeNVNode*)GetNativeWidget())->UpdatePosition();
+	if(pNativeNVNode){
+		pNativeNVNode->UpdatePosition();
+	}
+}
+
+void igdeNVNode::OnNativeWidgetLanguageChanged(){
+	if(pNativeNVNode){
+		pNativeNVNode->UpdateTitle();
+		pNativeNVNode->UpdateDescription();
+		pNativeNVNode->FitSizeToContent();
 	}
 }

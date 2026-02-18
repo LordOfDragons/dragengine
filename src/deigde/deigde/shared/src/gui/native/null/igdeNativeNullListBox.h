@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLLISTBOX_H_
 #define _IGDENATIVENULLLISTBOX_H_
 
+#include "../../igdeListBox.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class igdeListBox;
@@ -33,7 +35,7 @@ class igdeListBox;
 /**
  * Null list box.
  */
-class igdeNativeNullListBox{
+class igdeNativeNullListBox : public igdeListBox::cNativeListBox{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -57,21 +59,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void BuildList();
-	virtual void UpdateItem(int index);
-	virtual void UpdateStyles();
-	virtual void UpdateSelection();
-	virtual void Focus();
-	virtual void MakeItemVisible(int index);
+	void BuildList() override;
+	void UpdateItem(int index) override;
+	void UpdateStyles() override;
+	void UpdateSelection() override;
+	void Focus() override;
+	void MakeItemVisible(int index) override;
 	virtual decPoint GetContentPosition() const;
-	virtual void SetContentPosition(const decPoint &position);
-	virtual void InsertItem(int index);
-	virtual void RemoveItem(int index);
-	virtual void RemoveAllItems();
-	virtual void MoveItem(int fromIndex, int toIndex);
-	virtual void UpdateEnabled();
-	virtual void UpdateRowCount();
-	virtual void UpdateDescription();
+	void SetContentPosition(const decPoint &position) override;
+	void InsertItem(int index) override;
+	void RemoveItem(int index) override;
+	void RemoveAllItems() override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void UpdateEnabled() override;
+	void UpdateRowCount() override;
+	void UpdateDescription() override;
 	/*@}*/
 };
 

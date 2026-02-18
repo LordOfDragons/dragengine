@@ -27,6 +27,7 @@
 
 #include "foxtoolkit.h"
 #include "../../resources/igdeFont.h"
+#include "../../igdeColorBox.h"
 
 class igdeColorBox;
 class igdeEnvironment;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native colorBox.
  */
-class igdeNativeFoxColorBox : public FXFrame{
+class igdeNativeFoxColorBox : public FXFrame, public igdeColorBox::cNativeColorBox{
 	FXDECLARE(igdeNativeFoxColorBox)
 	
 protected:
@@ -84,12 +85,12 @@ public:
 	FXint getDefaultWidth() override;
 	FXint getDefaultHeight() override;
 	
-	virtual void UpdateColor();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
+	void UpdateColor() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
 	
-	virtual void ClipboardPutColor(const decColor &color);
-	virtual decColor ClipboardGetColor();
+	void ClipboardPutColor(const decColor &color) override;
+	decColor ClipboardGetColor() override;
 	
 	static FXColor ColorIgdeToFx(const decColor &color);
 	static decColor ColorFxToIgde(FXColor color);

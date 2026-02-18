@@ -56,7 +56,8 @@ igdeTreeList::igdeTreeList(igdeEnvironment &environment, int rows, const char *d
 igdeWidget(environment),
 pEnabled(true),
 pRows(rows),
-pDescription(description)
+pDescription(description),
+pNativeTreeList(nullptr)
 {
 	if(rows < 1){
 		DETHROW(deeInvalidParam);
@@ -104,8 +105,8 @@ void igdeTreeList::SetDescription(const char *description){
 }
 
 void igdeTreeList::Focus(){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->Focus();
+	if(pNativeTreeList){
+		pNativeTreeList->Focus();
 	}
 }
 
@@ -433,8 +434,8 @@ void igdeTreeList::SetSelectionWithData(void *data){
 }
 
 void igdeTreeList::MakeItemVisible(igdeTreeItem *item){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->MakeItemVisible(item);
+	if(pNativeTreeList){
+		pNativeTreeList->MakeItemVisible(item);
 	}
 }
 
@@ -445,7 +446,7 @@ void igdeTreeList::MakeSelectionVisible(){
 }
 
 void igdeTreeList::ShowContextMenu(const decPoint &position){
-	if(!GetNativeWidget()){
+	if(!pNativeTreeList){
 		return;
 	}
 	
@@ -502,12 +503,6 @@ void igdeTreeList::NotifyDoubleClickItem(igdeTreeItem *item){
 	});
 }
 
-void igdeTreeList::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeTreeList::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -516,6 +511,7 @@ void igdeTreeList::CreateNativeWidget(){
 	
 	igdeNativeTreeList * const native = igdeNativeTreeList::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeTreeList = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -528,65 +524,69 @@ void igdeTreeList::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeTreeList::DropNativeWidget(){
+	pNativeTreeList = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeTreeList::OnItemAdded(igdeTreeItem *item){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->CreateAndInsertItem(item);
+	if(pNativeTreeList){
+		pNativeTreeList->CreateAndInsertItem(item);
 	}
 }
 
 void igdeTreeList::OnItemRemoved(igdeTreeItem *item){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->RemoveItem(item);
+	if(pNativeTreeList){
+		pNativeTreeList->RemoveItem(item);
 	}
 }
 
 void igdeTreeList::OnAllItemsRemoved(igdeTreeItem *parent){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->RemoveAllItems(parent);
+	if(pNativeTreeList){
+		pNativeTreeList->RemoveAllItems(parent);
 	}
 }
 
 void igdeTreeList::OnItemChanged(igdeTreeItem *item){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->UpdateItem(item);
+	if(pNativeTreeList){
+		pNativeTreeList->UpdateItem(item);
 	}
 }
 
 void igdeTreeList::OnItemMoved(igdeTreeItem *item){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->ItemMoved(item);
+	if(pNativeTreeList){
+		pNativeTreeList->ItemMoved(item);
 	}
 }
 
 void igdeTreeList::OnItemsSorted(igdeTreeItem *item){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->ItemsSortedIn(item);
+	if(pNativeTreeList){
+		pNativeTreeList->ItemsSortedIn(item);
 	}
 }
 
 void igdeTreeList::OnSelectionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->SelectItem(pSelection);
+	if(pNativeTreeList){
+		pNativeTreeList->SelectItem(pSelection);
 	}
 }
 
 void igdeTreeList::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeTreeList){
+		pNativeTreeList->UpdateEnabled();
 	}
 }
 
 void igdeTreeList::OnRowsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->UpdateRows();
+	if(pNativeTreeList){
+		pNativeTreeList->UpdateRows();
 	}
 }
 
 void igdeTreeList::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTreeList*)GetNativeWidget())->UpdateDescription();
+	if(pNativeTreeList){
+		pNativeTreeList->UpdateDescription();
 	}
 }
 
@@ -732,4 +732,8 @@ void igdeTreeList::pRemoveAllItems(igdeTreeItem *item){
 	}else{
 		pFirstChild = nullptr;
 	}
+}
+
+void igdeTreeList::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLMENUCHECK_H_
 #define _IGDENATIVENULLMENUCHECK_H_
 
+#include "../../../menu/igdeMenuCheck.h"
+
 class igdeMenuCheck;
 
 
 /**
  * Null widget.
  */
-class igdeNativeNullMenuCheck{
+class igdeNativeNullMenuCheck : public igdeMenuCheck::cNativeMenuCheck{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,7 +57,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateChecked();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	
+	void UpdateChecked() override;
 	/*@}*/
 };
 

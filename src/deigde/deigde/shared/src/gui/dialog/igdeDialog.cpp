@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeDialog.h"
 #include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
@@ -106,7 +103,8 @@ void igdeDialog::CancelDialog::OnAction(){
 igdeDialog::igdeDialog(igdeEnvironment &environment, const char *title, igdeIcon *icon, bool canResize) :
 igdeWindow(environment, title, icon, canResize),
 pOwner(nullptr),
-pAccepted(false){
+pAccepted(false),
+pNativeDialog(nullptr){
 }
 
 igdeDialog::~igdeDialog(){
@@ -210,7 +208,7 @@ bool igdeDialog::Run(igdeWidget *owner){
 	if(!owner->GetNativeWidget()){
 		DETHROW(deeInvalidParam);
 	}
-	if(GetNativeWidget()){
+	if(pNativeDialog){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -224,7 +222,7 @@ bool igdeDialog::Run(igdeWidget *owner){
 	try{
 		CreateNativeWidget();
 		
-		((igdeNativeDialog*)GetNativeWidget())->ShowDialog();
+		pNativeDialog->ShowDialog();
 		
 		OnDialogShown();
 		GetEnvironment().RunModalWhileShown(*this);
@@ -256,7 +254,7 @@ void igdeDialog::CloseDialog(bool accepted){
 	
 	pAccepted = accepted;
 	
-	((igdeNativeDialog*)GetNativeWidget())->CloseDialog(accepted);
+	pNativeDialog->CloseDialog(accepted);
 }
 
 
@@ -279,8 +277,10 @@ void igdeDialog::CreateNativeWidget(){
 	
 	igdeNativeDialog * const native = igdeNativeDialog::CreateNativeWidget(*this, pOwner);
 	SetNativeWidget(native);
-	CreateChildWidgetNativeWidgets();
+	pNativeDialog = native;
+	pNativeWindow = native;
 	native->PostCreateNativeWidget();
+	CreateChildWidgetNativeWidgets();
 }
 
 void igdeDialog::DestroyNativeWidget(){
@@ -292,6 +292,10 @@ void igdeDialog::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeDialog::DropNativeWidget(){
+	pNativeDialog = nullptr;
+	igdeWindow::DropNativeWidget();
+}
 
 
 // Protected Functions
@@ -329,26 +333,26 @@ igdeWidget *rightPanel, igdeWidget *buttonBar){
 
 
 void igdeDialog::OnTitleChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeDialog*)GetNativeWidget())->UpdateTitle();
+	if(pNativeDialog){
+		pNativeDialog->UpdateTitle();
 	}
 }
 
 void igdeDialog::OnIconChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeDialog*)GetNativeWidget())->UpdateIcon();
+	if(pNativeDialog){
+		pNativeDialog->UpdateIcon();
 	}
 }
 
 void igdeDialog::OnSizeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeDialog*)GetNativeWidget())->UpdateSize();
+	if(pNativeDialog){
+		pNativeDialog->UpdateSize();
 	}
 }
 
 void igdeDialog::OnPositionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeDialog*)GetNativeWidget())->UpdatePosition();
+	if(pNativeDialog){
+		pNativeDialog->UpdatePosition();
 	}
 }
 
@@ -357,7 +361,7 @@ void igdeDialog::OnVisibleChanged(){
 }
 
 void igdeDialog::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeDialog*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeDialog){
+		pNativeDialog->UpdateEnabled();
 	}
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeComboBox.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -58,7 +54,8 @@ pRows(10),
 pEditable(false),
 pDescription(description),
 pInvalidValue(false),
-pAutoTranslateItems(false)
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -75,7 +72,8 @@ pRows(10),
 pEditable(editable),
 pDescription(description),
 pInvalidValue(false),
-pAutoTranslateItems(false)
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -92,7 +90,8 @@ pRows(rows),
 pEditable(false),
 pDescription(description),
 pInvalidValue(false),
-pAutoTranslateItems(false)
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
 	if(columns < 1 || rows < 1){
 		DETHROW(deeInvalidParam);
@@ -109,7 +108,8 @@ pRows(rows),
 pEditable(editable),
 pDescription(description),
 pInvalidValue(false),
-pAutoTranslateItems(false)
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
 	if(columns < 1 || rows < 1){
 		DETHROW(deeInvalidParam);
@@ -484,18 +484,6 @@ void igdeComboBox::ClearText(){
 	SetText("", false);
 }
 
-void igdeComboBox::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeComboBox * const native = (igdeNativeComboBox*)GetNativeWidget();
-		native->UpdateDescription();
-		if(pAutoTranslateItems){
-			native->BuildList();
-		}
-	}
-}
-
 
 void igdeComboBox::AddListener(igdeComboBoxListener *listener){
 	if(!listener){
@@ -530,6 +518,7 @@ void igdeComboBox::CreateNativeWidget(){
 	
 	igdeNativeComboBox * const native = igdeNativeComboBox::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeComboBox = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -542,113 +531,121 @@ void igdeComboBox::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeComboBox::DropNativeWidget(){
+	pNativeComboBox = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeComboBox::OnItemAdded(int index){
-	if(!GetNativeWidget()){
+	if(!pNativeComboBox){
 		return;
 	}
 	
 	const igdeListItem &item = pItems.GetAt(index);
-	igdeNativeComboBox &native = *((igdeNativeComboBox*)GetNativeWidget());
-	native.InsertItem(index, item);
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+	pNativeComboBox->InsertItem(index, item);
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
+	pNativeComboBox->UpdateRowCount();
 }
 
 void igdeComboBox::OnItemRemoved(int index){
-	if(!GetNativeWidget()){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *((igdeNativeComboBox*)GetNativeWidget());
-	native.RemoveItem(index);
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+	pNativeComboBox->RemoveItem(index);
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
+	pNativeComboBox->UpdateRowCount();
 }
 
 void igdeComboBox::OnAllItemsRemoved(){
-	if(!GetNativeWidget()){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *((igdeNativeComboBox*)GetNativeWidget());
-	native.RemoveAllItems();
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+	pNativeComboBox->RemoveAllItems();
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
+	pNativeComboBox->UpdateRowCount();
 }
 
 void igdeComboBox::OnItemChanged(int index){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->UpdateItem(index);
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateItem(index);
 	}
 }
 
 void igdeComboBox::OnItemMoved(int fromIndex, int toIndex){
-	if(!GetNativeWidget()){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *((igdeNativeComboBox*)GetNativeWidget());
-	native.MoveItem(fromIndex, toIndex);
-	//native.SyncSelection( false );
-	native.UpdateText();
+	pNativeComboBox->MoveItem(fromIndex, toIndex);
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
 }
 
 void igdeComboBox::OnItemsSorted(){
-	if(!GetNativeWidget()){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *((igdeNativeComboBox*)GetNativeWidget());
-	native.BuildList();
-	//native.SyncSelection( false );
-	native.UpdateText();
+	pNativeComboBox->BuildList();
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
 }
 
 void igdeComboBox::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->UpdateText();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateText();
 	}
 }
 
 void igdeComboBox::OnEnabledChanged(){
-	if(!GetNativeWidget()){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	((igdeNativeComboBox*)GetNativeWidget())->UpdateEnabled();
+	pNativeComboBox->UpdateEnabled();
 }
 
 void igdeComboBox::OnRowsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->UpdateRowCount();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateRowCount();
 	}
 }
 
 void igdeComboBox::OnEditableChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->UpdateEditable();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateEditable();
 	}
 }
 
 void igdeComboBox::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->UpdateDescription();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateDescription();
 	}
 }
 
 void igdeComboBox::OnInvalidValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->OnInvalidValueChanged();
+	if(pNativeComboBox){
+		pNativeComboBox->OnInvalidValueChanged();
 	}
 }
 
 void igdeComboBox::OnRequestFocus(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBox*)GetNativeWidget())->Focus();
+	if(pNativeComboBox){
+		pNativeComboBox->Focus();
+	}
+}
+
+void igdeComboBox::OnNativeWidgetLanguageChanged(){
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateDescription();
+		if(pAutoTranslateItems){
+			pNativeComboBox->BuildList();
+		}
 	}
 }

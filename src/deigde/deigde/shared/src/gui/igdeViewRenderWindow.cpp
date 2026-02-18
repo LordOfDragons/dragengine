@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeContainer.h"
 #include "igdeViewRenderWindow.h"
 #include "event/igdeMouseKeyListener.h"
@@ -53,7 +49,8 @@
 igdeViewRenderWindow::igdeViewRenderWindow(igdeEnvironment &environment) :
 igdeWidget(environment),
 pEnableRendering(false),
-pEngineRunning(false){
+pEngineRunning(false),
+pNativeViewRenderWindow(nullptr){
 }
 
 igdeViewRenderWindow::~igdeViewRenderWindow(){
@@ -68,19 +65,16 @@ void igdeViewRenderWindow::SetEnableRendering(bool enable){
 	pEnableRendering = enable;
 	
 	if(pRenderWindow){
-		igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
-		pRenderWindow->SetPaint(enable && native && native->IsShown());
+		pRenderWindow->SetPaint(enable && pNativeViewRenderWindow && pNativeViewRenderWindow->IsShown());
 	}
 }
 
 bool igdeViewRenderWindow::GetCanRender() const{
-	const igdeNativeRenderView * const native = (const igdeNativeRenderView*)GetNativeWidget();
-	return native && native->GetCanRender();
+	return pNativeViewRenderWindow && pNativeViewRenderWindow->GetCanRender();
 }
 
 decPoint igdeViewRenderWindow::GetRenderAreaSize() const{
-	const igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
-	return native ? native->GetSize() : decPoint();
+	return pNativeViewRenderWindow ? pNativeViewRenderWindow->GetSize() : decPoint();
 }
 
 
@@ -92,17 +86,15 @@ void igdeViewRenderWindow::ClearErrorRenderWindow(){
 
 
 void igdeViewRenderWindow::OnAfterEngineStart(){
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
-	if(native){
-		native->AttachRenderWindow();
+	if(pNativeViewRenderWindow){
+		pNativeViewRenderWindow->AttachRenderWindow();
 	}
 	pEngineRunning = true;
 }
 
 void igdeViewRenderWindow::OnBeforeEngineStop(){
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
-	if(native){
-		native->DetachRenderWindow();
+	if(pNativeViewRenderWindow){
+		pNativeViewRenderWindow->DetachRenderWindow();
 	}
 	pEngineRunning = false;
 }
@@ -112,11 +104,10 @@ void igdeViewRenderWindow::OnFrameUpdate(float){
 		return;
 	}
 	
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
-	pRenderWindow->SetPaint(pEnableRendering && native && native->IsReallyVisible());
+	pRenderWindow->SetPaint(pEnableRendering && pNativeViewRenderWindow && pNativeViewRenderWindow->IsReallyVisible());
 	
-	if(native){
-		native->OnFrameUpdate();
+	if(pNativeViewRenderWindow){
+		pNativeViewRenderWindow->OnFrameUpdate();
 	}
 }
 
@@ -181,16 +172,14 @@ void igdeViewRenderWindow::CreateCanvas(){
 }
 
 void igdeViewRenderWindow::GrabInput(){
-	igdeNativeRenderView * const native = static_cast<igdeNativeRenderView*>(GetNativeWidget());
-	if(native){
-		native->GrabInput();
+	if(pNativeViewRenderWindow){
+		pNativeViewRenderWindow->GrabInput();
 	}
 }
 
 void igdeViewRenderWindow::ReleaseInput(){
-	igdeNativeRenderView * const native = static_cast<igdeNativeRenderView*>(GetNativeWidget());
-	if(native){
-		native->ReleaseInput();
+	if(pNativeViewRenderWindow){
+		pNativeViewRenderWindow->ReleaseInput();
 	}
 }
 
@@ -278,14 +267,16 @@ void igdeViewRenderWindow::CreateNativeWidget(){
 	
 	igdeNativeRenderView * const native = igdeNativeRenderView::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeViewRenderWindow = native;
 	native->PostCreateNativeWidget();
 }
 
 void igdeViewRenderWindow::DropNativeWidget(){
-	if(GetNativeWidget()){
-		((igdeNativeRenderView*)GetNativeWidget())->DropNativeWindow();
+	if(pNativeViewRenderWindow){
+		pNativeViewRenderWindow->DropNativeWindow();
 	}
 	
+	pNativeViewRenderWindow = nullptr;
 	igdeWidget::DropNativeWidget();
 }
 
@@ -309,7 +300,7 @@ void igdeViewRenderWindow::CreateAndAttachRenderWindow(){
 		CreateCanvas();
 	}
 	
-	if(pEngineRunning){
-		((igdeNativeRenderView*)GetNativeWidget())->AttachRenderWindow();
+	if(pEngineRunning && pNativeViewRenderWindow){
+		pNativeViewRenderWindow->AttachRenderWindow();
 	}
 }

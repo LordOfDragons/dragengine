@@ -52,6 +52,11 @@ public:
 		ewsMaximized
 	};
 	
+	class cNativeMainWindow : public cNativeWindow{
+	public:
+		virtual ~cNativeMainWindow() override = default;
+		virtual void UpdateWindowState() = 0;
+	};
 	
 	
 private:
@@ -59,6 +64,10 @@ private:
 	eWindowStates pWindowState;
 	decPoint pNormalPosition, pNormalSize;
 	bool pNormalPositionSet, pNormalSizeSet;
+	
+	
+protected:
+	cNativeMainWindow *pNativeMainWindow;
 	
 	
 public:
@@ -175,37 +184,9 @@ public:
 	/*@}*/
 	
 	
-	
 protected:
-	/**
-	 * \brief Window title changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	void OnTitleChanged() override;
-	
-	/**
-	 * \brief Window icon changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	void OnIconChanged() override;
-	
-	/**
-	 * \brief Window size changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	void OnSizeChanged() override;
-	
-	/**
-	 * \brief Window position changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	void OnPositionChanged() override;
-	
 	/** \brief Visible changed. */
 	void OnVisibleChanged() override;
-	
-	/** \brief Enabled changed. */
-	void OnEnabledChanged() override;
 	
 	/** \brief Window state changed. */
 	virtual void OnWindowStateChanged();

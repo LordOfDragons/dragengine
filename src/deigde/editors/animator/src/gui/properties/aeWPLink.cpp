@@ -858,5 +858,7 @@ void aeWPLink::UpdateControllerList(){
 }
 
 void aeWPLink::OnLanguageChanged(){
+	igdeContainerScroll::OnLanguageChanged();
+	
 	UpdateControllerList();
 }

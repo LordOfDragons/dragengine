@@ -52,6 +52,31 @@ public:
 	using Ref = deTObjectReference<igdeTextArea>;
 	
 	
+	class cNativeTextArea{
+	public:
+		virtual ~cNativeTextArea() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEditable() = 0;
+		virtual void Focus() = 0;
+		virtual int GetCursorPosition() const = 0;
+		virtual void SetCursorPosition(int position) = 0;
+		virtual int GetCursorColumn() const = 0;
+		virtual void SetCursorColumn(int column) = 0;
+		virtual int GetCursorRow() const = 0;
+		virtual void SetCursorRow(int row) = 0;
+		virtual int GetTopLine() const = 0;
+		virtual void SetTopLine(int line) = 0;
+		virtual int GetBottomLine() const = 0;
+		virtual void SetBottomLine(int line) = 0;
+		virtual int GetLineCount() const = 0;
+		virtual void UpdateColumns() = 0;
+		virtual void UpdateRows() = 0;
+		virtual void UpdateStyles() = 0;
+	};
+	
+	
 private:
 	bool pEnabled;
 	decString pText;
@@ -65,6 +90,9 @@ private:
 	
 	decTObjectOrderedSet<igdeTextAreaListener> pListeners;
 	
+	
+protected:
+	cNativeTextArea *pNativeTextArea;
 	
 	
 public:
@@ -248,9 +276,6 @@ public:
 	
 	/** \brief Notify listeners text is changing. */
 	virtual void NotifyTextChanging();
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -272,6 +297,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -301,6 +331,9 @@ protected:
 	 * \returns \em true if anything change otherwise \em false.
 	 */
 	bool pClearSegment(int begin, int end);
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

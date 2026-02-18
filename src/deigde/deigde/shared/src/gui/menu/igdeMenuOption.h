@@ -42,9 +42,19 @@ public:
 	using Ref = deTObjectReference<igdeMenuOption>;
 	
 	
+	class cNativeMenuOption : public cNativeMenuCommand{
+	public:
+		virtual ~cNativeMenuOption() override = default;
+		virtual void UpdateSelected() = 0;
+	};
+	
+	
 private:
 	bool pSelected;
 	
+	
+protected:
+	cNativeMenuOption *pNativeMenuOption;
 	
 	
 public:
@@ -104,6 +114,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

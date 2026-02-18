@@ -25,13 +25,13 @@
 #ifndef _IGDENATIVENULLBUTTON_H_
 #define _IGDENATIVENULLBUTTON_H_
 
-class igdeButton;
+#include "../../igdeButton.h"
 
 
 /**
  * Null button.
  */
-class igdeNativeNullButton{
+class igdeNativeNullButton : public igdeButton::cNativeButton{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,12 +55,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	/*@}*/
 };
 

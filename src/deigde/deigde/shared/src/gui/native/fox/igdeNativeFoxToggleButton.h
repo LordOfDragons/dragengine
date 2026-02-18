@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXTOGGLEBUTTON_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeToggleButton.h"
 #include "../../resources/igdeFont.h"
 
 class igdeToggleButton;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native toggleButton.
  */
-class igdeNativeFoxToggleButton : public FXToggleButton{
+class igdeNativeFoxToggleButton : public FXToggleButton, public igdeToggleButton::cNativeToggleButton{
 	FXDECLARE(igdeNativeFoxToggleButton)
 	
 protected:
@@ -78,12 +79,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	FXbool canFocus() const override;
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcons();
-	virtual void UpdateEnabled();
-	virtual void UpdateToggled();
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	void UpdateToggled() override;
 	
 	static FXString ButtonText(const igdeToggleButton &owner);
 	static FXIcon *ButtonIconOn(const igdeToggleButton &owner);

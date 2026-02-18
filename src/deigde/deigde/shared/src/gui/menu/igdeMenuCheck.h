@@ -41,9 +41,19 @@ public:
 	using Ref = deTObjectReference<igdeMenuCheck>;
 	
 	
+	class cNativeMenuCheck : public cNativeMenuCommand{
+	public:
+		virtual ~cNativeMenuCheck() override = default;
+		virtual void UpdateChecked() = 0;
+	};
+	
+	
 private:
 	bool pChecked;
 	
+	
+protected:
+	cNativeMenuCheck *pNativeMenuCheck;
 	
 	
 public:
@@ -103,6 +113,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

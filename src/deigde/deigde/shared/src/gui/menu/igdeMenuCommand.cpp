@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeMenuCommand.h"
 #include "../igdeContainer.h"
 #include "../igdeCommonDialogs.h"
@@ -50,13 +46,15 @@
 igdeMenuCommand::igdeMenuCommand(igdeEnvironment &environment) :
 igdeWidget(environment),
 pMnemonic(deInputEvent::ekcUndefined),
-pEnabled(true){
+pEnabled(true),
+pNativeMenuCommand(nullptr){
 }
 
 igdeMenuCommand::igdeMenuCommand(igdeEnvironment &environment, igdeAction *action) :
 igdeWidget(environment),
 pMnemonic(deInputEvent::ekcUndefined),
-pEnabled(true)
+pEnabled(true),
+pNativeMenuCommand(nullptr)
 {
 	SetAction(action);
 }
@@ -142,16 +140,6 @@ void igdeMenuCommand::SetAction(igdeAction *action){
 	}
 }
 
-void igdeMenuCommand::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeMenuCommand * const native = igdeNativeMenuCommand::CreateNativeWidget(*this);
-		native->UpdateText();
-		native->UpdateDescription();
-	}
-}
-
 void igdeMenuCommand::OnAction(){
 	if(pAction){
 		pAction->OnAction();
@@ -182,6 +170,7 @@ void igdeMenuCommand::CreateNativeWidget(){
 	
 	igdeNativeMenuCommand * const native = igdeNativeMenuCommand::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeMenuCommand = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -194,40 +183,51 @@ void igdeMenuCommand::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeMenuCommand::DropNativeWidget(){
+	pNativeMenuCommand = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeMenuCommand::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateText();
+	if(pNativeMenuCommand){
+		pNativeMenuCommand->UpdateText();
 	}
 }
 
 void igdeMenuCommand::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateDescription();
+	if(pNativeMenuCommand){
+		pNativeMenuCommand->UpdateDescription();
 	}
 }
 
 void igdeMenuCommand::OnHotKeyChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateHotKey();
+	if(pNativeMenuCommand){
+		pNativeMenuCommand->UpdateHotKey();
 	}
 }
 
 void igdeMenuCommand::OnMnemonicChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeMenuCommand){
+		// ??
 	}
 }
 
 void igdeMenuCommand::OnIconChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateIcon();
+	if(pNativeMenuCommand){
+		pNativeMenuCommand->UpdateIcon();
 	}
 }
 
 void igdeMenuCommand::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeMenuCommand){
+		pNativeMenuCommand->UpdateEnabled();
+	}
+}
+
+void igdeMenuCommand::OnNativeWidgetLanguageChanged(){
+	if(pNativeMenuCommand){
+		pNativeMenuCommand->UpdateText();
+		pNativeMenuCommand->UpdateDescription();
 	}
 }

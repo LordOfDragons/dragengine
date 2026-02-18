@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXTEXTAREA_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeTextArea.h"
 #include "../../resources/igdeFont.h"
 
 #include <dragengine/common/collection/decTList.h>
@@ -38,7 +39,7 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native Text Area.
  */
-class igdeNativeFoxTextArea : public FXVerticalFrame{
+class igdeNativeFoxTextArea : public FXVerticalFrame, public igdeTextArea::cNativeTextArea{
 	FXDECLARE(igdeNativeFoxTextArea)
 protected:
 	   igdeNativeFoxTextArea();
@@ -89,26 +90,26 @@ public:
 	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
-	void UpdateStyles();
+	void UpdateStyles() override;
 	void ApplyStyles();
-	virtual void UpdateText();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
-	virtual void UpdateEditable();
-	virtual void Focus();
+	void UpdateText() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
+	void UpdateEditable() override;
+	void Focus() override;
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition(int position);
+	void SetCursorPosition(int position) override;
 	virtual int GetCursorColumn() const;
 	virtual int GetCursorRow() const;
-	virtual void SetCursorColumn(int column);
-	virtual void SetCursorRow(int row);
+	void SetCursorColumn(int column) override;
+	void SetCursorRow(int row) override;
 	virtual int GetTopLine() const;
-	virtual void SetTopLine(int line);
+	void SetTopLine(int line) override;
 	virtual int GetBottomLine() const;
-	virtual void SetBottomLine(int line);
+	void SetBottomLine(int line) override;
 	virtual int GetLineCount() const;
-	virtual void UpdateColumns();
-	virtual void UpdateRows();
+	void UpdateColumns() override;
+	void UpdateRows() override;
 	
 	static int TextAreaFlagsBorder(const igdeTextArea &owner);
 	static int TextAreaFlags(const igdeTextArea &owner);

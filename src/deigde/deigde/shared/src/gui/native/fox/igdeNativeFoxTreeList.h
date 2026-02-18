@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXTREELIST_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeTreeList.h"
 #include "../../resources/igdeFont.h"
 
 
@@ -38,7 +39,7 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native tree list.
  */
-class igdeNativeFoxTreeList : public FXVerticalFrame{
+class igdeNativeFoxTreeList : public FXVerticalFrame, public igdeTreeList::cNativeTreeList{
 	FXDECLARE(igdeNativeFoxTreeList)
 protected:
 	   igdeNativeFoxTreeList();
@@ -89,20 +90,20 @@ public:
 	
 	
 	
-	virtual void BuildTree();
-	virtual void UpdateItem(igdeTreeItem *item);
-	virtual void MakeItemVisible(igdeTreeItem *item);
-	virtual void CreateAndInsertItem(igdeTreeItem *item);
-	virtual void CreateAndAppendItem(igdeTreeItem *item);
-	virtual void RemoveItem(igdeTreeItem *item);
-	virtual void RemoveAllItems(igdeTreeItem *parent);
-	virtual void ItemMoved(igdeTreeItem *item);
-	virtual void SelectItem(igdeTreeItem *item);
-	virtual void ItemsSortedIn(igdeTreeItem *item);
-	virtual void Focus();
-	virtual void UpdateEnabled();
-	virtual void UpdateRows();
-	virtual void UpdateDescription();
+	void BuildTree() override;
+	void UpdateItem(igdeTreeItem *item) override;
+	void MakeItemVisible(igdeTreeItem *item) override;
+	void CreateAndInsertItem(igdeTreeItem *item) override;
+	void CreateAndAppendItem(igdeTreeItem *item) override;
+	void RemoveItem(igdeTreeItem *item) override;
+	void RemoveAllItems(igdeTreeItem *parent) override;
+	void ItemMoved(igdeTreeItem *item) override;
+	void SelectItem(igdeTreeItem *item) override;
+	void ItemsSortedIn(igdeTreeItem *item) override;
+	void Focus() override;
+	void UpdateEnabled() override;
+	void UpdateRows() override;
+	void UpdateDescription() override;
 	
 	static int TreeListFlags(const igdeTreeList &owner);
 	static igdeFont *TreeListFont(const igdeTreeList &owner, const igdeGuiTheme &guitheme);

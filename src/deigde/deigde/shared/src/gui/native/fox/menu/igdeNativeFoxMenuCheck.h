@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMENUCHECK_H_
 
 #include "../foxtoolkit.h"
+#include "../../../menu/igdeMenuCheck.h"
 
 class igdeMenuCheck;
 
@@ -33,7 +34,7 @@ class igdeMenuCheck;
 /**
  * FOX native widget.
  */
-class igdeNativeFoxMenuCheck : public FXMenuCheck{
+class igdeNativeFoxMenuCheck : public FXMenuCheck, public igdeMenuCheck::cNativeMenuCheck{
 	FXDECLARE(igdeNativeFoxMenuCheck)
 	
 protected:
@@ -70,7 +71,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateChecked();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	
+	void UpdateChecked() override;
 	
 	static FXString BuildConstrText(igdeMenuCheck &owner);
 	/*@}*/

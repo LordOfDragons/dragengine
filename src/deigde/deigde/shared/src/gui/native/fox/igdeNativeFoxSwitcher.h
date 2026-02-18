@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSWITCHER_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeSwitcher.h"
 #include "../../resources/igdeFont.h"
 
 class igdeSwitcher;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native switcher.
  */
-class igdeNativeFoxSwitcher : public FXSwitcher{
+class igdeNativeFoxSwitcher : public FXSwitcher, public igdeSwitcher::cNativeSwitcher{
 	FXDECLARE(igdeNativeFoxSwitcher)
 	
 protected:
@@ -74,7 +75,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateCurrent();
+	void UpdateCurrent() override;
 	/*@}*/
 };
 

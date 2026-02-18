@@ -51,6 +51,20 @@ public:
 	using LinksList = decTObjectOrderedSet<igdeNVLink>;
 	
 	
+	class cNativeNVBoard{
+	public:
+		virtual ~cNativeNVBoard() = default;
+		virtual decPoint GetSize() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateColors() = 0;
+		virtual void UpdateNodes() = 0;
+		virtual void UpdateLinks() = 0;
+		virtual void UpdateOffset() = 0;
+		virtual igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const = 0;
+		virtual const igdeNVLink::Ref &GetHoverLink() const = 0;
+	};
+	
+	
 private:
 	decColor pBgColor;
 	bool pEnabled;
@@ -62,6 +76,9 @@ private:
 	
 	decTObjectOrderedSet<igdeNVBoardListener> pListeners;
 	
+	
+protected:
+	cNativeNVBoard *pNativeNVBoard;
 	
 	
 public:
@@ -209,11 +226,18 @@ public:
 	void DestroyNativeWidget() override;
 	
 	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
+	
+	
+	/**
 	 * \brief Notify nodes board offset changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	void NotifyNodesOffsetChanged();
-	
 	
 	
 protected:

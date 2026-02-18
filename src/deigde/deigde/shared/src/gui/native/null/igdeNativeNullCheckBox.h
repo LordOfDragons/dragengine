@@ -25,13 +25,13 @@
 #ifndef _IGDENATIVENULLCHECKBOX_H_
 #define _IGDENATIVENULLCHECKBOX_H_
 
-class igdeCheckBox;
+#include "../../igdeCheckBox.h"
 
 
 /**
  * Null check box.
  */
-class igdeNativeNullCheckBox{
+class igdeNativeNullCheckBox : public igdeCheckBox::cNativeCheckBox{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,12 +55,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateChecked();
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void Focus() override;
+	void UpdateChecked() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	/*@}*/
 };
 

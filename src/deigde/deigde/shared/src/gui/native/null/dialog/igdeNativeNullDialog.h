@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLDIALOG_H_
 #define _IGDENATIVENULLDIALOG_H_
 
+#include "../../../dialog/igdeDialog.h"
+
 #include "../igdeNativeNullWindow.h"
 
 class igdeDialog;
@@ -35,7 +37,7 @@ class igdeGuiTheme;
 /**
  * Null dialog.
  */
-class igdeNativeNullDialog : public igdeNativeNullWindow{
+class igdeNativeNullDialog : public igdeNativeNullWindow, public igdeDialog::cNativeDialog{
 private:
 	igdeDialog &pOwnerDialog;
 	
@@ -67,9 +69,10 @@ public:
 	void UpdateIcon() override;
 	void UpdateTitle() override;
 	void UpdateSize() override;
-	virtual void ShowDialog();
+	void RaiseAndActivate() override;
 	
-	virtual void CloseDialog(bool accepted);
+	void ShowDialog() override;
+	void CloseDialog(bool accepted) override;
 	
 	void OnFrameUpdate() override;
 	

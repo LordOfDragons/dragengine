@@ -47,6 +47,20 @@ public:
 	using WeakRef = deTWeakObjectReference<igdeTextField>;
 	
 	
+	class cNativeTextField{
+	public:
+		virtual ~cNativeTextField() = default;
+		virtual void Focus() = 0;
+		virtual void OnInvalidValueChanged() = 0;
+		virtual void UpdateText() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEditable() = 0;
+		virtual int GetCursorPosition() const = 0;
+		virtual void SetCursorPosition(int position) = 0;
+	};
+	
+	
 private:
 	bool pEnabled;
 	decString pText;
@@ -58,6 +72,9 @@ private:
 	
 	decTObjectOrderedSet<igdeTextFieldListener> pListeners;
 	
+	
+protected:
+	cNativeTextField *pNativeTextField;
 	
 	
 public:
@@ -175,9 +192,6 @@ public:
 	
 	/** \brief Notify listeners enter key has been pressed. */
 	virtual void NotifyEnterKey();
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -199,6 +213,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -216,6 +235,9 @@ protected:
 	
 	/** \brief Invalid value changed. */
 	virtual void OnInvalidValueChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeTimer.h"
 #include "native/toolkit.h"
 #include "../environment/igdeEnvironment.h"
@@ -46,14 +42,18 @@ pEnvironment(environment),
 pNativeTimer(nullptr),
 pTimeout(0),
 pRepeating(false),
-pRunning(false)
+pRunning(false),
+pNativeTimerInterface(nullptr)
 {
-	pNativeTimer = igdeNativeTimer::CreateNativeTimer(*this);
+	igdeNativeTimer * const native = igdeNativeTimer::CreateNativeTimer(*this);
+	pNativeTimer = native;
+	pNativeTimerInterface = native;
 }
 
 igdeTimer::~igdeTimer(){
 	Stop();
 	
+	pNativeTimerInterface = nullptr;
 	if(pNativeTimer){
 		((igdeNativeTimer*)pNativeTimer)->DestroyNativeTimer();
 	}
@@ -67,11 +67,13 @@ igdeTimer::~igdeTimer(){
 void igdeTimer::Start(int timeoutMS, bool repeating){
 	Stop();
 	
+	DEASSERT_NOTNULL(pNativeTimerInterface)
+	
 	pTimeout = decMath::max(timeoutMS, 0);
 	pRepeating = repeating;
 	pRunning = true;
 	
-	((igdeNativeTimer*)pNativeTimer)->StartTimer();
+	pNativeTimerInterface->StartTimer();
 }
 
 void igdeTimer::Start(double timeout, bool repeating){
@@ -79,10 +81,14 @@ void igdeTimer::Start(double timeout, bool repeating){
 }
 
 void igdeTimer::Stop(){
-	if(pRunning){
-		((igdeNativeTimer*)pNativeTimer)->StopTimer();
-		pRunning = false;
+	if(!pRunning){
+		return;
 	}
+	
+	if(pNativeTimerInterface){
+		pNativeTimerInterface->StopTimer();
+	}
+	pRunning = false;
 }
 
 void igdeTimer::OnTimeout(){

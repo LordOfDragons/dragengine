@@ -123,6 +123,12 @@ FXbool igdeNativeFoxCheckBox::canFocus() const{
 	}
 }
 
+void igdeNativeFoxCheckBox::Focus(){
+	if(pOwner->GetStyle() != igdeCheckBox::ebsToolBar){
+		setFocus();
+	}
+}
+
 void igdeNativeFoxCheckBox::UpdateChecked(){
 	if(pOwner->GetChecked() != (bool)getCheck()){
 		setCheck(pOwner->GetChecked());

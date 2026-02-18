@@ -38,6 +38,19 @@ class igdeWidget;
  * \brief IGDE UI Window.
  */
 class DE_DLL_EXPORT igdeWindow : public igdeContainer{
+public:
+	class cNativeWindow{
+	public:
+		virtual ~cNativeWindow() = default;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdatePosition() = 0;
+		virtual void UpdateIcon() = 0;
+		virtual void UpdateTitle() = 0;
+		virtual void UpdateSize() = 0;
+		virtual void RaiseAndActivate() = 0;
+	};
+	
+	
 private:
 	decString pTitle;
 	igdeIcon::Ref pIcon;
@@ -45,6 +58,9 @@ private:
 	decPoint pPosition, pSize;
 	bool pEnabled;
 	
+	
+protected:
+	cNativeWindow *pNativeWindow;
 	
 	
 public:
@@ -126,9 +142,6 @@ public:
 	
 	/** \brief Parent window. */
 	igdeWindow *GetParentWindow() override;
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -150,6 +163,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -185,6 +203,9 @@ protected:
 	
 	/** \brief Raise and activate window. */
 	virtual void OnRaiseAndActivate();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

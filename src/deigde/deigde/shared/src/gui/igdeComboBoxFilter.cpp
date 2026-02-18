@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeComboBoxFilter.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -52,25 +48,29 @@
 igdeComboBoxFilter::igdeComboBoxFilter(igdeEnvironment &environment, int columns,
 	const char *description) :
 igdeComboBox(environment, columns, description),
-pFilterCaseInsensitive(true){
+pFilterCaseInsensitive(true),
+pNativeComboBoxFilter(nullptr){
 }
 
 igdeComboBoxFilter::igdeComboBoxFilter(igdeEnvironment &environment, int columns, bool editable,
 	const char *description) :
 igdeComboBox(environment, columns, editable, description),
-pFilterCaseInsensitive(true){
+pFilterCaseInsensitive(true),
+pNativeComboBoxFilter(nullptr){
 }
 
 igdeComboBoxFilter::igdeComboBoxFilter(igdeEnvironment &environment, int columns, int rows,
 	const char *description) :
 igdeComboBox(environment, columns, rows, description),
-pFilterCaseInsensitive(true){
+pFilterCaseInsensitive(true),
+pNativeComboBoxFilter(nullptr){
 }
 
 igdeComboBoxFilter::igdeComboBoxFilter(igdeEnvironment &environment, int columns, int rows,
 	bool editable, const char *description) :
 igdeComboBox(environment, columns, rows, editable, description),
-pFilterCaseInsensitive(true){
+pFilterCaseInsensitive(true),
+pNativeComboBoxFilter(nullptr){
 }
 
 igdeComboBoxFilter::~igdeComboBoxFilter(){
@@ -142,7 +142,6 @@ void igdeComboBoxFilter::SetFilterString(const char *filterString){
 }
 
 
-
 void igdeComboBoxFilter::CreateNativeWidget(){
 	if(GetNativeWidget()){
 		return;
@@ -150,6 +149,8 @@ void igdeComboBoxFilter::CreateNativeWidget(){
 	
 	igdeNativeComboBoxFilter * const native = igdeNativeComboBoxFilter::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeComboBoxFilter = native;
+	pNativeComboBox = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -162,118 +163,14 @@ void igdeComboBoxFilter::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
-
-
-void igdeComboBoxFilter::OnItemAdded(int index){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	igdeNativeComboBoxFilter &native = *((igdeNativeComboBoxFilter*)GetNativeWidget());
-	native.InsertItem(index, GetItems().GetAt(index));
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+void igdeComboBoxFilter::DropNativeWidget(){
+	pNativeComboBoxFilter = nullptr;
+	igdeComboBox::DropNativeWidget();
 }
 
-void igdeComboBoxFilter::OnItemRemoved(int index){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	igdeNativeComboBoxFilter &native = *((igdeNativeComboBoxFilter*)GetNativeWidget());
-	native.RemoveItem(index);
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
-}
-
-void igdeComboBoxFilter::OnAllItemsRemoved(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	igdeNativeComboBoxFilter &native = *((igdeNativeComboBoxFilter*)GetNativeWidget());
-	native.RemoveAllItems();
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
-}
-
-void igdeComboBoxFilter::OnItemChanged(int index){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateItem(index);
-	}
-}
-
-void igdeComboBoxFilter::OnItemMoved(int fromIndex, int toIndex){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	igdeNativeComboBoxFilter &native = *((igdeNativeComboBoxFilter*)GetNativeWidget());
-	native.MoveItem(fromIndex, toIndex);
-	//native.SyncSelection( false );
-	native.UpdateText();
-}
-
-void igdeComboBoxFilter::OnItemsSorted(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	igdeNativeComboBoxFilter &native = *((igdeNativeComboBoxFilter*)GetNativeWidget());
-	native.BuildList();
-	//native.SyncSelection( false );
-	native.UpdateText();
-}
-
-void igdeComboBoxFilter::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateText();
-	}
-}
-
-void igdeComboBoxFilter::OnEnabledChanged(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateEnabled();
-}
-
-void igdeComboBoxFilter::OnRowsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateRowCount();
-	}
-}
-
-void igdeComboBoxFilter::OnEditableChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateEditable();
-	}
-}
-
-void igdeComboBoxFilter::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateDescription();
-	}
-}
 
 void igdeComboBoxFilter::OnFilterStringChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->UpdateFilterString();
-	}
-}
-
-void igdeComboBoxFilter::OnInvalidValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->OnInvalidValueChanged();
-	}
-}
-
-void igdeComboBoxFilter::OnRequestFocus(){
-	if(GetNativeWidget()){
-		((igdeNativeComboBoxFilter*)GetNativeWidget())->Focus();
+	if(pNativeComboBoxFilter){
+		pNativeComboBoxFilter->UpdateFilterString();
 	}
 }

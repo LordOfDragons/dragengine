@@ -55,6 +55,9 @@ void igdeNativeNullCheckBox::DestroyNativeWidget(){
 // Management
 ///////////////
 
+void igdeNativeNullCheckBox::Focus(){
+}
+
 void igdeNativeNullCheckBox::UpdateChecked(){
 }
 

@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSPINTEXTFIELD_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeSpinTextField.h"
 #include "../../resources/igdeFont.h"
 
 class igdeSpinTextField;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native spinTextField.
  */
-class igdeNativeFoxSpinTextField : public FXSpinner{
+class igdeNativeFoxSpinTextField : public FXSpinner, public igdeSpinTextField::cNativeSpinTextField{
 	FXDECLARE(igdeNativeFoxSpinTextField)
 	
 protected:
@@ -76,11 +77,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateRange();
-	virtual void UpdateEnabled();
-	virtual void UpdateValue();
-	virtual void UpdateDescription();
+	void Focus() override;
+	void UpdateRange() override;
+	void UpdateEnabled() override;
+	void UpdateValue() override;
+	void UpdateDescription() override;
 	
 	static int SpinTextFieldFlags(const igdeSpinTextField &owner);
 	static igdeFont *SpinTextFieldFont(const igdeSpinTextField &owner, const igdeGuiTheme &guitheme);

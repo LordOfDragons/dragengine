@@ -219,6 +219,9 @@ protected:
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	void SetNativeWidget(void *nativeWidget);
+	
+	/** \brief Native widget language changed. */
+	virtual void OnNativeWidgetLanguageChanged();
 	/*@}*/
 };
 

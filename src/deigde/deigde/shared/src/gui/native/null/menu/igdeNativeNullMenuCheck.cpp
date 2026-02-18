@@ -55,6 +55,22 @@ void igdeNativeNullMenuCheck::DestroyNativeWidget(){
 // Management
 ///////////////
 
+void igdeNativeNullMenuCheck::UpdateText(){
+}
+
+void igdeNativeNullMenuCheck::UpdateDescription(){
+}
+
+void igdeNativeNullMenuCheck::UpdateHotKey(){
+}
+
+void igdeNativeNullMenuCheck::UpdateIcon(){
+}
+
+void igdeNativeNullMenuCheck::UpdateEnabled(){
+}
+
+
 void igdeNativeNullMenuCheck::UpdateChecked(){
 }
 

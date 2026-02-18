@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeStatusBar.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -45,7 +41,8 @@
 ////////////////////////////
 
 igdeStatusBar::igdeStatusBar(igdeEnvironment &environment) :
-igdeContainer(environment){
+igdeContainer(environment),
+pNativeStatusBar(nullptr){
 }
 
 igdeStatusBar::~igdeStatusBar(){
@@ -75,12 +72,6 @@ void igdeStatusBar::ClearText(){
 	OnTextChanged();
 }
 
-void igdeStatusBar::OnLanguageChanged(){
-	igdeContainer::OnLanguageChanged();
-	
-	OnTextChanged();
-}
-
 
 void igdeStatusBar::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -89,6 +80,7 @@ void igdeStatusBar::CreateNativeWidget(){
 	
 	igdeNativeStatusBar * const native = igdeNativeStatusBar::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeStatusBar = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -103,8 +95,18 @@ void igdeStatusBar::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeStatusBar::DropNativeWidget(){
+	pNativeStatusBar = nullptr;
+	igdeContainer::DropNativeWidget();
+}
+
+
 void igdeStatusBar::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeStatusBar*)GetNativeWidget())->UpdateText();
+	if(pNativeStatusBar){
+		pNativeStatusBar->UpdateText();
 	}
+}
+
+void igdeStatusBar::OnNativeWidgetLanguageChanged(){
+	OnTextChanged();
 }

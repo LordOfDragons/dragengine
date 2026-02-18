@@ -61,11 +61,25 @@ public:
 		~cHeader() override;
 	};
 	
+	class cNativeTabBook{
+	public:
+		virtual ~cNativeTabBook() = default;
+		virtual void AddHeader(const igdeTabBook::cHeader &header) = 0;
+		virtual void UpdateHeader(int index, const igdeTabBook::cHeader &header) = 0;
+		virtual void RemoveHeader(int index) = 0;
+		virtual void RemoveAllHeaders() = 0;
+		virtual void ChangePanel(int index) = 0;
+		virtual void *GetNativeContainer() = 0;
+	};
+	
 	
 private:
 	cHeader::List pHeaders;
 	int pActivePanel;
 	
+	
+protected:
+	cNativeTabBook *pNativeTabBook;
 	
 	
 public:
@@ -117,9 +131,6 @@ public:
 	
 	/** \brief Remove all children. */
 	void RemoveAllChildren() override;
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -147,6 +158,11 @@ public:
 	 */
 	void *GetNativeContainer() const override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -155,6 +171,9 @@ protected:
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	void CreateChildWidgetNativeWidgets() override;
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

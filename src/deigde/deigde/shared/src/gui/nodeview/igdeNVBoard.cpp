@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeNVBoard.h"
 #include "igdeNVBoardListener.h"
 #include "igdeNVNode.h"
@@ -104,7 +100,8 @@ public:
 igdeNVBoard::igdeNVBoard(igdeEnvironment &environment) :
 igdeContainer(environment),
 pBgColor(115.0f / 255.0f, 115.0f / 255.0f, 115.0f / 255.0f),
-pEnabled(true){
+pEnabled(true),
+pNativeNVBoard(nullptr){
 }
 
 igdeNVBoard::~igdeNVBoard(){
@@ -139,11 +136,7 @@ void igdeNVBoard::SetEnabled(bool enabled){
 
 
 decPoint igdeNVBoard::GetSize() const{
-	if(!GetNativeWidget()){
-		return decPoint();
-	}
-	
-	return ((igdeNativeNVBoard*)GetNativeWidget())->GetSize();
+	return pNativeNVBoard ? pNativeNVBoard->GetSize() : decPoint();
 }
 
 void igdeNVBoard::SetOffset(const decPoint &offset){
@@ -325,24 +318,19 @@ void igdeNVBoard::RemoveAllNodeLinks(igdeNVNode *node){
 }
 
 igdeNVLink *igdeNVBoard::ClosestLinkNear(const decPoint &position, float range) const{
-	if(!GetNativeWidget()){
-		return nullptr;
-	}
-	
-	return ((igdeNativeNVBoard*)GetNativeWidget())->ClosestLinkNear(position, range);
+	return pNativeNVBoard ? pNativeNVBoard->ClosestLinkNear(position, range) : nullptr;
 }
 
 void igdeNVBoard::ShowContextMenu(const decPoint &position){
-	if(!GetNativeWidget()){
+	if(!pNativeNVBoard){
 		return;
 	}
 	
-	const igdeNativeNVBoard &native = *((igdeNativeNVBoard*)GetNativeWidget());
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(helper.GetEnvironment()));
 	
 	// link
-	igdeNVLink * const link = native.GetHoverLink();
+	igdeNVLink * const link = pNativeNVBoard->GetHoverLink();
 	if(link){
 		helper.MenuCommand(menu, igdeNVBoardActionDeleteLink::Ref::New(*this, link));
 	}
@@ -421,6 +409,7 @@ void igdeNVBoard::CreateNativeWidget(){
 	
 	igdeNativeNVBoard * const native = igdeNativeNVBoard::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeNVBoard = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -435,6 +424,10 @@ void igdeNVBoard::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeNVBoard::DropNativeWidget(){
+	pNativeNVBoard = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 void igdeNVBoard::NotifyNodesOffsetChanged(){
@@ -446,42 +439,32 @@ void igdeNVBoard::NotifyNodesOffsetChanged(){
 }
 
 void igdeNVBoard::OnColorsChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateColors();
 	}
-	
-	((igdeNativeNVBoard*)GetNativeWidget())->UpdateColors();
 }
 
 void igdeNVBoard::OnEnabledChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateEnabled();
 	}
-	
-	((igdeNativeNVBoard*)GetNativeWidget())->UpdateEnabled();
 }
 
 void igdeNVBoard::OnOffsetChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateOffset();
 	}
-	
-	((igdeNativeNVBoard*)GetNativeWidget())->UpdateOffset();
 }
 
 void igdeNVBoard::OnNodesChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateNodes();
 	}
-	
-	((igdeNativeNVBoard*)GetNativeWidget())->UpdateNodes();
 }
 
 
 void igdeNVBoard::OnLinksChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateLinks();
 	}
-	
-	((igdeNativeNVBoard*)GetNativeWidget())->UpdateLinks();
 }

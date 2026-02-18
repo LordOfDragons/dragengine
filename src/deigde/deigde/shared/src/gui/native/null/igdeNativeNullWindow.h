@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLWINDOW_H_
 #define _IGDENATIVENULLWINDOW_H_
 
+#include "../../igdeWindow.h"
+
 class igdeWindow;
 
 
 /**
  * Null window.
  */
-class igdeNativeNullWindow{
+class igdeNativeNullWindow : public igdeWindow::cNativeWindow{
 private:
 	bool pIsClosed;
 	
@@ -58,12 +60,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void RaiseAndActivate();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
 	virtual void OnFrameUpdate();
 	inline bool GetIsClosed() const{ return pIsClosed; }

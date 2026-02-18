@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeViewCurveBezier.h"
 #include "igdeViewCurveBezierListener.h"
 #include "igdeDialogCurveBezierClamp.h"
@@ -323,7 +320,8 @@ pSelPoint(-1),
 pClamp(false),
 pClampMin(0.0f, 0.0f),
 pClampMax(1.0f, 1.0f),
-pDefaultSize(200, 150)
+pDefaultSize(200, 150),
+pNativeViewCurveBezier(nullptr)
 {
 	SetDefaultBezier();
 }
@@ -666,6 +664,7 @@ void igdeViewCurveBezier::CreateNativeWidget(){
 	
 	igdeNativeViewCurveBezier * const native = igdeNativeViewCurveBezier::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeViewCurveBezier = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -678,58 +677,49 @@ void igdeViewCurveBezier::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeViewCurveBezier::DropNativeWidget(){
+	pNativeViewCurveBezier = nullptr;
+	igdeWidget::DropNativeWidget();
+}
+
 void igdeViewCurveBezier::OnDefaultSizeChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->UpdateDefaultSize();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().UpdateDefaultSize();
 }
 
 void igdeViewCurveBezier::OnCurveChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->UpdateCurve();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().UpdateCurve();
 }
 
 void igdeViewCurveBezier::OnEnabledChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->UpdateEnabled();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().UpdateEnabled();
 }
 
 void igdeViewCurveBezier::OnSelectedPointChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->UpdateSelectedPoint();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().UpdateSelectedPoint();
 }
 
 void igdeViewCurveBezier::OnClampChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->UpdateClamp();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().UpdateClamp();
 }
 
 void igdeViewCurveBezier::OnResetView(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->ResetView();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().ResetView();
 }
 
 void igdeViewCurveBezier::OnFitToCurve(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeViewCurveBezier){
+		pNativeViewCurveBezier->FitViewToCurve();
 	}
-	
-	((igdeNativeViewCurveBezier*)GetNativeWidget())->GetView().FitViewToCurve();
 }

@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXDIALOG_H_
 
 #include "../foxtoolkit.h"
+#include "../../../dialog/igdeDialog.h"
 
 class igdeDialog;
 class igdeEnvironment;
@@ -36,7 +37,7 @@ class igdeWidget;
 /**
  * FOX Native dialog.
  */
-class igdeNativeFoxDialog : public FXDialogBox{
+class igdeNativeFoxDialog : public FXDialogBox, public igdeDialog::cNativeDialog{
 	FXDECLARE(igdeNativeFoxDialog)
 	
 protected:
@@ -73,14 +74,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void ShowDialog();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
-	virtual void CloseDialog(bool accepted);
+	void ShowDialog() override;
+	void CloseDialog(bool accepted) override;
 	
 	static int DialogFlags(const igdeDialog &owner);
 	

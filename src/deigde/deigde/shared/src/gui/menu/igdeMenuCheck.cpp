@@ -48,12 +48,14 @@
 
 igdeMenuCheck::igdeMenuCheck(igdeEnvironment &environment) :
 igdeMenuCommand(environment),
-pChecked(false){
+pChecked(false),
+pNativeMenuCheck(nullptr){
 }
 
 igdeMenuCheck::igdeMenuCheck(igdeEnvironment &environment, igdeAction *action) :
 igdeMenuCommand(environment),
-pChecked(false)
+pChecked(false),
+pNativeMenuCheck(nullptr)
 {
 	// WARNING we have to use SetAction not the base class constructor otherwise
 	//         OnParameterChanged is called before pSelected is constructed
@@ -96,6 +98,8 @@ void igdeMenuCheck::CreateNativeWidget(){
 	
 	igdeNativeMenuCheck * const native = igdeNativeMenuCheck::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeMenuCheck = native;
+	pNativeMenuCommand = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -108,10 +112,14 @@ void igdeMenuCheck::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeMenuCheck::DropNativeWidget(){
+	pNativeMenuCheck = nullptr;
+	igdeMenuCommand::DropNativeWidget();
+}
 
 
 void igdeMenuCheck::OnCheckedChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuCheck*)GetNativeWidget())->UpdateChecked();
+	if(pNativeMenuCheck){
+		pNativeMenuCheck->UpdateChecked();
 	}
 }

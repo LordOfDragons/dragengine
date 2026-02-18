@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLTOGGLEBUTTON_H_
 #define _IGDENATIVENULLTOGGLEBUTTON_H_
 
+#include "../../igdeToggleButton.h"
+
 class igdeToggleButton;
 
 
 /**
  * Null toggleButton.
  */
-class igdeNativeNullToggleButton{
+class igdeNativeNullToggleButton : public igdeToggleButton::cNativeToggleButton{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,12 +57,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcons();
-	virtual void UpdateEnabled();
-	virtual void UpdateToggled();
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	void UpdateToggled() override;
 	/*@}*/
 };
 

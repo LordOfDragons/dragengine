@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeMenuOption.h"
 #include "igdeMenuCascade.h"
 #include "../igdeCommonDialogs.h"
@@ -48,12 +44,14 @@
 
 igdeMenuOption::igdeMenuOption(igdeEnvironment &environment) :
 igdeMenuCommand(environment),
-pSelected(false){
+pSelected(false),
+pNativeMenuOption(nullptr){
 }
 
 igdeMenuOption::igdeMenuOption(igdeEnvironment &environment, igdeAction *action) :
 igdeMenuCommand(environment),
-pSelected(false)
+pSelected(false),
+pNativeMenuOption(nullptr)
 {
 	// WARNING we have to use SetAction not the base class constructor otherwise
 	//         OnParameterChanged is called before pSelected is constructed
@@ -96,6 +94,8 @@ void igdeMenuOption::CreateNativeWidget(){
 	
 	igdeNativeMenuOption * const native = igdeNativeMenuOption::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeMenuOption = native;
+	pNativeMenuCommand = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -108,10 +108,14 @@ void igdeMenuOption::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeMenuOption::DropNativeWidget(){
+	pNativeMenuOption = nullptr;
+	igdeMenuCommand::DropNativeWidget();
+}
 
 
 void igdeMenuOption::OnSelectedChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMenuOption*)GetNativeWidget())->UpdateSelected();
+	if(pNativeMenuOption){
+		pNativeMenuOption->UpdateSelected();
 	}
 }

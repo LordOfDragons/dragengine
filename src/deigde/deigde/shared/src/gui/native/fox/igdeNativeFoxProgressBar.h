@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXPROGRESSBAR_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeProgressBar.h"
 
 
 class igdeProgressBar;
@@ -36,7 +37,7 @@ class igdeFont;
 /**
  * \brief FOX toolkit Native Text Area.
  */
-class igdeNativeFoxProgressBar : public FXProgressBar{
+class igdeNativeFoxProgressBar : public FXProgressBar, public igdeProgressBar::cNativeProgressBar{
 	FXDECLARE(igdeNativeFoxProgressBar)
 protected:
 	   igdeNativeFoxProgressBar();
@@ -77,10 +78,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
 	
 	static int ProgressBarFlags(const igdeProgressBar &owner);
 	static igdeFont *ProgressBarFont(const igdeProgressBar &owner, const igdeGuiTheme &guitheme);

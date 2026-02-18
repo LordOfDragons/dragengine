@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXWINDOW_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeWindow.h"
 #include "../../resources/igdeFont.h"
 
 class igdeWindow;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native window.
  */
-class igdeNativeFoxWindow : public FXTopWindow{
+class igdeNativeFoxWindow : public FXTopWindow, public igdeWindow::cNativeWindow{
 	FXDECLARE(igdeNativeFoxWindow)
 	
 protected:
@@ -74,12 +75,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void RaiseAndActivate();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
 	static int WindowFlags(const igdeWindow &owner);
 	static int WindowPadLeft(const igdeGuiTheme &guitheme);

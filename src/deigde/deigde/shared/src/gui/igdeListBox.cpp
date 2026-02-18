@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeListBox.h"
 #include "igdeContainer.h"
 #include "igdeCommonDialogs.h"
@@ -58,7 +54,8 @@ pSelectionMode(esmSingle),
 pSelection(-1),
 pRows(rows),
 pDescription(description),
-pAutoTranslateItems(false)
+pAutoTranslateItems(false),
+pNativeListBox(nullptr)
 {
 	if(rows < 1){
 		DETHROW(deeInvalidParam);
@@ -106,8 +103,8 @@ void igdeListBox::SetDescription(const char *description){
 }
 
 void igdeListBox::Focus(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->Focus();
+	if(pNativeListBox){
+		pNativeListBox->Focus();
 	}
 }
 
@@ -464,8 +461,8 @@ void igdeListBox::DeselectAllItems(){
 }
 
 void igdeListBox::MakeItemVisible(int index){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->MakeItemVisible(index);
+	if(pNativeListBox){
+		pNativeListBox->MakeItemVisible(index);
 	}
 }
 
@@ -476,7 +473,7 @@ void igdeListBox::MakeSelectionVisible(){
 }
 
 void igdeListBox::ShowContextMenu(const decPoint &position){
-	if(!GetNativeWidget()){
+	if(!pNativeListBox){
 		return;
 	}
 	
@@ -495,9 +492,8 @@ void igdeListBox::ShowContextMenu(const decPoint &position){
 
 void igdeListBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
 	decPoint cpos;
-	igdeNativeListBox * const native = static_cast<igdeNativeListBox*>(GetNativeWidget());
-	if(native){
-		cpos = native->GetContentPosition();
+	if(pNativeListBox){
+		cpos = pNativeListBox->GetContentPosition();
 	}
 	
 	void * const selection = GetSelectedItemData();
@@ -513,8 +509,8 @@ void igdeListBox::UpdateRestoreSelection(const std::function<void()> &block, int
 		}
 	}
 	
-	if(native){
-		native->SetContentPosition(cpos);
+	if(pNativeListBox){
+		pNativeListBox->SetContentPosition(cpos);
 	}
 	
 	SetSelection(index);
@@ -522,9 +518,8 @@ void igdeListBox::UpdateRestoreSelection(const std::function<void()> &block, int
 
 void igdeListBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
 	decPoint cpos;
-	igdeNativeListBox * const native = static_cast<igdeNativeListBox*>(GetNativeWidget());
-	if(native){
-		cpos = native->GetContentPosition();
+	if(pNativeListBox){
+		cpos = pNativeListBox->GetContentPosition();
 	}
 	
 	void * const selection = GetSelectedItemData();
@@ -540,8 +535,8 @@ void igdeListBox::UpdateRestoreSelectionData(const std::function<void()> &block,
 		}
 	}
 	
-	if(native){
-		native->SetContentPosition(cpos);
+	if(pNativeListBox){
+		pNativeListBox->SetContentPosition(cpos);
 	}
 	
 	SetSelection(index);
@@ -591,18 +586,6 @@ void igdeListBox::NotifyDoubleClickItem(int index){
 	});
 }
 
-void igdeListBox::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeListBox * const native = (igdeNativeListBox*)GetNativeWidget();
-		native->UpdateDescription();
-		if(pAutoTranslateItems){
-			native->BuildList();
-		}
-	}
-}
-
 
 void igdeListBox::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -611,6 +594,7 @@ void igdeListBox::CreateNativeWidget(){
 	
 	igdeNativeListBox * const native = igdeNativeListBox::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeListBox = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -623,70 +607,83 @@ void igdeListBox::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeListBox::DropNativeWidget(){
+	pNativeListBox = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeListBox::OnItemAdded(int index){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->InsertItem(index);
+	if(pNativeListBox){
+		pNativeListBox->InsertItem(index);
 	}
 }
 
 void igdeListBox::OnItemRemoved(int index){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->RemoveItem(index);
+	if(pNativeListBox){
+		pNativeListBox->RemoveItem(index);
 	}
 }
 
 void igdeListBox::OnAllItemsRemoved(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->RemoveAllItems();
+	if(pNativeListBox){
+		pNativeListBox->RemoveAllItems();
 	}
 }
 
 void igdeListBox::OnItemChanged(int index){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->UpdateItem(index);
+	if(pNativeListBox){
+		pNativeListBox->UpdateItem(index);
 	}
 }
 
 void igdeListBox::OnItemMoved(int fromIndex, int toIndex){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->MoveItem(fromIndex, toIndex);
+	if(pNativeListBox){
+		pNativeListBox->MoveItem(fromIndex, toIndex);
 	}
 }
 
 void igdeListBox::OnItemsSorted(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->BuildList();
+	if(pNativeListBox){
+		pNativeListBox->BuildList();
 	}
 }
 
 void igdeListBox::OnSelectionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->UpdateSelection();
+	if(pNativeListBox){
+		pNativeListBox->UpdateSelection();
 	}
 }
 
 void igdeListBox::OnSelectionModeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->UpdateStyles();
+	if(pNativeListBox){
+		pNativeListBox->UpdateStyles();
 	}
 }
 
 void igdeListBox::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeListBox){
+		pNativeListBox->UpdateEnabled();
 	}
 }
 
 void igdeListBox::OnRowsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->UpdateRowCount();
+	if(pNativeListBox){
+		pNativeListBox->UpdateRowCount();
 	}
 }
 
 void igdeListBox::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeListBox*)GetNativeWidget())->UpdateDescription();
+	if(pNativeListBox){
+		pNativeListBox->UpdateDescription();
+	}
+}
+
+void igdeListBox::OnNativeWidgetLanguageChanged(){
+	if(pNativeListBox){
+		pNativeListBox->UpdateDescription();
+		if(pAutoTranslateItems){
+			pNativeListBox->BuildList();
+		}
 	}
 }

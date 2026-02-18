@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeMainWindow.h"
 #include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
@@ -52,7 +48,8 @@ pWindowState(ewsNormal),
 pNormalPosition(GetPosition()),
 pNormalSize(GetSize()),
 pNormalPositionSet(false),
-pNormalSizeSet(false){
+pNormalSizeSet(false),
+pNativeMainWindow(nullptr){
 }
 
 igdeMainWindow::~igdeMainWindow(){
@@ -174,7 +171,10 @@ void igdeMainWindow::CreateNativeWidget(){
 	
 	igdeNativeMainWindow * const native = igdeNativeMainWindow::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeMainWindow = native;
+	pNativeWindow = native;
 	CreateChildWidgetNativeWidgets();
+	
 	native->PostCreateNativeWidget();
 }
 
@@ -183,6 +183,7 @@ void igdeMainWindow::DropNativeWidget(){
 		pEngineController->UnparentMainRenderWindow();
 	}
 	
+	pNativeMainWindow = nullptr;
 	igdeWindow::DropNativeWidget();
 }
 
@@ -198,42 +199,12 @@ void igdeMainWindow::DestroyNativeWidget(){
 
 
 
-void igdeMainWindow::OnTitleChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMainWindow*)GetNativeWidget())->UpdateTitle();
-	}
-}
-
-void igdeMainWindow::OnIconChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMainWindow*)GetNativeWidget())->UpdateIcon();
-	}
-}
-
-void igdeMainWindow::OnSizeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMainWindow*)GetNativeWidget())->UpdateSize();
-	}
-}
-
-void igdeMainWindow::OnPositionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMainWindow*)GetNativeWidget())->UpdatePosition();
-	}
-}
-
 void igdeMainWindow::OnVisibleChanged(){
 	// never hide main window
 }
 
-void igdeMainWindow::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMainWindow*)GetNativeWidget())->UpdateEnabled();
-	}
-}
-
 void igdeMainWindow::OnWindowStateChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeMainWindow*)GetNativeWidget())->UpdateWindowState();
+	if(pNativeMainWindow){
+		pNativeMainWindow->UpdateWindowState();
 	}
 }

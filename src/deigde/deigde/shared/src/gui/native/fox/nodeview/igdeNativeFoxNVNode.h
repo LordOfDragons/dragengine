@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXNVNODE_H_
 
 #include "../foxtoolkit.h"
+#include "../../../nodeview/igdeNVNode.h"
 #include "../../../resources/igdeFont.h"
 
 
@@ -36,7 +37,7 @@ class igdeGuiTheme;
 /**
  * \brief FOX toolkit Native NodeView Node.
  */
-class igdeNativeFoxNVNode : public FXVerticalFrame{
+class igdeNativeFoxNVNode : public FXVerticalFrame, public igdeNVNode::cNativeNVNode{
 	FXDECLARE(igdeNativeFoxNVNode)
 protected:
 	   igdeNativeFoxNVNode();
@@ -96,28 +97,28 @@ public:
 	
 	
 	/** \brief Update title from owner. */
-	virtual void UpdateTitle();
+	void UpdateTitle() override;
 	
 	/** \brief Update description from owner. */
-	virtual void UpdateDescription();
+	void UpdateDescription() override;
 	
 	/** \brief Update enabled from owner. */
-	virtual void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update active from owner. */
-	virtual void UpdateActive();
+	void UpdateActive() override;
 	
 	/** \brief Update color from owner. */
-	virtual void UpdateColors();
+	void UpdateColors() override;
 	
 	/** \brief Update position from owner. */
-	virtual void UpdatePosition();
+	void UpdatePosition() override;
 	
 	/** \brief Resize node to fit size to content. */
-	virtual void FitSizeToContent();
+	void FitSizeToContent() override;
 	
 	/** \brief Get Size. */
-	virtual decPoint GetSize();
+	decPoint GetSize() override;
 	
 	
 	static int NVNodeFlags(const igdeNVNode &owner);

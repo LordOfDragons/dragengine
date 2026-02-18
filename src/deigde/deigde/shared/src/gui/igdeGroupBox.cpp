@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "native/toolkit.h"
 #include "igdeGroupBox.h"
 #include "resources/igdeFont.h"
@@ -50,7 +46,8 @@ pTitle(title),
 pTitleAlignment(titleAlignment),
 pCanCollapse(false),
 pCollapsed(false),
-pStretchLast(false){
+pStretchLast(false),
+pNativeGroupBox(nullptr){
 }
 
 igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
@@ -61,7 +58,8 @@ pTitleAlignment(titleAlignment),
 pDescription(description),
 pCanCollapse(false),
 pCollapsed(false),
-pStretchLast(false){
+pStretchLast(false),
+pNativeGroupBox(nullptr){
 }
 
 igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
@@ -71,7 +69,8 @@ pTitle(title),
 pTitleAlignment(titleAlignment),
 pCanCollapse(true),
 pCollapsed(collapsed),
-pStretchLast(false){
+pStretchLast(false),
+pNativeGroupBox(nullptr){
 }
 
 igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
@@ -82,7 +81,8 @@ pTitleAlignment(titleAlignment),
 pDescription(description),
 pCanCollapse(true),
 pCollapsed(collapsed),
-pStretchLast(false){
+pStretchLast(false),
+pNativeGroupBox(nullptr){
 }
 
 igdeGroupBox::~igdeGroupBox(){
@@ -169,16 +169,6 @@ void igdeGroupBox::RemoveChild(igdeWidget *child){
 	*/
 }
 
-void igdeGroupBox::OnLanguageChanged(){
-	igdeContainer::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeGroupBox * const native = (igdeNativeGroupBox*)GetNativeWidget();
-		native->UpdateTitle();
-		// native->UpdateDescription(); // not supported
-	}
-}
-
 
 void igdeGroupBox::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -187,6 +177,7 @@ void igdeGroupBox::CreateNativeWidget(){
 	
 	igdeNativeGroupBox * const native = igdeNativeGroupBox::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeGroupBox = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -201,51 +192,46 @@ void igdeGroupBox::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeGroupBox::DropNativeWidget(){
+	pNativeGroupBox = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 void igdeGroupBox::OnTitleChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeGroupBox){
+		pNativeGroupBox->UpdateTitle();
 	}
-	
-	((igdeNativeGroupBox*)GetNativeWidget())->UpdateTitle();
 }
 
 void igdeGroupBox::OnTitleAlignmentChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeGroupBox){
+		pNativeGroupBox->UpdateTitleAlignment();
 	}
-	
-	((igdeNativeGroupBox*)GetNativeWidget())->UpdateTitleAlignment();
 }
 
 void igdeGroupBox::OnDescriptionChanged(){
-	/* // not supported
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	igdeNativeFoxGroupBox &groupbox = *((igdeNativeFoxGroupBox*)GetNativeWidget());
-	groupbox.setTipText(pDescription.GetString());
-	groupbox.setHelpText(pDescription.GetString());
-	*/
+	// not supported
 }
 
 void igdeGroupBox::OnCanCollapseChanged(){
 }
 
 void igdeGroupBox::OnCollapsedChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeGroupBox){
+		pNativeGroupBox->UpdateCollapsed();
 	}
-	
-	((igdeNativeGroupBox*)GetNativeWidget())->UpdateCollapsed();
 }
 
 void igdeGroupBox::OnStretchLastChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeGroupBox){
+		pNativeGroupBox->UpdateStretchLast();
 	}
-	
-	((igdeNativeGroupBox*)GetNativeWidget())->UpdateStretchLast();
+}
+
+void igdeGroupBox::OnNativeWidgetLanguageChanged(){
+	if(pNativeGroupBox){
+		pNativeGroupBox->UpdateTitle();
+		// pNativeGroupBox->UpdateDescription(); // not supported
+	}
 }

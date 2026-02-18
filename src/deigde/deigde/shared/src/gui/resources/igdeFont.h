@@ -61,6 +61,14 @@ public:
 	};
 	
 	
+	class cNativeFont{
+	public:
+		virtual ~cNativeFont() = default;
+		virtual void DestroyNativeFont() = 0;
+		virtual deFont::Ref CreateEngineFont() = 0;
+		virtual decPoint TextSize(const char *text) const = 0;
+	};
+	
 	
 private:
 	igdeEnvironment &pEnvironment;
@@ -69,6 +77,10 @@ private:
 	float pSize;
 	bool pBold, pItalic, pUnderline, pStrikeThrough;
 	deFont::Ref pEngineFont;
+	
+	
+protected:
+	cNativeFont *pNativeFontInterface;
 	
 	
 public:

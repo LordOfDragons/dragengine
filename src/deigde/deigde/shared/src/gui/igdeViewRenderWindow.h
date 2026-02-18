@@ -49,6 +49,21 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<igdeViewRenderWindow>;
 	
+	class cNativeViewRenderWindow{
+	public:
+		virtual ~cNativeViewRenderWindow() = default;
+		virtual void DropNativeWindow() = 0;
+		virtual bool IsReallyVisible() const = 0;
+		virtual bool IsShown() const = 0;
+		virtual bool GetCanRender() const = 0;
+		virtual decPoint GetSize() const = 0;
+		virtual void OnFrameUpdate() = 0;
+		virtual void AttachRenderWindow() = 0;
+		virtual void DetachRenderWindow() = 0;
+		virtual void GrabInput() = 0;
+		virtual void ReleaseInput() = 0;
+	};
+	
 	
 private:
 	deRenderWindow::Ref pRenderWindow;
@@ -60,12 +75,15 @@ private:
 	decTObjectOrderedSet<igdeMouseKeyListener> pListeners;
 	
 	
+protected:
+	cNativeViewRenderWindow *pNativeViewRenderWindow;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render window. */
-	igdeViewRenderWindow(igdeEnvironment &environment);
+	explicit igdeViewRenderWindow(igdeEnvironment &environment);
 	
 	
 	

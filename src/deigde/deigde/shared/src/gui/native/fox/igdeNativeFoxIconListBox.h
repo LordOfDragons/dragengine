@@ -28,6 +28,7 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "foxtoolkit.h"
+#include "../../igdeIconListBox.h"
 #include "../../resources/igdeFont.h"
 
 
@@ -40,7 +41,7 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native icon list box.
  */
-class igdeNativeFoxIconListBox : public FXVerticalFrame{
+class igdeNativeFoxIconListBox : public FXVerticalFrame, public igdeIconListBox::cNativeIconListBox{
 	FXDECLARE(igdeNativeFoxIconListBox)
 protected:
 	   igdeNativeFoxIconListBox();
@@ -94,23 +95,23 @@ public:
 	
 	
 	
-	virtual void BuildHeader();
-	virtual void BuildList();
-	virtual void InsertItem(int index, igdeListItem &item);
-	virtual void UpdateItem(int index);
-	virtual void MoveItem(int fromIndex, int toIndex);
-	virtual void RemoveItem(int index);
-	virtual void UpdateSelection();
-	virtual void UpdateHeader();
-	virtual void UpdateStyles();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
-	virtual void UpdateMinimumSize();
-	virtual void Focus();
-	virtual void MakeItemVisible(int index);
-	virtual void RemoveAllItems();
+	void BuildHeader() override;
+	void BuildList() override;
+	void InsertItem(int index, igdeListItem &item) override;
+	void UpdateItem(int index) override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void RemoveItem(int index) override;
+	void UpdateSelection() override;
+	void UpdateHeader() override;
+	void UpdateStyles() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+	void UpdateMinimumSize() override;
+	void Focus() override;
+	void MakeItemVisible(int index) override;
+	void RemoveAllItems() override;
 	virtual decPoint GetContentPosition() const;
-	virtual void SetContentPosition(const decPoint &position);
+	void SetContentPosition(const decPoint &position) override;
 	
 	static int IconListBoxFlagsBorder(const igdeIconListBox &owner);
 	static int IconListBoxFlags(const igdeIconListBox &owner);

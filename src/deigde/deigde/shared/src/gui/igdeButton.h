@@ -36,7 +36,7 @@
 /**
  * \brief IGDE UI Button with text and icon.
  */
-class DE_DLL_EXPORT igdeButton : public igdeWidget, igdeActionListener{
+class DE_DLL_EXPORT igdeButton : public igdeWidget, public igdeActionListener{
 public:
 	/** \brief Strong reference. */
 	using Ref = deTObjectReference<igdeButton>;
@@ -51,6 +51,17 @@ public:
 		ebsToolBar
 	};
 	
+	class cNativeButton{
+	public:
+		virtual ~cNativeButton() = default;
+		virtual void Focus() = 0;
+		virtual void UpdateStyle() = 0;
+		virtual void UpdateText() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateIcon() = 0;
+		virtual void UpdateEnabled() = 0;
+	};
+	
 	
 private:
 	eButtonStyle pStyle;
@@ -60,6 +71,10 @@ private:
 	bool pEnabled;
 	bool pDefault;
 	igdeAction::Ref pAction;
+	
+	
+protected:
+	cNativeButton *pNativeButton;
 	
 	
 public:
@@ -150,9 +165,6 @@ public:
 	
 	/** \brief Action has been destroyed. */
 	void OnDestroyed(igdeAction *action) override;
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -173,6 +185,12 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
 	
 protected:
 	/** \brief Style changed. */
@@ -192,6 +210,9 @@ protected:
 	
 	/** \brief Default changed. */
 	virtual void OnDefaultChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

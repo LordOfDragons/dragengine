@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeSpinTextField.h"
 #include "igdeContainer.h"
 #include "igdeCommonDialogs.h"
@@ -55,7 +51,8 @@ pColumns(columns),
 pLower(lower),
 pUpper(decMath::max(upper, lower)),
 pValue(lower),
-pDescription(description)
+pDescription(description),
+pNativeSpinTextField(nullptr)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -90,8 +87,8 @@ void igdeSpinTextField::SetDescription(const char *description){
 }
 
 void igdeSpinTextField::Focus(){
-	if(GetNativeWidget()){
-		((igdeNativeSpinTextField*)GetNativeWidget())->Focus();
+	if(pNativeSpinTextField){
+		pNativeSpinTextField->Focus();
 	}
 }
 
@@ -125,12 +122,6 @@ void igdeSpinTextField::SetRange(int lower, int upper){
 	}
 }
 
-void igdeSpinTextField::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeSpinTextField::AddListener(igdeSpinTextFieldListener *listener){
 	if(!listener){
@@ -159,6 +150,7 @@ void igdeSpinTextField::CreateNativeWidget(){
 	
 	igdeNativeSpinTextField * const native = igdeNativeSpinTextField::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeSpinTextField = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -171,26 +163,36 @@ void igdeSpinTextField::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeSpinTextField::DropNativeWidget(){
+	pNativeSpinTextField = nullptr;
+	igdeWidget::DropNativeWidget();
+}
+
+
 void igdeSpinTextField::OnRangeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateRange();
+	if(pNativeSpinTextField){
+		pNativeSpinTextField->UpdateRange();
 	}
 }
 
 void igdeSpinTextField::OnValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateValue();
+	if(pNativeSpinTextField){
+		pNativeSpinTextField->UpdateValue();
 	}
 }
 
 void igdeSpinTextField::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeSpinTextField){
+		pNativeSpinTextField->UpdateEnabled();
 	}
 }
 
 void igdeSpinTextField::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateDescription();
+	if(pNativeSpinTextField){
+		pNativeSpinTextField->UpdateDescription();
 	}
+}
+
+void igdeSpinTextField::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

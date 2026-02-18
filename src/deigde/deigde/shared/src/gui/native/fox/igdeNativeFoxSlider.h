@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSLIDER_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeSlider.h"
 #include "../../resources/igdeFont.h"
 
 class igdeSlider;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native slider.
  */
-class igdeNativeFoxSlider : public FXSlider{
+class igdeNativeFoxSlider : public FXSlider, public igdeSlider::cNativeSlider{
 	FXDECLARE(igdeNativeFoxSlider)
 	
 protected:
@@ -76,12 +77,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateScale();
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
+	void Focus() override;
+	void UpdateScale() override;
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
 	
 	static int SliderFlags(const igdeSlider &owner);
 	/*@}*/

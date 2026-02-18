@@ -44,6 +44,17 @@ public:
 	using Ref = deTObjectReference<igdeSpinTextField>;
 	
 	
+	class cNativeSpinTextField{
+	public:
+		virtual ~cNativeSpinTextField() = default;
+		virtual void Focus() = 0;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateDescription() = 0;
+	};
+	
+	
 private:
 	bool pEnabled;
 	int pColumns;
@@ -54,6 +65,9 @@ private:
 	
 	decTObjectOrderedSet<igdeSpinTextFieldListener> pListeners;
 	
+	
+protected:
+	cNativeSpinTextField *pNativeSpinTextField;
 	
 	
 public:
@@ -125,9 +139,6 @@ public:
 	
 	/** \brief Notify listeners value changed. */
 	virtual void NotifyValueChanged();
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -149,6 +160,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -163,6 +179,9 @@ protected:
 	
 	/** \brief Description changed. */
 	virtual void OnDescriptionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

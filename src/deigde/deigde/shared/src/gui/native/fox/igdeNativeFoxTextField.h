@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXTEXTFIELD_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeTextField.h"
 #include "../../resources/igdeFont.h"
 
 class igdeTextField;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native textField.
  */
-class igdeNativeFoxTextField : public FXTextField{
+class igdeNativeFoxTextField : public FXTextField, public igdeTextField::cNativeTextField{
 	FXDECLARE(igdeNativeFoxTextField)
 	
 protected:
@@ -79,14 +80,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void OnInvalidValueChanged();
-	virtual void UpdateText();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
-	virtual void UpdateEditable();
+	void Focus() override;
+	void OnInvalidValueChanged() override;
+	void UpdateText() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
+	void UpdateEditable() override;
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition(int position);
+	void SetCursorPosition(int position) override;
 	
 	static int TextFieldFlags(const igdeTextField &owner);
 	static igdeFont *TextFieldFont(const igdeTextField &owner, const igdeGuiTheme &guitheme);

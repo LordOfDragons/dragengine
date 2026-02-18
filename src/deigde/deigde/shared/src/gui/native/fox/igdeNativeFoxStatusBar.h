@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSTATUSBAR_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeStatusBar.h"
 
 
 class igdeStatusBar;
@@ -36,7 +37,7 @@ class igdeFont;
 /**
  * \brief FOX toolkit Native Text Area.
  */
-class igdeNativeFoxStatusBar : public FXStatusBar{
+class igdeNativeFoxStatusBar : public FXStatusBar, public igdeStatusBar::cNativeStatusBar{
 	FXDECLARE(igdeNativeFoxStatusBar)
 protected:
 	   igdeNativeFoxStatusBar();
@@ -76,7 +77,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
+	void UpdateText() override;
 	
 	static int StatusBarFlags(const igdeStatusBar &owner);
 	static igdeFont *StatusBarFont(const igdeStatusBar &owner, const igdeGuiTheme &guitheme);

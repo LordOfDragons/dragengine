@@ -64,6 +64,14 @@ public:
 		eaBottom = 0x8,
 	};
 	
+	class cNativeLabel{
+	public:
+		virtual ~cNativeLabel() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateAlignment() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateIcon() = 0;
+	};
 	
 	
 private:
@@ -72,6 +80,9 @@ private:
 	decString pDescription;
 	igdeIcon::Ref pIcon;
 	
+	
+protected:
+	cNativeLabel *pNativeLabel;
 	
 	
 public:
@@ -132,9 +143,6 @@ public:
 	
 	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -156,6 +164,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -170,6 +183,9 @@ protected:
 	
 	/** \brief Icon changed. */
 	virtual void OnIconChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

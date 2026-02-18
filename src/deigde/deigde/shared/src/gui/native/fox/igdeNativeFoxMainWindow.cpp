@@ -246,6 +246,11 @@ void igdeNativeFoxMainWindow::UpdateSize(){
 	resize(pOwner->GetSize().x, pOwner->GetSize().y);
 }
 
+void igdeNativeFoxMainWindow::RaiseAndActivate(){
+	raise();
+	// how to active the window?
+}
+
 void igdeNativeFoxMainWindow::SetWindowState(){
 	if(isMaximized()){
 		pOwner->SetWindowState(igdeMainWindow::ewsMaximized);

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeTabBook.h"
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
@@ -61,7 +57,8 @@ igdeTabBook::cHeader::~cHeader(){
 
 igdeTabBook::igdeTabBook(igdeEnvironment &environment) :
 igdeContainer(environment),
-pActivePanel(-1){
+pActivePanel(-1),
+pNativeTabBook(nullptr){
 }
 
 igdeTabBook::~igdeTabBook(){
@@ -89,8 +86,8 @@ void igdeTabBook::SetActivePanel(int index){
 	
 	pActivePanel = index;
 	
-	if(GetNativeWidget()){
-		((igdeNativeTabBook*)GetNativeWidget())->ChangePanel(index);
+	if(pNativeTabBook){
+		pNativeTabBook->ChangePanel(index);
 	}
 }
 
@@ -121,12 +118,12 @@ const char *description){
 		throw;
 	}
 	
-	if(!GetNativeWidget()){
+	if(!pNativeTabBook){
 		return;
 	}
 	
 	try{
-		((igdeNativeTabBook*)GetNativeWidget())->AddHeader((const cHeader &)*header);
+		pNativeTabBook->AddHeader((const cHeader &)*header);
 		
 	}catch(const deException &){
 		pHeaders.RemoveFrom(pHeaders.GetCount() - 1);
@@ -145,8 +142,8 @@ void igdeTabBook::RemoveChild(igdeWidget *child){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(GetNativeWidget()){
-		((igdeNativeTabBook*)GetNativeWidget())->RemoveHeader(index);
+	if(pNativeTabBook){
+		pNativeTabBook->RemoveHeader(index);
 	}
 	pHeaders.RemoveFrom(index);
 	
@@ -154,22 +151,12 @@ void igdeTabBook::RemoveChild(igdeWidget *child){
 }
 
 void igdeTabBook::RemoveAllChildren(){
-	if(GetNativeWidget()){
-		((igdeNativeTabBook*)GetNativeWidget())->RemoveAllHeaders();
+	if(pNativeTabBook){
+		pNativeTabBook->RemoveAllHeaders();
 	}
 	pHeaders.RemoveAll();
 	
 	igdeContainer::RemoveAllChildren();
-}
-
-void igdeTabBook::OnLanguageChanged(){
-	igdeContainer::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		pHeaders.VisitIndexed([&](int index, const cHeader &header){
-			((igdeNativeTabBook*)GetNativeWidget())->UpdateHeader(index, header);
-		});
-	}
 }
 
 
@@ -180,6 +167,7 @@ void igdeTabBook::CreateNativeWidget(){
 	
 	igdeNativeTabBook * const native = igdeNativeTabBook::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeTabBook = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -196,22 +184,31 @@ void igdeTabBook::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeTabBook::DropNativeWidget(){
+	pNativeTabBook = nullptr;
+	igdeContainer::DropNativeWidget();
+}
+
 void *igdeTabBook::GetNativeContainer() const{
-	if(!GetNativeWidget()){
-		return nullptr;
-	}
-	return ((igdeNativeTabBook*)GetNativeWidget())->GetNativeContainer();
+	return pNativeTabBook ? pNativeTabBook->GetNativeContainer() : nullptr;
 }
 
 
 
 void igdeTabBook::CreateChildWidgetNativeWidgets(){
-	igdeNativeTabBook * const native = (igdeNativeTabBook*)GetNativeWidget();
-	DEASSERT_NOTNULL(native)
+	DEASSERT_NOTNULL(pNativeTabBook)
 	
 	igdeContainer::CreateChildWidgetNativeWidgets();
 	
 	pHeaders.Visit([&](const cHeader &header){
-		native->AddHeader(header);
+		pNativeTabBook->AddHeader(header);
 	});
+}
+
+void igdeTabBook::OnNativeWidgetLanguageChanged(){
+	if(pNativeTabBook){
+		pHeaders.VisitIndexed([&](int index, const cHeader &header){
+			pNativeTabBook->UpdateHeader(index, header);
+		});
+	}
 }

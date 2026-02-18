@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXGROUPBOX_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeGroupBox.h"
 #include "../../resources/igdeFont.h"
 
 class igdeGroupBox;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native groupBox.
  */
-class igdeNativeFoxGroupBox : public FXGroupBox{
+class igdeNativeFoxGroupBox : public FXGroupBox, public igdeGroupBox::cNativeGroupBox{
 	FXDECLARE(igdeNativeFoxGroupBox)
 	
 protected:
@@ -80,10 +81,10 @@ public:
 	/*@{*/
 	FXint getDefaultHeight() override;
 	
-	virtual void UpdateCollapsed();
-	virtual void UpdateTitle();
-	virtual void UpdateTitleAlignment();
-	virtual void UpdateStretchLast();
+	void UpdateCollapsed() override;
+	void UpdateTitle() override;
+	void UpdateTitleAlignment() override;
+	void UpdateStretchLast() override;
 	
 	static int GroupBoxFlags(const igdeGroupBox &owner);
 	static igdeFont *GroupBoxFont(const igdeGroupBox &owner, const igdeGuiTheme &guitheme);

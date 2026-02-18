@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXLABEL_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeLabel.h"
 #include "../../resources/igdeFont.h"
 
 class igdeLabel;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native label.
  */
-class igdeNativeFoxLabel : public FXLabel{
+class igdeNativeFoxLabel : public FXLabel, public igdeLabel::cNativeLabel{
 	FXDECLARE(igdeNativeFoxLabel)
 	
 protected:
@@ -76,10 +77,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
-	virtual void UpdateAlignment();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
+	void UpdateText() override;
+	void UpdateAlignment() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
 	
 	static FXIcon *LabelIcon(const igdeLabel &owner);
 	static int LabelFlags(const igdeLabel &owner);

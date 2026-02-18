@@ -126,6 +126,14 @@ FXbool igdeNativeFoxToggleButton::canFocus() const{
 	}
 }
 
+void igdeNativeFoxToggleButton::Focus(){
+	if(pOwner->GetStyle() == igdeToggleButton::ebsToolBar){
+		return;
+	}
+	
+	FXToggleButton::setFocus();
+}
+
 void igdeNativeFoxToggleButton::UpdateStyle(){
 	setText(igdeNativeFoxToggleButton::ButtonText(*pOwner));
 	setIcon(igdeNativeFoxToggleButton::ButtonIconOn(*pOwner));
@@ -148,7 +156,7 @@ void igdeNativeFoxToggleButton::UpdateDescription(){
 	setAltHelpText(description);
 }
 
-void igdeNativeFoxToggleButton::UpdateIcons(){
+void igdeNativeFoxToggleButton::UpdateIcon(){
 	setIcon(igdeNativeFoxToggleButton::ButtonIconOn(*pOwner));
 	setAltIcon(igdeNativeFoxToggleButton::ButtonIconOff(*pOwner));
 }

@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXFONT_H_
 
 #include "../foxtoolkit.h"
+#include "../../../resources/igdeFont.h"
 
 #include <dragengine/resources/font/deFont.h>
 
@@ -35,7 +36,7 @@ class igdeFont;
 /**
  * FOX Native font.
  */
-class igdeNativeFoxFont : public FXFont{
+class igdeNativeFoxFont : public FXFont, public igdeFont::cNativeFont{
 	FXDECLARE(igdeNativeFoxFont)
 	
 protected:
@@ -57,17 +58,17 @@ public:
 	static igdeNativeFoxFont* CreateNativeFont(igdeFont &owner);
 	
 	/** \brief Destroy native font. */
-	virtual void DestroyNativeFont();
+	void DestroyNativeFont() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	virtual deFont::Ref CreateEngineFont();
+	deFont::Ref CreateEngineFont() override;
 	
 	/** \brief Text size. */
-	virtual decPoint TextSize(const char *text) const;
+	decPoint TextSize(const char *text) const override;
 	/*@}*/
 };
 

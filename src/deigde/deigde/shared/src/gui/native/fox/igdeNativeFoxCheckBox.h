@@ -27,6 +27,7 @@
 
 #include "foxtoolkit.h"
 #include "../../resources/igdeFont.h"
+#include "../../igdeCheckBox.h"
 
 class igdeCheckBox;
 class igdeEnvironment;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native button.
  */
-class igdeNativeFoxCheckBox : public FXCheckButton{
+class igdeNativeFoxCheckBox : public FXCheckButton, public igdeCheckBox::cNativeCheckBox{
 	FXDECLARE(igdeNativeFoxCheckBox)
 	
 protected:
@@ -78,12 +79,13 @@ public:
 	/*@{*/
 	FXbool canFocus() const override;
 	
-	virtual void UpdateChecked();
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void Focus() override;
+	void UpdateChecked() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
 	static FXString CheckBoxText(const igdeCheckBox &owner);
 	static FXIcon *CheckBoxIcon(const igdeCheckBox &owner);

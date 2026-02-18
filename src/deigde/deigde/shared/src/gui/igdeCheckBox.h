@@ -36,10 +36,19 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<igdeCheckBox>;
 	
+	class cNativeCheckBox : public cNativeButton{
+	public:
+		virtual ~cNativeCheckBox() override = default;
+		virtual void UpdateChecked() = 0;
+	};
+	
 	
 private:
 	bool pChecked;
 	
+	
+protected:
+	cNativeCheckBox *pNativeCheckBox;
 	
 	
 public:
@@ -104,26 +113,17 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
 	
 	
 protected:
 	/** \brief Checked changed. */
 	virtual void OnCheckedChanged();
-	
-	/** \brief Style changed. */
-	void OnStyleChanged() override;
-	
-	/** \brief Text changed. */
-	void OnTextChanged() override;
-	
-	/** \brief Description changed. */
-	void OnDescriptionChanged() override;
-	
-	/** \brief Icon changed. */
-	void OnIconChanged() override;
-	
-	/** \brief Enabled changed. */
-	void OnEnabledChanged() override;
 	/*@}*/
 };
 

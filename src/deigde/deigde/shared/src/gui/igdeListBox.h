@@ -57,6 +57,25 @@ public:
 		esmMultiple
 	};
 	
+	class cNativeListBox{
+	public:
+		virtual ~cNativeListBox() = default;
+		virtual void BuildList() = 0;
+		virtual void UpdateItem(int index) = 0;
+		virtual void UpdateStyles() = 0;
+		virtual void UpdateSelection() = 0;
+		virtual void Focus() = 0;
+		virtual decPoint GetContentPosition() const = 0;
+		virtual void SetContentPosition(const decPoint &position) = 0;
+		virtual void MakeItemVisible(int index) = 0;
+		virtual void InsertItem(int index) = 0;
+		virtual void RemoveItem(int index) = 0;
+		virtual void RemoveAllItems() = 0;
+		virtual void MoveItem(int fromIndex, int toIndex) = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateRowCount() = 0;
+		virtual void UpdateDescription() = 0;
+	};
 	
 	
 private:
@@ -71,6 +90,9 @@ private:
 	
 	decTObjectOrderedSet<igdeListBoxListener> pListeners;
 	
+	
+protected:
+	cNativeListBox *pNativeListBox;
 	
 	
 public:
@@ -281,9 +303,6 @@ public:
 	
 	/** \brief Notify listeners double clicked on item. */
 	virtual void NotifyDoubleClickItem(int index);
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -305,6 +324,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -340,6 +364,9 @@ protected:
 	
 	/** \brief Selection mode changed. */
 	virtual void OnSelectionModeChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

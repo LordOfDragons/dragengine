@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMENUOPTION_H_
 
 #include "../foxtoolkit.h"
+#include "../../../menu/igdeMenuOption.h"
 
 class igdeMenuOption;
 
@@ -33,7 +34,7 @@ class igdeMenuOption;
 /**
  * FOX native widget.
  */
-class igdeNativeFoxMenuOption : public FXMenuRadio{
+class igdeNativeFoxMenuOption : public FXMenuRadio, public igdeMenuOption::cNativeMenuOption{
 	FXDECLARE(igdeNativeFoxMenuOption)
 	
 protected:
@@ -70,7 +71,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateSelected();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	
+	void UpdateSelected() override;
 	
 	static FXString BuildConstrText(igdeMenuOption &owner);
 	/*@}*/

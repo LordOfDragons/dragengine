@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeColorBox.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -198,13 +194,15 @@ void igdeColorBox::cActionEditHex::OnAction(){
 
 igdeColorBox::igdeColorBox(igdeEnvironment &environment) :
 igdeWidget(environment),
-pEnabled(true){
+pEnabled(true),
+pNativeColorBox(nullptr){
 }
 
 igdeColorBox::igdeColorBox(igdeEnvironment &environment, const char *description) :
 igdeWidget(environment),
 pDescription(description),
-pEnabled(true){
+pEnabled(true),
+pNativeColorBox(nullptr){
 }
 
 igdeColorBox::~igdeColorBox(){
@@ -260,14 +258,16 @@ void igdeColorBox::AddListener(igdeColorBoxListener *listener){
 void igdeColorBox::RemoveListener(igdeColorBoxListener *listener){
 	pListeners.Remove(listener);
 }
+
 void igdeColorBox::NotifyColorChanged(){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeColorBoxListener &l){
 		l.OnColorChanged(this);
 	});
 }
+
 void igdeColorBox::ShowContextMenu(const decPoint &position){
-	if(!GetNativeWidget()){
+	if(!pNativeColorBox){
 		return;
 	}
 	
@@ -284,12 +284,6 @@ void igdeColorBox::ShowContextMenu(const decPoint &position){
 	menu->Popup(*this, position);
 }
 
-void igdeColorBox::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeColorBox::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -298,6 +292,7 @@ void igdeColorBox::CreateNativeWidget(){
 	
 	igdeNativeColorBox * const native = igdeNativeColorBox::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeColorBox = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -310,20 +305,30 @@ void igdeColorBox::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeColorBox::DropNativeWidget(){
+	pNativeColorBox = nullptr;
+	igdeWidget::DropNativeWidget();
+}
+
+
 void igdeColorBox::OnColorChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeColorBox*)GetNativeWidget())->UpdateColor();
+	if(pNativeColorBox){
+		pNativeColorBox->UpdateColor();
 	}
 }
 
 void igdeColorBox::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeColorBox*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeColorBox){
+		pNativeColorBox->UpdateEnabled();
 	}
 }
 
 void igdeColorBox::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeColorBox*)GetNativeWidget())->UpdateDescription();
+	if(pNativeColorBox){
+		pNativeColorBox->UpdateDescription();
 	}
+}
+
+void igdeColorBox::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

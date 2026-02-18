@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeProgressBar.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -53,7 +49,8 @@ pOrientation(orientation),
 pLower(lower),
 pUpper(decMath::max(upper, lower)),
 pValue(lower),
-pDescription(description){
+pDescription(description),
+pNativeProgressBar(nullptr){
 }
 
 igdeProgressBar::~igdeProgressBar(){
@@ -93,12 +90,6 @@ void igdeProgressBar::SetRange(int lower, int upper){
 	OnRangeChanged();
 }
 
-void igdeProgressBar::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeProgressBar::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -107,6 +98,7 @@ void igdeProgressBar::CreateNativeWidget(){
 	
 	igdeNativeProgressBar * const native = igdeNativeProgressBar::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeProgressBar = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -119,20 +111,30 @@ void igdeProgressBar::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeProgressBar::DropNativeWidget(){
+	pNativeProgressBar = nullptr;
+	igdeWidget::DropNativeWidget();
+}
+
+
 void igdeProgressBar::OnRangeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeProgressBar*)GetNativeWidget())->UpdateRange();
+	if(pNativeProgressBar){
+		pNativeProgressBar->UpdateRange();
 	}
 }
 
 void igdeProgressBar::OnValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeProgressBar*)GetNativeWidget())->UpdateValue();
+	if(pNativeProgressBar){
+		pNativeProgressBar->UpdateValue();
 	}
 }
 
 void igdeProgressBar::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeProgressBar*)GetNativeWidget())->UpdateDescription();
+	if(pNativeProgressBar){
+		pNativeProgressBar->UpdateDescription();
 	}
+}
+
+void igdeProgressBar::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

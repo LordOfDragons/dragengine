@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLPROGRESSBAR_H_
 #define _IGDENATIVENULLPROGRESSBAR_H_
 
+#include "../../igdeProgressBar.h"
+
 class igdeProgressBar;
 
 
 /**
  * Null Text Area.
  */
-class igdeNativeNullProgressBar{
+class igdeNativeNullProgressBar : public igdeProgressBar::cNativeProgressBar{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,10 +57,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
 	/*@}*/
 };
 

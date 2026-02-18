@@ -50,6 +50,16 @@ public:
 		eoVertical
 	};
 	
+	class cNativeSlider{
+	public:
+		virtual ~cNativeSlider() = default;
+		virtual void Focus() = 0;
+		virtual void UpdateScale() = 0;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+	};
 	
 	
 private:
@@ -63,6 +73,9 @@ private:
 	decString pDescription;
 	decTObjectOrderedSet<igdeSliderListener> pListeners;
 	
+	
+protected:
+	cNativeSlider *pNativeSlider;
 	
 	
 public:
@@ -151,9 +164,6 @@ public:
 	
 	/** \brief Notify listeners value is changing. */
 	void NotifyValueChanging();
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -175,6 +185,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -192,6 +207,9 @@ protected:
 	
 	/** \brief Description changed. */
 	virtual void OnDescriptionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

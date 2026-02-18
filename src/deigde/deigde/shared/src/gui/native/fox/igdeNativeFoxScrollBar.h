@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSCROLLBAR_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeScrollBar.h"
 #include "../../resources/igdeFont.h"
 
 class igdeScrollBar;
@@ -37,7 +38,7 @@ class igdeWidget;
 /**
  * FOX Native scroll bar.
  */
-class igdeNativeFoxScrollBar : public FXScrollBar{
+class igdeNativeFoxScrollBar : public FXScrollBar, public igdeScrollBar::cNativeScrollBar{
 	FXDECLARE(igdeNativeFoxScrollBar)
 	
 protected:
@@ -76,9 +77,9 @@ public:
 	/*@{*/
 	FXbool canFocus() const override;
 	
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
 	
 	static int ScrollBarFlags(const igdeScrollBar &owner);
 	/*@}*/

@@ -60,11 +60,12 @@ igdeNativeFoxMenuOption::igdeNativeFoxMenuOption(igdeMenuOption &powner, FXCompo
 FXMenuRadio(pparent, BuildConstrText(powner), this, ID_SELF),
 pOwner(&powner)
 {
+	setCheck(powner.GetSelected());
+	UpdateHotKey();
+	
 	if(!powner.GetEnabled()){
 		disable();
 	}
-	
-	setCheck(powner.GetSelected());
 }
 
 igdeNativeFoxMenuOption::~igdeNativeFoxMenuOption(){
@@ -99,6 +100,43 @@ void igdeNativeFoxMenuOption::DestroyNativeWidget(){
 // Management
 ///////////////
 
+void igdeNativeFoxMenuOption::UpdateText(){
+	setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText().GetString()));
+}
+
+void igdeNativeFoxMenuOption::UpdateDescription(){
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription().GetString()));
+	setTipText(description);
+	setHelpText(description);
+}
+
+void igdeNativeFoxMenuOption::UpdateHotKey(){
+	// this here is annoying. since the accel text also sets the hotkey it has to be in English
+	// or it breaks. but for display display we want the user language. to solve this we have
+	// to set the accel text twice, once in English to set the hotkey and once in the user
+	// language to show the correct text
+	setAccelText(igdeUIFoxHelper::AccelStringSystem(pOwner->GetHotKey()), true);
+	setAccelText(igdeUIFoxHelper::AccelStringTranslated(*pOwner, pOwner->GetHotKey()), false);
+}
+
+void igdeNativeFoxMenuOption::UpdateIcon(){
+	FXIcon *iicon = nullptr;
+	if(pOwner->GetIcon()){
+		iicon = (FXIcon*)pOwner->GetIcon()->GetNativeIcon();
+	}
+	
+	setIcon(iicon);
+}
+
+void igdeNativeFoxMenuOption::UpdateEnabled(){
+	if(pOwner->GetEnabled()){
+		enable();
+		
+	}else{
+		disable();
+	}
+}
+
 void igdeNativeFoxMenuOption::UpdateSelected(){
 	setCheck(pOwner->GetSelected());
 }
@@ -107,7 +145,7 @@ void igdeNativeFoxMenuOption::UpdateSelected(){
 FXString igdeNativeFoxMenuOption::BuildConstrText(igdeMenuOption &powner){
 	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
 	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
-		+ "\t" + igdeUIFoxHelper::AccelString(powner, powner.GetHotKey())
+		+ "\t" + igdeUIFoxHelper::AccelStringSystem(powner.GetHotKey())
 		+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription());
 }
 

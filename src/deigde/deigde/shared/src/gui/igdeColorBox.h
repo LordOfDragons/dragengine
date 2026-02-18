@@ -92,6 +92,15 @@ public:
 		void OnAction() override;
 	};
 	
+	class cNativeColorBox{
+	public:
+		virtual ~cNativeColorBox() = default;
+		virtual void UpdateColor() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void ClipboardPutColor(const decColor &color) = 0;
+		virtual decColor ClipboardGetColor() = 0;
+	};
 	
 	
 private:
@@ -101,6 +110,9 @@ private:
 	
 	decTObjectOrderedSet<igdeColorBoxListener> pListeners;
 	
+	
+protected:
+	cNativeColorBox *pNativeColorBox;
 	
 	
 public:
@@ -163,9 +175,6 @@ public:
 	
 	/** \brief Show context menu at position. */
 	virtual void ShowContextMenu(const decPoint &position);
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -187,6 +196,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -198,6 +212,9 @@ protected:
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

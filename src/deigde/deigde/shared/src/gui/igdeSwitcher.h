@@ -38,9 +38,19 @@ public:
 	using Ref = deTObjectReference<igdeSwitcher>;
 	
 	
+	class cNativeSwitcher{
+	public:
+		virtual ~cNativeSwitcher() = default;
+		virtual void UpdateCurrent() = 0;
+	};
+	
+	
 private:
 	int pCurrent;
 	
+	
+protected:
+	cNativeSwitcher *pNativeSwitcher;
 	
 	
 public:
@@ -103,6 +113,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

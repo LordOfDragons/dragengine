@@ -171,6 +171,7 @@ void igdeWidget::OnGuiThemeChanged(){
 }
 
 void igdeWidget::OnLanguageChanged(){
+	OnNativeWidgetLanguageChanged();
 }
 
 void igdeWidget::SetNativeWidget(void *nativeWidget){
@@ -179,4 +180,7 @@ void igdeWidget::SetNativeWidget(void *nativeWidget){
 
 void igdeWidget::DropNativeWidget(){
 	pNativeWidget = nullptr;
+}
+
+void igdeWidget::OnNativeWidgetLanguageChanged(){
 }

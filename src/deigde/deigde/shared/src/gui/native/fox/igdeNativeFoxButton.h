@@ -27,8 +27,8 @@
 
 #include "foxtoolkit.h"
 #include "../../resources/igdeFont.h"
+#include "../../igdeButton.h"
 
-class igdeButton;
 class igdeEnvironment;
 class igdeGuiTheme;
 class igdeWidget;
@@ -37,7 +37,7 @@ class igdeWidget;
 /**
  * FOX Native button.
  */
-class igdeNativeFoxButton : public FXButton{
+class igdeNativeFoxButton : public FXButton, public igdeButton::cNativeButton{
 	FXDECLARE(igdeNativeFoxButton)
 	
 protected:
@@ -78,12 +78,12 @@ public:
 	/*@{*/
 	FXbool canFocus() const override;
 	
-	virtual void Focus();
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
 	static FXString ButtonText(const igdeButton &owner);
 	static FXIcon *ButtonIcon(const igdeButton &owner);

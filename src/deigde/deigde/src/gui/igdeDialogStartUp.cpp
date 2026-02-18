@@ -147,9 +147,10 @@ pWindowMain(windowMain)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 300)));
 	
-	helper.ListBox(10, "@Igde.StartUp.RecentProjects.ToolTip", pListRecentProjects, igdeDialogStartUp_ListRecentProjects::Ref::New(*this));
+	helper.ListBox(10, "@Igde.StartUp.RecentProjects.ToolTip", pListRecentProjects,
+		igdeDialogStartUp_ListRecentProjects::Ref::New(*this));
 	
 	
 	pActionLoadRecent = igdeDialogStartUp_ActionLoadRecent::Ref::New(*this);

@@ -50,11 +50,21 @@ public:
 	using Ref = deTObjectReference<igdeComboBoxFilter>;
 	
 	
+	class cNativeComboBoxFilter : public cNativeComboBox{
+	public:
+		virtual ~cNativeComboBoxFilter() override = default;
+		virtual void UpdateFilterString() = 0;
+	};
+	
+	
 private:
 	igdeListItem::List pFilterItems;
 	bool pFilterCaseInsensitive;
 	decString pFilterString;
 	
+	
+protected:
+	cNativeComboBoxFilter *pNativeComboBoxFilter;
 	
 	
 public:
@@ -132,50 +142,16 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
-	/** \brief Item added. */
-	void OnItemAdded(int index) override;
-	
-	/** \brief Item removed. */
-	void OnItemRemoved(int index) override;
-	
-	/** \brief All items removed. */
-	void OnAllItemsRemoved() override;
-	
-	/** \brief Item changed. */
-	void OnItemChanged(int index) override;
-	
-	/** \brief Item moved. */
-	void OnItemMoved(int fromIndex, int toIndex) override;
-	
-	/** \brief Items sorted. */
-	void OnItemsSorted() override;
-	
-	/** \brief Text changed. */
-	void OnTextChanged() override;
-	
-	/** \brief Enabled changed. */
-	void OnEnabledChanged() override;
-	
-	/** \brief Rows changed. */
-	void OnRowsChanged() override;
-	
-	/** \brief Editable changed. */
-	void OnEditableChanged() override;
-	
-	/** \brief Description changed. */
-	void OnDescriptionChanged() override;
-	
 	/** \brief Filter string changed. */
 	virtual void OnFilterStringChanged();
-	
-	/** \brief Invalid value changed. */
-	void OnInvalidValueChanged() override;
-	
-	/** \brief Request focus. */
-	void OnRequestFocus() override;
 	/*@}*/
 };
 

@@ -51,6 +51,13 @@ public:
 		eoVertical
 	};
 	
+	class cNativeScrollBar{
+	public:
+		virtual ~cNativeScrollBar() = default;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateEnabled() = 0;
+	};
 	
 	
 private:
@@ -62,6 +69,9 @@ private:
 	bool pEnabled;
 	decTObjectOrderedSet<igdeScrollBarListener> pListeners;
 	
+	
+protected:
+	cNativeScrollBar *pNativeScrollBar;
 	
 	
 public:
@@ -158,6 +168,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

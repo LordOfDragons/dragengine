@@ -52,6 +52,26 @@ public:
 	using Ref = deTObjectReference<igdeComboBox>;
 	
 	
+	class cNativeComboBox{
+	public:
+		virtual ~cNativeComboBox() = default;
+		virtual void BuildList() = 0;
+		virtual void UpdateItem(int index) = 0;
+		virtual void SyncSelection(bool changing) = 0;
+		virtual void OnInvalidValueChanged() = 0;
+		virtual void UpdateText() = 0;
+		virtual void InsertItem(int index, const igdeListItem &item) = 0;
+		virtual void RemoveItem(int index) = 0;
+		virtual void RemoveAllItems() = 0;
+		virtual void MoveItem(int fromIndex, int toIndex) = 0;
+		virtual void Focus() = 0;
+		virtual void UpdateRowCount() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateEditable() = 0;
+		virtual void UpdateDescription() = 0;
+	};
+	
+	
 private:
 	bool pEnabled;
 	igdeListItem::List pItems;
@@ -67,6 +87,9 @@ private:
 	
 	decTObjectOrderedSet<igdeComboBoxListener> pListeners;
 	
+	
+protected:
+	cNativeComboBox *pNativeComboBox;
 	
 	
 public:
@@ -252,9 +275,6 @@ public:
 	/** \brief Clear text. */
 	void ClearText();
 	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
-	
 	
 	
 	/** \brief Add listener. */
@@ -289,6 +309,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -330,6 +355,9 @@ protected:
 	
 	/** \brief Request focus. */
 	virtual void OnRequestFocus();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

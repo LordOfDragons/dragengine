@@ -162,6 +162,22 @@ public:
 	void DestroyNativeWidget() override;
 	
 	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
+
+	class cNativeContainerSplitted{
+	public:
+		virtual ~cNativeContainerSplitted() = default;
+		virtual void UpdateSplitValue() = 0;
+	};
+
+	cNativeContainerSplitted *pNativeContainerSplitted;
+
+
+	/**
 	 * \brief Create child widget native widgets.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */

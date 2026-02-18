@@ -42,7 +42,7 @@ class igdeNativeFoxTabBookHeader;
 /**
  * FOX Native tabBook.
  */
-class igdeNativeFoxTabBook : public FXVerticalFrame{
+class igdeNativeFoxTabBook : public FXVerticalFrame, public igdeTabBook::cNativeTabBook {
 	FXDECLARE(igdeNativeFoxTabBook)
 	
 protected:
@@ -96,12 +96,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	inline FXSwitcher *GetSwitcher() const{ return pSwitcher; }
-	
-	virtual void AddHeader(const igdeTabBook::cHeader &header);
-	virtual void UpdateHeader(int index, const igdeTabBook::cHeader &header);
-	virtual void RemoveHeader(int index);
-	virtual void RemoveAllHeaders();
-	virtual void ChangePanel(int index);
+	void AddHeader(const igdeTabBook::cHeader &header) override;
+	void UpdateHeader(int index, const igdeTabBook::cHeader &header) override;
+	void RemoveHeader(int index) override;
+	void RemoveAllHeaders() override;
+	void ChangePanel(int index) override;
 	virtual void *GetNativeContainer();
 	
 	static igdeFont *TabBookFont(const igdeTabBook &owner, const igdeGuiTheme &guitheme);

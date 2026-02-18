@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeScrollBar.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -49,7 +45,8 @@ pLower(0),
 pUpper(100),
 pPageSize(10),
 pValue(0),
-pEnabled(true){
+pEnabled(true),
+pNativeScrollBar(nullptr){
 }
 
 igdeScrollBar::igdeScrollBar(igdeEnvironment &environment, eOrientation orientation,
@@ -60,7 +57,8 @@ pLower(lower),
 pUpper(upper),
 pPageSize(pageSize),
 pValue(value),
-pEnabled(true)
+pEnabled(true),
+pNativeScrollBar(nullptr)
 {
 	if(upper < lower){
 		DETHROW_INFO(deeInvalidParam, "upper < lower");
@@ -182,6 +180,7 @@ void igdeScrollBar::CreateNativeWidget(){
 	
 	igdeNativeScrollBar * const native = igdeNativeScrollBar::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeScrollBar = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -194,22 +193,26 @@ void igdeScrollBar::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeScrollBar::DropNativeWidget(){
+	pNativeScrollBar = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeScrollBar::OnRangeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeScrollBar*)GetNativeWidget())->UpdateRange();
+	if(pNativeScrollBar){
+		pNativeScrollBar->UpdateRange();
 	}
 }
 
 void igdeScrollBar::OnValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeScrollBar*)GetNativeWidget())->UpdateValue();
+	if(pNativeScrollBar){
+		pNativeScrollBar->UpdateValue();
 	}
 }
 
 void igdeScrollBar::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeScrollBar*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeScrollBar){
+		pNativeScrollBar->UpdateEnabled();
 	}
 }

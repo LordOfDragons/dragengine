@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMENUCOMMAND_H_
 
 #include "../foxtoolkit.h"
+#include "../../../menu/igdeMenuCommand.h"
 
 class igdeMenuCommand;
 
@@ -33,7 +34,7 @@ class igdeMenuCommand;
 /**
  * FOX native widget.
  */
-class igdeNativeFoxMenuCommand : public FXMenuCommand{
+class igdeNativeFoxMenuCommand : public FXMenuCommand, public igdeMenuCommand::cNativeMenuCommand{
 	FXDECLARE(igdeNativeFoxMenuCommand)
 	
 protected:
@@ -70,11 +71,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateHotKey();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
 	static FXString BuildConstrText(igdeMenuCommand &owner);
 	/*@}*/

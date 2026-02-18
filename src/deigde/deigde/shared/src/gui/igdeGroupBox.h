@@ -51,6 +51,14 @@ public:
 		etaCenter
 	};
 	
+	class cNativeGroupBox{
+	public:
+		virtual ~cNativeGroupBox() = default;
+		virtual void UpdateCollapsed() = 0;
+		virtual void UpdateTitle() = 0;
+		virtual void UpdateTitleAlignment() = 0;
+		virtual void UpdateStretchLast() = 0;
+	};
 	
 	
 private:
@@ -61,6 +69,9 @@ private:
 	bool pCollapsed;
 	bool pStretchLast;
 	
+	
+protected:
+	cNativeGroupBox *pNativeGroupBox;
 	
 	
 public:
@@ -142,9 +153,6 @@ public:
 	
 	/** \brief Remove child. */
 	void RemoveChild(igdeWidget *child) override;
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -166,6 +174,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -186,6 +199,9 @@ protected:
 	
 	/** \brief Stretch last changed. */
 	virtual void OnStretchLastChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

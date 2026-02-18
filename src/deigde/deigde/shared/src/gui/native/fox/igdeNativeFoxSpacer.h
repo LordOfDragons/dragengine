@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSPACER_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeSpacer.h"
 
 class igdeSpacer;
 
@@ -33,7 +34,7 @@ class igdeSpacer;
 /**
  * \brief FOX toolkit Native Spacer.
  */
-class igdeNativeFoxSpacer : public FXFrame{
+class igdeNativeFoxSpacer : public FXFrame, public igdeSpacer::cNativeSpacer{
 	FXDECLARE(igdeNativeFoxSpacer)
 protected:
 	igdeNativeFoxSpacer();
@@ -62,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Set size. */
-	virtual void SetSize(int width, int height);
+	void SetSize(int width, int height) override;
 	
 	FXint getDefaultWidth() override;
 	FXint getDefaultHeight() override;

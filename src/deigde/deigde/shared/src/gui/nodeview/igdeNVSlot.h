@@ -51,6 +51,22 @@ public:
 	/** \brief Link list. */
 	using LinkList = decTObjectOrderedSet<igdeNVLink>;
 	
+	class cNativeNVSlot{
+	public:
+		virtual ~cNativeNVSlot() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateColor() = 0;
+		virtual void UpdateLinkedState() = 0;
+		virtual decPoint GetCenter() const = 0;
+		virtual decPoint GetCenterNode() const = 0;
+		virtual decPoint GetCenterBoard() const = 0;
+		virtual decPoint GetConnector() const = 0;
+		virtual decPoint GetConnectorNode() const = 0;
+		virtual decPoint GetConnectorBoard() const = 0;
+	};
+	
 	
 private:
 	decString pText;
@@ -63,6 +79,9 @@ private:
 	igdeNVNode *pOwnerNode;
 	LinkList pLinks;
 	
+	
+protected:
+	cNativeNVSlot *pNativeNVSlot;
 	
 	
 public:
@@ -174,9 +193,6 @@ public:
 	
 	/** \brief Connector position of slot in owner board coordinates.. */
 	decPoint GetConnectorBoard() const;
-	
-	/** \brief Language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -198,6 +214,12 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
 	
 	
 protected:
@@ -215,6 +237,9 @@ protected:
 	
 	/** \brief Linked slots changed. */
 	virtual void OnLinksChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

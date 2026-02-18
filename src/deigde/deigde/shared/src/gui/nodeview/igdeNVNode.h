@@ -49,6 +49,20 @@ public:
 	using SlotsList = decTObjectOrderedSet<igdeNVSlot>;
 	
 	
+	class cNativeNVNode{
+	public:
+		virtual ~cNativeNVNode() = default;
+		virtual void UpdateTitle() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateActive() = 0;
+		virtual void UpdateColors() = 0;
+		virtual void UpdatePosition() = 0;
+		virtual void FitSizeToContent() = 0;
+		virtual decPoint GetSize() = 0;
+	};
+	
+	
 private:
 	decString pTitle;
 	decString pDescription;
@@ -67,6 +81,9 @@ private:
 	
 	decTObjectOrderedSet<igdeNVNodeListener> pListeners;
 	
+	
+protected:
+	cNativeNVNode *pNativeNVNode;
 	
 	
 public:
@@ -206,9 +223,6 @@ public:
 	
 	/** \brief Notify listeners dragging ended. */
 	virtual void NotifyDragEnd();
-	
-	/** \brief Language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -230,6 +244,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -253,6 +272,9 @@ protected:
 	
 	/** \brief Position changed. */
 	virtual void OnPositionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

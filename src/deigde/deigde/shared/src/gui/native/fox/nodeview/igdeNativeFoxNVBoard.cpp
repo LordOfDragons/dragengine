@@ -215,6 +215,10 @@ igdeNVLink *igdeNativeFoxNVBoard::ClosestLinkNear(const decPoint &position, floa
 	return bestLink;
 }
 
+const igdeNVLink::Ref &igdeNativeFoxNVBoard::GetHoverLink() const{
+	return pHoverLink;
+}
+
 void igdeNativeFoxNVBoard::SetHoverLink(igdeNVLink *link){
 	if(pHoverLink == link){
 		return;

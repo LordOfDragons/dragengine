@@ -41,6 +41,15 @@ public:
 	using Ref = deTObjectReference<igdeTimer>;
 	
 	
+	class cNativeTimer{
+	public:
+		virtual ~cNativeTimer() = default;
+		virtual void DestroyNativeTimer() = 0;
+		virtual void StartTimer() = 0;
+		virtual void StopTimer() = 0;
+	};
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeTimer;
@@ -48,6 +57,9 @@ private:
 	bool pRepeating;
 	bool pRunning;
 	
+	
+protected:
+	cNativeTimer *pNativeTimerInterface;
 	
 	
 public:
@@ -132,6 +144,7 @@ protected:
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	void SetNativeTimer(void *nativeTimer);
+	
 	/*@}*/
 };
 

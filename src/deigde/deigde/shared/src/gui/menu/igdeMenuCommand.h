@@ -32,15 +32,27 @@
 #include "../resources/igdeIcon.h"
 
 
+
 /**
  * \brief IGDE UI Command Menu Entry.
  * 
  * Calls OnAction() if user clicks the menu entry and it is enabled.
  */
-class DE_DLL_EXPORT igdeMenuCommand : public igdeWidget, igdeActionListener{
+class DE_DLL_EXPORT igdeMenuCommand : public igdeWidget, public igdeActionListener{
 public:
 	/** \brief Strong reference. */
 	using Ref = deTObjectReference<igdeMenuCommand>;
+	
+	
+	class cNativeMenuCommand{
+	public:
+		virtual ~cNativeMenuCommand() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateHotKey() = 0;
+		virtual void UpdateIcon() = 0;
+		virtual void UpdateEnabled() = 0;
+	};
 	
 	
 private:
@@ -52,6 +64,9 @@ private:
 	bool pEnabled;
 	igdeAction::Ref pAction;
 	
+	
+protected:
+	cNativeMenuCommand *pNativeMenuCommand;
 	
 	
 public:
@@ -122,9 +137,6 @@ public:
 	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
-	
 	
 	
 	/**
@@ -160,6 +172,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -180,6 +197,9 @@ protected:
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

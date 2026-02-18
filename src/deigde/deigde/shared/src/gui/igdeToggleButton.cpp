@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeToggleButton.h"
 #include "igdeContainer.h"
 #include "igdeCommonDialogs.h"
@@ -50,19 +46,22 @@
 igdeToggleButton::igdeToggleButton(igdeEnvironment &environment, const char *text,
 	igdeIcon *icon, eButtonStyle style) :
 igdeButton(environment, text, icon, style),
-pToggled(false){
+pToggled(false),
+pNativeToggleButton(nullptr){
 }
 
 igdeToggleButton::igdeToggleButton(igdeEnvironment &environment, const char *text,
 	const char *description, igdeIcon *icon, eButtonStyle style) :
 igdeButton(environment, text, description, icon, style),
-pToggled(false){
+pToggled(false),
+pNativeToggleButton(nullptr){
 }
 
 igdeToggleButton::igdeToggleButton(igdeEnvironment &environment, igdeAction *action,
 	eButtonStyle style) :
 igdeButton(environment, action, style),
-pToggled(false){
+pToggled(false),
+pNativeToggleButton(nullptr){
 }
 
 igdeToggleButton::~igdeToggleButton(){
@@ -103,6 +102,8 @@ void igdeToggleButton::CreateNativeWidget(){
 	
 	igdeNativeToggleButton * const native = igdeNativeToggleButton::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeToggleButton = native;
+	pNativeButton = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -115,53 +116,18 @@ void igdeToggleButton::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
-
-
-void igdeToggleButton::OnStyleChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeToggleButton*)GetNativeWidget())->UpdateStyle();
-	}
+void igdeToggleButton::DropNativeWidget(){
+	pNativeToggleButton = nullptr;
+	igdeButton::DropNativeWidget();
 }
 
-void igdeToggleButton::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeToggleButton*)GetNativeWidget())->UpdateText();
-	}
-}
-
-void igdeToggleButton::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeToggleButton*)GetNativeWidget())->UpdateDescription();
-	}
-}
-
-void igdeToggleButton::OnIconChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeToggleButton*)GetNativeWidget())->UpdateIcons();
-	}
-}
-
-void igdeToggleButton::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeToggleButton*)GetNativeWidget())->UpdateEnabled();
-	}
-}
 
 void igdeToggleButton::OnDefaultChanged(){
 	// only used during widget construction
 }
 
 void igdeToggleButton::OnToggledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeToggleButton*)GetNativeWidget())->UpdateToggled();
-	}
-}
-
-void igdeToggleButton::OnLanguageChanged(){
-	igdeButton::OnLanguageChanged();
-	if(GetNativeWidget()){
-		igdeNativeToggleButton * const native = (igdeNativeToggleButton*)GetNativeWidget();
-		native->UpdateText();
-		native->UpdateDescription();
+	if(pNativeToggleButton){
+		pNativeToggleButton->UpdateToggled();
 	}
 }

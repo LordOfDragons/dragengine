@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeSpacer.h"
 #include "native/toolkit.h"
 #include "igdeContainer.h"
@@ -44,7 +40,8 @@
 
 igdeSpacer::igdeSpacer(igdeEnvironment &environment, const decPoint &size) :
 igdeWidget(environment),
-pSize(size)
+pSize(size),
+pNativeSpacer(nullptr)
 {
 	if(!(size >= decPoint())){
 		DETHROW(deeInvalidParam);
@@ -82,6 +79,7 @@ void igdeSpacer::CreateNativeWidget(){
 	
 	igdeNativeSpacer * const native = igdeNativeSpacer::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeSpacer = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -94,10 +92,14 @@ void igdeSpacer::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeSpacer::DropNativeWidget(){
+	pNativeSpacer = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeSpacer::OnSizeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSpacer*)GetNativeWidget())->SetSize(pSize.x, pSize.y);
+	if(pNativeSpacer){
+		pNativeSpacer->SetSize(pSize.x, pSize.y);
 	}
 }

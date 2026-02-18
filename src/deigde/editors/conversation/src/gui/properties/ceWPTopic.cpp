@@ -1417,5 +1417,7 @@ void ceWPTopic::PlayActionFromHere(){
 }
 
 void ceWPTopic::OnLanguageChanged(){
+	igdeContainerFlow::OnLanguageChanged();
+	
 	pModelTreeActions->UpdateActions();
 }

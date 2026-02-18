@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLTEXTFIELD_H_
 #define _IGDENATIVENULLTEXTFIELD_H_
 
+#include "../../igdeTextField.h"
+
 class igdeTextField;
 
 
 /**
  * Null textField.
  */
-class igdeNativeNullTextField{
+class igdeNativeNullTextField : public igdeTextField::cNativeTextField{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,14 +57,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void OnInvalidValueChanged();
-	virtual void UpdateText();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
-	virtual void UpdateEditable();
+	void Focus() override;
+	void OnInvalidValueChanged() override;
+	void UpdateText() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
+	void UpdateEditable() override;
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition(int position);
+	void SetCursorPosition(int position) override;
 	/*@}*/
 };
 

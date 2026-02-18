@@ -1299,4 +1299,32 @@ long igdeNativeFoxViewCurveBezier::onResizerDrag(FXObject*, FXSelector, void *pd
 	return 0;
 }
 
+void igdeNativeFoxViewCurveBezier::UpdateEnabled(){
+	pView->UpdateEnabled();
+}
+
+void igdeNativeFoxViewCurveBezier::UpdateDefaultSize(){
+	pView->UpdateDefaultSize();
+}
+
+void igdeNativeFoxViewCurveBezier::UpdateCurve(){
+	pView->UpdateCurve();
+}
+
+void igdeNativeFoxViewCurveBezier::UpdateSelectedPoint(){
+	pView->UpdateSelectedPoint();
+}
+
+void igdeNativeFoxViewCurveBezier::UpdateClamp(){
+	pView->UpdateClamp();
+}
+
+void igdeNativeFoxViewCurveBezier::ResetView(){
+	pView->ResetView();
+}
+
+void igdeNativeFoxViewCurveBezier::FitViewToCurve(){
+	pView->FitViewToCurve();
+}
+
 #endif

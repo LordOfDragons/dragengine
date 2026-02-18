@@ -52,7 +52,8 @@ pTickSpacing(1.0f),
 pValue(0.0f),
 pPrecision(0),
 pEnabled(true),
-pDescription(description){
+pDescription(description),
+pNativeSlider(nullptr){
 }
 
 igdeSlider::igdeSlider(igdeEnvironment &environment, eOrientation orientation,
@@ -65,7 +66,8 @@ pTickSpacing(decMath::max(tickSpacing, 0.0f)),
 pValue(lower),
 pPrecision(precision),
 pEnabled(true),
-pDescription(description)
+pDescription(description),
+pNativeSlider(nullptr)
 {
 	if(precision < 0){
 		DETHROW(deeInvalidParam);
@@ -141,8 +143,8 @@ void igdeSlider::SetDescription(const char *description){
 }
 
 void igdeSlider::Focus(){
-	if(GetNativeWidget()){
-		((igdeNativeSlider*)GetNativeWidget())->Focus();
+	if(pNativeSlider){
+		pNativeSlider->Focus();
 	}
 }
 
@@ -170,12 +172,6 @@ void igdeSlider::NotifyValueChanging(){
 	});
 }
 
-void igdeSlider::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeSlider::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -184,6 +180,7 @@ void igdeSlider::CreateNativeWidget(){
 	
 	igdeNativeSlider * const native = igdeNativeSlider::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeSlider = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -196,39 +193,46 @@ void igdeSlider::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeSlider::DropNativeWidget(){
+	pNativeSlider = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeSlider::OnRangeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSlider*)GetNativeWidget())->UpdateRange();
+	if(pNativeSlider){
+		pNativeSlider->UpdateRange();
 	}
 }
 
 void igdeSlider::OnValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSlider*)GetNativeWidget())->UpdateValue();
+	if(pNativeSlider){
+		pNativeSlider->UpdateValue();
 	}
 }
 
 void igdeSlider::OnPrecisionChanged(){
-	if(!GetNativeWidget()){
+	if(!pNativeSlider){
 		return;
 	}
 	
-	igdeNativeSlider &native = *((igdeNativeSlider*)GetNativeWidget());
-	native.UpdateScale();
-	native.UpdateRange();
-	native.UpdateValue();
+	pNativeSlider->UpdateScale();
+	pNativeSlider->UpdateRange();
+	pNativeSlider->UpdateValue();
 }
 
 void igdeSlider::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSlider*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeSlider){
+		pNativeSlider->UpdateEnabled();
 	}
 }
 
 void igdeSlider::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSlider*)GetNativeWidget())->UpdateDescription();
+	if(pNativeSlider){
+		pNativeSlider->UpdateDescription();
 	}
+}
+
+void igdeSlider::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

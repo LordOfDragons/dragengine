@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeTextArea.h"
 #include "igdeContainer.h"
 #include "igdeCommonDialogs.h"
@@ -57,7 +53,8 @@ pEnabled(true),
 pColumns(columns),
 pRows(rows),
 pEditable(true),
-pDescription(description)
+pDescription(description),
+pNativeTextArea(nullptr)
 {
 	if(columns < 1 || rows < 0){
 		DETHROW(deeInvalidParam);
@@ -71,7 +68,8 @@ pEnabled(true),
 pColumns(columns),
 pRows(rows),
 pEditable(editable),
-pDescription(description)
+pDescription(description),
+pNativeTextArea(nullptr)
 {
 	if(columns < 1 || rows < 1){
 		DETHROW(deeInvalidParam);
@@ -258,15 +256,11 @@ void igdeTextArea::ClearText(){
 
 
 int igdeTextArea::GetCursorPosition() const{
-	if(!GetNativeWidget()){
-		return 0;
-	}
-	
-	return ((igdeNativeTextArea*)GetNativeWidget())->GetCursorPosition();
+	return pNativeTextArea ? pNativeTextArea->GetCursorPosition() : 0;
 }
 
 void igdeTextArea::SetCursorPosition(int position){
-	if(!GetNativeWidget()){
+	if(!pNativeTextArea){
 		return;
 	}
 	
@@ -274,73 +268,54 @@ void igdeTextArea::SetCursorPosition(int position){
 		DETHROW(deeInvalidParam);
 	}
 	
-	((igdeNativeTextArea*)GetNativeWidget())->SetCursorPosition(position);
+	pNativeTextArea->SetCursorPosition(position);
 }
 
 decPoint igdeTextArea::GetCursorCoordinate() const{
-	if(!GetNativeWidget()){
-		return decPoint();
-	}
-	
-	const igdeNativeTextArea &native = *((igdeNativeTextArea*)GetNativeWidget());
-	return decPoint(native.GetCursorColumn(), native.GetCursorRow());
+	return pNativeTextArea ? decPoint(pNativeTextArea->GetCursorColumn(),
+		pNativeTextArea->GetCursorRow()) : decPoint();
 }
 
 void igdeTextArea::SetCursorCoordinate(const decPoint &coordinate){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeTextArea){
+		pNativeTextArea->SetCursorRow(coordinate.y);
+		pNativeTextArea->SetCursorColumn(coordinate.x);
 	}
-	
-	igdeNativeTextArea &native = *((igdeNativeTextArea*)GetNativeWidget());
-	native.SetCursorRow(coordinate.y);
-	native.SetCursorColumn(coordinate.x);
 }
 
 
 
 int igdeTextArea::GetTopLine() const{
-	if(!GetNativeWidget()){
+	if(!pNativeTextArea){
 		return 0;
 	}
 	
-	return ((igdeNativeTextArea*)GetNativeWidget())->GetTopLine();
+	return pNativeTextArea->GetTopLine();
 }
 
 void igdeTextArea::SetTopLine(int line){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeTextArea){
+		pNativeTextArea->SetTopLine(line);
 	}
-	
-	((igdeNativeTextArea*)GetNativeWidget())->SetTopLine(line);
 }
 
 int igdeTextArea::GetBottomLine() const{
-	if(!GetNativeWidget()){
-		return 0;
-	}
-	
-	return ((igdeNativeTextArea*)GetNativeWidget())->GetBottomLine();
+	return pNativeTextArea ? pNativeTextArea->GetBottomLine() : 0;
 }
 
 void igdeTextArea::SetBottomLine(int line){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeTextArea){
+		pNativeTextArea->SetBottomLine(line);
 	}
-	
-	((igdeNativeTextArea*)GetNativeWidget())->SetBottomLine(line);
 }
 
 int igdeTextArea::GetLineCount() const{
-	if(!GetNativeWidget()){
-		return 0;
-	}
-	
-	return ((igdeNativeTextArea*)GetNativeWidget())->GetLineCount();
+	return pNativeTextArea ? pNativeTextArea->GetLineCount() : 0;
 }
 
 void igdeTextArea::Focus(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->Focus();
+	if(pNativeTextArea){
+		pNativeTextArea->Focus();
 	}
 }
 
@@ -395,12 +370,6 @@ void igdeTextArea::NotifyTextChanging(){
 	});
 }
 
-void igdeTextArea::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeTextArea::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -409,6 +378,7 @@ void igdeTextArea::CreateNativeWidget(){
 	
 	igdeNativeTextArea * const native = igdeNativeTextArea::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeTextArea = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -421,45 +391,51 @@ void igdeTextArea::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeTextArea::DropNativeWidget(){
+	pNativeTextArea = nullptr;
+	igdeWidget::DropNativeWidget();
+}
+
+
 void igdeTextArea::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateText();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateText();
 	}
 }
 
 void igdeTextArea::OnColumnsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateColumns();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateColumns();
 	}
 }
 
 void igdeTextArea::OnRowsChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateRows();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateRows();
 	}
 }
 
 void igdeTextArea::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateEnabled();
 	}
 }
 
 void igdeTextArea::OnEditableChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateEditable();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateEditable();
 	}
 }
 
 void igdeTextArea::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateDescription();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateDescription();
 	}
 }
 
 void igdeTextArea::OnStylesChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextArea*)GetNativeWidget())->UpdateStyles();
+	if(pNativeTextArea){
+		pNativeTextArea->UpdateStyles();
 	}
 }
 
@@ -500,4 +476,8 @@ bool igdeTextArea::pClearSegment(int begin, int end){
 	}
 	
 	return changed;
+}
+
+void igdeTextArea::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

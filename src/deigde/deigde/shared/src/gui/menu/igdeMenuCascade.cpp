@@ -203,15 +203,6 @@ void igdeMenuCascade::PopupBottom(igdeWidget &owner){
 	PopupAt(owner, owner.WidgetToScreen(decPoint(0, igdeNativeWidget::GetSize(owner).y)));
 }
 
-void igdeMenuCascade::OnLanguageChanged(){
-	igdeContainer::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		OnTextChanged();
-		OnDescriptionChanged();
-	}
-}
-
 
 void igdeMenuCascade::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -306,5 +297,12 @@ void igdeMenuCascade::PopupAt(igdeWidget &owner, const decPoint &position){
 		DropNativeWidget();
 		igdeNativeMenuCascade::DestroyNativePopup(*this, nativePopup);
 		throw;
+	}
+}
+
+void igdeMenuCascade::OnNativeWidgetLanguageChanged(){
+	if(GetNativeWidget()){
+		OnTextChanged();
+		OnDescriptionChanged();
 	}
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeIconListBox.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -60,7 +56,8 @@ pViewMode(evmList),
 pSelection(-1),
 pMinimumSize(100, 60),
 pDescription(description),
-pAutoTranslateItems(false){
+pAutoTranslateItems(false),
+pNativeIconListBox(nullptr){
 }
 
 igdeIconListBox::igdeIconListBox(igdeEnvironment &environment,
@@ -72,7 +69,8 @@ pViewMode(evmList),
 pSelection(-1),
 pMinimumSize(minimumSize),
 pDescription(description),
-pAutoTranslateItems(false)
+pAutoTranslateItems(false),
+pNativeIconListBox(nullptr)
 {
 	if(!(minimumSize >= decPoint())){
 		DETHROW(deeInvalidParam);
@@ -129,8 +127,8 @@ void igdeIconListBox::SetViewMode(eViewMode mode){
 }
 
 void igdeIconListBox::Focus(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->Focus();
+	if(pNativeIconListBox){
+		pNativeIconListBox->Focus();
 	}
 }
 
@@ -443,9 +441,8 @@ void igdeIconListBox::DeselectAllItems(){
 
 void igdeIconListBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
 	decPoint cpos;
-	igdeNativeIconListBox * const native = static_cast<igdeNativeIconListBox*>(GetNativeWidget());
-	if(native){
-		cpos = native->GetContentPosition();
+	if(pNativeIconListBox){
+		cpos = pNativeIconListBox->GetContentPosition();
 	}
 	
 	void * const selection = GetSelectedItemData();
@@ -461,8 +458,8 @@ void igdeIconListBox::UpdateRestoreSelection(const std::function<void()> &block,
 		}
 	}
 	
-	if(native){
-		native->SetContentPosition(cpos);
+	if(pNativeIconListBox){
+		pNativeIconListBox->SetContentPosition(cpos);
 	}
 	
 	SetSelection(index);
@@ -470,9 +467,8 @@ void igdeIconListBox::UpdateRestoreSelection(const std::function<void()> &block,
 
 void igdeIconListBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
 	decPoint cpos;
-	igdeNativeIconListBox * const native = static_cast<igdeNativeIconListBox*>(GetNativeWidget());
-	if(native){
-		cpos = native->GetContentPosition();
+	if(pNativeIconListBox){
+		cpos = pNativeIconListBox->GetContentPosition();
 	}
 	
 	void * const selection = GetSelectedItemData();
@@ -488,8 +484,8 @@ void igdeIconListBox::UpdateRestoreSelectionData(const std::function<void()> &bl
 		}
 	}
 	
-	if(native){
-		native->SetContentPosition(cpos);
+	if(pNativeIconListBox){
+		pNativeIconListBox->SetContentPosition(cpos);
 	}
 	
 	SetSelection(index);
@@ -554,11 +550,11 @@ void igdeIconListBox::NotifyHeaderClicked(int index){
 
 
 void igdeIconListBox::MakeItemVisible(int index){
-	if(!GetNativeWidget()){
+	if(!pNativeIconListBox){
 		return;
 	}
 	
-	((igdeNativeIconListBox*)GetNativeWidget())->MakeItemVisible(index);
+	pNativeIconListBox->MakeItemVisible(index);
 }
 
 void igdeIconListBox::MakeSelectedItemVisible(){
@@ -568,7 +564,7 @@ void igdeIconListBox::MakeSelectedItemVisible(){
 }
 
 void igdeIconListBox::ShowContextMenu(const decPoint &position){
-	if(!GetNativeWidget()){
+	if(!pNativeIconListBox){
 		return;
 	}
 	
@@ -612,19 +608,6 @@ void igdeIconListBox::NotifyDoubleClickItem(int index){
 	});
 }
 
-void igdeIconListBox::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeIconListBox * const native = (igdeNativeIconListBox*)GetNativeWidget();
-		native->UpdateDescription();
-		native->UpdateHeader();
-		if(pAutoTranslateItems){
-			native->BuildList();
-		}
-	}
-}
-
 
 void igdeIconListBox::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -633,6 +616,7 @@ void igdeIconListBox::CreateNativeWidget(){
 	
 	igdeNativeIconListBox * const native = igdeNativeIconListBox::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeIconListBox = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -645,84 +629,98 @@ void igdeIconListBox::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeIconListBox::DropNativeWidget(){
+	pNativeIconListBox = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeIconListBox::OnItemAdded(int index){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->InsertItem(index, pItems.GetAt(index));
+	if(pNativeIconListBox){
+		pNativeIconListBox->InsertItem(index, pItems.GetAt(index));
 	}
 }
 
 void igdeIconListBox::OnItemRemoved(int index){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->RemoveItem(index);
+	if(pNativeIconListBox){
+		pNativeIconListBox->RemoveItem(index);
 	}
 }
 
 void igdeIconListBox::OnAllItemsRemoved(){
-	if(!GetNativeWidget()){
+	if(!pNativeIconListBox){
 		return;
 	}
 	
-	((igdeNativeIconListBox*)GetNativeWidget())->RemoveAllItems();
+	pNativeIconListBox->RemoveAllItems();
 }
 
 void igdeIconListBox::OnItemChanged(int index){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateItem(index);
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateItem(index);
 	}
 }
 
 void igdeIconListBox::OnItemMoved(int fromIndex, int toIndex){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->MoveItem(fromIndex, toIndex);
+	if(pNativeIconListBox){
+		pNativeIconListBox->MoveItem(fromIndex, toIndex);
 	}
 }
 
 void igdeIconListBox::OnItemsSorted(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->BuildList();
+	if(pNativeIconListBox){
+		pNativeIconListBox->BuildList();
 	}
 }
 
 void igdeIconListBox::OnSelectionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateSelection();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateSelection();
 	}
 }
 
 void igdeIconListBox::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateEnabled();
 	}
 }
 
 void igdeIconListBox::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateDescription();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateDescription();
 	}
 }
 
 void igdeIconListBox::OnViewModeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateStyles();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnSelectionModeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateStyles();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnHeaderChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateHeader();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateHeader();
 	}
 }
 
 void igdeIconListBox::OnMinimumSizeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->UpdateMinimumSize();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateMinimumSize();
+	}
+}
+
+void igdeIconListBox::OnNativeWidgetLanguageChanged(){
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateDescription();
+		pNativeIconListBox->UpdateHeader();
+		if(pAutoTranslateItems){
+			pNativeIconListBox->BuildList();
+		}
 	}
 }

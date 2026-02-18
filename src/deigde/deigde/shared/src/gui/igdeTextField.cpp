@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeTextField.h"
 #include "igdeContainer.h"
 #include "igdeCommonDialogs.h"
@@ -53,7 +49,8 @@ pColumns(columns),
 pEditable(true),
 pDescription(description),
 pPrecision(3),
-pInvalidValue(false)
+pInvalidValue(false),
+pNativeTextField(nullptr)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -68,7 +65,8 @@ pColumns(columns),
 pEditable(editable),
 pDescription(description),
 pPrecision(3),
-pInvalidValue(false)
+pInvalidValue(false),
+pNativeTextField(nullptr)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -189,14 +187,11 @@ void igdeTextField::SetDouble(double value, bool changing){
 
 
 int igdeTextField::GetCursorPosition() const{
-	if(!GetNativeWidget()){
-		return 0;
-	}
-	return ((igdeNativeTextField*)GetNativeWidget())->GetCursorPosition();
+	return pNativeTextField ? pNativeTextField->GetCursorPosition() : 0;
 }
 
 void igdeTextField::SetCursorPosition(int position){
-	if(!GetNativeWidget()){
+	if(!pNativeTextField){
 		return;
 	}
 	
@@ -204,15 +199,13 @@ void igdeTextField::SetCursorPosition(int position){
 		DETHROW(deeInvalidParam);
 	}
 	
-	((igdeNativeTextField*)GetNativeWidget())->SetCursorPosition(position);
+	pNativeTextField->SetCursorPosition(position);
 }
 
 void igdeTextField::Focus(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeTextField){
+		pNativeTextField->Focus();
 	}
-	
-	((igdeNativeTextField*)GetNativeWidget())->Focus();
 }
 
 
@@ -248,12 +241,6 @@ void igdeTextField::NotifyEnterKey(){
 	});
 }
 
-void igdeTextField::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	OnDescriptionChanged();
-}
-
 
 void igdeTextField::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -262,6 +249,7 @@ void igdeTextField::CreateNativeWidget(){
 	
 	igdeNativeTextField * const native = igdeNativeTextField::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeTextField = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -274,32 +262,42 @@ void igdeTextField::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeTextField::DropNativeWidget(){
+	pNativeTextField = nullptr;
+	igdeWidget::DropNativeWidget();
+}
+
+
 void igdeTextField::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextField*)GetNativeWidget())->UpdateText();
+	if(pNativeTextField){
+		pNativeTextField->UpdateText();
 	}
 }
 
 void igdeTextField::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextField*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeTextField){
+		pNativeTextField->UpdateEnabled();
 	}
 }
 
 void igdeTextField::OnEditableChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextField*)GetNativeWidget())->UpdateEditable();
+	if(pNativeTextField){
+		pNativeTextField->UpdateEditable();
 	}
 }
 
 void igdeTextField::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextField*)GetNativeWidget())->UpdateDescription();
+	if(pNativeTextField){
+		pNativeTextField->UpdateDescription();
 	}
 }
 
 void igdeTextField::OnInvalidValueChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeTextField*)GetNativeWidget())->OnInvalidValueChanged();
+	if(pNativeTextField){
+		pNativeTextField->OnInvalidValueChanged();
 	}
+}
+
+void igdeTextField::OnNativeWidgetLanguageChanged(){
+	OnDescriptionChanged();
 }

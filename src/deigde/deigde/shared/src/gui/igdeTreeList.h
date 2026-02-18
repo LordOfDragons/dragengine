@@ -42,10 +42,29 @@ class igdeTreeItem;
  * \brief IGDE UI TreeList.
  */
 class DE_DLL_EXPORT igdeTreeList : public igdeWidget{
-
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<igdeTreeList>;
+	
+	
+	class cNativeTreeList{
+	public:
+		virtual ~cNativeTreeList() = default;
+		virtual void BuildTree() = 0;
+		virtual void UpdateItem(igdeTreeItem *item) = 0;
+		virtual void MakeItemVisible(igdeTreeItem *item) = 0;
+		virtual void CreateAndInsertItem(igdeTreeItem *item) = 0;
+		virtual void CreateAndAppendItem(igdeTreeItem *item) = 0;
+		virtual void RemoveItem(igdeTreeItem *item) = 0;
+		virtual void RemoveAllItems(igdeTreeItem *parent) = 0;
+		virtual void ItemMoved(igdeTreeItem *item) = 0;
+		virtual void SelectItem(igdeTreeItem *item) = 0;
+		virtual void ItemsSortedIn(igdeTreeItem *item) = 0;
+		virtual void Focus() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateRows() = 0;
+		virtual void UpdateDescription() = 0;
+	};
 	
 	
 private:
@@ -58,6 +77,9 @@ private:
 	
 	decTObjectOrderedSet<igdeTreeListListener> pListeners;
 	
+	
+protected:
+	cNativeTreeList *pNativeTreeList;
 	
 	
 public:
@@ -238,9 +260,6 @@ public:
 	
 	/** \brief Notify listeners double clicked on item. */
 	virtual void NotifyDoubleClickItem(igdeTreeItem *item);
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -262,6 +281,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -321,6 +345,9 @@ protected:
 	
 	/** \brief Remove all items. */
 	void pRemoveAllItems(igdeTreeItem *item);
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

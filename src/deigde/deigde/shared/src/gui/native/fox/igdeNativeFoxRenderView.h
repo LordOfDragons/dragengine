@@ -26,9 +26,7 @@
 #define _IGDENATIVEFOXRENDERVIEW_H_
 
 #include "foxtoolkit.h"
-
-
-class igdeViewRenderWindow;
+#include "../../igdeViewRenderWindow.h"
 
 
 /**
@@ -41,7 +39,7 @@ class igdeViewRenderWindow;
  * container inside which the FXFrame is located we can mess around with.
  */
 
-class igdeNativeFoxRenderView : public FXFrame{
+class igdeNativeFoxRenderView : public FXFrame, public igdeViewRenderWindow::cNativeViewRenderWindow{
 	FXDECLARE(igdeNativeFoxRenderView)
 	
 public:
@@ -96,11 +94,11 @@ public:
 	inline bool GetCanRender() const{ return pCanRender; }
 	inline bool GetRenderWindowAttached() const{ return pRenderWindowAttached; }
 	
-	virtual void DropNativeWindow();
-	virtual bool IsReallyVisible() const;
-	virtual bool IsShown() const;
-	virtual decPoint GetSize() const;
-	virtual void OnFrameUpdate();
+	void DropNativeWindow() override;
+	bool IsReallyVisible() const override;
+	bool IsShown() const override;
+	decPoint GetSize() const override;
+	void OnFrameUpdate() override;
 	
 	
 	/**
@@ -109,7 +107,7 @@ public:
 	 * Uses owner RenderWindow from stored reference if present. Destroys the FOX created
 	 * window and attaches instead the render window window.
 	 */
-	virtual void AttachRenderWindow();
+	void AttachRenderWindow() override;
 	
 	/**
 	 * \brief Detach render window if present.
@@ -117,14 +115,14 @@ public:
 	 * Uses owner RenderWindow from stored reference if present. Detaches render window window
 	 * and creates a new FOX window.
 	 */
-	virtual void DetachRenderWindow();
+	void DetachRenderWindow() override;
 	
 	void DrawEngineUnavailable(FXDCWindow &dc);
 	void DrawErrorRenderWindow(FXDCWindow &dc);
 	void DrawErrorRendering(FXDCWindow &dc);
 	
-	virtual void GrabInput();
-	virtual void ReleaseInput();
+	void GrabInput() override;
+	void ReleaseInput() override;
 	/*@}*/
 	
 	

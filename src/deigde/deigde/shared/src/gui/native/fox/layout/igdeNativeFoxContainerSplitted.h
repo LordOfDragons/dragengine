@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXCONTAINERSPLITTED_H_
 
 #include "../foxtoolkit.h"
+#include "../../../layout/igdeContainerSplitted.h"
 
 class igdeContainerSplitted;
 
@@ -33,7 +34,7 @@ class igdeContainerSplitted;
 /**
  * FOX Native button.
  */
-class igdeNativeFoxContainerSplitted : public FXSplitter{
+class igdeNativeFoxContainerSplitted : public FXSplitter, public igdeContainerSplitted::cNativeContainerSplitted {
 	FXDECLARE(igdeNativeFoxContainerSplitted)
 	
 protected:
@@ -71,7 +72,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateSplitValue();
+	void UpdateSplitValue() override;
 	
 	static int SplitterFlags(const igdeContainerSplitted &owner);
 	/*@}*/

@@ -72,6 +72,9 @@ void igdeNativeNullDialog::UpdateTitle(){
 void igdeNativeNullDialog::UpdateSize(){
 }
 
+void igdeNativeNullDialog::RaiseAndActivate(){
+}
+
 void igdeNativeNullDialog::ShowDialog(){
 }
 

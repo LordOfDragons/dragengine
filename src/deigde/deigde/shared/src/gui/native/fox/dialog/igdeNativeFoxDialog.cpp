@@ -131,6 +131,10 @@ void igdeNativeFoxDialog::UpdateSize(){
 	resize(pOwner->GetSize().x, pOwner->GetSize().y);
 }
 
+void igdeNativeFoxDialog::RaiseAndActivate(){
+	// not required
+}
+
 void igdeNativeFoxDialog::ShowDialog(){
 	show(getParent() ? PLACEMENT_OWNER : PLACEMENT_SCREEN);
 }

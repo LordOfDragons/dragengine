@@ -106,6 +106,9 @@ void igdeNativeNullMainWindow::UpdateTitle(){
 void igdeNativeNullMainWindow::UpdateSize(){
 }
 
+void igdeNativeNullMainWindow::RaiseAndActivate(){
+}
+
 void igdeNativeNullMainWindow::SetWindowState(){
 }
 

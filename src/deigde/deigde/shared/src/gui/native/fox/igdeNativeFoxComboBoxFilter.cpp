@@ -89,8 +89,7 @@ pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0
 		disable();
 	}
 	
-	setTipText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
-	setHelpText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	UpdateDescription();
 	
 	BuildList();
 	setCurrentItem(powner.GetSelection());
@@ -280,7 +279,7 @@ void igdeNativeFoxComboBoxFilter::UpdateEditable(){
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription().GetString()));
 	setTipText(description);
 	setHelpText(description);
 }

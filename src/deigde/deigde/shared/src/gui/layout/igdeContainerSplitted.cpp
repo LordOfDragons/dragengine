@@ -48,7 +48,8 @@ pSidePlacement(sidePlacement),
 pSplitPosition(-1),
 pSplitPositionRelative(0.5f),
 pWidgetSide(nullptr),
-pWidgetCenter(nullptr){
+pWidgetCenter(nullptr),
+pNativeContainerSplitted(nullptr){
 }
 
 igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
@@ -58,7 +59,8 @@ pSidePlacement(sidePlacement),
 pSplitPosition(splitPosition),
 pSplitPositionRelative(0.0f),
 pWidgetSide(nullptr),
-pWidgetCenter(nullptr){
+pWidgetCenter(nullptr),
+pNativeContainerSplitted(nullptr){
 }
 
 igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
@@ -68,7 +70,8 @@ pSidePlacement(sidePlacement),
 pSplitPosition(-1),
 pSplitPositionRelative(decMath::clamp(splitPosition, 0.0f, 1.0f)),
 pWidgetSide(nullptr),
-pWidgetCenter(nullptr){
+pWidgetCenter(nullptr),
+pNativeContainerSplitted(nullptr){
 }
 
 igdeContainerSplitted::~igdeContainerSplitted(){
@@ -86,8 +89,8 @@ void igdeContainerSplitted::SetSplitPosition(int splitPosition){
 	
 	pSplitPosition = splitPosition;
 	
-	if(GetNativeWidget()){
-		((igdeNativeContainerSplitted*)GetNativeWidget())->UpdateSplitValue();
+	if(pNativeContainerSplitted){
+		pNativeContainerSplitted->UpdateSplitValue();
 	}
 }
 
@@ -99,8 +102,8 @@ void igdeContainerSplitted::SetSplitPositionRelative(float splitPosition){
 	pSplitPositionRelative = splitPosition;
 	pSplitPosition = -1;
 	
-	if(GetNativeWidget()){
-		((igdeNativeContainerSplitted*)GetNativeWidget())->UpdateSplitValue();
+	if(pNativeContainerSplitted){
+		pNativeContainerSplitted->UpdateSplitValue();
 	}
 }
 
@@ -150,8 +153,8 @@ void igdeContainerSplitted::AddChild(igdeWidget *child, eArea area){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(GetNativeWidget()){
-		((igdeNativeContainerSplitted*)GetNativeWidget())->UpdateSplitValue();
+	if(pNativeContainerSplitted){
+		pNativeContainerSplitted->UpdateSplitValue();
 	}
 }
 
@@ -199,6 +202,7 @@ void igdeContainerSplitted::CreateNativeWidget(){
 	
 	igdeNativeContainerSplitted * const native = igdeNativeContainerSplitted::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeContainerSplitted = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -214,6 +218,11 @@ void igdeContainerSplitted::DestroyNativeWidget(){
 	igdeNativeContainerSplitted * const native = (igdeNativeContainerSplitted*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
+}
+
+void igdeContainerSplitted::DropNativeWidget(){
+	pNativeContainerSplitted = nullptr;
+	igdeContainer::DropNativeWidget();
 }
 
 void igdeContainerSplitted::CreateChildWidgetNativeWidgets(){

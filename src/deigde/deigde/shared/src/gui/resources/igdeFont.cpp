@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeFont.h"
 #include "../native/toolkit.h"
 
@@ -89,18 +85,21 @@ pSize(config.size),
 pBold(config.bold),
 pItalic(config.italic),
 pUnderline(config.underline),
-pStrikeThrough(config.strikeThrough)
+pStrikeThrough(config.strikeThrough),
+pNativeFontInterface(nullptr)
 {
 	if(config.size <= 0.0f){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNativeFont = igdeNativeFont::CreateNativeFont(*this);
+	igdeNativeFont * const native = igdeNativeFont::CreateNativeFont(*this);
+	pNativeFont = native;
+	pNativeFontInterface = native;
 }
 
 igdeFont::~igdeFont(){
-	if(pNativeFont){
-		((igdeNativeFont*)pNativeFont)->DestroyNativeFont();
+	if(pNativeFontInterface){
+		pNativeFontInterface->DestroyNativeFont();
 	}
 }
 
@@ -120,12 +119,13 @@ void igdeFont::GetConfig(sConfiguration &config) const{
 
 decPoint igdeFont::TextSize(const char *text) const{
 	DEASSERT_NOTNULL(text)
-	return ((igdeNativeFont*)pNativeFont)->TextSize(text);
+	
+	return pNativeFontInterface->TextSize(text);
 }
 
 const deFont::Ref &igdeFont::GetEngineFont(){
 	if(!pEngineFont){
-		pEngineFont = static_cast<igdeNativeFont*>(pNativeFont)->CreateEngineFont();
+		pEngineFont = pNativeFontInterface->CreateEngineFont();
 	}
 	return pEngineFont;
 }

@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXCOMBOBOX_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeComboBox.h"
 #include "../../resources/igdeFont.h"
 
 class igdeComboBox;
@@ -38,7 +39,7 @@ class igdeWidget;
 /**
  * FOX Native comboBox.
  */
-class igdeNativeFoxComboBox : public FXComboBox{
+class igdeNativeFoxComboBox : public FXComboBox, public igdeComboBox::cNativeComboBox{
 	FXDECLARE(igdeNativeFoxComboBox)
 	
 protected:
@@ -79,20 +80,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void BuildList();
-	virtual void UpdateItem(int index);
-	virtual void SyncSelection(bool changing);
-	virtual void OnInvalidValueChanged();
-	virtual void UpdateText();
-	virtual void InsertItem(int index, const igdeListItem &item);
-	virtual void RemoveItem(int index);
-	virtual void RemoveAllItems();
-	virtual void MoveItem(int fromIndex, int toIndex);
-	virtual void Focus();
-	virtual void UpdateRowCount();
-	virtual void UpdateEnabled();
-	virtual void UpdateEditable();
-	virtual void UpdateDescription();
+	void BuildList() override;
+	void UpdateItem(int index) override;
+	void SyncSelection(bool changing) override;
+	void OnInvalidValueChanged() override;
+	void UpdateText() override;
+	void InsertItem(int index, const igdeListItem &item) override;
+	void RemoveItem(int index) override;
+	void RemoveAllItems() override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void Focus() override;
+	void UpdateRowCount() override;
+	void UpdateEnabled() override;
+	void UpdateEditable() override;
+	void UpdateDescription() override;
 	
 	static int ComboBoxFlags(const igdeComboBox &owner);
 	static igdeFont *ComboBoxFont(const igdeComboBox &owner, const igdeGuiTheme &guitheme);

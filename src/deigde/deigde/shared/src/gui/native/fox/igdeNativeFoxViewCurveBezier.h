@@ -28,12 +28,12 @@
 #include "foxtoolkit.h"
 #include "../../event/igdeAction.h"
 #include "../../resources/igdeFont.h"
+#include "../../curveedit/igdeViewCurveBezier.h"
 
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 
 
-class igdeViewCurveBezier;
 class igdeGuiTheme;
 class igdeNativeFoxResizer;
 
@@ -200,7 +200,7 @@ public:
  * 
  * Wraps igdeNativeFoxViewCurveBezierView with resizing support.
  */
-class igdeNativeFoxViewCurveBezier : public FXVerticalFrame{
+class igdeNativeFoxViewCurveBezier : public FXVerticalFrame, public igdeViewCurveBezier::cNativeViewCurveBezier{
 	FXDECLARE(igdeNativeFoxViewCurveBezier)
 protected:
 	   igdeNativeFoxViewCurveBezier();
@@ -243,11 +243,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief View curve bezier. */
-	inline igdeNativeFoxViewCurveBezierView &GetView() const{ return *pView; }
-	
 	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
+	
+	void UpdateEnabled() override;
+	void UpdateDefaultSize() override;
+	void UpdateCurve() override;
+	void UpdateSelectedPoint() override;
+	void UpdateClamp() override;
+	void ResetView() override;
+	void FitViewToCurve() override;
 	/*@}*/
 	
 	

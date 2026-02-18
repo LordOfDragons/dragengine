@@ -50,6 +50,14 @@ public:
 		eoVertical
 	};
 	
+	class cNativeProgressBar{
+	public:
+		virtual ~cNativeProgressBar() = default;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+	};
 	
 	
 private:
@@ -59,6 +67,9 @@ private:
 	int pValue;
 	decString pDescription;
 	
+	
+protected:
+	cNativeProgressBar *pNativeProgressBar;
 	
 	
 public:
@@ -110,9 +121,6 @@ public:
 	
 	/** \brief Set range. */
 	void SetRange(int lower, int upper);
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -134,6 +142,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -145,6 +158,9 @@ protected:
 	
 	/** \brief Description changed. */
 	virtual void OnDescriptionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

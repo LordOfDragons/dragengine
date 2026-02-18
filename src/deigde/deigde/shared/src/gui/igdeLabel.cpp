@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeLabel.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
@@ -49,7 +45,8 @@
 igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text, int alignment) :
 igdeWidget(environment),
 pText(text),
-pAlignment(alignment){
+pAlignment(alignment),
+pNativeLabel(nullptr){
 }
 
 igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
@@ -57,7 +54,8 @@ igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
 igdeWidget(environment),
 pText(text),
 pAlignment(alignment),
-pDescription(description){
+pDescription(description),
+pNativeLabel(nullptr){
 }
 
 igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
@@ -65,7 +63,8 @@ igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
 igdeWidget(environment),
 pText(text),
 pAlignment(alignment),
-pIcon(icon){
+pIcon(icon),
+pNativeLabel(nullptr){
 }
 
 igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
@@ -74,7 +73,8 @@ igdeWidget(environment),
 pText(text),
 pAlignment(alignment),
 pDescription(description),
-pIcon(icon){
+pIcon(icon),
+pNativeLabel(nullptr){
 }
 
 igdeLabel::~igdeLabel(){
@@ -122,16 +122,6 @@ void igdeLabel::SetIcon(igdeIcon *icon){
 	OnIconChanged();
 }
 
-void igdeLabel::OnLanguageChanged(){
-	igdeWidget::OnLanguageChanged();
-	
-	if(GetNativeWidget()){
-		igdeNativeLabel * const native = (igdeNativeLabel*)GetNativeWidget();
-		native->UpdateText();
-		native->UpdateDescription();
-	}
-}
-
 
 void igdeLabel::CreateNativeWidget(){
 	if(GetNativeWidget()){
@@ -140,6 +130,7 @@ void igdeLabel::CreateNativeWidget(){
 	
 	igdeNativeLabel * const native = igdeNativeLabel::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeLabel = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -152,28 +143,39 @@ void igdeLabel::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeLabel::DropNativeWidget(){
+	pNativeLabel = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeLabel::OnTextChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeLabel*)GetNativeWidget())->UpdateText();
+	if(pNativeLabel){
+		pNativeLabel->UpdateText();
 	}
 }
 
 void igdeLabel::OnAlignmentChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeLabel*)GetNativeWidget())->UpdateAlignment();
+	if(pNativeLabel){
+		pNativeLabel->UpdateAlignment();
 	}
 }
 
 void igdeLabel::OnDescriptionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeLabel*)GetNativeWidget())->UpdateDescription();
+	if(pNativeLabel){
+		pNativeLabel->UpdateDescription();
 	}
 }
 
 void igdeLabel::OnIconChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeLabel*)GetNativeWidget())->UpdateIcon();
+	if(pNativeLabel){
+		pNativeLabel->UpdateIcon();
+	}
+}
+
+void igdeLabel::OnNativeWidgetLanguageChanged(){
+	if(pNativeLabel){
+		pNativeLabel->UpdateText();
+		pNativeLabel->UpdateDescription();
 	}
 }

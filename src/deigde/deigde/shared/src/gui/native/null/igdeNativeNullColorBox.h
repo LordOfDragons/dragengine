@@ -25,6 +25,7 @@
 #ifndef _IGDENATIVENULLCOLORBOX_H_
 #define _IGDENATIVENULLCOLORBOX_H_
 
+#include "../../igdeColorBox.h"
 #include <dragengine/common/math/decMath.h>
 
 class igdeColorBox;
@@ -33,7 +34,7 @@ class igdeColorBox;
 /**
  * Null colorBox.
  */
-class igdeNativeNullColorBox{
+class igdeNativeNullColorBox : public igdeColorBox::cNativeColorBox{
 private:
 	static decColor vCopyColor;
 	
@@ -60,12 +61,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateColor();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
+	void UpdateColor() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
 	
-	virtual void ClipboardPutColor(const decColor &color);
-	virtual decColor ClipboardGetColor();
+	void ClipboardPutColor(const decColor &color) override;
+	decColor ClipboardGetColor() override;
 	/*@}*/
 };
 

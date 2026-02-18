@@ -88,11 +88,21 @@ public:
 	};
 	
 	
+	class cNativeDialog : public cNativeWindow{
+	public:
+		virtual ~cNativeDialog() = default;
+		virtual void ShowDialog() = 0;
+		virtual void CloseDialog(bool accepted) = 0;
+	};
+	
 	
 private:
 	igdeWidget *pOwner;
 	bool pAccepted;
 	
+	
+protected:
+	cNativeDialog *pNativeDialog;
 	
 	
 public:
@@ -260,8 +270,13 @@ public:
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	void DestroyNativeWidget() override;
-	/*@}*/
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	/*@}*/
 	
 	
 protected:

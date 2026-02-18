@@ -38,9 +38,19 @@ public:
 	using Ref = deTObjectReference<igdeSpacer>;
 	
 	
+	class cNativeSpacer{
+	public:
+		virtual ~cNativeSpacer() = default;
+		virtual void SetSize(int width, int height) = 0;
+	};
+	
+	
 private:
 	decPoint pSize;
 	
+	
+protected:
+	cNativeSpacer *pNativeSpacer;
 	
 	
 public:
@@ -91,6 +101,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

@@ -42,9 +42,19 @@ public:
 	using Ref = deTObjectReference<igdeStatusBar>;
 	
 	
+	class cNativeStatusBar{
+	public:
+		virtual ~cNativeStatusBar() = default;
+		virtual void UpdateText() = 0;
+	};
+	
+	
 private:
 	decString pText;
 	
+	
+protected:
+	cNativeStatusBar *pNativeStatusBar;
 	
 	
 public:
@@ -78,9 +88,6 @@ public:
 	
 	/** \brief Clear text. */
 	void ClearText();
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -102,11 +109,19 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
 	/** \brief Text changed. */
 	virtual void OnTextChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

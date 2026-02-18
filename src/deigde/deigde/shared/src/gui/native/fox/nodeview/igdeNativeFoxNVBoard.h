@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXNVBOARD_H_
 
 #include "../foxtoolkit.h"
+#include "../../../nodeview/igdeNVBoard.h"
 #include "../../../resources/igdeFont.h"
 #include "../../../nodeview/igdeNVLink.h"
 
@@ -39,7 +40,7 @@ class igdeNativeFoxNVSlot;
 /**
  * \brief FOX toolkit Native NodeView Board.
  */
-class igdeNativeFoxNVBoard : public FXPacker{
+class igdeNativeFoxNVBoard : public FXPacker, public igdeNVBoard::cNativeNVBoard {
 	FXDECLARE(igdeNativeFoxNVBoard)
 protected:
 	   igdeNativeFoxNVBoard();
@@ -98,22 +99,22 @@ public:
 	
 	
 	/** \brief Update enabled. */
-	void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update color from owner. */
-	void UpdateColors();
+	void UpdateColors() override;
 	
 	/** \brief Update nodes from owner. */
-	void UpdateNodes();
+	void UpdateNodes() override;
 	
 	/** \brief Update links from owner. */
-	void UpdateLinks();
+	void UpdateLinks() override;
 	
 	/** \brief Update offset from owner. */
-	void UpdateOffset();
+	void UpdateOffset() override;
 	
 	/** \brief Get Size. */
-	virtual decPoint GetSize();
+	decPoint GetSize() override;
 	
 	
 	
@@ -136,10 +137,10 @@ public:
 	void FinishCreateLink();
 	
 	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
-	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
+	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const override;
 	
 	/** \brief Hover link or nullptr. */
-	inline const igdeNVLink::Ref &GetHoverLink() const{ return pHoverLink; }
+	const igdeNVLink::Ref &GetHoverLink() const override;
 	
 	/** \brief Set hover link. */
 	void SetHoverLink(igdeNVLink *link);

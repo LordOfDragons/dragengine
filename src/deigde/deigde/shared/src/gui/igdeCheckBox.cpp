@@ -50,18 +50,21 @@
 igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, const char *text,
 	igdeIcon *icon, eButtonStyle style) :
 igdeButton(environment, text, icon, style),
-pChecked(false){
+pChecked(false),
+pNativeCheckBox(nullptr){
 }
 
 igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, const char *text,
 	const char *description, igdeIcon *icon, eButtonStyle style) :
 igdeButton(environment, text, description, icon, style),
-pChecked(false){
+pChecked(false),
+pNativeCheckBox(nullptr){
 }
 
 igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, igdeAction *action, eButtonStyle style) :
 igdeButton(environment, action, style),
-pChecked(false)
+pChecked(false),
+pNativeCheckBox(nullptr)
 {
 	SetAction(action);
 }
@@ -100,6 +103,8 @@ void igdeCheckBox::CreateNativeWidget(){
 	
 	igdeNativeCheckBox * const native = igdeNativeCheckBox::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeCheckBox = native;
+	pNativeButton = native;
 	native->PostCreateNativeWidget();
 }
 
@@ -112,52 +117,14 @@ void igdeCheckBox::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeCheckBox::DropNativeWidget(){
+	pNativeCheckBox = nullptr;
+	igdeButton::DropNativeWidget();
+}
 
 
 void igdeCheckBox::OnCheckedChanged(){
-	if(!GetNativeWidget()){
-		return;
+	if(pNativeCheckBox){
+		pNativeCheckBox->UpdateChecked();
 	}
-	
-	((igdeNativeCheckBox*)GetNativeWidget())->UpdateChecked();
-}
-
-void igdeCheckBox::OnStyleChanged(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	((igdeNativeCheckBox*)GetNativeWidget())->UpdateStyle();
-}
-
-void igdeCheckBox::OnTextChanged(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	((igdeNativeCheckBox*)GetNativeWidget())->UpdateText();
-}
-
-void igdeCheckBox::OnDescriptionChanged(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	((igdeNativeCheckBox*)GetNativeWidget())->UpdateDescription();
-}
-
-void igdeCheckBox::OnIconChanged(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	((igdeNativeCheckBox*)GetNativeWidget())->UpdateIcon();
-}
-
-void igdeCheckBox::OnEnabledChanged(){
-	if(!GetNativeWidget()){
-		return;
-	}
-	
-	((igdeNativeCheckBox*)GetNativeWidget())->UpdateEnabled();
 }

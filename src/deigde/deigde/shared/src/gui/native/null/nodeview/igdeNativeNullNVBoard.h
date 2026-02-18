@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLNVBOARD_H_
 #define _IGDENATIVENULLNVBOARD_H_
 
+#include "../../../nodeview/igdeNVBoard.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class igdeNVBoard;
@@ -35,7 +37,7 @@ class igdeNativeNullNVSlot;
 /**
  * Null NodeView Board.
  */
-class igdeNativeNullNVBoard{
+class igdeNativeNullNVBoard : public igdeNVBoard::cNativeNVBoard{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -75,7 +77,7 @@ public:
 	void UpdateOffset();
 	
 	/** \brief Get Size. */
-	virtual decPoint GetSize();
+	decPoint GetSize() override;
 	
 	
 	

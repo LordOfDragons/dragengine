@@ -38,9 +38,19 @@ public:
 	using Ref = deTObjectReference<igdeToggleButton>;
 	
 	
+	class cNativeToggleButton : public cNativeButton{
+	public:
+		virtual ~cNativeToggleButton() override = default;
+		virtual void UpdateToggled() = 0;
+	};
+	
+	
 private:
 	bool pToggled;
 	
+	
+protected:
+	cNativeToggleButton *pNativeToggleButton;
 	
 	
 public:
@@ -112,32 +122,19 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
-	/** \brief Style changed. */
-	void OnStyleChanged() override;
-	
-	/** \brief Text changed. */
-	void OnTextChanged() override;
-	
-	/** \brief Description changed. */
-	void OnDescriptionChanged() override;
-	
-	/** \brief Icon changed. */
-	void OnIconChanged() override;
-	
-	/** \brief Enabled changed. */
-	void OnEnabledChanged() override;
-	
 	/** \brief Default changed. */
 	void OnDefaultChanged() override;
 	
 	/** \brief Toggled changed. */
 	virtual void OnToggledChanged();
-	
-	/** \brief Active language changed. */
-	void OnLanguageChanged() override;
 	/*@}*/
 };
 

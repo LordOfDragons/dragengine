@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeApplication.h"
 #include "igdeWindow.h"
 #include "igdeCommonDialogs.h"
@@ -53,7 +50,8 @@ pIcon(icon),
 pCanResize(canResize),
 pPosition(igdeApplication::app().DisplayScaled(decPoint(10, 50))),
 pSize(igdeApplication::app().DisplayScaled(decPoint(400, 300))),
-pEnabled(true)
+pEnabled(true),
+pNativeWindow(nullptr)
 {
 	SetVisible(false);
 }
@@ -130,19 +128,13 @@ bool igdeWindow::CloseWindow(){
 }
 
 void igdeWindow::Close(){
-	if(GetNativeWidget()){
+	if(pNativeWindow){
 		DestroyNativeWidget();
 	}
 }
 
 igdeWindow *igdeWindow::GetParentWindow(){
 	return this;
-}
-
-void igdeWindow::OnLanguageChanged(){
-	igdeContainer::OnLanguageChanged();
-	
-	OnTitleChanged();
 }
 
 
@@ -161,6 +153,7 @@ void igdeWindow::CreateNativeWidget(){
 	
 	igdeNativeWindow * const native = igdeNativeWindow::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeWindow = native;
 	CreateChildWidgetNativeWidgets();
 	native->PostCreateNativeWidget();
 }
@@ -174,29 +167,33 @@ void igdeWindow::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeWindow::DropNativeWidget(){
+	pNativeWindow = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 void igdeWindow::OnTitleChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeWindow*)GetNativeWidget())->UpdateTitle();
+	if(pNativeWindow){
+		pNativeWindow->UpdateTitle();
 	}
 }
 
 void igdeWindow::OnIconChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeWindow*)GetNativeWidget())->UpdateIcon();
+	if(pNativeWindow){
+		pNativeWindow->UpdateIcon();
 	}
 }
 
 void igdeWindow::OnSizeChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeWindow*)GetNativeWidget())->UpdateSize();
+	if(pNativeWindow){
+		pNativeWindow->UpdateSize();
 	}
 }
 
 void igdeWindow::OnPositionChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeWindow*)GetNativeWidget())->UpdatePosition();
+	if(pNativeWindow){
+		pNativeWindow->UpdatePosition();
 	}
 }
 
@@ -208,13 +205,17 @@ void igdeWindow::OnVisibleChanged(){
 }
 
 void igdeWindow::OnEnabledChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeWindow*)GetNativeWidget())->UpdateEnabled();
+	if(pNativeWindow){
+		pNativeWindow->UpdateEnabled();
 	}
 }
 
 void igdeWindow::OnRaiseAndActivate(){
-	if(GetNativeWidget()){
-		((igdeNativeWindow*)GetNativeWidget())->RaiseAndActivate();
+	if(pNativeWindow){
+		pNativeWindow->RaiseAndActivate();
 	}
+}
+
+void igdeWindow::OnNativeWidgetLanguageChanged(){
+	OnTitleChanged();
 }

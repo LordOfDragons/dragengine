@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeSwitcher.h"
 #include "native/toolkit.h"
 
@@ -41,7 +37,8 @@
 
 igdeSwitcher::igdeSwitcher(igdeEnvironment &environment) :
 igdeContainer(environment),
-pCurrent(-1){
+pCurrent(-1),
+pNativeSwitcher(nullptr){
 }
 
 igdeSwitcher::~igdeSwitcher(){
@@ -111,6 +108,7 @@ void igdeSwitcher::CreateNativeWidget(){
 	
 	igdeNativeSwitcher * const native = igdeNativeSwitcher::CreateNativeWidget(*this);
 	SetNativeWidget(native);
+	pNativeSwitcher = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -127,13 +125,17 @@ void igdeSwitcher::DestroyNativeWidget(){
 	DropNativeWidget();
 }
 
+void igdeSwitcher::DropNativeWidget(){
+	pNativeSwitcher = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 // Protected Functions
 ////////////////////////
 
 void igdeSwitcher::OnCurrentChanged(){
-	if(GetNativeWidget()){
-		((igdeNativeSwitcher*)GetNativeWidget())->UpdateCurrent();
+	if(pNativeSwitcher){
+		pNativeSwitcher->UpdateCurrent();
 	}
 }

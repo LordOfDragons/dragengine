@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXLISTBOX_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeListBox.h"
 #include "../../resources/igdeFont.h"
 
 
@@ -37,7 +38,7 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native list box.
  */
-class igdeNativeFoxListBox : public FXVerticalFrame{
+class igdeNativeFoxListBox : public FXVerticalFrame, public igdeListBox::cNativeListBox{
 	FXDECLARE(igdeNativeFoxListBox)
 protected:
 	   igdeNativeFoxListBox();
@@ -88,21 +89,21 @@ public:
 	
 	
 	
-	virtual void BuildList();
-	virtual void UpdateItem(int index);
-	virtual void UpdateStyles();
-	virtual void UpdateSelection();
-	virtual void Focus();
+	void BuildList() override;
+	void UpdateItem(int index) override;
+	void UpdateStyles() override;
+	void UpdateSelection() override;
+	void Focus() override;
 	virtual decPoint GetContentPosition() const;
-	virtual void SetContentPosition(const decPoint &position);
-	virtual void MakeItemVisible(int index);
-	virtual void InsertItem(int index);
-	virtual void RemoveItem(int index);
-	virtual void RemoveAllItems();
-	virtual void MoveItem(int fromIndex, int toIndex);
-	virtual void UpdateEnabled();
-	virtual void UpdateRowCount();
-	virtual void UpdateDescription();
+	void SetContentPosition(const decPoint &position) override;
+	void MakeItemVisible(int index) override;
+	void InsertItem(int index) override;
+	void RemoveItem(int index) override;
+	void RemoveAllItems() override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void UpdateEnabled() override;
+	void UpdateRowCount() override;
+	void UpdateDescription() override;
 	
 	static int ListBoxFlags(const igdeListBox &owner);
 	static igdeFont *ListBoxFont(const igdeListBox &owner, const igdeGuiTheme &guitheme);

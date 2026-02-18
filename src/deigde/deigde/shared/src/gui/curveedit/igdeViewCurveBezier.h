@@ -163,6 +163,17 @@ public:
 		void OnAction() override;
 	};
 	
+	class cNativeViewCurveBezier{
+	public:
+		virtual ~cNativeViewCurveBezier() = default;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDefaultSize() = 0;
+		virtual void UpdateCurve() = 0;
+		virtual void UpdateSelectedPoint() = 0;
+		virtual void UpdateClamp() = 0;
+		virtual void ResetView() = 0;
+		virtual void FitViewToCurve() = 0;
+	};
 	
 	
 private:
@@ -179,6 +190,9 @@ private:
 	
 	decTObjectOrderedSet<igdeViewCurveBezierListener> pListeners;
 	
+	
+protected:
+	cNativeViewCurveBezier *pNativeViewCurveBezier;
 	
 	
 public:
@@ -331,6 +345,11 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

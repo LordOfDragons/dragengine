@@ -60,7 +60,117 @@ igdeUIFoxHelper::igdeUIFoxHelper(){}
 // Functions
 //////////////
 
-FXString igdeUIFoxHelper::AccelString(const igdeWidget &widget, const igdeHotKey &hotKey){
+FXString igdeUIFoxHelper::AccelStringSystem(const igdeHotKey &hotKey){
+	const deInputEvent::eKeyCodes keyCode = hotKey.GetKeyCode();
+	if(keyCode == deInputEvent::ekcUndefined){
+		return "";
+	}
+	
+	const bool shift = (hotKey.GetModifiers() & deInputEvent::esmShift) == deInputEvent::esmShift;
+	const bool control = (hotKey.GetModifiers() & deInputEvent::esmControl) == deInputEvent::esmControl;
+	const bool alt = (hotKey.GetModifiers() & deInputEvent::esmAlt) == deInputEvent::esmAlt;
+	
+	FXString string;
+	
+	if(alt){
+		string += "Alt-";
+	}
+	if(control){
+		string += "Ctl-";
+	}
+	if(shift){
+		string += "Shift-";
+	}
+	
+	switch(keyCode){
+	case deInputEvent::ekcSpace:
+		string += "Space";
+		break;
+		
+	case deInputEvent::ekcBackSpace:
+		string += "BackSpace";
+		break;
+		
+	case deInputEvent::ekcTab:
+		string += "Tab";
+		break;
+		
+	case deInputEvent::ekcReturn:
+		string += "Return";
+		break;
+		
+	case deInputEvent::ekcPause:
+		string += "Pause";
+		break;
+		
+	case deInputEvent::ekcEscape:
+		string += "Escape";
+		break;
+		
+	case deInputEvent::ekcInsert:
+		string += "Insert";
+		break;
+		
+	case deInputEvent::ekcDelete:
+		string += "Delete";
+		break;
+		
+	case deInputEvent::ekcArrowLeft:
+		string += "Left";
+		break;
+		
+	case deInputEvent::ekcArrowUp:
+		string += "Up";
+		break;
+		
+	case deInputEvent::ekcArrowRight:
+		string += "Right";
+		break;
+		
+	case deInputEvent::ekcArrowDown:
+		string += "Down";
+		break;
+		
+	case deInputEvent::ekcPageUp:
+		string += "PgUp";
+		break;
+		
+	case deInputEvent::ekcPageDown:
+		string += "PgDn";
+		break;
+		
+	case deInputEvent::ekcHome:
+		string += "Home";
+		break;
+		
+	case deInputEvent::ekcEnd:
+		string += "End";
+		break;
+		
+	default:{
+		FXString key;
+		
+		if(keyCode >= deInputEvent::ekcA && keyCode <= deInputEvent::ekcZ){
+			key.format("%c", 'A' + (keyCode - deInputEvent::ekcA));
+			
+		}else if(keyCode >= deInputEvent::ekc0 && keyCode <= deInputEvent::ekc9){
+			key.format("%d", keyCode - deInputEvent::ekc0);
+			
+		}else if(keyCode >= deInputEvent::ekcF1 && keyCode <= deInputEvent::ekcF12){
+			key.format("F%d", keyCode - deInputEvent::ekcF1 + 1);
+			
+		}else{
+			key = "?";
+		}
+		
+		string += key;
+		}
+	};
+	
+	return string;
+}
+
+FXString igdeUIFoxHelper::AccelStringTranslated(const igdeWidget &widget, const igdeHotKey &hotKey){
 	const deInputEvent::eKeyCodes keyCode = hotKey.GetKeyCode();
 	if(keyCode == deInputEvent::ekcUndefined){
 		return "";
