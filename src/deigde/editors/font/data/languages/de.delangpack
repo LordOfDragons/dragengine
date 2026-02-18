@@ -64,7 +64,7 @@ Schriftart wird das Bild überschrieben.
 	<translation name="Font.WPGlyph.Glyph.Add.ToolTip">Glyphe hinzufügen</translation>
 	<translation name="Font.WPGlyph.Glyph.Remove.ToolTip">Glyphe entfernen</translation>
 	<translation name="Font.WPGlyph.GlyphCode">Code {0}</translation>
-	<translation name="Font.WPGlyph.TexCoords">Tex-Koordinaten:</translation>
+	<translation name="Font.WPGlyph.TexCoords">Texturkoordinaten:</translation>
 	<translation name="Font.WPGlyph.TexCoords.ToolTip">Texturkoordinaten in Pixeln.</translation>
 	<translation name="Font.WPGlyph.TexCoordsU.ToolTip">U Texturkoordinaten in Pixeln</translation>
 	<translation name="Font.WPGlyph.TexCoordsV.ToolTip">V Texturkoordinaten in Pixeln</translation>
@@ -80,22 +80,22 @@ Schriftart wird das Bild überschrieben.
 	<translation name="Font.WPGlyph.Advance.ToolTip">Vorschub in Pixel.</translation>
 	
 	<!-- Undo: Font -->
-	<translation name="Font.Undo.SetImagePath">Schriftart Bildpfad festlegen</translation>
-	<translation name="Font.Undo.SetLineHeight">Schriftart Zeilenhöhe festlegen</translation>
-	<translation name="Font.Undo.SetBaseLine">Schriftart-Grundlinie festlegen</translation>
-	<translation name="Font.Undo.ToggleColorFont">Schriftart umschalten Farbschrift</translation>
-	<translation name="Font.Undo.ImportImage">Schriftart Importieren von Bild</translation>
+	<translation name="Font.Undo.SetImagePath">Bildpfad festlegen</translation>
+	<translation name="Font.Undo.SetLineHeight">Zeilenhöhe festlegen</translation>
+	<translation name="Font.Undo.SetBaseLine">Grundlinie festlegen</translation>
+	<translation name="Font.Undo.ToggleColorFont">Farbschrift umschalten</translation>
+	<translation name="Font.Undo.ImportImage">Bild importieren</translation>
 	
 	<!-- Undo: Glyph -->
 	<translation name="Font.Undo.GlyphAdd">Glyphe hinzufügen</translation>
 	<translation name="Font.Undo.GlyphRemove">Glyphe entfernen</translation>
-	<translation name="Font.Undo.GlyphSetU">Glyphe U setzen</translation>
-	<translation name="Font.Undo.GlyphSetV">Glyphe V setzen</translation>
-	<translation name="Font.Undo.GlyphSetWidth">Glyphe Breite setzen</translation>
-	<translation name="Font.Undo.GlyphSetHeight">Glyphe Höhe setzen</translation>
-	<translation name="Font.Undo.GlyphSetBearing">Glyphe Versatz setzen</translation>
-	<translation name="Font.Undo.GlyphSetBearingY">Glyphe Versatz Y setzen</translation>
-	<translation name="Font.Undo.GlyphSetAdvance">Glyphe Vorschub setzen</translation>
+	<translation name="Font.Undo.GlyphSetU">Glyphe: U setzen</translation>
+	<translation name="Font.Undo.GlyphSetV">Glyphe: V setzen</translation>
+	<translation name="Font.Undo.GlyphSetWidth">Glyphe: Breite setzen</translation>
+	<translation name="Font.Undo.GlyphSetHeight">Glyphe: Höhe setzen</translation>
+	<translation name="Font.Undo.GlyphSetBearing">Glyphe: Versatz setzen</translation>
+	<translation name="Font.Undo.GlyphSetBearingY">Glyphe: Versatz Y setzen</translation>
+	<translation name="Font.Undo.GlyphSetAdvance">Glyphe: Vorschub setzen</translation>
 	
 	<!-- ViewFontImage -->
 	<translation name="Font.ViewFontImage.Zoom.ToolTip">Zoomfaktor auswählen</translation>

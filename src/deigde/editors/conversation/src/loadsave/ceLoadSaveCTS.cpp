@@ -63,7 +63,7 @@ ceLoadSaveCTS::ceLoadSaveCTS(ceLoadSaveSystem *lssys, deLogger *logger, const ch
 igdeBaseXML(logger, loggerSource){
 	pLSSys = lssys;
 	
-	pName = "Conversation Test Setup";
+	pName = "@Conversation.FilePattern.ConversationTestSetup";
 	pPattern = ".dects";
 }
 

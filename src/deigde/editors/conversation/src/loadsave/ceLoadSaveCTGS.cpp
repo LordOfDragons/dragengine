@@ -57,7 +57,7 @@ ceLoadSaveCTGS::ceLoadSaveCTGS(ceLoadSaveSystem &loadSaveSystem,
 deLogger *logger, const char *loggerSource) :
 igdeBaseXML(logger, loggerSource),
 pLoadSaveSystem(loadSaveSystem),
-pName("Conversation Test Game State"),
+pName("@Conversation.FilePattern.ConversationTestGameState"),
 pPattern(".dectgs"){
 }
 

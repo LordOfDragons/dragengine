@@ -1098,4 +1098,9 @@
 	<translation name="Conversation.Undo.RemoveTopic">Remove Topic</translation>
 	<translation name="Conversation.Undo.TopicSetID">Topic Set ID</translation>
 	<translation name="Conversation.Undo.SetImportConversationPathList">Set Import Conversation Path List</translation>
+	
+	<!-- File patterns -->
+	<translation name="Conversation.FilePattern.ConversationTestActor">Conversation Test Actor</translation>
+	<translation name="Conversation.FilePattern.ConversationTestGameState">Conversation Test Game State</translation>
+	<translation name="Conversation.FilePattern.ConversationTestSetup">Conversation Test Setup</translation>
 </languagePack>

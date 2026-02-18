@@ -59,7 +59,7 @@ ceLoadSaveCTA::ceLoadSaveCTA(ceLoadSaveSystem &loadSaveSystem,
 deLogger *logger, const char *loggerSource) :
 igdeBaseXML(logger, loggerSource),
 pLoadSaveSystem(loadSaveSystem),
-pName("Conversation Test Actor"),
+pName("@Conversation.FilePattern.ConversationTestActor"),
 pPattern(".decta"){
 }
 

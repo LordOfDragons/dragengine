@@ -221,8 +221,8 @@
 	<translation name="Igde.EditPropertyValue.Action.Value.ToolTip">Boolescher Eigenschaftswert</translation>
 	<translation name="Igde.EditPropertyValue.Action.EditRawValue">Bearbeiten des Rohwerts der Eigenschaft</translation>
 	<translation name="Igde.EditPropertyValue.Dialog.EditRawValue.Title">Rohwert der Eigenschaft bearbeiten</translation>
-	<translation name="Igde.EditPropertyValue.Dialog.EditRawValue.Message">Rohwert der Eigenschaft. Die hier eingegebenen Werte können gegen den
-Eigenschaftstyp verstossen, daher ist bei der Eingabe Vorsicht geboten.</translation>
+	<translation name="Igde.EditPropertyValue.Dialog.EditRawValue.Message">Vorsicht bei der Eingabe, da der Wert gegen den
+Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.EditPropertyValue.Action.EditList">Liste bearbeiten</translation>
 	<translation name="Igde.EditPropertyValue.Action.EditTriggerExpression">Auslöserausdruck bearbeiten</translation>
 	<translation name="Igde.EditPropertyValue.Action.EditShape">Form bearbeiten</translation>

@@ -404,18 +404,18 @@
 	<translation name="Conversation.WindowMain.Copy.ToolTip">Kopiert ausgewählte Objekte</translation>
 	<translation name="Conversation.WindowMain.Paste">Einfügen</translation>
 	<translation name="Conversation.WindowMain.Paste.ToolTip">Objekte einfügen</translation>
-	<translation name="Conversation.WindowMain.LoadConversationTestSetup">Gesprächstest einrichten...</translation>
-	<translation name="Conversation.WindowMain.LoadConversationTestSetup.ToolTip">Lädt ein Gesprächstest-Setup aus einer Datei.</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestSetup">Gesprächstestaufbau laden...</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestSetup.ToolTip">Lädt einen Gesprächstestaufbau aus einer Datei.</translation>
 	<translation name="Conversation.WindowMain.SaveConversationTestSetup">Gesprächs-Testaufbau speichern...</translation>
-	<translation name="Conversation.WindowMain.SaveConversationTestSetup.ToolTip">Speichert eine Gesprächstest-Einrichtung aus einer Datei.</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestSetup.ToolTip">Speichert einen Gesprächstestaufbau in einer Datei.</translation>
 	<translation name="Conversation.WindowMain.LoadConversationActorSetup">Gesprächsakteur laden...</translation>
-	<translation name="Conversation.WindowMain.LoadConversationActorSetup.ToolTip">Lädt eine Gesprächsakteur-Einrichtung aus einer Datei.</translation>
+	<translation name="Conversation.WindowMain.LoadConversationActorSetup.ToolTip">Lädt einen Gesprächsakteur aus einer Datei.</translation>
 	<translation name="Conversation.WindowMain.SaveConversationActorSetup">Gesprächs-Akteuraufbau speichern...</translation>
-	<translation name="Conversation.WindowMain.SaveConversationActorSetup.ToolTip">Speichert eine Gesprächsakteur-Einrichtung aus einer Datei</translation>
-	<translation name="Conversation.WindowMain.LoadConversationTestGameState">Gesprächs-Testspielstatus laden...</translation>
-	<translation name="Conversation.WindowMain.LoadConversationTestGameState.ToolTip">Lädt einen Gesprächstest-Spielstatus aus einer Datei.</translation>
-	<translation name="Conversation.WindowMain.SaveConversationTestGameState">Gesprächs-Testspielstatus speichern...</translation>
-	<translation name="Conversation.WindowMain.SaveConversationTestGameState.ToolTip">Speichert einen Gesprächstest-Spielstatus aus einer Datei.</translation>
+	<translation name="Conversation.WindowMain.SaveConversationActorSetup.ToolTip">Speichert einen Gesprächsakteur in einer Datei</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestGameState">Gesprächstestspielstatus laden...</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestGameState.ToolTip">Lädt einen Gesprächstestspielstatus aus einer Datei.</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestGameState">Gesprächstestspielstatus speichern...</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestGameState.ToolTip">Speichert einen Gesprächstestspielstatus in einer Datei.</translation>
 	<translation name="Conversation.WindowMain.ShowRuleOfThirdsAid">Drittelregel anzeigen</translation>
 	<translation name="Conversation.WindowMain.ShowRuleOfThirdsAid.ToolTip">Drittelregel anzeigen</translation>
 	<translation name="Conversation.WindowMain.AttachLanguagePack">Sprachpaket laden...</translation>
@@ -1200,4 +1200,9 @@
 	<translation name="Conversation.Undo.RemoveTopic">Thema entfernen</translation>
 	<translation name="Conversation.Undo.TopicSetID">Thema: Kennung festlegen</translation>
 	<translation name="Conversation.Undo.SetImportConversationPathList">Gesprächsimportliste: Pfad festlegen</translation>
+	
+	<!-- File patterns -->
+	<translation name="Conversation.FilePattern.ConversationTestActor">Gesprächstestakteur</translation>
+	<translation name="Conversation.FilePattern.ConversationTestGameState">Gesprächstestspielstatus</translation>
+	<translation name="Conversation.FilePattern.ConversationTestSetup">Gesprächstestaufbau</translation>
 </languagePack>
