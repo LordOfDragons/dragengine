@@ -56,9 +56,9 @@
 	<translation name="Conversation.DopeSheetLane.Remove">Remove</translation>
 	<translation name="Conversation.DopeSheetLane.RemoveAll">Remove All</translation>
 	<!-- DopeSheetLaneEyesLookAt -->
-	<translation name="Conversation.DopeSheetLaneEyesLookAt.SetfromHeadLookAt">Set from Head Look-At</translation>
+	<translation name="Conversation.DopeSheetLaneEyesLookAt.SetFromHeadLookAt">Set from Head Look-At</translation>
 	<!-- DopeSheetLaneHeadLookAt -->
-	<translation name="Conversation.DopeSheetLaneHeadLookAt.SetfromEyesLookAt">Set from Eyes Look-At</translation>
+	<translation name="Conversation.DopeSheetLaneHeadLookAt.SetFromEyesLookAt">Set from Eyes Look-At</translation>
 	<!-- DopeSheetLaneWord -->
 	<translation name="Conversation.DopeSheetLaneWord.WordsFromText">Words From Text</translation>
 	<!-- WPActionActorAdd -->
@@ -157,9 +157,9 @@
 	<translation name="Conversation.WPConditionAParam.ActorID">Actor ID:</translation>
 	<translation name="Conversation.WPConditionAParam.Equal">Equal</translation>
 	<translation name="Conversation.WPConditionAParam.Greater">Greater</translation>
-	<translation name="Conversation.WPConditionAParam.GreaterorEqual">Greater or Equal</translation>
+	<translation name="Conversation.WPConditionAParam.GreaterOrEqual">Greater or Equal</translation>
 	<translation name="Conversation.WPConditionAParam.Less">Less</translation>
-	<translation name="Conversation.WPConditionAParam.LessorEqual">Less or Equal</translation>
+	<translation name="Conversation.WPConditionAParam.LessOrEqual">Less or Equal</translation>
 	<translation name="Conversation.WPConditionAParam.NotEqual">Not Equal</translation>
 	<translation name="Conversation.WPConditionAParam.Operator">Operator:</translation>
 	<translation name="Conversation.WPConditionAParam.Parameter">Parameter:</translation>
@@ -194,9 +194,9 @@
 	<!-- WPConditionVariable -->
 	<translation name="Conversation.WPConditionVariable.Equal">Equal</translation>
 	<translation name="Conversation.WPConditionVariable.Greater">Greater</translation>
-	<translation name="Conversation.WPConditionVariable.GreaterorEqual">Greater or Equal</translation>
+	<translation name="Conversation.WPConditionVariable.GreaterOrEqual">Greater or Equal</translation>
 	<translation name="Conversation.WPConditionVariable.Less">Less</translation>
-	<translation name="Conversation.WPConditionVariable.LessorEqual">Less or Equal</translation>
+	<translation name="Conversation.WPConditionVariable.LessOrEqual">Less or Equal</translation>
 	<translation name="Conversation.WPConditionVariable.NotEqual">Not Equal</translation>
 	<translation name="Conversation.WPConditionVariable.Operator">Operator:</translation>
 	<translation name="Conversation.WPConditionVariable.TestVariable">Test Variable:</translation>
@@ -302,7 +302,7 @@
 	<translation name="Conversation.WPView.Model">Model:</translation>
 	<translation name="Conversation.WPView.Name">Name:</translation>
 	<translation name="Conversation.WPView.Position">Position:</translation>
-	<translation name="Conversation.WPView.Proptoedit">Prop to edit</translation>
+	<translation name="Conversation.WPView.PropToEdit">Prop to edit</translation>
 	<translation name="Conversation.WPView.RenameController.Title">Rename Controller</translation>
 	<translation name="Conversation.WPView.RenameGesture.Title">Rename Gesture</translation>
 	<translation name="Conversation.WPView.RenamePose.Title">Rename Pose</translation>
@@ -685,7 +685,8 @@
 	<translation name="Conversation.Dialog.CopyToClipboard.Text">Text for you to copy to the clipboard</translation>
 	<!-- Tree Model Context Menu GameCommand -->
 	<!-- WPConversation Labels (fixed typos) -->
-	<translation name="Conversation.WPConversation.FacePoseControllerToEdit">Face pose controller to edit:</translation>
+	<translation name="Conversation.WPConversation.FacePoseController">Face pose controller:</translation>
+	<translation name="Conversation.WPConversation.FacePoseController.ToolTip">Face pose controller to edit</translation>
 	<!-- WPConversation Action Titles -->
 	<translation name="Conversation.WPConversation.AddFacePoseController.Title">Add Face Pose Controller</translation>
 	<!-- WPConversation Messages -->
@@ -700,80 +701,80 @@
 	<translation name="Conversation.MenuCascade.LogicAddCondition">Logic: Add Condition</translation>
 	<translation name="Conversation.MenuCascade.AddCondition">Add Condition</translation>
 	<!-- Tooltips for Actions -->
-	<translation name="Conversation.ToolTip.ConversationSnippet">Conversation snippet to generate actions from</translation>
-	<translation name="Conversation.ToolTip.ActorToAdd">ID of the actor to add to conversation</translation>
-	<translation name="Conversation.ToolTip.ActorAliasToSet">Optional alias ID to set for the added actor</translation>
-	<translation name="Conversation.ToolTip.ActorToSendCommand">Actor to send command to</translation>
-	<translation name="Conversation.ToolTip.ActorToRemove">ID of the actor to remove from conversation</translation>
-	<translation name="Conversation.ToolTip.ActorSpeaking">ID of the actor speaking</translation>
-	<translation name="Conversation.ToolTip.TranslationEntryExists">Translation entry '{0}' exists. Replace entry?</translation>
-	<translation name="Conversation.ToolTip.LanguagePackEntry">Language pack translation entry</translation>
-	<translation name="Conversation.ToolTip.TextBoxTextStyle">Name of style to use for the text box text</translation>
-	<translation name="Conversation.ToolTip.ActorMovement">Name of the actor movement to use or empty to not change</translation>
-	<translation name="Conversation.ToolTip.SoundFile">Sound file to play or empty to not use a sound file</translation>
-	<translation name="Conversation.ToolTip.Comment">Comment</translation>
-	<translation name="Conversation.ToolTip.CoordSystemToAdd">ID of the coordinate system to add to conversation</translation>
-	<translation name="Conversation.ToolTip.CoordSystemAliasToSet">Optional alias ID to set for the added coordinate system</translation>
-	<translation name="Conversation.ToolTip.CoordSystemToRemove">ID of the coordinate system to remove from conversation</translation>
-	<translation name="Conversation.ToolTip.MusicName">Name of the music to use or empty to not change</translation>
-	<translation name="Conversation.ToolTip.VariableForChoice">Name of the variable to store the choice in or empty to use none</translation>
-	<translation name="Conversation.ToolTip.ActorToModify">Actor to modify</translation>
-	<translation name="Conversation.ToolTip.ParameterName">Name of the parameter to set or empty to have no effect</translation>
-	<translation name="Conversation.ToolTip.OperatorForParameter">How to apply the value to the parameter</translation>
-	<translation name="Conversation.ToolTip.VariableForParameter">Variable value to use for operation or empty string to use 'Value'</translation>
-	<translation name="Conversation.ToolTip.VariableName">Name of the variable to set or empty to have no effect</translation>
-	<translation name="Conversation.ToolTip.OperatorForVariable">How to apply the value to the variable</translation>
-	<translation name="Conversation.ToolTip.VariableForOperation">Variable value to use for operation or empty string to use 'Value'</translation>
-	<translation name="Conversation.ToolTip.TriggerName">Name of the trigger to operate or empty to have no effect</translation>
-	<translation name="Conversation.ToolTip.TriggerAction">The action to apply on the trigger</translation>
+	<translation name="Conversation.ConversationSnippet.ToolTip">Conversation snippet to generate actions from</translation>
+	<translation name="Conversation.ActorToAdd.ToolTip">ID of the actor to add to conversation</translation>
+	<translation name="Conversation.ActorAliasToSet.ToolTip">Optional alias ID to set for the added actor</translation>
+	<translation name="Conversation.ActorToSendCommand.ToolTip">Actor to send command to</translation>
+	<translation name="Conversation.ActorToRemove.ToolTip">ID of the actor to remove from conversation</translation>
+	<translation name="Conversation.ActorSpeaking.ToolTip">ID of the actor speaking</translation>
+	<translation name="Conversation.TranslationEntryExists.ToolTip">Translation entry '{0}' exists. Replace entry?</translation>
+	<translation name="Conversation.LanguagePackEntry.ToolTip">Language pack translation entry</translation>
+	<translation name="Conversation.TextBoxTextStyle.ToolTip">Name of style to use for the text box text</translation>
+	<translation name="Conversation.ActorMovement.ToolTip">Name of the actor movement to use or empty to not change</translation>
+	<translation name="Conversation.SoundFile.ToolTip">Sound file to play or empty to not use a sound file</translation>
+	<translation name="Conversation.Comment.ToolTip">Comment</translation>
+	<translation name="Conversation.CoordSystemToAdd.ToolTip">ID of the coordinate system to add to conversation</translation>
+	<translation name="Conversation.CoordSystemAliasToSet.ToolTip">Optional alias ID to set for the added coordinate system</translation>
+	<translation name="Conversation.CoordSystemToRemove.ToolTip">ID of the coordinate system to remove from conversation</translation>
+	<translation name="Conversation.MusicName.ToolTip">Name of the music to use or empty to not change</translation>
+	<translation name="Conversation.VariableForChoice.ToolTip">Name of the variable to store the choice in or empty to use none</translation>
+	<translation name="Conversation.ActorToModify.ToolTip">Actor to modify</translation>
+	<translation name="Conversation.ParameterName.ToolTip">Name of the parameter to set or empty to have no effect</translation>
+	<translation name="Conversation.OperatorForParameter.ToolTip">How to apply the value to the parameter</translation>
+	<translation name="Conversation.VariableForParameter.ToolTip">Variable value to use for operation or empty string to use 'Value'</translation>
+	<translation name="Conversation.VariableName.ToolTip">Name of the variable to set or empty to have no effect</translation>
+	<translation name="Conversation.OperatorForVariable.ToolTip">How to apply the value to the variable</translation>
+	<translation name="Conversation.VariableForOperation.ToolTip">Variable value to use for operation or empty string to use 'Value'</translation>
+	<translation name="Conversation.TriggerName.ToolTip">Name of the trigger to operate or empty to have no effect</translation>
+	<translation name="Conversation.TriggerAction.ToolTip">The action to apply on the trigger</translation>
 	<!-- Tooltips for Conditions -->
-	<translation name="Conversation.ToolTip.ActorIDToTest">Actor ID to test</translation>
-	<translation name="Conversation.ToolTip.OperatorForComparison">Operator to compare parameter value with test value</translation>
-	<translation name="Conversation.ToolTip.ParameterToCompare">Parameter to compare</translation>
-	<translation name="Conversation.ToolTip.VariableToCompare">Variable to compare against or empty string to use 'Test Value'</translation>
-	<translation name="Conversation.ToolTip.LogicForConditions">Logic to apply to the conditions</translation>
-	<translation name="Conversation.ToolTip.TriggerTestMode">How to test the trigger</translation>
-	<translation name="Conversation.ToolTip.TriggerToTest">Name of trigger to test</translation>
-	<translation name="Conversation.ToolTip.VariableOperator">Operator to compare variable value with test value</translation>
-	<translation name="Conversation.ToolTip.VariableToCompareAgainst">Variable to compare against or empty string to use 'Test Value'</translation>
+	<translation name="Conversation.ActorIDToTest.ToolTip">Actor ID to test</translation>
+	<translation name="Conversation.OperatorForComparison.ToolTip">Operator to compare parameter value with test value</translation>
+	<translation name="Conversation.ParameterToCompare.ToolTip">Parameter to compare</translation>
+	<translation name="Conversation.VariableToCompare.ToolTip">Variable to compare against or empty string to use 'Test Value'</translation>
+	<translation name="Conversation.LogicForConditions.ToolTip">Logic to apply to the conditions</translation>
+	<translation name="Conversation.TriggerTestMode.ToolTip">How to test the trigger</translation>
+	<translation name="Conversation.TriggerToTest.ToolTip">Name of trigger to test</translation>
+	<translation name="Conversation.VariableOperator.ToolTip">Operator to compare variable value with test value</translation>
+	<translation name="Conversation.VariableToCompareAgainst.ToolTip">Variable to compare against or empty string to use 'Test Value'</translation>
 	<!-- Tooltips for WPConversation -->
-	<translation name="Conversation.ToolTip.CoordSystemID">ID of coordinate system or empty to not use a coordinate system</translation>
-	<translation name="Conversation.ToolTip.BoneName">Name of the bone to use as coordinate frame or an empty string to use the origin</translation>
-	<translation name="Conversation.ToolTip.PositionRelativeToTarget">Position relative to the target object</translation>
-	<translation name="Conversation.ToolTip.OrientationRelativeToTarget">Orientation relative to the target object</translation>
-	<translation name="Conversation.ToolTip.OffsetFromStart">Start offset relative to the target</translation>
-	<translation name="Conversation.ToolTip.OffsetToEnd">End offset relative to the target</translation>
-	<translation name="Conversation.ToolTip.OffsetFromLookAt">Start offset relative to the look-at target</translation>
-	<translation name="Conversation.ToolTip.OffsetToLookAt">End offset relative to the look-at target</translation>
-	<translation name="Conversation.ToolTip.OrbitFromStart">Start rotation of the camera orbit</translation>
-	<translation name="Conversation.ToolTip.OrbitToEnd">End rotation of the camera orbit</translation>
-	<translation name="Conversation.ToolTip.PositionFrom">Start position</translation>
-	<translation name="Conversation.ToolTip.PositionTo">End position</translation>
-	<translation name="Conversation.ToolTip.RotationFrom">Start rotation</translation>
-	<translation name="Conversation.ToolTip.RotationTo">End rotation</translation>
-	<translation name="Conversation.ToolTip.GestureAnimator">Name of the animator to use for this gesture</translation>
+	<translation name="Conversation.CoordSystemID.ToolTip">ID of coordinate system or empty to not use a coordinate system</translation>
+	<translation name="Conversation.BoneName.ToolTip">Name of the bone to use as coordinate frame or an empty string to use the origin</translation>
+	<translation name="Conversation.PositionRelativeToTarget.ToolTip">Position relative to the target object</translation>
+	<translation name="Conversation.OrientationRelativeToTarget.ToolTip">Orientation relative to the target object</translation>
+	<translation name="Conversation.OffsetFromStart.ToolTip">Start offset relative to the target</translation>
+	<translation name="Conversation.OffsetToEnd.ToolTip">End offset relative to the target</translation>
+	<translation name="Conversation.OffsetFromLookAt.ToolTip">Start offset relative to the look-at target</translation>
+	<translation name="Conversation.OffsetToLookAt.ToolTip">End offset relative to the look-at target</translation>
+	<translation name="Conversation.OrbitFromStart.ToolTip">Start rotation of the camera orbit</translation>
+	<translation name="Conversation.OrbitToEnd.ToolTip">End rotation of the camera orbit</translation>
+	<translation name="Conversation.PositionFrom.ToolTip">Start position</translation>
+	<translation name="Conversation.PositionTo.ToolTip">End position</translation>
+	<translation name="Conversation.RotationFrom.ToolTip">Start rotation</translation>
+	<translation name="Conversation.RotationTo.ToolTip">End rotation</translation>
+	<translation name="Conversation.GestureAnimator.ToolTip">Name of the animator to use for this gesture</translation>
 	<!-- Tooltips for WPView -->
-	<translation name="Conversation.ToolTip.PropName">Sets the name of the prop</translation>
-	<translation name="Conversation.ToolTip.PropPosition">Prop position</translation>
-	<translation name="Conversation.ToolTip.PropRotation">Prop rotation</translation>
-	<translation name="Conversation.ToolTip.ActorID">Unique actor ID in the conversation</translation>
-	<translation name="Conversation.ToolTip.ActorAliasID">Optional unique actor alias ID</translation>
-	<translation name="Conversation.ToolTip.ActorPosition">Actor position</translation>
-	<translation name="Conversation.ToolTip.ActorRotation">Actor rotation</translation>
-	<translation name="Conversation.ToolTip.ActorModel">Actor model to use</translation>
-	<translation name="Conversation.ToolTip.ActorSkin">Actor skin to use</translation>
-	<translation name="Conversation.ToolTip.ActorRig">Actor rig to use</translation>
-	<translation name="Conversation.ToolTip.SpeechAnimation">Speech animation to use</translation>
-	<translation name="Conversation.ToolTip.EyeAnimator">Eye animator to use</translation>
-	<translation name="Conversation.ToolTip.FacePoseAnimator">Face pose animator to use</translation>
-	<translation name="Conversation.ToolTip.HeadRotatorBone">Name of head rotator bone or empty string if not used</translation>
-	<translation name="Conversation.ToolTip.Animator">Animator to use</translation>
+	<translation name="Conversation.PropName.ToolTip">Sets the name of the prop</translation>
+	<translation name="Conversation.PropPosition.ToolTip">Prop position</translation>
+	<translation name="Conversation.PropRotation.ToolTip">Prop rotation</translation>
+	<translation name="Conversation.ActorID.ToolTip">Unique actor ID in the conversation</translation>
+	<translation name="Conversation.ActorAliasID.ToolTip">Optional unique actor alias ID</translation>
+	<translation name="Conversation.ActorPosition.ToolTip">Actor position</translation>
+	<translation name="Conversation.ActorRotation.ToolTip">Actor rotation</translation>
+	<translation name="Conversation.ActorModel.ToolTip">Actor model to use</translation>
+	<translation name="Conversation.ActorSkin.ToolTip">Actor skin to use</translation>
+	<translation name="Conversation.ActorRig.ToolTip">Actor rig to use</translation>
+	<translation name="Conversation.SpeechAnimation.ToolTip">Speech animation to use</translation>
+	<translation name="Conversation.EyeAnimator.ToolTip">Eye animator to use</translation>
+	<translation name="Conversation.FacePoseAnimator.ToolTip">Face pose animator to use</translation>
+	<translation name="Conversation.HeadRotatorBone.ToolTip">Name of head rotator bone or empty string if not used</translation>
+	<translation name="Conversation.Animator.ToolTip">Animator to use</translation>
 	<translation name="Conversation.ControllerUpdateType.ToolTip">How to update the controller</translation>
-	<translation name="Conversation.ToolTip.ConstantVector">Constant vector to use if the update type is constant</translation>
-	<translation name="Conversation.ToolTip.CoordSystemIDUnique">Unique coordinate system ID in the conversation</translation>
-	<translation name="Conversation.ToolTip.CoordSystemAliasID">Optional unique coordinate system alias ID</translation>
-	<translation name="Conversation.ToolTip.CoordSystemPosition">Position of the coordinate system</translation>
-	<translation name="Conversation.ToolTip.CoordSystemOrientation">Orientation of the coordinate system</translation>
+	<translation name="Conversation.ConstantVector.ToolTip">Constant vector to use if the update type is constant</translation>
+	<translation name="Conversation.CoordSystemIDUnique.ToolTip">Unique coordinate system ID in the conversation</translation>
+	<translation name="Conversation.CoordSystemAliasID.ToolTip">Optional unique coordinate system alias ID</translation>
+	<translation name="Conversation.CoordSystemPosition.ToolTip">Position of the coordinate system</translation>
+	<translation name="Conversation.CoordSystemOrientation.ToolTip">Orientation of the coordinate system</translation>
 	<translation name="Conversation.CameraHandling.ToolTip">How camera is handled</translation>
 	<!-- Additional Action Labels -->
 	<translation name="Conversation.Action.PlaybackAutoAdvance">Auto Advance</translation>

@@ -164,10 +164,10 @@ ceWPASetVariable::ceWPASetVariable(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "@Conversation.WPActionSetVariable.Name", "@Conversation.ToolTip.VariableName",
+	helper.EditString(*this, "@Conversation.WPActionSetVariable.Name", "@Conversation.VariableName.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "@Conversation.WPActionSetVariable.Operator", true, "@Conversation.ToolTip.OperatorForVariable",
+	helper.ComboBox(*this, "@Conversation.WPActionSetVariable.Operator", true, "@Conversation.OperatorForVariable.ToolTip",
 		pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@Conversation.WPActionSetVariable.Set", nullptr, (void*)(intptr_t)ceCASetVariable::eopSet);
@@ -177,7 +177,7 @@ ceWPASetVariable::ceWPASetVariable(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	
 	helper.EditInteger(*this, "@Conversation.WPActionSetVariable.Value", "@Conversation.WPActionSetVariable.Value.ToolTip",
 		pEditValue, cTextValue::Ref::New(*this));
-	helper.EditString(*this, "@Conversation.WPActionSetVariable.ValueVariable", "@Conversation.ToolTip.VariableForOperation",
+	helper.EditString(*this, "@Conversation.WPActionSetVariable.ValueVariable", "@Conversation.VariableForOperation.ToolTip",
 		pEditValueVariable, cTextValueVariable::Ref::New(*this));
 }
 

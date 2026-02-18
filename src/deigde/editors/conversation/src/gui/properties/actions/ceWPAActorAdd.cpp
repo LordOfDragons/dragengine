@@ -117,11 +117,11 @@ ceWPAActorAdd::ceWPAActorAdd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Actor", true, "@Conversation.ToolTip.ActorToAdd",
+	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Actor", true, "@Conversation.ActorToAdd.ToolTip",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Alias", true, "@Conversation.ToolTip.ActorAliasToSet",
+	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Alias", true, "@Conversation.ActorAliasToSet.ToolTip",
 		pCBAliasID, cComboAliasID::Ref::New(*this));
 	pCBAliasID->SetDefaultSorter();
 }

@@ -96,7 +96,7 @@ ceWPAMusic::ceWPAMusic(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "@Conversation.WPActionMusic.Name", "@Conversation.ToolTip.MusicName",
+	helper.EditString(*this, "@Conversation.WPActionMusic.Name", "@Conversation.MusicName.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
 }
 

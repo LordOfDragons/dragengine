@@ -96,7 +96,7 @@ pConversation(conversation)
 	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.ScaleActorSpeak",
 		"@Conversation.DialogPasteSnippet.ScaleActorSpeak.ToolTip", pEditScaleActorSpeak, {});
 	
-	helper.EditString(content, "@Conversation.DialogPasteSnippet.Snippet", "@Conversation.ToolTip.ConversationSnippet",
+	helper.EditString(content, "@Conversation.DialogPasteSnippet.Snippet", "@Conversation.ConversationSnippet.ToolTip",
 		pEditSnippet, 80, 20, {});
 	
 	igdeContainer::Ref buttonBar;

@@ -147,7 +147,7 @@ ceWPAActorCmd::ceWPAActorCmd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorCmd.ActorID", true, "@Conversation.ToolTip.ActorToSendCommand", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPActionActorCmd.ActorID", true, "@Conversation.ActorToSendCommand.ToolTip", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
 	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionActorCmd.Command.ToolTip", formLine);

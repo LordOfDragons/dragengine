@@ -1436,14 +1436,14 @@ pWindowProperties(windowProperties)
 		pCBTargetActorID, cComboTargetActorID::Ref::New(*this));
 	pCBTargetActorID->SetDefaultSorter();
 	
-	helper.EditString(groupBox, "@Conversation.WPConversation.CoordSystem", "@Conversation.ToolTip.CoordSystemID",
+	helper.EditString(groupBox, "@Conversation.WPConversation.CoordSystem", "@Conversation.CoordSystemID.ToolTip",
 		pEditTargetEntityID, cTextTargetEntityID::Ref::New(*this));
 	helper.EditString(groupBox, "@Conversation.WPConversation.Bone",
-		"@Conversation.ToolTip.BoneName",
+		"@Conversation.BoneName.ToolTip",
 		pEditTargetBone, cTextTargetBone::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPConversation.Position", "@Conversation.ToolTip.PositionRelativeToTarget",
+	helper.EditVector(groupBox, "@Conversation.WPConversation.Position", "@Conversation.PositionRelativeToTarget.ToolTip",
 		pEditTargetPosition, cVectorTargetPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPConversation.Orientation", "@Conversation.ToolTip.OrientationRelativeToTarget",
+	helper.EditVector(groupBox, "@Conversation.WPConversation.Orientation", "@Conversation.OrientationRelativeToTarget.ToolTip",
 		pEditTargetOrientation, cVectorTargetOrientation::Ref::New(*this));
 	
 	
@@ -1470,9 +1470,9 @@ pWindowProperties(windowProperties)
 		pCBCameraShotCameraTarget, cComboCameraShotCameraTarget::Ref::New(*this));
 	pCBCameraShotCameraTarget->SetDefaultSorter();
 	
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetFrom", "@Conversation.ToolTip.OffsetFromStart",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetFrom", "@Conversation.OffsetFromStart.ToolTip",
 		pEditCShotOffCamFrom, cVectorCShotOffCamFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetTo", "@Conversation.ToolTip.OffsetToEnd",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetTo", "@Conversation.OffsetToEnd.ToolTip",
 		pEditCShotOffCamTo, cVectorCShotOffCamTo::Ref::New(*this));
 	
 	// camera shot look at target
@@ -1483,17 +1483,17 @@ pWindowProperties(windowProperties)
 		pCBCameraShotLookAtTarget, cComboCameraShotCameraLookAt::Ref::New(*this));
 	pCBCameraShotLookAtTarget->SetDefaultSorter();
 	
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetFrom", "@Conversation.ToolTip.OffsetFromLookAt",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetFrom", "@Conversation.OffsetFromLookAt.ToolTip",
 		pEditCShotOffLookAtFrom, cVectorCShotOffLookAtFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetTo", "@Conversation.ToolTip.OffsetToLookAt",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetTo", "@Conversation.OffsetToLookAt.ToolTip",
 		pEditCShotOffLookAtTo, cVectorCShotOffLookAtTo::Ref::New(*this));
 	
 	// camera shot camera target
 	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPConversation.Orbiting.GroupBox", false);
 	
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.OrbitFrom", "@Conversation.ToolTip.OrbitFromStart",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OrbitFrom", "@Conversation.OrbitFromStart.ToolTip",
 		pEditCShotCamOrbitFrom, cVectorCShotCamOrbitFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.OrbitTo", "@Conversation.ToolTip.OrbitToEnd",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OrbitTo", "@Conversation.OrbitToEnd.ToolTip",
 		pEditCShotCamOrbitTo, cVectorCShotCamOrbitTo::Ref::New(*this));
 	
 	helper.EditFloat(groupBox2, "@Conversation.WPConversation.DistanceFrom", "@Conversation.WPConversation.DistanceFrom.ToolTip",
@@ -1504,14 +1504,14 @@ pWindowProperties(windowProperties)
 	// camera shot camera target
 	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPConversation.Parameters.GroupBox", false);
 	
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.PositionFrom", "@Conversation.ToolTip.PositionFrom",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.PositionFrom", "@Conversation.PositionFrom.ToolTip",
 		pEditCShotPosFrom, cVectorCShotPositionFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.PositionTo", "@Conversation.ToolTip.PositionTo",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.PositionTo", "@Conversation.PositionTo.ToolTip",
 		pEditCShotPosTo, cVectorCShotPositionTo::Ref::New(*this));
 	
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.RotationFrom", "@Conversation.ToolTip.RotationFrom",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.RotationFrom", "@Conversation.RotationFrom.ToolTip",
 		pEditCShotRotFrom, cVectorCShotRotationFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "@Conversation.WPConversation.RotationTo", "@Conversation.ToolTip.RotationTo",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.RotationTo", "@Conversation.RotationTo.ToolTip",
 		pEditCShotRotTo, cVectorCShotRotationTo::Ref::New(*this));
 	
 	helper.EditFloat(groupBox2, "@Conversation.WPConversation.TiltFrom", "@Conversation.WPConversation.TiltFrom.ToolTip",
@@ -1541,7 +1541,7 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnGesture, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnGesture);
 	
-	helper.EditString(groupBox, "@Conversation.WPConversation.Animator", "@Conversation.ToolTip.GestureAnimator",
+	helper.EditString(groupBox, "@Conversation.WPConversation.Animator", "@Conversation.GestureAnimator.ToolTip",
 		pEditGestureAnimator, cTextGestureAnimator::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "@Conversation.WPConversation.Duration", "@Conversation.WPConversation.Duration.ToolTip",
@@ -1560,8 +1560,8 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnFacePose, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnFacePose);
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.FormLine.Controller", "@Conversation.WPConversation.FacePoseControllerToEdit", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPConversation.FacePoseControllerToEdit", pCBFPController, cComboFacePoseController::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.FormLine.Controller", "@Conversation.WPConversation.FacePoseController", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPConversation.FacePoseController.ToolTip", pCBFPController, cComboFacePoseController::Ref::New(*this));
 	pCBFPController->SetDefaultSorter();
 	actionContextMenu = cActionFacePoseControllerMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnFPController, actionContextMenu);

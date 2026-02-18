@@ -123,10 +123,10 @@ ceWPATrigger::ceWPATrigger(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "@Conversation.WPActionTrigger.Name", "@Conversation.ToolTip.TriggerName",
+	helper.EditString(*this, "@Conversation.WPActionTrigger.Name", "@Conversation.TriggerName.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "@Conversation.WPActionTrigger.Action", true, "@Conversation.ToolTip.TriggerAction",
+	helper.ComboBox(*this, "@Conversation.WPActionTrigger.Action", true, "@Conversation.TriggerAction.ToolTip",
 		pCBAction, cComboAction::Ref::New(*this));
 	pCBAction->SetAutoTranslateItems(true);
 	pCBAction->AddItem("@Conversation.WPActionTrigger.Fire", nullptr, (void*)(intptr_t)ceCATrigger::eaFire);

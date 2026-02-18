@@ -185,13 +185,13 @@ ceWPASetAParam::ceWPASetAParam(ceWPTopic &parentPanel) : ceWPAction(parentPanel)
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.ActorID", true, "@Conversation.ToolTip.ActorToModify", pCBActorID, cComboActorID::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.ActorID", true, "@Conversation.ActorToModify.ToolTip", pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.EditString(*this, "@Conversation.WPActionSetAParam.Name", "@Conversation.ToolTip.ParameterName",
+	helper.EditString(*this, "@Conversation.WPActionSetAParam.Name", "@Conversation.ParameterName.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.Operator", "@Conversation.ToolTip.OperatorForParameter",
+	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.Operator", "@Conversation.OperatorForParameter.ToolTip",
 		pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Set", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopSet);
@@ -201,7 +201,7 @@ ceWPASetAParam::ceWPASetAParam(ceWPTopic &parentPanel) : ceWPAction(parentPanel)
 	
 	helper.EditInteger(*this, "@Conversation.WPActionSetAParam.Value", "@Conversation.WPActionSetAParam.Value.ToolTip",
 		pEditValue, cTextValue::Ref::New(*this));
-	helper.EditString(*this, "@Conversation.WPActionSetAParam.Variable", "@Conversation.ToolTip.VariableForParameter",
+	helper.EditString(*this, "@Conversation.WPActionSetAParam.Variable", "@Conversation.VariableForParameter.ToolTip",
 		pEditValueVariable, cTextValueVariable::Ref::New(*this));
 }
 

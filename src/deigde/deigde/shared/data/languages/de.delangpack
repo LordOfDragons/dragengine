@@ -492,24 +492,24 @@ Eigenschaftstyp verstossen, daher ist bei der Eingabe Vorsicht geboten.</transla
 	
 	<!-- WP Trigger Table -->
 	<translation name="Igde.WPTriggerTable.Action.ToggleState">Status umschalten</translation>
-	<translation name="Igde.WPTriggerTable.Action.ToggleState.ToolTip">Umschalten des ausgewählten Ziels zwischen aktiviertem und zurückgesetztem Status</translation>
-	<translation name="Igde.WPTriggerTable.Action.ClearTable">Tabelle löschen</translation>
-	<translation name="Igde.WPTriggerTable.Action.ClearTable.ToolTip">Alle Ziele aus der Tabelle entfernen</translation>
-	<translation name="Igde.WPTriggerTable.Action.AddTarget">Ziel hinzufügen...</translation>
-	<translation name="Igde.WPTriggerTable.Action.AddTarget.ToolTip">Ziel zur Tabelle hinzufügen</translation>
-	<translation name="Igde.WPTriggerTable.Dialog.AddTarget.Title">Ziel hinzufügen</translation>
+	<translation name="Igde.WPTriggerTable.Action.ToggleState.ToolTip">Umschalten des ausgewählten Auslösers zwischen aktiviertem und zurückgesetztem Status</translation>
+	<translation name="Igde.WPTriggerTable.Action.ClearTable">Alle löschen</translation>
+	<translation name="Igde.WPTriggerTable.Action.ClearTable.ToolTip">Alle Auslöser aus der Tabelle entfernen</translation>
+	<translation name="Igde.WPTriggerTable.Action.AddTarget">Hinzufügen...</translation>
+	<translation name="Igde.WPTriggerTable.Action.AddTarget.ToolTip">Auslöser zur Tabelle hinzufügen</translation>
+	<translation name="Igde.WPTriggerTable.Dialog.AddTarget.Title">Auslöser hinzufügen</translation>
 	<translation name="Igde.WPTriggerTable.Dialog.AddTarget.Name">Name:</translation>
-	<translation name="Igde.WPTriggerTable.Action.RemoveTarget">Ziel entfernen</translation>
-	<translation name="Igde.WPTriggerTable.Action.RemoveTarget.ToolTip">Ausgewähltes Ziel aus Tabelle entfernen</translation>
-	<translation name="Igde.WPTriggerTable.Action.FireTarget">Ziel auslösen</translation>
-	<translation name="Igde.WPTriggerTable.Action.FireTarget.ToolTip">Ausgewähltes Ziel auslösen</translation>
-	<translation name="Igde.WPTriggerTable.Action.ResetTarget">Ziel zurücksetzen</translation>
-	<translation name="Igde.WPTriggerTable.Action.ResetTarget.ToolTip">Ausgewähltes Ziel zurücksetzen</translation>
-	<translation name="Igde.WPTriggerTable.Action.FullResetTarget">Vollständiges Zurücksetzen des Ziels</translation>
-	<translation name="Igde.WPTriggerTable.Action.FullResetTarget.ToolTip">Vollständiges Zurücksetzen des ausgewählten Ziels</translation>
+	<translation name="Igde.WPTriggerTable.Action.RemoveTarget">Entfernen</translation>
+	<translation name="Igde.WPTriggerTable.Action.RemoveTarget.ToolTip">Ausgewählten Auslöser aus Tabelle entfernen</translation>
+	<translation name="Igde.WPTriggerTable.Action.FireTarget">Auslösen</translation>
+	<translation name="Igde.WPTriggerTable.Action.FireTarget.ToolTip">Ausgewählten Auslöser auslösen</translation>
+	<translation name="Igde.WPTriggerTable.Action.ResetTarget">Zurücksetzen</translation>
+	<translation name="Igde.WPTriggerTable.Action.ResetTarget.ToolTip">Ausgewählten Auslöser zurücksetzen</translation>
+	<translation name="Igde.WPTriggerTable.Action.FullResetTarget">Vollständig zurücksetzen</translation>
+	<translation name="Igde.WPTriggerTable.Action.FullResetTarget.ToolTip">Ausgewählten Auslöser vollständig zurücksetzen</translation>
 	<translation name="Igde.WPTriggerTable.Filter">Filter:</translation>
-	<translation name="Igde.WPTriggerTable.Filter.ToolTip">Filterziele in der Liste, ohne Berücksichtigung der Gross-/Kleinschreibung</translation>
-	<translation name="Igde.WPTriggerTable.ListBox.ToolTip">Liste der Ziele in der Tabelle</translation>
+	<translation name="Igde.WPTriggerTable.Filter.ToolTip">Auslöser filtern ohne Berücksichtigung der Groß-/Kleinschreibung</translation>
+	<translation name="Igde.WPTriggerTable.ListBox.ToolTip">Liste von Auslösern</translation>
 	
 	<!-- WP Undo History -->
 	<translation name="Igde.WPUndoHistory">Rückgängig-Verlauf:</translation>
@@ -690,8 +690,9 @@ Eigenschaftstyp verstossen, daher ist bei der Eingabe Vorsicht geboten.</transla
 	<translation name="Igde.WPSky.ControllerValue">Aktueller Wert des Controllers {0}</translation>
 	
 	<!-- WP Trigger Table -->
-	<translation name="Igde.WPTriggerTable.Target.HasFired">hat ausgelöst</translation>
-	<translation name="Igde.WPTriggerTable.Target.NeverFired">wurde nie ausgelöst</translation>
+	<translation name="Igde.WPTriggerTable.Target.HasFired">ausgelöst</translation>
+	<translation name="Igde.WPTriggerTable.Target.NotFired">nicht ausgelöst</translation>
+	<translation name="Igde.WPTriggerTable.Target.NeverFired">noch nie ausgelöst</translation>
 	<translation name="Igde.WPTriggerTable.Target.Text">{0} ({1})</translation>
 	
 	<!-- Trigger Expression Editor -->

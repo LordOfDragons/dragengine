@@ -691,7 +691,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPSky.ControllerValue">Current value of the controller {0}</translation>
 	
 	<!-- WP Trigger Table -->
-	<translation name="Igde.WPTriggerTable.Target.HasFired">has fired</translation>
+	<translation name="Igde.WPTriggerTable.Target.HasFired">fired</translation>
+	<translation name="Igde.WPTriggerTable.Target.NotFired">not fired</translation>
 	<translation name="Igde.WPTriggerTable.Target.NeverFired">never fired</translation>
 	<translation name="Igde.WPTriggerTable.Target.Text">{0} ({1})</translation>
 	

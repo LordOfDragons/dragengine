@@ -372,9 +372,20 @@ void igdeWPTriggerTable::UpdateTable(){
 					return;
 				}
 				
+				const char *statusKey = nullptr;
+				if(t->GetFired()){
+					statusKey = "Igde.WPTriggerTable.Target.HasFired";
+					
+				}else if(t->GetHasFired()){
+					statusKey = "Igde.WPTriggerTable.Target.NotFired";
+					
+				}else{
+					statusKey = "Igde.WPTriggerTable.Target.NeverFired";
+				}
+				
 				decString text;
-				text.FormatSafe(Translate("Igde.WPTriggerTable.Target.Text").ToUTF8(), t->GetName(),
-					Translate(t->GetFired() ? "Igde.WPTriggerTable.Target.HasFired" : "Igde.WPTriggerTable.Target.NeverFired").ToUTF8());
+				text.FormatSafe(Translate("Igde.WPTriggerTable.Target.Text").ToUTF8(),
+					t->GetName(), Translate(statusKey).ToUTF8());
 				pListTriggerTable->AddItem(text, t->GetFired() ? pIconFired : pIconNotFired, t);
 			});
 			
@@ -389,9 +400,20 @@ void igdeWPTriggerTable::UpdateTarget(igdeTriggerTarget *target){
 		return;
 	}
 	
+	const char *statusKey = nullptr;
+	if(target->GetFired()){
+		statusKey = "Igde.WPTriggerTable.Target.HasFired";
+		
+	}else if(target->GetHasFired()){
+		statusKey = "Igde.WPTriggerTable.Target.NotFired";
+		
+	}else{
+		statusKey = "Igde.WPTriggerTable.Target.NeverFired";
+	}
+	
 	decString text;
-	text.FormatSafe(Translate("Igde.WPTriggerTable.Target.Text").ToUTF8(), target->GetName(),
-		Translate(target->GetHasFired() ? "Igde.WPTriggerTable.Target.HasFired" : "Igde.WPTriggerTable.Target.NeverFired").ToUTF8());
+	text.FormatSafe(Translate("Igde.WPTriggerTable.Target.Text").ToUTF8(),
+		target->GetName(), Translate(statusKey).ToUTF8());
 	
 	igdeListItem &item = pListTriggerTable->GetItems().GetAt(index);
 	if(item.GetText() == text){

@@ -1954,22 +1954,22 @@ pWindowProperties(windowProperties)
 	// props
 	helper.GroupBox(content, groupBox, "@Conversation.WPView.Props.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Prop", "@Conversation.WPView.Proptoedit", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Proptoedit", pCBProps, cComboProp::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Prop", "@Conversation.WPView.PropToEdit", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.PropToEdit", pCBProps, cComboProp::Ref::New(*this));
 	pCBProps->SetDefaultSorter();
 	actionContextMenu = cActionPropMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnPropMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnPropMenu);
 	
-	helper.EditString(groupBox, "@Conversation.WPView.Name", "@Conversation.ToolTip.PropName", pEditPropName, cTextPropName::Ref::New(*this));
+	helper.EditString(groupBox, "@Conversation.WPView.Name", "@Conversation.PropName.ToolTip", pEditPropName, cTextPropName::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Object", "@Conversation.WPView.PropClass", formLine);
 	helper.EditString(formLine, "@Conversation.WPView.PropClass", pEditPropClass, cTextPropClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropMenu, cActionPropClass::Ref::New(*this, pEditPropClass));
 	
 	helper.CheckBox(groupBox, pChkPropVisible, cActionPropVisible::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Position", "@Conversation.ToolTip.PropPosition", pEditPropPos, cVectorPropPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Rotation", "@Conversation.ToolTip.PropRotation", pEditPropRot, cVectorPropRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@Conversation.WPView.Position", "@Conversation.PropPosition.ToolTip", pEditPropPos, cVectorPropPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@Conversation.WPView.Rotation", "@Conversation.PropRotation.ToolTip", pEditPropRot, cVectorPropRotation::Ref::New(*this));
 	
 	
 	// props
@@ -1984,26 +1984,26 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnActorMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorMenu);
 	
-	helper.EditString(form, "@Conversation.WPView.ID", "@Conversation.ToolTip.ActorID",
+	helper.EditString(form, "@Conversation.WPView.ID", "@Conversation.ActorID.ToolTip",
 		pEditActorID, cTextActorID::Ref::New(*this));
-	helper.EditString(form, "@Conversation.WPView.AliasID", "@Conversation.ToolTip.ActorAliasID",
+	helper.EditString(form, "@Conversation.WPView.AliasID", "@Conversation.ActorAliasID.ToolTip",
 		pEditActorAliasID, cTextActorAliasID::Ref::New(*this));
-	helper.EditVector(form, "@Conversation.WPView.Position", "@Conversation.ToolTip.ActorPosition", pEditActorPos, cVectorActorPosition::Ref::New(*this));
-	helper.EditVector(form, "@Conversation.WPView.Rotation", "@Conversation.ToolTip.ActorRotation", pEditActorOri, cVectorActorRotation::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.Model", "@Conversation.ToolTip.ActorModel", igdeEnvironment::efpltModel,
+	helper.EditVector(form, "@Conversation.WPView.Position", "@Conversation.ActorPosition.ToolTip", pEditActorPos, cVectorActorPosition::Ref::New(*this));
+	helper.EditVector(form, "@Conversation.WPView.Rotation", "@Conversation.ActorRotation.ToolTip", pEditActorOri, cVectorActorRotation::Ref::New(*this));
+	helper.EditPath(form, "@Conversation.WPView.Model", "@Conversation.ActorModel.ToolTip", igdeEnvironment::efpltModel,
 		pEditActorPathModel, cPathActorModel::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.Skin", "@Conversation.ToolTip.ActorSkin", igdeEnvironment::efpltSkin,
+	helper.EditPath(form, "@Conversation.WPView.Skin", "@Conversation.ActorSkin.ToolTip", igdeEnvironment::efpltSkin,
 		pEditActorPathSkin, cPathActorSkin::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.Rig", "@Conversation.ToolTip.ActorRig", igdeEnvironment::efpltRig,
+	helper.EditPath(form, "@Conversation.WPView.Rig", "@Conversation.ActorRig.ToolTip", igdeEnvironment::efpltRig,
 		pEditActorPathRig, cPathActorRig::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.SpeechAnimation", "@Conversation.ToolTip.SpeechAnimation",
+	helper.EditPath(form, "@Conversation.WPView.SpeechAnimation", "@Conversation.SpeechAnimation.ToolTip",
 		igdeEnvironment::efpltSpeechAnimation, pEditActorPathSpeechAnim, cPathActorSpeechAnimation::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.EyeAnimator", "@Conversation.ToolTip.EyeAnimator",
+	helper.EditPath(form, "@Conversation.WPView.EyeAnimator", "@Conversation.EyeAnimator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditActorPathEyeAnimator, cPathActorEyeAnimator::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.FacePoseAnimator", "@Conversation.ToolTip.FacePoseAnimator",
+	helper.EditPath(form, "@Conversation.WPView.FacePoseAnimator", "@Conversation.FacePoseAnimator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditActorPathFaceAnimator, cPathActorFacePoseAnimator::Ref::New(*this));
 	helper.CheckBox(form, pChkActorWaiting, cActionActorWaiting::Ref::New(*this));
-	helper.EditString(form, "@Conversation.WPView.HeadRotator", "@Conversation.ToolTip.HeadRotatorBone",
+	helper.EditString(form, "@Conversation.WPView.HeadRotator", "@Conversation.HeadRotatorBone.ToolTip",
 		pEditActorBoneHeadRotator, cTextActorBoneHeadRotator::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(form, "@Conversation.WPView.ActorPose", "@Conversation.WPView.ActorPose.ToolTip", formLine);
@@ -2012,7 +2012,7 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnActorPoseMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseMenu);
 	
-	helper.EditPath(form, "@Conversation.WPView.Animator", "@Conversation.ToolTip.Animator",
+	helper.EditPath(form, "@Conversation.WPView.Animator", "@Conversation.Animator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditActorPosePathAnimator, cPathActorPoseAnimator::Ref::New(*this));
 	
 	
@@ -2042,7 +2042,7 @@ pWindowProperties(windowProperties)
 	
 	helper.EditFloat(groupBox2, "@Conversation.WPView.Value", "@Conversation.WPView.Value.ToolTip",
 		pEditActorPoseControllerValue, cTextActorPoseControllerValue::Ref::New(*this, pCBActorPoseController));
-	helper.EditVector(groupBox2, "@Conversation.WPView.Vector", "@Conversation.ToolTip.ConstantVector",
+	helper.EditVector(groupBox2, "@Conversation.WPView.Vector", "@Conversation.ConstantVector.ToolTip",
 		pEditActorPoseControllerVector, cTextActorPoseControllerVector::Ref::New(*this, pCBActorPoseController));
 	
 	
@@ -2054,7 +2054,7 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnActorGestureMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorGestureMenu);
 	
-	helper.EditPath(groupBox2, "@Conversation.WPView.Animator", "@Conversation.ToolTip.Animator", igdeEnvironment::efpltAnimator,
+	helper.EditPath(groupBox2, "@Conversation.WPView.Animator", "@Conversation.Animator.ToolTip", igdeEnvironment::efpltAnimator,
 		pEditActorGesturePathAnimator, cPathActorGestureAnimator::Ref::New(*this));
 	
 	
@@ -2076,13 +2076,13 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnCoordSysMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnCoordSysMenu);
 	
-	helper.EditString(groupBox, "@Conversation.WPView.ID", "@Conversation.ToolTip.CoordSystemIDUnique",
+	helper.EditString(groupBox, "@Conversation.WPView.ID", "@Conversation.CoordSystemIDUnique.ToolTip",
 		pEditCoordSysID, cTextCoordSysID::Ref::New(*this));
-	helper.EditString(groupBox, "@Conversation.WPView.AliasID", "@Conversation.ToolTip.CoordSystemAliasID",
+	helper.EditString(groupBox, "@Conversation.WPView.AliasID", "@Conversation.CoordSystemAliasID.ToolTip",
 		pEditCoordSysAliasID, cTextCoordSysAliasID::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Position", "@Conversation.ToolTip.CoordSystemPosition",
+	helper.EditVector(groupBox, "@Conversation.WPView.Position", "@Conversation.CoordSystemPosition.ToolTip",
 		pEditCoordSysPosition, cVectorCoordSysPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Rotation", "@Conversation.ToolTip.CoordSystemOrientation",
+	helper.EditVector(groupBox, "@Conversation.WPView.Rotation", "@Conversation.CoordSystemOrientation.ToolTip",
 		pEditCoordSysRotation, cVectorCoordSysRotation::Ref::New(*this));
 	
 	

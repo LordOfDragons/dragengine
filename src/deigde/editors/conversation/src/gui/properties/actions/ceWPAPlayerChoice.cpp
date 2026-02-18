@@ -159,7 +159,7 @@ ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "@Conversation.WPActionPlayerChoice.Variable", "@Conversation.ToolTip.VariableForChoice",
+	helper.EditString(*this, "@Conversation.WPActionPlayerChoice.Variable", "@Conversation.VariableForChoice.ToolTip",
 		pEditVarName, cTextVarName::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.OptionText", "@Conversation.WPActionPlayerChoice.DisplayText", formLine);

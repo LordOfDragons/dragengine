@@ -97,7 +97,7 @@ ceWPAActorRemove::ceWPAActorRemove(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorRemove.ActorID", true, "@Conversation.ToolTip.ActorToRemove",
+	helper.ComboBox(*this, "@Conversation.WPActionActorRemove.ActorID", true, "@Conversation.ActorToRemove.ToolTip",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 }

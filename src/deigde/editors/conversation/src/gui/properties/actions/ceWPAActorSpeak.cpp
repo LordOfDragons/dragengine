@@ -201,7 +201,7 @@ public:
 		const decUnicodeString *foundText = nullptr;
 		if(langpack->GetEntries().GetAt(name, foundText)){
 			if(igdeCommonDialogs::QuestionFormat(*pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
-			"@Conversation.WPActionActorSpeak.MoveToTranslationEntry.Title", "@Conversation.ToolTip.TranslationEntryExists",
+			"@Conversation.WPActionActorSpeak.MoveToTranslationEntry.Title", "@Conversation.TranslationEntryExists.ToolTip",
 			name.GetString()) == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -428,7 +428,7 @@ ceWPAActorSpeak::ceWPAActorSpeak(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorSpeak.Actor", true, "@Conversation.ToolTip.ActorSpeaking",
+	helper.ComboBox(*this, "@Conversation.WPActionActorSpeak.Actor", true, "@Conversation.ActorSpeaking.ToolTip",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
@@ -444,14 +444,14 @@ ceWPAActorSpeak::ceWPAActorSpeak(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	helper.Button(formLine, pBtnTextBoxTextTranslate, actionTbtt);
 	actionTbtt->SetWidget(pBtnTextBoxTextTranslate);
 	
-	helper.EditString(*this, "", "@Conversation.ToolTip.LanguagePackEntry", pEditShowTranslation, {});
+	helper.EditString(*this, "", "@Conversation.LanguagePackEntry.ToolTip", pEditShowTranslation, {});
 	pEditShowTranslation->SetEditable(false);
 	
-	helper.EditString(*this, "@Conversation.WPActionActorSpeak.TextStyle", "@Conversation.ToolTip.TextBoxTextStyle",
+	helper.EditString(*this, "@Conversation.WPActionActorSpeak.TextStyle", "@Conversation.TextBoxTextStyle.ToolTip",
 		pEditTextBoxTextStyle, cTextTextBoxStyle::Ref::New(*this));
-	helper.EditString(*this, "@Conversation.WPActionActorSpeak.Movement", "@Conversation.ToolTip.ActorMovement",
+	helper.EditString(*this, "@Conversation.WPActionActorSpeak.Movement", "@Conversation.ActorMovement.ToolTip",
 		pEditMovement, cTextMovement::Ref::New(*this));
-	helper.EditPath(*this, "@Conversation.WPActionActorSpeak.PathSound", "@Conversation.ToolTip.SoundFile",
+	helper.EditPath(*this, "@Conversation.WPActionActorSpeak.PathSound", "@Conversation.SoundFile.ToolTip",
 		igdeEnvironment::efpltSound, pEditPathSound, cPathSound::Ref::New(*this));
 	helper.EditFloat(*this, "@Conversation.WPActionActorSpeak.MinSpeechTime", "@Conversation.WPActionActorSpeak.MinSpeechTime.ToolTip",
 		pEditMinSpeechTime, cTextMinSpeechTime::Ref::New(*this));

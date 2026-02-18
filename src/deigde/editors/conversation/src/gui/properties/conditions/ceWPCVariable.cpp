@@ -170,22 +170,22 @@ ceWPCVariable::ceWPCVariable(ceWPTopic &parentPanel) : ceWPCondition(parentPanel
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "@Conversation.WPConditionVariable.Operator", "@Conversation.ToolTip.VariableOperator",
+	helper.ComboBox(*this, "@Conversation.WPConditionVariable.Operator", "@Conversation.VariableOperator.ToolTip",
 		pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@Conversation.WPConditionVariable.Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopEqual);
 	pCBOperator->AddItem("@Conversation.WPConditionVariable.NotEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopNotEqual);
 	pCBOperator->AddItem("@Conversation.WPConditionVariable.Less", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLess);
-	pCBOperator->AddItem("@Conversation.WPConditionVariable.LessorEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.LessOrEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
 	pCBOperator->AddItem("@Conversation.WPConditionVariable.Greater", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreater);
-	pCBOperator->AddItem("@Conversation.WPConditionVariable.GreaterorEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.GreaterOrEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
 	
-	helper.EditString(*this, "@Conversation.WPConditionVariable.Variable", "@Conversation.ToolTip.VariableToCompare",
+	helper.EditString(*this, "@Conversation.WPConditionVariable.Variable", "@Conversation.VariableToCompare.ToolTip",
 		pEditVariable, cTextVariable::Ref::New(*this));
 	helper.EditInteger(*this, "@Conversation.WPConditionVariable.TestValue", "@Conversation.WPConditionVariable.TestValue.ToolTip",
 		pEditTestValue, cTextTestValue::Ref::New(*this));
 	helper.EditString(*this, "@Conversation.WPConditionVariable.TestVariable",
-		"@Conversation.ToolTip.VariableToCompareAgainst",
+		"@Conversation.VariableToCompareAgainst.ToolTip",
 		pEditTestVariable, cTextTestVariable::Ref::New(*this));
 }
 

@@ -170,7 +170,7 @@ ceWPCActorCommand::ceWPCActorCommand(ceWPTopic &parentPanel) : ceWPCondition(par
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "@Conversation.WPConditionActorCommand.ActorID", true, "@Conversation.ToolTip.ActorIDToTest", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPConditionActorCommand.ActorID", true, "@Conversation.ActorIDToTest.ToolTip", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
 	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionActorCommand.Command.ToolTip", formLine);

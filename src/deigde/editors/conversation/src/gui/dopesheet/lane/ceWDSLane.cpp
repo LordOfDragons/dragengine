@@ -839,26 +839,25 @@ void ceWDSLane::EditStrip(ceStrip *strip){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeDialog::Ref refDialog;
+	const decString label(pWindow.TranslateIf(pLabel).ToUTF8());
 	decString title, text;
-	title.FormatSafe(pWindow.Translate("Conversation.Format.Edit").ToUTF8(), pLabel.GetString());
-	text.FormatSafe(pWindow.Translate("Conversation.Format.LabelColon").ToUTF8(), pLabel.GetString());
-	refDialog = ceDialogEditStrip::Ref::New(pWindow.GetEnvironment(), title, text);
-	ceDialogEditStrip &dialog = (ceDialogEditStrip&)(igdeDialog&)refDialog;
+	title.FormatSafe(pWindow.Translate("Conversation.Format.Edit").ToUTF8(), label);
+	text.FormatSafe(pWindow.Translate("Conversation.Format.LabelColon").ToUTF8(), label);
+	auto dialog = ceDialogEditStrip::Ref::New(pWindow.GetEnvironment(), title, text);
 	
 	decStringList idList;
 	FillIDList(idList);
-	dialog.SetIDList(idList);
-	dialog.SetListener(cListenerResetDuration::Ref::New(*this));
-	dialog.SetAutoResetDuration(false);
+	dialog->SetIDList(idList);
+	dialog->SetListener(cListenerResetDuration::Ref::New(*this));
+	dialog->SetAutoResetDuration(false);
 	
-	dialog.SetFromStrip(*strip);
+	dialog->SetFromStrip(*strip);
 	
-	if(!dialog.Run(&pWindow.GetWindowMain())){
+	if(!dialog->Run(&pWindow.GetWindowMain())){
 		return;
 	}
 	
-	const ceStrip::Ref newStrip(dialog.CreateStrip());
+	const ceStrip::Ref newStrip(dialog->CreateStrip());
 	if(*newStrip == *strip){
 		return;
 	}
