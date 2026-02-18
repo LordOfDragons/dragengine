@@ -985,13 +985,13 @@ bool projWindowMain::pCmdLineProfileList(decUnicodeStringList &arguments){
 void projWindowMain::pCmdLineHelp(){
 	printf("\n");
 	printf("deigde <path-project.degp> --project.profile.distribute <profile>\n");
-	printf(Translate("Project.WindowMain.Syntax1").ToUTF8());
+	printf("%s", Translate("Project.WindowMain.Syntax1").ToUTF8().GetString());
 	
 	printf("\n\n");
 	printf("deigde <path-project.degp> --project.profile.distribute.file <profile>\n");
-	printf(Translate("Project.WindowMain.Syntax2").ToUTF8());
+	printf("%s", Translate("Project.WindowMain.Syntax2").ToUTF8().GetString());
 	
 	printf("\n\n");
 	printf("deigde <path-project.degp> --project.profile.list\n");
-	printf(Translate("Project.WindowMain.Syntax3").ToUTF8());
+	printf("%s", Translate("Project.WindowMain.Syntax3").ToUTF8().GetString());
 }
