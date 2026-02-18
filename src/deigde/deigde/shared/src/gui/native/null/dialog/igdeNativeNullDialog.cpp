@@ -80,7 +80,6 @@ void igdeNativeNullDialog::ShowDialog(){
 }
 
 void igdeNativeNullDialog::CloseDialog(bool){
-	SetIsClosed(true);
 }
 
 int igdeNativeNullDialog::DialogPadContent (const igdeGuiTheme &){
