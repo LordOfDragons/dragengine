@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new limit rule. */
-	aeRuleLimit();
+	explicit aeRuleLimit(const char *name);
 	/** Create a copy of a limit rule. */
 	aeRuleLimit(const aeRuleLimit &copy);
 	/** Clean up the limit rule. */

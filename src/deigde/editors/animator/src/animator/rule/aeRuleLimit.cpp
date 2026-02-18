@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleLimit::aeRuleLimit() :
-aeRule(deAnimatorRuleVisitorIdentify::ertLimit),
+aeRuleLimit::aeRuleLimit(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertLimit, name),
 pMinScaling(1.0f, 1.0f, 1.0f),
 pMaxScaling(1.0f, 1.0f, 1.0f),
 pMinVertexPositionSet(0.0f),
@@ -68,9 +68,7 @@ pEnableScalingYMax(false),
 pEnableScalingZMin(false),
 pEnableScalingZMax(false),
 pEnableVertexPositionSetMin(false),
-pEnableVertexPositionSetMax(false)
-{
-	SetName("Limit");
+pEnableVertexPositionSetMax(false){
 }
 
 aeRuleLimit::aeRuleLimit(const aeRuleLimit &copy) :

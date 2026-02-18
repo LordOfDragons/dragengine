@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleBoneTransformator::aeRuleBoneTransformator() :
-aeRule(deAnimatorRuleVisitorIdentify::ertBoneTransformator),
+aeRuleBoneTransformator::aeRuleBoneTransformator(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertBoneTransformator, name),
 pMinScaling(1.0f, 1.0f, 1.0f),
 pMaxScaling(1.0f, 1.0f, 1.0f),
 pAxis(0.0f, 0.0f, 1.0f),
@@ -57,9 +57,7 @@ pUseAxis(false),
 pInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend),
 pTargetTranslation(aeControllerTarget::Ref::New()),
 pTargetRotation(aeControllerTarget::Ref::New()),
-pTargetScaling(aeControllerTarget::Ref::New())
-{
-	SetName("Bone Transformator");
+pTargetScaling(aeControllerTarget::Ref::New()){
 }
 
 aeRuleBoneTransformator::aeRuleBoneTransformator(const aeRuleBoneTransformator &copy) :

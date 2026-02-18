@@ -41,16 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleStateSnapshot::aeRuleStateSnapshot() :
-aeRule(deAnimatorRuleVisitorIdentify::ertStateSnapshot),
+aeRuleStateSnapshot::aeRuleStateSnapshot(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertStateSnapshot, name),
 pUseLastState(true),
 pID(0),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true)
-{
-	SetName("State Snapshot");
+pEnableVertexPositionSet(true){
 }
 
 aeRuleStateSnapshot::aeRuleStateSnapshot(const aeRuleStateSnapshot &copy) :

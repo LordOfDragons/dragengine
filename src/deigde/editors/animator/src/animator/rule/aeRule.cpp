@@ -23,9 +23,6 @@
  */
 
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "aeRule.h"
 #include "aeRuleAnimation.h"
@@ -42,6 +39,8 @@
 #include "aeRuleTrackTo.h"
 #include "aeRuleMirror.h"
 #include "../aeAnimator.h"
+
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -64,11 +63,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRule::aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type) :
+aeRule::aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name) :
 pAnimator(nullptr),
 pParentGroup(nullptr),
 pEngRule(nullptr),
-pName("Rule"),
+pName(name),
 pType(type),
 pBlendMode(deAnimatorRule::ebmBlend),
 pBlendFactor(1.0f),
@@ -412,46 +411,47 @@ aeRule &aeRule::operator=(const aeRule &copy){
 // Helper
 ///////////
 
-aeRule::Ref aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type){
+aeRule::Ref aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type,
+const igdeTranslationManager &tm){
 	switch(type){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
-		return aeRuleAnimation::Ref::New();
+		return aeRuleAnimation::Ref::New(tm.Translate("Animator.Action.Rule.Animation").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationDifference:
-		return aeRuleAnimationDifference::Ref::New();
+		return aeRuleAnimationDifference::Ref::New(tm.Translate("Animator.Action.Rule.AnimationDifference").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationSelect:
-		return aeRuleAnimationSelect::Ref::New();
+		return aeRuleAnimationSelect::Ref::New(tm.Translate("Animator.Action.Rule.AnimationSelect").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertBoneTransformator:
-		return aeRuleBoneTransformator::Ref::New();
+		return aeRuleBoneTransformator::Ref::New(tm.Translate("Animator.Action.Rule.BoneTransformator").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertForeignState:
-		return aeRuleForeignState::Ref::New();
+		return aeRuleForeignState::Ref::New(tm.Translate("Animator.Action.Rule.ForeignState").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
-		return aeRuleGroup::Ref::New();
+		return aeRuleGroup::Ref::New(tm.Translate("Animator.Action.Rule.Group").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertInverseKinematic:
-		return aeRuleInverseKinematic::Ref::New();
+		return aeRuleInverseKinematic::Ref::New(tm.Translate("Animator.Action.Rule.InverseKinematic").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
-		return aeRuleLimit::Ref::New();
+		return aeRuleLimit::Ref::New(tm.Translate("Animator.Action.Rule.Limit").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
-		return aeRuleStateManipulator::Ref::New();
+		return aeRuleStateManipulator::Ref::New(tm.Translate("Animator.Action.Rule.StateManipulator").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertStateSnapshot:
-		return aeRuleStateSnapshot::Ref::New();
+		return aeRuleStateSnapshot::Ref::New(tm.Translate("Animator.Action.Rule.StateSnapshot").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-		return aeRuleSubAnimator::Ref::New();
+		return aeRuleSubAnimator::Ref::New(tm.Translate("Animator.Action.Rule.SubAnimator").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
-		return aeRuleTrackTo::Ref::New();
+		return aeRuleTrackTo::Ref::New(tm.Translate("Animator.Action.Rule.TrackTo").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertMirror:
-		return aeRuleMirror::CreateDefault();
+		return aeRuleMirror::CreateDefault(tm.Translate("Animator.Action.Rule.Mirror").ToUTF8());
 		
 	default:
 		DETHROW(deeInvalidParam);

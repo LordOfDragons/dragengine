@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	aeRuleStateManipulator();
+	explicit aeRuleStateManipulator(const char *name);
 	
 	/** Create copy of rule. */
 	aeRuleStateManipulator(const aeRuleStateManipulator &copy);

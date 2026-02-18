@@ -41,16 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleTrackTo::aeRuleTrackTo() :
-aeRule(deAnimatorRuleVisitorIdentify::ertTrackTo),
+aeRuleTrackTo::aeRuleTrackTo(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertTrackTo, name),
 pTrackAxis(deAnimatorRuleTrackTo::etaPosZ),
 pUpAxis(deAnimatorRuleTrackTo::etaPosY),
 pUpTarget(deAnimatorRuleTrackTo::eutComponentY),
 pLockedAxis(deAnimatorRuleTrackTo::elaNone),
 pTargetPosition(aeControllerTarget::Ref::New()),
-pTargetUp(aeControllerTarget::Ref::New())
-{
-	SetName("Track To");
+pTargetUp(aeControllerTarget::Ref::New()){
 }
 
 aeRuleTrackTo::aeRuleTrackTo(const aeRuleTrackTo &copy) :

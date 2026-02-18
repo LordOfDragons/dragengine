@@ -39,6 +39,7 @@ class aeAnimator;
 class aeRuleGroup;
 class deAnimatorRule;
 class deAnimatorRuleVisitor;
+class igdeTranslationManager;
 
 
 
@@ -74,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator rule. */
-	aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type);
+	aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name);
 	/** Create a copy of an animator rule. */
 	aeRule(const aeRule &copy);
 	/** Clean up the animator rule. */
@@ -208,7 +209,8 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** Create a new rule from a rule type. */
-	static aeRule::Ref CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type);
+	static aeRule::Ref CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type,
+		const igdeTranslationManager &tm);
 	/*@}*/
 };
 

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleForeignState::aeRuleForeignState() :
-aeRule(deAnimatorRuleVisitorIdentify::ertForeignState),
+aeRuleForeignState::aeRuleForeignState(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertForeignState, name),
 pForeignBone("bone"),
 pSourceCoordinateFrame(deAnimatorRuleForeignState::ecfBoneLocal),
 pDestCoordinateFrame(deAnimatorRuleForeignState::ecfBoneLocal),
@@ -58,9 +58,7 @@ pEnableVertexPositionSet(true),
 pTargetPosition(aeControllerTarget::Ref::New()),
 pTargetOrientation(aeControllerTarget::Ref::New()),
 pTargetSize(aeControllerTarget::Ref::New()),
-pTargetVertexPositionSet(aeControllerTarget::Ref::New())
-{
-	SetName("Foreign State");
+pTargetVertexPositionSet(aeControllerTarget::Ref::New()){
 }
 
 aeRuleForeignState::aeRuleForeignState(const aeRuleForeignState &copy) :

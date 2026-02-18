@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new bone transformator rule. */
-	aeRuleBoneTransformator();
+	explicit aeRuleBoneTransformator(const char *name);
 	/** Create a copy of a bone transformator rule. */
 	aeRuleBoneTransformator(const aeRuleBoneTransformator &copy);
 	/** Clean up the bone transformator rule. */

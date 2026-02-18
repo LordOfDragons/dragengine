@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new track to rule. */
-	aeRuleTrackTo();
+	explicit aeRuleTrackTo(const char *name);
 	/** Create a copy of a track to rule. */
 	aeRuleTrackTo(const aeRuleTrackTo &copy);
 	/** Clean up the animator rule. */

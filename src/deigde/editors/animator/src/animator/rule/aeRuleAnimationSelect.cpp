@@ -42,16 +42,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleAnimationSelect::aeRuleAnimationSelect() :
-aeRule(deAnimatorRuleVisitorIdentify::ertAnimationSelect),
+aeRuleAnimationSelect::aeRuleAnimationSelect(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertAnimationSelect, name),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
 pEnableVertexPositionSet(true),
 pTargetMoveTime(aeControllerTarget::Ref::New()),
-pTargetSelect(aeControllerTarget::Ref::New())
-{
-	SetName("Animation Select");
+pTargetSelect(aeControllerTarget::Ref::New()){
 }
 
 aeRuleAnimationSelect::aeRuleAnimationSelect(const aeRuleAnimationSelect &copy) :

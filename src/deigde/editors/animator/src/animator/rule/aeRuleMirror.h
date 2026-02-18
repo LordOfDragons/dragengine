@@ -75,13 +75,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	aeRuleMirror();
+	explicit aeRuleMirror(const char *name);
 	
 	/** Create copy of rule. */
 	aeRuleMirror(const aeRuleMirror &copy);
 	
 	/** Create rule with default settings. */
-	static aeRuleMirror::Ref CreateDefault();
+	static aeRuleMirror::Ref CreateDefault(const char *name);
 	
 protected:
 	/** Clean up rule. */

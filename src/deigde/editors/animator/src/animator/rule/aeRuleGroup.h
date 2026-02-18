@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new group rule. */
-	aeRuleGroup();
+	explicit aeRuleGroup(const char *name);
 	/** Create a copy of a group rule. */
 	aeRuleGroup(const aeRuleGroup &copy);
 	/** Clean up the group rule. */

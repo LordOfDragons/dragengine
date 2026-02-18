@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleGroup::aeRuleGroup() :
-aeRule(deAnimatorRuleVisitorIdentify::ertGroup),
+aeRuleGroup::aeRuleGroup(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertGroup, name),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
@@ -51,9 +51,7 @@ pEnableVertexPositionSet(true),
 pUseCurrentState(false),
 pApplicationType(deAnimatorRuleGroup::eatAll),
 pTargetSelect(aeControllerTarget::Ref::New()),
-pTreeListExpanded(false)
-{
-	SetName("Group");
+pTreeListExpanded(false){
 }
 
 aeRuleGroup::aeRuleGroup(const aeRuleGroup &copy) :

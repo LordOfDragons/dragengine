@@ -63,14 +63,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleSubAnimator::aeRuleSubAnimator() :
-aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator),
+aeRuleSubAnimator::aeRuleSubAnimator(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator, name),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(true),
-pEnableVertexPositionSet(true)
-{
-	SetName("Sub Animator");
+pEnableVertexPositionSet(true){
 }
 
 aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :

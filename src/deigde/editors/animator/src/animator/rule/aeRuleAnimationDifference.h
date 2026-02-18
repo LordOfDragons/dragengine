@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator difference rule. */
-	aeRuleAnimationDifference();
+	explicit aeRuleAnimationDifference(const char *name);
 	/** Create a copy of an animator difference rule. */
 	aeRuleAnimationDifference(const aeRuleAnimationDifference &copy);
 	/** Cleans up the animator difference rule. */

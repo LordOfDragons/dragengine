@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleInverseKinematic::aeRuleInverseKinematic() :
-aeRule(deAnimatorRuleVisitorIdentify::ertInverseKinematic),
+aeRuleInverseKinematic::aeRuleInverseKinematic(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertInverseKinematic, name),
 pAdjustOrientation(false),
 pUseSolverBone(false),
 pReachRange(0.0f),
@@ -53,9 +53,7 @@ pTargetGoalOrientation(aeControllerTarget::Ref::New()),
 pTargetLocalPosition(aeControllerTarget::Ref::New()),
 pTargetLocalOrientation(aeControllerTarget::Ref::New()),
 pTargetReachRange(aeControllerTarget::Ref::New()),
-pTargetReachCenter(aeControllerTarget::Ref::New())
-{
-	SetName("Inverse Kinematic");
+pTargetReachCenter(aeControllerTarget::Ref::New()){
 }
 
 aeRuleInverseKinematic::aeRuleInverseKinematic(const aeRuleInverseKinematic &copy) :

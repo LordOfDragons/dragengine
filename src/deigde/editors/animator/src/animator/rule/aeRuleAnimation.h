@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator rule. */
-	aeRuleAnimation();
+	explicit aeRuleAnimation(const char *name);
 	/** Create a copy of a animator rule. */
 	aeRuleAnimation(const aeRuleAnimation &copy);
 	/** Clean up the animator rule. */

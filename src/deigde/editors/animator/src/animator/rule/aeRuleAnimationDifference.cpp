@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleAnimationDifference::aeRuleAnimationDifference() :
-aeRule(deAnimatorRuleVisitorIdentify::ertAnimationDifference),
+aeRuleAnimationDifference::aeRuleAnimationDifference(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertAnimationDifference, name),
 pMove1Name("idle"),
 pMove1Time(0.0f),
 pMove2Name("idle"),
@@ -54,9 +54,7 @@ pEnableOrientation(true),
 pEnableSize(false),
 pEnableVertexPositionSet(true),
 pTargetLeadMoveTime(aeControllerTarget::Ref::New()),
-pTargetRefMoveTime(aeControllerTarget::Ref::New())
-{
-	SetName("Animation Difference");
+pTargetRefMoveTime(aeControllerTarget::Ref::New()){
 }
 
 aeRuleAnimationDifference::aeRuleAnimationDifference(const aeRuleAnimationDifference &copy) :

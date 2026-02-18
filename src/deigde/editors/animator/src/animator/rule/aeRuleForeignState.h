@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new foreign state rule. */
-	aeRuleForeignState();
+	explicit aeRuleForeignState(const char *name);
 	/** Create a copy of a foreign state rule. */
 	aeRuleForeignState(const aeRuleForeignState &copy);
 	/** Clean up the foreign state rule. */

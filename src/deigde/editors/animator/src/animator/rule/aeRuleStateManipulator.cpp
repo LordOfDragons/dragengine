@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleStateManipulator::aeRuleStateManipulator() :
-aeRule(deAnimatorRuleVisitorIdentify::ertStateManipulator),
+aeRuleStateManipulator::aeRuleStateManipulator(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertStateManipulator, name),
 pMinSize(1.0f, 1.0f, 1.0f),
 pMaxSize(1.0f, 1.0f, 1.0f),
 pMinVertexPositionSet(0.0f),
@@ -55,9 +55,7 @@ pEnableVertexPositionSet(true),
 pTargetPosition(aeControllerTarget::Ref::New()),
 pTargetRotation(aeControllerTarget::Ref::New()),
 pTargetSize(aeControllerTarget::Ref::New()),
-pTargetVertexPositionSet(aeControllerTarget::Ref::New())
-{
-	SetName("State Manipulator");
+pTargetVertexPositionSet(aeControllerTarget::Ref::New()){
 }
 
 aeRuleStateManipulator::aeRuleStateManipulator(const aeRuleStateManipulator &copy) :

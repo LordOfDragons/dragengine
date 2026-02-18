@@ -42,17 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleAnimation::aeRuleAnimation() :
-aeRule(deAnimatorRuleVisitorIdentify::ertAnimation),
+aeRuleAnimation::aeRuleAnimation(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertAnimation, name),
 pMoveName("idle"),
 pMoveTime(0.0f),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
 pEnableVertexPositionSet(true),
-pTargetMoveTime(aeControllerTarget::Ref::New())
-{
-	SetName("Animation");
+pTargetMoveTime(aeControllerTarget::Ref::New()){
 }
 
 aeRuleAnimation::aeRuleAnimation(const aeRuleAnimation &copy) : 

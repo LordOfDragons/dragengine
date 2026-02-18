@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new state snapshot rule. */
-	aeRuleStateSnapshot();
+	explicit aeRuleStateSnapshot(const char *name);
 	/** Create a copy of a state snapshot rule. */
 	aeRuleStateSnapshot(const aeRuleStateSnapshot &copy);
 	/** Clean up the animator rule. */

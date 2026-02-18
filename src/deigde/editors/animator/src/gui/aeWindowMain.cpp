@@ -268,7 +268,7 @@ void aeWindowMain::CreateRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, bo
 		}
 	}
 	
-	const aeRule::Ref rule(aeRule::CreateRuleFromType(type));
+	const aeRule::Ref rule(aeRule::CreateRuleFromType(type, GetEnvironment().GetTranslationManager()));
 	
 	if(parentGroup){
 		undo = aeURuleGroupAddRule::Ref::New(parentGroup, rule, index);

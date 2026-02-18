@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create inverse kinematic rule. */
-	aeRuleInverseKinematic();
+	explicit aeRuleInverseKinematic(const char *name);
 	
 	/** Create copy of an inverse kinematic rule. */
 	aeRuleInverseKinematic(const aeRuleInverseKinematic &copy);

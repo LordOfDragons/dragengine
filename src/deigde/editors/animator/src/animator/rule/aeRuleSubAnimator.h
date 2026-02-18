@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new sub animator rule. */
-	aeRuleSubAnimator();
+	explicit aeRuleSubAnimator(const char *name);
 	/** Create a copy of a sub animator rule. */
 	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */

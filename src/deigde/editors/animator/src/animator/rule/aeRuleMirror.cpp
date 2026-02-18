@@ -57,8 +57,8 @@ bool aeRuleMirror::MatchName::operator!=(const MatchName &matchName) const{
 	return !operator==(matchName);
 }
 
-aeRuleMirror::Ref aeRuleMirror::CreateDefault(){
-	const Ref rule(aeRuleMirror::Ref::New());
+aeRuleMirror::Ref aeRuleMirror::CreateDefault(const char *name){
+	const Ref rule(aeRuleMirror::Ref::New(name));
 	rule->pMatchNames.Add(aeRuleMirror::MatchName::Ref::New(".l", ".r", deAnimatorRuleMirror::emntLast));
 	return rule;
 }
@@ -71,15 +71,13 @@ aeRuleMirror::Ref aeRuleMirror::CreateDefault(){
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleMirror::aeRuleMirror() :
-aeRule(deAnimatorRuleVisitorIdentify::ertMirror),
+aeRuleMirror::aeRuleMirror(const char *name) :
+aeRule(deAnimatorRuleVisitorIdentify::ertMirror, name),
 pMirrorAxis(deAnimatorRuleMirror::emaX),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true)
-{
-	SetName("Mirror");
+pEnableVertexPositionSet(true){
 }
 
 aeRuleMirror::aeRuleMirror(const aeRuleMirror &copy) :

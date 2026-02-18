@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create animator select rule. */
-	aeRuleAnimationSelect();
+	explicit aeRuleAnimationSelect(const char *name);
 	
 	/** Create copy of animator select rule. */
 	aeRuleAnimationSelect(const aeRuleAnimationSelect &copy);
