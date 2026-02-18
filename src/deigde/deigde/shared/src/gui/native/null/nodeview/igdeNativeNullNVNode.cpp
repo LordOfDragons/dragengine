@@ -37,6 +37,7 @@ igdeNativeNullNVNode::~igdeNativeNullNVNode(){
 }
 
 igdeNativeNullNVNode *igdeNativeNullNVNode::CreateNativeWidget(igdeNVNode&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullNVNode;
 }
 

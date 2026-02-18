@@ -44,6 +44,7 @@ igdeNativeNullTimer::~igdeNativeNullTimer(){
 }
 
 igdeNativeNullTimer *igdeNativeNullTimer::CreateNativeTimer(igdeTimer &owner){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTimer(owner);
 }
 

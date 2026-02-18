@@ -38,6 +38,7 @@ igdeNativeNullViewCurveBezier::~igdeNativeNullViewCurveBezier(){
 }
 
 igdeNativeNullViewCurveBezier *igdeNativeNullViewCurveBezier::CreateNativeWidget(igdeViewCurveBezier&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullViewCurveBezier;
 }
 

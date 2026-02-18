@@ -41,6 +41,7 @@ igdeNativeNullRenderView::~igdeNativeNullRenderView(){
 }
 
 igdeNativeNullRenderView *igdeNativeNullRenderView::CreateNativeWidget(igdeViewRenderWindow&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullRenderView;
 }
 

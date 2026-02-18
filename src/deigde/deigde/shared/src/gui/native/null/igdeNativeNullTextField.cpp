@@ -40,6 +40,7 @@ igdeNativeNullTextField::~igdeNativeNullTextField(){
 }
 
 igdeNativeNullTextField *igdeNativeNullTextField::CreateNativeWidget(igdeTextField&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTextField;
 }
 

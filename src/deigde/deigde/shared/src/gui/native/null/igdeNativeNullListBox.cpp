@@ -37,6 +37,7 @@ igdeNativeNullListBox::~igdeNativeNullListBox(){
 }
 
 igdeNativeNullListBox *igdeNativeNullListBox::CreateNativeWidget(igdeListBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullListBox;
 }
 

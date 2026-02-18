@@ -37,6 +37,7 @@ igdeNativeNullNVSlot::~igdeNativeNullNVSlot(){
 }
 
 igdeNativeNullNVSlot *igdeNativeNullNVSlot::CreateNativeWidget(igdeNVSlot&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullNVSlot;
 }
 

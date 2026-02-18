@@ -43,7 +43,7 @@ public:
 	igdeNativeNullListBox();
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullListBox();
+	~igdeNativeNullListBox() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeNullListBox* CreateNativeWidget(igdeListBox &owner);

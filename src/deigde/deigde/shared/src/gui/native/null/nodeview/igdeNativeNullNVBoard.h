@@ -45,7 +45,7 @@ public:
 	igdeNativeNullNVBoard();
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullNVBoard();
+	~igdeNativeNullNVBoard() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeNullNVBoard* CreateNativeWidget(igdeNVBoard &owner);
@@ -62,19 +62,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update enabled. */
-	void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update color from owner. */
-	void UpdateColors();
+	void UpdateColors() override;
 	
 	/** \brief Update nodes from owner. */
-	void UpdateNodes();
+	void UpdateNodes() override;
 	
 	/** \brief Update links from owner. */
-	void UpdateLinks();
+	void UpdateLinks() override;
 	
 	/** \brief Update offset from owner. */
-	void UpdateOffset();
+	void UpdateOffset() override;
 	
 	/** \brief Get Size. */
 	decPoint GetSize() override;
@@ -103,7 +103,7 @@ public:
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
 	/** \brief Hover link or nullptr. */
-	inline igdeNVLink *GetHoverLink() const{ return nullptr; }
+	const igdeNVLink::Ref &GetHoverLink() const override;
 	
 	/** \brief Set hover link. */
 	void SetHoverLink(igdeNVLink *link);

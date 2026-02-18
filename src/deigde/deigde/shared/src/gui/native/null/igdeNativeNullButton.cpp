@@ -40,6 +40,7 @@ igdeNativeNullButton::~igdeNativeNullButton(){
 }
 
 igdeNativeNullButton *igdeNativeNullButton::CreateNativeWidget(igdeButton&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullButton;
 }
 

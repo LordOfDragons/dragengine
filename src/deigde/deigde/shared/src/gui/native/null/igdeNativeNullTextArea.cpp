@@ -40,6 +40,7 @@ igdeNativeNullTextArea::~igdeNativeNullTextArea(){
 }
 
 igdeNativeNullTextArea *igdeNativeNullTextArea::CreateNativeWidget(igdeTextArea&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTextArea;
 }
 

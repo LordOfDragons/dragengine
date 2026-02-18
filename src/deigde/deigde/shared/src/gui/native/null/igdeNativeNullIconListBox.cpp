@@ -37,6 +37,7 @@ igdeNativeNullIconListBox::~igdeNativeNullIconListBox(){
 }
 
 igdeNativeNullIconListBox *igdeNativeNullIconListBox::CreateNativeWidget(igdeIconListBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullIconListBox;
 }
 

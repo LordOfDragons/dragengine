@@ -40,6 +40,7 @@ igdeNativeNullLabel::~igdeNativeNullLabel(){
 }
 
 igdeNativeNullLabel *igdeNativeNullLabel::CreateNativeWidget(igdeLabel&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullLabel;
 }
 

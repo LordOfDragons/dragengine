@@ -40,6 +40,7 @@ igdeNativeNullFont::~igdeNativeNullFont(){
 }
 
 igdeNativeNullFont *igdeNativeNullFont::CreateNativeFont(igdeFont&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullFont;
 }
 

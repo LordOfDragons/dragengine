@@ -40,6 +40,7 @@ igdeNativeNullTabBook::~igdeNativeNullTabBook(){
 }
 
 igdeNativeNullTabBook *igdeNativeNullTabBook::CreateNativeWidget(igdeTabBook&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTabBook;
 }
 

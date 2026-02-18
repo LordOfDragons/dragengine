@@ -40,6 +40,7 @@ igdeNativeNullMenuOption::~igdeNativeNullMenuOption(){
 }
 
 igdeNativeNullMenuOption *igdeNativeNullMenuOption::CreateNativeWidget(igdeMenuOption&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullMenuOption;
 }
 

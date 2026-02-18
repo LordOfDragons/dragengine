@@ -40,6 +40,7 @@ igdeNativeNullStatusBar::~igdeNativeNullStatusBar(){
 }
 
 igdeNativeNullStatusBar *igdeNativeNullStatusBar::CreateNativeWidget(igdeStatusBar&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullStatusBar;
 }
 

@@ -40,6 +40,7 @@ igdeNativeNullSpacer::~igdeNativeNullSpacer(){
 }
 
 igdeNativeNullSpacer *igdeNativeNullSpacer::CreateNativeWidget(igdeSpacer&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullSpacer;
 }
 

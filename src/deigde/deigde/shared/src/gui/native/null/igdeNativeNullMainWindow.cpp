@@ -50,6 +50,7 @@ igdeNativeNullMainWindow::~igdeNativeNullMainWindow(){
 }
 
 igdeNativeNullMainWindow *igdeNativeNullMainWindow::CreateNativeWidget(igdeMainWindow &owner){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullMainWindow(owner);
 }
 

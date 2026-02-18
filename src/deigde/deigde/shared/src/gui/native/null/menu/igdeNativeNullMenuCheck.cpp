@@ -40,6 +40,7 @@ igdeNativeNullMenuCheck::~igdeNativeNullMenuCheck(){
 }
 
 igdeNativeNullMenuCheck *igdeNativeNullMenuCheck::CreateNativeWidget(igdeMenuCheck&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullMenuCheck;
 }
 

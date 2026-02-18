@@ -40,6 +40,7 @@ igdeNativeNullCheckBox::~igdeNativeNullCheckBox(){
 }
 
 igdeNativeNullCheckBox *igdeNativeNullCheckBox::CreateNativeWidget(igdeCheckBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullCheckBox;
 }
 

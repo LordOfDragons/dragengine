@@ -40,6 +40,7 @@ igdeNativeNullComboBoxFilter::~igdeNativeNullComboBoxFilter(){
 }
 
 igdeNativeNullComboBoxFilter *igdeNativeNullComboBoxFilter::CreateNativeWidget(igdeComboBoxFilter&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullComboBoxFilter;
 }
 

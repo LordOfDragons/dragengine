@@ -39,6 +39,7 @@ igdeNativeNullToggleButton::~igdeNativeNullToggleButton(){
 }
 
 igdeNativeNullToggleButton *igdeNativeNullToggleButton::CreateNativeWidget(igdeToggleButton&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullToggleButton;
 }
 

@@ -42,6 +42,7 @@ igdeNativeNullDialog::~igdeNativeNullDialog(){
 }
 
 igdeNativeNullDialog *igdeNativeNullDialog::CreateNativeWidget(igdeDialog &owner, igdeWidget*){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullDialog(owner);
 }
 

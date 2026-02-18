@@ -42,6 +42,7 @@ igdeNativeNullColorBox::~igdeNativeNullColorBox(){
 }
 
 igdeNativeNullColorBox *igdeNativeNullColorBox::CreateNativeWidget(igdeColorBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullColorBox;
 }
 

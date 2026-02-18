@@ -41,6 +41,7 @@ igdeNativeNullWindow::~igdeNativeNullWindow(){
 }
 
 igdeNativeNullWindow *igdeNativeNullWindow::CreateNativeWidget(igdeWindow&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullWindow;
 }
 

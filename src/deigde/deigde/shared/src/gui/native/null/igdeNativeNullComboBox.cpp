@@ -40,6 +40,7 @@ igdeNativeNullComboBox::~igdeNativeNullComboBox(){
 }
 
 igdeNativeNullComboBox *igdeNativeNullComboBox::CreateNativeWidget(igdeComboBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullComboBox;
 }
 

@@ -40,6 +40,7 @@ igdeNativeNullGroupBox::~igdeNativeNullGroupBox(){
 }
 
 igdeNativeNullGroupBox *igdeNativeNullGroupBox::CreateNativeWidget(igdeGroupBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullGroupBox;
 }
 

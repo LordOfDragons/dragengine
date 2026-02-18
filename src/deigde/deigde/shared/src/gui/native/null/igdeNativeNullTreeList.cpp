@@ -37,6 +37,7 @@ igdeNativeNullTreeList::~igdeNativeNullTreeList(){
 }
 
 igdeNativeNullTreeList *igdeNativeNullTreeList::CreateNativeWidget(igdeTreeList&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTreeList;
 }
 
