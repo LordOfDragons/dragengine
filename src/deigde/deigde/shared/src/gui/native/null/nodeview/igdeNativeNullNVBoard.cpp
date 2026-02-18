@@ -90,7 +90,10 @@ igdeNVLink *igdeNativeNullNVBoard::ClosestLinkNear(const decPoint &, float) cons
 	return nullptr;
 }
 
-void igdeNativeNullNVBoard::SetHoverLink(igdeNVLink*){
+igdeNVLink::Ref igdeNativeNullNVBoard::GetHoverLink() const{
+	return {};
 }
 
+void igdeNativeNullNVBoard::SetHoverLink(igdeNVLink *link){
+}
 #endif
