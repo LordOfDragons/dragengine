@@ -37,7 +37,7 @@ class igdeGuiTheme;
 /**
  * Null dialog.
  */
-class igdeNativeNullDialog : public igdeNativeNullWindow, public igdeDialog::cNativeDialog{
+class igdeNativeNullDialog : public igdeDialog::cNativeDialog{
 private:
 	igdeDialog &pOwnerDialog;
 	
@@ -54,10 +54,10 @@ public:
 	static igdeNativeNullDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);
 	
 	/** \brief Post create native widget. */
-	void PostCreateNativeWidget() override;
+	virtual void PostCreateNativeWidget();
 	
 	/** \brief Destroy native widget. */
-	void DestroyNativeWidget() override;
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
