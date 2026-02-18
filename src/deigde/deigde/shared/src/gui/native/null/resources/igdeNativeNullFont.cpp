@@ -53,8 +53,8 @@ void igdeNativeNullFont::DestroyNativeFont(){
 // Management
 ///////////////
 
-deFont *igdeNativeNullFont::CreateEngineFont(){
-	return nullptr;
+deFont::Ref igdeNativeNullFont::CreateEngineFont(){
+	return {};
 }
 
 decPoint igdeNativeNullFont::TextSize(const char *) const{
