@@ -98,11 +98,6 @@ public:
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand(menu, pPanel.GetActionEffectCopy());
-		helper.MenuCommand(menu, pPanel.GetActionEffectCut());
-		helper.MenuCommand(menu, pPanel.GetActionEffectPasteAdd());
-		helper.MenuCommand(menu, pPanel.GetActionEffectPasteInsert());
-		
 		const syneWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
 		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Synthesizer.WPEffect.Menu.Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionEffectAddStretch());
@@ -112,6 +107,13 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionEffectInsertStretch());
 		menu.AddChild(submenu);
 		
+		helper.Separator(menu);
+		helper.MenuCommand(menu, pPanel.GetActionEffectCopy());
+		helper.MenuCommand(menu, pPanel.GetActionEffectCut());
+		helper.MenuCommand(menu, pPanel.GetActionEffectPasteAdd());
+		helper.MenuCommand(menu, pPanel.GetActionEffectPasteInsert());
+		
+		helper.Separator(menu);
 		helper.MenuCommand(menu, windowMain.GetActionEffectRemove());
 		helper.MenuCommand(menu, windowMain.GetActionEffectUp());
 		helper.MenuCommand(menu, windowMain.GetActionEffectDown());
@@ -139,7 +141,7 @@ public:
 	}
 	
 	void Update() override{
-		SetSelected(pPanel.GetEffect());
+		SetEnabled(pPanel.GetEffect());
 	}
 };
 
@@ -167,7 +169,7 @@ public:
 	}
 	
 	void Update() override{
-		SetSelected(pPanel.GetEffect());
+		SetEnabled(pPanel.GetEffect());
 	}
 };
 
@@ -201,7 +203,7 @@ public:
 	}
 	
 	void Update() override{
-		SetSelected(pPanel.GetSource() && pPanel.GetViewSynthesizer().GetWindowMain()
+		SetEnabled(pPanel.GetSource() && pPanel.GetViewSynthesizer().GetWindowMain()
 			.GetClipboard().HasWithTypeName(syneClipboardDataEffect::TYPE_NAME));
 	}
 };
