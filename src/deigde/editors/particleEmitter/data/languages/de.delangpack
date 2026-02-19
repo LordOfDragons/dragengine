@@ -215,7 +215,7 @@
 	<translation name="ParticleEmitter.Undo.Type.SetCastFrom">Typ: Quelle festlegen</translation>
 	<translation name="ParticleEmitter.Undo.Type.SetSimulationType">Typ: Simulationstyp festlegen</translation>
 	<translation name="ParticleEmitter.Undo.Type.SetIntervalAsDistance">Typ: Intervall aus Entfernung festlegen</translation>
-	<translation name="ParticleEmitter.Undo.Type.SetPhysicsSize">Typ: Physikgröße festlegen</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetPhysicsSize">Typ: Physikgrösse festlegen</translation>
 	<translation name="ParticleEmitter.Undo.Type.SetCollisionResponse">Typ: Kollisionsreaktion festlegen</translation>
 	<translation name="ParticleEmitter.Undo.Type.SetPathCollisionEmitter">Typ: Pfad Kollisionsemitter festlegen</translation>
 	<translation name="ParticleEmitter.Undo.Type.SetPathTrailEmitter">Typ: Pfad Spuremitter festlegen</translation>

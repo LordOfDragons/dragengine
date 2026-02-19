@@ -5,74 +5,74 @@
 	<description>Deutsch</description>
 	
 	<!-- Window Properties Tabs -->
-	<translation name="SpeechAnimation.WindowProperties.TabSAnimation">SAnimation</translation>
+	<translation name="SpeechAnimation.WindowProperties.TabSAnimation">Animation</translation>
 	<translation name="SpeechAnimation.WindowProperties.TabView">Ansicht</translation>
 	<translation name="SpeechAnimation.WindowProperties.TabUndo">Rückgängig</translation>
 	
 	<!-- WPSAnim: Speech Animation Group -->
 	<translation name="SpeechAnimation.WPSAnim.GroupSpeechAnimation">Sprachanimation:</translation>
 	<translation name="SpeechAnimation.WPSAnim.Rig">Rig:</translation>
-	<translation name="SpeechAnimation.WPSAnim.Rig.Description">Pfad zur Rig-Ressource.</translation>
+	<translation name="SpeechAnimation.WPSAnim.Rig.Description">Pfad zur Rig-Ressource</translation>
 	<translation name="SpeechAnimation.WPSAnim.Animation">Animation:</translation>
-	<translation name="SpeechAnimation.WPSAnim.Animation.Description">Pfad zur Animationsressource.</translation>
+	<translation name="SpeechAnimation.WPSAnim.Animation.Description">Pfad zur Animationsressource</translation>
 	<translation name="SpeechAnimation.WPSAnim.NeutralMove">Neutrale Bewegung:</translation>
-	<translation name="SpeechAnimation.WPSAnim.NeutralMove.Description">Animationsbewegung für die neutrale Mundposition.</translation>
+	<translation name="SpeechAnimation.WPSAnim.NeutralMove.Description">Animationsbewegung für die neutrale Mundposition</translation>
 	
 	<!-- WPSAnim: Neutral Vertex Position Sets Group -->
-	<translation name="SpeechAnimation.WPSAnim.GroupNeutralVertexPositionSets">Neutrale Scheitelpunktpositionen:</translation>
-	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSet.Description">Name des Satzes</translation>
+	<translation name="SpeechAnimation.WPSAnim.GroupNeutralVertexPositionSets">Neutraler Vertex-Positionssatz:</translation>
+	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSet.Description">Name des Vertex-Positionssatzes</translation>
 	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetAdd">Hinzufügen</translation>
 	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetAdd.Description">Vertex-Positionssatz hinzufügen</translation>
 	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetRemove">Entfernen</translation>
-	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetRemove.Description">Entfernen Sie die Vertex-Positionsgruppe</translation>
+	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetRemove.Description">Vertex-Positionssatz entfernen</translation>
 	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetClear">Löschen</translation>
-	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetClear.Description">Alle Scheitelpunktpositionssätze entfernen</translation>
-	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSets.Description">Neutrale Scheitelpunktpositionen. Werden zurückgesetzt, um Probleme zu vermeiden. Von Phonemen verwendete Sätze werden automatisch zurückgesetzt.</translation>
+	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSetClear.Description">Alle Vertex-Positionssätze entfernen</translation>
+	<translation name="SpeechAnimation.WPSAnim.NeutralVertexPositionSets.Description">Neutrale Vertex-Positionssätze. Diese werden zurückgesetzt, um Probleme zu vermeiden. Von Phonemen verwendete Vertex-Positionssätze werden automatisch zurückgesetzt</translation>
 	
 	<!-- WPSAnim: Phoneme Group -->
 	<translation name="SpeechAnimation.WPSAnim.GroupPhoneme">Phonem:</translation>
 	<translation name="SpeechAnimation.WPSAnim.Phoneme">Phonem:</translation>
-	<translation name="SpeechAnimation.WPSAnim.Phoneme.Description">Zu bearbeitendes Phonem.</translation>
+	<translation name="SpeechAnimation.WPSAnim.Phoneme.Description">Zu bearbeitendes Phonem</translation>
 	<translation name="SpeechAnimation.WPSAnim.PhonemeIPA">IPA-Symbol:</translation>
-	<translation name="SpeechAnimation.WPSAnim.PhonemeIPA.Description">IPA-Symbol (Unicode), das das Phonem darstellt.</translation>
+	<translation name="SpeechAnimation.WPSAnim.PhonemeIPA.Description">IPA-Symbol (Unicode), das das Phonem darstellt</translation>
 	<translation name="SpeechAnimation.WPSAnim.PhonemeSampleText">Beispieltext:</translation>
-	<translation name="SpeechAnimation.WPSAnim.PhonemeSampleText.Description">Beispieltext, der das Phonem enthält.</translation>
+	<translation name="SpeechAnimation.WPSAnim.PhonemeSampleText.Description">Beispieltext, der das Phonem enthält</translation>
 	<translation name="SpeechAnimation.WPSAnim.PhonemeLength">Länge:</translation>
-	<translation name="SpeechAnimation.WPSAnim.PhonemeLength.Description">Länge des Phonems in Sekunden.</translation>
-	<translation name="SpeechAnimation.WPSAnim.PhonemeMove">Verschieben:</translation>
-	<translation name="SpeechAnimation.WPSAnim.PhonemeMove.Description">Für dieses Phonem zu verwendende Animationsbewegung.</translation>
+	<translation name="SpeechAnimation.WPSAnim.PhonemeLength.Description">Länge des Phonems in Sekunden</translation>
+	<translation name="SpeechAnimation.WPSAnim.PhonemeMove">Bewegung:</translation>
+	<translation name="SpeechAnimation.WPSAnim.PhonemeMove.Description">Für dieses Phonem zu verwendende Animationsbewegung</translation>
 	<translation name="SpeechAnimation.WPSAnim.PhonemeVertexPositionSet">Vertex-Positionssatz:</translation>
-	<translation name="SpeechAnimation.WPSAnim.PhonemeVertexPositionSet.Description">Modell-Vertex-Positionssatz, der für dieses Phonem verwendet werden soll.</translation>
+	<translation name="SpeechAnimation.WPSAnim.PhonemeVertexPositionSet.Description">Für dieses Phonem zu verwendender Vertex-Positionssatz</translation>
 	
 	<!-- WPSAnim: Word Group -->
 	<translation name="SpeechAnimation.WPSAnim.GroupWord">Wort:</translation>
 	<translation name="SpeechAnimation.WPSAnim.Word">Wort:</translation>
-	<translation name="SpeechAnimation.WPSAnim.Word.Description">Zu bearbeitendes Wort.</translation>
+	<translation name="SpeechAnimation.WPSAnim.Word.Description">Zu bearbeitendes Wort</translation>
 	<translation name="SpeechAnimation.WPSAnim.WordName">Name:</translation>
-	<translation name="SpeechAnimation.WPSAnim.WordName.Description">Name des Begriffs.</translation>
-	<translation name="SpeechAnimation.WPSAnim.WordPhonetics">Phonetik</translation>
-	<translation name="SpeechAnimation.WPSAnim.WordPhonetics.Description">Phonetik des Wortes.</translation>
+	<translation name="SpeechAnimation.WPSAnim.WordName.Description">Name des Wortes</translation>
+	<translation name="SpeechAnimation.WPSAnim.WordPhonetics">Aussprache</translation>
+	<translation name="SpeechAnimation.WPSAnim.WordPhonetics.Description">Aussprache des Wortes</translation>
 	<translation name="SpeechAnimation.WPSAnim.WordAddIPA">IPA</translation>
-	<translation name="SpeechAnimation.WPSAnim.WordAddIPA.Description">Fügen Sie das ausgewählte Phonem IPA zur ausgewählten Wortphonetik an der Cursorposition ein.</translation>
+	<translation name="SpeechAnimation.WPSAnim.WordAddIPA.Description">Fügt das ausgewählte Phonem IPA in der ausgewählten Wortaussprache an der Cursorposition ein.</translation>
 	
 	<!-- WPSAnim: Error Messages -->
-	<translation name="SpeechAnimation.WPSAnim.Error.ChangePhonemeIPA">Änderung des Phonems IPA</translation>
+	<translation name="SpeechAnimation.WPSAnim.Error.ChangePhonemeIPA">Phonem IPA ändern</translation>
 	<translation name="SpeechAnimation.WPSAnim.Error.IPASingleCharacter">Das IPA-Symbol muss aus einem Unicode-Zeichen bestehen.</translation>
 	<translation name="SpeechAnimation.WPSAnim.Error.PhonemeIPAExists">Es existiert bereits ein Phonem mit diesem IPA-Symbol.</translation>
-	<translation name="SpeechAnimation.WPSAnim.Error.ChangeWordName">Wortnamen ändern</translation>
+	<translation name="SpeechAnimation.WPSAnim.Error.ChangeWordName">Wortname ändern</translation>
 	<translation name="SpeechAnimation.WPSAnim.Error.WordNameEmpty">Der Name darf nicht leer sein</translation>
 	<translation name="SpeechAnimation.WPSAnim.Error.WordNameExists">Es existiert bereits ein Wort mit diesem Namen.</translation>
-	<translation name="SpeechAnimation.WPSAnim.Error.ChangeWordPhonetics">Änderung der Wortphonetik</translation>
-	<translation name="SpeechAnimation.WPSAnim.Error.InvalidPhonetics">Ungültige Phonetik (fehlerhafte UTF8-Kodierung)</translation>
+	<translation name="SpeechAnimation.WPSAnim.Error.ChangeWordPhonetics">Wortausprache ändern</translation>
+	<translation name="SpeechAnimation.WPSAnim.Error.InvalidPhonetics">Ungültige Aussprache (fehlerhafte UTF8-Kodierung)</translation>
 	
 	<!-- WPView: Display Group -->
 	<translation name="SpeechAnimation.WPView.GroupDisplay">Anzeige:</translation>
 	<translation name="SpeechAnimation.WPView.DisplayModel">Modell:</translation>
-	<translation name="SpeechAnimation.WPView.DisplayModel.Description">Pfad zur zu verwendenden Modellressource.</translation>
+	<translation name="SpeechAnimation.WPView.DisplayModel.Description">Pfad zur Modellressource.</translation>
 	<translation name="SpeechAnimation.WPView.DisplaySkin">Skin:</translation>
-	<translation name="SpeechAnimation.WPView.DisplaySkin.Description">Pfad zur zu verwendenden Skin-Ressource.</translation>
+	<translation name="SpeechAnimation.WPView.DisplaySkin.Description">Pfad zur Skin-Ressource.</translation>
 	<translation name="SpeechAnimation.WPView.DisplayRig">Rig:</translation>
-	<translation name="SpeechAnimation.WPView.DisplayRig.Description">Pfad zur zu verwendenden Sanimation-Ressource.</translation>
+	<translation name="SpeechAnimation.WPView.DisplayRig.Description">Pfad zur Rig-Ressource.</translation>
 	<translation name="SpeechAnimation.WPView.Camera">Kamera:</translation>
 	<translation name="SpeechAnimation.WPView.Sky">Himmel:</translation>
 	
@@ -87,7 +87,7 @@
 	<translation name="SpeechAnimation.WindowMain.SaveAs.Description">Sprachanimation in separater Datei speichern</translation>
 	<translation name="SpeechAnimation.WindowMain.Cut">Ausschneiden</translation>
 	<translation name="SpeechAnimation.WindowMain.Cut.Description">Ausgewählte Objekte ausschneiden</translation>
-	<translation name="SpeechAnimation.WindowMain.Copy">Text</translation>
+	<translation name="SpeechAnimation.WindowMain.Copy">Kopieren</translation>
 	<translation name="SpeechAnimation.WindowMain.Copy.Description">Kopiert ausgewählte Objekte</translation>
 	<translation name="SpeechAnimation.WindowMain.Paste">Einfügen</translation>
 	<translation name="SpeechAnimation.WindowMain.Paste.Description">Objekte einfügen</translation>
@@ -99,8 +99,8 @@
 	<translation name="SpeechAnimation.WindowMain.WordAdd.Description">Wort hinzufügen</translation>
 	<translation name="SpeechAnimation.WindowMain.WordRemove">Entfernen</translation>
 	<translation name="SpeechAnimation.WindowMain.WordRemove.Description">Wort entfernen</translation>
-	<translation name="SpeechAnimation.WindowMain.WordAddList">Liste hinzufügen...</translation>
-	<translation name="SpeechAnimation.WindowMain.WordAddList.Description">Wörter aus der Textliste hinzufügen</translation>
+	<translation name="SpeechAnimation.WindowMain.WordAddList">Wörter hinzufügen...</translation>
+	<translation name="SpeechAnimation.WindowMain.WordAddList.Description">Wörter aus der Wortliste hinzufügen</translation>
 	<translation name="SpeechAnimation.WindowMain.ViewDisplayModePhoneme">Aktives Phonem anzeigen</translation>
 	<translation name="SpeechAnimation.WindowMain.ViewDisplayModePhoneme.Description">Aktives Phonem im Vorschaufenster anzeigen</translation>
 	<translation name="SpeechAnimation.WindowMain.ViewDisplayModeWord">Aktives Wort anzeigen</translation>
@@ -116,9 +116,9 @@
 	<!-- WindowMain: Dialogs -->
 	<translation name="SpeechAnimation.WindowMain.NewSpeechAnimation">Neue Sprachanimation</translation>
 	<translation name="SpeechAnimation.WindowMain.NewSpeechAnimation.Question">Die Sprachanimation wurde geändert. Durch das Erstellen einer neuen Sprachanimation wird die aktuelle Animation gelöscht. Ist das in Ordnung?</translation>
-	<translation name="SpeechAnimation.WindowMain.OpenSpeechAnimation">Animation zum Öffnen der Sprache</translation>
-	<translation name="SpeechAnimation.WindowMain.OpenSpeechAnimation.Question">Die Sprachanimation wurde geändert. Die Animation "Open Speech" ersetzt die aktuelle Animation. Ist das in Ordnung?</translation>
-	<translation name="SpeechAnimation.WindowMain.SaveSpeechAnimation">Animation zum Speichern von Sprache</translation>
+	<translation name="SpeechAnimation.WindowMain.OpenSpeechAnimation">Sprachanimation öffnen</translation>
+	<translation name="SpeechAnimation.WindowMain.OpenSpeechAnimation.Question">Die Sprachanimation wurde geändert. Die Animation "Sprachanimation öffnen" ersetzt die aktuelle Animation. Ist das in Ordnung?</translation>
+	<translation name="SpeechAnimation.WindowMain.SaveSpeechAnimation">Sprachanimation speichern</translation>
 	<translation name="SpeechAnimation.WindowMain.AddPhoneme">Phonem hinzufügen</translation>
 	<translation name="SpeechAnimation.WindowMain.AddPhoneme.IPA">IPA-Symbol (Unicode):</translation>
 	<translation name="SpeechAnimation.WindowMain.AddPhoneme.ErrorSingleIPA">Einzelnes Unicode-IPA eingeben</translation>
@@ -128,8 +128,8 @@
 	<translation name="SpeechAnimation.WindowMain.AddWord.ErrorEmpty">Der Name darf nicht leer sein</translation>
 	<translation name="SpeechAnimation.WindowMain.AddWord.ErrorExists">Ein Wort mit diesem Namen ist bereits vorhanden.</translation>
 	<translation name="SpeechAnimation.WindowMain.AddWords">Wörter hinzufügen</translation>
-	<translation name="SpeechAnimation.WindowMain.AddWords.Names">Namen (Zeilen mit "Wortphonetik"):</translation>
-	<translation name="SpeechAnimation.WindowMain.AddWords.ErrorInvalidFormat">Ungültiges Format. Die Wörter müssen in einer durch Zeilenumbrüche getrennten Liste aufgeführt sein, wobei jedes Wort die Form "Wort phonetisch" haben muss.</translation>
+	<translation name="SpeechAnimation.WindowMain.AddWords.Names">Namen (Zeilen mit "Wortaussprache"):</translation>
+	<translation name="SpeechAnimation.WindowMain.AddWords.ErrorInvalidFormat">Ungültiges Format. Die Wörter müssen in einer durch Zeilenumbrüche getrennten Liste aufgeführt sein, wobei jedes Wort phonetisch geschrieben sein muss.</translation>
 	<translation name="SpeechAnimation.WindowMain.AddWords.ErrorWordExists">Ein Wort mit dem Namen "{0}" ist bereits vorhanden.</translation>
 	
 	<!-- Task: Sync Game Definition -->
@@ -137,18 +137,18 @@
 	
 	<!-- Undo System -->
 	<translation name="SpeechAnimation.Undo.SetAnimationPath">Animationspfad festlegen</translation>
-	<translation name="SpeechAnimation.Undo.SetNeutralVertexPositionSets">Neutrale Scheitelpunktpositionen festlegen</translation>
+	<translation name="SpeechAnimation.Undo.SetNeutralVertexPositionSets">Neutrale Vertex-Positionssätze festlegen</translation>
 	<translation name="SpeechAnimation.Undo.SetNeutralMoveName">Neutralen Bewegungsnamen festlegen</translation>
 	<translation name="SpeechAnimation.Undo.SetRigPath">Rig-Pfad festlegen</translation>
-	<translation name="SpeechAnimation.Undo.PhonemeSetIPA">Phonem-Set IPA</translation>
+	<translation name="SpeechAnimation.Undo.PhonemeSetIPA">Phonem: IPA festlegen</translation>
 	<translation name="SpeechAnimation.Undo.PhonemeAdd">Phonem hinzufügen</translation>
-	<translation name="SpeechAnimation.Undo.PhonemeSetVertexPositionSet">Phonem-Set Scheitelpunktposition festlegen</translation>
-	<translation name="SpeechAnimation.Undo.PhonemeSetMoveName">Phonem-Set verschieben benennen</translation>
-	<translation name="SpeechAnimation.Undo.PhonemeSetSampleText">Phonem-Set Beispieltext</translation>
+	<translation name="SpeechAnimation.Undo.PhonemeSetVertexPositionSet">Phonem: Vertex-Positionssatz festlegen</translation>
+	<translation name="SpeechAnimation.Undo.PhonemeSetMoveName">Phonem: Bewegungsname festlegen</translation>
+	<translation name="SpeechAnimation.Undo.PhonemeSetSampleText">Phonem: Beispieltext festlegen</translation>
 	<translation name="SpeechAnimation.Undo.PhonemeRemove">Phonem entfernen</translation>
-	<translation name="SpeechAnimation.Undo.PhonemeSetLength">Länge des Phonemsatzes</translation>
+	<translation name="SpeechAnimation.Undo.PhonemeSetLength">Phonem: Länge festlegen</translation>
 	<translation name="SpeechAnimation.Undo.WordAdd">Wort hinzufügen</translation>
 	<translation name="SpeechAnimation.Undo.WordRemove">Wort entfernen</translation>
-	<translation name="SpeechAnimation.Undo.WordSetName">Wortgruppe benennen</translation>
-	<translation name="SpeechAnimation.Undo.WordSetPhonetics">Wort-Set-Aussprache</translation>
+	<translation name="SpeechAnimation.Undo.WordSetName">Wort: Name festlegen</translation>
+	<translation name="SpeechAnimation.Undo.WordSetPhonetics">Wort: Aussprache festlegen</translation>
 </languagePack>
