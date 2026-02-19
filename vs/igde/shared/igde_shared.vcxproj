@@ -570,9 +570,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCommand.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuOption.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuSeparator.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVBoard.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVNode.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVSlot.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNuullNVBoard.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullFont.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullIcon.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoard.cpp" />

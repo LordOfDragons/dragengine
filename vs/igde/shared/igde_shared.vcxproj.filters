@@ -878,13 +878,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuSeparator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVSlot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNuullNVBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullFont.cpp">
