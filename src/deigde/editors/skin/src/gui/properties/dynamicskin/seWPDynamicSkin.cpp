@@ -228,18 +228,63 @@ public:
 			return;
 		}
 		
-		decString name(pPanel.Translate("Skin.WPDynamicSkin.DefaultRenderableName").ToUTF8());
-		if(!igdeCommonDialogs::GetString(pPanel, "@Skin.WPDynamicSkin.Dialog.AddRenderable.Title", "@Skin.WPDynamicSkin.Dialog.AddRenderable.Name", name)){
+		seDynamicSkin &dynamicSkin = pPanel.GetSkin()->GetDynamicSkin();
+		decStringList proposals;
+		pPanel.GetSkin()->GetTextures().Visit([&](const seTexture &texture){
+			texture.GetProperties().Visit([&](const seProperty &property){
+				const decString &name = property.GetRenderableName();
+				if(!name.IsEmpty() && !dynamicSkin.GetRenderables().HasNamed(name)){
+					proposals.Add(name);
+				}
+			});
+		});
+		
+		decString name(proposals.IsNotEmpty() ? proposals.First()
+			: pPanel.Translate("Skin.WPDynamicSkin.DefaultRenderableName").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Skin.WPDynamicSkin.Dialog.AddRenderable.Title",
+		"@Skin.WPDynamicSkin.Dialog.AddRenderable.Name", name, proposals)){
 			return;
 		}
 		
-		seDynamicSkin &dynamicSkin = pPanel.GetSkin()->GetDynamicSkin();
 		if(dynamicSkin.GetRenderables().HasNamed(name)){
 			igdeCommonDialogs::Error(pPanel, "@Skin.WPDynamicSkin.Dialog.AddRenderable.Title", "@Skin.WPDynamicSkin.Dialog.AddRenderable.Error");
 			return;
 		}
 		
 		const seDynamicSkinRenderable::Ref renderable(seDynamicSkinRenderable::Ref::New(pPanel.GetSkin()->GetEngine(), name));
+		
+		pPanel.GetSkin()->GetTextures().VisitWhile([&](const seTexture &texture){
+			return texture.GetProperties().HasMatching([&](const seProperty &property){
+				if(property.GetRenderableName() == name){
+					switch(property.GetValueType()){
+					case seProperty::evtValue:
+						renderable->SetRenderableType(seDynamicSkinRenderable::ertValue);
+						renderable->SetValue(property.GetValue());
+						return true;
+						
+					case seProperty::evtColor:
+						renderable->SetRenderableType(seDynamicSkinRenderable::ertColor);
+						renderable->SetColor(property.GetColor());
+						return true;
+						
+					case seProperty::evtImage:
+						renderable->SetRenderableType(seDynamicSkinRenderable::ertImage);
+						renderable->SetImagePath(property.GetImagePath());
+						return true;
+						
+					case seProperty::evtVideo:
+						renderable->SetRenderableType(seDynamicSkinRenderable::ertVideoFrame);
+						renderable->SetVideoPath(property.GetVideoPath());
+						return true;
+						
+					default:
+						break;
+					}
+				}
+				return false;
+			});
+		});
+		
 		dynamicSkin.AddRenderable(renderable);
 		dynamicSkin.SetActiveRenderable(renderable);
 	}

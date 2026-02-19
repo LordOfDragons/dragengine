@@ -34,6 +34,7 @@
 
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeListBox.h>
@@ -75,6 +76,22 @@ public:
 	}
 };
 
+class cListProperties : public igdeListBoxListener{
+private:
+	seDialogAddProperty &pDialog;
+	
+public:
+	cListProperties(seDialogAddProperty &dialog) : pDialog(dialog){}
+	
+	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
+		if(index >= 0 and listBox->GetSelectedItem()){
+			pDialog.SetSelectedPropertyNames(decStringSet(devctag, listBox->GetSelectedItem()->GetText()));
+			pDialog.SetCustomPropertyName("");
+			pDialog.Accept();
+		}
+	}
+};
+
 }
 
 
@@ -94,12 +111,14 @@ pWindowMain(windowMain)
 	igdeContainer::Ref content, formLine;
 	
 	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 500)));
+	
 	igdeLabel::Ref header(igdeLabel::Ref::New(env, "@Skin.DialogAddProperty.Header"));
 	
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5);
 	
-	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5);
-	
-	helper.ListBox(content, 15, "@Skin.DialogAddProperty.PropertyNames", pListProperties, {});
+	helper.ListBox(content, 15, "@Skin.DialogAddProperty.PropertyNames",
+		pListProperties, deTObjectReference<cListProperties>::New(*this));
 	pListProperties->SetSelectionMode(igdeListBox::esmMultiple);
 	pListProperties->SetDefaultSorter();
 	
