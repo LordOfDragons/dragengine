@@ -136,6 +136,7 @@ jobs:
         run: |
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
+          $Platform = "x64"
           # $env:MSBUILDDISABLENODEREUSE=1
           # & msbuild /m:2 /p:CL_MPCount=2 `
           #   -tl:off /nodeReuse:false /v:m `
@@ -143,6 +144,7 @@ jobs:
             -tl:off /v:m `
             /p:Configuration=$Config `
             /p:BuildVersion=$BuilVersion `
+            /p:Platform=$Platform `
             dragengine.sln
       
       - name: Archive
