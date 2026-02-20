@@ -33,8 +33,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeNullWindow::igdeNativeNullWindow() :
-pIsClosed(false){
+igdeNativeNullWindow::igdeNativeNullWindow(){
 }
 
 igdeNativeNullWindow::~igdeNativeNullWindow(){
@@ -75,10 +74,6 @@ void igdeNativeNullWindow::RaiseAndActivate(){
 }
 
 void igdeNativeNullWindow::OnFrameUpdate(){
-}
-
-void igdeNativeNullWindow::SetIsClosed(bool isClosed){
-	pIsClosed = isClosed;
 }
 
 #endif

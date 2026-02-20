@@ -30,13 +30,19 @@
 class igdeWindow;
 
 
+class igdeNativeNullWindowBase{
+public:
+	bool isClosed = false;
+	
+	virtual ~igdeNativeNullWindowBase() = default;
+	virtual void OnFrameUpdate() = 0;
+};
+
+
 /**
  * Null window.
  */
-class igdeNativeNullWindow : public igdeWindow::cNativeWindow{
-private:
-	bool pIsClosed;
-	
+class igdeNativeNullWindow : public igdeNativeNullWindowBase, public igdeWindow::cNativeWindow{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -44,7 +50,7 @@ public:
 	igdeNativeNullWindow();
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullWindow();
+	~igdeNativeNullWindow() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeNullWindow* CreateNativeWidget(igdeWindow &owner);
@@ -57,7 +63,6 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
 	void UpdateEnabled() override;
@@ -67,9 +72,7 @@ public:
 	void UpdateSize() override;
 	void RaiseAndActivate() override;
 	
-	virtual void OnFrameUpdate();
-	inline bool GetIsClosed() const{ return pIsClosed; }
-	void SetIsClosed(bool isClosed);
+	void OnFrameUpdate() override;
 	/*@}*/
 };
 

@@ -146,18 +146,16 @@ void igdeNativeNullApplication::ShowError(const deException &exception) const{
 }
 
 void igdeNativeNullApplication::RunModalWhileShown(igdeWindow &window){
-	igdeNativeNullWindow * const native = (igdeNativeNullWindow*)window.GetNativeWidget();
-	if(!native){
-		DETHROW(deeInvalidParam);
-	}
+	igdeNativeNullWindowBase * const base = (igdeNativeNullWindowBase*)window.GetNativeWidget();
+	DEASSERT_NOTNULL(base)
 	
-	while(!pQuitRequested && !native->GetIsClosed()){
+	while(!pQuitRequested && !base->isClosed){
 		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
 		if(mainWindow){
 			mainWindow->OnFrameUpdate();
 		}
 		
-		native->OnFrameUpdate();
+		base->OnFrameUpdate();
 	}
 }
 

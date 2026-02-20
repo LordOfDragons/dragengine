@@ -81,7 +81,7 @@ void igdeNativeNullDialog::ShowDialog(){
 }
 
 void igdeNativeNullDialog::CloseDialog(bool){
-	SetIsClosed(true);
+	isClosed = true;
 }
 
 void igdeNativeNullDialog::OnFrameUpdate(){

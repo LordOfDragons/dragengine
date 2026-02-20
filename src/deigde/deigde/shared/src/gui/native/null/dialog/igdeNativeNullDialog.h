@@ -37,9 +37,10 @@ class igdeGuiTheme;
 /**
  * Null dialog.
  */
-class igdeNativeNullDialog : public igdeNativeNullWindow, public igdeDialog::cNativeDialog{
+class igdeNativeNullDialog : public igdeNativeNullWindowBase, public igdeDialog::cNativeDialog{
 private:
 	igdeDialog &pOwnerDialog;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -59,7 +60,6 @@ public:
 	/** \brief Destroy native widget. */
 	virtual void DestroyNativeWidget();
 	/*@}*/
-	
 	
 	
 	/** \name Management */
