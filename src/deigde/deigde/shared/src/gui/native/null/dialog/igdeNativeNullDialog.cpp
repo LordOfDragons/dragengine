@@ -35,7 +35,6 @@
 ////////////////////////////
 
 igdeNativeNullDialog::igdeNativeNullDialog(igdeDialog &owner) :
-igdeNativeNullWindow(),
 pOwnerDialog(owner){
 }
 

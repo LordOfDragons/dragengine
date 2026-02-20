@@ -165,23 +165,23 @@ void projDialogDistribute::OnFrameUpdate(){
 		}
 		
 		decString text;
-	text.FormatSafe(Translate("Project.DialogDistribute.Format.DelgaSize").ToUTF8(),
-		igdeUIHelper::FormatSize1024(pTaskDistribute->GetDelgaSize()).GetString(),
-		igdeUIHelper::FormatSizeTousand(pTaskDistribute->GetDelgaSize()).GetString());
-	pEditDelgaSize->SetText(text);
-	
-	pEditDelgaDirCount->SetText(igdeUIHelper::FormatSizeTousand(
-		pTaskDistribute->GetDelgaDirectoryCount()));
-	pEditDelgaFileCount->SetText(igdeUIHelper::FormatSizeTousand(
-		pTaskDistribute->GetDelgaFileCount()));
-	
-	const decString &taskMessage = pTaskDistribute->GetMessage();
-	if(taskMessage != pLastTaskMessage){
-		LogMessage(taskMessage);
-	}
-	
-}catch(const deException &e){
-	pSuccess = false;
+		text.FormatSafe(Translate("Project.DialogDistribute.Format.DelgaSize").ToUTF8(),
+			igdeUIHelper::FormatSize1024(pTaskDistribute->GetDelgaSize()).GetString(),
+			igdeUIHelper::FormatSizeTousand(pTaskDistribute->GetDelgaSize()).GetString());
+		pEditDelgaSize->SetText(text);
+		
+		pEditDelgaDirCount->SetText(igdeUIHelper::FormatSizeTousand(
+			pTaskDistribute->GetDelgaDirectoryCount()));
+		pEditDelgaFileCount->SetText(igdeUIHelper::FormatSizeTousand(
+			pTaskDistribute->GetDelgaFileCount()));
+		
+		const decString &taskMessage = pTaskDistribute->GetMessage();
+		if(taskMessage != pLastTaskMessage){
+			LogMessage(taskMessage);
+		}
+		
+	}catch(const deException &e){
+		pSuccess = false;
 		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
 		if(taskMessage != pLastTaskMessage){
