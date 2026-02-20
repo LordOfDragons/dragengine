@@ -198,7 +198,8 @@ entfernt, die ihn verwenden. Möchten Sie den Link entfernen?</translation>
 	<translation name="Animator.WPController.Dialog.SetControllerName.Title">Controllernamen festlegen</translation>
 	<translation name="Animator.WPController.Dialog.SetControllerName.DuplicateName">Ein Controller mit diesem Namen existiert bereits</translation>
 	<translation name="Animator.WPController.Dialog.SetRangeFromMove.Title">Bereich von Spielzeit festlegen</translation>
-	<translation name="Animator.WPController.Dialog.SetRangeFromMove.Message">Die Bereichsgrenzen werden auf die Spielzeit der ausgewählten Animationsbewegung festgelegt.</translation>
+	<translation name="Animator.WPController.Dialog.SetRangeFromMove.Message">Die Bereichsgrenzen werden auf die Spielzeit der
+ausgewählten Animationsbewegung festgelegt.</translation>
 	
 	<!-- Property Panel: Link -->
 	<translation name="Animator.WPLink.Links">Links:</translation>

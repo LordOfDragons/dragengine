@@ -1518,8 +1518,8 @@ pPreventUpdate(false)
 	// geometry
 	helper.GroupBox(content, groupBox, "@World.WPSObject.Geometry");
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Class", "@World.WPSObject.NameOfActiveObjectClass.ToolTip", formLine);
-	helper.ComboBoxFilter(formLine, true, "@World.WPSObjectShape.NameOfActiveObjectClass.ToolTip", pCBClass, cComboClass::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Class", "@World.WPSObject.ObjectClass.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@World.WPSObjectShape.ObjectClass.ToolTip", pCBClass, cComboClass::Ref::New(*this));
 	pCBClass->SetDefaultSorter();
 	helper.Button(formLine, pBtnClassMenu, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnClassMenu);
@@ -1530,7 +1530,7 @@ pPreventUpdate(false)
 	helper.Button(formLine, pBtnIdMenu, pActionIdClass);
 	pActionIdClass->SetWidget(pBtnIdMenu);
 	
-	helper.EditString(groupBox, "@World.WPSObject.Attach", "@World.WPSObject.IdOfObjectToAttachTo.ToolTip", pEditAttach, {});
+	helper.EditString(groupBox, "@World.WPSObject.Attach", "@World.WPSObject.ObjectAttachTo.ToolTip", pEditAttach, {});
 	pEditAttach->SetEditable(false);
 	
 	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Position", "@World.WPSObject.PositionOfObject.ToolTip", formLine);
@@ -1538,17 +1538,17 @@ pPreventUpdate(false)
 	helper.Button(formLine, pBtnPositionMenu, pActionMenuPosition);
 	pActionMenuPosition->SetWidget(pBtnPositionMenu);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Rotation", "@World.WPSObject.RotationOfObject.ToolTip", formLine);
-	helper.EditVector(formLine, "@World.WPSObject.RotationOfObject.ToolTip", pEditRotation, cEditRotation::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Rotation", "@World.WPSObject.Rotation.ToolTip", formLine);
+	helper.EditVector(formLine, "@World.WPSObject.Rotation.ToolTip", pEditRotation, cEditRotation::Ref::New(*this));
 	helper.Button(formLine, pBtnRotationMenu, pActionMenuRotation);
 	pActionMenuRotation->SetWidget(pBtnRotationMenu);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Scaling", "@World.WPSObject.ScalingOfObject.ToolTip", formLine);
-	helper.EditVector(formLine, "@World.WPSObject.ScalingOfObject.ToolTip", pEditScaling, cEditScaling::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Scaling", "@World.WPSObject.Scaling.ToolTip", formLine);
+	helper.EditVector(formLine, "@World.WPSObject.Scaling.ToolTip", pEditScaling, cEditScaling::Ref::New(*this));
 	helper.Button(formLine, pBtnScaleMenu, pActionMenuScale);
 	pActionMenuScale->SetWidget(pBtnScaleMenu);
 	
-	helper.EditVector(groupBox, "@World.WPSObject.Size", "@World.WPSObject.SizeOfObject.ToolTip", pEditSize, cEditSize::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSObject.Size", "@World.WPSObject.Size.ToolTip", pEditSize, cEditSize::Ref::New(*this));
 	
 	
 	// properties
@@ -1574,13 +1574,13 @@ pPreventUpdate(false)
 	// texture
 	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture", "@World.WPSObject.TextureToEdit.ToolTip", formLine);
-	helper.ComboBox(formLine, "@World.WPSObject.TextureToEdit.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture", "@World.WPSObject.Texture.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPSObject.Texture.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
 	pCBTexture->SetDefaultSorter();
 	helper.Button(formLine, pBtnTextureMenu, pActionMenuTexture);
 	pActionMenuTexture->SetWidget(pBtnTextureMenu);
 	
-	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPSObject.SkinToUseForTexture.ToolTip",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPSObject.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexSkin, cEditTextureSkin::Ref::New(*this));
 	
 	
@@ -1606,17 +1606,17 @@ pPreventUpdate(false)
 	// light properties
 	helper.GroupBox(content, groupBox, "@World.WPSObject.Light", true);
 	
-	helper.EditSliderText(groupBox, "@World.WPSObject.IntensityOfLight", "@World.WPSObject.IntensityOfLight.ToolTip", 0.0f, 10.0f,
+	helper.EditSliderText(groupBox, "@World.WPSObject.LightIntensity", "@World.WPSObject.LightIntensity.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigInt, cLightSlider::Ref::New(*this, igdeGDCLight::epIntensity));
 	helper.ColorBox(groupBox, "@World.WPSObject.Color", "@World.WPSObject.ColorOfLight.ToolTip", pClrLight, cLightColor::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@World.WPSObject.Range", "@World.WPSObject.RangeOfLightInMeters.ToolTip", 0.0f, 10.0f,
+	helper.EditSliderText(groupBox, "@World.WPSObject.Range", "@World.WPSObject.Range.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigRange, cLightSlider::Ref::New(*this, igdeGDCLight::epRange));
 	helper.EditSliderText(groupBox, "@World.WPSObject.HalfIntDist",
 		"@World.WPSObject.HalfIntensityDistance.ToolTip", 0.0f, 1.0f,
 		5, 2, 0.1f, pSldLigHID, cLightSlider::Ref::New(*this, igdeGDCLight::epHalfIntDist));
 	
 	helper.EditSliderText(groupBox, "@World.WPView.Distance",
-		"@World.WPSObject.DistanceToLightSourceToEvaluateDistanceFor.ToolTip", 0.0f, 10.0f,
+		"@World.WPSObject.DistanceToLight.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigDist, cLightIntForDistSlider::Ref::New(*this));
 	helper.EditString(groupBox, "@World.WPSObject.Intensity",
 		"@World.WPSObject.LightIntensityEvaluateDistance.ToolTip", pEditLigDistInt, {});

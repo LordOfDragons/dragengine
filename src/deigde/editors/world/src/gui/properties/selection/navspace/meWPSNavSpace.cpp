@@ -200,7 +200,7 @@ pWPSelection(wpselection)
 		igdeEnvironment::efpltNavigationSpace, pEditPath, cPathNavSpace::Ref::New(*this));
 	helper.EditDVector(groupBox, "@World.WPSNavSpace.Label.Position", "@World.WPSNavSpace.PositionOfNavigationSpace.ToolTip",
 		pEditPositon, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSNavSpace.OrientationOfNavigationSpace", "@World.WPSNavSpace.OrientationOfNavigationSpace.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSNavSpace.Orientation", "@World.WPSNavSpace.Orientation.ToolTip",
 		pEditOrientation, cEditOrientation::Ref::New(*this));
 	
 	

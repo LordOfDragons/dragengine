@@ -24,14 +24,11 @@
 
 #ifdef IGDE_TOOLKIT_FOX
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "foxtoolkit.h"
 #include "igdeNativeFoxCommonDialogs.h"
 #include "dialog/igdeNativeFoxFileDialog.h"
 #include "../../igdeWidget.h"
+#include "../../igdeApplication.h"
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../localization/igdeTranslationManager.h"
 
@@ -165,7 +162,8 @@ const char *text, int &value){
 	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
 	const decString ttext(tm.TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8());
 	
-	FXInputDialog dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr, INPUTDIALOG_INTEGER);
+	FXInputDialog dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr,
+		INPUTDIALOG_INTEGER, 0, 0, igdeApplication::app().DisplayScaled(300));
 	
 	decString initialValue;
 	initialValue.Format("%d", value);
@@ -192,7 +190,8 @@ const char *text, float &value){
 	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
 	const decString ttext(tm.TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8());
 	
-	FXInputDialog dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr, INPUTDIALOG_REAL);
+	FXInputDialog dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr,
+		INPUTDIALOG_REAL, 0, 0, igdeApplication::app().DisplayScaled(300));
 	
 	decString initialValue;
 	initialValue.Format("%g", value);
@@ -219,7 +218,8 @@ const char *text, decString &value){
 	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
 	const decString ttext(tm.TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8());
 	
-	FXInputDialog dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr, INPUTDIALOG_STRING);
+	FXInputDialog dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr,
+		INPUTDIALOG_STRING, 0, 0, igdeApplication::app().DisplayScaled(400));
 	
 	dialog.setText(value.GetString());
 	
@@ -244,7 +244,9 @@ const char *text, const decStringList &list, int &selection){
 	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
 	const decString ttext(tm.TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8());
 	
-	FXChoiceBox dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr, DEJoin(list, "\n").GetString());
+	FXChoiceBox dialog(foxOwner, ttitle.GetString(), ttext.GetString(), nullptr,
+		DEJoin(list, "\n").GetString(), 0, 0, 0, igdeApplication::app().DisplayScaled(400),
+		igdeApplication::app().DisplayScaled(400));
 	
 	//dialog.setCurrentItem( selection );
 	// TODO fox does not expose "list" member to set selection. create an own dialog anyways

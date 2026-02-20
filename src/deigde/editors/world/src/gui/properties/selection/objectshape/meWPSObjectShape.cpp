@@ -185,7 +185,7 @@ pPreventUpdate(false)
 	form = igdeContainerForm::Ref::New(env);
 	content->AddChild(form);
 	
-	helper.EditString(form, "@World.WPSObjectShape.Class", "@World.WPSObjectShape.NameOfActiveObjectClass.ToolTip", pEditObjectClass, {});
+	helper.EditString(form, "@World.WPSObjectShape.Class", "@World.WPSObjectShape.ObjectClass.ToolTip", pEditObjectClass, {});
 	pEditObjectClass->SetEditable(false);
 	
 	helper.ComboBox(form, "@World.WPSObjectShape.Property", "@World.WPSObjectShape.NameOfActiveObjectProperty.ToolTip",

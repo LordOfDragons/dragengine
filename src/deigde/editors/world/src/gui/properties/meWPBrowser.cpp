@@ -626,7 +626,7 @@ pViewMode(evmPreview)
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(frameLine);
 	
-	helper.ComboBox(frameLine, "@World.WPBrowser.TypeOfItemsToBrowse", pCBTypes, cComboType::Ref::New(*this));
+	helper.ComboBox(frameLine, "@World.WPBrowser.Type", pCBTypes, cComboType::Ref::New(*this));
 	pCBTypes->SetAutoTranslateItems(true);
 	pCBTypes->AddItem("@World.WPBrowser.ObjectClass", nullptr, (void*)(intptr_t)epitObjectClass);
 	pCBTypes->AddItem("@World.WPBrowser.BrowserType.Skin", nullptr, (void*)(intptr_t)epitSkin);
@@ -873,31 +873,27 @@ void meWPBrowser::CurrentItemChanged(){
 	decString text;
 	
 	if(pWorld){
-		switch(GetPreviewItemType()){
-		case epitObjectClass:
-			if(selection){
-				const igdeGDClass * const gdclass = (igdeGDClass*)selection->GetData();
+		if(selection){
+			// we have to do this the complicated way because the pListItems has autoselect enabled.
+			// if pCBTypes changes this method is called with the already changed pCBTypes but the
+			// selection is still the old type. doing a simple cast causes a segfault
+			const deObject * const object = (deObject*)selection->GetData();
+			const igdeGDClass * const gdclass = dynamic_cast<const igdeGDClass*>(object);
+			const igdeGDSkin * const gdskin = dynamic_cast<const igdeGDSkin*>(object);
+			// const igdeGDSky * const gdsky = dynamic_cast<const igdeGDSky*>(object);
+			
+			if(gdclass){
 				pWorld->GetGuiParameters().SetBrowseClass(gdclass->GetName());
 				text.Format("%s:\n%s", gdclass->GetName().GetString(), gdclass->GetDescription().GetString());
 				
-			}else{
-				pWorld->GetGuiParameters().SetBrowseClass("");
-			}
-			break;
-			
-		case epitSkin:
-			if(selection){
-				const igdeGDSkin * const gdskin = (igdeGDSkin*)selection->GetData();
+			}else if(gdskin){
 				pWorld->GetGuiParameters().SetBrowseSkin(gdskin->GetPath());
 				text.Format("%s:\n%s", gdskin->GetName().GetString(), gdskin->GetDescription().GetString());
-				
-			}else{
-				pWorld->GetGuiParameters().SetBrowseSkin("");
 			}
-			break;
 			
-		case epitSky:
-			break;
+		}else{
+			pWorld->GetGuiParameters().SetBrowseClass("");
+			pWorld->GetGuiParameters().SetBrowseSkin("");
 		}
 	}
 	

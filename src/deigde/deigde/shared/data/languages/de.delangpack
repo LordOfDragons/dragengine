@@ -298,7 +298,7 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.ViewCurveBezier.Action.InvertCurveX.ToolTip">Kurve entlang der X-Achse umkehren</translation>
 	<translation name="Igde.ViewCurveBezier.Action.InvertCurveY">Kurve entlang der Y-Achse umkehren</translation>
 	<translation name="Igde.ViewCurveBezier.Action.InvertCurveY.ToolTip">Kurve entlang der Y-Achse umkehren</translation>
-	<translation name="Igde.ViewCurveBezier.Action.EditClampParameters">Klemmenparameter bearbeiten...</translation>
+	<translation name="Igde.ViewCurveBezier.Action.EditClampParameters">Beschränkungen bearbeiten...</translation>
 	<translation name="Igde.ViewCurveBezier.Action.EditClampParameters.ToolTip">Dialogfeld zum Bearbeiten der Begrenzungsparameter für die Ansicht anzeigen</translation>
 	<translation name="Igde.ViewCurveBezier.Action.AutoHandles">Automatische Kurvenführung</translation>
 	<translation name="Igde.ViewCurveBezier.Action.AutoHandles.ToolTip">Standardführpunkte für Interpolationstyp festlegen</translation>
@@ -401,7 +401,7 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.DialogEngine.TabConsole">Konsole</translation>
 	
 	<!-- Actions -->
-	<translation name="Igde.Action.ClearUndo">Aktionen rückgängig machen</translation>
+	<translation name="Igde.Action.ClearUndo">Verlauf löschen</translation>
 	<translation name="Igde.Action.ClearUndo.ToolTip">Alle Rückgängig-Aktionen löschen</translation>
 	<translation name="Igde.Action.Redo">Wiederholen</translation>
 	<translation name="Igde.Action.Redo.ToolTip">Letzte Aktion wiederholen</translation>
@@ -436,10 +436,10 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.WPCamera.Action.Save.ToolTip">Parameter in Datei speichern</translation>
 	<translation name="Igde.WPCamera.Dialog.SaveCamera.Title">Kamera speichern</translation>
 	<translation name="Igde.WPCamera.Action.Menu.ToolTip">Kameramenü</translation>
-	<translation name="Igde.WPCamera.Action.SetDefaultIndoor">Auf Standardwerte für Innenraue setzen</translation>
-	<translation name="Igde.WPCamera.Action.SetDefaultDay">Auf Standardwerte für Tag setzen</translation>
-	<translation name="Igde.WPCamera.Action.SetDefaultNight">Auf Standardwerte für Nacht setzen</translation>
-	<translation name="Igde.WPCamera.Action.SetDefaultDynamic">Auf Standardwerte für Dynamisch setzen</translation>
+	<translation name="Igde.WPCamera.Action.SetDefaultIndoor">Standardwerte Innenraum</translation>
+	<translation name="Igde.WPCamera.Action.SetDefaultDay">Standardwerte Tag</translation>
+	<translation name="Igde.WPCamera.Action.SetDefaultNight">Standardwerte Nacht</translation>
+	<translation name="Igde.WPCamera.Action.SetDefaultDynamic">Standardwerte Dynamisch</translation>
 	<translation name="Igde.WPCamera.Position">Position:</translation>
 	<translation name="Igde.WPCamera.Position.ToolTip">Position der Kamera</translation>
 	<translation name="Igde.WPCamera.Rotation">Drehung:</translation>
@@ -577,7 +577,7 @@ Eigenschaftstyp verstossen könnte.</translation>
 	
 	<!-- UI Helper -->
 	<translation name="Igde.UIHelper.RecentFiles.Title">Aktuelle Datei Öffnen</translation>
-	<translation name="Igde.UIHelper.RecentFiles.Title.ToolTip">Zuletzt geöffnete Datei öffnen</translation>
+	<translation name="Igde.UIHelper.RecentFiles.ToolTip">Zuletzt geöffnete Datei öffnen</translation>
 	
 	<!-- Recent Files -->
 	<translation name="Igde.RecentFiles.Action.ClearList">Liste löschen</translation>

@@ -311,7 +311,8 @@
 	<!-- UHTVRuleVecMathSetVectorA -->
 
 	<!-- UHTVRuleVecMathSetVectorB -->
-	<translation name="World.UHTVRuleVecMathSetVectorB.VegetationLayerRuleMathSetVectorA">Vegetation Layer Rule Math Set Vector A</translation>
+	<translation name="World.UHTVRuleVecMathSetVectorA">Vegetation Layer Rule Math Set Vector A</translation>
+	<translation name="World.UHTVRuleVecMathSetVectorB">Vegetation Layer Rule Math Set Vector B</translation>
 
 	<!-- UHTVVarSetModel -->
 	<translation name="World.UHTVVarSetModel.VegetationLayerVariationSetModel">Vegetation Layer Variation Set Model</translation>
@@ -537,7 +538,7 @@
 	<translation name="World.WPBrowser.Filter">Filter</translation>
 	<translation name="World.WPBrowser.ObjectClass">Object Class</translation>
 	<translation name="World.WPBrowser.SetClass">Set Class</translation>
-	<translation name="World.WPBrowser.TypeOfItemsToBrowse">Type of items to browse</translation>
+	<translation name="World.WPBrowser.Type">Type of items to browse</translation>
 
 	<!-- WPHeightTerrain -->
 	<translation name="World.WPHeightTerrain.BaseHeight">Base Height:</translation>
@@ -571,14 +572,16 @@ Only images with 1 color channel can be used for visibility terrains.</translati
 	<translation name="World.WPHeightTerrain.Draw">Draw</translation>
 	<translation name="World.WPHeightTerrain.Erase">Erase</translation>
 	<translation name="World.WPHeightTerrain.Faces">Faces:</translation>
-	<translation name="World.WPHeightTerrain.FileToSaveHeightImageTo.ToolTip">File to save height image to</translation>
-	<translation name="World.WPHeightTerrain.FileToSaveHeightTerrainTo.ToolTip">File to save height terrain to</translation>
-	<translation name="World.WPHeightTerrain.FileToSaveVisibilityImageTo.ToolTip">File to save visibility image to</translation>
+	<translation name="World.WPHeightTerrain..ToolTip">File to save height image to</translation>
+	<translation name="World.WPHeightTerrain.HeightTerrain.ToolTip">File to save height terrain to</translation>
+	<translation name="World.WPHeightTerrain.VisibilityImage.ToolTip">File to save visibility image to</translation>
 	<translation name="World.WPHeightTerrain.HeightImage">Height Image:</translation>
 	<translation name="World.WPHeightTerrain.HeightPainting">Height Painting:</translation>
 	<translation name="World.WPHeightTerrain.HeightScaling">Height Scaling:</translation>
 	<translation name="World.WPHeightTerrain.HeightTerrain">Height Terrain:</translation>
 	<translation name="World.WPHeightTerrain.Invisible">Invisible</translation>
+	<translation name="World.WPHeightTerrain.PropFieldCache">Prop Field Cache</translation>
+	<translation name="World.WPHeightTerrain.PropFieldCache.ToolTip">File to save the prop field cache</translation>
 	<translation name="World.WPHeightTerrain.LayerToEdit.ToolTip">Layer to edit</translation>
 	<translation name="World.WPHeightTerrain.Level">Level</translation>
 	<translation name="World.WPHeightTerrain.Lower">Lower</translation>
@@ -587,7 +590,7 @@ Only images with 1 color channel can be used for visibility terrains.</translati
 	<translation name="World.WPHeightTerrain.MaskToUseForTexture.ToolTip">Mask to use for the texture.</translation>
 	<translation name="World.WPHeightTerrain.Mode">Mode:</translation>
 	<translation name="World.WPHeightTerrain.Model">Model:</translation>
-	<translation name="World.WPHeightTerrain.ModelToUseForVariation.ToolTip">Model to use for the variation</translation>
+	<translation name="World.WPHeightTerrain.Model.ToolTip">Model to use for the variation</translation>
 	<translation name="World.WPHeightTerrain.NavSpace">Nav-Space:</translation>
 	<translation name="World.WPHeightTerrain.NavSpace.ToolTip">Nav-Space</translation>
 	<translation name="World.WPHeightTerrain.NavigationLayer.ToolTip">Navigation layer.</translation>
@@ -615,7 +618,7 @@ Only images with 1 color channel can be used for visibility terrains.</translati
 	<translation name="World.WPHeightTerrain.HeightImageHeightScaling.ToolTip">Set height scaling of height image values</translation>
 	<translation name="World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip">Sets the radius of influence.</translation>
 	<translation name="World.WPHeightTerrain.SizeOfSectorsAlongXZAxis.ToolTip">Size of sectors along X and Z axis</translation>
-	<translation name="World.WPHeightTerrain.SkinToUseForTexture.ToolTip">Skin to use for the texture.</translation>
+	<translation name="World.WPHeightTerrain.Skin.ToolTip">Skin to use for the texture.</translation>
 	<translation name="World.WPHeightTerrain.SkinToUseForVariation.ToolTip">Skin to use for the variation</translation>
 	<translation name="World.WPHeightTerrain.Smooth">Smooth</translation>
 	<translation name="World.WPHeightTerrain.SnapAngle">Snap Angle:</translation>
@@ -623,7 +626,7 @@ Only images with 1 color channel can be used for visibility terrains.</translati
 	<translation name="World.WPHeightTerrain.SnapDistance">Snap Distance:</translation>
 	<translation name="World.WPHeightTerrain.SnapDistance.ToolTip">Snap distance.</translation>
 	<translation name="World.WPHeightTerrain.StrengthOfInfluence.ToolTip">Strength of the influence.</translation>
-	<translation name="World.WPHeightTerrain.TextureToEdit.ToolTip">Texture to edit</translation>
+	<translation name="World.WPHeightTerrain.Texture.ToolTip">Texture to edit</translation>
 	<translation name="World.WPHeightTerrain.TypeNumberOfTexture.ToolTip">Type number of the texture.</translation>
 	<translation name="World.WPHeightTerrain.Update">Update:</translation>
 	<translation name="World.WPHeightTerrain.UpdateVegetation.ToolTip">Update vegetation</translation>
@@ -664,7 +667,7 @@ Default Value: "{1}"</translation>
 	<!-- WPSNavSpace -->
 	<translation name="World.WPSNavSpace.SelectedNavigationSpaceCount">Count of selected navigation spaces</translation>
 	<translation name="World.WPSNavSpace.NavigationSpace">Navigation Space:</translation>
-	<translation name="World.WPSNavSpace.OrientationOfNavigationSpace.ToolTip">Orientation of the navigation space.</translation>
+	<translation name="World.WPSNavSpace.Orientation.ToolTip">Orientation of the navigation space.</translation>
 	<translation name="World.WPSNavSpace.PathToNavigationSpace.ToolTip">Path to the navigation space</translation>
 	<translation name="World.WPSNavSpace.PositionOfNavigationSpace.ToolTip">Position of the navigation space.</translation>
 	<translation name="World.WPSNavSpace.SelectedNavigationSpace">Selected navigation space</translation>
@@ -680,35 +683,35 @@ Default Value: "{1}"</translation>
 	<translation name="World.WPSObject.Dialog.Behavior">Behavior:</translation>
 	<translation name="World.WPSObject.Dialog.TextureNameExistsAlready">Texture name exists already</translation>
 	<translation name="World.WPSObject.DisplayOptions">Display Options</translation>
-	<translation name="World.WPSObject.DistanceToLightSourceToEvaluateDistanceFor.ToolTip">Distance to the light source to evaluate distance for.</translation>
+	<translation name="World.WPSObject.DistanceToLight.ToolTip">Distance to the light source to evaluate distance for.</translation>
 	<translation name="World.WPSObject.LightIntensityEvaluateDistance.ToolTip">Evaluated intensity at distance to light source.</translation>
 	<translation name="World.WPSObject.FindId">Find ID...</translation>
 	<translation name="World.WPSObject.Geometry">Geometry:</translation>
 	<translation name="World.WPSObject.HalfIntDist">Half-Int Dist:</translation>
 	<translation name="World.WPSObject.HalfIntensityDistance.ToolTip">Half intensity distance as percentage of light range.</translation>
 	<translation name="World.WPSObject.Id">ID:</translation>
-	<translation name="World.WPSObject.IdOfObjectToAttachTo.ToolTip">ID of object to attach to</translation>
-	<translation name="World.WPSObject.IntensityOfLight.ToolTip">Intensity of the light.</translation>
+	<translation name="World.WPSObject.ObjectAttachTo.ToolTip">ID of object to attach to</translation>
+	<translation name="World.WPSObject.LightIntensity.ToolTip">Intensity of the light.</translation>
 	<translation name="World.WPSObject.Light">Light:</translation>
-	<translation name="World.WPSObject.NameOfActiveObjectClass.ToolTip">Name of the active object class.</translation>
+	<translation name="World.WPSObject.ObjectClass.ToolTip">Name of the active object class.</translation>
 	<translation name="World.WPSObject.None">&lt;none&gt;</translation>
 	<translation name="World.WPSObject.NumberOfSelectedObjects">Number of selected objects</translation>
 	<translation name="World.WPSObject.PositionOfObject.ToolTip">Position of the object.</translation>
 	<translation name="World.WPSObject.Properties">Properties:</translation>
 	<translation name="World.WPSObject.Range">Range:</translation>
-	<translation name="World.WPSObject.RangeOfLightInMeters.ToolTip">Range of the light in meters.</translation>
-	<translation name="World.WPSObject.RotationOfObject.ToolTip">Rotation of the object.</translation>
-	<translation name="World.WPSObject.ScalingOfObject.ToolTip">Scaling of the object.</translation>
+	<translation name="World.WPSObject.Range.ToolTip">Range of the light in meters.</translation>
+	<translation name="World.WPSObject.Rotation.ToolTip">Rotation of the object.</translation>
+	<translation name="World.WPSObject.Scaling.ToolTip">Scaling of the object.</translation>
 	<translation name="World.WPSObject.Selected">Selected:</translation>
-	<translation name="World.WPSObject.SizeOfObject.ToolTip">Size of the object.</translation>
+	<translation name="World.WPSObject.Size.ToolTip">Size of the object.</translation>
 	<translation name="World.WPSObject.Skin">Skin:</translation>
-	<translation name="World.WPSObject.SkinToUseForTexture.ToolTip">Skin to use for the texture</translation>
+	<translation name="World.WPSObject.Skin.ToolTip">Skin to use for the texture</translation>
 	<translation name="World.WPSObject.Texture">Texture:</translation>
 	<translation name="World.WPSObject.TextureCoordinatesRotation.ToolTip">Texture coordinates rotation.</translation>
 	<translation name="World.WPSObject.TextureCoordinatesScaling.ToolTip">Texture coordinates scaling.</translation>
 	<translation name="World.WPSObject.TextureCoordinatesTranslation.ToolTip">Texture coordinates translation.</translation>
 	<translation name="World.WPSObject.TextureProperties">Texture Properties:</translation>
-	<translation name="World.WPSObject.TextureToEdit.ToolTip">Texture to edit.</translation>
+	<translation name="World.WPSObject.Texture.ToolTip">Texture to edit.</translation>
 	<translation name="World.WPSObject.TextureTransformation">Texture Transformation:</translation>
 	<translation name="World.WPSObject.Tint">Tint:</translation>
 	<translation name="World.WPSObject.Translation">Translation:</translation>
@@ -729,7 +732,7 @@ Default Value: "{1}"</translation>
 	<translation name="World.WPSObjectShape.Height">Height:</translation>
 	<translation name="World.WPSObjectShape.HeightOfCapsule.ToolTip">Height of the capsule.</translation>
 	<translation name="World.WPSObjectShape.HeightOfCylinder.ToolTip">Height of the cylinder.</translation>
-	<translation name="World.WPSObjectShape.NameOfActiveObjectClass.ToolTip">Name of the active object class.</translation>
+	<translation name="World.WPSObjectShape.ObjectClass.ToolTip">Name of the active object class.</translation>
 	<translation name="World.WPSObjectShape.NameOfActiveObjectProperty.ToolTip">Name of the active object property.</translation>
 	<translation name="World.WPSObjectShape.NoShapeSelected">No Shape Selected</translation>
 	<translation name="World.WPSObjectShape.PositionOfBox.ToolTip">Position of the box.</translation>
@@ -842,7 +845,7 @@ Default Value: "{1}"</translation>
 	<!-- WVNodeClosestProp -->
 
 	<!-- WVNodeClosestVegetation -->
-	<translation name="World.WVNodeClosestVegetation.SetTypeOfVegetationToSearchFor.ToolTip">Set type of vegetation to search for.</translation>
+	<translation name="World.WVNodeClosestVegetation.Type.ToolTip">Set type of vegetation to search for.</translation>
 
 	<!-- WVNodeCombine -->
 	<translation name="World.WVNodeCombine.XComponent">X component of vector if slot is not connected.</translation>
@@ -1416,7 +1419,7 @@ property type so be careful what you enter</translation>
 	<translation name="World.WPSDecal.TextureCoordinatesRotation">Rotation:</translation>
 	<translation name="World.WPSObject.Class">Class:</translation>
 	<translation name="World.WPSObject.TextureCoordinatesRotation">Rotation:</translation>
-	<translation name="World.WPSObject.IntensityOfLight">Intensity:</translation>
+	<translation name="World.WPSObject.LightIntensity">Intensity:</translation>
 	<translation name="World.WVNodeClosestProp.Class">Class:</translation>
 	<translation name="World.WVNodeClosestVegetation.Type">Type:</translation>
 	<translation name="World.WVNodePropCount.Class">Class:</translation>
@@ -1499,7 +1502,7 @@ Default: ''</translation>
 
 	<!-- WPSNavSpace -->
 	<translation name="World.WPSNavSpace.Label.Position">Position:</translation>
-	<translation name="World.WPSNavSpace.OrientationOfNavigationSpace">Orientation:</translation>
+	<translation name="World.WPSNavSpace.Orientation">Orientation:</translation>
 
 	<!-- WPSObject -->
 	<translation name="World.WPSObject.Action.AttachableAdd">Add</translation>

@@ -578,7 +578,7 @@ property type so be careful what you enter</translation>
 	
 	<!-- UI Helper -->
 	<translation name="Igde.UIHelper.RecentFiles.Title">Open Recent File</translation>
-	<translation name="Igde.UIHelper.RecentFiles.Title.ToolTip">Open recent file</translation>
+	<translation name="Igde.UIHelper.RecentFiles.ToolTip">Open recent file</translation>
 	
 	<!-- Recent Files -->
 	<translation name="Igde.RecentFiles.Action.ClearList">Clear List</translation>

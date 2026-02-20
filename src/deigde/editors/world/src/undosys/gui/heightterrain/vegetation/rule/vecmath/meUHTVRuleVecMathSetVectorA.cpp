@@ -46,7 +46,7 @@ meUHTVRuleVecMathSetVectorA::meUHTVRuleVecMathSetVectorA(meHTVegetationLayer *vl
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("@World.UHTVRuleVecMathSetVectorB.VegetationLayerRuleMathSetVectorA");
+	SetShortInfo("@World.UHTVRuleVecMathSetVectorA");
 	SetMemoryConsumption(sizeof(meUHTVRuleVecMathSetVectorA));
 	
 	pOldVector = rule->GetVectorA();

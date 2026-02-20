@@ -1414,7 +1414,7 @@ pWindowProperties(windowProperties)
 	igdeFilePattern::List filePatterns;
 	filePatterns.Add(igdeFilePattern::Ref::New(
 		"@World.WPHeightTerrain.DragEnGineHeightTerrain", "*.deterrain", ".deterrain"));
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightTerrain", "@World.WPHeightTerrain.FileToSaveHeightTerrainTo.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightTerrain", "@World.WPHeightTerrain.HeightTerrain.ToolTip",
 		filePatterns, pEditPathHTerrain, cEditPathHT::Ref::New(*this));
 	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SectorSize", "@World.WPHeightTerrain.SizeOfSectorsAlongXZAxis.ToolTip",
 		pEditSectorSize, cEditSectorSize::Ref::New(*this));
@@ -1429,23 +1429,23 @@ pWindowProperties(windowProperties)
 	// sector
 	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Sector");
 	
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightImage", "@World.WPHeightTerrain.FileToSaveHeightImageTo.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightImage", "@World.WPHeightTerrain..ToolTip",
 		igdeEnvironment::efpltImage, pEditPathHeightImage, cEditPathHeightImage::Ref::New(*this));
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.VisibilityImage", "@World.WPHeightTerrain.FileToSaveVisibilityImageTo.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.VisibilityImage", "@World.WPHeightTerrain.VisibilityImage.ToolTip",
 		igdeEnvironment::efpltImage, pEditPathVisImage, cEditPathVisibilityImage::Ref::New(*this));
 	
 	
 	// texture
 	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture");
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture", "@World.WPHeightTerrain.TextureToEdit.ToolTip", formLine);
-	helper.ComboBox(formLine, "@World.WPHeightTerrain.TextureToEdit.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture", "@World.WPHeightTerrain.Texture.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.Texture.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
 	helper.Button(formLine, pBtnTexture, pActionMenuTexture);
 	pActionMenuTexture->SetWidget(pBtnTexture);
 	
 	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber", "@World.WPHeightTerrain.TypeNumberOfTexture.ToolTip",
 		pEditTexTypeNum, cTextTexTypeNumber::Ref::New(*this));
-	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexSkin, cPathTexSkin::Ref::New(*this));
 	helper.EditPath(groupBox, "@World.WPHeightTerrain.Mask", "@World.WPHeightTerrain.MaskToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexMask, cPathTexMask::Ref::New(*this));
@@ -1504,7 +1504,7 @@ pWindowProperties(windowProperties)
 	filePatterns.RemoveAll();
 	filePatterns.Add(igdeFilePattern::Ref::New(
 		"@World.WPHeightTerrain.DragEnGinePropFieldCache", "*.depfc", ".depfc"));
-	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.PropFieldCache", "@World.WPHeightTerrain.PropFieldCache.ToolTip",
 		filePatterns, pEditPathPFCache, cPathPathPFCache::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Layer", "@World.WPHeightTerrain.LayerToEdit.ToolTip", formLine);
@@ -1517,7 +1517,7 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnMenuVVariation, pActionMenuVVariation);
 	pActionMenuVVariation->SetWidget(pBtnMenuVVariation);
 	
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.Model", "@World.WPHeightTerrain.ModelToUseForVariation.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.Model", "@World.WPHeightTerrain.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditVVModel, cPathVVModel::Ref::New(*this));
 	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.SkinToUseForVariation.ToolTip",
 		igdeEnvironment::efpltSkin, pEditVVSkin, cPathVVSkin::Ref::New(*this));
