@@ -35,6 +35,7 @@
 ////////////////////////////
 
 igdeNativeNullDialog::igdeNativeNullDialog(igdeDialog &owner) :
+igdeNativeNullWindow(),
 pOwnerDialog(owner){
 }
 
@@ -80,6 +81,11 @@ void igdeNativeNullDialog::ShowDialog(){
 }
 
 void igdeNativeNullDialog::CloseDialog(bool){
+	SetIsClosed(true);
+}
+
+void igdeNativeNullDialog::OnFrameUpdate(){
+	pOwnerDialog.OnFrameUpdate();
 }
 
 int igdeNativeNullDialog::DialogPadContent (const igdeGuiTheme &){
