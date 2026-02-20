@@ -10,7 +10,7 @@ internalModule = envModule['build_skin_deskin_internal']
 parent_report['build DESkin Skin Module'] = 'yes (internal)' if internalModule else 'yes'
 
 # fetch values in expanded form for later use
-versionString = '1.18'
+versionString = '1.30'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
