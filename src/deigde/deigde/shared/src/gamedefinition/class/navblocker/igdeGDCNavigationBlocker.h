@@ -27,8 +27,9 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
 
@@ -38,6 +39,13 @@
  */
 class DE_DLL_EXPORT igdeGDCNavigationBlocker : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDCNavigationBlocker>;
+	
+	/** \brief Type holding list of objects. */
+	using List = decTObjectOrderedSet<igdeGDCNavigationBlocker>;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epEnabled,
@@ -60,9 +68,9 @@ private:
 	deNavigationSpace::eSpaceTypes pType;
 	int pBlockingPriority;
 	
-	decShapeList pShapeList;
+	decShape::List pShapeList;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
+	decString pPropertyNames[epAttachRotation + 1];
 	
 	
 	
@@ -73,11 +81,11 @@ public:
 	igdeGDCNavigationBlocker();
 	
 	/** \brief Create copy of a game definition class navigation blocker. */
-	igdeGDCNavigationBlocker( const igdeGDCNavigationBlocker &blocker );
+	igdeGDCNavigationBlocker(const igdeGDCNavigationBlocker &blocker);
 	
 protected:
 	/** \brief Clean up class navigation blocker. */
-	virtual ~igdeGDCNavigationBlocker();
+	~igdeGDCNavigationBlocker() override;
 	/*@}*/
 	
 	
@@ -89,43 +97,43 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
 	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	/** \brief Name of the bone to attach to or empty string. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone to attach to or empty string. */
-	void SetBoneName( const char *boneName );
+	void SetBoneName(const char *boneName);
 	
 	/** \brief Determines if the blocker is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Sets if the blocker is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	/** \brief Space type. */
 	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set space type. */
-	void SetType( deNavigationSpace::eSpaceTypes type );
+	void SetType(deNavigationSpace::eSpaceTypes type);
 	
 	/**
 	 * \brief Blocking priority.
@@ -139,25 +147,25 @@ public:
 	 * 
 	 * Blocks navigation meshes with a smaller or equal blocking priority.
 	 */
-	void SetBlockingPriority( int priority );
+	void SetBlockingPriority(int priority);
 	
 	/** \brief Shape list. */
-	inline const decShapeList &GetShapeList() const{ return pShapeList; }
+	inline const decShape::List &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Set shape list. */
-	void SetShapeList( const decShapeList &shapeList );
+	void SetShapeList(const decShape::List &shapeList);
 	
 	/** \brief Determines if a property name is set or not (empty string). */
-	bool IsPropertySet( eProperties property ) const;
+	bool IsPropertySet(eProperties property) const;
 	
 	/** \brief Name of the given property. */
-	const decString &GetPropertyName( eProperties property ) const;
+	const decString &GetPropertyName(eProperties property) const;
 	
 	/** \brief Set name of the given property. */
-	void SetPropertyName( eProperties property, const char *name );
+	void SetPropertyName(eProperties property, const char *name);
 	
 	/** \brief Determines if one or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	/*@}*/
 };
 

@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCBillboard;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class billboard set offset.
  */
 class gdeUOCBillboardSetOffset : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCBillboardSetOffset>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetOffset( gdeObjectClass *objectClass,
-		gdeOCBillboard *billboard, const decVector2 &newValue );
+	gdeUOCBillboardSetOffset(gdeObjectClass *objectClass,
+		gdeOCBillboard *billboard, const decVector2 &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCBillboardSetOffset();
+	~gdeUOCBillboardSetOffset() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

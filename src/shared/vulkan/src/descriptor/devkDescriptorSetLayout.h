@@ -39,8 +39,7 @@ class devkDevice;
 class devkDescriptorSetLayout : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDescriptorSetLayout> Ref;
-	
+	using Ref = deTObjectReference<devkDescriptorSetLayout>;
 	
 	
 private:
@@ -54,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor layout. */
-	devkDescriptorSetLayout( devkDevice &device, const devkDescriptorSetLayoutConfiguration &configuration );
+	devkDescriptorSetLayout(devkDevice &device, const devkDescriptorSetLayoutConfiguration &configuration);
 	
 protected:
 	/** Clean up descriptor layout. */
-	virtual ~devkDescriptorSetLayout();
+	~devkDescriptorSetLayout() override;
 	/*@}*/
 	
 	

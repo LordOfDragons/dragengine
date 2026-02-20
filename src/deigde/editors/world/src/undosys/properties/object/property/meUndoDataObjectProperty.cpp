@@ -39,23 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjectProperty::meUndoDataObjectProperty( meObject *object ) :
-pObject( NULL ),
-pPropertyExists( false )
+meUndoDataObjectProperty::meUndoDataObjectProperty(meObject *object) :
+
+pPropertyExists(false)
 {
-	if( ! object ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL(object)
 	pObject = object;
-	object->AddReference();
 }
 
 meUndoDataObjectProperty::~meUndoDataObjectProperty(){
-	pOldProperties.RemoveAll();
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -63,10 +55,10 @@ meUndoDataObjectProperty::~meUndoDataObjectProperty(){
 // Management
 ///////////////
 
-void meUndoDataObjectProperty::SetOldValue( const char *value ){
+void meUndoDataObjectProperty::SetOldValue(const char *value){
 	pOldValue = value;
 }
 
-void meUndoDataObjectProperty::SetPropertyExists( bool exists ){
+void meUndoDataObjectProperty::SetPropertyExists(bool exists){
 	pPropertyExists = exists;
 }

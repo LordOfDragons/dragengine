@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCBillboard;
+#include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCBillboard;
  */
 class gdeWPSTIMOCBillboard : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCBillboard *pBillboard;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCBillboard> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCBillboard( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCBillboard *billboard, int index );
+	gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCBillboard *billboard, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCBillboard();
+	~gdeWPSTIMOCBillboard() override;
 	/*@}*/
 	
 	
@@ -56,24 +58,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pBillboard; }
+	inline const gdeOCBillboard::Ref &GetOCBillboard() const{ return pBillboard; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

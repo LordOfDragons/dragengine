@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "debnMessage.h"
 #include "debnMessageManager.h"
-#include "dragengine/resources/network/deNetworkMessage.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
 
 
 
@@ -40,14 +37,9 @@
 ////////////////////////////
 
 debnMessageManager::debnMessageManager(){
-	pMessages = NULL;
-	pMessageCount = 0;
-	pMessageSize = 0;
 }
 
 debnMessageManager::~debnMessageManager(){
-	RemoveAllMessages();
-	if( pMessages ) delete [] pMessages;
 }
 
 
@@ -55,83 +47,40 @@ debnMessageManager::~debnMessageManager(){
 // Management
 ///////////////
 
-debnMessage *debnMessageManager::GetMessageAt( int index ) const{
-	if( index < 0 || index >= pMessageCount ) DETHROW( deeInvalidParam );
-	
-	return pMessages[ index ];
+debnMessage *debnMessageManager::GetMessageAt(int index) const{
+	return pMessages.GetAt(index);
 }
 
-int debnMessageManager::IndexOfMessageWithNumber( int number ) const{
-	int i;
-	
-	for( i=0; i<pMessageCount; i++ ){
-		if( number == pMessages[ i ]->GetNumber() ) return i;
-	}
-	
-	return -1;
+int debnMessageManager::IndexOfMessageWithNumber(int number) const{
+	return pMessages.IndexOfMatching([&](const debnMessage &m){
+		return m.GetNumber() == number;
+	});
 }
 
-int debnMessageManager::IndexOfMessage( debnMessage *message ) const{
-	if( ! message ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pMessageCount; i++ ){
-		if( message == pMessages[ i ] ) return i;
-	}
-	
-	return -1;
+int debnMessageManager::IndexOfMessage(debnMessage *message) const{
+	DEASSERT_NOTNULL(message)
+	return pMessages.IndexOf(message);
 }
 
-bool debnMessageManager::HasMessage( debnMessage *message ) const{
-	if( ! message ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pMessageCount; i++ ){
-		if( message == pMessages[ i ] ) return true;
-	}
-	
-	return false;
+bool debnMessageManager::HasMessage(debnMessage *message) const{
+	DEASSERT_NOTNULL(message)
+	return pMessages.Has(message);
 }
 
-void debnMessageManager::AddMessage( debnMessage *message ){
-	if( ! message ) DETHROW( deeInvalidParam );
+void debnMessageManager::AddMessage(debnMessage::Ref &&message){
+	DEASSERT_NOTNULL(message)
 	
-	if( pMessageCount == pMessageSize ){
-		int newSize = pMessageSize * 3 / 2 + 1;
-		debnMessage **newArray = new debnMessage*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pMessages ){
-			memcpy( newArray, pMessages, sizeof( debnMessage* ) * pMessageSize );
-			delete [] pMessages;
-		}
-		pMessages = newArray;
-		pMessageSize = newSize;
-	}
-	
-	pMessages[ pMessageCount ] = message;
-	pMessageCount++;
+	pMessages.Add(std::move(message));
 }
 
-void debnMessageManager::RemoveMessage( debnMessage *message ){
-	RemoveMessageAt( IndexOfMessage( message ) );
+void debnMessageManager::RemoveMessage(debnMessage *message){
+	pMessages.Remove(message);
 }
 
-void debnMessageManager::RemoveMessageAt( int index ){
-	if( index < 0 || index >= pMessageCount ) DETHROW( deeInvalidParam );
-	debnMessage *message = pMessages[ index ];
-	int i;
-	
-	for( i=index+1; i<pMessageCount; i++ ){
-		pMessages[ i - 1 ] = pMessages[ i ];
-	}
-	pMessageCount--;
-	
-	delete message;
+void debnMessageManager::RemoveMessageAt(int index){
+	pMessages.RemoveFrom(index);
 }
 
 void debnMessageManager::RemoveAllMessages(){
-	while( pMessageCount > 0 ){
-		pMessageCount--;
-		delete pMessages[ pMessageCount ];
-	}
+	pMessages.RemoveAll();
 }

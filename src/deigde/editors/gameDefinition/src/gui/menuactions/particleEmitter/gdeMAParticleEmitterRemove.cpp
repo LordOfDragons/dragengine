@@ -44,10 +44,10 @@
 // Constructor
 ////////////////
 
-gdeMAParticleEmitterRemove::gdeMAParticleEmitterRemove( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Remove Particle Emitter",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove particle emitter" )
+gdeMAParticleEmitterRemove::gdeMAParticleEmitterRemove(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ParticleEmitterRemove",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"@GameDefinition.Menu.ParticleEmitterRemove.ToolTip")
 {
 }
 
@@ -56,27 +56,27 @@ gdeBaseAction( windowMain, "Remove Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAParticleEmitterRemove::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMAParticleEmitterRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeParticleEmitter * const category = gameDefinition.GetActiveParticleEmitter();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotParticleEmitter ){
-		return NULL;
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotParticleEmitter){
+		return {};
 	}
 	
 	gdeParticleEmitter * const particleEmitter = gameDefinition.GetActiveParticleEmitter();
-	if( ! particleEmitter ){
-		return NULL;
+	if(!particleEmitter){
+		return {};
 	}
 	
-	return new gdeURemoveParticleEmitter( &gameDefinition, particleEmitter );
+	return gdeURemoveParticleEmitter::Ref::New(&gameDefinition, particleEmitter);
 }
 
 void gdeMAParticleEmitterRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotParticleEmitter 
-		&& gameDefinition->GetActiveParticleEmitter() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotParticleEmitter 
+		&& gameDefinition->GetActiveParticleEmitter() != nullptr);
 }

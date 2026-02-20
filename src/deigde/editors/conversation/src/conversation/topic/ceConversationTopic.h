@@ -25,14 +25,14 @@
 #ifndef _CECONVERSATIONTOPIC_H_
 #define _CECONVERSATIONTOPIC_H_
 
+#include "../action/ceConversationAction.h"
+#include "../condition/ceConversationCondition.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 
-#include "../action/ceConversationActionList.h"
-#include "../action/ceConversationActionReference.h"
-#include "../condition/ceConversationConditionReference.h"
-
-class decStringSet;
 class ceConversationFile;
 class ceConversationCondition;
 
@@ -42,17 +42,17 @@ class ceConversationCondition;
  */
 class ceConversationTopic : public deObject{
 public:
-	typedef deTObjectReference<ceConversationTopic> Ref;
-	
+	using Ref = deTObjectReference<ceConversationTopic>;
+	using List = decTObjectOrderedSet<ceConversationTopic>;
 	
 	
 private:
 	ceConversationFile *pFile;
 	
 	decString pID;
-	ceConversationActionList pActions;
-	ceConversationActionReference pActiveAction;
-	ceConversationConditionReference pActiveCondition;
+	ceConversationAction::List pActions;
+	ceConversationAction::Ref pActiveAction;
+	ceConversationCondition::Ref pActiveCondition;
 	
 	
 	
@@ -60,24 +60,26 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation topic. */
-	ceConversationTopic( const char *id = "Topic" );
+	explicit ceConversationTopic(const char *id = "Topic");
 	
 	/** \brief Create copy of conversation topic. */
-	ceConversationTopic( const ceConversationTopic &topic );
+	ceConversationTopic(const ceConversationTopic &topic);
 	
 	/** \brief Clean up conversation topic. */
-	virtual ~ceConversationTopic();
+protected:
+	~ceConversationTopic() override;
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent file or \em NULL if not set. */
+	/** \brief Parent file or \em nullptr if not set. */
 	inline ceConversationFile *GetFile() const{ return pFile; }
 	
-	/** \brief Set parent file or \em NULL if not set. */
-	void SetFile( ceConversationFile *file );
+	/** \brief Set parent file or \em nullptr if not set. */
+	void SetFile(ceConversationFile *file);
 	
 	
 	
@@ -85,38 +87,38 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Actions. */
-	inline ceConversationActionList &GetActionList(){ return pActions; }
-	inline const ceConversationActionList &GetActionList() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	
-	/** \brief Active action or \em NULL if none is active. */
-	inline ceConversationAction *GetActiveAction() const{ return pActiveAction; }
+	/** \brief Active action or \em nullptr if none is active. */
+	inline const ceConversationAction::Ref &GetActiveAction() const{ return pActiveAction; }
 	
-	/** \brief Active condition or \em NULL if none is active. */
-	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
+	/** \brief Active condition or \em nullptr if none is active. */
+	inline const ceConversationCondition::Ref &GetActiveCondition() const{ return pActiveCondition; }
 	
 	/** \brief Set active element. */
-	void SetActive( ceConversationAction *action, ceConversationCondition *condition );
+	void SetActive(ceConversationAction *action, ceConversationCondition *condition);
 	
 	/** Find missing words. */
-	void FindMissingWords( decStringSet &missingWords ) const;
-	void FindMissingWords( const ceConversationActionList &actions, decStringSet &missingWords ) const;
+	void FindMissingWords(decStringSet &missingWords) const;
+	void FindMissingWords(const ceConversationAction::List &actions, decStringSet &missingWords) const;
 	
 	
 	
 	/** \brief Notify listeners action structure changed. */
-	void NotifyActionStructureChanged( ceConversationAction *action );
+	void NotifyActionStructureChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners action changed. */
-	void NotifyActionChanged( ceConversationAction *action );
+	void NotifyActionChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners condition structure changed. */
-	void NotifyConditionStructureChanged( ceConversationAction *action );
+	void NotifyConditionStructureChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners condition changed. */
-	void NotifyConditionChanged( ceConversationAction *action, ceConversationCondition *condition );
+	void NotifyConditionChanged(ceConversationAction *action, ceConversationCondition *condition);
 	/*@}*/
 };
 

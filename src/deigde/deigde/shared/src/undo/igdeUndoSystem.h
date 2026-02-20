@@ -25,10 +25,10 @@
 #ifndef _IGDEUNDOSYSTEM_H_
 #define _IGDEUNDOSYSTEM_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "igdeUndo.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class igdeUndo;
 class igdeEditableEntity;
 
 
@@ -44,7 +44,7 @@ class DE_DLL_EXPORT igdeUndoSystem{
 private:
 	igdeEditableEntity *pEditableEntity;
 	
-	decObjectOrderedSet pUndos;
+	decTObjectOrderedSet<igdeUndo> pUndos;
 	int pRedoCount;
 	
 	int pMaxUndos;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo system. */
-	igdeUndoSystem( igdeEditableEntity *editableEntity );
+	igdeUndoSystem(igdeEditableEntity *editableEntity);
 	
 	/** \brief Clean up undo system. */
 	~igdeUndoSystem();
@@ -71,14 +71,17 @@ public:
 	
 	
 	
+	/** \brief Undo actions. */
+	inline const decTObjectOrderedSet<igdeUndo> &GetUndos() const{ return pUndos; }
+	
 	/** \brief Number of undo actions. */
 	int GetCount() const;
 	
 	/** \brief Undo action at index. */
-	igdeUndo *GetAt( int index ) const;
+	const igdeUndo::Ref &GetAt(int index) const;
 	
 	/** \brief Next undo action. */
-	igdeUndo *GetTop() const;
+	const igdeUndo::Ref &GetTop() const;
 	
 	/**
 	 * \brief Add undo.
@@ -87,7 +90,7 @@ public:
 	 * unless disabled. Disable only if you know what you are doing, for example preparing
 	 * an undo action with the possibility to cancel before actually adding it
 	 */
-	void Add( igdeUndo *undo, bool runRedo = true );
+	void Add(igdeUndo *undo, bool runRedo = true);
 	
 	/**
 	 * \brief Remove all undo actions.
@@ -102,13 +105,13 @@ public:
 	inline int GetMaxUndoCount() const{ return pMaxUndos; }
 	
 	/** \brief Set maximum number of undo actions. */
-	void SetMaxUndoCount( int maxUndos );
+	void SetMaxUndoCount(int maxUndos);
 	
 	/** \brief Maximum memory to consume. */
 	inline int GetMaxMemory() const{ return pMaxMemory; }
 	
 	/** \brief Set maximum memory to consume. */
-	void SetMaxMemory( int maxMemory );
+	void SetMaxMemory(int maxMemory);
 	
 	
 	

@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
-class gdeProperty;
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "../../../gamedef/property/gdeProperty.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeProperty;
  * \brief Undo action object class property set default value.
  */
 class gdeUGDWPSetDefaultValue : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDWPSetDefaultValue> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -52,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPSetDefaultValue( gdeGameDefinition *gamedef, gdeProperty *property,
-		const char *newValue, const char *oldValue );
+	gdeUGDWPSetDefaultValue(gdeGameDefinition *gamedef, gdeProperty *property,
+		const char *newValue, const char *oldValue);
 	
 protected:
 	/** \brief Clean up undo action. */

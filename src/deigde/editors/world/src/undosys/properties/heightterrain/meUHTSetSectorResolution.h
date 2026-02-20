@@ -27,17 +27,21 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meWorld;
-class meHeightTerrain;
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrain.h"
 
 
 /**
  * \brief Undo Set Height Terrain Sector Resolution.
  */
 class meUHTSetSectorResolution : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetSectorResolution>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrain *pHeightTerrain;
+	meHeightTerrain::Ref pHeightTerrain;
 	
 	int pOldSectorResolution;
 	int pNewSectorResolution;
@@ -46,21 +50,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetSectorResolution( meWorld *world, meHeightTerrain *heightTerrain, int newSectorResolution );
+	meUHTSetSectorResolution(meWorld *world, meHeightTerrain *heightTerrain, int newSectorResolution);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetSectorResolution();
+
+protected:
+	~meUHTSetSectorResolution() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

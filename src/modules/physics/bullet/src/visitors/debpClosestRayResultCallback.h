@@ -42,14 +42,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new callback. */
-	debpClosestRayResultCallback( const btVector3 &rayFromWorld,
-	const btVector3 &rayToWorld, const decCollisionFilter *collisionFilter );
+	debpClosestRayResultCallback(const btVector3 &rayFromWorld,
+	const btVector3 &rayToWorld, const decCollisionFilter *collisionFilter);
 	/*@}*/
 	
 	/** \name Overwriting */
 	/*@{*/
 	/** \brief Determine if a collision between two collision objects is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	/*@}*/
 };
 

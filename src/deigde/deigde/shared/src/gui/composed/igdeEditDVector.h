@@ -25,11 +25,11 @@
 #ifndef _IGDEEDITDVECTOR_H_
 #define _IGDEEDITDVECTOR_H_
 
-#include "../igdeTextFieldReference.h"
+#include "../igdeTextField.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerBoxAlternate.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -43,21 +43,33 @@ class igdeUIHelper;
  * Composed widget to edit decDVector.
  */
 class DE_DLL_EXPORT igdeEditDVector : public igdeContainerBoxAlternate{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditDVector>;
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditDVector &pEditDVector;
-		igdeTextFieldReference pTextX;
-		igdeTextFieldReference pTextY;
-		igdeTextFieldReference pTextZ;
+		igdeTextField::WeakRef pTextX;
+		igdeTextField::WeakRef pTextY;
+		igdeTextField::WeakRef pTextZ;
 		
 	public:
-		cListener( igdeEditDVector &editDVector, igdeTextField *textX,
-			igdeTextField *textY, igdeTextField *textz );
-		virtual ~cListener();
-		virtual void OnTextChanged( igdeTextField *textField );
-		virtual void OnTextChanging( igdeTextField *textField );
+		using Ref = deTObjectReference<cListener>;
+		
+		cListener(igdeEditDVector &editVector, igdeTextField *textX,
+			igdeTextField *textY, igdeTextField *textz);
+		
+	protected:
+		~cListener() override;
+		
+	public:
+		void OnTextChanged(igdeTextField *textField) override;
+		void OnTextChanging(igdeTextField *textField) override;
 	};
 	
 	
@@ -70,12 +82,12 @@ private:
 	int pColumns;
 	int pPrecision;
 	
-	igdeTextFieldReference pTextX;
-	igdeTextFieldReference pTextY;
-	igdeTextFieldReference pTextZ;
+	igdeTextField::Ref pTextX;
+	igdeTextField::Ref pTextY;
+	igdeTextField::Ref pTextZ;
 	bool pPreventUpdate;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditDVectorListener> pListeners;
 	
 	
 	
@@ -83,11 +95,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit vector. */
-	igdeEditDVector( igdeUIHelper &helper, int columns, int precision,
-		const char *description = "" );
+	igdeEditDVector(igdeUIHelper &helper, int columns, int precision,
+		const char *description = "");
 	
-	igdeEditDVector( igdeUIHelper &helper, int columns, int precision,
-		bool editable, const char *description = "" );
+	igdeEditDVector(igdeUIHelper &helper, int columns, int precision,
+		bool editable, const char *description = "");
 	
 	
 	
@@ -98,7 +110,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       vectorer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditDVector();
+	~igdeEditDVector() override;
 	/*@}*/
 	
 	
@@ -110,7 +122,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit fields. */
 	inline int GetColumns() const{ return pColumns; }
@@ -119,19 +131,19 @@ public:
 	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if widget is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Precision for floating point values as digits after period. */
 	inline int GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision for floating point values as digits after period. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -142,15 +154,15 @@ public:
 	inline const decDVector &GetDVector() const{ return pDVector; }
 	
 	/** \brief Set vector. */
-	void SetDVector( const decDVector &vector );
+	void SetDVector(const decDVector &vector);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditDVectorListener *listener );
+	void AddListener(igdeEditDVectorListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditDVectorListener *listener );
+	void RemoveListener(igdeEditDVectorListener *listener);
 	
 	/** \brief Notify listeners vector changed. */
 	virtual void NotifyDVectorChanged();
@@ -183,7 +195,7 @@ protected:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper );
+	void pCreateContent(igdeUIHelper &helper);
 };
 
 #endif

@@ -37,16 +37,17 @@
 class dexsiDeviceCoreKeyboard : public dexsiDevice{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceCoreKeyboard> Ref;
+	using Ref = deTObjectReference<dexsiDeviceCoreKeyboard>;
+	
 	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	dexsiDeviceCoreKeyboard( deXSystemInput &module );
+	dexsiDeviceCoreKeyboard(deXSystemInput &module);
 	
 protected:
 	/** Clean up device. */
-	virtual ~dexsiDeviceCoreKeyboard();
+	~dexsiDeviceCoreKeyboard() override;
 	/*@}*/
 	
 	
@@ -55,16 +56,16 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Get key code for X11 key sym. */
-	static deInputEvent::eKeyCodes KeyCodeForKeySym( KeySym keysym );
+	static deInputEvent::eKeyCodes KeyCodeForKeySym(KeySym keysym);
 	
 	/** Get key location for X11 key sym. */
-	static deInputEvent::eKeyLocation KeyLocationForKeySym( KeySym keysym );
+	static deInputEvent::eKeyLocation KeyLocationForKeySym(KeySym keysym);
 	
 	/** Get matching priority for X11 key sym. */
-	static int MatchingPriorityForKeySym( KeySym keysym );
+	static int MatchingPriorityForKeySym(KeySym keysym);
 	
 	/** Get button best matching a character. */
-	int ButtonMatchingKeyChar( int keyChar ) const;
+	int ButtonMatchingKeyChar(int keyChar) const;
 	/*@}*/
 };
 

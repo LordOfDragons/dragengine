@@ -32,8 +32,8 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleClosestProp;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleClosestProp.h"
 
 
 
@@ -43,9 +43,15 @@ class meHTVRuleClosestProp;
  * Undo action to set the prop class of a height terrain vegetation rule closest prop.
  */
 class meUHTVRuleCPSetClass : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleCPSetClass>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleClosestProp *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleClosestProp::Ref pRule;
 	
 	decString pOldPropClass;
 	decString pNewPropClass;
@@ -54,17 +60,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCPSetClass( meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass );
+	meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleCPSetClass();
+
+protected:
+	~meUHTVRuleCPSetClass() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

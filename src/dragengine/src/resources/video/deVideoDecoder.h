@@ -25,8 +25,9 @@
 #ifndef _DEVIDEODECODER_H_
 #define _DEVIDEODECODER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../../deObject.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deVideoManager;
 class deBaseVideoDecoder;
@@ -43,18 +44,16 @@ class deBaseVideoDecoder;
 class DE_DLL_EXPORT deVideoDecoder : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideoDecoder> Ref;
-	
+	using Ref = deTObjectReference<deVideoDecoder>;
 	
 	
 private:
 	deVideoManager &pVideoManager;
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	deBaseVideoDecoder *pPeerVideo;
 	
-	deVideoDecoder *pLLManagerPrev;
-	deVideoDecoder *pLLManagerNext;
+	decTLinkedList<deVideoDecoder>::Element pLLManager;
 	
 	
 	
@@ -62,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video decoder. */
-	deVideoDecoder( deVideoManager &manager, deVideo *video );
+	deVideoDecoder(deVideoManager &manager, deVideo *video);
 	
 protected:
 	/**
@@ -71,7 +70,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVideoDecoder();
+	~deVideoDecoder() override;
 	/*@}*/
 	
 	
@@ -88,7 +87,7 @@ public:
 	int GetPosition();
 	
 	/** \brief Set file position in frames from the beginning. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
@@ -101,7 +100,7 @@ public:
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	bool DecodeFrame( void *buffer, int size );
+	bool DecodeFrame(void *buffer, int size);
 	/*@}*/
 	
 	
@@ -112,7 +111,7 @@ public:
 	inline deBaseVideoDecoder *GetPeerVideo() const{ return pPeerVideo; }
 	
 	/** \brief Set decoder peer. */
-	void SetPeerVideo( deBaseVideoDecoder *peer );
+	void SetPeerVideo(deBaseVideoDecoder *peer);
 	/*@}*/
 	
 	
@@ -122,23 +121,8 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deVideoDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerPrev( deVideoDecoder *resource );
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deVideoDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerNext( deVideoDecoder *resource );
+	/** \brief Manager linked list element. */
+	inline decTLinkedList<deVideoDecoder>::Element &GetLLManager(){ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

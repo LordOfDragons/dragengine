@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,29 +37,33 @@ class ceStrip;
  * \brief Undo Action Actor Speak Conversation Action Remove Face Pose.
  */
 class ceUCAASpeakFaceRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakFaceRemove>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pFacePose;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pFacePose;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakFaceRemove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose );
+	ceUCAASpeakFaceRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakFaceRemove();
+	~ceUCAASpeakFaceRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

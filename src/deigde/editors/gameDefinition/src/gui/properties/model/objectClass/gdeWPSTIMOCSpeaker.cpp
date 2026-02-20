@@ -37,7 +37,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -47,29 +47,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCSpeaker::gdeWPSTIMOCSpeaker( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCSpeaker *speaker, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassSpeaker, objectClass, index ),
-pSpeaker( NULL )
+gdeWPSTIMOCSpeaker::gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCSpeaker *speaker, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassSpeaker, objectClass, index)
 {
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Speaker #%d", index + 1 );
-	SetText( text );
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.SpeakerNumber").ToUTF8(), index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
 }
 
 gdeWPSTIMOCSpeaker::~gdeWPSTIMOCSpeaker(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
 }
 
 
@@ -78,16 +73,16 @@ gdeWPSTIMOCSpeaker::~gdeWPSTIMOCSpeaker(){
 ///////////////
 
 void gdeWPSTIMOCSpeaker::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
 bool gdeWPSTIMOCSpeaker::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if( ! pSpeaker->GetPathSound().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pSpeaker->GetPathSound() ) ) ){
+	if(!pSpeaker->GetPathSound().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pSpeaker->GetPathSound()))){
 		return false;
 	}
 	
@@ -101,20 +96,20 @@ void gdeWPSTIMOCSpeaker::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCSpeaker::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCSpeaker( pSpeaker );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCSpeaker );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCSpeaker(pSpeaker);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCSpeaker);
 }
 
-void gdeWPSTIMOCSpeaker::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCSpeaker::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSpeakerAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSpeakerRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSpeakerCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSpeakerCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSpeakerPaste());
 }

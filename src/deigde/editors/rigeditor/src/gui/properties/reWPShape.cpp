@@ -58,54 +58,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPShape::reWPShape( reWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pShape( NULL ),
-pRig( NULL ),
-pListener( NULL ),
-
-pPanelSphere( NULL ),
-pPanelBox( NULL ),
-pPanelCylinder( NULL ),
-pPanelCapsule( NULL ),
-pPanelHull( NULL ),
-pActivePanel( NULL )
+reWPShape::reWPShape(reWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pActivePanel(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPShapeListener( *this );
+	pListener = reWPShapeListener::Ref::New(*this);
 	
-	pSwitcher.TakeOver( new igdeSwitcher( env ) );
-	AddChild( pSwitcher );
+	pSwitcher = igdeSwitcher::Ref::New(env);
+	AddChild(pSwitcher);
 	
-	helper.Label( pSwitcher, "No Active Shape" );
+	helper.Label(pSwitcher, "@Rig.PanelShape.NoActiveShape");
 	
-	pPanelSphere = new reWPPanelShapeSphere( *this );
-	pSwitcher->AddChild( pPanelSphere );
+	pPanelSphere = reWPPanelShapeSphere::Ref::New(*this);
+	pSwitcher->AddChild(pPanelSphere);
 	
-	pPanelBox = new reWPPanelShapeBox( *this );
-	pSwitcher->AddChild( pPanelBox );
+	pPanelBox = reWPPanelShapeBox::Ref::New(*this);
+	pSwitcher->AddChild(pPanelBox);
 	
-	pPanelCylinder = new reWPPanelShapeCylinder( *this );
-	pSwitcher->AddChild( pPanelCylinder );
+	pPanelCylinder = reWPPanelShapeCylinder::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCylinder);
 	
-	pPanelCapsule = new reWPPanelShapeCapsule( *this );
-	pSwitcher->AddChild( pPanelCapsule );
+	pPanelCapsule = reWPPanelShapeCapsule::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCapsule);
 	
-	pPanelHull = new reWPPanelShapeHull( *this );
-	pSwitcher->AddChild( pPanelHull );
+	pPanelHull = reWPPanelShapeHull::Ref::New(*this);
+	pSwitcher->AddChild(pPanelHull);
 	
-	pSwitcher->SetCurrent( 0 );
+	pSwitcher->SetCurrent(0);
 }
 
 reWPShape::~reWPShape(){
-	SetRig( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -113,80 +100,69 @@ reWPShape::~reWPShape(){
 // Management
 ///////////////
 
-void reWPShape::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reWPShape::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	SetShape( NULL );
+	SetShape(nullptr);
 	
-	if( pRig ){
-		pRig->RemoveNotifier( pListener );
-		pRig->FreeReference();
-		pRig = NULL;
+	if(pRig){
+		pRig->RemoveNotifier(pListener);
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
-		rig->AddNotifier( pListener );
-		rig->AddReference();
-		
-		SetShape( rig->GetSelectionShapes()->GetActiveShape() );
+	if(rig){
+		rig->AddNotifier(pListener);
+		SetShape(rig->GetSelectionShapes()->GetActiveShape());
 	}
 }
 
-void reWPShape::SetShape( reRigShape *shape ){
-	if( shape == pShape ){
+void reWPShape::SetShape(reRigShape *shape){
+	if(shape == pShape){
 		return;
 	}
 	
-	if( pActivePanel ){
-		pActivePanel->SetShape( NULL, NULL );
-		pActivePanel = NULL;
+	if(pActivePanel){
+		pActivePanel->SetShape(nullptr, nullptr);
+		pActivePanel = nullptr;
 	}
-	
-	if( pShape ){
-		pShape->FreeReference();
-	}
-	
 	pShape = shape;
 	
-	if( ! shape ){
-		pSwitcher->SetCurrent( 0 );
+	if(!shape){
+		pSwitcher->SetCurrent(0);
 		return;
 	}
-	
-	shape->AddReference();
-	
 	const reRigShape::eShapeTypes shapeType = shape->GetShapeType();
 	
-	if( shapeType == pPanelSphere->GetRequiredShapeType() ){
-		pSwitcher->SetCurrent( 1 );
+	if(shapeType == pPanelSphere->GetRequiredShapeType()){
+		pSwitcher->SetCurrent(1);
 		pActivePanel = pPanelSphere;
 		
-	}else if( shapeType == pPanelBox->GetRequiredShapeType() ){
-		pSwitcher->SetCurrent( 2 );
+	}else if(shapeType == pPanelBox->GetRequiredShapeType()){
+		pSwitcher->SetCurrent(2);
 		pActivePanel = pPanelBox;
 		
-	}else if( shapeType == pPanelCylinder->GetRequiredShapeType() ){
-		pSwitcher->SetCurrent( 3 );
+	}else if(shapeType == pPanelCylinder->GetRequiredShapeType()){
+		pSwitcher->SetCurrent(3);
 		pActivePanel = pPanelCylinder;
 		
-	}else if( shapeType == pPanelCapsule->GetRequiredShapeType() ){
-		pSwitcher->SetCurrent( 4 );
+	}else if(shapeType == pPanelCapsule->GetRequiredShapeType()){
+		pSwitcher->SetCurrent(4);
 		pActivePanel = pPanelCapsule;
 		
-	}else if( shapeType == pPanelHull->GetRequiredShapeType() ){
-		pSwitcher->SetCurrent( 5 );
+	}else if(shapeType == pPanelHull->GetRequiredShapeType()){
+		pSwitcher->SetCurrent(5);
 		pActivePanel = pPanelHull;
 		
 	}else{
-		pSwitcher->SetCurrent( 0 );
+		pSwitcher->SetCurrent(0);
 	}
 	
-	if( pActivePanel ){
-		pActivePanel->SetShape( pRig, pShape );
+	if(pActivePanel){
+		pActivePanel->SetShape(pRig, pShape);
 		UpdateShape();
 	}
 }
@@ -194,7 +170,7 @@ void reWPShape::SetShape( reRigShape *shape ){
 
 
 void reWPShape::UpdateShape(){
-	if( pActivePanel ){
+	if(pActivePanel){
 		pActivePanel->UpdateShape();
 	}
 }

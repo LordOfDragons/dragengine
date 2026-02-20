@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeMainWindow.h"
 #include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
@@ -45,16 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMainWindow::igdeMainWindow( igdeEnvironment &environment, const char *title ) :
-igdeWindow( environment, title, NULL, true ),
-pEngineController( NULL ),
-pWindowState( ewsNormal ){
+igdeMainWindow::igdeMainWindow(igdeEnvironment &environment, const char *title) :
+igdeWindow(environment, title, nullptr, true),
+pEngineController(nullptr),
+pWindowState(ewsNormal),
+pNormalPosition(GetPosition()),
+pNormalSize(GetSize()),
+pNormalPositionSet(false),
+pNormalSizeSet(false),
+pNativeMainWindow(nullptr){
 }
 
 igdeMainWindow::~igdeMainWindow(){
 	igdeMainWindow::DestroyNativeWidget();
 	
-	if( pEngineController ){
+	if(pEngineController){
 		delete pEngineController;
 	}
 }
@@ -64,12 +65,8 @@ igdeMainWindow::~igdeMainWindow(){
 // Management
 ///////////////
 
-void igdeMainWindow::SetInitialSize( const decPoint &initialSize ){
-	pInitialSize = initialSize.Largest( decPoint() );
-}
-
-void igdeMainWindow::SetWindowState( eWindowStates windowState ){
-	if( windowState == pWindowState ){
+void igdeMainWindow::SetWindowState(eWindowStates windowState){
+	if(windowState == pWindowState){
 		return;
 	}
 	
@@ -79,10 +76,18 @@ void igdeMainWindow::SetWindowState( eWindowStates windowState ){
 	OnWindowState();
 }
 
+void igdeMainWindow::SetNormalPosition(const decPoint &position){
+	pNormalPosition = position;
+	pNormalPositionSet = true;
+}
 
+void igdeMainWindow::SetNormalSize(const decPoint &size){
+	pNormalSize = size;
+	pNormalSizeSet = true;
+}
 
 void igdeMainWindow::StartEngine(){
-	if( pEngineController->GetRunning() ){
+	if(pEngineController->GetRunning()){
 		return;
 	}
 	
@@ -96,7 +101,7 @@ void igdeMainWindow::StartEngine(){
 }
 
 void igdeMainWindow::StopEngine(){
-	if( ! pEngineController || ! pEngineController->GetRunning() ){
+	if(!pEngineController || !pEngineController->GetRunning()){
 		return;
 	}
 	
@@ -135,99 +140,71 @@ void igdeMainWindow::Close(){
 ////////////////////////
 
 void igdeMainWindow::CreateEngineController(){
-	pEngineController = new igdeEngineController( *this );
+	pEngineController = new igdeEngineController(*this);
 	AddNullModules();
 	ActivateNullModules();
 }
 
 void igdeMainWindow::AddNullModules(){
-	deObjectReference module;
+	pEngineController->AddInternalModule(igdeNullScriptModule::cModule::Ref::New(
+		pEngineController->GetEngine()->GetModuleSystem()));
 	
-	module.TakeOver( new igdeNullScriptModule::cModule( pEngineController->GetEngine()->GetModuleSystem() ) );
-	pEngineController->AddInternalModule( ( deInternalModule* )( deObject* )module );
+	pEngineController->AddInternalModule(igdeNullInputModule::cModule::Ref::New(
+		pEngineController->GetEngine()->GetModuleSystem()));
 	
-	module.TakeOver( new igdeNullInputModule::cModule( pEngineController->GetEngine()->GetModuleSystem() ) );
-	pEngineController->AddInternalModule( ( deInternalModule* )( deObject* )module );
-	
-	module.TakeOver( new igdeNullCrashRecoveryModule::cModule( pEngineController->GetEngine()->GetModuleSystem() ) );
-	pEngineController->AddInternalModule( ( deInternalModule* )( deObject* )module );
+	pEngineController->AddInternalModule(igdeNullCrashRecoveryModule::cModule::Ref::New(
+		pEngineController->GetEngine()->GetModuleSystem()));
 }
 
 void igdeMainWindow::ActivateNullModules(){
-	pEngineController->ActivateModule( igdeEngineController::esInput, "NullInput" );
-	pEngineController->ActivateModule( igdeEngineController::esScripting, "NullScript" );
-	pEngineController->ActivateModule( igdeEngineController::esCrashRecovery, "NullCrashRecovery" );
+	pEngineController->ActivateModule(igdeEngineController::esInput, "NullInput");
+	pEngineController->ActivateModule(igdeEngineController::esScripting, "NullScript");
+	pEngineController->ActivateModule(igdeEngineController::esCrashRecovery, "NullCrashRecovery");
 }
 
 
 
 void igdeMainWindow::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMainWindow * const native = igdeNativeMainWindow::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMainWindow * const native = igdeNativeMainWindow::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeMainWindow = native;
+	pNativeWindow = native;
 	CreateChildWidgetNativeWidgets();
+	
 	native->PostCreateNativeWidget();
 }
 
 void igdeMainWindow::DropNativeWidget(){
-	if( pEngineController ){
+	if(pEngineController){
 		pEngineController->UnparentMainRenderWindow();
 	}
 	
+	pNativeMainWindow = nullptr;
 	igdeWindow::DropNativeWidget();
 }
 
 void igdeMainWindow::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMainWindow &native = *( ( igdeNativeMainWindow* )GetNativeWidget() );
+	igdeNativeMainWindow &native = *((igdeNativeMainWindow*)GetNativeWidget());
 	DropNativeWidget();
 	native.DestroyNativeWidget();
 }
 
 
 
-void igdeMainWindow::OnTitleChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateTitle();
-	}
-}
-
-void igdeMainWindow::OnIconChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateIcon();
-	}
-}
-
-void igdeMainWindow::OnSizeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateSize();
-	}
-}
-
-void igdeMainWindow::OnPositionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdatePosition();
-	}
-}
-
 void igdeMainWindow::OnVisibleChanged(){
 	// never hide main window
 }
 
-void igdeMainWindow::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateEnabled();
-	}
-}
-
 void igdeMainWindow::OnWindowStateChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateWindowState();
+	if(pNativeMainWindow){
+		pNativeMainWindow->UpdateWindowState();
 	}
 }

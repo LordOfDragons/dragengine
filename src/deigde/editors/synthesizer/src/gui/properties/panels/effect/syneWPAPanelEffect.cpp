@@ -1,0 +1,398 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#include "syneWPAPanelEffect.h"
+#include "../../syneWPEffect.h"
+#include "../../../syneWindowMain.h"
+#include "../../../syneViewSynthesizer.h"
+#include "../../../../synthesizerEditor.h"
+#include "../../../../synthesizer/syneSynthesizer.h"
+#include "../../../../synthesizer/controller/syneController.h"
+#include "../../../../synthesizer/controller/syneControllerTarget.h"
+#include "../../../../synthesizer/link/syneLink.h"
+#include "../../../../synthesizer/effect/syneEffect.h"
+#include "../../../../undosys/source/effect/syneUEffectSetStrength.h"
+#include "../../../../undosys/source/effect/syneUEffectToggleEnabled.h"
+#include "../../../../undosys/source/effect/syneUEffectTargetAddLink.h"
+#include "../../../../undosys/source/effect/syneUEffectTargetRemoveLink.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/layout/igdeContainerForm.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeComboBoxListener.h>
+#include <deigde/gui/event/igdeListBoxListener.h>
+#include <deigde/gui/event/igdeTextFieldListener.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
+#include <deigde/gui/model/igdeListItem.h>
+#include <deigde/undo/igdeUndo.h>
+#include <deigde/undo/igdeUndoSystem.h>
+
+#include <dragengine/common/exceptions.h>
+
+
+
+// Actions
+////////////
+
+namespace{
+
+class cBaseTextFieldListener : public igdeTextFieldListener{
+protected:
+	syneWPAPanelEffect &pPanel;
+	
+public:
+	cBaseTextFieldListener(syneWPAPanelEffect &panel) : pPanel(panel){}
+	
+	void OnTextChanged(igdeTextField *textField) override{
+		syneEffect * const effect = pPanel.GetEffect();
+		if(!effect){
+			return;
+		}
+		
+		igdeUndo::Ref undo(OnChanged(textField, effect));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
+		}
+	}
+	
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, syneEffect *effect) = 0;
+};
+
+class cBaseComboBoxListener : public igdeComboBoxListener{
+protected:
+	syneWPAPanelEffect &pPanel;
+	
+public:
+	cBaseComboBoxListener(syneWPAPanelEffect &panel) : pPanel(panel){}
+	
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		syneEffect * const effect = pPanel.GetEffect();
+		if(!effect){
+			return;
+		}
+		
+		igdeUndo::Ref undo(OnChanged(comboBox, effect));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
+		}
+	}
+	
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, syneEffect *effect) = 0;
+};
+
+class cBaseAction : public igdeAction{
+protected:
+	syneWPAPanelEffect &pPanel;
+	
+public:
+	cBaseAction(syneWPAPanelEffect &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
+	
+	void OnAction() override{
+		syneEffect * const effect = pPanel.GetEffect();
+		if(!effect){
+			return;
+		}
+		
+		igdeUndo::Ref undo(OnAction(effect));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
+		}
+	}
+	
+	virtual igdeUndo::Ref OnAction(syneEffect *effect) = 0;
+};
+
+
+class cTextStrength : public cBaseTextFieldListener {
+public:
+	using Ref = deTObjectReference<cTextStrength>;
+	cTextStrength(syneWPAPanelEffect &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffect *effect) override{
+		const float value = textField->GetFloat();
+		return fabsf(value - effect->GetStrength()) > FLOAT_SAFE_EPSILON
+			? syneUEffectSetStrength::Ref::New(effect, value) : igdeUndo::Ref();
+	}
+};
+
+class cActionEnable : public cBaseAction {
+public:
+	using Ref = deTObjectReference<cActionEnable>;
+	cActionEnable(syneWPAPanelEffect &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelEffect.Action.Enable",
+		nullptr, "@Synthesizer.WPAPanelEffect.Action.Enable.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(syneEffect *effect) override{
+		return syneUEffectToggleEnabled::Ref::New(effect);
+	}
+};
+
+
+class cComboTarget : public cBaseComboBoxListener {
+public:
+	using Ref = deTObjectReference<cComboTarget>;
+	cComboTarget(syneWPAPanelEffect &panel) : cBaseComboBoxListener(panel){}
+	
+	igdeUndo::Ref  OnChanged(igdeComboBox*, syneEffect*) override{
+		pPanel.UpdateTarget();
+		return {};
+	}
+};
+
+class cListLinks : public igdeListBoxListener{
+	syneWPAPanelEffect &pPanel;
+	
+public:
+	using Ref = deTObjectReference<cListLinks>;
+	cListLinks(syneWPAPanelEffect &panel) : pPanel(panel){}
+	
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
+		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
+	}
+};
+
+class cActionLinkAdd : public cBaseAction {
+public:
+	using Ref = deTObjectReference<cActionLinkAdd>;
+	cActionLinkAdd(syneWPAPanelEffect &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelEffect.Action.LinkAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Synthesizer.WPAPanelEffect.Action.LinkAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(syneEffect *effect) override{
+		syneControllerTarget * const target = pPanel.GetTarget();
+		syneLink * const link = pPanel.GetCBLink();
+		return target && link && !target->GetLinks().Has(link)
+			? syneUEffectTargetAddLink::Ref::New(effect, target, link) : igdeUndo::Ref();
+	}
+	
+	void Update() override{
+		syneControllerTarget * const target = pPanel.GetTarget();
+		syneLink * const link = pPanel.GetCBLink();
+		SetSelected(target && link && !target->GetLinks().Has(link));
+	}
+};
+
+class cActionLinkRemove : public cBaseAction {
+public:
+	using Ref = deTObjectReference<cActionLinkRemove>;
+	cActionLinkRemove(syneWPAPanelEffect &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelEffect.Action.LinkRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Synthesizer.WPAPanelEffect.Action.LinkRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(syneEffect *effect) override{
+		syneControllerTarget * const target = pPanel.GetTarget();
+		syneLink * const link = pPanel.GetListLink();
+		return target && link && target->GetLinks().Has(link)
+			? syneUEffectTargetRemoveLink::Ref::New(effect, target, link) : igdeUndo::Ref();
+	}
+	
+	void Update() override{
+		syneControllerTarget * const target = pPanel.GetTarget();
+		syneLink * const link = pPanel.GetListLink();
+		SetSelected(target && link && target->GetLinks().Has(link));
+	}
+};
+
+}
+
+
+
+// Class syneWPAPanelEffect
+///////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+syneWPAPanelEffect::syneWPAPanelEffect(syneWPEffect &wpEffect,
+	deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType) :
+igdeContainerFlow(wpEffect.GetEnvironment(), igdeContainerFlow::eaY),
+pWPEffect(wpEffect),
+pRequiredType(requiredType)
+{
+	igdeEnvironment &env = wpEffect.GetEnvironment();
+	igdeUIHelper &helper = env.GetUIHelperProperties();
+	igdeContainer::Ref groupBox, form, formLine;
+	
+	
+	pActionLinkAdd = cActionLinkAdd::Ref::New(*this);
+	pActionLinkRemove = cActionLinkRemove::Ref::New(*this);
+	
+	
+	// general settings
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelEffect.GroupGeneralSettings");
+	helper.EditString(groupBox, "@Synthesizer.WPAPanelEffect.FieldStrength", "@Synthesizer.WPAPanelEffect.FieldStrength.ToolTip", pEditStrength, cTextStrength::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnabled, cActionEnable::Ref::New(*this));
+	
+	
+	// targets and links
+	helper.GroupBoxFlow(*this, groupBox, "@Synthesizer.WPAPanelEffect.GroupTargetsLinks");
+	
+	form = igdeContainerForm::Ref::New(env);
+	groupBox->AddChild(form);
+	helper.ComboBox(form, "@Synthesizer.WPAPanelEffect.FieldTarget", "@Synthesizer.WPAPanelEffect.FieldTarget.ToolTip",
+		pCBTarget, cComboTarget::Ref::New(*this));
+	pCBTarget->SetAutoTranslateItems(true);
+	
+	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelEffect.FieldLink", "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", pCBLinks, cComboTarget::Ref::New(*this));
+	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
+	
+	helper.ListBox(groupBox, 4, "@Synthesizer.WPAPanelEffect.ListLinks.ToolTip", pListLinks, cListLinks::Ref::New(*this));
+	pListLinks->SetDefaultSorter();
+}
+
+syneWPAPanelEffect::~syneWPAPanelEffect(){
+}
+
+
+
+// Management
+///////////////
+
+syneWindowMain &syneWPAPanelEffect::GetWindowMain() const{
+	return pWPEffect.GetViewSynthesizer().GetWindowMain();
+}
+
+syneSynthesizer *syneWPAPanelEffect::GetSynthesizer() const{
+	return pWPEffect.GetSynthesizer();
+}
+
+syneEffect *syneWPAPanelEffect::GetEffect() const{
+	return pWPEffect.GetEffect();
+}
+
+syneControllerTarget *syneWPAPanelEffect::GetTarget() const{
+	const igdeListItem * const selection = pCBTarget->GetSelectedItem();
+	return selection ? (syneControllerTarget*)selection->GetData() : nullptr;
+}
+
+syneLink *syneWPAPanelEffect::GetCBLink() const{
+	const igdeListItem * const selection = pCBLinks->GetSelectedItem();
+	return selection ? (syneLink*)selection->GetData() : nullptr;
+}
+
+syneLink *syneWPAPanelEffect::GetListLink() const{
+	const igdeListItem * const selection = pListLinks->GetSelectedItem();
+	return selection ? (syneLink*)selection->GetData() : nullptr;
+}
+
+
+
+void syneWPAPanelEffect::OnActivated(){
+	UpdateLinkList();
+	UpdateTargetList();
+	UpdateControllerList();
+	
+	UpdateTarget();
+}
+
+
+
+void syneWPAPanelEffect::RemoveAllTargets(){
+	pCBTarget->RemoveAllItems();
+}
+
+void syneWPAPanelEffect::AddTarget(const char *name, syneControllerTarget *target){
+	pCBTarget->AddItem(name, nullptr, target);
+}
+
+
+
+void syneWPAPanelEffect::UpdateControllerList(){
+}
+
+void syneWPAPanelEffect::UpdateLinkList(){
+	void * const selection = pCBLinks->GetSelectedItemData();
+	
+	pCBLinks->RemoveAllItems();
+	
+	const syneSynthesizer * const synthesizer = GetSynthesizer();
+	if(synthesizer){
+		synthesizer->GetLinks().Visit([&](syneLink *link){
+			pCBLinks->AddItem(link->GetName(), nullptr, link);
+		});
+		
+		pCBLinks->SortItems();
+	}
+	
+	pCBLinks->SetSelectionWithData(selection);
+}
+
+void syneWPAPanelEffect::UpdateEffect(){
+	const syneEffect * const effect = GetEffect();
+	
+	if(effect){
+		pEditStrength->SetFloat(effect->GetStrength());
+		pChkEnabled->SetChecked(effect->GetEnabled());
+		
+	}else{
+		pEditStrength->ClearText();
+		pChkEnabled->SetChecked(false);
+	}
+	
+	const bool enabled = effect;
+	pEditStrength->SetEnabled(enabled);
+	pChkEnabled->SetEnabled(enabled);
+	
+	UpdateTarget();
+}
+
+void syneWPAPanelEffect::UpdateTargetList(){
+	pCBTarget->RemoveAllItems();
+	
+	syneEffect * const effect = GetEffect();
+	if(effect){
+		AddTarget("@Synthesizer.WPAPanelEffect.Target.Strength", effect->GetTargetStrength());
+	}
+}
+
+void syneWPAPanelEffect::UpdateTarget(){
+	syneControllerTarget * const target = GetTarget();
+	
+	pListLinks->RemoveAllItems();
+	
+	if(target){
+		target->GetLinks().Visit([this](syneLink *link){
+			pListLinks->AddItem(link->GetName(), nullptr, link);
+		});
+		pListLinks->SortItems();
+	}
+	
+	pListLinks->SetEnabled(target);
+	pBtnLinkAdd->GetAction()->Update();
+}

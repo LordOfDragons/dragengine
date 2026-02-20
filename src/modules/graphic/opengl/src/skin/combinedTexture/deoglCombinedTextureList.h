@@ -25,6 +25,7 @@
 #ifndef _DEOGLCOMBINEDTEXTURELIST_H_
 #define _DEOGLCOMBINEDTEXTURELIST_H_
 
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglCombinedTexture;
@@ -40,15 +41,13 @@ class deoglCombinedTextureList{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglCombinedTexture *pRoot;
-	deoglCombinedTexture *pTail;
-	int pCount;
+	decTUniqueLinkedList<deoglCombinedTexture> pTextures;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglCombinedTextureList( deoglRenderThread &pRenderThread );
+	deoglCombinedTextureList(deoglRenderThread &pRenderThread);
 	
 	/** Clean up list. */
 	~deoglCombinedTextureList();
@@ -63,11 +62,14 @@ public:
 	
 	
 	
+	/** Combined textures. */
+	inline const decTUniqueLinkedList<deoglCombinedTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of combined textures in the list. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{ return pTextures.GetCount(); }
 	
 	/** Root combined texture. */
-	inline deoglCombinedTexture *GetRoot() const{ return pRoot; }
+	inline deoglCombinedTexture *GetRoot() const{ return pTextures.GetRootOwner(); }
 	
 	/**
 	 * Combined texture with parameters.
@@ -75,13 +77,13 @@ public:
 	 *          texture. To remove a usage use the RemoveUsage function on the returned
 	 *          combined texture.
 	 */
-	deoglCombinedTexture *GetWith( const decColor &color, deoglRImage *images[ 4 ] );
+	deoglCombinedTexture *GetWith(const decColor &color, deoglRImage *images[4]);
 	
 	/**
 	 * Remove combined texture.
 	 * \details For use by deoglCombinedTexture only.
 	 */
-	void Remove( deoglCombinedTexture *combinedTexture );
+	void Remove(deoglCombinedTexture *combinedTexture);
 	/*@}*/
 };
 

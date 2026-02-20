@@ -30,6 +30,7 @@
 #include "../target/deoglRenderTarget.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
@@ -49,6 +50,8 @@ public:
 		
 	public:
 		cViewImage() = default;
+		cViewImage(const cViewImage &other);
+		cViewImage &operator=(const cViewImage &other);
 	};
 	
 	
@@ -69,11 +72,9 @@ private:
 	deoglRenderTarget::Ref pRenderTarget;
 	decVector2 pCanvasTCFrom, pCanvasTCTo;
 	
-	GLuint *pVRGetViewsBuffer;
-	int pVRGetViewsBufferSize;
+	decTList<GLuint> pVRGetViewsBuffer;
 	
-	cViewImage *pVRViewImages;
-	int pVRViewImageCount;
+	decTList<cViewImage> pVRViewImages;
 	decVector2 pVRViewTCFrom, pVRViewTCTo;
 	
 	bool pUseGammaCorrection;
@@ -84,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create VR eye. */
-	deoglVREye( deoglVR &vr, deBaseVRModule::eEye eye );
+	deoglVREye(deoglVR &vr, deBaseVRModule::eEye eye);
 	
 	/** Clean up VR eye. */
 	~deoglVREye();
@@ -110,10 +111,10 @@ public:
 	inline const decMatrix &GetMatrixViewToEye() const{ return pMatrixViewToEye; }
 	
 	/** Hidden area mesh or nullptr. */
-	inline deoglRModel *GetHiddenMesh() const{ return pHiddenRMesh; }
+	inline const deoglRModel::Ref &GetHiddenMesh() const{ return pHiddenRMesh; }
 	
 	/** Render target. */
-	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Texture coordinates to use to render from render target to canvas. */
 	inline const decVector2 &GetCanvasTCFrom() const{ return pCanvasTCFrom; }
@@ -126,32 +127,31 @@ public:
 	 * Create projection matrix matching depth usage mode. Depending on the inverse depth
 	 * mode used the projection matrix is either infinite or non-infinite.
 	 */
-	decDMatrix CreateProjectionDMatrix( float znear, float zfar ) const;
+	decDMatrix CreateProjectionDMatrix(float znear, float zfar) const;
 	
 	/**
 	 * Create frustum matrix. This is the same as CreateProjectionDMatrix but always
 	 * creates a non-infinite projection matrix.
 	 */
-	decDMatrix CreateFrustumDMatrix( float znear, float zfar ) const;
+	decDMatrix CreateFrustumDMatrix(float znear, float zfar) const;
 	
 	/** Begin frame. */
-	void BeginFrame( deBaseVRModule &vrmodule );
+	void BeginFrame(deBaseVRModule &vrmodule);
 	
 	/** Render if required. */
 	void Render();
 	
 	/** Submit if required. */
-	void Submit( deBaseVRModule &vrmodule );
+	void Submit(deBaseVRModule &vrmodule);
 	/*@}*/
 	
 	
 	
 private:
-	void pGetParameters( deBaseVRModule &vrmodule );
-	void pLogParameters( deoglRenderThread &renderThread );
-	void pUpdateEyeViews( deBaseVRModule &vrmodule );
-	void pDestroyEyeViews();
-	void pRender( deoglRenderThread &renderThread );
+	void pGetParameters(deBaseVRModule &vrmodule);
+	void pLogParameters(deoglRenderThread &renderThread);
+	void pUpdateEyeViews(deBaseVRModule &vrmodule);
+	void pRender(deoglRenderThread &renderThread);
 	const char *LogPrefix() const;
 };
 

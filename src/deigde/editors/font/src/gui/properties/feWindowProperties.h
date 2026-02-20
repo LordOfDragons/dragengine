@@ -25,9 +25,13 @@
 #ifndef _FEWINDOWPROPERTIES_H_
 #define _FEWINDOWPROPERTIES_H_
 
+#include "feWPFont.h"
+#include "feWPGlyph.h"
+#include "feWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class feWindowMain;
 class feFont;
@@ -38,12 +42,15 @@ class feFont;
  * \brief Properties Panel.
  */
 class feWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<feWindowProperties>;
+	
 private:
 	feWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelFont;
-	igdeWidgetReference pPanelGlyph;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	feWPFont::Ref pPanelFont;
+	feWPGlyph::Ref pPanelGlyph;
+	feWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -51,10 +58,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	feWindowProperties( feWindowMain &windowMain );
+	feWindowProperties(feWindowMain &windowMain);
 	
 	/** \brief Clean up window. */
-	virtual ~feWindowProperties();
+protected:
+	~feWindowProperties() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -63,7 +72,7 @@ public:
 	inline feWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set font to monitor. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	/*@}*/
 };
 

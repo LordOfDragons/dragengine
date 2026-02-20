@@ -26,9 +26,9 @@
 #define _SEUTEXTUREIMPORT_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../skin/property/sePropertyList.h"
+#include "../../skin/property/seProperty.h"
 
-class seTexture;
+#include "../../skin/texture/seTexture.h"
 
 
 
@@ -36,30 +36,34 @@ class seTexture;
  * \brief Undo texture import.
  */
 class seUTextureImport : public igdeUndo{
-private:
-	seTexture *pTexture;
+public:
+	using Ref = deTObjectReference<seUTextureImport>;
 	
-	sePropertyList pOldProperties;
-	sePropertyList pNewProperties;
+	
+private:
+	seTexture::Ref pTexture;
+	
+	seProperty::List pOldProperties;
+	seProperty::List pNewProperties;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */
-	seUTextureImport( seTexture *texture, const seTexture *importTexture );
+	seUTextureImport(seTexture *texture, const seTexture *importTexture);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUTextureImport();
+	~seUTextureImport() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

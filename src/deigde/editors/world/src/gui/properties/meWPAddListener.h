@@ -35,6 +35,9 @@ class meWPAdd;
  * \brief Add panel listener.
  */
 class meWPAddListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWPAddListener>;
+	
 private:
 	meWPAdd &pPanel;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPAddListener( meWPAdd &panel );
+	meWPAddListener(meWPAdd &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWPAddListener();
+	~meWPAddListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,7 +61,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged( meWorld *world );
+	void EditingChanged(meWorld *world) override;
 	/*@}*/
 };
 

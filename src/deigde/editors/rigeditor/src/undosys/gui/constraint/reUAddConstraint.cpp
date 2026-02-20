@@ -41,27 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddConstraint::reUAddConstraint( reRig *rig, reRigBone *bone, reRigConstraint *constraint ){
-	if( ! constraint || ( ! rig && ! bone ) ) DETHROW( deeInvalidParam );
+reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint *constraint){
+	if(!constraint || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	if( rig ) rig->AddReference();
-	
 	pBone = bone;
-	if( bone ) bone->AddReference();
-	
 	pConstraint = constraint;
-	constraint->AddReference();
 	
 	try{
-		if( bone ){
-			SetShortInfo( "Add Bone Constraint" );
+		if(bone){
+			SetShortInfo("@Rig.Undo.ConstraintAddBone");
 			
 		}else{
-			SetShortInfo( "Add Rig Constraint" );
+			SetShortInfo("@Rig.Undo.ConstraintAddRig");
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -77,36 +72,36 @@ reUAddConstraint::~reUAddConstraint(){
 ///////////////
 
 void reUAddConstraint::Undo(){
-	reRig *rig = pGetRig();
+	reRig * const rig = pGetRig();
 	
 	reSelectionConstraints *selection = rig->GetSelectionConstraints();
 	
-	if( pConstraint->GetSelected() ){
-		selection->RemoveConstraint( pConstraint );
+	if(pConstraint->GetSelected()){
+		selection->RemoveConstraint(pConstraint);
 	}
 	
-	if( pBone ){
-		pBone->RemoveConstraint( pConstraint );
+	if(pBone){
+		pBone->RemoveConstraint(pConstraint);
 		
 	}else{
-		rig->RemoveConstraint( pConstraint );
+		rig->RemoveConstraint(pConstraint);
 	}
 }
 
 void reUAddConstraint::Redo(){
-	reRig *rig = pGetRig();
+	reRig * const rig = pGetRig();
 	
 	reSelectionConstraints *selection = rig->GetSelectionConstraints();
 	
-	if( pBone ){
-		pBone->AddConstraint( pConstraint );
+	if(pBone){
+		pBone->AddConstraint(pConstraint);
 		
 	}else{
-		rig->AddConstraint( pConstraint );
+		rig->AddConstraint(pConstraint);
 	}
 	
 	selection->RemoveAllConstraints();
-	selection->AddConstraint( pConstraint );
+	selection->AddConstraint(pConstraint);
 }
 
 
@@ -115,16 +110,15 @@ void reUAddConstraint::Redo(){
 //////////////////////
 
 void reUAddConstraint::pCleanUp(){
-	if( pConstraint ) pConstraint->FreeReference();
-	if( pBone ) pBone->FreeReference();
-	if( pRig ) pRig->FreeReference();
 }
 
 reRig *reUAddConstraint::pGetRig(){
-	if( pRig ) return pRig;
+	if(pRig){
+		return pRig;
+	}
 	
-	reRig *rig = pBone->GetRig();
-	if( ! rig ) DETHROW( deeInvalidParam );
+	reRig * const rig = pBone->GetRig();
+	DEASSERT_NOTNULL(rig)
 	
 	return rig;
 }

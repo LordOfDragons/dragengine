@@ -25,17 +25,18 @@
 #ifndef _PEETYPE_H_
 #define _PEETYPE_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
-#include <dragengine/resources/particle/deParticleEmitterType.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/particle/deParticleEmitterType.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class peeEmitter;
 class peeParameter;
 class deComponent;
-class deModel;
-class deSkin;
 class deEngine;
 
 
@@ -44,17 +45,25 @@ class deEngine;
  * \brief Particle emitter type.
  */
 class peeType : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeType>;
+	
+	/** \brief List type. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<peeType>,peeType>;
+	
+	
 private:
 	peeEmitter *pEmitter;
 	deEngine *pEngine;
-	deSkin *pEngSkin;
-	deModel *pEngCastModel;
-	deSkin *pEngCastSkin;
+	deSkin::Ref pEngSkin;
+	deModel::Ref pEngCastModel;
+	deSkin::Ref pEngCastSkin;
 	
 	int pIndex;
 	decString pName;
 	
-	peeParameter *pParameters[ 31 ];
+	peeParameter *pParameters[31];
 	peeParameter *pActiveParameter;
 	
 	decString pSkinPath;
@@ -65,16 +74,16 @@ private:
 	bool pIntervalAsDistance;
 	
 	decString pPathTrailEmitter;
-	deParticleEmitter *pEngTrailEmitter;
-	decString pTrailControllers[ 4 ];
+	deParticleEmitter::Ref pEngTrailEmitter;
+	decString pTrailControllers[4];
 	deParticleEmitterType::eEmitControllers pActiveTrailController;
 	
 	float pPhysicsSize;
 	deParticleEmitterType::eCollisionResponses pCollisionResponse;
 	decString pPathCollisionEmitter;
-	deParticleEmitter *pEngCollisionEmitter;
+	deParticleEmitter::Ref pEngCollisionEmitter;
 	float pEmitMinImpulse;
-	decString pEmitControllers[ 4 ];
+	decString pEmitControllers[4];
 	deParticleEmitterType::eEmitControllers pActiveEmitController;
 	
 	bool pActive;
@@ -86,10 +95,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new controller. */
-	peeType( deEngine *engine, const char *name = "Type" );
+	peeType(deEngine *engine, const char *name = "Type");
 	
 	/** \brief Clean up controller. */
-	virtual ~peeType();
+protected:
+	~peeType() override;
+public:
 	/*@}*/
 	
 	
@@ -100,13 +111,13 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set parent emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -114,7 +125,7 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine skin. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	
@@ -122,61 +133,61 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Skin path. */
 	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	
 	/** \brief Set skin path. */
-	void SetSkinPath( const char *path );
+	void SetSkinPath(const char *path);
 	
 	/** \brief Model path. */
 	inline const decString &GetModelPath() const{ return pModelPath; }
 	
 	/** \brief Set model path. */
-	void SetModelPath( const char *path );
+	void SetModelPath(const char *path);
 	
 	/** \brief Model skin path. */
 	inline const decString &GetModelSkinPath() const{ return pModelSkinPath; }
 	
 	/** \brief Set model skin path. */
-	void SetModelSkinPath( const char *path );
+	void SetModelSkinPath(const char *path);
 	
 	/** \brief What part of the model to cast particles from. */
 	inline deParticleEmitterType::eCastFrom GetCastFrom() const{ return pCastFrom; }
 	
 	/** \brief Set what part of the model to cast particles from. */
-	void SetCastFrom( deParticleEmitterType::eCastFrom castFrom );
+	void SetCastFrom(deParticleEmitterType::eCastFrom castFrom);
 	
 	/** \brief Simulation type. */
 	inline deParticleEmitterType::eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
 	/** \brief Set simulation type. */
-	void SetSimulationType( deParticleEmitterType::eSimulationTypes simulationType );
+	void SetSimulationType(deParticleEmitterType::eSimulationTypes simulationType);
 	
 	/** \brief Interval parameter is used as distance not time. */
 	inline bool GetIntervalAsDistance() const{ return pIntervalAsDistance; }
 	
 	/** \brief Set if interval parameter is used as distance not time. */
-	void SetIntervalAsDistance( bool intervalAsDistance );
+	void SetIntervalAsDistance(bool intervalAsDistance);
 	
 	/** \brief Path to trail particle emitter. */
 	inline const decString &GetPathTrailEmitter() const{ return pPathTrailEmitter; }
 	
 	/** \brief Set path to trail particle emitter. */
-	void SetPathTrailEmitter( const char *path );
+	void SetPathTrailEmitter(const char *path);
 	
 	/** \brief Trail controller name or empty string if not set. */
-	const decString &GetTrailController( deParticleEmitterType::eEmitControllers controller ) const;
+	const decString &GetTrailController(deParticleEmitterType::eEmitControllers controller) const;
 	
 	/** \brief Set trail controller name or empty string if not set. */
-	void SetTrailController( deParticleEmitterType::eEmitControllers controller, const char *targetController );
+	void SetTrailController(deParticleEmitterType::eEmitControllers controller, const char *targetController);
 	
 	/** \brief Index of the active trail controller. */
 	inline deParticleEmitterType::eEmitControllers GetActiveTrailController() const{ return pActiveTrailController; }
 	
 	/** \brief Set index of the active trail controller. */
-	void SetActiveTrailController( deParticleEmitterType::eEmitControllers index );
+	void SetActiveTrailController(deParticleEmitterType::eEmitControllers index);
 	
 	
 	
@@ -184,37 +195,37 @@ public:
 	inline float GetPhysicsSize() const{ return pPhysicsSize; }
 	
 	/** \brief Set physics size. */
-	void SetPhysicsSize( float size );
+	void SetPhysicsSize(float size);
 	
 	/** \brief Collision response. */
 	inline deParticleEmitterType::eCollisionResponses GetCollisionResponse() const{ return pCollisionResponse; }
 	
 	/** \brief Set collision response. */
-	void SetCollisionResponse( deParticleEmitterType::eCollisionResponses response );
+	void SetCollisionResponse(deParticleEmitterType::eCollisionResponses response);
 	
 	/** \brief Path to collision particle emitter. */
 	inline const decString &GetPathCollisionEmitter() const{ return pPathCollisionEmitter; }
 	
 	/** \brief Set path to collision particle emitter. */
-	void SetPathCollisionEmitter( const char *path );
+	void SetPathCollisionEmitter(const char *path);
 	
 	/** \brief Minimum impulse required for colliding particles to emit instances. */
 	inline float GetEmitMinImpulse() const{ return pEmitMinImpulse; }
 	
 	/** \brief Set minimum impulse required for colliding particles to emit instances. */
-	void SetEmitMinImpulse( float impulse );
+	void SetEmitMinImpulse(float impulse);
 	
 	/** \brief Emit controller name or empty string if not set. */
-	const decString &GetEmitController( deParticleEmitterType::eEmitControllers controller ) const;
+	const decString &GetEmitController(deParticleEmitterType::eEmitControllers controller) const;
 	
 	/** \brief Set emit controller name or empty string if not set. */
-	void SetEmitController( deParticleEmitterType::eEmitControllers controller, const char *targetController );
+	void SetEmitController(deParticleEmitterType::eEmitControllers controller, const char *targetController);
 	
 	/** \brief Index of the active emit controller. */
 	inline deParticleEmitterType::eEmitControllers GetActiveEmitController() const{ return pActiveEmitController; }
 	
 	/** \brief Set index of the active emit controller. */
-	void SetActiveEmitController( deParticleEmitterType::eEmitControllers index );
+	void SetActiveEmitController(deParticleEmitterType::eEmitControllers index);
 	
 	
 	
@@ -222,7 +233,7 @@ public:
 	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if this is the active controller. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	
 	
@@ -238,7 +249,7 @@ public:
 	
 	
 	/** \brief Update engine type. */
-	void UpdateEngineType( deParticleEmitterType &type );
+	void UpdateEngineType(deParticleEmitterType &type);
 	/*@}*/
 	
 	
@@ -246,23 +257,23 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Parameter. */
-	peeParameter *GetParameterAt( deParticleEmitterType::eParameters parameter ) const;
+	peeParameter *GetParameterAt(deParticleEmitterType::eParameters parameter) const;
 	
 	/** \brief Index of parameter or -1 of not found. */
-	int IndexOfParameter( peeParameter *parameter ) const;
+	int IndexOfParameter(peeParameter *parameter) const;
 	
 	/** \brief Active parameter. */
 	inline peeParameter *GetActiveParameter() const{ return pActiveParameter; }
 	
 	/** \brief Set active parameter. */
-	void SetActiveParameter( peeParameter *parameter );
+	void SetActiveParameter(peeParameter *parameter);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pSetParameter( deParticleEmitterType::eParameters index, float value, float spread );
+	void pSetParameter(deParticleEmitterType::eParameters index, float value, float spread);
 	void pLoadSkin();
 	void pLoadModel();
 	void pLoadModelSkin();

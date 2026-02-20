@@ -25,14 +25,15 @@
 #ifndef _DEOGLPARTICLEEMITTERINSTANCE_H_
 #define _DEOGLPARTICLEEMITTERINSTANCE_H_
 
-#include <dragengine/common/math/decMath.h>
-#include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitterInstance.h>
-
 #include "../deoglBasics.h"
+#include "deoglRParticleEmitterInstance.h"
+
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitterInstance.h>
 
 class deoglParticleEmitter;
 class deoglParticleEmitterInstanceType;
-class deoglRParticleEmitterInstance;
 
 class deGraphicOpenGl;
 class deParticleEmitterInstance;
@@ -45,12 +46,11 @@ class deoglParticleEmitterInstance : public deBaseGraphicParticleEmitterInstance
 private:
 	deGraphicOpenGl &pOgl;
 	const deParticleEmitterInstance &pInstance;
-	deoglRParticleEmitterInstance *pRInstance;
+	deoglRParticleEmitterInstance::Ref pRInstance;
 	
 	deoglParticleEmitter *pEmitter;
 	
-	deoglParticleEmitterInstanceType **pTypes;
-	int pTypeCount;
+	decTUniqueList<deoglParticleEmitterInstanceType> pTypes;
 	
 	bool pDirtyEmitter;
 	bool pDirtyExtends;
@@ -63,10 +63,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglParticleEmitterInstance( deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance );
+	deoglParticleEmitterInstance(deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance);
 	
 	/** Clean up peer. */
-	virtual ~deoglParticleEmitterInstance();
+	~deoglParticleEmitterInstance() override;
 	/*@}*/
 	
 	
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** Render particle emitter instance. */
-	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
+	inline const deoglRParticleEmitterInstance::Ref &GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -92,11 +92,14 @@ public:
 	/** Emitter or \em NULL if not set. */
 	inline deoglParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
+	/** Types. */
+	inline const decTUniqueList<deoglParticleEmitterInstanceType> &GetTypes() const{ return pTypes; }
+	
 	/** Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** Type at index. */
-	deoglParticleEmitterInstanceType &GetTypeAt( int index );
+	deoglParticleEmitterInstanceType &GetTypeAt(int index);
 	/*@}*/
 	
 	
@@ -104,46 +107,46 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Emitter changed. */
-	virtual void EmitterChanged();
+	void EmitterChanged() override;
 	
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Reference position changed. */
-	virtual void ReferencePositionChanged();
+	void ReferencePositionChanged() override;
 	
 	/** Enable casting changed. */
-	virtual void EnableCastingChanged();
+	void EnableCastingChanged() override;
 	
 	/** Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** Warm up time changed. */
-	virtual void WarmUpTimeChanged();
+	void WarmUpTimeChanged() override;
 	
 	/** Burst time changed. */
-	virtual void BurstTimeChanged();
+	void BurstTimeChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	void ControllerChanged(int controller) override;
 	
 	/** Type changed. */
-	virtual void TypeChanged( int type );
+	void TypeChanged(int type) override;
 	
 	/** Type particles changed. */
-	virtual void TypeParticlesChanged( int type );
+	void TypeParticlesChanged(int type) override;
 	
 	/** Reset burst particles. */
-	virtual void ResetBurst();
+	void ResetBurst() override;
 	
 	/** Kill all particles. */
-	virtual void KillAllParticles();
+	void KillAllParticles() override;
 	/*@}*/
 	
 private:

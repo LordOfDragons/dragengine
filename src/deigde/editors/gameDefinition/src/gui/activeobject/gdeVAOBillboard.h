@@ -26,10 +26,11 @@
 #define _GDEVAOBILLBOARD_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/billboard/deBillboardReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include "../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
-class gdeOCBillboard;
+#include <dragengine/resources/billboard/deBillboard.h>
+#include <dragengine/resources/collider/deCollider.h>
+
 
 
 
@@ -37,19 +38,24 @@ class gdeOCBillboard;
  * \brief Active object view object class billboard.
  */
 class gdeVAOBillboard : public gdeVAOSubObject{
-private:
-	gdeOCBillboard *pOCBillboard;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOBillboard> Ref;
 	
-	deBillboardReference pBillboard;
-	deColliderReference pCollider;
+	
+private:
+	gdeOCBillboard::Ref pOCBillboard;
+	
+	deBillboard::Ref pBillboard;
+	deCollider::Ref pCollider;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOBillboard( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCBillboard *ocbillboard );
+	gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCBillboard *ocbillboard);
 	
 protected:
 	/**
@@ -58,7 +64,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOBillboard();
+	~gdeVAOBillboard() override;
 	/*@}*/
 	
 	
@@ -67,19 +73,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pOCBillboard; }
+	inline const gdeOCBillboard::Ref &GetOCBillboard() const{ return pOCBillboard; }
 	
-	/** \brief Collider or \em NULL if not present. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	/** \brief Collider or \em nullptr if not present. */
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Extends. */
-	void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	void GetExtends(decVector &minExtend, decVector &maxExtend) const;
 	/*@}*/
 	
 	

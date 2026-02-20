@@ -26,16 +26,20 @@
 #define _DEOGLRCANVASPAINT_H_
 
 #include "deoglRCanvas.h"
+#include "../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-
-class deoglSharedVBOBlock;
 
 
 /**
  * Render canvas paint.
  */
 class deoglRCanvasPaint : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRCanvasPaint>;
+	
+	
 private:
 	deCanvasPaint::eShapeTypes pShapeType;
 	decColor pLineColor;
@@ -47,10 +51,9 @@ private:
 	float pStartAngle;
 	float pEndAngle;
 	
-	decVector2 *pPoints;
-	int pPointCount;
+	decTList<decVector2> pPoints;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	bool pDirtyVBOBlock;
 	int pVBOBlockPointCount;
 	
@@ -68,10 +71,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasPaint( deoglRenderThread &renderThread );
+	deoglRCanvasPaint(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasPaint();
+	~deoglRCanvasPaint() override;
 	/*@}*/
 	
 	
@@ -79,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set size. */
-	virtual void SetSize( const decVector2 &size );
+	void SetSize(const decVector2 &size) override;
 	
 	/** Shape type. */
 	inline deCanvasPaint::eShapeTypes GetShapeType() const{ return pShapeType; }
@@ -88,19 +91,19 @@ public:
 	 * Set shape type.
 	 * \throws deeInvalidParam \em shapeType is not a member of deCanvasPaint::eShapeTypes.
 	 */
-	void SetShapeType( deCanvasPaint::eShapeTypes shapeType );
+	void SetShapeType(deCanvasPaint::eShapeTypes shapeType);
 	
 	/** Line color. */
 	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
 	/** Set line color. */
-	void SetLineColor( const decColor &color );
+	void SetLineColor(const decColor &color);
 	
 	/** Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** Line thickness in units. */
 	inline float GetThickness() const{ return pThickness; }
@@ -109,7 +112,7 @@ public:
 	 * Line thickness in units.
 	 * \details \em thickness is clamped to 0 or larger.
 	 */
-	void SetThickness( float thickness );
+	void SetThickness(float thickness);
 	
 	/** Requires thick rendering. */
 	inline bool IsThick() const{ return pIsThick; }
@@ -128,7 +131,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerX( float roundCorner );
+	void SetRoundCornerX(float roundCorner);
 	
 	/**
 	 * Round corner in Y direction as percentage.
@@ -144,7 +147,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerY( float roundCorner );
+	void SetRoundCornerY(float roundCorner);
 	
 	/**
 	 * Start angle in degrees from 0 to 360.
@@ -158,7 +161,7 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetStartAngle( float angle );
+	void SetStartAngle(float angle);
 	
 	/**
 	 * End angle in degrees from 0 to 360.
@@ -172,28 +175,25 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetEndAngle( float angle );
+	void SetEndAngle(float angle);
 	
 	
 	
 	/** \name Points */
 	/*@{*/
-	/** Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	/** Points. */
+	inline decTList<decVector2> &GetPoints(){ return pPoints; }
+	inline const decTList<decVector2> &GetPoints() const{ return pPoints; }
 	
 	/**
 	 * Set number of points.
-	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void SetPointCount( int count );
-	
-	/** Points. */
-	inline decVector2 *GetPoints() const{ return pPoints; }
+	void SetPointCount(int count);
 	
 	
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	
 	
@@ -221,10 +221,10 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 	
 	
@@ -234,8 +234,8 @@ private:
 	int pRequiredPointCount();
 	void pPrepareVBOBlock();
 	void pWriteVBOData();
-	void pCalcArc( decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
-		float startAngle, float stopAngle, int stepCount );
+	void pCalcArc(decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
+		float startAngle, float stopAngle, int stepCount);
 };
 
 #endif

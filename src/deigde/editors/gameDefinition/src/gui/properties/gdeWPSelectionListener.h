@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSelectionListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSelectionListener( gdeWPSelection &panel );
+	gdeWPSelectionListener(gdeWPSelection &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSelectionListener();
+protected:
+	~gdeWPSelectionListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Selected object changed. */
-	virtual void SelectedObjectChanged( gdeGameDefinition *gameDefinition );
+	void SelectedObjectChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

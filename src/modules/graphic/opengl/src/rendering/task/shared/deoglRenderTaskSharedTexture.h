@@ -36,8 +36,7 @@ class deoglTexUnitsConfig;
  */
 class deoglRenderTaskSharedTexture : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderTaskSharedTexture> Ref;
-	
+	using Ref = deTObjectReference<deoglRenderTaskSharedTexture>;
 	
 	
 private:
@@ -52,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared render task shader. */
-	deoglRenderTaskSharedTexture( deoglRenderTaskSharedPool &pool, int index );
+	deoglRenderTaskSharedTexture(deoglRenderTaskSharedPool &pool, int index);
 	
 protected:
 	/** Clean up shared render task shader. */
-	virtual ~deoglRenderTaskSharedTexture();
+	~deoglRenderTaskSharedTexture() override;
 	/*@}*/
 	
 	
@@ -76,7 +75,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	
 	/** Set texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
+	void SetTUC(deoglTexUnitsConfig *tuc);
 	
 	
 	

@@ -36,17 +36,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPDefRenSizeLimit( deGraphicOpenGl &ogl );
+	deoglPDefRenSizeLimit(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPDefRenSizeLimit();
+	~deoglPDefRenSizeLimit() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual int GetParameterInt();
+	int GetParameterInt() override;
 	/** Sets the current value. */
-	virtual void SetParameterInt( int value );
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

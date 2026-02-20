@@ -25,9 +25,10 @@
 #ifndef _IGDELISTHEADER_H_
 #define _IGDELISTHEADER_H_
 
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -39,9 +40,18 @@
  * Stores information about a column header.
  */
 class DE_DLL_EXPORT igdeListHeader : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeListHeader>;
+	
+	/** \brief List header list. */
+	using List = decTObjectOrderedSet<igdeListHeader>;
+	
+	
 private:
 	decString pTitle;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	int pSize;
 	
 	
@@ -50,12 +60,12 @@ public:
 	/** \title Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list header. */
-	igdeListHeader( const char *title, int size );
+	igdeListHeader(const char *title, int size);
 	
-	igdeListHeader( const char *title, igdeIcon *icon, int size );
+	igdeListHeader(const char *title, igdeIcon *icon, int size);
 	
 	/** \brief Create copy of list header. */
-	igdeListHeader( const igdeListHeader &header );
+	igdeListHeader(const igdeListHeader &header);
 	
 	
 	
@@ -66,7 +76,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeListHeader();
+	~igdeListHeader() override;
 	/*@}*/
 	
 	
@@ -78,24 +88,24 @@ public:
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Size in pixels. */
 	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set size in pixels. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	
 	
 	/** \brief Set from another header. */
-	virtual igdeListHeader &operator=( const igdeListHeader &header );
+	virtual igdeListHeader &operator=(const igdeListHeader &header);
 	/*@}*/
 };
 

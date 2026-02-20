@@ -33,7 +33,7 @@
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../undosys/objectClass/gdeUAddObjectClass.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassPaste::gdeMAObjectClassPaste( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Paste Object Class",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class" )
+gdeMAObjectClassPaste::gdeMAObjectClassPaste(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@Igde.Action.Paste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.ObjectClassPaste.ToolTip")
 {
 }
 
@@ -60,27 +60,26 @@ gdeBaseAction( windowMain, "Paste Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassPaste::OnAction( gdeGameDefinition &gameDefinition ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataObjectClass::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataObjectClass::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataObjectClass &clipObjectClass =
-		( const gdeClipboardDataObjectClass & )( igdeClipboardData& )clip;
+	const gdeClipboardDataObjectClass &clipObjectClass = clip.DynamicCast<gdeClipboardDataObjectClass>();
 	
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
-	decString name( clipObjectClass.GetObjectClass()->GetName() );
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
+	decString name(clipObjectClass.GetObjectClass()->GetName());
 	
-	if( list.HasNamed( name ) ){
-		while( true ){
-			if( ! igdeCommonDialogs::GetString( &pWindowMain, "Paste Object Class", "Name:", name ) ){
-				return NULL;
+	if(list.HasNamed(name)){
+		while(true){
+			if(!igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassPaste.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.Name", name)){
+				return {};
 			}
 			
-			if( list.HasNamed( name ) ){
-				igdeCommonDialogs::Error( &pWindowMain, "Paste Object Class", "Object Class exists already." );
+			if(list.HasNamed(name)){
+				igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassPaste.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.ErrorExists");
 				
 			}else{
 				break;
@@ -88,22 +87,20 @@ igdeUndo *gdeMAObjectClassPaste::OnAction( gdeGameDefinition &gameDefinition ){
 		}
 	}
 	
-	deObjectReference objectClass;
-	objectClass.TakeOver( new gdeObjectClass( *clipObjectClass.GetObjectClass() ) );
-	( ( gdeObjectClass& )( deObject& )objectClass ).SetName( name );
+	auto objectClass = gdeObjectClass::Ref::New(*clipObjectClass.GetObjectClass());
+	objectClass->SetName(name);
 	
-	igdeUndo * const undo = new gdeUAddObjectClass(
-		&gameDefinition, ( gdeObjectClass* )( deObject* )objectClass );
-	undo->SetShortInfo( "Paste object class" );
+	const igdeUndo::Ref undo = gdeUAddObjectClass::Ref::New(&gameDefinition, objectClass);
+	undo->SetShortInfo("@GameDefinition.Undo.PasteObjectClass");
 	return undo;
 }
 
 void gdeMAObjectClassPaste::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataObjectClass::TYPE_NAME ) );
+	SetEnabled(pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataObjectClass::TYPE_NAME));
 }

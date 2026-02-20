@@ -27,10 +27,10 @@
 #define _GDEUOCLIGHTSETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class light set property name.
  */
 class gdeUOCLightSetPropertyName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCLightSetPropertyName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	gdeOCLight::eProperties pProperty;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetPropertyName( gdeObjectClass *objectClass, gdeOCLight *light,
-		gdeOCLight::eProperties property, const char *newValue );
+	gdeUOCLightSetPropertyName(gdeObjectClass *objectClass, gdeOCLight *light,
+		gdeOCLight::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCLightSetPropertyName();
+	~gdeUOCLightSetPropertyName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

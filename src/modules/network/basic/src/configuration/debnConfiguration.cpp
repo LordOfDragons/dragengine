@@ -42,12 +42,12 @@
 ////////////////////////////
 
 debnConfiguration::debnConfiguration() :
-pLogLevel( ellWarning ),
+pLogLevel(ellWarning),
 
-pConnectResendInterval( 1.0f ),
-pConnectTimeout( 5.0f ),
-pReliableResendInterval( 0.5f ),
-pReliableTimeout( 3.0f ){
+pConnectResendInterval(1.0f),
+pConnectTimeout(5.0f),
+pReliableResendInterval(0.5f),
+pReliableTimeout(3.0f){
 }
 
 debnConfiguration::~debnConfiguration(){
@@ -58,22 +58,22 @@ debnConfiguration::~debnConfiguration(){
 // Management
 ///////////////
 
-void debnConfiguration::SetLogLevel( eLogLevels level ){
+void debnConfiguration::SetLogLevel(eLogLevels level){
 	pLogLevel = level;
 }
 
-void debnConfiguration::SetConnectResendInterval( float interval ){
-	pConnectResendInterval = decMath::max( interval, 0.01f );
+void debnConfiguration::SetConnectResendInterval(float interval){
+	pConnectResendInterval = decMath::max(interval, 0.01f);
 }
 
-void debnConfiguration::SetConnectTimeout( float timeout ){
-	pConnectTimeout = decMath::max( timeout, 0.01f );
+void debnConfiguration::SetConnectTimeout(float timeout){
+	pConnectTimeout = decMath::max(timeout, 0.01f);
 }
 
-void debnConfiguration::SetReliableResendInterval( float interval ){
-	pReliableResendInterval = decMath::max( interval, 0.01f );
+void debnConfiguration::SetReliableResendInterval(float interval){
+	pReliableResendInterval = decMath::max(interval, 0.01f);
 }
 
-void debnConfiguration::SetReliableTimeout( float timeout ){
-	pReliableTimeout = decMath::max( timeout, 0.01f );
+void debnConfiguration::SetReliableTimeout(float timeout){
+	pReliableTimeout = decMath::max(timeout, 0.01f);
 }

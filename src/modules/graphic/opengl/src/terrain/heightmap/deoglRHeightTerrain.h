@@ -28,14 +28,15 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 class deoglRWorld;
 class deoglRHTSector;
 class deoglRenderThread;
 class deoglHeightTerrainListener;
+class deoglHTSectorListener;
 
 class deHeightTerrain;
 
@@ -45,8 +46,7 @@ class deHeightTerrain;
  */
 class deoglRHeightTerrain : public deObject{
 public:
-	typedef deTObjectReference<deoglRHeightTerrain> Ref;
-	
+	using Ref = deTObjectReference<deoglRHeightTerrain>;
 	
 	
 private:
@@ -57,10 +57,10 @@ private:
 	int pSectorResolution;
 	float pSectorSize;
 	
-	decObjectList pSectors;
+	decTObjectList<deoglRHTSector> pSectors;
 	bool pSectorsRequirePrepareForRender;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<deoglHeightTerrainListener> pListeners;
 	int pListenerIndex;
 	
 	
@@ -69,11 +69,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render height terrain. */
-	deoglRHeightTerrain( deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain );
+	deoglRHeightTerrain(deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain);
 	
 protected:
 	/** Clean up render height terrain. */
-	virtual ~deoglRHeightTerrain();
+	~deoglRHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -88,7 +88,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Height image size. */
 	inline int GetSectorResolution() const{ return pSectorResolution; }
@@ -101,14 +101,17 @@ public:
 	
 	
 	
+	/** Sectors. */
+	inline const decTObjectList<deoglRHTSector> &GetSectors() const{ return pSectors; }
+	
 	/** Number of sectors. */
 	int GetSectorCount() const;
 	
 	/** Sector at index. */
-	deoglRHTSector &GetSectorAt( int index ) const;
+	deoglRHTSector &GetSectorAt(int index) const;
 	
 	/** Add sector. */
-	void AddSector( deoglRHTSector *htsector );
+	void AddSector(deoglRHTSector *htsector);
 	
 	/** Remove all sectors. */
 	void RemoveAllSectors();
@@ -122,10 +125,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglHeightTerrainListener *listener );
+	void AddListener(deoglHeightTerrainListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglHeightTerrainListener *listener );
+	void RemoveListener(deoglHeightTerrainListener *listener);
 	
 	/** Notify all that this height terrain has been destroyed. */
 	void NotifyHeightTerrainDestroyed();

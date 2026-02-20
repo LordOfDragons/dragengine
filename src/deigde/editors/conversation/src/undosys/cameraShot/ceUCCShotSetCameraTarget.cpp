@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget( ceCameraShot *cameraShot, const char *newTarget ){
-	if( ! cameraShot || ! newTarget ){
-		DETHROW( deeInvalidParam );
+ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot *cameraShot, const char *newTarget){
+	if(!cameraShot || !newTarget){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set Camera Target" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetCameraTarget");
 	
 	pOldTarget = cameraShot->GetCameraTarget();
 	pNewTarget = newTarget;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCameraTarget::~ceUCCShotSetCameraTarget(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ ceUCCShotSetCameraTarget::~ceUCCShotSetCameraTarget(){
 ///////////////
 
 void ceUCCShotSetCameraTarget::Undo(){
-	pCameraShot->SetCameraTarget( pOldTarget );
+	pCameraShot->SetCameraTarget(pOldTarget);
 }
 
 void ceUCCShotSetCameraTarget::Redo(){
-	pCameraShot->SetCameraTarget( pNewTarget );
+	pCameraShot->SetCameraTarget(pNewTarget);
 }

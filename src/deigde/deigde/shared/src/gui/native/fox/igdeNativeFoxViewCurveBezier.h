@@ -27,13 +27,13 @@
 
 #include "foxtoolkit.h"
 #include "../../event/igdeAction.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
+#include "../../curveedit/igdeViewCurveBezier.h"
 
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 
 
-class igdeViewCurveBezier;
 class igdeGuiTheme;
 class igdeNativeFoxResizer;
 
@@ -42,7 +42,7 @@ class igdeNativeFoxResizer;
  * \brief FOX toolkit Native list box view.
  */
 class igdeNativeFoxViewCurveBezierView : public FXFrame{
-	FXDECLARE( igdeNativeFoxViewCurveBezierView )
+	FXDECLARE(igdeNativeFoxViewCurveBezierView)
 protected:
 	   igdeNativeFoxViewCurveBezierView();
 	
@@ -75,7 +75,7 @@ public:
 	
 private:
 	igdeViewCurveBezier *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 	decVector2 pGridMin;
 	decVector2 pGridMax;
@@ -119,11 +119,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxViewCurveBezierView( igdeViewCurveBezier &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxViewCurveBezierView(igdeViewCurveBezier &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxViewCurveBezierView();
+	~igdeNativeFoxViewCurveBezierView() override;
 	/*@}*/
 	
 	
@@ -138,59 +138,59 @@ public:
 	
 	inline igdeViewCurveBezier &GetOwner() const{ return *pOwner; }
 	
-	void SetGridZoom( const decVector2 &zoom );
+	void SetGridZoom(const decVector2 &zoom);
 	virtual void ResetView();
 	virtual void FitViewToCurve();
 	
-	int IndexOfPointAt( int x, int y, eSelectionModes mode ) const;
+	int IndexOfPointAt(int x, int y, eSelectionModes mode) const;
 	
-	void DrawGrid( FXDC &dc );
-	void DrawRulers( FXDC &dc );
-	void DrawCurve( FXDC &dc );
-	void DrawCurveHandles( FXDC &dc );
-	void ClampHandles( const decVector2 &p1, decVector2 &h1,
-		decVector2 &h2, const decVector2 &p2 ) const;
-	void InternalDrawCurve( FXDC &dc, const decVector2 &p1,
-		const decVector2 &p2, const decVector2 &p3, const decVector2 &p4 );
+	void DrawGrid(FXDC &dc);
+	void DrawRulers(FXDC &dc);
+	void DrawCurve(FXDC &dc);
+	void DrawCurveHandles(FXDC &dc);
+	void ClampHandles(const decVector2 &p1, decVector2 &h1,
+		decVector2 &h2, const decVector2 &p2) const;
+	void InternalDrawCurve(FXDC &dc, const decVector2 &p1,
+		const decVector2 &p2, const decVector2 &p3, const decVector2 &p4);
 	
-	inline int CurveXToWindow( float curveCoord ) const{
-		return pWindowCenter.x + ( int )( ( curveCoord - pGridCenter.x ) * pGridScale.x );
+	inline int CurveXToWindow(float curveCoord) const{
+		return pWindowCenter.x + (int)((curveCoord - pGridCenter.x) * pGridScale.x);
 	}
-	inline int CurveYToWindow( float curveCoord ) const{
-		return pWindowCenter.y - ( int )( ( curveCoord - pGridCenter.y ) * pGridScale.y );
+	inline int CurveYToWindow(float curveCoord) const{
+		return pWindowCenter.y - (int)((curveCoord - pGridCenter.y) * pGridScale.y);
 	}
-	inline float WindowXToCurve( int windowCoord ) const{
-		return ( float )( windowCoord - pWindowCenter.x ) / pGridScale.x + pGridCenter.x;
+	inline float WindowXToCurve(int windowCoord) const{
+		return (float)(windowCoord - pWindowCenter.x) / pGridScale.x + pGridCenter.x;
 	}
-	inline float WindowYToCurve( int windowCoord ) const{
-		return ( float )( pWindowCenter.y - windowCoord ) / pGridScale.y + pGridCenter.y;
+	inline float WindowYToCurve(int windowCoord) const{
+		return (float)(pWindowCenter.y - windowCoord) / pGridScale.y + pGridCenter.y;
 	}
 	
-	void DisplayPopupView( const decPoint &position );
+	void DisplayPopupView(const decPoint &position);
 	void UpdateParameters();
 	
 	
-	static int ViewCurveBezierFlags( const igdeViewCurveBezier &owner );
-	static igdeFont *ViewCurveBezierFont( const igdeViewCurveBezier &owner, const igdeGuiTheme &guitheme );
+	static int ViewCurveBezierFlags(const igdeViewCurveBezier &owner);
+	static igdeFont *ViewCurveBezierFont(const igdeViewCurveBezier &owner, const igdeGuiTheme &guitheme);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onPaint( FXObject*, FXSelector, void* );
-	long onLeftMouseDown( FXObject*, FXSelector, void* );
-	long onLeftMouseUp( FXObject*, FXSelector, void* );
-	long onMouseMove( FXObject*, FXSelector, void* );
-	long onMouseWheel( FXObject*, FXSelector, void* );
-	long onRightMouseDown( FXObject*, FXSelector, void* );
-	long onRightMouseUp( FXObject*, FXSelector, void* );
-	long onMiddleMouseDown( FXObject*, FXSelector, void* );
-	long onMiddleMouseUp( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onPaint(FXObject*, FXSelector, void*);
+	long onLeftMouseDown(FXObject*, FXSelector, void*);
+	long onLeftMouseUp(FXObject*, FXSelector, void*);
+	long onMouseMove(FXObject*, FXSelector, void*);
+	long onMouseWheel(FXObject*, FXSelector, void*);
+	long onRightMouseDown(FXObject*, FXSelector, void*);
+	long onRightMouseUp(FXObject*, FXSelector, void*);
+	long onMiddleMouseDown(FXObject*, FXSelector, void*);
+	long onMiddleMouseUp(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
@@ -200,8 +200,8 @@ public:
  * 
  * Wraps igdeNativeFoxViewCurveBezierView with resizing support.
  */
-class igdeNativeFoxViewCurveBezier : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxViewCurveBezier )
+class igdeNativeFoxViewCurveBezier : public FXVerticalFrame, public igdeViewCurveBezier::cNativeViewCurveBezier{
+	FXDECLARE(igdeNativeFoxViewCurveBezier)
 protected:
 	   igdeNativeFoxViewCurveBezier();
 	
@@ -223,14 +223,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxViewCurveBezier( igdeViewCurveBezier &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxViewCurveBezier(igdeViewCurveBezier &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxViewCurveBezier();
+	~igdeNativeFoxViewCurveBezier() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxViewCurveBezier* CreateNativeWidget( igdeViewCurveBezier &owner );
+	static igdeNativeFoxViewCurveBezier* CreateNativeWidget(igdeViewCurveBezier &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -243,21 +243,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief View curve bezier. */
-	inline igdeNativeFoxViewCurveBezierView &GetView() const{ return *pView; }
-	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
+	
+	void UpdateEnabled() override;
+	void UpdateDefaultSize() override;
+	void UpdateCurve() override;
+	void UpdateSelectedPoint() override;
+	void UpdateClamp() override;
+	void ResetView() override;
+	void FitViewToCurve() override;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxViewCurveBezier igdeNativeViewCurveBezier;
+using igdeNativeViewCurveBezier = igdeNativeFoxViewCurveBezier;
 
 #endif

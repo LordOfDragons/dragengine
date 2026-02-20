@@ -27,10 +27,11 @@
 #include "igdeDEModuleStatus.h"
 #include "igdeDEParameters.h"
 #include "igdeDEConsole.h"
-#include "../igdeContainerReference.h"
+#include "../igdeApplication.h"
+#include "../igdeContainer.h"
 #include "../igdeMainWindow.h"
 #include "../igdeTabBook.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -42,34 +43,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogEngine::igdeDialogEngine( igdeMainWindow &mainWindow ) :
-igdeDialog( mainWindow.GetEnvironment(), "Engine Control Center" ),
-pMainWindow( mainWindow )
+igdeDialogEngine::igdeDialogEngine(igdeMainWindow &mainWindow) :
+igdeDialog(mainWindow.GetEnvironment(), "@Igde.DialogEngine.Title"),
+pMainWindow(mainWindow)
 {
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	
-	SetInitialSize( decPoint( 800, 600 ) );
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pTabPanels.TakeOver( new igdeTabBook( environment ) );
+	pTabPanels = igdeTabBook::Ref::New(environment);
 	
-	panel.TakeOver( new igdeDEStatus( *this ) );
-	pTabPanels->AddChild( panel, "Engine Status" );
+	panel = igdeDEStatus::Ref::New(*this);
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabEngineStatus");
 	
-	panel.TakeOver( new igdeDEModuleStatus( *this ) );
-	pTabPanels->AddChild( panel, "Module Status" );
+	panel = igdeDEModuleStatus::Ref::New(*this);
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabModuleStatus");
 	
-	panel.TakeOver( new igdeDEParameters( *this ) );
-	pTabPanels->AddChild( panel, "Parameters" );
+	panel = igdeDEParameters::Ref::New(*this);
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabParameters");
 	
-	panel.TakeOver( new igdeDEConsole( *this ) );
-	pTabPanels->AddChild( panel, "Console" );
+	panel = igdeDEConsole::Ref::New(*this);
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabConsole");
 	
 	
-	igdeContainerReference buttonBar;
-	CreateButtonBar( buttonBar, "Close" );
+	igdeContainer::Ref buttonBar;
+	CreateButtonBar(buttonBar, "@Igde.Close");
 	
-	AddContent( pTabPanels, buttonBar );
+	AddContent(pTabPanels, buttonBar);
 }
 
 igdeDialogEngine::~igdeDialogEngine(){

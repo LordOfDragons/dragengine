@@ -48,6 +48,62 @@ pin Dragengine.Scenery
  * readFromFile() is called otherwise an exception can be thrown.
  */
 class BTContext
+	/**
+	 * \brief Behavior tree state backup.
+	 * \version 1.30
+	 */
+	class StateBackup
+		var String pCurrentRuleId
+		var bool pActionFirstRun
+		
+		
+		/** \brief Create state backup. */
+		func new(BTContext context)
+			var BTRule currentRule = context.getCurrentRule()
+			if currentRule != null
+				pCurrentRuleId = currentRule.getID()
+			end
+			pActionFirstRun = context.getActionFirstRun()
+		end
+		
+		/** \brief Create state backup from file. */
+		func new(PersistencyEnvironment env, FileReader reader)
+			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			pActionFirstRun = flags.getAt(1)
+			
+			if flags.getAt(0)
+				pCurrentRuleId = reader.readString8()
+			end
+		end
+		
+		
+		/** \brief Current rule identifier or null. */
+		func String getCurrentRuleId()
+			return pCurrentRuleId
+		end
+		
+		/** \brief Action first run flag. */
+		func bool getActionFirstRun()
+			return pActionFirstRun
+		end
+		
+		
+		/** \brief Write to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pCurrentRuleId != null)
+			flags.setAt(1, pActionFirstRun)
+			flags.writeToFile(writer)
+			
+			if pCurrentRuleId != null
+				writer.writeString8(pCurrentRuleId)
+			end
+		end
+	end
+	
+	
 	var BehaviorTree pBehaviorTree
 	var Dictionary pConditions
 	var Dictionary pActions
@@ -363,6 +419,35 @@ class BTContext
 	
 	
 	/**
+	 * \brief Back up state.
+	 * \version 1.30
+	 * 
+	 * Allows to properly restore the behavior tree to this state. Restores current rule and
+	 * action first run flag.
+	 * 
+	 * You can also call \code{.ds}StateBackup.new(context)\endcode directly.
+	 */
+	func StateBackup createBackupState()
+		return StateBackup.new(this)
+	end
+	
+	/**
+	 * \brief Restore state from backup.
+	 * \version 1.30
+	 * 
+	 * Works only if the state has been created from this context with the same behavior tree.
+	 */
+	func void restoreBackupState(StateBackup state)
+		if state == null
+			throw ENullPointer.new("state")
+		end
+		
+		pCurrentRule = pBehaviorTree.getRuleWithID(state.getCurrentRuleId())
+		pActionFirstRun = state.getActionFirstRun()
+	end
+	
+	
+	/**
 	 * \brief Step behavior tree.
 	 * 
 	 * Multiple actions can run before this method returns.
@@ -476,12 +561,20 @@ class BTContext
 	 * \version 1.26
 	 */
 	func String debugGetCurrentRule()
-		if pCurrentRule == null
-			return "<no current rule>"
+		return pCurrentRule != null if debugGetRulePath(pCurrentRule) else "<no current rule>"
+	end
+	
+	/**
+	 * \brief Get string path describing rule for debug purpose.
+	 * \version 1.30
+	 */
+	func String debugGetRulePath(BTRule rule)
+		if rule == null
+			throw ENullPointer.new("rule")
 		end
 		
 		var Array path = Array.new()
-		var BTRule prule, rule = pCurrentRule
+		var BTRule prule
 		var int rindex
 		var String extra
 		
@@ -533,28 +626,8 @@ class BTContext
 		if pCurrentRule != null
 			var String id = pCurrentRule.getID()
 			if id == null
-				var Array path = Array.new()
-				var BTRule prule, rule = pCurrentRule
-				var int rindex
-				var String extra
-				
-				while rule != null
-					prule = rule.getParent()
-					rindex = 0
-					extra = ""
-					if prule != null and prule castable BTRuleList
-						rindex = (prule cast BTRuleList).indexOfRule(rule)
-					end
-					if rule castable BTRuleAction
-						extra = ":" + (rule cast BTRuleAction).getActionID()
-					end
-					path.insert(0, "'{}'({}{})[{}]".format(Array.newWith(\
-						rule.getID(), rule.className().split('.').getAt(-1), extra, rindex)))
-					rule = prule
-				end
-				
 				throw EInvalidParam.new("can not persist behavior tree '{}' with null id rule: {}".\
-					format(Array.newWith(pBehaviorTree.getFilename(), path)))
+					format(Array.newWith(pBehaviorTree.getFilename(), debugGetCurrentRule())))
 			end
 			writer.writeString8(id)
 		end

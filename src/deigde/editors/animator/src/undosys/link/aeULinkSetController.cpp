@@ -41,28 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetController::aeULinkSetController( aeLink *link, aeController *newController ){
-	if( ! link ) DETHROW( deeInvalidParam );
-	if( link->GetController() == newController ) DETHROW( deeInvalidParam );
+aeULinkSetController::aeULinkSetController(aeLink *link, aeController *newController){
+	if(!link) DETHROW(deeInvalidParam);
+	if(link->GetController() == newController) DETHROW(deeInvalidParam);
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
-	SetShortInfo( "Set Link Controller" );
+	SetShortInfo("@Animator.Undo.LinkSetController");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldController = link->GetController();
-	if( pOldController ) pOldController->AddReference();
-	
 	pNewController = newController;
-	if( pNewController ) pNewController->AddReference();
 }
 
 aeULinkSetController::~aeULinkSetController(){
-	if( pNewController ) pNewController->FreeReference();
-	if( pOldController ) pOldController->FreeReference();
-	if( pLink ) pLink->FreeReference();
 }
 
 
@@ -71,9 +63,9 @@ aeULinkSetController::~aeULinkSetController(){
 ///////////////
 
 void aeULinkSetController::Undo(){
-	pLink->SetController( pOldController );
+	pLink->SetController(pOldController);
 }
 
 void aeULinkSetController::Redo(){
-	pLink->SetController( pNewController );
+	pLink->SetController(pNewController);
 }

@@ -26,9 +26,9 @@
 #ifndef _PROJUDISTRIBUTORSETGAMEOBJECT_H_
 #define _PROJUDISTRIBUTORSETGAMEOBJECT_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/projProject.h"
 
-class projProject;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -45,13 +45,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProjectSetGameObject>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetGameObject( projProject *project, const char *newValue );
+	projUProjectSetGameObject(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProjectSetGameObject();
+protected:
+	~projUProjectSetGameObject() override;
+public:
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

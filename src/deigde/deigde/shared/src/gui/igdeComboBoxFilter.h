@@ -44,33 +44,49 @@
  * exists no filtering is done.
  */
 class DE_DLL_EXPORT igdeComboBoxFilter : public igdeComboBox{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeComboBoxFilter>;
+	
+	
+	class cNativeComboBoxFilter : public cNativeComboBox{
+	public:
+		virtual ~cNativeComboBoxFilter() override = default;
+		virtual void UpdateFilterString() = 0;
+	};
+	
+	
 private:
-	decObjectList pFilterItems;
+	igdeListItem::List pFilterItems;
 	bool pFilterCaseInsensitive;
 	decString pFilterString;
 	
+	
+protected:
+	cNativeComboBoxFilter *pNativeComboBoxFilter;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create combobox. */
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, const char *description = "");
 	
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, bool editable,
-		const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, bool editable,
+		const char *description = "");
 	
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, int rows,
-		const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, int rows,
+		const char *description = "");
 	
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, int rows, bool editable,
-		const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, int rows, bool editable,
+		const char *description = "");
 	
 	
 	
 protected:
 	/** \brief Clean up filtered combo box. */
-	virtual ~igdeComboBoxFilter();
+	~igdeComboBoxFilter() override;
 	/*@}*/
 	
 	
@@ -91,7 +107,7 @@ public:
 	inline bool GetFilterCaseInsensitive() const{ return pFilterCaseInsensitive; }
 	
 	/** \brief Set if filtering is case insensitive. */
-	void SetFilterCaseInsentive( bool caseInsensitive );
+	void SetFilterCaseInsentive(bool caseInsensitive);
 	
 	/** \brief Filter string. */
 	inline const decString &GetFilterString() const{ return pFilterString; }
@@ -101,13 +117,10 @@ public:
 	 * 
 	 * Calls FilterItems() if the filter string changed.
 	 */
-	void SetFilterString( const char *filterString );
+	void SetFilterString(const char *filterString);
 	
-	/** \brief Number of stored filter items. */
-	int GetFilterItemCount() const;
-	
-	/** \brief Stored filter item at index. */
-	igdeListItem *GetFilterItemAt( int index ) const;
+	/** \brief Filter items. */
+	inline const igdeListItem::List &GetFilterItems() const{ return pFilterItems; }
 	/*@}*/
 	
 	
@@ -121,58 +134,24 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
-	/** \brief Item added. */
-	virtual void OnItemAdded( int index );
-	
-	/** \brief Item removed. */
-	virtual void OnItemRemoved( int index );
-	
-	/** \brief All items removed. */
-	virtual void OnAllItemsRemoved();
-	
-	/** \brief Item changed. */
-	virtual void OnItemChanged( int index );
-	
-	/** \brief Item moved. */
-	virtual void OnItemMoved( int fromIndex, int toIndex );
-	
-	/** \brief Items sorted. */
-	virtual void OnItemsSorted();
-	
-	/** \brief Text changed. */
-	virtual void OnTextChanged();
-	
-	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
-	
-	/** \brief Rows changed. */
-	virtual void OnRowsChanged();
-	
-	/** \brief Editable changed. */
-	virtual void OnEditableChanged();
-	
-	/** \brief Description changed. */
-	virtual void OnDescriptionChanged();
-	
 	/** \brief Filter string changed. */
 	virtual void OnFilterStringChanged();
-	
-	/** \brief Invalid value changed. */
-	virtual void OnInvalidValueChanged();
-	
-	/** \brief Request focus. */
-	virtual void OnRequestFocus();
 	/*@}*/
 };
 

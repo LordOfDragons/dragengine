@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleLockLookAtTarget::ceUCCShotToggleLockLookAtTarget( ceCameraShot *cameraShot ){
-	if( ! cameraShot ){
-		DETHROW( deeInvalidParam );
+ceUCCShotToggleLockLookAtTarget::ceUCCShotToggleLockLookAtTarget(ceCameraShot *cameraShot){
+	if(!cameraShot){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera shot lock look-at target" );
+	SetShortInfo("@Conversation.Undo.CameraShotLockLookAtTarget");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockLookAtTarget::~ceUCCShotToggleLockLookAtTarget(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void ceUCCShotToggleLockLookAtTarget::Undo(){
 }
 
 void ceUCCShotToggleLockLookAtTarget::Redo(){
-	pCameraShot->SetLockLookAtTarget( ! pCameraShot->GetLockLookAtTarget() );
+	pCameraShot->SetLockLookAtTarget(!pCameraShot->GetLockLookAtTarget());
 }

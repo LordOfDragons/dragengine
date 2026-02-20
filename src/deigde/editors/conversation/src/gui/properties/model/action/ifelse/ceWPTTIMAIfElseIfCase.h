@@ -30,19 +30,22 @@
 class ceCAIfElse;
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
-class ceWPTTIMAIfElseIfCaseCondition;
-class ceWPTTIMAIfElseIfCaseActions;
+#include "ceWPTTIMAIfElseIfCaseCondition.h"
+#include "ceWPTTIMAIfElseIfCaseActions.h"
 
 
 /**
  * \brief Action if-else action.
  */
 class ceWPTTIMAIfElseIfCase : public ceWPTTreeItemModel{
+public:
+	using Ref = deTObjectReference<ceWPTTIMAIfElseIfCase>;
+	
 private:
-	ceCAIfElseCase *pIfCase;
+	ceCAIfElseCase::Ref pIfCase;
 	int pIndex;
-	ceWPTTIMAIfElseIfCaseCondition *pCondition;
-	ceWPTTIMAIfElseIfCaseActions *pActions;
+	ceWPTTIMAIfElseIfCaseCondition::Ref pCondition;
+	ceWPTTIMAIfElseIfCaseActions::Ref pActions;
 	
 	
 	
@@ -50,12 +53,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseIfCase( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index );
+	ceWPTTIMAIfElseIfCase(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAIfElseIfCase();
+	~ceWPTTIMAIfElseIfCase() override;
 	/*@}*/
 	
 	
@@ -64,22 +67,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline const ceCAIfElseCase::Ref &GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Parent if-else model. */
 	ceWPTTIMAIfElse *GetModelIfElse() const;
 	
-	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAIfElseIfCaseCondition *GetChildCondition() const{ return pCondition; }
+	/** \brief Model with condition or \em nullptr. */
+	inline const ceWPTTIMAIfElseIfCaseCondition::Ref &GetChildCondition() const{ return pCondition; }
 	
-	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAIfElseIfCaseActions *GetChildActions() const{ return pActions; }
+	/** \brief Model with actions or \em nullptr. */
+	inline const ceWPTTIMAIfElseIfCaseActions::Ref &GetChildActions() const{ return pActions; }
 	
 	/** \brief Update if-case. */
 	void Update();
@@ -88,10 +91,10 @@ public:
 	void UpdateActionLists();
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 	
 	

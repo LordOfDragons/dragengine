@@ -34,15 +34,16 @@
  */
 class ceWPTTIMAStopTopic : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAStopTopic>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAStopTopic( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAStopTopic *action );
+	ceWPTTIMAStopTopic(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAStopTopic *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAStopTopic();
+	~ceWPTTIMAStopTopic() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAStopTopic *GetActionStopTopic() const{ return ( ceCAStopTopic* )GetAction(); }
+	inline ceCAStopTopic *GetActionStopTopic() const{ return GetAction().DynamicCast<ceCAStopTopic>(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

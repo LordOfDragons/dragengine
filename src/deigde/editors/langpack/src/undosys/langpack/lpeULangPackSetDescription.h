@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class lpeLangPack;
+#include "../../langpack/lpeLangPack.h"
 
 
 
@@ -37,6 +37,10 @@ class lpeLangPack;
  * \brief Undo action language pack set description.
  */
 class lpeULangPackSetDescription : public igdeUndo{
+public:
+	using Ref = deTObjectReference<lpeULangPackSetDescription>;
+	
+	
 private:
 	lpeLangPack *pLangPack;
 	
@@ -49,11 +53,11 @@ public:
 	/** \description Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackSetDescription( lpeLangPack *langpack, const decUnicodeString &newDescription );
+	lpeULangPackSetDescription(lpeLangPack *langpack, const decUnicodeString &newDescription);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~lpeULangPackSetDescription();
+	~lpeULangPackSetDescription() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \description Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

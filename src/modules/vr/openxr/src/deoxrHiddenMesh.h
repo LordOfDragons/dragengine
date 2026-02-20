@@ -28,6 +28,7 @@
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/model/deModel.h>
 
 class deoxrSession;
@@ -39,8 +40,7 @@ class deoxrSession;
 class deoxrHiddenMesh : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrHiddenMesh> Ref;
-	
+	using Ref = deTObjectReference<deoxrHiddenMesh>;
 	
 	
 private:
@@ -54,16 +54,15 @@ private:
 	deModel::Ref pModel;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load hidden mesh. */
-	deoxrHiddenMesh( deoxrSession &session, XrViewConfigurationType viewConfig, uint32_t viewIndex );
+	deoxrHiddenMesh(deoxrSession &session, XrViewConfigurationType viewConfig, uint32_t viewIndex);
 	
 protected:
 	/** Clean up hidden mesh. */
-	virtual ~deoxrHiddenMesh();
+	~deoxrHiddenMesh() override;
 	/*@}*/
 	
 	
@@ -84,10 +83,10 @@ public:
 	inline XrFovf GetFov() const{ return pFov; }
 	
 	/** Set fov. */
-	void SetFov( XrFovf fov );
+	void SetFov(XrFovf fov);
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Update model. */
 	void UpdateModel();
@@ -96,10 +95,10 @@ public:
 	
 	
 private:
-	void pFetchData( XrVisibilityMaskKHR &mask ) const;
-	void pProjectVertices( XrVisibilityMaskKHR &mask ) const;
-	void pMapVerticesToWindow( XrVisibilityMaskKHR &mask ) const;
-	void pFitVertices( XrVisibilityMaskKHR &mask ) const;
+	void pFetchData(XrVisibilityMaskKHR &mask, decTList<XrVector2f> &vertices, decTList<uint32_t> &indices) const;
+	void pProjectVertices(XrVisibilityMaskKHR &mask) const;
+	void pMapVerticesToWindow(XrVisibilityMaskKHR &mask) const;
+	void pFitVertices(XrVisibilityMaskKHR &mask) const;
 };
 
 #endif

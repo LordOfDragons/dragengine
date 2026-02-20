@@ -27,9 +27,10 @@
 
 #include "dearRule.h"
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
-class decIntList;
 class deAnimator;
 class dearBoneStateList;
 class dearVPSStateList;
@@ -49,8 +50,7 @@ private:
 	dearVPSStateList *pVPSStateList;
 	dearVPSStateList *pVPSStateList2;
 	
-	dearRule **pRules;
-	int pRuleCount;
+	decTUniqueList<dearRule> pRules;
 	
 	dearControllerTarget pTargetSelect;
 	
@@ -65,11 +65,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping );
+	dearRuleGroup(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleGroup &rule, const decTList<int> &controllerMapping);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleGroup();
+	~dearRuleGroup() override;
 	/*@}*/
 	
 	
@@ -80,32 +80,32 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	void CaptureStateInto(int identifier) override;
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime) override;
 	
 	/**
 	 * Check if a full rebuild of the animator instance is required.
 	 */
-	virtual bool RebuildInstance() const;
+	bool RebuildInstance() const override;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	void ControllerChanged(int controller) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pCreateRules( int firstLink, const decIntList &controllerMapping );
+	void pCreateRules(int firstLink, const decTList<int> &controllerMapping);
 };
 
 #endif

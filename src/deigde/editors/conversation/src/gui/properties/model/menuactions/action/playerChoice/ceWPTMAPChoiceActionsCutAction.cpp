@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,14 +46,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceActionsCutAction::ceWPTMAPChoiceActionsCutAction( ceWindowMain &windowMain,
+ceWPTMAPChoiceActionsCutAction::ceWPTMAPChoiceActionsCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceConversationAction *action ) :
-ceWPTMACopyAction( windowMain, action, "Cut Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ){
+ceCAPlayerChoice &playerChoice, ceConversationAction *action) :
+ceWPTMACopyAction(windowMain, action, "@Conversation.MenuAction.CutAction",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice){
 }
 
 
@@ -64,8 +64,8 @@ pPlayerChoice( &playerChoice ){
 void ceWPTMAPChoiceActionsCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAPChoiceActionRemove( pTopic, pPlayerChoice, NULL, GetAction() ) );
-	undo->SetShortInfo( "Cut Action" );
-	pConversation->GetUndoSystem()->Add( undo );
+	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::New(
+		pTopic, pPlayerChoice, nullptr, GetAction()));
+	undo->SetShortInfo("@Conversation.Undo.CutAction");
+	pConversation->GetUndoSystem()->Add(undo);
 }

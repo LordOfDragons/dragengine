@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionGameCommand;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionGameCommand.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,10 +37,14 @@ class ceConversationTopic;
  * \brief Undo conversation condition game command set command.
  */
 class ceUCCGameCmdSetCommand : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCGameCmdSetCommand>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionGameCommand *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionGameCommand::Ref pCondition;
 	decString pOldCommand;
 	decString pNewCommand;
 	
@@ -48,19 +52,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCGameCmdSetCommand( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionGameCommand *condition, const char *newCommand );
+	ceUCCGameCmdSetCommand(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionGameCommand *condition, const char *newCommand);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCCGameCmdSetCommand();
+protected:
+	~ceUCCGameCmdSetCommand() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

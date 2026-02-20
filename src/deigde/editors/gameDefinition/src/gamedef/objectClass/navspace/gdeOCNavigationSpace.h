@@ -26,8 +26,9 @@
 #define _GDEOCNAVIGATIONSPACE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
@@ -38,6 +39,13 @@
  */
 class gdeOCNavigationSpace : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeOCNavigationSpace>;
+
+	/** \brief Type holding list. */
+	using List = decTObjectOrderedSet<gdeOCNavigationSpace>;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Path to navigation space file. */
@@ -78,9 +86,9 @@ private:
 	
 	deNavigationSpace::eSpaceTypes pType;
 	int pBlockingPriority;
-	decShapeList pBlockerShapeList;
+	decShape::List pBlockerShapeList;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
+	decString pPropertyNames[epAttachRotation + 1];
 	
 	
 	
@@ -91,10 +99,12 @@ public:
 	gdeOCNavigationSpace();
 	
 	/** \brief Create copy of navigation space. */
-	gdeOCNavigationSpace( const gdeOCNavigationSpace &space );
+	gdeOCNavigationSpace(const gdeOCNavigationSpace &space);
 	
 	/** \brief Clean up navigation space. */
-	virtual ~gdeOCNavigationSpace();
+protected:
+	~gdeOCNavigationSpace() override;
+public:
 	/*@}*/
 	
 	
@@ -105,37 +115,37 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path to use. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of the bone to attach to or empty string. */
-	void SetBoneName( const char *boneName );
+	void SetBoneName(const char *boneName);
 	
 	/** \brief Layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	/** \brief Space type. */
 	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set space type. */
-	void SetType( deNavigationSpace::eSpaceTypes type );
+	void SetType(deNavigationSpace::eSpaceTypes type);
 	
 	/**
 	 * \brief Blocking priority.
@@ -151,38 +161,38 @@ public:
 	 *          larger blocking priority. If a blocker shape exists it blocks
 	 *          all navigation meshes with equal or less blocking priority.
 	 */
-	void SetBlockingPriority( int priority );
+	void SetBlockingPriority(int priority);
 	
 	/** \brief Blocker shape list. */
-	inline decShapeList &GetBlockerShapeList(){ return pBlockerShapeList; }
-	inline const decShapeList &GetBlockerShapeList() const{ return pBlockerShapeList; }
+	inline decShape::List &GetBlockerShapeList(){ return pBlockerShapeList; }
+	inline const decShape::List &GetBlockerShapeList() const{ return pBlockerShapeList; }
 	
 	/** \brief Snap distance. */
 	inline float GetSnapDistance() const{ return pSnapDistance; }
 	
 	/** \brief Set snap distance. */
-	void SetSnapDistance( float distance );
+	void SetSnapDistance(float distance);
 	
 	/** \brief Snap angle. */
 	inline float GetSnapAngle() const{ return pSnapAngle; }
 	
 	/** \brief Set snap angle. */
-	void SetSnapAngle( float angle );
+	void SetSnapAngle(float angle);
 	
 	
 	
 	
 	/** \brief Property name is set. */
-	bool IsPropertySet( eProperties property ) const;
+	bool IsPropertySet(eProperties property) const;
 	
 	/** \brief Name of property. */
-	const decString &GetPropertyName( eProperties property ) const;
+	const decString &GetPropertyName(eProperties property) const;
 	
 	/** \brief Set name of property. */
-	void SetPropertyName( eProperties property, const char *name );
+	void SetPropertyName(eProperties property, const char *name);
 	
 	/** \brief One or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	/*@}*/
 };
 

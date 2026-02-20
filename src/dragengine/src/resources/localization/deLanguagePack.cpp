@@ -41,19 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLanguagePack::deLanguagePack( deLanguagePackManager *manager, deVirtualFileSystem *vfs,
-	const char *filename, TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
-pEntries( NULL ),
-pEntryCount( 0 )
+deLanguagePack::deLanguagePack(deLanguagePackManager *manager, deVirtualFileSystem *vfs,
+	const char *filename, TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime)
 {
-	pMissingText.SetFromUTF8( "< Missing Text >" );
+	pMissingText.SetFromUTF8("< Missing Text >");
 }
 
 deLanguagePack::~deLanguagePack(){
-	if( pEntries ){
-		delete [] pEntries;
-	}
 }
 
 
@@ -61,91 +56,69 @@ deLanguagePack::~deLanguagePack(){
 // Management
 ///////////////
 
-void deLanguagePack::SetIdentifier( const decString &identifier ){
+void deLanguagePack::SetIdentifier(const decString &identifier){
 	pIdentifier = identifier;
 }
 
-void deLanguagePack::SetName( const decUnicodeString &name ){
+void deLanguagePack::SetName(const decUnicodeString &name){
 	pName = name;
 }
 
-void deLanguagePack::SetDescription( const decUnicodeString &description ){
+void deLanguagePack::SetDescription(const decUnicodeString &description){
 	pDescription = description;
 }
 
-void deLanguagePack::SetMissingText( const decUnicodeString &missingText ){
+void deLanguagePack::SetMissingText(const decUnicodeString &missingText){
 	pMissingText = missingText;
 }
 
 
 
-void deLanguagePack::SetEntryCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deLanguagePack::SetEntryCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pEntries ){
-		delete [] pEntries;
-		pEntries = NULL;
-		pEntryCount = 0;
-	}
-	
-	if( count > 0 ){
-		pEntries = new deLanguagePackEntry[ count ];
-		pEntryCount = count;
-	}
+	pEntries.SetAll(count, {});
 }
 
-const deLanguagePackEntry &deLanguagePack::GetEntryAt( int index ) const{
-	if( index < 0 || index >= pEntryCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pEntries[ index ];
+const deLanguagePackEntry &deLanguagePack::GetEntryAt(int index) const{
+	return pEntries[index];
 }
 
-deLanguagePackEntry &deLanguagePack::GetEntryAt( int index ){
-	if( index < 0 || index >= pEntryCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pEntries[ index ];
+deLanguagePackEntry &deLanguagePack::GetEntryAt(int index){
+	return pEntries[index];
 }
 
-int deLanguagePack::IndexOfEntryNamed( const char *name ) const{
-	int i;
-	
-	for( i=0; i<pEntryCount; i++ ){
-		if( pEntries[ i ].GetName() == name ){
-			return i;
-		}
-	}
-	
-	return -1;
+int deLanguagePack::IndexOfEntryNamed(const char *name) const{
+	return pEntries.IndexOfMatching([&](const deLanguagePackEntry &entry){
+		return entry.GetName() == name;
+	});
 }
 
 
 
-const decUnicodeString &deLanguagePack::Translate( const char *name ) const{
-	return Translate( name, pMissingText );
+const decUnicodeString &deLanguagePack::Translate(const char *name) const{
+	return Translate(name, pMissingText);
 }
 
-const decUnicodeString &deLanguagePack::Translate( const char *name,
-const decUnicodeString &defaultValue ) const{
-	void *pointer;
-	
-	if( pLookupTable.GetAt( name, &pointer ) ){
-		return ( ( const deLanguagePackEntry* )pointer )->GetText();
+const decUnicodeString &deLanguagePack::Translate(const char *name,
+const decUnicodeString &defaultValue) const{
+	const deLanguagePackEntry * const *pointer;
+	if(pLookupTable.GetAt(name, pointer)){
+		return (*pointer)->GetText();
 		
 	}else{
 		return defaultValue;
 	}
 }
 
-bool deLanguagePack::Translate( const char *name, const decUnicodeString **text ) const {
-	DEASSERT_NOTNULL( text );
+bool deLanguagePack::Translate(const char *name, const decUnicodeString **text) const {
+	DEASSERT_NOTNULL(text);
 	
-	void *pointer;
-	if( pLookupTable.GetAt( name, &pointer ) ){
-		*text = &( ( const deLanguagePackEntry* )pointer )->GetText();
+	const deLanguagePackEntry * const *pointer;
+	if(pLookupTable.GetAt(name, pointer)){
+		*text = &((*pointer)->GetText());
 		return true;
 		
 	}else{
@@ -156,23 +129,24 @@ bool deLanguagePack::Translate( const char *name, const decUnicodeString **text 
 
 
 bool deLanguagePack::Verify() const{
-	int i, j;
-	
-	for( i=0; i<pEntryCount; i++ ){
-		const decString &name = pEntries[ i ].GetName();
+	const int entryCount = pEntries.GetCount();
+	int i;
+	for(i=0; i<entryCount; i++){
+		const decString &name = pEntries[i].GetName();
 		
-		if( name.IsEmpty() ){
-			GetEngine()->GetLogger()->LogErrorFormat( "Dragengine",
+		if(name.IsEmpty()){
+			GetEngine()->GetLogger()->LogErrorFormat("Dragengine",
 				"deLanguagePack::Verify(%s): Entry has empty name (index %d)",
-					GetFilename().GetString(), i );
+					GetFilename().GetString(), i);
 			return false;
 		}
 		
-		for( j=0; j<pEntryCount; j++ ){
-			if( j != i && pEntries[ j ].GetName() == name ){
-				GetEngine()->GetLogger()->LogErrorFormat( "Dragengine",
+		int j;
+		for(j=0; j<entryCount; j++){
+			if(j != i && pEntries[j].GetName() == name){
+				GetEngine()->GetLogger()->LogErrorFormat("Dragengine",
 					"deLanguagePack::Verify(%s): Duplicate name '%s' (index %d and %d)",
-						GetFilename().GetString(), name.GetString(), i, j );
+						GetFilename().GetString(), name.GetString(), i, j);
 				return false;
 			}
 		}
@@ -183,9 +157,7 @@ bool deLanguagePack::Verify() const{
 
 void deLanguagePack::BuildLookupTable(){
 	pLookupTable.RemoveAll();
-	
-	int i;
-	for( i=0; i<pEntryCount; i++ ){
-		pLookupTable.SetAt( pEntries[ i ].GetName(), pEntries + i );
-	}
+	pEntries.Visit([&](const deLanguagePackEntry &entry){
+		pLookupTable.SetAt(entry.GetName(), &entry);
+	});
 }

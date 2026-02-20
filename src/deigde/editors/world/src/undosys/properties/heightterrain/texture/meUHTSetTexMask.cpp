@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexMask::meUHTSetTexMask( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath ){
-	if( ! world || ! sector || ! texture || ! newPath ) DETHROW( deeInvalidParam );
+meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath){
+	if(!world || !sector || !texture || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -51,17 +51,11 @@ meUHTSetTexMask::meUHTSetTexMask( meWorld *world, meHeightTerrainSector *sector,
 	pOldPath = texture->GetPathMask();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Set Height Terrain Texture Mask" );
-	
-	world->AddReference();
-	
+	SetShortInfo("@World.UHTSetTexMask.SetHeightTerrainTextureMask");
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexMask::~meUHTSetTexMask(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
 }
 
 
@@ -71,9 +65,9 @@ meUHTSetTexMask::~meUHTSetTexMask(){
 
 
 void meUHTSetTexMask::Undo(){
-	pTexture->SetPathMask( pOldPath.GetString(), false );
+	pTexture->SetPathMask(pOldPath.GetString(), false);
 }
 
 void meUHTSetTexMask::Redo(){
-	pTexture->SetPathMask( pNewPath.GetString(), false );
+	pTexture->SetPathMask(pNewPath.GetString(), false);
 }

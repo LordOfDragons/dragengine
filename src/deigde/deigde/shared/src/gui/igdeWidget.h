@@ -25,11 +25,13 @@
 #ifndef _IGDEWIDGET_H_
 #define _IGDEWIDGET_H_
 
-#include "theme/igdeGuiThemeReference.h"
+#include "theme/igdeGuiTheme.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeString.h>
 
 class igdeEnvironment;
 class igdeContainer;
@@ -48,7 +50,10 @@ class deLogger;
 class DE_DLL_EXPORT igdeWidget : public deObject{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeWidget> Ref;
+	using Ref = deTObjectReference<igdeWidget>;
+	
+	/** \brief Weak reference. */
+	using WeakRef = deTWeakObjectReference<igdeWidget>;
 	
 	
 private:
@@ -56,7 +61,7 @@ private:
 	void *pNativeWidget;
 	igdeContainer *pParent;
 	bool pVisible;
-	igdeGuiThemeReference pGuiTheme;
+	igdeGuiTheme::Ref pGuiTheme;
 	decString pGuiThemeName;
 	
 	
@@ -64,7 +69,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeWidget( igdeEnvironment &environment );
+	igdeWidget(igdeEnvironment &environment);
 	
 	/**
 	 * \brief Clean up widget.
@@ -82,14 +87,14 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Parent of widget or NULL. */
+	/** \brief Parent of widget or nullptr. */
 	inline igdeContainer *GetParent() const{ return pParent; }
 	
 	/** \brief Widget is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if widget is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Engine controller. */
 	igdeEngineController &GetEngineController() const;
@@ -107,22 +112,22 @@ public:
 	deLogger *GetLogger() const;
 	
 	
-	/** \brief Widget specific GuiTheme or NULL to use parent GuiTheme. */
-	inline igdeGuiTheme *GetWidgetGuiTheme() const{ return pGuiTheme; }
+	/** \brief Widget specific GuiTheme or nullptr to use parent GuiTheme. */
+	inline const igdeGuiTheme::Ref &GetWidgetGuiTheme() const{ return pGuiTheme; }
 	
-	/** \brief Set widget specific GuiTheme or NULL to use parent GuiTheme. */
-	void SetWidgetGuiTheme( igdeGuiTheme *guitheme );
+	/** \brief Set widget specific GuiTheme or nullptr to use parent GuiTheme. */
+	void SetWidgetGuiTheme(igdeGuiTheme *guitheme);
 	
 	/** \brief Widget specific GuiTheme name or empty string to use parent GuiTheme. */
 	inline const decString &GetWidgetGuiThemeName() const{ return pGuiThemeName; }
 	
 	/** \brief Set widget specific GuiTheme name or empty string to use parent GuiTheme. */
-	void SetWidgetGuiThemeName( const char *guitheme );
+	void SetWidgetGuiThemeName(const char *guitheme);
 	
 	/**
 	 * \brief GuiTheme to use.
 	 * 
-	 * Returns the first GuiTheme which is not NULL:
+	 * Returns the first GuiTheme which is not nullptr:
 	 * - Widget specific GuiTheme
 	 * - Named widget specific GuiTheme
 	 * - Parent GuiThemes (walking up the parent chain)
@@ -136,10 +141,30 @@ public:
 	
 	
 	/** \brief Convert widget position to screen position. */
-	virtual decPoint WidgetToScreen( const decPoint &position ) const;
+	virtual decPoint WidgetToScreen(const decPoint &position) const;
 	
 	/** \brief Parent window. */
 	virtual igdeWindow *GetParentWindow();
+	
+	
+	/** \brief Translation for entry name entry name itself if absent. */
+	decUnicodeString Translate(const decString &entryName) const;
+	decUnicodeString Translate(const char *entryName) const;
+	
+	/**
+	 * \brief Translate text if it starts with a translation character.
+	 *
+	 * This call can be used for plain text and text prefixed with a marker
+	 * character. If text is empty or the first character in text does not
+	 * match the translation character the text is returned unmodified.
+	 * Otherwise the entire text after the translation character converted to
+	 * UTF-8 encoding is used as name in a call to translate(String).
+	 * 
+	 * Choose the marker character to not be found at the start of any text
+	 * you can possibly encounter. A typical choice is '@'.
+	 */
+	decUnicodeString TranslateIf(const decString &text) const;
+	decUnicodeString TranslateIf(const char *text) const;
 	/*@}*/
 	
 	
@@ -152,7 +177,7 @@ public:
 	 * \brief Set parent.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetParent( igdeContainer *parent );
+	void SetParent(igdeContainer *parent);
 	
 	/**
 	 * \brief Create native widget.
@@ -181,6 +206,9 @@ public:
 	/** \brief GuiTheme changed. */
 	virtual void OnGuiThemeChanged();
 	
+	/** \brief Active language changed. */
+	virtual void OnLanguageChanged();
+	
 	
 protected:
 	/** \brief Visible changed. */
@@ -190,7 +218,10 @@ protected:
 	 * \brief Set native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetNativeWidget( void *nativeWidget );
+	void SetNativeWidget(void *nativeWidget);
+	
+	/** \brief Native widget language changed. */
+	virtual void OnNativeWidgetLanguageChanged();
 	/*@}*/
 };
 

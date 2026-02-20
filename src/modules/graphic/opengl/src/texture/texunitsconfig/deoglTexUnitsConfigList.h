@@ -25,6 +25,8 @@
 #ifndef _DEOGLTEXUNITSCONFIGLIST_H_
 #define _DEOGLTEXUNITSCONFIGLIST_H_
 
+#include <dragengine/common/collection/decTLinkedList.h>
+
 class deoglRenderThread;
 class deoglTexUnitConfig;
 class deoglTexUnitsConfig;
@@ -38,9 +40,7 @@ class deoglTexUnitsConfigList{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexUnitsConfig *pRootTUC;
-	deoglTexUnitsConfig *pTailTUC;
-	int pTUCCount;
+	decTUniqueLinkedList<deoglTexUnitsConfig> pConfigs;
 	
 	deoglTexUnitsConfig *pTUCEmpty;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglTexUnitsConfigList( deoglRenderThread &renderThread );
+	deoglTexUnitsConfigList(deoglRenderThread &renderThread);
 	
 	/** Clean up list. */
 	~deoglTexUnitsConfigList();
@@ -63,18 +63,21 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
+	/** Texture units configurations. */
+	inline const decTUniqueLinkedList<deoglTexUnitsConfig> &GetConfigs() const{ return pConfigs; }
+	
 	/** Count of texture units configurations. */
-	inline int GetCount() const{ return pTUCCount; }
+	inline int GetCount() const{ return pConfigs.GetCount(); }
 	
 	/** Root texture units configuration. */
-	inline deoglTexUnitsConfig *GetRoot() const{ return pRootTUC; }
+	inline deoglTexUnitsConfig *GetRoot() const{ return pConfigs.GetRootOwner(); }
 	
 	/**
 	 * Texture units configuration matching parameters. Create texture units configuration
 	 * if absent. Adds usage to texture units configuration. To remove a usage use RemoveUsage.
 	 */
-	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units,
-		int unitCount, deoglShaderParameterBlock *paramBlock );
+	deoglTexUnitsConfig *GetWith(const deoglTexUnitConfig *units,
+		int unitCount, deoglShaderParameterBlock *paramBlock);
 	
 	/** Empty texture units configuration. */
 	deoglTexUnitsConfig *GetEmpty();
@@ -83,7 +86,7 @@ public:
 	deoglTexUnitsConfig *GetEmptyNoUsage() const;
 	
 	/** Remove texture units configuration. For use by deoglTexUnitsConfig only. */
-	void Remove( deoglTexUnitsConfig *config );
+	void Remove(deoglTexUnitsConfig *config);
 	/*@}*/
 };
 

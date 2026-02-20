@@ -38,23 +38,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX( seProperty *property ) :
-pProperty( NULL )
+seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty *property) :
+pProperty(nullptr)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed tile X" );
+	SetShortInfo("@Skin.Undo.PropertyConstructedTileX");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -63,9 +59,9 @@ seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
 ///////////////
 
 void seUPropertyConstructedToggleTileX::Undo(){
-	pProperty->SetNodeTileX( ! pProperty->GetNodeTileX() );
+	pProperty->SetNodeTileX(!pProperty->GetNodeTileX());
 }
 
 void seUPropertyConstructedToggleTileX::Redo(){
-	pProperty->SetNodeTileX( ! pProperty->GetNodeTileX() );
+	pProperty->SetNodeTileX(!pProperty->GetNodeTileX());
 }

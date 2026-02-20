@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime( peeController *controller ){
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController *controller){
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pController = NULL;
+	pController = nullptr;
 	
-	SetShortInfo( "Toggle Controller Link To Time" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.ToggleLinkToTime");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleLinkToTime::~peeUControllerToggleLinkToTime(){
-	if( pController ){
-		pController->FreeReference();
-	}
 }
 
 
@@ -64,9 +60,9 @@ peeUControllerToggleLinkToTime::~peeUControllerToggleLinkToTime(){
 ///////////////
 
 void peeUControllerToggleLinkToTime::Undo(){
-	pController->SetLinkToTime( ! pController->GetLinkToTime() );
+	pController->SetLinkToTime(!pController->GetLinkToTime());
 }
 
 void peeUControllerToggleLinkToTime::Redo(){
-	pController->SetLinkToTime( ! pController->GetLinkToTime() );
+	pController->SetLinkToTime(!pController->GetLinkToTime());
 }

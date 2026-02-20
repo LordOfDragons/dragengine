@@ -43,27 +43,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMove::meUHTVRuleMove( meHTVegetationLayer *vlayer, meHTVRule *rule ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	pOldPosition = rule->GetPosition();
 	pNewPosition = pOldPosition;
 	
-	SetShortInfo( "Move Vegetation Layer Rule" );
-	SetMemoryConsumption( sizeof( meUHTVRuleMove ) );
+	SetShortInfo("@World.UHTVRuleMove.MoveVegetationLayerRule");
+	SetMemoryConsumption(sizeof(meUHTVRuleMove));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMove::~meUHTVRuleMove(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -71,18 +67,18 @@ meUHTVRuleMove::~meUHTVRuleMove(){
 // Management
 ///////////////
 
-void meUHTVRuleMove::SetNewPosition( const decVector2 &position ){
+void meUHTVRuleMove::SetNewPosition(const decVector2 &position){
 	pNewPosition = position;
 }
 
 
 
 void meUHTVRuleMove::Undo(){
-	pRule->SetPosition( pOldPosition );
-	pVLayer->NotifyRuleMoved( pRule );
+	pRule->SetPosition(pOldPosition);
+	pVLayer->NotifyRuleMoved(pRule);
 }
 
 void meUHTVRuleMove::Redo(){
-	pRule->SetPosition( pNewPosition );
-	pVLayer->NotifyRuleMoved( pRule );
+	pRule->SetPosition(pNewPosition);
+	pVLayer->NotifyRuleMoved(pRule);
 }

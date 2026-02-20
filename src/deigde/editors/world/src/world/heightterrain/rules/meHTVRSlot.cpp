@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meHTVRule.h"
 #include "meHTVRLink.h"
 #include "meHTVRSlot.h"
@@ -35,13 +31,13 @@
 
 
 // Class meHTVRSlot
-//////////////////////////
+/////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 meHTVRSlot::meHTVRSlot() :
-pIsInput( true ){
+pIsInput(true){
 }
 
 meHTVRSlot::~meHTVRSlot(){
@@ -52,37 +48,19 @@ meHTVRSlot::~meHTVRSlot(){
 // Management
 ///////////////
 
-void meHTVRSlot::SetIsInput( bool isInput ){
+void meHTVRSlot::SetIsInput(bool isInput){
 	pIsInput = isInput;
 }
 
 
 
-int meHTVRSlot::GetLinkCount() const{
-	return pLinks.GetCount();
+void meHTVRSlot::AddLink(meHTVRLink *link){
+	DEASSERT_NOTNULL(link)
+	pLinks.Add(link);
 }
 
-meHTVRLink *meHTVRSlot::GetLinkAt( int index ) const{
-	return ( meHTVRLink* )pLinks.GetAt( index );
-}
-
-int meHTVRSlot::IndexOfLink( meHTVRLink *link ) const{
-	return pLinks.IndexOf( link );
-}
-
-bool meHTVRSlot::HasLink( meHTVRLink *link ) const{
-	return pLinks.Has( link );
-}
-
-void meHTVRSlot::AddLink( meHTVRLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
-	}
-	pLinks.Add( link );
-}
-
-void meHTVRSlot::RemoveLink( meHTVRLink *link ){
-	pLinks.Remove( link );
+void meHTVRSlot::RemoveLink(meHTVRLink *link){
+	pLinks.Remove(link);
 }
 
 void meHTVRSlot::RemoveAllLinks(){
@@ -91,58 +69,26 @@ void meHTVRSlot::RemoveAllLinks(){
 
 
 
-bool meHTVRSlot::HasLinkWithSource( meHTVRule *rule, int slot ) const{
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meHTVRLink &link = *( meHTVRLink* )pLinks.GetAt( i );
-		if( link.GetSourceRule() == rule && link.GetSourceSlot() == slot ){
-			return true;
-		}
-	}
-	
-	return false;
+bool meHTVRSlot::HasLinkWithSource(const meHTVRule *rule, int slot) const{
+	return pLinks.HasMatching([&](const meHTVRLink &link){
+		return link.GetSourceRule() == rule && link.GetSourceSlot() == slot;
+	});
 }
 
-meHTVRLink *meHTVRSlot::GetLinkWithSource( meHTVRule *rule, int slot ) const{
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		meHTVRLink * const link = ( meHTVRLink* )pLinks.GetAt( i );
-		if( link->GetSourceRule() == rule && link->GetSourceSlot() == slot ){
-			return link;
-		}
-	}
-	
-	return NULL;
+meHTVRLink *meHTVRSlot::GetLinkWithSource(const meHTVRule *rule, int slot) const{
+	return pLinks.FindOrDefault([&](const meHTVRLink &link){
+		return link.GetSourceRule() == rule && link.GetSourceSlot() == slot;
+	});
 }
 
-bool meHTVRSlot::HasLinkWithDestination( meHTVRule *rule, int slot ) const{
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meHTVRLink &link = *( meHTVRLink* )pLinks.GetAt( i );
-		if( link.GetDestinationRule() == rule && link.GetDestinationSlot() == slot ){
-			return true;
-		}
-	}
-	
-	return false;
+bool meHTVRSlot::HasLinkWithDestination(const meHTVRule *rule, int slot) const{
+	return pLinks.HasMatching([&](const meHTVRLink &link){
+		return link.GetDestinationRule() == rule && link.GetDestinationSlot() == slot;
+	});
 }
 
-meHTVRLink *meHTVRSlot::GetLinkWithDestination( meHTVRule *rule, int slot ) const{
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		meHTVRLink * const link = ( meHTVRLink* )pLinks.GetAt( i );
-		if( link->GetDestinationRule() == rule && link->GetDestinationSlot() == slot ){
-			return link;
-		}
-	}
-	
-	return NULL;
+meHTVRLink *meHTVRSlot::GetLinkWithDestination(const meHTVRule *rule, int slot) const{
+	return pLinks.FindOrDefault([&](const meHTVRLink &link){
+		return link.GetDestinationRule() == rule && link.GetDestinationSlot() == slot;
+	});
 }

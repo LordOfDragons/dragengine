@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set ambient ratio" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetAmbientRatio");
 	
 	pOldValue = light->GetAmbientRatio();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetAmbientRatio::~gdeUOCLightSetAmbientRatio(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetAmbientRatio::~gdeUOCLightSetAmbientRatio(){
 ///////////////
 
 void gdeUOCLightSetAmbientRatio::Undo(){
-	pLight->SetAmbientRatio( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetAmbientRatio(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetAmbientRatio::Redo(){
-	pLight->SetAmbientRatio( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetAmbientRatio(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

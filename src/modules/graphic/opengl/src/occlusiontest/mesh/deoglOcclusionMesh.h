@@ -25,9 +25,10 @@
 #ifndef _DEOGLOCCLUSIONMESH_H_
 #define _DEOGLOCCLUSIONMESH_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
+#include "deoglROcclusionMesh.h"
 
-class deoglROcclusionMesh;
+#include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deOcclusionMesh;
 class deGraphicOpenGl;
@@ -39,18 +40,21 @@ class deGraphicOpenGl;
  */
 class deoglOcclusionMesh : public deBaseGraphicOcclusionMesh{
 public:
+	using List = decTOrderedSet<deoglOcclusionMesh*>;
+	
+public:
 	deGraphicOpenGl &pOgl;
 	const deOcclusionMesh &pOcclusionMesh;
-	deoglROcclusionMesh *pROcclusionMesh;
+	deoglROcclusionMesh::Ref pROcclusionMesh;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglOcclusionMesh( deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh );
+	deoglOcclusionMesh(deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh);
 	
 	/** Clean up peer. */
-	virtual ~deoglOcclusionMesh();
+	~deoglOcclusionMesh() override;
 	/*@}*/
 	
 	
@@ -64,7 +68,7 @@ public:
 	inline const deOcclusionMesh &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Render occlusion mesh. */
-	inline deoglROcclusionMesh *GetROcclusionMesh() const{ return pROcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetROcclusionMesh() const{ return pROcclusionMesh; }
 	/*@}*/
 	
 private:

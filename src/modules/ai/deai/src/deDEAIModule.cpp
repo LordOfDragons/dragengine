@@ -44,7 +44,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DEAICreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DEAICreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -52,14 +52,14 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEAICreateModule( deLoadableModule *loadableM
 
 
 
-deBaseModule *DEAICreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *DEAICreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deDEAIModule( *loadableModule );
+		module = new deDEAIModule(*loadableModule);
 		
-	}catch( const deException & ){
-		module = NULL; // just to be safe
+	}catch(const deException &){
+		module = nullptr; // just to be safe
 	}
 	
 	return module;
@@ -73,21 +73,21 @@ deBaseModule *DEAICreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deDEAIModule::deDEAIModule( deLoadableModule &loadableModule ) :
-deBaseAIModule( loadableModule ){
-	pDeveloperMode = NULL;
-	pCommandExecuter = NULL;
+deDEAIModule::deDEAIModule(deLoadableModule &loadableModule) :
+deBaseAIModule(loadableModule){
+	pDeveloperMode = nullptr;
+	pCommandExecuter = nullptr;
 	
 	// create objects existing at all times
-	pCommandExecuter = new dedaiCommandExecuter( this );
-	pDeveloperMode = new dedaiDeveloperMode( *this );
+	pCommandExecuter = new dedaiCommandExecuter(this);
+	pDeveloperMode = new dedaiDeveloperMode(*this);
 }
 
 deDEAIModule::~deDEAIModule(){
-	if( pDeveloperMode ){
+	if(pDeveloperMode){
 		delete pDeveloperMode;
 	}
-	if( pCommandExecuter ){
+	if(pCommandExecuter){
 		delete pCommandExecuter;
 	}
 }
@@ -109,24 +109,24 @@ void deDEAIModule::CleanUp(){
 // Management
 ///////////////
 
-deBaseAIWorld *deDEAIModule::CreateWorld( deWorld *world ){
-	return new dedaiWorld( *this, *world );
+deBaseAIWorld *deDEAIModule::CreateWorld(deWorld *world){
+	return new dedaiWorld(*this, *world);
 }
 
-deBaseAINavigationSpace *deDEAIModule::CreateNavigationSpace( deNavigationSpace *navspace ){
-	return new dedaiNavSpace( *this, *navspace );
+deBaseAINavigationSpace *deDEAIModule::CreateNavigationSpace(deNavigationSpace *navspace){
+	return new dedaiNavSpace(*this, *navspace);
 }
 
-deBaseAINavigationBlocker *deDEAIModule::CreateNavigationBlocker( deNavigationBlocker *blocker ){
-	return new dedaiNavBlocker( *this, *blocker );
+deBaseAINavigationBlocker *deDEAIModule::CreateNavigationBlocker(deNavigationBlocker *blocker){
+	return new dedaiNavBlocker(*this, *blocker);
 }
 
-deBaseAINavigator *deDEAIModule::CreateNavigator( deNavigator *navigator ){
-	return new dedaiNavigator( *this, *navigator );
+deBaseAINavigator *deDEAIModule::CreateNavigator(deNavigator *navigator){
+	return new dedaiNavigator(*this, *navigator);
 }
 
-deBaseAIHeightTerrain *deDEAIModule::CreateHeightTerrain( deHeightTerrain &heightTerrain ){
-	return new dedaiHeightTerrain( *this, heightTerrain );
+deBaseAIHeightTerrain *deDEAIModule::CreateHeightTerrain(deHeightTerrain &heightTerrain){
+	return new dedaiHeightTerrain(*this, heightTerrain);
 }
 
 
@@ -134,12 +134,12 @@ deBaseAIHeightTerrain *deDEAIModule::CreateHeightTerrain( deHeightTerrain &heigh
 // Debugging
 //////////////
 
-void deDEAIModule::SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( pCommandExecuter ){
-		pCommandExecuter->ExecuteCommand( command, answer );
+void deDEAIModule::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(pCommandExecuter){
+		pCommandExecuter->ExecuteCommand(command, answer);
 		
 	}else{
-		answer.SetFromUTF8( "Internal Error!" );
+		answer.SetFromUTF8("Internal Error!");
 	}
 }
 
@@ -152,7 +152,9 @@ void deDEAIModule::SendCommand( const decUnicodeArgumentList &command, decUnicod
 
 class deaiModuleInternal : public deInternalModule{
 public:
-deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	using Ref = deTObjectReference<deaiModuleInternal>;
+	
+	deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAI");
 		SetDescription("Provides AI support to the engine.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
@@ -171,7 +173,7 @@ deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 	}
 };
 
-deInternalModule *deaiRegisterInternalModule(deModuleSystem *system){
-	return new deaiModuleInternal(system);
+deTObjectReference<deInternalModule> deaiRegisterInternalModule(deModuleSystem *system){
+	return deaiModuleInternal::Ref::New(system);
 }
 #endif

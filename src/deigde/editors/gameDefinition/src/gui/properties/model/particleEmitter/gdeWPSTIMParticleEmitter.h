@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeParticleEmitter;
+#include "../../../../gamedef/particleemitter/gdeParticleEmitter.h"
 
 
 /**
@@ -35,18 +35,20 @@ class gdeParticleEmitter;
  */
 class gdeWPSTIMParticleEmitter : public gdeWPSTreeItemModel{
 private:
-	gdeParticleEmitter *pParticleEmitter;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMParticleEmitter> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMParticleEmitter( gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter );
+	gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMParticleEmitter();
+	~gdeWPSTIMParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -55,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
+	inline const gdeParticleEmitter::Ref &GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	
 	
@@ -67,16 +69,16 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

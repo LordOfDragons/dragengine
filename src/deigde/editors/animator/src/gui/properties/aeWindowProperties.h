@@ -25,18 +25,18 @@
 #ifndef _AEWINDOWPROPERTIES_H_
 #define _AEWINDOWPROPERTIES_H_
 
-#include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include "aeWPAnimator.h"
+#include "aeWPRule.h"
+#include "aeWPController.h"
+#include "aeWPLink.h"
+#include "aeWPView.h"
+#include "aeWPPlayground.h"
+#include "aeWPUndoHistory.h"
 
-class aeRule;
-class aeWPAnimator;
-class aeController;
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
+
 class aeWindowMain;
-class aeWPRule;
-class aeWPController;
-class aeWPLink;
-class aeWPView;
-class aeWPPlayground;
 class aeAnimator;
 
 
@@ -44,27 +44,31 @@ class aeAnimator;
  * Properties Panel.
  */
 class aeWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<aeWindowProperties>;
+	
+	
 private:
 	aeWindowMain &pWindowMain;
 	
-	aeWPAnimator *pPropAnimator;
-	aeWPRule *pPropRule;
-	aeWPLink *pPropLink;
-	aeWPController *pPropController;
-	aeWPView *pPropView;
-	aeWPPlayground *pPropPlayground;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	aeWPAnimator::Ref pPropAnimator;
+	aeWPRule::Ref pPropRule;
+	aeWPLink::Ref pPropLink;
+	aeWPController::Ref pPropController;
+	aeWPView::Ref pPropView;
+	aeWPPlayground::Ref pPropPlayground;
+	aeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWindowProperties( aeWindowMain &windowMain );
+	aeWindowProperties(aeWindowMain &windowMain);
 	
 protected:
 	/** Clean up window. */
-	virtual ~aeWindowProperties();
+	~aeWindowProperties() override;
 	/*@}*/
 	
 	
@@ -76,7 +80,7 @@ public:
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Animator path changed. */
 	void OnAnimatorPathChanged();

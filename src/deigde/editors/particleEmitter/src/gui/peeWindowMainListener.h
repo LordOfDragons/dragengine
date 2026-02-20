@@ -35,6 +35,10 @@ class peeWindowMain;
  * \brief Window Main Listener.
  */
 class peeWindowMainListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWindowMainListener>;
+	
 private:
 	peeWindowMain &pWindow;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWindowMainListener( peeWindowMain &window );
+	peeWindowMainListener(peeWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	~peeWindowMainListener();
+protected:
+	~peeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,34 +61,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( peeEmitter *emitter );
+	void StateChanged(peeEmitter *emitter) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( peeEmitter *emitter );
+	void UndoChanged(peeEmitter *emitter) override;
 	
 	/** \brief Emitter changed. */
-	virtual void EmitterChanged( peeEmitter *emitter );
+	void EmitterChanged(peeEmitter *emitter) override;
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( peeEmitter *emitter );
+	void ControllerStructureChanged(peeEmitter *emitter) override;
 	
 	/** Active controller changed. */
-	virtual void ActiveControllerChanged( peeEmitter *emitter );
+	void ActiveControllerChanged(peeEmitter *emitter) override;
 	
 	/** \brief Type count or order changed. */
-	virtual void TypeStructureChanged( peeEmitter *emitter );
+	void TypeStructureChanged(peeEmitter *emitter) override;
 	
 	/** \brief Active type active trail controller changed. */
-	virtual void TypeActiveTrailControllerChanged( peeEmitter *emitter, peeType *type );
+	void TypeActiveTrailControllerChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** \brief Active type active emit controller changed. */
-	virtual void TypeActiveEmitControllerChanged( peeEmitter *emitter, peeType *type );
+	void TypeActiveEmitControllerChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** \brief Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged( peeEmitter *emitter, peeType *type );
+	void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** \brief Active type changed. */
-	virtual void ActiveTypeChanged( peeEmitter *emitter );
+	void ActiveTypeChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

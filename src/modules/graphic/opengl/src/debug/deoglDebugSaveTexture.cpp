@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglDebugSaveTexture.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
@@ -42,6 +38,7 @@
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decPath.h>
 
 
@@ -49,7 +46,7 @@
 // Definitions
 ////////////////
 
-#define CONVERT_COLOR_LIN2SRGB   ( 1.0f / 2.2f )
+#define CONVERT_COLOR_LIN2SRGB   (1.0f / 2.2f)
 
 
 
@@ -59,8 +56,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugSaveTexture::deoglDebugSaveTexture( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglDebugSaveTexture::deoglDebugSaveTexture(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglDebugSaveTexture::~deoglDebugSaveTexture(){
@@ -71,130 +68,126 @@ deoglDebugSaveTexture::~deoglDebugSaveTexture(){
 // Management
 ///////////////
 
-void deoglDebugSaveTexture::SetBasePath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SetBasePath(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
 	pBasePath = path;
 }
 
-void deoglDebugSaveTexture::SaveTexture( deoglTexture &texture, const char *name ){
-	SaveTextureLevelConversion( texture, 0, name, ecNoConversion );
+void deoglDebugSaveTexture::SaveTexture(deoglTexture &texture, const char *name){
+	SaveTextureLevelConversion(texture, 0, name, ecNoConversion);
 }
 
-void deoglDebugSaveTexture::SaveTextureConversion( deoglTexture &texture, const char *name, eConvertions conversion ){
-	SaveTextureLevelConversion( texture, 0, name, conversion );
+void deoglDebugSaveTexture::SaveTextureConversion(deoglTexture &texture, const char *name, eConvertions conversion){
+	SaveTextureLevelConversion(texture, 0, name, conversion);
 }
 
-void deoglDebugSaveTexture::SaveTextureLevel( deoglTexture &texture, int level, const char *name ){
-	SaveTextureLevelConversion( texture, level, name, ecNoConversion );
+void deoglDebugSaveTexture::SaveTextureLevel(deoglTexture &texture, int level, const char *name){
+	SaveTextureLevelConversion(texture, level, name, ecNoConversion);
 }
 
-void deoglDebugSaveTexture::SaveTextureLevelConversion( deoglTexture &texture, int level, const char *name, eConvertions conversion ){
-	if( level < 0 || ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveTextureLevelConversion(deoglTexture &texture, int level, const char *name, eConvertions conversion){
+	if(level < 0 || !name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
 	int i;
 	
-	for( i=0; i<level; i++ ){
+	for(i=0; i<level; i++){
 		width >>= 1;
-		if( width < 1 ){
+		if(width < 1){
 			width = 1;
 		}
 		
 		height >>= 1;
-		if( height < 1 ){
+		if(height < 1){
 			height = 1;
 		}
 	}
 	
-	fileTitle.Format( "%s.png", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, 1 ) ) );
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfFloat4, width, height, 1));
 		
-		texture.GetPixelsLevel( level, pixbuf );
+		texture.GetPixelsLevel(level, pixbuf);
 		
-		imgdata = new sRGBA8[ width * height ];
-		pConvertDataRGBA( pixbuf->GetPointerFloat4(), imgdata, width, height, false, conversion );
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(width * height * sizeof(sRGBA8));
+		pConvertDataRGBA(pixbuf->GetPointerFloat4(),
+			reinterpret_cast<sRGBA8*>(imgdata.GetArrayPointer()),
+			width, height, false, conversion);
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, width, height, 1, 4, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
 		
-	}catch( const deException &e ){
-		if( saveImage ){
+	}catch(const deException &e){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveTextureLevel(%s:%i) failed!", name, level );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveTextureLevel(%s:%i) failed!", name, level);
 		e.PrintError();
 	}
 }
 
-void deoglDebugSaveTexture::SaveDepthTexture( deoglTexture &texture, const char *name, eDepthTypes type ){
-	SaveDepthTextureLevel( texture, 0, name, type );
+void deoglDebugSaveTexture::SaveDepthTexture(deoglTexture &texture, const char *name, eDepthTypes type){
+	SaveDepthTextureLevel(texture, 0, name, type);
 }
 
-void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int level, const char *name, eDepthTypes type ){
-	if( level < 0 || ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int level, const char *name, eDepthTypes type){
+	if(level < 0 || !name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x;
-	sRGBA8 *imgdata = NULL;
 	float depthval;
 	
-	for( y=0; y<level; y++ ){
+	for(y=0; y<level; y++){
 		width >>= 1;
-		if( width < 1 ){
+		if(width < 1){
 			width = 1;
 		}
 		
 		height >>= 1;
-		if( height < 1 ){
+		if(height < 1){
 			height = 1;
 		}
 	}
 	
-	fileTitle.Format( "%s.png", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, 1 ) ) );
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfFloat1, width, height, 1));
 		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
-		if( true ){
-			fbo.TakeOverWith(pRenderThread, false);
-			pRenderThread.GetFramebuffer().Activate( fbo );
-			fbo->AttachDepthTextureLevel( &texture, level );
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+		if(true){
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
+			pRenderThread.GetFramebuffer().Activate(fbo);
+			fbo->AttachDepthTextureLevel(&texture, level);
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 			fbo->Verify();
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, pbdata));
@@ -208,20 +201,22 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 			tsmgr.DisableStage(0);
 		}
 		
-		imgdata = new sRGBA8[ width * height ];
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(width * height * sizeof(sRGBA8));
+		sRGBA8 * const imgdataPtr = reinterpret_cast<sRGBA8*>(imgdata.GetArrayPointer());
 		
-		for( y=0; y<height; y++){
-			for( x=0; x<width; x++ ){
-				sRGBA8 &d = imgdata[ ( height - 1 - y ) * width + x ];
-				const deoglPixelBuffer::sFloat1 &s = pbdata[ y * width + x ];
+		for(y=0; y<height; y++){
+			for(x=0; x<width; x++){
+				sRGBA8 &d = imgdataPtr[(height - 1 - y) * width + x];
+				const deoglPixelBuffer::sFloat1 &s = pbdata[y * width + x];
 				
-				switch( type ){
+				switch(type){
 				case edtLinear:
 					depthval = s.r;
 					break;
 					
 				case edtDepth:
-					depthval = powf( s.r, 250.0f );
+					depthval = powf(s.r, 250.0f);
 					break;
 					
 				case edtLinearInverse:
@@ -229,139 +224,127 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 					break;
 					
 				case edtDepthInverse:
-					depthval = powf( 1.0f - s.r, 250.0f );
+					depthval = powf(1.0f - s.r, 250.0f);
 					break;
 					
 				default:
 					depthval = 0.0f;
 				}
 				
-				d.red = ( unsigned char )( depthval * 255.0f );
+				d.red = (unsigned char)(depthval * 255.0f);
 				d.green = d.red;
 				d.blue = d.red;
 				d.alpha = 255;
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, width, height, 1, 4, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
-		if( saveImage ){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveDepthTextureLevel(%s) failed!", name );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveDepthTextureLevel(%s) failed!", name);
 		e.PrintError();
 	}
 }
 
-void deoglDebugSaveTexture::SaveStencilTexture( deoglTexture &texture, const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x;
-	sRGB8 *imgdata = NULL;
-	unsigned char *pbdata = NULL;
 	
-	fileTitle.Format( "%s.png", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		pbdata = new unsigned char[ width * height ];
-		imgdata = new sRGB8[ width * height ];
+		decTList<unsigned char> pbdata(width * height, 0);
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(width * height * sizeof(sRGB8));
 		
-		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
+		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		
-		if( true ){
-			fbo.TakeOverWith(pRenderThread, false);
-			pRenderThread.GetFramebuffer().Activate( fbo );
-			fbo->AttachDepthTextureLevel( &texture, 0 );
-			fbo->AttachStencilTextureLevel( &texture, 0 );
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+		if(true){
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
+			pRenderThread.GetFramebuffer().Activate(fbo);
+			fbo->AttachDepthTextureLevel(&texture, 0);
+			fbo->AttachStencilTextureLevel(&texture, 0);
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 			fbo->Verify();
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
-			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata));
+			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height,
+				GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata.GetArrayPointer()));
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			
 		}else{
-			tsmgr.EnableBareTexture( 0, texture );
+			tsmgr.EnableBareTexture(0, texture);
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
-			OGL_CHECK(pRenderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata));
+			OGL_CHECK(pRenderThread, glGetTexImage(GL_TEXTURE_2D, 0,
+				GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata.GetArrayPointer()));
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
-			tsmgr.DisableStage( 0 );
+			tsmgr.DisableStage(0);
 		}
 		
-		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 4 ) );
+		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 		
-		for( y=0; y<height; y++){
-			for( x=0; x<width; x++ ){
-				sRGB8 &d = imgdata[ ( height - 1 - y ) * width + x ];
-				const unsigned char s = pbdata[ y * width + x ];
+		sRGB8 * const imgdataPtr = reinterpret_cast<sRGB8*>(imgdata.GetArrayPointer());
+		for(y=0; y<height; y++){
+			for(x=0; x<width; x++){
+				sRGB8 &d = imgdataPtr[(height - 1 - y) * width + x];
+				const unsigned char s = pbdata.GetArrayPointer()[y * width + x];
 				
-				d.red = s; //( unsigned char )( s & 0xff );
+				d.red = s; //(unsigned char)(s & 0xff);
 				d.green = s;
 				d.blue = s;
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, width, height, 1, 3, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 3, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
-		
-		delete [] pbdata;
-		pbdata = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
-		if( saveImage ){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
-		if( pbdata ){
-			delete [] pbdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveStencilTexture(%s) failed!", name );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveStencilTexture(%s) failed!", name);
 		e.PrintError();
 	}
 }
 
-void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture, const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	int layers = texture.GetLayerCount();
@@ -369,194 +352,185 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture,
 	decString fileTitle;
 	decPath pathFile;
 	int y, x, l;
-	sRGB8 *imgdata = NULL;
-	unsigned char *pbdata = NULL;
 	
-	fileTitle.Format( "%s.png3d", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png3d", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		pbdata = new unsigned char[ width * height * layers ];
-		imgdata = new sRGB8[ width * height * layers ];
+		decTList<unsigned char> pbdata(width * height * layers, 0);
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(width * height * layers * sizeof(sRGB8));
 		
-		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
+		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		
-		if( true ){
-			fbo.TakeOverWith(pRenderThread, false);
-			pRenderThread.GetFramebuffer().Activate( fbo );
-			fbo->AttachDepthArrayTextureLevel( &texture, 0 );
-			fbo->AttachStencilArrayTextureLevel( &texture, 0 );
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+		if(true){
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
+			pRenderThread.GetFramebuffer().Activate(fbo);
+			fbo->AttachDepthArrayTextureLevel(&texture, 0);
+			fbo->AttachStencilArrayTextureLevel(&texture, 0);
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 			fbo->Verify();
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
-			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata));
+			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_STENCIL_INDEX,
+				GL_UNSIGNED_BYTE, pbdata.GetArrayPointer()));
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			
 		}else{
 			tsmgr.EnableBareArrayTexture(0, texture);
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
-			OGL_CHECK( pRenderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
+			OGL_CHECK(pRenderThread, glGetTexImage(GL_TEXTURE_2D, 0, GL_STENCIL_INDEX,
+				GL_UNSIGNED_BYTE, pbdata.GetArrayPointer()));
 			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			tsmgr.DisableStage(0);
 		}
 		
-		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 4 ) );
+		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 		
-		for( l=0; l<layers; l++ ){
-			for( y=0; y<height; y++){
-				for( x=0; x<width; x++ ){
-					sRGB8 &d = imgdata[ ( width * height ) * l + ( height - 1 - y ) * width + x ];
-					const unsigned char s = pbdata[ y * width + x ];
+		sRGB8 * const imgdataPtr = reinterpret_cast<sRGB8*>(imgdata.GetArrayPointer());
+		for(l=0; l<layers; l++){
+			for(y=0; y<height; y++){
+				for(x=0; x<width; x++){
+					sRGB8 &d = imgdataPtr[(width * height) * l + (height - 1 - y) * width + x];
+					const unsigned char s = pbdata.GetArrayPointer()[y * width + x];
 					
-					d.red = s; //( unsigned char )( s & 0xff );
+					d.red = s; //(unsigned char)(s & 0xff);
 					d.green = s;
 					d.blue = s;
 				}
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, width, height, layers, 3, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layers, 3, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
-		
-		delete [] pbdata;
-		pbdata = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
-		if( saveImage ){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
-		if( pbdata ){
-			delete [] pbdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveStencilTexture(%s) failed!", name );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveStencilTexture(%s) failed!", name);
 		e.PrintError();
 	}
 }
 
 
 
-void deoglDebugSaveTexture::SaveCubeMap( deoglCubeMap &cubemap, const char *name, bool upsideDown ){
-	SaveCubeMapLevelConversion( cubemap, 0, name, upsideDown, ecNoConversion );
+void deoglDebugSaveTexture::SaveCubeMap(deoglCubeMap &cubemap, const char *name, bool upsideDown){
+	SaveCubeMapLevelConversion(cubemap, 0, name, upsideDown, ecNoConversion);
 }
 
-void deoglDebugSaveTexture::SaveCubeMapLevel( deoglCubeMap &cubemap, int level, const char *name, bool upsideDown ){
-	SaveCubeMapLevelConversion( cubemap, level, name, upsideDown, ecNoConversion );
+void deoglDebugSaveTexture::SaveCubeMapLevel(deoglCubeMap &cubemap, int level, const char *name, bool upsideDown){
+	SaveCubeMapLevelConversion(cubemap, level, name, upsideDown, ecNoConversion);
 }
 
-void deoglDebugSaveTexture::SaveCubeMapConversion( deoglCubeMap &cubemap, const char *name, bool upsideDown, eConvertions conversion ){
-	SaveCubeMapLevelConversion( cubemap, 0, name, upsideDown, conversion );
+void deoglDebugSaveTexture::SaveCubeMapConversion(deoglCubeMap &cubemap, const char *name, bool upsideDown, eConvertions conversion){
+	SaveCubeMapLevelConversion(cubemap, 0, name, upsideDown, conversion);
 }
 
-void deoglDebugSaveTexture::SaveCubeMapLevelConversion( deoglCubeMap &cubemap, int level, const char *name, bool upsideDown, eConvertions conversion ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, int level, const char *name, bool upsideDown, eConvertions conversion){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int size = cubemap.GetLevelSize( level );
-	deoglDelayedSaveImage *saveImage = NULL;
+	const int size = cubemap.GetLevelSize(level);
+	deoglDelayedSaveImage *saveImage = nullptr;
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
 	int i;
 	
-	fileTitle.Format( "%s.png3d", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png3d", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, size, size, 6 ) ) );
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfFloat4, size, size, 6));
 		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int faceStride = size * size;
 		
-		imgdata = new sRGBA8[ faceStride * 6 ];
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(faceStride * 6 * sizeof(sRGBA8));
 		
-		cubemap.GetPixelsLevel( level, pixbuf );
+		cubemap.GetPixelsLevel(level, pixbuf);
 		
-		for( i=0; i<6; i++ ){
-			pConvertDataRGBA( pbdata + faceStride * i, imgdata + faceStride * i, size, size, upsideDown, conversion );
+		for(i=0; i<6; i++){
+			pConvertDataRGBA(pbdata + faceStride * i,
+				reinterpret_cast<sRGBA8*>(imgdata.GetArrayPointer()) + faceStride * i,
+				size, size, upsideDown, conversion);
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, size, size, 6, 4, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
-	}catch( const deException &e ){
-		if( saveImage){
+	}catch(const deException &e){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveCubeMap(%s) failed!", name );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveCubeMap(%s) failed!", name);
 		e.PrintError();
 	}
 }
 
 
-void deoglDebugSaveTexture::SaveDepthCubeMap( deoglCubeMap &cubemap, const char *name, bool linearDepth ){
-	SaveDepthCubeMapLevel( cubemap, 0, name, linearDepth );
+void deoglDebugSaveTexture::SaveDepthCubeMap(deoglCubeMap &cubemap, const char *name, bool linearDepth){
+	SaveDepthCubeMapLevel(cubemap, 0, name, linearDepth);
 }
 
-void deoglDebugSaveTexture::SaveDepthCubeMapLevel( deoglCubeMap &cubemap, int level, const char *name, bool linearDepth ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int level, const char *name, bool linearDepth){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int size = cubemap.GetLevelSize( level );
-	deoglDelayedSaveImage *saveImage = NULL;
+	const int size = cubemap.GetLevelSize(level);
+	deoglDelayedSaveImage *saveImage = nullptr;
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
 	float depthval;
 	int cmf, x, y;
 	
-	fileTitle.Format( "%s.png3d", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png3d", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, size, size, 6 ) ) );
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfFloat1, size, size, 6));
 		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		const int faceStride = size * size;
 		
-		imgdata = new sRGBA8[ faceStride * 6 ];
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(faceStride * 6 * sizeof(sRGBA8));
 		
-		cubemap.GetPixelsLevel( level, pixbuf );
+		cubemap.GetPixelsLevel(level, pixbuf);
 		
-		for( cmf=0; cmf<6; cmf++ ){
+		sRGBA8 * const imgdataPtr = reinterpret_cast<sRGBA8*>(imgdata.GetArrayPointer());
+		for(cmf=0; cmf<6; cmf++){
 			const deoglPixelBuffer::sFloat1 * const pbdface = pbdata + faceStride * cmf;
 			
-			for( y=0; y<size; y++){
-				for( x=0; x<size; x++ ){
-					sRGBA8 &d = imgdata[ faceStride * cmf + size * ( size - 1 - y ) + x ];
-					const deoglPixelBuffer::sFloat1 &s = pbdface[ size * y + x ];
+			for(y=0; y<size; y++){
+				for(x=0; x<size; x++){
+					sRGBA8 &d = imgdataPtr[faceStride * cmf + size * (size - 1 - y) + x];
+					const deoglPixelBuffer::sFloat1 &s = pbdface[size * y + x];
 					
-					if( linearDepth ){
+					if(linearDepth){
 						depthval = s.r;
 						
 					}else{
-						depthval = powf( s.r, 200.0f );
+						depthval = powf(s.r, 200.0f);
 					}
 					
-					d.red = ( unsigned char )( depthval * 255.0f );
+					d.red = (unsigned char)(depthval * 255.0f);
 					d.green = d.red;
 					d.blue = d.red;
 					d.alpha = 255;
@@ -564,138 +538,133 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel( deoglCubeMap &cubemap, int le
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, size, size, 6, 4, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
-	}catch( const deException &e ){
-		if( saveImage ){
+	}catch(const deException &e){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveDepthCubeMap(%s) failed!", name );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveDepthCubeMap(%s) failed!", name);
 		e.PrintError();
 	}
 }
 
-void deoglDebugSaveTexture::SaveArrayTexture( deoglArrayTexture &texture, const char *name ){
-	SaveArrayTextureLevelConversion( texture, 0, name, ecNoConversion );
+void deoglDebugSaveTexture::SaveArrayTexture(deoglArrayTexture &texture, const char *name){
+	SaveArrayTextureLevelConversion(texture, 0, name, ecNoConversion);
 }
 
-void deoglDebugSaveTexture::SaveArrayTextureLevel( deoglArrayTexture &texture, int level, const char *name ){
-	SaveArrayTextureLevelConversion( texture, level, name, ecNoConversion );
+void deoglDebugSaveTexture::SaveArrayTextureLevel(deoglArrayTexture &texture, int level, const char *name){
+	SaveArrayTextureLevelConversion(texture, level, name, ecNoConversion);
 }
 
-void deoglDebugSaveTexture::SaveArrayTextureConversion( deoglArrayTexture &texture,
-const char *name, eConvertions conversion ){
-	SaveArrayTextureLevelConversion( texture, 0, name, conversion );
+void deoglDebugSaveTexture::SaveArrayTextureConversion(deoglArrayTexture &texture,
+const char *name, eConvertions conversion){
+	SaveArrayTextureLevelConversion(texture, 0, name, conversion);
 }
 
-void deoglDebugSaveTexture::SaveArrayTextureLevelConversion( deoglArrayTexture &texture,
-int level, const char *name, eConvertions conversion ){
-	if( level < 0 || ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveArrayTextureLevelConversion(deoglArrayTexture &texture,
+int level, const char *name, eConvertions conversion){
+	if(level < 0 || !name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	const int layerCount = texture.GetLayerCount();
 	int height, width;
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
 	int i;
 	
-	texture.GetLevelSize( level, width, height );
+	texture.GetLevelSize(level, width, height);
 	
-	fileTitle.Format( "%s.png3d", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png3d", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, layerCount ) ) );
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfFloat4, width, height, layerCount));
 		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int stride = width * height;
 		
-		texture.GetPixelsLevel( level, pixbuf );
+		texture.GetPixelsLevel(level, pixbuf);
 		
-		imgdata = new sRGBA8[ stride * layerCount ];
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(stride * layerCount * sizeof(sRGBA8));
 		
-		for( i=0; i<layerCount; i++ ){
-			pConvertDataRGBA( pbdata + stride * i, imgdata, width, height, true, conversion );
+		for(i=0; i<layerCount; i++){
+			pConvertDataRGBA(pbdata + stride * i,
+				reinterpret_cast<sRGBA8*>(imgdata.GetArrayPointer()),
+				width, height, true, conversion);
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, width, height, layerCount, 4, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
-	}catch( const deException &e ){
-		if( saveImage ){
+	}catch(const deException &e){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveArrayTextureLevelConversion(%s:%i) failed!", name, level );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveArrayTextureLevelConversion(%s:%i) failed!", name, level);
 		e.PrintError();
 	}
 }
 
-void deoglDebugSaveTexture::SaveDepthArrayTexture( deoglArrayTexture &arrayTexture, const char *name, bool linearDepth ){
-	SaveDepthArrayTextureLevel( arrayTexture, 0, name, linearDepth );
+void deoglDebugSaveTexture::SaveDepthArrayTexture(deoglArrayTexture &arrayTexture, const char *name, bool linearDepth){
+	SaveDepthArrayTextureLevel(arrayTexture, 0, name, linearDepth);
 }
 
-void deoglDebugSaveTexture::SaveDepthArrayTextureLevel( deoglArrayTexture &arrayTexture, int level, const char *name, bool linearDepth ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayTexture, int level, const char *name, bool linearDepth){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int layerCount = arrayTexture.GetLayerCount();
 	int width, height;
 	decString fileTitle;
 	decPath pathFile;
 	int l, x, y;
-	sRGBA8 *imgdata = NULL;
 	float depthval;
 	
-	arrayTexture.GetLevelSize( level, width, height );
+	arrayTexture.GetLevelSize(level, width, height);
 	
-	fileTitle.Format( "%s.png3d", name );
-	pathFile.SetFromUnix( pBasePath.GetString() );
-	pathFile.AddUnixPath( fileTitle.GetString() );
+	fileTitle.Format("%s.png3d", name);
+	pathFile.SetFromUnix(pBasePath.GetString());
+	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, layerCount ) ) );
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfFloat1, width, height, layerCount));
 		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
-		arrayTexture.GetPixelsLevel( level, pixbuf );
+		arrayTexture.GetPixelsLevel(level, pixbuf);
 		
-		imgdata = new sRGBA8[ width * height * layerCount ];
+		decTList<char> imgdata;
+		imgdata.SetCountDiscard(width * height * layerCount * sizeof(sRGBA8));
 		
-		for( l=0; l<layerCount; l++ ){
-			for( y=0; y<height; y++){
-				for( x=0; x<width; x++ ){
-					sRGBA8 &d = imgdata[ width * height * l + width * ( height - 1 - y ) + x ];
-					const deoglPixelBuffer::sFloat1 &s = pbdata[ width * height * l + width * y + x ];
+		sRGBA8 * const imgdataPtr = reinterpret_cast<sRGBA8*>(imgdata.GetArrayPointer());
+		for(l=0; l<layerCount; l++){
+			for(y=0; y<height; y++){
+				for(x=0; x<width; x++){
+					sRGBA8 &d = imgdataPtr[width * height * l + width * (height - 1 - y) + x];
+					const deoglPixelBuffer::sFloat1 &s = pbdata[width * height * l + width * y + x];
 					
-					if( linearDepth ){
+					if(linearDepth){
 						depthval = s.r;
 						
 					}else{
-						depthval = powf( s.r, 200.0f );
+						depthval = powf(s.r, 200.0f);
 					}
 					
-					d.red = ( unsigned char )( depthval * 255.0f );
+					d.red = (unsigned char)(depthval * 255.0f);
 					d.green = d.red;
 					d.blue = d.red;
 					d.alpha = 255;
@@ -703,97 +672,93 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel( deoglArrayTexture &array
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage( pathFile, width, height, layerCount, 4, 8, (char*)imgdata );
-		imgdata = NULL;
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, std::move(imgdata));
 		
-		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
-		saveImage = NULL;
+		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
+		saveImage = nullptr;
 		
-	}catch( const deException &e ){
-		if( saveImage ){
+	}catch(const deException &e){
+		if(saveImage){
 			delete saveImage;
 		}
-		if( imgdata ){
-			delete [] imgdata;
-		}
 		
-		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveDepthArrayTexture(%s) failed!", name );
+		pRenderThread.GetLogger().LogErrorFormat("DebugSaveTexture.SaveDepthArrayTexture(%s) failed!", name);
 		e.PrintError();
 	}
 }
 
 
 
-deoglPixelBuffer::ePixelFormats deoglDebugSaveTexture::GetPixelBufferType( GLenum &pixelFormat, GLenum &pixelType ) const{
+deoglPixelBuffer::ePixelFormats deoglDebugSaveTexture::GetPixelBufferType(GLenum &pixelFormat, GLenum &pixelType) const{
 	// byte and float formats
-	if( pixelFormat == GL_LUMINANCE ){
+	if(pixelFormat == GL_LUMINANCE){
 		pixelFormat = GL_RGBA;
-		if( pixelType == GL_UNSIGNED_BYTE ){
+		if(pixelType == GL_UNSIGNED_BYTE){
 			return deoglPixelBuffer::epfByte4; //deoglPixelBuffer::epfByte1;
 			
-		}else if( pixelType == GL_FLOAT ){
+		}else if(pixelType == GL_FLOAT){
 			pixelType = GL_UNSIGNED_BYTE;
 			return deoglPixelBuffer::epfByte4; //deoglPixelBuffer::epfByte1;// deoglPixelBuffer::epfFloat1;
 		}
 		
-	}else if( pixelFormat == GL_LUMINANCE_ALPHA ){
+	}else if(pixelFormat == GL_LUMINANCE_ALPHA){
 		pixelFormat = GL_RGBA;
-		if( pixelType == GL_UNSIGNED_BYTE ){
+		if(pixelType == GL_UNSIGNED_BYTE){
 			return deoglPixelBuffer::epfByte4; //deoglPixelBuffer::epfByte2;
 			
-		}else if( pixelType == GL_FLOAT ){
+		}else if(pixelType == GL_FLOAT){
 			pixelType = GL_UNSIGNED_BYTE;
 			return deoglPixelBuffer::epfByte4; //deoglPixelBuffer::epfByte2; //deoglPixelBuffer::epfFloat2;
 		}
 		
-	}else if( pixelFormat == GL_RGB ){
+	}else if(pixelFormat == GL_RGB){
 		pixelFormat = GL_RGBA;
-		if( pixelType == GL_UNSIGNED_BYTE ){
+		if(pixelType == GL_UNSIGNED_BYTE){
 			return deoglPixelBuffer::epfByte4;
 			
-		}else if( pixelType == GL_FLOAT ){
+		}else if(pixelType == GL_FLOAT){
 			pixelType = GL_UNSIGNED_BYTE;
 			return deoglPixelBuffer::epfByte4; //deoglPixelBuffer::epfFloat3;
 		}
 		
-	}else if( pixelFormat == GL_RGBA ){
+	}else if(pixelFormat == GL_RGBA){
 		pixelFormat = GL_RGBA;
-		if( pixelType == GL_UNSIGNED_BYTE ){
+		if(pixelType == GL_UNSIGNED_BYTE){
 			return deoglPixelBuffer::epfByte4;
 			
-		}else if( pixelType == GL_FLOAT ){
+		}else if(pixelType == GL_FLOAT){
 			pixelType = GL_UNSIGNED_BYTE;
 			return deoglPixelBuffer::epfByte4; //deoglPixelBuffer::epfFloat4;
 		}
 		
 	// integer formats
-	}else if( pixelFormat == GL_RED_INTEGER ){
+	}else if(pixelFormat == GL_RED_INTEGER){
 		pixelFormat = GL_RGBA_INTEGER;
 		return deoglPixelBuffer::epfByte4;
 		
-	}else if( pixelFormat == GL_RG_INTEGER ){
+	}else if(pixelFormat == GL_RG_INTEGER){
 		pixelFormat = GL_RGBA_INTEGER;
 		return deoglPixelBuffer::epfByte4;
 		
-	}else if( pixelFormat == GL_RGB_INTEGER ){
+	}else if(pixelFormat == GL_RGB_INTEGER){
 		pixelFormat = GL_RGBA_INTEGER;
 		return deoglPixelBuffer::epfByte4;
 		
-	}else if( pixelFormat == GL_RGBA_INTEGER ){
+	}else if(pixelFormat == GL_RGBA_INTEGER){
 		pixelFormat = GL_RGBA_INTEGER;
 		return deoglPixelBuffer::epfByte4;
 		
 	// depth formats
-	}else if( pixelFormat == GL_DEPTH_COMPONENT ){
+	}else if(pixelFormat == GL_DEPTH_COMPONENT){
 		pixelType = GL_UNSIGNED_BYTE;
 		return deoglPixelBuffer::epfByte1; //deoglPixelBuffer::epfFloat1;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-int deoglDebugSaveTexture::GetStride( int width, int pixelBufferType ) const{
-	switch( ( deoglPixelBuffer::ePixelFormats )pixelBufferType ){
+int deoglDebugSaveTexture::GetStride(int width, int pixelBufferType) const{
+	switch((deoglPixelBuffer::ePixelFormats)pixelBufferType){
 	case deoglPixelBuffer::epfByte1:
 		return width; // sizeof(char) * 1
 		
@@ -819,12 +784,12 @@ int deoglDebugSaveTexture::GetStride( int width, int pixelBufferType ) const{
 		return width * 16; // sizeof(float) * 4
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-int deoglDebugSaveTexture::GetComponentCount( int pixelBufferType ){
-	switch( ( deoglPixelBuffer::ePixelFormats )pixelBufferType ){
+int deoglDebugSaveTexture::GetComponentCount(int pixelBufferType){
+	switch((deoglPixelBuffer::ePixelFormats)pixelBufferType){
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfFloat1:
 		return 1;
@@ -842,12 +807,12 @@ int deoglDebugSaveTexture::GetComponentCount( int pixelBufferType ){
 		return 4;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-int deoglDebugSaveTexture::GetBitCount( int pixelBufferType ){
-	switch( ( deoglPixelBuffer::ePixelFormats )pixelBufferType ){
+int deoglDebugSaveTexture::GetBitCount(int pixelBufferType){
+	switch((deoglPixelBuffer::ePixelFormats)pixelBufferType){
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:
@@ -861,7 +826,7 @@ int deoglDebugSaveTexture::GetBitCount( int pixelBufferType ){
 		return 32;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -870,42 +835,42 @@ int deoglDebugSaveTexture::GetBitCount( int pixelBufferType ){
 // Private Functions
 //////////////////////
 
-void deoglDebugSaveTexture::pConvertDataRGBA( const deoglPixelBuffer::sFloat4 *inputData,
-sRGBA8 *outputData, int width, int height, bool yflip, eConvertions conversion ){
+void deoglDebugSaveTexture::pConvertDataRGBA(const deoglPixelBuffer::sFloat4 *inputData,
+sRGBA8 *outputData, int width, int height, bool yflip, eConvertions conversion){
 	const float rangeHigh = 6.0f;
 	const float rangeLow = -7.0f;
-	const float rangeInv = 1.0f / ( rangeHigh - rangeLow );
+	const float rangeInv = 1.0f / (rangeHigh - rangeLow);
 	
 	int srcy, srcyinc;
 	deoglPixelBuffer::sFloat4 value;
 	int x, y;
 	
-	if( yflip ){
+	if(yflip){
 		srcy = 0;
 		srcyinc = width;
 		
 	}else{
-		srcy = ( height - 1 ) * width;
+		srcy = (height - 1) * width;
 		srcyinc = -width;
 	}
 	
-	for( y=0; y<height; srcy+=srcyinc, y++){
-		for( x=0; x<width; x++ ){
-			sRGBA8 &d = outputData[ srcy + x ];
-			const deoglPixelBuffer::sFloat4 &s = inputData[ y * width + x ];
+	for(y=0; y<height; srcy+=srcyinc, y++){
+		for(x=0; x<width; x++){
+			sRGBA8 &d = outputData[srcy + x];
+			const deoglPixelBuffer::sFloat4 &s = inputData[y * width + x];
 			
-			switch( conversion ){
+			switch(conversion){
 			case ecColorLinear2sRGB:
-				value.r = powf( s.r, CONVERT_COLOR_LIN2SRGB );
-				value.g = powf( s.g, CONVERT_COLOR_LIN2SRGB );
-				value.b = powf( s.b, CONVERT_COLOR_LIN2SRGB );
+				value.r = powf(s.r, CONVERT_COLOR_LIN2SRGB);
+				value.g = powf(s.g, CONVERT_COLOR_LIN2SRGB);
+				value.b = powf(s.b, CONVERT_COLOR_LIN2SRGB);
 				value.a = s.a;
 				break;
 				
 			case ecColorLinearToneMapsRGB:
-				value.r = powf( s.r / ( 1.0f + s.r ), 1.0f/*CONVERT_COLOR_LIN2SRGB*/ );
-				value.g = powf( s.g / ( 1.0f + s.g ), 1.0f/*CONVERT_COLOR_LIN2SRGB*/ );
-				value.b = powf( s.b / ( 1.0f + s.b ), 1.0f/*CONVERT_COLOR_LIN2SRGB*/ );
+				value.r = powf(s.r / (1.0f + s.r), 1.0f/*CONVERT_COLOR_LIN2SRGB*/);
+				value.g = powf(s.g / (1.0f + s.g), 1.0f/*CONVERT_COLOR_LIN2SRGB*/);
+				value.b = powf(s.b / (1.0f + s.b), 1.0f/*CONVERT_COLOR_LIN2SRGB*/);
 				value.a = s.a;
 				break;
 				
@@ -917,16 +882,16 @@ sRGBA8 *outputData, int width, int height, bool yflip, eConvertions conversion )
 				break;
 				
 			case ecDepthBuffer:
-				value.r = powf( s.r, 200.0f );
-				value.g = powf( s.g, 200.0f );
-				value.b = powf( s.b, 200.0f );
+				value.r = powf(s.r, 200.0f);
+				value.g = powf(s.g, 200.0f);
+				value.b = powf(s.b, 200.0f);
 				value.a = s.a;
 				break;
 				
 			case ecDepthBufferInverse:
-				value.r = powf( 1.0f - s.r, 300.0f );
-				value.g = powf( 1.0f - s.g, 300.0f );
-				value.b = powf( 1.0f - s.b, 300.0f );
+				value.r = powf(1.0f - s.r, 300.0f);
+				value.g = powf(1.0f - s.g, 300.0f);
+				value.b = powf(1.0f - s.b, 300.0f);
 				value.a = s.a;
 				break;
 				
@@ -934,21 +899,21 @@ sRGBA8 *outputData, int width, int height, bool yflip, eConvertions conversion )
 				value.r = s.r * 0.5f + 0.5f;
 				value.g = s.g * 0.5f + 0.5f;
 				value.b = s.b * 0.5f + 0.5f;
-				value.a = sqrtf( s.r * s.r + s.g * s.g + s.b * s.b ) * 0.5f;
+				value.a = sqrtf(s.r * s.r + s.g * s.g + s.b * s.b) * 0.5f;
 				break;
 				
 			case ecNaNInf:
-				value.r = ( ( isnan( s.r ) || isnan( s.g ) || isnan( s.b ) || isnan( s.a ) ) ) ? 1.0f : 0.0f;
-				value.g = ( ( isinf( s.r ) || isinf( s.g ) || isinf( s.b ) || isinf( s.a ) ) ) ? 1.0f : 0.0f;
+				value.r = ((isnan(s.r) || isnan(s.g) || isnan(s.b) || isnan(s.a))) ? 1.0f : 0.0f;
+				value.g = ((isinf(s.r) || isinf(s.g) || isinf(s.b) || isinf(s.a))) ? 1.0f : 0.0f;
 				value.b = 0.0f;
 				value.a = 1.0f;
 				break;
 				
 			case ecLogIntensity:
-				value.r = ( s.r - rangeLow ) * rangeInv;
-				value.g = ( s.g - rangeLow ) * rangeInv;
-				value.b = ( s.b - rangeLow ) * rangeInv;
-				value.a = ( s.a - rangeLow ) * rangeInv;
+				value.r = (s.r - rangeLow) * rangeInv;
+				value.g = (s.g - rangeLow) * rangeInv;
+				value.b = (s.b - rangeLow) * rangeInv;
+				value.a = (s.a - rangeLow) * rangeInv;
 				break;
 				
 			default:
@@ -958,10 +923,10 @@ sRGBA8 *outputData, int width, int height, bool yflip, eConvertions conversion )
 				value.a = s.a;
 			}
 			
-			d.red = ( unsigned char )( value.r * 255.0f );
-			d.green = ( unsigned char )( value.g * 255.0f );
-			d.blue = ( unsigned char )( value.b * 255.0f );
-			d.alpha = ( unsigned char )( value.a * 255.0f );
+			d.red = (unsigned char)(value.r * 255.0f);
+			d.green = (unsigned char)(value.g * 255.0f);
+			d.blue = (unsigned char)(value.b * 255.0f);
+			d.alpha = (unsigned char)(value.a * 255.0f);
 		}
 	}
 }

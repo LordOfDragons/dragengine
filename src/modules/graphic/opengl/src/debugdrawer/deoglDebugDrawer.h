@@ -25,9 +25,9 @@
 #ifndef _DEOGLDEBUGDRAWER_H_
 #define _DEOGLDEBUGDRAWER_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicDebugDrawer.h>
+#include "deoglRDebugDrawer.h"
 
-class deoglRDebugDrawer;
+#include <dragengine/systems/modules/graphic/deBaseGraphicDebugDrawer.h>
 
 class deGraphicOpenGl;
 class deDebugDrawer;
@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deDebugDrawer &pDebugDrawer;
 	
-	deoglRDebugDrawer *pRDebugDrawer;
+	deoglRDebugDrawer::Ref pRDebugDrawer;
 	
 	bool pDirtyDebugDrawer;
 	bool pDirtyShapes;
@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglDebugDrawer( deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer );
+	deoglDebugDrawer(deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer);
 	
 	/** Clean up peer. */
-	virtual ~deoglDebugDrawer();
+	~deoglDebugDrawer() override;
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	
 	
 	/** Render debug drawer. */
-	inline deoglRDebugDrawer *GetRDebugDrawer() const{ return pRDebugDrawer; }
+	inline const deoglRDebugDrawer::Ref &GetRDebugDrawer() const{ return pRDebugDrawer; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -81,35 +81,35 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	
 	
 	/** Visibile changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	
 	/** X-Ray changed. */
-	virtual void XRayChanged();
+	void XRayChanged() override;
 	
 	
 	
 	/** Shape edge or fill colors changed. */
-	virtual void ShapeColorChanged();
+	void ShapeColorChanged() override;
 	
 	/** Shape position, orientation or scaling changed. */
-	virtual void ShapeGeometryChanged();
+	void ShapeGeometryChanged() override;
 	
 	/** Shape shapes or faces changed. */
-	virtual void ShapeContentChanged();
+	void ShapeContentChanged() override;
 	
 	/** Shapes have been added or removed. */
-	virtual void ShapeLayoutChanged();
+	void ShapeLayoutChanged() override;
 	/*@}*/
 	
 private:

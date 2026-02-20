@@ -36,8 +36,7 @@
 class DE_DLL_EXPORT decDiskFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decDiskFileReader> Ref;
-	
+	using Ref = deTObjectReference<decDiskFileReader>;
 	
 	
 private:
@@ -60,7 +59,7 @@ public:
 	 * \throws deeFileNotFound \em filename does not exist.
 	 * \throws deeFileNotFound \em filename can not be opened for reading.
 	 */
-	decDiskFileReader( const char *filename );
+	decDiskFileReader(const char *filename);
 	
 protected:
 	/**
@@ -69,7 +68,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~decDiskFileReader();
+	~decDiskFileReader() override;
 	/*@}*/
 	
 	
@@ -78,25 +77,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the file. */
-	virtual const char *GetFilename();
+	const char *GetFilename() override;
 	
 	/** \brief Length of the file. */
-	virtual int GetLength();
+	int GetLength() override;
 	
 	/** \brief Modification time. */
-	virtual TIME_SYSTEM GetModificationTime();
+	TIME_SYSTEM GetModificationTime() override;
 	
 	/** \brief Current reading position in the file. */
-	virtual int GetPosition();
+	int GetPosition() override;
 	
 	/** \brief Set file position for the next read action. */
-	virtual void SetPosition( int position );
+	void SetPosition(int position) override;
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	void MovePosition(int offset) override;
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	void SetPositionEnd(int position) override;
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
@@ -104,17 +103,17 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 * \throws deeReadFile Can not read from file.
 	 */
-	virtual void Read( void *buffer, int size );
+	void Read(void *buffer, int size) override;
 	
 	/** \brief Duplicate file reader. */
-	virtual decBaseFileReader::Ref Duplicate();
+	decBaseFileReader::Ref Duplicate() override;
 	/*@}*/
 
 
 
 private:
 #ifdef OS_W32_VS
-	decString pFormatError( errno_t error ) const;
+	decString pFormatError(errno_t error) const;
 #endif
 };
 

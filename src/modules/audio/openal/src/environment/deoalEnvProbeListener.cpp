@@ -39,40 +39,40 @@
 /////////////////////////////////
 
 deoalEnvProbeListener::deoalEnvProbeListener() :
-pReflectedLow( 0.0f ),
-pReflectedMedium( 0.0f ),
-pReflectedHigh( 0.0f ),
-pReflectionDelay( 0.0f ),
-pReverberationGainLow( 0.0f ),
-pReverberationGainMedium( 0.0f ),
-pReverberationGainHigh( 0.0f ),
-pReverberationDelay( 0.0f ),
+pReflectedLow(0.0f),
+pReflectedMedium(0.0f),
+pReflectedHigh(0.0f),
+pReflectionDelay(0.0f),
+pReverberationGainLow(0.0f),
+pReverberationGainMedium(0.0f),
+pReverberationGainHigh(0.0f),
+pReverberationDelay(0.0f),
 
-pReverberationTimeLow( 0.0f ),
-pReverberationTimeMedium( 0.0f ),
-pReverberationTimeHigh( 0.0f ),
-pEchoDelay( 0.0f ){
+pReverberationTimeLow(0.0f),
+pReverberationTimeMedium(0.0f),
+pReverberationTimeHigh(0.0f),
+pEchoDelay(0.0f){
 }
 
-deoalEnvProbeListener::deoalEnvProbeListener( const deoalEnvProbeListener &listener ) :
-pReflectedLow( listener.pReflectedLow ),
-pReflectedMedium( listener.pReflectedMedium ),
-pReflectedHigh( listener.pReflectedHigh ),
-pReflectionDelay( listener.pReflectionDelay ),
-pReflectionPan( listener.pReflectionPan ),
-pReverberationGainLow( listener.pReverberationGainLow ),
-pReverberationGainMedium( listener.pReverberationGainMedium ),
-pReverberationGainHigh( listener.pReverberationGainHigh ),
-pReverberationDelay( listener.pReverberationDelay ),
-pReverberationPan( listener.pReverberationPan ),
+deoalEnvProbeListener::deoalEnvProbeListener(const deoalEnvProbeListener &listener) :
+pReflectedLow(listener.pReflectedLow),
+pReflectedMedium(listener.pReflectedMedium),
+pReflectedHigh(listener.pReflectedHigh),
+pReflectionDelay(listener.pReflectionDelay),
+pReflectionPan(listener.pReflectionPan),
+pReverberationGainLow(listener.pReverberationGainLow),
+pReverberationGainMedium(listener.pReverberationGainMedium),
+pReverberationGainHigh(listener.pReverberationGainHigh),
+pReverberationDelay(listener.pReverberationDelay),
+pReverberationPan(listener.pReverberationPan),
 
-pReverberationTimeLow( listener.pReverberationTimeLow ),
-pReverberationTimeMedium( listener.pReverberationTimeMedium ),
-pReverberationTimeHigh( listener.pReverberationTimeHigh ),
-pEchoDelay( listener.pEchoDelay ),
+pReverberationTimeLow(listener.pReverberationTimeLow),
+pReverberationTimeMedium(listener.pReverberationTimeMedium),
+pReverberationTimeHigh(listener.pReverberationTimeHigh),
+pEchoDelay(listener.pEchoDelay),
 
-pImpulseResponse( listener.pImpulseResponse ) /*,
-pEnergyHistogram( listener.pEnergyHistogram ) */{
+pImpulseResponse(listener.pImpulseResponse) /*,
+pEnergyHistogram(listener.pEnergyHistogram) */{
 }
 
 deoalEnvProbeListener::~deoalEnvProbeListener(){
@@ -83,41 +83,41 @@ deoalEnvProbeListener::~deoalEnvProbeListener(){
 // Manegement
 ///////////////
 
-void deoalEnvProbeListener::SetReflected( float gainLow, float gainMedium, float gainHigh, float delay ){
+void deoalEnvProbeListener::SetReflected(float gainLow, float gainMedium, float gainHigh, float delay){
 	pReflectedLow = gainLow;
 	pReflectedMedium = gainMedium;
 	pReflectedHigh = gainHigh;
 	pReflectionDelay = delay;
 }
 
-void deoalEnvProbeListener::SetReflectionPan( const decVector &pan ){
+void deoalEnvProbeListener::SetReflectionPan(const decVector &pan){
 	pReflectionPan = pan;
 }
 
-void deoalEnvProbeListener::SetReverberation( float gainLow, float gainMedium, float gainHigh, float delay ){
+void deoalEnvProbeListener::SetReverberation(float gainLow, float gainMedium, float gainHigh, float delay){
 	pReverberationGainLow = gainLow;
 	pReverberationGainMedium = gainMedium;
 	pReverberationGainHigh = gainHigh;
 	pReverberationDelay = delay;
 }
 
-void deoalEnvProbeListener::SetReverberationPan( const decVector &pan ){
+void deoalEnvProbeListener::SetReverberationPan(const decVector &pan){
 	pReverberationPan = pan;
 }
 
-void deoalEnvProbeListener::SetReverberationTime( float timeLow, float timeMedium, float timeHigh ){
+void deoalEnvProbeListener::SetReverberationTime(float timeLow, float timeMedium, float timeHigh){
 	pReverberationTimeLow = timeLow;
 	pReverberationTimeMedium = timeMedium;
 	pReverberationTimeHigh = timeHigh;
 }
 
-void deoalEnvProbeListener::SetEcho( float delay ){
+void deoalEnvProbeListener::SetEcho(float delay){
 	pEchoDelay = delay;
 }
 
 
 
-void deoalEnvProbeListener::AddScaled( const deoalEnvProbeListener &listener, float factor ){
+void deoalEnvProbeListener::AddScaled(const deoalEnvProbeListener &listener, float factor){
 	pReflectedLow += listener.pReflectedLow * factor;
 	pReflectedMedium += listener.pReflectedMedium * factor;
 	pReflectedHigh += listener.pReflectedHigh * factor;
@@ -137,7 +137,7 @@ void deoalEnvProbeListener::AddScaled( const deoalEnvProbeListener &listener, fl
 	//pEnergyHistogram.BlendAddScaled( listener.pEnergyHistogram, factor );
 }
 
-void deoalEnvProbeListener::Normalize( float factor ){
+void deoalEnvProbeListener::Normalize(float factor){
 	pReflectedLow *= factor;
 	pReflectedMedium *= factor;
 	pReflectedHigh *= factor;
@@ -183,7 +183,7 @@ void deoalEnvProbeListener::Clear(){
 // Operators
 //////////////
 
-deoalEnvProbeListener &deoalEnvProbeListener::operator=( const deoalEnvProbeListener &listener ){
+deoalEnvProbeListener &deoalEnvProbeListener::operator=(const deoalEnvProbeListener &listener){
 	pReflectedLow = listener.pReflectedLow;
 	pReflectedMedium = listener.pReflectedMedium;
 	pReflectedHigh = listener.pReflectedHigh;
@@ -206,7 +206,7 @@ deoalEnvProbeListener &deoalEnvProbeListener::operator=( const deoalEnvProbeList
 	return *this;
 }
 
-deoalEnvProbeListener &deoalEnvProbeListener::operator+=( const deoalEnvProbeListener &listener ){
+deoalEnvProbeListener &deoalEnvProbeListener::operator+=(const deoalEnvProbeListener &listener){
 	pReflectedLow += listener.pReflectedLow;
 	pReflectedMedium += listener.pReflectedMedium;
 	pReflectedHigh += listener.pReflectedHigh;

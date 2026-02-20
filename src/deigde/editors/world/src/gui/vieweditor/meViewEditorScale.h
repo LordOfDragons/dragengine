@@ -26,8 +26,9 @@
 #define _MEVIEWEDITORSCALE_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../undosys/gui/meBaseUndoScale.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -36,16 +37,23 @@
  * View editor for scaling scene elements.
  */
 class meViewEditorScale : public meViewEditorNavigation{
+public:
+	using Ref = deTObjectReference<meViewEditorScale>;
+	
 private:
-	igdeUndoReference pUndoScale;
+	meBaseUndoScale::Ref pUndoScale;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
-	meViewEditorScale( meView3D &view );
+	meViewEditorScale(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
-	virtual ~meViewEditorScale();
+	~meViewEditorScale() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -55,13 +63,13 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );
+	bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control) override;
 	/** The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	/** The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/*@}*/
 };
 

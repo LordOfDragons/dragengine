@@ -25,13 +25,12 @@
 #ifndef _DEVIDEOMANAGER_H_
 #define _DEVIDEOMANAGER_H_
 
+#include "deVideo.h"
+#include "deVideoDecoder.h"
+#include "deVideoAudioDecoder.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 #include "../../threading/deMutex.h"
-
-class deVideo;
-class deVideoDecoder;
-class deVideoAudioDecoder;
 
 
 /**
@@ -41,14 +40,8 @@ class DE_DLL_EXPORT deVideoManager : public deFileResourceManager{
 private:
 	deFileResourceList pVideos;
 	
-	deVideoDecoder *pDecoderRoot;
-	deVideoDecoder *pDecoderTail;
-	int pDecoderCount;
-	
-	deVideoAudioDecoder *pAudioDecoderRoot;
-	deVideoAudioDecoder *pAudioDecoderTail;
-	int pAudioDecoderCount;
-	
+	decTLinkedList<deVideoDecoder> pDecoders;
+	decTLinkedList<deVideoAudioDecoder> pAudioDecoders;
 	deMutex pMutexDecoder;
 	
 	
@@ -57,16 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video resource manager. */
-	deVideoManager( deEngine *engine );
+	deVideoManager(deEngine *engine);
 	
 	/** \brief Clean up video resource manager and reports leaking resources. */
-	virtual ~deVideoManager();
+	~deVideoManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Videos. */
+	inline const deFileResourceList &GetVideos() const{ return pVideos; }
+	
 	/** \brief Number of videos. */
 	int GetVideoCount() const;
 	
@@ -74,50 +70,50 @@ public:
 	deVideo *GetRootVideo() const;
 	
 	/** \brief Video with filename or NULL if not loaded yet. */
-	deVideo *GetVideoWith( const char *filename ) const;
+	deVideo *GetVideoWith(const char *filename) const;
 	
 	/** \brief Video with filename or NULL if not loaded yet. */
-	deVideo *GetVideoWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deVideo *GetVideoWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Load video from file relative to base path. */
-	deVideo *LoadVideo( const char *filename, const char *basePath, bool asynchron );
+	deVideo::Ref LoadVideo(const char *filename, const char *basePath, bool asynchron);
 	
 	/** \brief Load video from file relative to base path. */
-	deVideo *LoadVideo( deVirtualFileSystem *vfs, const char *filename,
-		const char *basePath, bool asynchron );
+	deVideo::Ref LoadVideo(deVirtualFileSystem *vfs, const char *filename,
+		const char *basePath, bool asynchron);
 	
 	/** \brief Save video to file. */
-	void SaveVideo( deVideo *video, const char *filename );
+	void SaveVideo(deVideo *video, const char *filename);
 	
 	/** \brief Save video to file. */
-	void SaveVideo( deVirtualFileSystem *vfs, deVideo *video, const char *filename );
+	void SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename);
 	
 	/**
 	 * \brief Add loaded video.
 	 * \warning This method is to be used only by the resource loader!
 	 */
-	void AddLoadedVideo( deVideo *video );
+	void AddLoadedVideo(deVideo *video);
 	
 	
 	
 	/** \brief Create video decoder. */
-	deVideoDecoder *CreateDecoder( deVideo *video );
+	deVideoDecoder::Ref CreateDecoder(deVideo *video);
 	
 	/** \brief Create audio decoder or NULL if video has no audio. */
-	deVideoAudioDecoder *CreateAudioDecoder( deVideo *video );
+	deVideoAudioDecoder::Ref CreateAudioDecoder(deVideo *video);
 	
 	
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	virtual void SystemGraphicLoad();
-	virtual void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -128,9 +124,9 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
-	void RemoveDecoder( deVideoDecoder *decoder );
-	void RemoveAudioDecoder( deVideoAudioDecoder *decoder );
+	void RemoveResource(deResource *resource) override;
+	void RemoveDecoder(deVideoDecoder *decoder);
+	void RemoveAudioDecoder(deVideoAudioDecoder *decoder);
 	/*@}*/
 };
 

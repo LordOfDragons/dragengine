@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleTrackTo;
+#include "../../../animator/rule/aeRuleTrackTo.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleTrackTo;
  * Undo Action Rule Track To Set Track Bone.
  */
 class aeURuleTrackToSetTrackBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleTrackToSetTrackBone>;
+	
+	
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTrackToSetTrackBone( aeRuleTrackTo *rule, const char *newName );
+	aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTrackToSetTrackBone();
+	~aeURuleTrackToSetTrackBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

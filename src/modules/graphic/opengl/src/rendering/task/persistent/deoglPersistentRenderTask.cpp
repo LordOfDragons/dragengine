@@ -51,7 +51,6 @@
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../../vao/deoglVAO.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 
@@ -63,12 +62,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTask::deoglPersistentRenderTask( deoglPersistentRenderTaskPool &pool ) :
-pPool( pool ),
-pRenderParamBlock( NULL ),
-pTBOInstances( 0 ),
-pSPBInstanceMaxEntries( 0 ),
-pUseSPBInstanceFlags( false ){
+deoglPersistentRenderTask::deoglPersistentRenderTask(deoglPersistentRenderTaskPool &pool) :
+pPool(pool),
+pRenderParamBlock(nullptr),
+pTBOInstances(0),
+pSPBInstanceMaxEntries(0),
+pUseSPBInstanceFlags(false){
 }
 
 deoglPersistentRenderTask::~deoglPersistentRenderTask(){
@@ -81,25 +80,25 @@ deoglPersistentRenderTask::~deoglPersistentRenderTask(){
 // Management
 ///////////////
 
-void deoglPersistentRenderTask::PrepareForRender( deoglRenderThread &renderThread ){
-	if( pPipelines.GetCount() == 0 ){
+void deoglPersistentRenderTask::PrepareForRender(deoglRenderThread &renderThread){
+	if(pPipelines.GetCount() == 0){
 		return;
 	}
 	
-	pCalcSPBInstancesMaxEntries( renderThread );
-	pAssignSPBInstances( renderThread );
+	pCalcSPBInstancesMaxEntries(renderThread);
+	pAssignSPBInstances(renderThread);
 	pUpdateSPBInstances();
 }
 
-void deoglPersistentRenderTask::SetRenderParamBlock( deoglSPBlockUBO *paramBlock ){
+void deoglPersistentRenderTask::SetRenderParamBlock(deoglSPBlockUBO *paramBlock){
 	pRenderParamBlock = paramBlock;
 }
 
-void deoglPersistentRenderTask::SetTBOInstances( GLuint tbo ){
+void deoglPersistentRenderTask::SetTBOInstances(GLuint tbo){
 	pTBOInstances = tbo;
 }
 
-void deoglPersistentRenderTask::SetUseSPBInstanceFlags( bool useFlags ){
+void deoglPersistentRenderTask::SetUseSPBInstanceFlags(bool useFlags){
 	pUseSPBInstanceFlags = useFlags;
 }
 
@@ -109,42 +108,37 @@ int deoglPersistentRenderTask::GetOwnerCount() const{
 	return pOwners.GetCount();
 }
 
-decPointerLinkedList::cListEntry *deoglPersistentRenderTask::GetRootOwner() const{
+decTLinkedList<deoglPersistentRenderTaskOwner>::Element *deoglPersistentRenderTask::GetRootOwner() const{
 	return pOwners.GetRoot();
 }
 
-deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::GetOwnerWith( deObject *owner, unsigned int hash ) const{
-	deoglPersistentRenderTaskOwner *rtowner;
-	return pOwnersMap.GetAt( owner, hash, ( void** )&rtowner ) ? rtowner : NULL;
+deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::GetOwnerWith(unsigned int uniqueKey) const{
+	return pOwnersMap.GetAtOrDefault(uniqueKey);
 }
 
-deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::AddOwner( deObject *owner, unsigned int hash ){
+deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::AddOwner(deObject *owner, unsigned int uniqueKey){
 	// commented out in the name of performance
-// 	if( pOwnersMap.Has( owner, hash ) ){
-// 		DETHROW( deeInvalidParam );
-// 	}
+// 	DEASSERT_FALSE(pOwnersMap.Has(uniqueKey))
 	
 	deoglPersistentRenderTaskOwner * const rtowner = pPool.GetOwner();
-	rtowner->SetOwner( owner, hash );
-	pOwners.Add( &rtowner->GetLLTask() );
-	pOwnersMap.SetAt( owner, hash, rtowner );
+	rtowner->SetOwner(owner, uniqueKey);
+	pOwners.Add(&rtowner->GetLLTask());
+	pOwnersMap.SetAt(uniqueKey, rtowner);
 	return rtowner;
 }
 
-void deoglPersistentRenderTask::RemoveOwner( deoglPersistentRenderTaskOwner *owner ){
-	if( ! owner ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglPersistentRenderTask::RemoveOwner(deoglPersistentRenderTaskOwner *owner){
+	DEASSERT_NOTNULL(owner)
 	
-	pOwnersMap.Remove( owner->GetOwner(), owner->GetHash() );
-	pOwners.Remove( &owner->GetLLTask() );
-	pPool.ReturnOwner( owner );
+	pOwnersMap.Remove(owner->GetUniqueKey());
+	pOwners.Remove(&owner->GetLLTask());
+	pPool.ReturnOwner(owner);
 }
 
 void deoglPersistentRenderTask::RemoveAllOwners(){
-	decPointerLinkedList::cListEntry *iter = pOwners.GetRoot();
-	while( iter ){
-		pPool.ReturnOwner( ( deoglPersistentRenderTaskOwner* )iter->GetOwner() );
+	const decTLinkedList<deoglPersistentRenderTaskOwner>::Element *iter = pOwners.GetRoot();
+	while(iter){
+		pPool.ReturnOwner(iter->GetOwner());
 		iter = iter->GetNext();
 	}
 	pOwners.RemoveAll();
@@ -157,19 +151,17 @@ int deoglPersistentRenderTask::GetPipelineCount() const{
 	return pPipelines.GetCount();
 }
 
-decPointerLinkedList::cListEntry *deoglPersistentRenderTask::GetRootPipeline() const{
+decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *deoglPersistentRenderTask::GetRootPipeline() const{
 	return pPipelines.GetRoot();
 }
 
-deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::GetPipelineWith( const deoglPipeline *pipeline ) const{
-	DEASSERT_NOTNULL( pipeline )
-	
-	deoglPersistentRenderTaskPipeline *rtpipeline;
-	return pPipelinesMap.GetAt( pipeline, pipeline->GetRTSIndex(), ( void** )&rtpipeline ) ? rtpipeline : nullptr;
+deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::GetPipelineWith(const deoglPipeline *pipeline) const{
+	DEASSERT_NOTNULL(pipeline)
+	return pPipelinesMap.GetAtOrDefault(pipeline->GetRTSIndex());
 }
 
-deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline( const deoglPipeline *pipeline ){
-	DEASSERT_NOTNULL( pipeline )
+deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline(const deoglPipeline *pipeline){
+	DEASSERT_NOTNULL(pipeline)
 	
 	// commented out in the name of performance
 // 	if( pPipelinesMap.Has( pipeline, pipeline->GetUniqueKey() ) ){
@@ -177,25 +169,25 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline( const
 // 	}
 	
 	deoglPersistentRenderTaskPipeline * const rtpipeline = pPool.GetPipeline();
-	pPipelines.Add( &rtpipeline->GetLLTask() );
-	rtpipeline->SetParentTask( this );
-	rtpipeline->SetPipeline( pipeline );
-	pPipelinesMap.SetAt( pipeline, pipeline->GetRTSIndex(), rtpipeline );
+	pPipelines.Add(&rtpipeline->GetLLTask());
+	rtpipeline->SetParentTask(this);
+	rtpipeline->SetPipeline(pipeline);
+	pPipelinesMap.SetAt(pipeline->GetRTSIndex(), rtpipeline);
 	return rtpipeline;
 }
 
-void deoglPersistentRenderTask::RemovePipeline( deoglPersistentRenderTaskPipeline *pipeline ){
-	DEASSERT_NOTNULL( pipeline )
+void deoglPersistentRenderTask::RemovePipeline(deoglPersistentRenderTaskPipeline *pipeline){
+	DEASSERT_NOTNULL(pipeline)
 	
-	pPipelinesMap.Remove( pipeline->GetPipeline(), pipeline->GetPipeline()->GetRTSIndex() );
-	pPipelines.Remove( &pipeline->GetLLTask() );
-	pPool.ReturnPipeline( pipeline );
+	pPipelinesMap.Remove(pipeline->GetPipeline()->GetRTSIndex());
+	pPipelines.Remove(&pipeline->GetLLTask());
+	pPool.ReturnPipeline(pipeline);
 }
 
 void deoglPersistentRenderTask::RemoveAllPipelines(){
-	decPointerLinkedList::cListEntry *iter = pPipelines.GetRoot();
-	while( iter ){
-		pPool.ReturnPipeline( ( deoglPersistentRenderTaskPipeline* )iter->GetOwner() );
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iter = pPipelines.GetRoot();
+	while(iter){
+		pPool.ReturnPipeline(iter->GetOwner());
 		iter = iter->GetNext();
 	}
 	pPipelines.RemoveAll();
@@ -205,11 +197,11 @@ void deoglPersistentRenderTask::RemoveAllPipelines(){
 
 
 int deoglPersistentRenderTask::GetTotalPointCount() const{
-	decPointerLinkedList::cListEntry *iter = pPipelines.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iter = pPipelines.GetRoot();
 	int totalPointCount = 0;
 	
-	while( iter ){
-		totalPointCount += ( ( deoglPersistentRenderTaskPipeline* )iter->GetOwner() )->GetTotalPointCount();
+	while(iter){
+		totalPointCount += iter->GetOwner()->GetTotalPointCount();
 		iter = iter->GetNext();
 	}
 	
@@ -217,11 +209,11 @@ int deoglPersistentRenderTask::GetTotalPointCount() const{
 }
 
 int deoglPersistentRenderTask::GetTotalTextureCount() const{
-	decPointerLinkedList::cListEntry *iter = pPipelines.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iter = pPipelines.GetRoot();
 	int totalTextureCount = 0;
 	
-	while( iter ){
-		totalTextureCount += ( ( deoglPersistentRenderTaskPipeline* )iter->GetOwner() )->GetTextureCount();
+	while(iter){
+		totalTextureCount += iter->GetOwner()->GetTextureCount();
 		iter = iter->GetNext();
 	}
 	
@@ -229,11 +221,11 @@ int deoglPersistentRenderTask::GetTotalTextureCount() const{
 }
 
 int deoglPersistentRenderTask::GetTotalVAOCount() const{
-	decPointerLinkedList::cListEntry *iter = pPipelines.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iter = pPipelines.GetRoot();
 	int totalVAOCount = 0;
 	
-	while( iter ){
-		totalVAOCount += ( ( deoglPersistentRenderTaskPipeline* )iter->GetOwner() )->GetTotalVAOCount();
+	while(iter){
+		totalVAOCount += iter->GetOwner()->GetTotalVAOCount();
 		iter = iter->GetNext();
 	}
 	
@@ -241,11 +233,11 @@ int deoglPersistentRenderTask::GetTotalVAOCount() const{
 }
 
 int deoglPersistentRenderTask::GetTotalInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pPipelines.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iter = pPipelines.GetRoot();
 	int totalInstanceCount = 0;
 	
-	while( iter ){
-		totalInstanceCount += ( ( deoglPersistentRenderTaskPipeline* )iter->GetOwner() )->GetTotalInstanceCount();
+	while(iter){
+		totalInstanceCount += iter->GetOwner()->GetTotalInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -253,11 +245,11 @@ int deoglPersistentRenderTask::GetTotalInstanceCount() const{
 }
 
 int deoglPersistentRenderTask::GetTotalSubInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pPipelines.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iter = pPipelines.GetRoot();
 	int totalSubInstanceCount = 0;
 	
-	while( iter ){
-		totalSubInstanceCount += ( ( deoglPersistentRenderTaskPipeline* )iter->GetOwner() )->GetTotalSubInstanceCount();
+	while(iter){
+		totalSubInstanceCount += iter->GetOwner()->GetTotalSubInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -269,23 +261,23 @@ void deoglPersistentRenderTask::Clear(){
 	RemoveAllOwners();
 }
 
-void deoglPersistentRenderTask::RemoveOwnedBy( deoglPersistentRenderTaskOwner &owner ){
+void deoglPersistentRenderTask::RemoveOwnedBy(deoglPersistentRenderTaskOwner &owner){
 	// remove sub instances
 	int i, count = owner.GetSubInstanceCount();
-	for( i=0; i<count; i++ ){
-		deoglPersistentRenderTaskSubInstance * const subInstance = owner.GetSubInstanceAt( i );
+	for(i=0; i<count; i++){
+		deoglPersistentRenderTaskSubInstance * const subInstance = owner.GetSubInstanceAt(i);
 		deoglPersistentRenderTaskInstance * const instance = subInstance->GetParentInstance();
-		instance->RemoveSubInstance( subInstance );
+		instance->RemoveSubInstance(subInstance);
 		instance->RemoveFromParentIfEmpty();
 	}
 	owner.RemoveAllSubInstances();
 	
 	// remove instances
 	count = owner.GetInstanceCount();
-	for( i=0; i<count; i++ ){
-		deoglPersistentRenderTaskInstance * const instance = owner.GetInstanceAt( i );
+	for(i=0; i<count; i++){
+		deoglPersistentRenderTaskInstance * const instance = owner.GetInstanceAt(i);
 		deoglPersistentRenderTaskVAO * const vao = instance->GetParentVAO();
-		vao->RemoveInstance( instance );
+		vao->RemoveInstance(instance);
 		vao->RemoveFromParentIfEmpty();
 	}
 	owner.RemoveAllInstances();
@@ -296,13 +288,13 @@ void deoglPersistentRenderTask::RemoveOwnedBy( deoglPersistentRenderTaskOwner &o
 // Private Functions
 //////////////////////
 
-void deoglPersistentRenderTask::pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThread ){
+void deoglPersistentRenderTask::pCalcSPBInstancesMaxEntries(deoglRenderThread &renderThread){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4].
 	//pSPBInstanceMaxEntries = ( renderThread.GetCapabilities().GetUBOMaxSize() / 16 ) * 4;
 	pSPBInstanceMaxEntries = renderThread.GetBufferObject().GetInstanceArraySizeUBO();
 	
-	if( pUseSPBInstanceFlags ){
+	if(pUseSPBInstanceFlags){
 		// if instance flags are used the vector <instanceIndex, instanceFlags> is
 		// used instead. this reduces the max entries count by factor 2 but allows
 		// to transport a scratch flags value in a fast way
@@ -310,125 +302,90 @@ void deoglPersistentRenderTask::pCalcSPBInstancesMaxEntries( deoglRenderThread &
 	}
 }
 
-void deoglPersistentRenderTask::pAssignSPBInstances( deoglRenderThread &renderThread ){
-	decPointerLinkedList::cListEntry *iterPipeline = pPipelines.GetRoot();
+void deoglPersistentRenderTask::pAssignSPBInstances(deoglRenderThread &renderThread){
 	const int componentsPerIndex = pUseSPBInstanceFlags ? 2 : 1;
-	deoglShaderParameterBlock *paramBlock = NULL;
+	deoglShaderParameterBlock *paramBlock = nullptr;
 	int paramBlockCount = 0;
 	int firstIndex = 0;
 	
-	while( iterPipeline ){
-		const deoglPersistentRenderTaskPipeline &pipeline = *( ( deoglPersistentRenderTaskPipeline* )iterPipeline->GetOwner() );
-		decPointerLinkedList::cListEntry *iterTexture = pipeline.GetRootTexture();
-		
-		while( iterTexture ){
-			deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
-			decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
-			
-			while( iterVAO ){
-				deoglPersistentRenderTaskVAO &vao = *( ( deoglPersistentRenderTaskVAO* )iterVAO->GetOwner() );
-				decPointerLinkedList::cListEntry *iterInstance = vao.GetRootInstance();
-				
-				while( iterInstance ){
-					deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
-					
-					if( ! paramBlock || firstIndex + instance.GetSubInstanceCount() > pSPBInstanceMaxEntries ){
-						if( paramBlock ){
-							const int ecount = componentsPerIndex * decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 );
-							if( ecount > paramBlock->GetElementCount() ){
-								paramBlock->SetElementCount( ecount );
+	pPipelines.Visit([&](const deoglPersistentRenderTaskPipeline *pipeline){
+		pipeline->GetTextures().Visit([&](deoglPersistentRenderTaskTexture *texture){
+			texture->GetVAOs().Visit([&](deoglPersistentRenderTaskVAO *vao){
+				vao->GetInstances().Visit([&](deoglPersistentRenderTaskInstance *instance){
+					if(!paramBlock || firstIndex + instance->GetSubInstanceCount() > pSPBInstanceMaxEntries){
+						if(paramBlock){
+							const int ecount = componentsPerIndex * decMath::max(((firstIndex - 1) / 4) + 1, 1);
+							if(ecount > paramBlock->GetElementCount()){
+								paramBlock->SetElementCount(ecount);
 							}
 						}
 						
-						if( paramBlockCount == pSPBInstances.GetCount() ){
-							pCreateSPBInstanceParamBlock( renderThread );
+						if(paramBlockCount == pSPBInstances.GetCount()){
+							pCreateSPBInstanceParamBlock(renderThread);
 						}
-						paramBlock = pSPBInstances.GetAt( paramBlockCount++ );
+						paramBlock = pSPBInstances.GetAt(paramBlockCount++);
 						firstIndex = 0;
 					}
 					
-					instance.SetSIIndexInstanceParam( paramBlock, firstIndex );
-					firstIndex += instance.GetSubInstanceCount();
-					
-					iterInstance = iterInstance->GetNext();
-				}
-				iterVAO = iterVAO->GetNext();
-			}
-			iterTexture = iterTexture->GetNext();
-		}
-		iterPipeline = iterPipeline->GetNext();
-	}
+					instance->SetSIIndexInstanceParam(paramBlock, firstIndex);
+					firstIndex += instance->GetSubInstanceCount();
+				});
+			});
+		});
+	});
 	
-	if( paramBlock ){
-		const int ecount = componentsPerIndex * decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 );
-		if( ecount > paramBlock->GetElementCount() ){
-			paramBlock->SetElementCount( ecount );
+	if(paramBlock){
+		const int ecount = componentsPerIndex * decMath::max(((firstIndex - 1) / 4) + 1, 1);
+		if(ecount > paramBlock->GetElementCount()){
+			paramBlock->SetElementCount(ecount);
 		}
 	}
 }
 
 void deoglPersistentRenderTask::pUpdateSPBInstances(){
-	deoglShaderParameterBlock *paramBlock = NULL;
+	deoglShaderParameterBlock *paramBlock = nullptr;
 	
 	try{
-		decPointerLinkedList::cListEntry *iterPipeline = pPipelines.GetRoot();
-		
-		while( iterPipeline ){
-			const deoglPersistentRenderTaskPipeline &pipeline = *( ( deoglPersistentRenderTaskPipeline* )iterPipeline->GetOwner() );
-			decPointerLinkedList::cListEntry *iterTexture = pipeline.GetRootTexture();
-			
-			while( iterTexture ){
-				deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
-				decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
-				
-				while( iterVAO ){
-					deoglPersistentRenderTaskVAO &vao = *( ( deoglPersistentRenderTaskVAO* )iterVAO->GetOwner() );
-					decPointerLinkedList::cListEntry *iterInstance = vao.GetRootInstance();
-					
-					while( iterInstance ){
-						deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
-						
-						if( instance.GetSIIndexInstanceSPB() != paramBlock ){
-							if( paramBlock ){
+		pPipelines.Visit([&](const deoglPersistentRenderTaskPipeline *pipeline){
+			pipeline->GetTextures().Visit([&](deoglPersistentRenderTaskTexture *texture){
+				texture->GetVAOs().Visit([&](deoglPersistentRenderTaskVAO *vao){
+					vao->GetInstances().Visit([&](deoglPersistentRenderTaskInstance *instance){
+						if(instance->GetSIIndexInstanceSPB() != paramBlock){
+							if(paramBlock){
 								paramBlock->UnmapBuffer();
-								paramBlock = NULL;
+								paramBlock = nullptr;
 							}
 							
-							instance.GetSIIndexInstanceSPB()->MapBuffer();
-							paramBlock = instance.GetSIIndexInstanceSPB();
+							instance->GetSIIndexInstanceSPB()->MapBuffer();
+							paramBlock = instance->GetSIIndexInstanceSPB();
 						}
 						
-						instance.WriteSIIndexInstanceInt( pUseSPBInstanceFlags );
-						
-						iterInstance = iterInstance->GetNext();
-					}
-					iterVAO = iterVAO->GetNext();
-				}
-				iterTexture = iterTexture->GetNext();
-			}
-			iterPipeline = iterPipeline->GetNext();
-		}
+						instance->WriteSIIndexInstanceInt(pUseSPBInstanceFlags);
+					});
+				});
+			});
+		});
 		
-		if( paramBlock ){
+		if(paramBlock){
 			paramBlock->UnmapBuffer();
 		}
 		
-	}catch( const deException & ){
-		if( paramBlock ){
+	}catch(const deException &){
+		if(paramBlock){
 			paramBlock->UnmapBuffer();
 		}
 		throw;
 	}
 }
 
-void deoglPersistentRenderTask::pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread ){
+void deoglPersistentRenderTask::pCreateSPBInstanceParamBlock(deoglRenderThread &renderThread){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4]
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-	ubo->SetParameterCount( 1 );
-	ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(renderThread));
+	ubo->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
+	ubo->SetParameterCount(1);
+	ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	ubo->MapToStd140();
-	ubo->SetBindingPoint( deoglSkinShader::eubInstanceIndex );
-	pSPBInstances.Add( ubo );
+	ubo->SetBindingPoint(deoglSkinShader::eubInstanceIndex);
+	pSPBInstances.Add(ubo);
 }

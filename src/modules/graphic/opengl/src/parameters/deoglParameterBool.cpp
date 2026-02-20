@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglParameterBool::deoglParameterBool( deGraphicOpenGl &oal ) : deoglParameter( oal ){
-	SetType( eptBoolean );
+deoglParameterBool::deoglParameterBool(deGraphicOpenGl &oal) : deoglParameter(oal){
+	SetType(eptBoolean);
 }
 
 
@@ -51,7 +51,7 @@ decString deoglParameterBool::GetParameterValue(){
 	return GetParameterBool() ? "1" : "0";
 }
 
-void deoglParameterBool::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
-	SetParameterBool( checkValue == "1" || checkValue == "true" || checkValue == "yes" );
+void deoglParameterBool::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	SetParameterBool(checkValue == "1" || checkValue == "true" || checkValue == "yes");
 }

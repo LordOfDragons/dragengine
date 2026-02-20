@@ -8,7 +8,7 @@ VARYING_BIND(1) flat in vec3 vColor;
 VARYING_BIND(2) flat in vec3 vColorRim;
 VARYING_BIND(3) flat in float vRimThickness;
 
-layout(location=0) out vec3 outColor;
+layout(location=0) out vec4 outColor;
 
 void main( void ){
 	float radius = length( vTexCoord );
@@ -16,5 +16,6 @@ void main( void ){
 		discard; // outside sphere
 	}
 	
-	outColor = radius > vRimThickness ? vColorRim : vColor;
+	outColor.rgb = radius > vRimThickness ? vColorRim : vColor;
+	outColor.a = 1.0;
 }

@@ -32,7 +32,7 @@
 #include "../seWindowMain.h"
 #include "../../skin/seSkin.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -46,31 +46,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWindowProperties::seWindowProperties( seWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+seWindowProperties::seWindowProperties(seWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelMapped.TakeOver( new seWPMapped( *this ) );
-	AddChild( pPanelMapped, "Mapped" );
+	pPanelMapped = seWPMapped::Ref::New(*this);
+	AddChild(pPanelMapped, "@Skin.WindowProperties.Tab.Mapped");
 	
-	pPanelTexture.TakeOver( new seWPTexture( *this ) );
-	AddChild( pPanelTexture, "Texture" );
+	pPanelTexture = seWPTexture::Ref::New(*this);
+	AddChild(pPanelTexture, "@Skin.WindowProperties.Tab.Texture");
 	
-	pPanelNode.TakeOver( new seWPNode( *this ) );
-	AddChild( pPanelNode, "Node" );
+	pPanelNode = seWPNode::Ref::New(*this);
+	AddChild(pPanelNode, "@Skin.WindowProperties.Tab.Node");
 	
-	pPanelDynamicSkin.TakeOver( new seWPDynamicSkin( *this ) );
-	AddChild( pPanelDynamicSkin, "Dynamic Skin" );
+	pPanelDynamicSkin = seWPDynamicSkin::Ref::New(*this);
+	AddChild(pPanelDynamicSkin, "@Skin.WindowProperties.Tab.DynamicSkin");
 	
-	pPanelView.TakeOver( new seWPView( *this ) );
-	AddChild( pPanelView, "View" );
+	pPanelView = seWPView::Ref::New(*this);
+	AddChild(pPanelView, "@Skin.WindowProperties.Tab.View");
 	
-	pPanelUndoHistory.TakeOver( new seWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory = seWPUndoHistory::Ref::New(GetEnvironment());
+	AddChild(pPanelUndoHistory, "@Igde.Tab.UndoHistory");
 	
-	SetActivePanel( 1 ); // texture
+	SetActivePanel(1); // texture
 }
 
 seWindowProperties::~seWindowProperties(){
@@ -81,16 +81,16 @@ seWindowProperties::~seWindowProperties(){
 // Management
 ///////////////
 
-void seWindowProperties::SetSkin( seSkin *skin ){
-	( ( seWPMapped& )( igdeWidget& )pPanelMapped ).SetSkin( skin );
-	( ( seWPTexture& )( igdeWidget& )pPanelTexture ).SetSkin( skin );
-	( ( seWPNode& )( igdeWidget& )pPanelNode ).SetSkin( skin );
-	( ( seWPDynamicSkin& )( igdeWidget& )pPanelDynamicSkin ).SetSkin( skin );
-	( ( seWPView& )( igdeWidget& )pPanelView ).SetSkin( skin );
-	( ( seWPUndoHistory& )( igdeWidget& )pPanelUndoHistory ).SetSkin( skin );
+void seWindowProperties::SetSkin(seSkin *skin){
+	pPanelMapped.DynamicCast<seWPMapped>()->SetSkin(skin);
+	pPanelTexture.DynamicCast<seWPTexture>()->SetSkin(skin);
+	pPanelNode.DynamicCast<seWPNode>()->SetSkin(skin);
+	pPanelDynamicSkin.DynamicCast<seWPDynamicSkin>()->SetSkin(skin);
+	pPanelView.DynamicCast<seWPView>()->SetSkin(skin);
+	pPanelUndoHistory.DynamicCast<seWPUndoHistory>()->SetSkin(skin);
 }
 
 void seWindowProperties::OnSkinPathChanged(){
-	( ( seWPTexture& )( igdeWidget& )pPanelTexture ).OnSkinPathChanged();
-	( ( seWPNode& )( igdeWidget& )pPanelNode ).OnSkinPathChanged();
+	pPanelTexture.DynamicCast<seWPTexture>()->OnSkinPathChanged();
+	pPanelNode.DynamicCast<seWPNode>()->OnSkinPathChanged();
 }

@@ -77,8 +77,8 @@ int deBasePhysicsTouchSensor::GetColliderCount(){
 	return 0;
 }
 
-deCollider *deBasePhysicsTouchSensor::GetColliderAt( int collider ){
-	DETHROW( deeInvalidParam );
+deCollider *deBasePhysicsTouchSensor::GetColliderAt(int collider){
+	DETHROW(deeInvalidParam);
 }
 
 
@@ -86,29 +86,29 @@ deCollider *deBasePhysicsTouchSensor::GetColliderAt( int collider ){
 // Collision Detection
 ////////////////////////
 
-bool deBasePhysicsTouchSensor::PointInside( const decDVector &point ){
+bool deBasePhysicsTouchSensor::PointInside(const decDVector &point){
 	return false;
 }
 
-void deBasePhysicsTouchSensor::AllHits( deBaseScriptingCollider *listener ){
+void deBasePhysicsTouchSensor::AllHits(deBaseScriptingCollider *listener){
 }
 
-void deBasePhysicsTouchSensor::RayHits( const decDVector &rayOrigin,
-const decVector &rayDirection, deBaseScriptingCollider *listener ){
+void deBasePhysicsTouchSensor::RayHits(const decDVector &rayOrigin,
+const decVector &rayDirection, deBaseScriptingCollider *listener){
 }
 
-void deBasePhysicsTouchSensor::ColliderHits( deCollider *collider,
-deBaseScriptingCollider *listener ){
+void deBasePhysicsTouchSensor::ColliderHits(deCollider *collider,
+deBaseScriptingCollider *listener){
 }
 
-void deBasePhysicsTouchSensor::ColliderMoveHits( deCollider *collider,
-const decVector &displacement, deBaseScriptingCollider *listener ){
+void deBasePhysicsTouchSensor::ColliderMoveHits(deCollider *collider,
+const decVector &displacement, deBaseScriptingCollider *listener){
 }
 
-void deBasePhysicsTouchSensor::ColliderRotateHits( deCollider *collider,
-const decVector &rotation, deBaseScriptingCollider *listener ){
+void deBasePhysicsTouchSensor::ColliderRotateHits(deCollider *collider,
+const decVector &rotation, deBaseScriptingCollider *listener){
 }
 
-void deBasePhysicsTouchSensor::ColliderMoveRotateHits( deCollider *collider,
-const decVector &displacement, const decVector &rotation, deBaseScriptingCollider *listener ){
+void deBasePhysicsTouchSensor::ColliderMoveRotateHits(deCollider *collider,
+const decVector &displacement, const decVector &rotation, deBaseScriptingCollider *listener){
 }

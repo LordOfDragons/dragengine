@@ -30,7 +30,7 @@
 #include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../../../undosys/objectClass/world/gdeUOCRemoveWorld.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -44,29 +44,28 @@
 ////////////////
 
 gdeMAOCWorldCut::gdeMAOCWorldCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class World",
-	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut object class world"){
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldCut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "@GameDefinition.Menu.OCWorldCut.ToolTip"){
 }
 
 
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
+igdeUndo::Ref gdeMAOCWorldCut::OnActionSubObject(
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
-		return nullptr;
+		return {};
 	}
 	
 	gdeOCWorld * const world = gameDefinition.GetActiveOCWorld();
 	if(!world){
-		return nullptr;
+		return {};
 	}
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(
-		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::New(new gdeOCWorld(*world)))));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(gdeOCWorld::Ref::New(*world)));
 	
-	return new gdeUOCRemoveWorld(&objectClass, world);
+	return gdeUOCRemoveWorld::Ref::New(&objectClass, world);
 }
 
 void gdeMAOCWorldCut::Update(){

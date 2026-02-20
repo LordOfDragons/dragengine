@@ -38,7 +38,6 @@ class fbxModel;
 
 class deCacheHelper;
 class deModelLOD;
-class decPointerList;
 
 
 /**
@@ -55,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	fbxModelModule( deLoadableModule &loadableModule );
+	fbxModelModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~fbxModelModule();
+	~fbxModelModule() override;
 	/*@}*/
 	
 	
@@ -66,35 +65,35 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load model. */
-	virtual void LoadModel( decBaseFileReader &reader, deModel &model );
+	void LoadModel(decBaseFileReader &reader, deModel &model) override;
 	
 	/** \brief Save model. */
-	virtual void SaveModel( decBaseFileWriter &writer, const deModel &model );
+	void SaveModel(decBaseFileWriter &writer, const deModel &model) override;
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadModel( deModel &model, fbxScene &scene );
+	void pLoadModel(deModel &model, fbxScene &scene);
 	
-	void pLoadModelBones( deModel &model, const fbxRig &rig );
+	void pLoadModelBones(deModel &model, const fbxRig &rig);
 	
-	void pLoadModelBone( deModel &model, const fbxRigBone &rigBone );
+	void pLoadModelBone(deModel &model, const fbxRigBone &rigBone);
 	
-	void pLoadModelTextures( deModel &model, const fbxModel &loadModel );
+	void pLoadModelTextures(deModel &model, const fbxModel &loadModel);
 	
-	void pLoadModelTexture( deModel &model, const fbxModel &loadModel, const fbxNode &nodeMaterial );
+	void pLoadModelTexture(deModel &model, const fbxModel &loadModel, const fbxNode &nodeMaterial);
 	
-	void pLoadModelLod( deModel &model, deModelLOD &lod,
-		const fbxModel &loadModel, const fbxRig *loadRig );
+	void pLoadModelLod(deModel &model, deModelLOD &lod,
+		const fbxModel &loadModel, const fbxRig *loadRig);
 	
-	void pLoadModelVertices( deModel &model, deModelLOD &lod,
-		const fbxModel &loadModel, const fbxRig *loadRig );
+	void pLoadModelVertices(deModel &model, deModelLOD &lod,
+		const fbxModel &loadModel, const fbxRig *loadRig);
 	
-	void pLoadModelFaces( deModel &model, deModelLOD &lod,
-		const fbxModel &loadModel, const fbxRig *loadRig );
+	void pLoadModelFaces(deModel &model, deModelLOD &lod,
+		const fbxModel &loadModel, const fbxRig *loadRig);
 	
-	void pEnsureTextureIndex( deModel &model, int count );
+	void pEnsureTextureIndex(deModel &model, int count);
 };
 
 #endif

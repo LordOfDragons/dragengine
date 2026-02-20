@@ -35,7 +35,6 @@
 #include "../property/fbxPropertyLong.h"
 #include "../property/fbxPropertyString.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
@@ -46,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxMaterial::fbxMaterial( fbxScene &scene, fbxNode &nodeMaterial ) :
-pScene( scene ),
-pNodeMaterial( nodeMaterial ),
-pMaterialID( nodeMaterial.GetPropertyAt( 0 )->CastLong().GetValue() ),
-pName( nodeMaterial.GetPropertyAt( 1 )->CastString().GetValue() )
+fbxMaterial::fbxMaterial(fbxScene &scene, fbxNode &nodeMaterial) :
+pScene(scene),
+pNodeMaterial(nodeMaterial),
+pMaterialID(nodeMaterial.GetProperties().GetAt(0)->CastLong().GetValue()),
+pName(nodeMaterial.GetProperties().GetAt(1)->CastString().GetValue())
 {
 }
 
@@ -62,12 +61,12 @@ fbxMaterial::~fbxMaterial(){
 // Management
 ///////////////
 
-void fbxMaterial::SetName( const char *name ){
+void fbxMaterial::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void fbxMaterial::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose ) const{
-	module.LogInfoFormat( "%sMaterial '%s':", prefix.GetString(), pName.GetString() );
+void fbxMaterial::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	module.LogInfoFormat("%sMaterial '%s':", prefix.GetString(), pName.GetString());
 }

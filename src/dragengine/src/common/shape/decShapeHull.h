@@ -26,6 +26,7 @@
 #define _DECSHAPEHULL_H_
 
 #include "decShape.h"
+#include "../collection/decTList.h"
 #include "../math/decMath.h"
 
 
@@ -38,9 +39,16 @@
  * points after the shape has been added to a collider.
  */
 class DE_DLL_EXPORT decShapeHull : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeHull>;
+	
+	/** \brief List of points. */
+	using PointList = decTList<decVector>;
+	
+	
 private:
-	decVector *pPoints;
-	int pPointCount;
+	PointList pPoints;
 	
 	
 	
@@ -51,13 +59,14 @@ public:
 	decShapeHull();
 	
 	/** \brief Create hull shape. */
-	decShapeHull( const decVector &position );
+	decShapeHull(const decVector &position);
 	
 	/** \brief Create hull shape. */
-	decShapeHull( const decVector &position, const decQuaternion &orientation );
+	decShapeHull(const decVector &position, const decQuaternion &orientation);
 	
-	/** \brief Clean up hull shape. */
-	virtual ~decShapeHull();
+	/** \brief Create hull shape. */
+	decShapeHull(const decVector &position, const decQuaternion &orientation, const PointList &points);
+	decShapeHull(const decVector &position, const decQuaternion &orientation, PointList &&points);
 	/*@}*/
 	
 	
@@ -65,10 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point arrays. */
-	inline decVector *GetPoints() const{ return pPoints; }
-	
-	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline const PointList &GetPoints() const{ return pPoints; }
 	
 	/**
 	 * \brief Set number of points.
@@ -78,24 +84,18 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void SetPointCount( int count );
-	
-	/**
-	 * \brief Point at index.
-	 * \throws deeOutOfBoundary \em count is less than 0 or greater than or equal to GetPointCount().
-	 */
-	const decVector &GetPointAt( int index ) const;
+	void SetPointCount(int count);
 	
 	/**
 	 * \brief Set point at index.
 	 * \throws deeOutOfBoundary \em count is less than 0 or greater than or equal to GetPointCount().
 	 */
-	void SetPointAt( int index, const decVector &point );
+	void SetPointAt(int index, const decVector &point);
 	
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	void Visit(decShapeVisitor &visitor) override;
 	/*@}*/
 };
 

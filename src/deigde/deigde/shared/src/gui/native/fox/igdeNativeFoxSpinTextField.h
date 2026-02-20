@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXSPINTEXTFIELD_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeSpinTextField.h"
+#include "../../resources/igdeFont.h"
 
 class igdeSpinTextField;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native spinTextField.
  */
-class igdeNativeFoxSpinTextField : public FXSpinner{
-	FXDECLARE( igdeNativeFoxSpinTextField )
+class igdeNativeFoxSpinTextField : public FXSpinner, public igdeSpinTextField::cNativeSpinTextField{
+	FXDECLARE(igdeNativeFoxSpinTextField)
 	
 protected:
 	igdeNativeFoxSpinTextField();
@@ -50,20 +51,20 @@ public:
 	
 private:
 	igdeSpinTextField *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxSpinTextField( igdeSpinTextField &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxSpinTextField(igdeSpinTextField &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxSpinTextField();
+	~igdeNativeFoxSpinTextField() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSpinTextField* CreateNativeWidget( igdeSpinTextField &owner );
+	static igdeNativeFoxSpinTextField* CreateNativeWidget(igdeSpinTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -76,28 +77,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateRange();
-	virtual void UpdateEnabled();
-	virtual void UpdateValue();
-	virtual void UpdateDescription();
+	void Focus() override;
+	void UpdateRange() override;
+	void UpdateEnabled() override;
+	void UpdateValue() override;
+	void UpdateDescription() override;
 	
-	static int SpinTextFieldFlags( const igdeSpinTextField &owner );
-	static igdeFont *SpinTextFieldFont( const igdeSpinTextField &owner, const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadLeft( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadRight( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadTop( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadBottom( const igdeGuiTheme &guitheme );
+	static int SpinTextFieldFlags(const igdeSpinTextField &owner);
+	static igdeFont *SpinTextFieldFont(const igdeSpinTextField &owner, const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadLeft(const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadRight(const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadTop(const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxSpinTextField igdeNativeSpinTextField;
+using igdeNativeSpinTextField = igdeNativeFoxSpinTextField;
 
 #endif

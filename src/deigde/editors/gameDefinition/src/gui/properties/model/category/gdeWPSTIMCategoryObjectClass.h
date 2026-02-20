@@ -33,14 +33,16 @@
  */
 class gdeWPSTIMCategoryObjectClass : public gdeWPSTIMCategory{
 public:
+	typedef deTObjectReference<gdeWPSTIMCategoryObjectClass> Ref;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategoryObjectClass( gdeWPSTreeModel &tree, gdeCategory *category );
+	gdeWPSTIMCategoryObjectClass(gdeWPSTreeModel &tree, gdeCategory *category);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMCategoryObjectClass();
+	~gdeWPSTIMCategoryObjectClass() override;
 	/*@}*/
 	
 	
@@ -48,8 +50,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with category or \em NULL. */
-	gdeWPSTIMCategoryObjectClass *GetChildWith( gdeCategory* category, bool deep ) const;
+	/** \brief Model with category or \em nullptr. */
+	gdeWPSTIMCategoryObjectClass *GetChildWith(gdeCategory* category, bool deep) const;
 	
 	/** \brief Categories changed. */
 	void CategoriesChanged();
@@ -57,16 +59,16 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRWorld;
@@ -58,11 +58,9 @@ private:
 	bool pHasShapes;
 	bool pHasFaces;
 	
-	deoglDebugDrawerShape *pShapes;
-	int pShapeCount;
+	decTList<deoglDebugDrawerShape> pShapes;
 	
-	oglVector3 *pVBOData;
-	int pVBOPointCount;
+	decTList<oglVector3> pVBOData;
 	
 	GLuint pVBO;
 	deoglVAO *pVAO;
@@ -72,17 +70,22 @@ private:
 	bool pWorldMarkedRemove;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDebugDrawer>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render debug drawer. */
-	deoglRDebugDrawer( deoglRenderThread &renderThread );
+	deoglRDebugDrawer(deoglRenderThread &renderThread);
 	
+protected:
 	/** Cleans up render debug drawer. */
-	virtual ~deoglRDebugDrawer();
+	~deoglRDebugDrawer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -94,7 +97,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	
 	
@@ -102,24 +105,24 @@ public:
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set matrix. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	/** Debug drawer is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set if debug drawer is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** Debug drawer is rendered in x-ray mode. */
 	inline bool GetXRay() const{ return pXRay; }
 	
 	/** Set debug drawer is rendered in x-ray mode. */
-	void SetXRay( bool xray );
+	void SetXRay(bool xray);
 	
 	
 	
 	/** Update shapes. */
-	void UpdateShapes( const deDebugDrawer &debugDrawer );
+	void UpdateShapes(const deDebugDrawer &debugDrawer);
 	
 	/** Determines if the debug drawer has shapes. */
 	inline bool GetHasShapes() const{ return pHasShapes; }
@@ -127,11 +130,11 @@ public:
 	/** Determines if the debug drawer has faces. */
 	inline bool GetHasFaces() const{ return pHasFaces; }
 	
-	/** Number of shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
+	/** Shapes. */
+	inline const decTList<deoglDebugDrawerShape> &GetShapes() const{ return pShapes; }
 	
 	/** Retrieves a shape. */
-	deoglDebugDrawerShape &GetShapeAt( int index ) const;
+	deoglDebugDrawerShape &GetShapeAt(int index);
 	
 	
 	
@@ -161,12 +164,12 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 	
 private:
-	void pUpdateHasFlags( const deDebugDrawer &debugDrawer );
-	void pWriteVBOData( const deDebugDrawer &debugDrawer );
+	void pUpdateHasFlags(const deDebugDrawer &debugDrawer);
+	void pWriteVBOData(const deDebugDrawer &debugDrawer);
 };
 
 #endif

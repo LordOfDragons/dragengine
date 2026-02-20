@@ -29,8 +29,8 @@
 // Class deBaseArchiveModule
 //////////////////////////////
 
-deBaseArchiveModule::deBaseArchiveModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseArchiveModule::deBaseArchiveModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseArchiveModule::~deBaseArchiveModule(){

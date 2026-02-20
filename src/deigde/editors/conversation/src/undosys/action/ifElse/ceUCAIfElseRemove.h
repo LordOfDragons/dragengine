@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAIfElse;
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 
@@ -38,21 +38,27 @@ class ceCAIfElse;
  * \brief Undo action if-else remove conversation action.
  */
 class ceUCAIfElseRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAIfElseRemove>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceConversationAction *pAction;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceConversationAction::Ref pAction;
+	ceCAIfElseCase::Ref pCase;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseRemove( ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase, ceConversationAction *action );
+	ceUCAIfElseRemove(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase, ceConversationAction *action);
 	
 	/** \brief Clean up undo object. */
-	virtual ~ceUCAIfElseRemove();
+protected:
+	~ceUCAIfElseRemove() override;
+public:
 	/*@}*/
 	
 	
@@ -61,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

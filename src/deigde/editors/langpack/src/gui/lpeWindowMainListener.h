@@ -35,6 +35,9 @@ class lpeWindowMain;
  * \brief Window Main Listener.
  */
 class lpeWindowMainListener : public lpeLangPackListener{
+public:
+	using Ref = deTObjectReference<lpeWindowMainListener>;
+	
 private:
 	lpeWindowMain &pWindow;
 	
@@ -44,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	lpeWindowMainListener( lpeWindowMain &window );
+	lpeWindowMainListener(lpeWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	~lpeWindowMainListener();
+	~lpeWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,18 +58,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( lpeLangPack *langpack );
+	void StateChanged(lpeLangPack *langpack) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( lpeLangPack *langpack );
+	void UndoChanged(lpeLangPack *langpack) override;
 	
 	
 	
 	/** \brief Entries have been added or removed. */
-	virtual void EntryStructureChanged ( lpeLangPack *langpack );
+	void EntryStructureChanged (lpeLangPack *langpack) override;
 	
 	/** \brief Selection of one or mote entries changed. */
-	virtual void EntrySelectionChanged( lpeLangPack *langpack );
+	void EntrySelectionChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

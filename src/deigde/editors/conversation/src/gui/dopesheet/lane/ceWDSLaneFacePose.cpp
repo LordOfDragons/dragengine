@@ -44,7 +44,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -58,9 +57,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSLaneFacePose::ceWDSLaneFacePose( ceWindowDopeSheet &dopeSheet, int index,
-	const char *label, const char *description ) :
-ceWDSLane( dopeSheet, index, label, description ){
+ceWDSLaneFacePose::ceWDSLaneFacePose(ceWindowDopeSheet &dopeSheet, int index,
+	const char *label, const char *description) :
+ceWDSLane(dopeSheet, index, label, description){
 }
 
 ceWDSLaneFacePose::~ceWDSLaneFacePose(){
@@ -71,61 +70,58 @@ ceWDSLaneFacePose::~ceWDSLaneFacePose(){
 // Management
 ///////////////
 
-const ceStripList &ceWDSLaneFacePose::GetStripList() const{
+const ceStrip::List &ceWDSLaneFacePose::GetStripList() const{
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? action->GetFacePoseList() : GetEmptyList();
+	return action ? action->GetFacePoses() : GetEmptyList();
 }
 
-void ceWDSLaneFacePose::FillIDList( decStringList &list ){
+void ceWDSLaneFacePose::FillIDList(decStringList &list){
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	if( ! action ){
+	if(!action){
 		return;
 	}
 	
-	const ceFacePoseList facePoseList( GetWindow().GetConversation()->AllFacePoses() );
-	const int facePoseCount = facePoseList.GetCount();
-	int i;
-	for( i=0; i<facePoseCount; i++ ){
-		list.Add( facePoseList.GetAt( i )->GetName() );
-	}
+	GetWindow().GetConversation()->AllFacePoses().Visit([&](ceFacePose &f){
+		list.Add(f.GetName());
+	});
 }
 
-igdeUndo *ceWDSLaneFacePose::UndoStripAdd( ceStrip *strip, int index ){
+igdeUndo::Ref ceWDSLaneFacePose::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceAdd( GetWindow().GetTopic(), action, strip, index ) : NULL;
+	return action ? ceUCAASpeakFaceAdd::Ref::New(GetWindow().GetTopic(), action, strip, index) : ceUCAASpeakFaceAdd::Ref();
 }
 
-igdeUndo *ceWDSLaneFacePose::UndoStripRemove( ceStrip *strip ){
+igdeUndo::Ref ceWDSLaneFacePose::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceRemove( GetWindow().GetTopic(), action, strip ) : NULL;
+	return action ? ceUCAASpeakFaceRemove::Ref::New(GetWindow().GetTopic(), action, strip) : ceUCAASpeakFaceRemove::Ref();
 }
 
-igdeUndo *ceWDSLaneFacePose::UndoStripRemoveAll(){
+igdeUndo::Ref ceWDSLaneFacePose::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceClear( GetWindow().GetTopic(), action ) : NULL;
+	return action ? ceUCAASpeakFaceClear::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakFaceClear::Ref();
 }
 
-igdeUndo *ceWDSLaneFacePose::UndoStripReplace( ceStrip *strip, ceStrip *withStrip ){
+igdeUndo::Ref ceWDSLaneFacePose::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceSet( GetWindow().GetTopic(), action, strip, withStrip ) : NULL;
+	return action ? ceUCAASpeakFaceSet::Ref::New(GetWindow().GetTopic(), action, strip, withStrip) : ceUCAASpeakFaceSet::Ref();
 }
 
-igdeUndo *ceWDSLaneFacePose::UndoStripMove( ceStrip *strip, int toIndex ){
+igdeUndo::Ref ceWDSLaneFacePose::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceMove( GetWindow().GetTopic(), action, strip, toIndex ) : NULL;
+	return action ? ceUCAASpeakFaceMove::Ref::New(GetWindow().GetTopic(), action, strip, toIndex) : ceUCAASpeakFaceMove::Ref();
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneFacePose::UndoStripSetPause( ceStrip *strip, float pause ){
+ceUCAASpeakStripSetPause::Ref ceWDSLaneFacePose::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceSetPause( GetWindow().GetTopic(), action, strip, pause ) : NULL;
+	return action ? ceUCAASpeakFaceSetPause::Ref::New(GetWindow().GetTopic(), action, strip, pause) : ceUCAASpeakFaceSetPause::Ref();
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneFacePose::UndoStripSetDuration( ceStrip *strip, float duration ){
+ceUCAASpeakStripSetDuration::Ref ceWDSLaneFacePose::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFaceSetDuration( GetWindow().GetTopic(), action, strip, duration ) : NULL;
+	return action ? ceUCAASpeakFaceSetDuration::Ref::New(GetWindow().GetTopic(), action, strip, duration) : ceUCAASpeakFaceSetDuration::Ref();
 }
 
-ceUCAASpeakStripsScale *ceWDSLaneFacePose::UndoScaleStrips(){
+ceUCAASpeakStripsScale::Ref ceWDSLaneFacePose::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakFacesScale( GetWindow().GetTopic(), action ) : NULL;
+	return action ? ceUCAASpeakFacesScale::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakFacesScale::Ref();
 }

@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSSkinListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSSkinListener( gdeWPSSkin &panel );
+	gdeWPSSkinListener(gdeWPSSkin &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSSkinListener();
+protected:
+	~gdeWPSSkinListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,15 +58,15 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class categories changed. */
-	virtual void SkinCategoriesChanged( gdeGameDefinition *gameDefinition );
+	void SkinCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class changed. */
-	virtual void SkinChanged( gdeGameDefinition *gameDefinition, gdeSkin *skin );
+	void SkinChanged(gdeGameDefinition *gameDefinition, gdeSkin *skin) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveSkinChanged( gdeGameDefinition *gameDefinition );
+	void ActiveSkinChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

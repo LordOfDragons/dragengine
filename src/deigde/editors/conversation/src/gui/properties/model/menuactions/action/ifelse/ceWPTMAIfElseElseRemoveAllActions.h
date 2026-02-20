@@ -36,6 +36,9 @@ class ceCAIfElse;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAIfElseElseRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAIfElseElseRemoveAllActions>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -50,8 +53,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseElseRemoveAllActions( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse );
+	ceWPTMAIfElseElseRemoveAllActions(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse);
 	/*@}*/
 	
 	
@@ -65,7 +68,7 @@ public:
 	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

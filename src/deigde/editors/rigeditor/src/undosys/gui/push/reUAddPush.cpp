@@ -30,7 +30,7 @@
 #include "../../../rig/push/reRigPush.h"
 #include "../../../rig/push/reSelectionPushes.h"
 
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -40,19 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddPush::reUAddPush( reRig *rig, reRigPush *push ){
-	if( ! rig || ! push ) DETHROW( deeInvalidParam );
+reUAddPush::reUAddPush(reRig *rig, reRigPush *push){
+	if(!rig || !push) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	rig->AddReference();
-	
 	pPush = push;
-	push->AddReference();
-	
 	try{
-		SetShortInfo( "Add Push" );
+		SetShortInfo("@Rig.Undo.PushAdd");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -70,20 +66,20 @@ reUAddPush::~reUAddPush(){
 void reUAddPush::Undo(){
 	reSelectionPushes *selection = pRig->GetSelectionPushes();
 	
-	if( pPush->GetSelected() ){
-		selection->RemovePush( pPush );
+	if(pPush->GetSelected()){
+		selection->RemovePush(pPush);
 	}
 	
-	pRig->RemovePush( pPush );
+	pRig->RemovePush(pPush);
 }
 
 void reUAddPush::Redo(){
 	reSelectionPushes *selection = pRig->GetSelectionPushes();
 	
-	pRig->AddPush( pPush );
+	pRig->AddPush(pPush);
 	
 	selection->RemoveAllPushes();
-	selection->AddPush( pPush );
+	selection->AddPush(pPush);
 }
 
 
@@ -92,6 +88,4 @@ void reUAddPush::Redo(){
 //////////////////////
 
 void reUAddPush::pCleanUp(){
-	if( pPush ) pPush->FreeReference();
-	if( pRig ) pRig->FreeReference();
 }

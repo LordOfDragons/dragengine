@@ -35,6 +35,10 @@
  * Undo action set mapped input type.
  */
 class seUMappedSetInputType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedSetInputType>;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetInputType( seMapped *mapped, deSkinMapped::eInputTypes newInputType );
+	seUMappedSetInputType(seMapped *mapped, deSkinMapped::eInputTypes newInputType);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetInputType();
+	~seUMappedSetInputType() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -53,7 +53,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/world/deWorld.h>
 
 
@@ -65,55 +64,57 @@ class igdeWOSOLightResLoadComponent : public igdeResourceLoaderListener{
 private:
 	igdeWOSOLight *pOwner;
 	decString pPathLightSkin;
-	deSkinReference pLightSkin;
+	deSkin::Ref pLightSkin;
 	int pCounter;
 	bool pSuccess;
 	
 public:
-	igdeWOSOLightResLoadComponent( igdeWOSOLight &owner ) :
-	pOwner( &owner ), pCounter( 0 ), pSuccess( true ){
+	typedef deTObjectReference<igdeWOSOLightResLoadComponent> Ref;
+	
+	igdeWOSOLightResLoadComponent(igdeWOSOLight &owner) :
+	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
 	
 	virtual ~igdeWOSOLightResLoadComponent(){
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
-	void LoadLightSkin( const char *path ){
+	void LoadLightSkin(const char *path){
 		pPathLightSkin = path;
-		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource( path, deResourceLoader::ertSkin, this );
+		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
 	inline deSkin *GetLightSkin() const{ return pLightSkin; }
-	inline bool HasPathLightSkin() const{ return ! pPathLightSkin.IsEmpty(); }
+	inline bool HasPathLightSkin() const{ return !pPathLightSkin.IsEmpty(); }
 	
-	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource){
-		if( ! pOwner ){
+	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
+		if(!pOwner){
 			return;
 		}
 		
 		const deResourceLoader::eResourceType type = task.GetResourceType();
 		const decString &filename = task.GetFilename();
 		
-		if( type == deResourceLoader::ertSkin && pPathLightSkin == filename ){
-			pLightSkin = ( deSkin* )resource;
+		if(type == deResourceLoader::ertSkin && pPathLightSkin == filename){
+			pLightSkin = (deSkin*)resource;
 			pCounter--;
 		}
 		
 		CheckFinished();
 	}
 	
-	virtual void LoadingFailed( const igdeResourceLoaderTask &task ){
-		if( ! pOwner ){
+	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
+		if(!pOwner){
 			return;
 		}
 		
 		const deResourceLoader::eResourceType type = task.GetResourceType();
 		const decString &filename = task.GetFilename();
 		
-		if( type == deResourceLoader::ertSkin && pPathLightSkin == filename ){
+		if(type == deResourceLoader::ertSkin && pPathLightSkin == filename){
 			pCounter--;
 			pSuccess = false;
 		}
@@ -122,8 +123,8 @@ public:
 	}
 	
 	void CheckFinished(){
-		if( pOwner && pCounter == 0 ){
-			pOwner->AsyncLoadFinished( pSuccess );
+		if(pOwner && pCounter == 0){
+			pOwner->AsyncLoadFinished(pSuccess);
 		}
 	}
 };
@@ -133,17 +134,17 @@ private:
 	deLight &pLight;
 	
 public:
-	VisitorAddShadowIgnoreComponents( deLight &light ) : pLight( light ){ }
+	VisitorAddShadowIgnoreComponents(deLight &light) : pLight(light){}
 	
-	virtual void VisitComponent( igdeWOSOComponent &component ){
-		if( component.GetLightShadowIgnore() ){
-			if( ! pLight.HasShadowIgnoreComponent( component.GetComponent() ) ){
-				pLight.AddShadowIgnoreComponent( component.GetComponent() );
+	virtual void VisitComponent(igdeWOSOComponent &component){
+		if(component.GetLightShadowIgnore()){
+			if(!pLight.GetShadowIgnoreComponents().Has(component.GetComponent())){
+				pLight.AddShadowIgnoreComponent(component.GetComponent());
 			}
 			
 		}else{
-			if( pLight.HasShadowIgnoreComponent( component.GetComponent() ) ){
-				pLight.RemoveShadowIgnoreComponent( component.GetComponent() );
+			if(pLight.GetShadowIgnoreComponents().Has(component.GetComponent())){
+				pLight.RemoveShadowIgnoreComponent(component.GetComponent());
 			}
 		}
 	}
@@ -156,23 +157,23 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSOLight::igdeWOSOLight( igdeWObject &wrapper,
-	const igdeGDCLight &gdLight, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDLight( gdLight ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSOLight::igdeWOSOLight(igdeWObject &wrapper,
+	const igdeGDCLight &gdLight, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDLight(gdLight),
+pAddedToWorld(false),
+pAttachment(nullptr)
 {
 	pLoadResources();
 }
 
 igdeWOSOLight::~igdeWOSOLight(){
-	if( pResLoad ){
-		( ( igdeWOSOLightResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
-		pResLoad = NULL;
+	if(pResLoad){
+		pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>()->Drop();
+		pResLoad = nullptr;
 	}
 	pDestroyLight();
-	pClearTrigger( pTriggerActivate );
+	pClearTrigger(pTriggerActivate);
 }
 
 
@@ -185,42 +186,42 @@ void igdeWOSOLight::UpdateParameters(){
 }
 
 void igdeWOSOLight::InitTriggers(){
-	pInitTrigger( pTriggerActivate, pGDLight.GetTriggerName( igdeGDCLight::etActivated ) );
+	pInitTrigger(pTriggerActivate, pGDLight.GetTriggerName(igdeGDCLight::etActivated));
 }
 
 void igdeWOSOLight::UpdateTriggers(){
-	if( ! pLight ){
+	if(!pLight){
 		return;
 	}
 	
-	if( GetWrapper().GetVisible() ){
-		if( pTriggerActivate ){
+	if(GetWrapper().GetVisible()){
+		if(pTriggerActivate){
 			pTriggerActivate->Evaluate();
-			pLight->SetActivated( pTriggerActivate->GetResult() );
+			pLight->SetActivated(pTriggerActivate->GetResult());
 			
 		}else{
-			pLight->SetActivated( GetBoolProperty(
-				pGDLight.GetPropertyName( igdeGDCLight::epActivated ),
-				pGDLight.GetActivated() ) );
+			pLight->SetActivated(GetBoolProperty(
+				pGDLight.GetPropertyName(igdeGDCLight::epActivated),
+				pGDLight.GetActivated()));
 		}
 		
 	}else{
-		pLight->SetActivated( false );
+		pLight->SetActivated(false);
 	}
 }
 
 void igdeWOSOLight::UpdateVisibility(){
-	if( pLight ){
-		pLight->SetActivated( GetWrapper().GetVisible() );
+	if(pLight){
+		pLight->SetActivated(GetWrapper().GetVisible());
 	}
 }
 
 void igdeWOSOLight::UpdateLayerMasks(){
-	if( pLight ){
+	if(pLight){
 		int layerMask = GetWrapper().GetRenderLayerMask();
 		layerMask |= GetWrapper().GetRenderEnvMapMask();
-		pLight->SetLayerMask( LayerMaskFromInt( layerMask ) );
-		pLight->SetLayerMaskShadow( pLight->GetLayerMask() );
+		pLight->SetLayerMask(LayerMaskFromInt(layerMask));
+		pLight->SetLayerMaskShadow(pLight->GetLayerMask());
 	}
 }
 
@@ -229,18 +230,18 @@ void igdeWOSOLight::OnAllSubObjectsFinishedLoading(){
 	pAddShadowIgnoreComponents();
 }
 
-void igdeWOSOLight::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitLight( *this );
+void igdeWOSOLight::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitLight(*this);
 }
 
-void igdeWOSOLight::AsyncLoadFinished( bool success ){
-	if( ! pResLoad ){
+void igdeWOSOLight::AsyncLoadFinished(bool success){
+	if(!pResLoad){
 		return;
 	}
 	
-	( ( igdeWOSOLightResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
+	pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>()->Drop();
 	
-	GetWrapper().SubObjectFinishedLoading( *this, success );
+	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
 
 
@@ -249,183 +250,172 @@ void igdeWOSOLight::AsyncLoadFinished( bool success ){
 //////////////////////
 
 void igdeWOSOLight::pLoadResources(){
-	if( pResLoad ){
-		( ( igdeWOSOLightResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
-		pResLoad = NULL;
+	if(pResLoad){
+		pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>()->Drop();
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver( new igdeWOSOLightResLoadComponent( *this ) );
-	igdeWOSOLightResLoadComponent &rl =
-		( igdeWOSOLightResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+	pResLoad = igdeWOSOLightResLoadComponent::Ref::New(*this);
+	igdeWOSOLightResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>();
 	
-	const decString pathLightSkin( GetStringProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epLightSkin ), pGDLight.GetLightSkinPath() ) );
-	if( ! pathLightSkin.IsEmpty() ){
-		rl.LoadLightSkin( pathLightSkin );
+	const decString pathLightSkin(GetStringProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epLightSkin), pGDLight.GetLightSkinPath()));
+	if(!pathLightSkin.IsEmpty()){
+		rl.LoadLightSkin(pathLightSkin);
 	}
 	
 	rl.CheckFinished();
 }
 
 void igdeWOSOLight::pUpdateLight(){
-	const igdeWOSOLightResLoadComponent &rl =
-		( igdeWOSOLightResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+	const igdeWOSOLightResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>();
 	
-	if( ! pLight ){
-		pLight.TakeOver( GetEngine().GetLightManager()->CreateLight() );
-		
-		pLight->SetHintMovement( pGDLight.GetHintMovement() );
-		pLight->SetHintParameter( pGDLight.GetHintParameter() );
+	if(!pLight){
+		pLight = GetEngine().GetLightManager()->CreateLight();
+		pLight->SetHintMovement(pGDLight.GetHintMovement());
+		pLight->SetHintParameter(pGDLight.GetHintParameter());
 		UpdateLayerMasks();
 		UpdateVisibility();
 	}
 	
 	decString lightType;
-	if( GetPropertyValue( pGDLight.GetPropertyName( igdeGDCLight::epType ), lightType ) ){
-		if( lightType == "point" ){
-			pLight->SetType( deLight::eltPoint );
+	if(GetPropertyValue(pGDLight.GetPropertyName(igdeGDCLight::epType), lightType)){
+		if(lightType == "point"){
+			pLight->SetType(deLight::eltPoint);
 			
-		}else if( lightType == "spot" ){
-			pLight->SetType( deLight::eltSpot );
+		}else if(lightType == "spot"){
+			pLight->SetType(deLight::eltSpot);
 			
-		}else if( lightType == "projector" ){
-			pLight->SetType( deLight::eltProjector );
+		}else if(lightType == "projector"){
+			pLight->SetType(deLight::eltProjector);
 			
 		}else{
-			pLight->SetType( pGDLight.GetType() );
+			pLight->SetType(pGDLight.GetType());
 		}
 		
 	}else{
-		pLight->SetType( pGDLight.GetType() );
+		pLight->SetType(pGDLight.GetType());
 	}
 	
-	pLight->SetColor( GetColor3Property(
-		pGDLight.GetPropertyName( igdeGDCLight::epColor ),
-		pGDLight.GetColor() ) );
-	pLight->SetIntensity( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epIntensity ),
-		pGDLight.GetIntensity() ) );
-	pLight->SetRange( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epRange ),
-		pGDLight.GetRange() ) );
-	pLight->SetAmbientRatio( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epAmbientRatio ),
-		pGDLight.GetAmbientRatio() ) );
-	pLight->SetHalfIntensityDistance( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epHalfIntDist ),
-		pGDLight.GetHalfIntensityDistance() ) );
-	pLight->SetSpotAngle( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epSpotAngle ),
-		pGDLight.GetSpotAngle() ) * DEG2RAD );
-	pLight->SetSpotRatio( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epSpotRatio ),
-		pGDLight.GetSpotRatio() ) );
-	pLight->SetSpotSmoothness( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epSpotSmoothness ),
-		pGDLight.GetSpotSmoothness() ) );
-	pLight->SetSpotExponent( GetFloatProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epSpotExponent ),
-		pGDLight.GetSpotExponent() ) );
-	pLight->SetCastShadows( GetBoolProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epCastShadows ),
-		pGDLight.GetCastShadows() ) );
+	pLight->SetColor(GetColor3Property(
+		pGDLight.GetPropertyName(igdeGDCLight::epColor),
+		pGDLight.GetColor()));
+	pLight->SetIntensity(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epIntensity),
+		pGDLight.GetIntensity()));
+	pLight->SetRange(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epRange),
+		pGDLight.GetRange()));
+	pLight->SetAmbientRatio(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epAmbientRatio),
+		pGDLight.GetAmbientRatio()));
+	pLight->SetHalfIntensityDistance(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epHalfIntDist),
+		pGDLight.GetHalfIntensityDistance()));
+	pLight->SetSpotAngle(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epSpotAngle),
+		pGDLight.GetSpotAngle()) * DEG2RAD);
+	pLight->SetSpotRatio(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epSpotRatio),
+		pGDLight.GetSpotRatio()));
+	pLight->SetSpotSmoothness(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epSpotSmoothness),
+		pGDLight.GetSpotSmoothness()));
+	pLight->SetSpotExponent(GetFloatProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epSpotExponent),
+		pGDLight.GetSpotExponent()));
+	pLight->SetCastShadows(GetBoolProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epCastShadows),
+		pGDLight.GetCastShadows()));
 	
-	deSkin::Ref lightSkin( rl.GetLightSkin() );
-	if( ! lightSkin && rl.HasPathLightSkin() && GetWrapper().GetGDClass() ){
-		lightSkin = GetEnvironment().GetStockSkin( igdeEnvironment::essError );
+	deSkin::Ref lightSkin(rl.GetLightSkin());
+	if(!lightSkin && rl.HasPathLightSkin() && GetWrapper().GetGDClass()){
+		lightSkin = GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 	}
-	pLight->SetLightSkin( lightSkin );
+	pLight->SetLightSkin(lightSkin);
 	
-	pLight->SetHintLightImportance( GetIntProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epHintLightImportance ),
-		pGDLight.GetHintLightImportance() ) );
-	pLight->SetHintShadowImportance( GetIntProperty(
-		pGDLight.GetPropertyName( igdeGDCLight::epHintShadowImportance ),
-		pGDLight.GetHintShadowImportance() ) );
+	pLight->SetHintLightImportance(GetIntProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epHintLightImportance),
+		pGDLight.GetHintLightImportance()));
+	pLight->SetHintShadowImportance(GetIntProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epHintShadowImportance),
+		pGDLight.GetHintShadowImportance()));
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddLight( pLight );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddLight(pLight);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOLight::pDestroyLight(){
-	if( ! pLight ){
+	if(!pLight){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveLight( pLight );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveLight(pLight);
 	}
 	
-	pLight = NULL;
+	pLight = nullptr;
 	pAddedToWorld = false;
 }
 
 void igdeWOSOLight::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pLight ){
+	if(!pLight){
 		return;
 	}
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
 	
-	try{
-		attachment = new deColliderAttachment( pLight );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDLight.GetPropertyName( igdeGDCLight::epAttachPosition ),
-			pGDLight.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDLight.GetPropertyName( igdeGDCLight::epAttachRotation ),
-			pGDLight.GetOrientation() ) );
-		
-		if( colliderComponent ){
-			if( ! pGDLight.GetBoneName().IsEmpty() ){
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( pGDLight.GetBoneName() );
-			}
-			colliderComponent->AddAttachment( attachment );
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment( attachment );
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pLight);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epAttachPosition),
+		pGDLight.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epAttachRotation),
+		pGDLight.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDLight.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDLight.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch( const deException & ){
-		if( attachment ){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOLight::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachedToCollider->RemoveAttachment(pAttachment);
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }
 
 void igdeWOSOLight::pAddShadowIgnoreComponents(){
-	if( pLight ){
-		VisitorAddShadowIgnoreComponents visitor( pLight );
-		GetWrapper().VisitSubObjects( visitor );
+	if(pLight){
+		VisitorAddShadowIgnoreComponents visitor(pLight);
+		GetWrapper().VisitSubObjects(visitor);
 	}
 }

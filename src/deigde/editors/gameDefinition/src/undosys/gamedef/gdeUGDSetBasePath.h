@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -36,6 +36,10 @@ class gdeGameDefinition;
  * \brief Undo action object class set base.
  */
 class gdeUGDSetBasePath : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDSetBasePath> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
 	
@@ -48,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetBasePath( gdeGameDefinition *gameDefinition, const char *newValue );
+	gdeUGDSetBasePath(gdeGameDefinition *gameDefinition, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRCoverageEdgeSize::deoglPSSRCoverageEdgeSize( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPSSRCoverageEdgeSize::deoglPSSRCoverageEdgeSize(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "ssrCoverageEdgeSize" );
-	SetDescription( "Sets the edge size for edge coverage calculation in screen space reflection."
+	SetName("ssrCoverageEdgeSize");
+	SetDescription("Sets the edge size for edge coverage calculation in screen space reflection."
 		" Many reflections can not be calculated properly in screen space."
 		" Especially near the edge the calculation fails with higher probability."
 		" Using edge coverage the found results near the screen edge are gradually faded out"
@@ -52,10 +52,10 @@ deoglParameterFloat( ogl )
 		" This parameter sets the fading distance from the edge as percentage of half the screen dimension."
 		" The default value is 0.1 (10%) which equals to 5% edge of the screen dimension."
 		" Higher values enlarge the fading distance which might be more visually more pleasant."
-		" Speed wise this has no impact." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSR Coverage Edge Size" );
-	SetDefaultValue( "0.1" );
+		" Speed wise this has no impact.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSR Coverage Edge Size");
+	SetDefaultValue("0.1");
 }
 
 deoglPSSRCoverageEdgeSize::~deoglPSSRCoverageEdgeSize(){
@@ -70,6 +70,6 @@ float deoglPSSRCoverageEdgeSize::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSRCoverageEdgeSize();
 }
 
-void deoglPSSRCoverageEdgeSize::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSRCoverageEdgeSize( value );
+void deoglPSSRCoverageEdgeSize::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSRCoverageEdgeSize(value);
 }

@@ -40,20 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURemoveRule::aeURemoveRule( aeAnimator *animator, aeRule *rule ){
-	if( ! animator || ! rule ) DETHROW( deeInvalidParam );
+aeURemoveRule::aeURemoveRule(aeAnimator *animator, aeRule *rule){
+	if(!animator || !rule) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pRule = NULL;
+	pAnimator = nullptr;
+	pRule = nullptr;
 	
-	pIndex = animator->GetRules().IndexOf( rule );
-	if( pIndex == -1 ) DETHROW( deeInvalidParam );
+	pIndex = animator->GetRules().IndexOf(rule);
+	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURemoveRule::~aeURemoveRule(){
@@ -66,11 +63,11 @@ aeURemoveRule::~aeURemoveRule(){
 ///////////////
 
 void aeURemoveRule::Undo(){
-	pAnimator->InsertRuleAt( pRule, pIndex );
+	pAnimator->InsertRuleAt(pRule, pIndex);
 }
 
 void aeURemoveRule::Redo(){
-	pAnimator->RemoveRule( pRule );
+	pAnimator->RemoveRule(pRule);
 }
 
 
@@ -79,6 +76,4 @@ void aeURemoveRule::Redo(){
 //////////////////////
 
 void aeURemoveRule::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
-	if( pAnimator ) pAnimator->FreeReference();
 }

@@ -24,7 +24,7 @@
 
 #include "reUSetShapeCapsuleBottomRadius.h"
 #include "../../../rig/shape/reRigShapeCapsule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,21 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCapsuleBottomRadius::reUSetShapeCapsuleBottomRadius( reRigShapeCapsule *shape, float bottomRadius ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCapsuleBottomRadius::reUSetShapeCapsuleBottomRadius(reRigShapeCapsule *shape, float bottomRadius){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
 	pOldBottomRadius = shape->GetBottomRadius();
 	pNewBottomRadius = bottomRadius;
 	
-	SetShortInfo( "Set Capsule Shape Half Height" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeCapsuleSetBottomRadius");
 }
 
 reUSetShapeCapsuleBottomRadius::~reUSetShapeCapsuleBottomRadius(){
-	pShape->FreeReference();
 }
 
 
@@ -57,9 +54,9 @@ reUSetShapeCapsuleBottomRadius::~reUSetShapeCapsuleBottomRadius(){
 ///////////////
 
 void reUSetShapeCapsuleBottomRadius::Undo(){
-	pShape->SetBottomRadius( pOldBottomRadius );
+	pShape->SetBottomRadius(pOldBottomRadius);
 }
 
 void reUSetShapeCapsuleBottomRadius::Redo(){
-	pShape->SetBottomRadius( pNewBottomRadius );
+	pShape->SetBottomRadius(pNewBottomRadius);
 }

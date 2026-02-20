@@ -25,10 +25,10 @@
 #ifndef _CEWPCACTORCOMMAND_H_
 #define _CEWPCACTORCOMMAND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -40,11 +40,14 @@ class ceCConditionActorCommand;
  * \brief Actor command conversation condition property window.
  */
 class ceWPCActorCommand : public ceWPCondition{
+public:
+	using Ref = deTObjectReference<ceWPCActorCommand>;
+
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeTextFieldReference pEditCommand;
-	igdeButtonReference pBtnCommand;
-	igdeCheckBoxReference pChkNegate;
+	igdeComboBox::Ref pCBActorID;
+	igdeTextField::Ref pEditCommand;
+	igdeButton::Ref pBtnCommand;
+	igdeCheckBox::Ref pChkNegate;
 	
 	
 	
@@ -52,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCActorCommand( ceWPTopic &parentPanel );
+	ceWPCActorCommand(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCActorCommand();
+	~ceWPCActorCommand() override;
 	/*@}*/
 	
 	
@@ -64,7 +67,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Active condition or NULL if none is active. */
+	/** \brief Active condition or nullptr if none is active. */
 	ceCConditionActorCommand *GetCondition() const;
 	
 	/** \brief Update active condition. */

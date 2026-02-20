@@ -39,25 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldAddProperty::meUWorldAddProperty( meWorld *world, const char *key, const char *value ) :
-pWorld( NULL ),
-pKey( key ),
-pValue( value )
+meUWorldAddProperty::meUWorldAddProperty(meWorld *world, const char *key, const char *value) :
+
+pKey(key),
+pValue(value)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add world property" );
+	SetShortInfo("@World.UWorldAddProperty.AddWorldProperty");
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldAddProperty::~meUWorldAddProperty(){
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
 }
 
 
@@ -65,18 +61,18 @@ meUWorldAddProperty::~meUWorldAddProperty(){
 // Management
 ///////////////
 
-void meUWorldAddProperty::SetValue( const char *value ){
+void meUWorldAddProperty::SetValue(const char *value){
 	pValue = value;
 }
 
 
 
 void meUWorldAddProperty::Undo(){
-	pWorld->RemoveProperty( pKey );
+	pWorld->RemoveProperty(pKey);
 }
 
 void meUWorldAddProperty::Redo(){
-	pWorld->SetProperty( pKey, pValue );
+	pWorld->SetProperty(pKey, pValue);
 }
 
 void meUWorldAddProperty::ProgressiveRedo(){

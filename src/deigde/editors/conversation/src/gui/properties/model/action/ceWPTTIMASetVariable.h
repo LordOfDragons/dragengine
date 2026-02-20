@@ -34,15 +34,16 @@
  */
 class ceWPTTIMASetVariable : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMASetVariable>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMASetVariable( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCASetVariable *action );
+	ceWPTTIMASetVariable(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCASetVariable *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMASetVariable();
+	~ceWPTTIMASetVariable() override;
 	/*@}*/
 	
 	
@@ -51,13 +52,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASetVariable *GetActionSetVariable() const{ return ( ceCASetVariable* )GetAction(); }
+	inline ceCASetVariable *GetActionSetVariable() const{ return GetAction().DynamicCast<ceCASetVariable>(); }
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText( ceCASetVariable::eOperators anOperator );
+	decString GetOperatorText(ceCASetVariable::eOperators anOperator) const;
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

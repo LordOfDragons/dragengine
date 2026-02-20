@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyValue::deSkinPropertyValue( const char *type ) : deSkinProperty( type ){
+deSkinPropertyValue::deSkinPropertyValue(const char *type) : deSkinProperty(type){
 	pValue = 0.0f;
 }
 
@@ -49,7 +49,7 @@ deSkinPropertyValue::~deSkinPropertyValue(){
 // Management
 ///////////////
 
-void deSkinPropertyValue::SetValue( float value ){
+void deSkinPropertyValue::SetValue(float value){
 	pValue = value;
 }
 
@@ -58,6 +58,6 @@ void deSkinPropertyValue::SetValue( float value ){
 // Visiting
 /////////////
 
-void deSkinPropertyValue::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitValue( *this );
+void deSkinPropertyValue::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitValue(*this);
 }

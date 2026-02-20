@@ -25,10 +25,9 @@
 #ifndef _REUREMOVEPUSH_H_
 #define _REUREMOVEPUSH_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../../rig/push/reRigPush.h"
 
-class reRigPush;
-class reRigPushList;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -36,9 +35,12 @@ class reRigPushList;
  * \brief Undo Remove Push.
  */
 class reURemovePush : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reURemovePush>;
+	
+	
 private:
-	reRigPush **pPushes;
-	int pPushCount;
+	reRigPush::List pPushes;
 	
 	
 	
@@ -46,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURemovePush( reRigPushList &list );
+	reURemovePush(const reRigPush::List &list);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reURemovePush();
+	~reURemovePush() override;
 	/*@}*/
 	
 	
@@ -59,16 +61,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

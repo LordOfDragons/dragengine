@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetDescription::gdeUOCSetDescription( gdeObjectClass *objectClass, const char *newValue ) :
-pObjectClass( NULL )
+gdeUOCSetDescription::gdeUOCSetDescription(gdeObjectClass *objectClass, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set description" );
+	SetShortInfo("@GameDefinition.Undo.OCSetDescription");
 	
 	pOldValue = objectClass->GetDescription();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetDescription::~gdeUOCSetDescription(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ gdeUOCSetDescription::~gdeUOCSetDescription(){
 ///////////////
 
 void gdeUOCSetDescription::Undo(){
-	pObjectClass->SetDescription( pOldValue );
+	pObjectClass->SetDescription(pOldValue);
 }
 
 void gdeUOCSetDescription::Redo(){
-	pObjectClass->SetDescription( pNewValue );
+	pObjectClass->SetDescription(pNewValue);
 }

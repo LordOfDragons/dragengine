@@ -25,18 +25,19 @@
 #ifndef _SAEWPSANIM_H_
 #define _SAEWPSANIM_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include "saeWPSAnimListener.h"
+#include "../../sanimation/saeSAnimation.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class saeWindowProperties;
-class saeWPSAnimListener;
-class saeSAnimation;
 class saePhoneme;
 class saeWord;
 
@@ -46,34 +47,37 @@ class saeWord;
  * Speech Animation property window.
  */
 class saeWPSAnim : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<saeWPSAnim>;
+	
 private:
 	saeWindowProperties &pWindowProperties;
 	
-	saeWPSAnimListener *pListener;
-	saeSAnimation *pSAnimation;
+	saeWPSAnimListener::Ref pListener;
+	saeSAnimation::Ref pSAnimation;
 	
-	igdeActionReference pActionWordAddIpa;
+	igdeAction::Ref pActionWordAddIpa;
 	
-	igdeEditPathReference pEditRigPath;
-	igdeEditPathReference pEditAnimPath;
-	igdeComboBoxFilterReference pCBNeutralMove;
+	igdeEditPath::Ref pEditRigPath;
+	igdeEditPath::Ref pEditAnimPath;
+	igdeComboBoxFilter::Ref pCBNeutralMove;
 	
-	igdeListBoxReference pListNeutralVertexPositionSets;
-	igdeComboBoxFilterReference pCBNeutralVertexPositionSets;
-	igdeButtonReference pBtnNeutralVertexPositionSetAdd;
-	igdeButtonReference pBtnNeutralVertexPositionSetDel;
+	igdeListBox::Ref pListNeutralVertexPositionSets;
+	igdeComboBoxFilter::Ref pCBNeutralVertexPositionSets;
+	igdeButton::Ref pBtnNeutralVertexPositionSetAdd;
+	igdeButton::Ref pBtnNeutralVertexPositionSetDel;
 	
-	igdeComboBoxReference pCBPhoneme;
-	igdeTextFieldReference pEditPhonemeIPA;
-	igdeTextFieldReference pEditPhonemeSampleText;
-	igdeTextFieldReference pEditPhonemeLength;
-	igdeComboBoxFilterReference pCBPhonemeMove;
-	igdeComboBoxFilterReference pCBPhonemeVertexPositionSet;
+	igdeComboBox::Ref pCBPhoneme;
+	igdeTextField::Ref pEditPhonemeIPA;
+	igdeTextField::Ref pEditPhonemeSampleText;
+	igdeTextField::Ref pEditPhonemeLength;
+	igdeComboBoxFilter::Ref pCBPhonemeMove;
+	igdeComboBoxFilter::Ref pCBPhonemeVertexPositionSet;
 	
-	igdeComboBoxFilterReference pCBWord;
-	igdeTextFieldReference pEditWordName;
-	igdeTextFieldReference pEditWordPhonetics;
-	igdeButtonReference pBtnWordAddIPA;
+	igdeComboBoxFilter::Ref pCBWord;
+	igdeTextField::Ref pEditWordName;
+	igdeTextField::Ref pEditWordPhonetics;
+	igdeButton::Ref pBtnWordAddIPA;
 	
 	
 	
@@ -81,11 +85,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWPSAnim( saeWindowProperties &windowProperties );
+	saeWPSAnim(saeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~saeWPSAnim();
+	~saeWPSAnim() override;
 	/*@}*/
 	
 	
@@ -97,10 +101,10 @@ public:
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Speech animation path changed. */
 	void OnSAnimationPathChanged();
@@ -120,11 +124,11 @@ public:
 	const decString &GetCBNeutralVertexPositionSetText() const;
 	
 	/** Set neutral vertex position set combo box text. */
-	void SetCBNeutralVertexPositionSetText( const char *text );
+	void SetCBNeutralVertexPositionSetText(const char *text);
 	
 	
 	
-	/** Active phoneme or NULL. */
+	/** Active phoneme or nullptr. */
 	saePhoneme *GetActivePhoneme() const;
 	
 	/** Update phoneme list. */
@@ -144,7 +148,7 @@ public:
 	
 	
 	
-	/** Active word or NULL. */
+	/** Active word or nullptr. */
 	saeWord *GetActiveWord() const;
 	
 	/** Update word list. */

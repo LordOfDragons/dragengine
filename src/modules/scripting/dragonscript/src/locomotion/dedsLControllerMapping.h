@@ -25,7 +25,7 @@
 #ifndef _DEDSLCONTROLLERMAPPING_H_
 #define _DEDSLCONTROLLERMAPPING_H_
 
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 
 class dedsLocomotion;
@@ -95,7 +95,7 @@ public:
 	
 private:
 	/** \brief Animator instance. */
-	deAnimatorInstanceReference pAnimatorInstance;
+	deAnimatorInstance::Ref pAnimatorInstance;
 	
 	/** \brief Index of controller in the animator. */
 	int pController;
@@ -112,7 +112,7 @@ public:
 	dedsLControllerMapping();
 	
 	/** \brief Create mapping. */
-	dedsLControllerMapping( const dedsLControllerMapping &mapping );
+	dedsLControllerMapping(const dedsLControllerMapping &mapping);
 	/*@}*/
 	
 	
@@ -120,30 +120,30 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Animator instance to update or NULL if not used. */
-	inline deAnimatorInstance *GetAnimatorInstance() const{ return pAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetAnimatorInstance() const{ return pAnimatorInstance; }
 	
 	/** \brief Set animator instance to update or NULL if not used. */
-	void SetAnimatorInstance( deAnimatorInstance *instance );
+	void SetAnimatorInstance(deAnimatorInstance *instance);
 	
 	/** \brief Controller. */
 	inline int GetController() const{ return pController; }
 	
 	/** \brief Set controller. */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Attribute. */
 	inline eAttributes GetAttribute() const{ return pAttribute; }
 	
 	/** \brief Set attribute. */
-	void SetAttribute( eAttributes attribute );
+	void SetAttribute(eAttributes attribute);
 	
 	
 	
 	/** \brief Apply mapping. */
-	void Apply( const dedsLocomotion &locomotion, float elapsed );
+	void Apply(const dedsLocomotion &locomotion, float elapsed);
 	
 	/** \brief Apply mapping for post locomotion only. */
-	void ApplyPost( const dedsLocomotion &locomotion, float elapsed );
+	void ApplyPost(const dedsLocomotion &locomotion, float elapsed);
 	/*@}*/
 	
 	
@@ -151,7 +151,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set from other mapping. */
-	dedsLControllerMapping &operator=( const dedsLControllerMapping &mapping );
+	dedsLControllerMapping &operator=(const dedsLControllerMapping &mapping);
 	/*@}*/
 };
 

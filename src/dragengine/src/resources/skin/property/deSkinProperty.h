@@ -25,6 +25,7 @@
 #ifndef _DESKINPROPERTY_H_
 #define _DESKINPROPERTY_H_
 
+#include "../../../common/collection/decTUniqueList.h"
 #include "../../../common/string/decString.h"
 
 class deSkinPropertyVisitor;
@@ -81,6 +82,13 @@ class deSkinPropertyVisitor;
  * bone coordinate system. Texture properties not using vertex position ignore this parameter.
  */
 class DE_DLL_EXPORT deSkinProperty{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deSkinProperty>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deSkinProperty>;
+	
 private:
 	decString pType;
 	decString pTexCoordSet;
@@ -97,7 +105,7 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinProperty( const char *type );
+	deSkinProperty(const char *type);
 	
 	/** \brief Clean up skin property. */
 	virtual ~deSkinProperty();
@@ -114,19 +122,19 @@ public:
 	inline const decString &GetTexCoordSet() const{ return pTexCoordSet; }
 	
 	/** \brief Set texture coordinate set name or an empty string to use the default one. */
-	void SetTexCoordSet( const char *name );
+	void SetTexCoordSet(const char *name);
 	
 	/** \brief Renderable name or empty string to use none. */
 	inline const decString &GetRenderable() const{ return pRenderable; }
 	
 	/** \brief Set renderable name or empty string to use none. */
-	void SetRenderable( const char *renderable );
+	void SetRenderable(const char *renderable);
 	
 	/** \brief Bone name or empty string. */
 	inline const decString &GetBone() const{ return pBone; }
 	
 	/** \brief Set bone name or empty string. */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	/*@}*/
 	
 	
@@ -134,7 +142,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

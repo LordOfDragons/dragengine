@@ -60,44 +60,44 @@ public:
 	/** Retrieves the navigation mesh the funnel data is relative to. */
 	inline dedaiSpaceMesh *GetMesh() const{ return pMesh; }
 	/** Sets the navigation mesh the funnel data is relative to. */
-	void SetMesh( dedaiSpaceMesh *mesh );
+	void SetMesh(dedaiSpaceMesh *mesh);
 	/** Retrieves the origin. */
 	inline const decVector &GetOrigin() const{ return pOrigin; }
 	/** Sets the origin. */
-	void SetOrigin( const decVector &origin );
+	void SetOrigin(const decVector &origin);
 	/** Retrieves the goal. */
 	inline const decVector &GetGoal() const{ return pGoal; }
 	/** Sets the goal. */
-	void SetGoal( const decVector &goal );
+	void SetGoal(const decVector &goal);
 	
 	/** Retrieves the left corner. */
 	inline const decVector &GetLeftCorner() const{ return pLeftCorner; }
 	/** Sets the left corner. */
-	void SetLeftCorner( const decVector &corner );
+	void SetLeftCorner(const decVector &corner);
 	/** Retrieves the left plane normal. */
 	inline const decVector &GetLeftNormal() const{ return pLeftNormal; }
 	/** Sets the left plane normal. */
-	void SetLeftNormal( const decVector &normal );
+	void SetLeftNormal(const decVector &normal);
 	/** Retrieves the left plane distance. */
 	inline float GetLeftDistance() const{ return pLeftDist; }
 	
 	/** Retrieves the right corner. */
 	inline const decVector &GetRightCorner() const{ return pRightCorner; }
 	/** Sets the right corner. */
-	void SetRightCorner( const decVector &corner );
+	void SetRightCorner(const decVector &corner);
 	/** Retrieves the right plane normal. */
 	inline const decVector &GetRightNormal() const{ return pRightNormal; }
 	/** Sets the right plane normal. */
-	void SetRightNormal( const decVector &normal );
+	void SetRightNormal(const decVector &normal);
 	/** Retrieves the right plane distance. */
 	inline float GetRightDistance() const{ return pRightDist; }	
 	
 	/** Update left plane using the current origin and left normal. */
-	void UpdateLeftPlane( const decVector &faceNormal );
+	void UpdateLeftPlane(const decVector &faceNormal);
 	/** Update right plane using the current origin and right normal. */
-	void UpdateRightPlane( const decVector &faceNormal );
+	void UpdateRightPlane(const decVector &faceNormal);
 	/** Transform funnel by a matrix. */
-	void Transform( const decMatrix &matrix );
+	void Transform(const decMatrix &matrix);
 	/*@}*/
 };
 

@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetFieldType::gdeUOCForceFieldSetFieldType( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, deForceField::eFieldTypes newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetFieldType::gdeUOCForceFieldSetFieldType(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, deForceField::eFieldTypes newValue) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set field type" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetFieldType");
 	
 	pOldValue = forceField->GetFieldType();
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetFieldType::~gdeUOCForceFieldSetFieldType(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetFieldType::~gdeUOCForceFieldSetFieldType(){
 ///////////////
 
 void gdeUOCForceFieldSetFieldType::Undo(){
-	pForceField->SetFieldType( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetFieldType(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetFieldType::Redo(){
-	pForceField->SetFieldType( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetFieldType(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

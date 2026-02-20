@@ -33,7 +33,7 @@
 #include "../action/deoxrAction.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDeviceButton.h>
@@ -60,8 +60,7 @@ class deInputDevicePose;
 class deoxrDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDevice> Ref;
-	
+	using Ref = deTObjectReference<deoxrDevice>;
 	
 	
 private:
@@ -85,10 +84,13 @@ private:
 	int pNameNumber;
 	decString pID, pName;
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
-	decObjectOrderedSet pButtons, pAxes, pFeedbacks, pComponents;
+	decTObjectOrderedSet<deoxrDeviceButton> pButtons;
+	decTObjectOrderedSet<deoxrDeviceAxis> pAxes;
+	decTObjectOrderedSet<deoxrDeviceFeedback> pFeedbacks;
+	decTObjectOrderedSet<deoxrDeviceComponent> pComponents;
 	
 	deInputDevicePose pPoseDevice;
 	
@@ -104,11 +106,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	deoxrDevice( deVROpenXR &oxr, const deoxrDeviceProfile &profile );
+	deoxrDevice(deVROpenXR &oxr, const deoxrDeviceProfile &profile);
 	
 protected:
 	/** Clean up device. */
-	virtual ~deoxrDevice();
+	~deoxrDevice() override;
 	/*@}*/
 	
 	
@@ -123,7 +125,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Profile. */
 	inline const deoxrDeviceProfile &GetProfile() const{ return pProfile; }
@@ -132,31 +134,31 @@ public:
 	inline const deoxrPath &GetSubactionPath() const{ return pSubactionPath; }
 	
 	/** Set subaction path. */
-	void SetSubactionPath( const deoxrPath &path );
+	void SetSubactionPath(const deoxrPath &path);
 	
 	/** Pose action. */
 	inline const deoxrAction::Ref &GetActionPose() const{ return pActionPose; }
 	
 	/** Set pose action. */
-	void SetActionPose( deoxrAction *action );
+	void SetActionPose(deoxrAction *action);
 	
 	/** Orientation pose action. */
 	inline const deoxrAction::Ref &GetActionPoseOrientation() const{ return pActionPoseOrientation; }
 	
 	/** Set orientation pose action. */
-	void SetActionPoseOrientation( deoxrAction *action );
+	void SetActionPoseOrientation(deoxrAction *action);
 	
 	/** Pose space. */
 	inline const deoxrSpace::Ref &GetSpacePose() const{ return pSpacePose; }
 	
 	/** Set pose space. */
-	void SetSpacePose( deoxrSpace *space );
+	void SetSpacePose(deoxrSpace *space);
 	
 	/** Pose space orientation. */
 	inline const deoxrSpace::Ref &GetSpacePoseOrientation() const{ return pSpacePoseOrientation; }
 	
 	/** Set pose space orientation. */
-	void SetSpacePoseOrientation( deoxrSpace *space );
+	void SetSpacePoseOrientation(deoxrSpace *space);
 	
 	
 	
@@ -164,7 +166,7 @@ public:
 	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
 	/** Set device type. */
-	void SetType( deInputDevice::eDeviceTypes type );
+	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** Name number or -1 it not set. */
 	inline int GetNameNumber() const{ return pNameNumber; }
@@ -173,28 +175,28 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -202,101 +204,89 @@ public:
 	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
 	
 	/** Set bone configuration. */
-	void SetBoneConfiguration( deInputDevice::eBoneConfigurations config );
+	void SetBoneConfiguration(deInputDevice::eBoneConfigurations config);
 	
 	
 	
-	/** Number of buttons. */
-	int GetButtonCount() const;
-	
-	/** Add button. */
-	void AddButton( deoxrDeviceButton *button );
+	/** Buttons. */
+	inline const decTObjectOrderedSet<deoxrDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** Add button. */
-	void AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+	void AddButton(deoxrDeviceButton *button);
+	
+	/** Add button. */
+	void AddButton(deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
 		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
-		const char *name, const char *id, const char *displayText );
+		const char *name, const char *id, const char *displayText);
 	
 	/** Add button. */
-	void AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+	void AddButton(deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
 		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
 		deVROpenXR::eInputActions actionNear, const char *name, const char *id,
-		const char *displayText );
-	
-	/** Button at index. */
-	deoxrDeviceButton *GetButtonAt( int index ) const;
+		const char *displayText);
 	
 	/** Button with identifier or nullptr if absent. */
-	deoxrDeviceButton *GetButtonWithID( const char *id ) const;
+	deoxrDeviceButton *GetButtonWithID(const char *id) const;
 	
 	/** Index of button with identifier or -1 if absent. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	
 	
 	
-	/** Number of axiss. */
-	int GetAxisCount() const;
+	/** Axes. */
+	inline const decTObjectOrderedSet<deoxrDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** Add axis. */
-	void AddAxis( deoxrDeviceAxis *axis );
+	void AddAxis(deoxrDeviceAxis *axis);
 	
 	/** Add trigger axis. */
-	void AddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
+	void AddAxisTrigger(deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
 		deVROpenXR::eInputActions actionAnalog, const char *name,
-		const char *id, const char *displayText );
+		const char *id, const char *displayText);
 	
 	/** Add finger axis. */
-	void AddAxisFinger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
-		int finger, const char *name, const char *id, const char *displayText );
+	void AddAxisFinger(deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
+		int finger, const char *name, const char *id, const char *displayText);
 	
 	/** Add joystick axis. */
-	void AddAxesJoystick( deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
+	void AddAxesJoystick(deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText);
 	
 	/** Add trackpad axis. */
-	void AddAxesTrackpad( deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
-	
-	/** Axis at index. */
-	deoxrDeviceAxis *GetAxisAt( int index ) const;
+	void AddAxesTrackpad(deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText);
 	
 	/** Axis with identifier or nullptr if absent. */
-	deoxrDeviceAxis *GetAxisWithID( const char *id ) const;
+	deoxrDeviceAxis *GetAxisWithID(const char *id) const;
 	
 	/** Index of axis with identifier or -1 if absent. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	
 	
 	
-	/** Number of feedbacks. */
-	int GetFeedbackCount() const;
+	/** Feedbacks. */
+	inline const decTObjectOrderedSet<deoxrDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** Add feedback. */
-	void AddFeedback( deoxrDeviceFeedback *feedback );
-	
-	/** Feedback at index. */
-	deoxrDeviceFeedback *GetFeedbackAt( int index ) const;
+	void AddFeedback(deoxrDeviceFeedback *feedback);
 	
 	/** Index of feedback with identifier or -1 if absent. */
-	int IndexOfFeedbackWithID( const char *id ) const;
+	int IndexOfFeedbackWithID(const char *id) const;
 	
 	
 	
-	/** Number of components. */
-	int GetComponentCount() const;
-	
-	/** Add component. */
-	void AddComponent( deoxrDeviceComponent *component );
+	/** Components. */
+	inline const decTObjectOrderedSet<deoxrDeviceComponent> &GetComponents() const{ return pComponents; }
 	
 	/** Add component. */
-	deoxrDeviceComponent *AddComponent( deInputDeviceComponent::eComponentTypes type,
-		const char *name, const char *id, const char *displayText );
+	void AddComponent(deoxrDeviceComponent *component);
 	
-	/** Component at index. */
-	deoxrDeviceComponent *GetComponentAt( int index ) const;
+	/** Add component. */
+	deoxrDeviceComponent *AddComponent(deInputDeviceComponent::eComponentTypes type,
+		const char *name, const char *id, const char *displayText);
 	
 	/** Index of component with identifier or -1 if absent. */
-	int IndexOfComponentWithID( const char *id ) const;
+	int IndexOfComponentWithID(const char *id) const;
 	
 	
 	
@@ -304,17 +294,17 @@ public:
 	inline const deoxrHandTracker::Ref &GetHandTracker() const{ return pHandTracker; }
 	
 	/** Set hand tracker or nullptr. */
-	void SetHandTracker( deoxrHandTracker *handTracker );
+	void SetHandTracker(deoxrHandTracker *handTracker);
 	
 	/** Matrix transforming from wrist space to device space. */
 	inline const decMatrix &GetMatrixWristToDevice() const{ return pMatrixWristToDevice; }
 	
 	/** Set matrix transforming from wrist space to device space. */
-	void SetMatrixWristToDevice( const decMatrix &matrix );
+	void SetMatrixWristToDevice(const decMatrix &matrix);
 	
 	/** Enable trigger input simulation using two-finger input of index finger. */
 	inline bool GetEnableTwoFingerTriggerSimulation() const{
-		return pEnableTwoFingerTriggerSimulation; }
+		return pEnableTwoFingerTriggerSimulation;}
 	
 	/** Set enable trigger input simulation using two-finger input of index finger. */
 	void SetEnableTwoFingerTriggerSimulation(bool enable);
@@ -324,12 +314,12 @@ public:
 	inline const deoxrFaceTracker::Ref &GetFaceTracker() const{ return pFaceTracker; }
 	
 	/** Set face tracker or nullptr. */
-	void SetFaceTracker( deoxrFaceTracker *faceTracker );
+	void SetFaceTracker(deoxrFaceTracker *faceTracker);
 	
 	
 	
 	/** Update engine input device information. */
-	void GetInfo( deInputDevice &info ) const;
+	void GetInfo(deInputDevice &info) const;
 	
 	/** Update device parameters. */
 	void UpdateParameters();
@@ -341,7 +331,7 @@ public:
 	void ResetStates();
 	
 	/** Get device pose. */
-	void GetDevicePose( deInputDevicePose &pose );
+	void GetDevicePose(deInputDevicePose &pose);
 
 	/** Direct device pose access for internal use. */
 	inline const deInputDevicePose &GetDirectDevicePose() const{ return pPoseDevice; }

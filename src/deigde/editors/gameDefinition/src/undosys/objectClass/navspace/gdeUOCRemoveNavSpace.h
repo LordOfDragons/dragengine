@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationSpace;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class remove navspace.
  */
 class gdeUOCRemoveNavSpace : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCRemoveNavSpace> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveNavSpace( gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace );
+	gdeUOCRemoveNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace);
 	
 protected:
 	/** \brief Clean up undo action. */

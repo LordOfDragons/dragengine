@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deThreadSafeObject::deThreadSafeObject() :
-pRefCount( 1 ){
+pRefCount(1){
 }
 
 deThreadSafeObject::~deThreadSafeObject(){
@@ -50,24 +50,24 @@ deThreadSafeObject::~deThreadSafeObject(){
 ///////////////
 
 int deThreadSafeObject::GetRefCount(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pRefCount;
 }
 
 void deThreadSafeObject::AddReference(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pRefCount++;
 }
 
 void deThreadSafeObject::FreeReference(){
-	deMutexGuard lock( pMutex );
+	deMutexGuard lock(pMutex);
 	pRefCount--;
-	if( pRefCount > 0 ){
+	if(pRefCount > 0){
 		return;
 	}
 	
-	if( pRefCount < 0 ){
-		deeInvalidParam( __FILE__, __LINE__ ).PrintError();
+	if(pRefCount < 0){
+		deeInvalidParam(__FILE__, __LINE__).PrintError();
 		return;
 	}
 	

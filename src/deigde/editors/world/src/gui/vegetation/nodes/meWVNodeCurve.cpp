@@ -40,9 +40,7 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezierListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -57,25 +55,26 @@ namespace {
 class cEditCurve : public igdeViewCurveBezierListener{
 protected:
 	meWVNodeCurve &pNode;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
-	cEditCurve( meWVNodeCurve &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cEditCurve>;
+	cEditCurve(meWVNodeCurve &node) : pNode(node){}
 	
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier ){
-		OnCurveChanging( viewCurveBezier );
-		pUndo = NULL;
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
+		OnCurveChanging(viewCurveBezier);
+		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier ){
-		if( pUndo ){
-			( ( meUHTVRuleCurveSetCurve& )( igdeUndo& )pUndo ).SetNewCurve( viewCurveBezier->GetCurve() );
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
+		if(pUndo){
+			pUndo.DynamicCast<meUHTVRuleCurveSetCurve>()->SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver( new meUHTVRuleCurveSetCurve( pNode.GetWindowVegetation().GetVLayer(),
-				pNode.GetRuleCurve(), viewCurveBezier->GetCurve() ) );
-			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( pUndo );
+			pUndo = meUHTVRuleCurveSetCurve::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCurve(), viewCurveBezier->GetCurve());
+			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(pUndo);
 		}
 	}
 };
@@ -90,31 +89,28 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeCurve::meWVNodeCurve( meWindowVegetation &windowVegetation, meHTVRuleCurve *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleCurve( rule )
+meWVNodeCurve::meWVNodeCurve(meWindowVegetation &windowVegetation, meHTVRuleCurve *rule) :
+meWVNode(windowVegetation, rule),
+pRuleCurve(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Curve" );
+	SetTitle("@World.WVNodeCurve.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value of curve at input value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Output.Result", "@World.WVNodeCurve.Output.Result.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value to evaluate curve at",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Input.Value", "@World.WVNodeCurve.Input.Value.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(pFraParameters);
 	
-	helper.ViewCurveBezier( pFraParameters, pCurve, new cEditCurve( *this ) );
+	helper.ViewCurveBezier(pFraParameters, pCurve, cEditCurve::Ref::New(*this));
 }
 
 meWVNodeCurve::~meWVNodeCurve(){
@@ -128,5 +124,5 @@ meWVNodeCurve::~meWVNodeCurve(){
 void meWVNodeCurve::Update(){
 	meWVNode::Update();
 	
-	pCurve->SetCurve( pRuleCurve->GetCurve() );
+	pCurve->SetCurve(pRuleCurve->GetCurve());
 }

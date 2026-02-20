@@ -40,26 +40,22 @@
 ////////////////////////////
 
 projUProfileSetPathConfig::projUProfileSetPathConfig(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set config path" );
+	SetShortInfo("@Project.Undo.ProfileSetPathConfig");
 	
 	pOldValue = profile->GetPathConfig();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetPathConfig::~projUProfileSetPathConfig(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ projUProfileSetPathConfig::~projUProfileSetPathConfig(){
 ///////////////
 
 void projUProfileSetPathConfig::Undo(){
-	pProfile->SetPathConfig( pOldValue );
+	pProfile->SetPathConfig(pOldValue);
 }
 
 void projUProfileSetPathConfig::Redo(){
-	pProfile->SetPathConfig( pNewValue );
+	pProfile->SetPathConfig(pNewValue);
 }

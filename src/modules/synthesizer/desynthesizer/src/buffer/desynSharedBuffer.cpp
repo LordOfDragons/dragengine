@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynSharedBuffer.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class desynSharedBuffer
@@ -38,39 +34,20 @@
 ////////////////////////////
 
 desynSharedBuffer::desynSharedBuffer() :
-pBuffer( NULL ),
-pSize( 0 ),
-pInUse( false ){
+pInUse(false){
 }
 
-desynSharedBuffer::~desynSharedBuffer(){
-	if( pBuffer ){
-		delete [] pBuffer;
-	}
-}
+desynSharedBuffer::~desynSharedBuffer() = default;
 
 
 
 // Management
 ///////////////
 
-void desynSharedBuffer::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pBuffer ){
-		delete [] pBuffer;
-		pBuffer = NULL;
-		pSize = 0;
-	}
-	
-	if( size > 0 ){
-		pBuffer = new float[ size ];
-		pSize = size;
-	}
+void desynSharedBuffer::SetSize(int size){
+	pBuffer.SetCountDiscard(size);
 }
 
-void desynSharedBuffer::SetInUse( bool inUse ){
+void desynSharedBuffer::SetInUse(bool inUse){
 	pInUse = inUse;
 }

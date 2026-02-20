@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -38,8 +38,12 @@ class aeRuleBoneTransformator;
  * Undo action rule bone transformator set maximum scaling.
  */
 class aeURuleBTransSetScaleMax : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleBTransSetScaleMax>;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;
@@ -48,19 +52,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetScaleMax( aeRuleBoneTransformator *rule, const decVector &newMax );
+	aeURuleBTransSetScaleMax(aeRuleBoneTransformator *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetScaleMax();
+	~aeURuleBTransSetScaleMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

@@ -41,8 +41,7 @@ class deArchiveDelga;
  */
 class deadArchiveFile : public deObject{
 public:
-	typedef deTObjectReference<deadArchiveFile> Ref;
-	
+	using Ref = deTObjectReference<deadArchiveFile>;
 	
 	
 private:
@@ -61,15 +60,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file entry. */
-	deadArchiveFile( deArchiveDelga &module, const char *filename,
-		const unz_file_info &info, const unz_file_pos &archivePosition );
+	deadArchiveFile(deArchiveDelga &module, const char *filename,
+		const unz_file_info &info, const unz_file_pos &archivePosition);
 	
+protected:
 	/** \brief Clean up file entry. */
-	virtual ~deadArchiveFile();
+	~deadArchiveFile() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */

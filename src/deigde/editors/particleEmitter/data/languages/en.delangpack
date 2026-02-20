@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English</description>
+	
+	<!-- Window Main -->
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.New">New</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.New.ToolTip">Creates a new emitter</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Open">Open...</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Open.ToolTip">Opens a emitter from file</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Save">Save</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Save.ToolTip">Saves the emitter to file</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.SaveAs">Save As...</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.SaveAs.ToolTip">Saves the emitter under a differen file</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Cut">Cut</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Cut.ToolTip">Cut selected objects</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Copy">Copy</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Copy.ToolTip">Copies selected objects</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Paste">Paste</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Action.Paste.ToolTip">Paste objects</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Emitter">Emitter</translation>
+	<translation name="ParticleEmitter.WindowMain.Menu.Edit">Edit</translation>
+	<translation name="ParticleEmitter.WindowMain.Dialog.NewEmitter.Title">New Emitter</translation>
+	<translation name="ParticleEmitter.WindowMain.Dialog.NewEmitter.Message">Creating a new emitter discarding the current one is that ok?</translation>
+	<translation name="ParticleEmitter.WindowMain.Dialog.OpenEmitter.Title">Open Emitter</translation>
+	<translation name="ParticleEmitter.WindowMain.Dialog.SaveEmitter.Title">Save Emitter</translation>
+	
+	<!-- Window Properties -->
+	<translation name="ParticleEmitter.WindowProperties.Tab.Type">Type</translation>
+	<translation name="ParticleEmitter.WindowProperties.Tab.Controller">Controller</translation>
+	<translation name="ParticleEmitter.WindowProperties.Tab.View">View</translation>
+	<translation name="ParticleEmitter.WindowProperties.Tab.Undo">Undo</translation>
+	
+	<!-- WP Controller -->
+	<translation name="ParticleEmitter.WPController.Group.Controllers">Controllers:</translation>
+	<translation name="ParticleEmitter.WPController.Controllers.ToolTip">Controllers</translation>
+	<translation name="ParticleEmitter.WPController.Group.ControllerSettings">Controller Settings:</translation>
+	<translation name="ParticleEmitter.WPController.Name">Name:</translation>
+	<translation name="ParticleEmitter.WPController.Name.ToolTip">Name of the controller</translation>
+	<translation name="ParticleEmitter.WPController.Range">Range:</translation>
+	<translation name="ParticleEmitter.WPController.Range.ToolTip">Range of the controller value if limited</translation>
+	<translation name="ParticleEmitter.WPController.MinimumValue.ToolTip">Minimum value the controller can take</translation>
+	<translation name="ParticleEmitter.WPController.MaximumValue.ToolTip">Maximum value the controller can take</translation>
+	<translation name="ParticleEmitter.WPController.Value">Value:</translation>
+	<translation name="ParticleEmitter.WPController.Value.ToolTip">Current value of the controller</translation>
+	<translation name="ParticleEmitter.WPController.Clamp">Clamp value to range</translation>
+	<translation name="ParticleEmitter.WPController.Clamp.ToolTip">Determines if the value of the controller is clamped to the given range.</translation>
+	<translation name="ParticleEmitter.WPController.Frozen">Freeze Controller value</translation>
+	<translation name="ParticleEmitter.WPController.Frozen.ToolTip">Prevents the controller from changing the current value.</translation>
+	<translation name="ParticleEmitter.WPController.Action.Add">Add</translation>
+	<translation name="ParticleEmitter.WPController.Action.Add.ToolTip">Add a controller to the end of the list.</translation>
+	<translation name="ParticleEmitter.WPController.Action.Remove">Remove</translation>
+	<translation name="ParticleEmitter.WPController.Action.Remove.ToolTip">Remove the selected controller.</translation>
+	<translation name="ParticleEmitter.WPController.Action.Up">Move Up</translation>
+	<translation name="ParticleEmitter.WPController.Action.Up.ToolTip">Move controller up in the list.</translation>
+	<translation name="ParticleEmitter.WPController.Action.Down">Move Down</translation>
+	<translation name="ParticleEmitter.WPController.Action.Down.ToolTip">Move controller down in the list.</translation>
+	
+	<!-- WP Type -->
+	<translation name="ParticleEmitter.WPType.Group.Emitter">Emitter:</translation>
+	<translation name="ParticleEmitter.WPType.EmitBurst">Emit Burst</translation>
+	<translation name="ParticleEmitter.WPType.EmitBurst.ToolTip">Determines if particles are emit as burst or continuous</translation>
+	<translation name="ParticleEmitter.WPType.Lifetime">Lifetime:</translation>
+	<translation name="ParticleEmitter.WPType.Lifetime.ToolTip">Lifetime of burst</translation>
+	<translation name="ParticleEmitter.WPType.Group.Types">Types:</translation>
+	<translation name="ParticleEmitter.WPType.Type">Type:</translation>
+	<translation name="ParticleEmitter.WPType.Type.ToolTip">Type to edit</translation>
+	<translation name="ParticleEmitter.WPType.Types.ToolTip">Types</translation>
+	<translation name="ParticleEmitter.WPType.TypeMenu.ToolTip">Edit type menu</translation>
+	<translation name="ParticleEmitter.WPType.Skin">Skin:</translation>
+	<translation name="ParticleEmitter.WPType.Skin.ToolTip">Path to the skin for the particles</translation>
+	<translation name="ParticleEmitter.WPType.Model">Model:</translation>
+	<translation name="ParticleEmitter.WPType.Model.ToolTip">Path to the model to emit particles from</translation>
+	<translation name="ParticleEmitter.WPType.ModelSkin">Model Skin:</translation>
+	<translation name="ParticleEmitter.WPType.ModelSkin.ToolTip">Path to the skin for the model to emit particles from</translation>
+	<translation name="ParticleEmitter.WPType.CastFrom">Cast From:</translation>
+	<translation name="ParticleEmitter.WPType.CastFrom.ToolTip">Type of element to cast particles from if a model is set</translation>
+	<translation name="ParticleEmitter.WPType.CastFrom.Vertex">Vertex</translation>
+	<translation name="ParticleEmitter.WPType.CastFrom.Face">Face</translation>
+	<translation name="ParticleEmitter.WPType.CastFrom.Volume">Volume</translation>
+	<translation name="ParticleEmitter.WPType.SimulationType">Simulation Type:</translation>
+	<translation name="ParticleEmitter.WPType.SimulationType.ToolTip">Type of simulation to use</translation>
+	<translation name="ParticleEmitter.WPType.SimulationType.Particle">Particle</translation>
+	<translation name="ParticleEmitter.WPType.SimulationType.Ribbon">Ribbon</translation>
+	<translation name="ParticleEmitter.WPType.SimulationType.Beam">Beam</translation>
+	<translation name="ParticleEmitter.WPType.IntervalAsDistance">Interval As Distance</translation>
+	<translation name="ParticleEmitter.WPType.IntervalAsDistance.ToolTip">Determines if the interval is used with distance instead of time</translation>
+	<translation name="ParticleEmitter.WPType.PhysicsSize">Physics Size:</translation>
+	<translation name="ParticleEmitter.WPType.PhysicsSize.ToolTip">Size of particles for physics simulation</translation>
+	<translation name="ParticleEmitter.WPType.Group.Trail">Trail:</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Emitter">Emitter:</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Emitter.ToolTip">Path to the particle emitter to use as trail</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Controller">Controller:</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Controller.ToolTip">Type of controller to set</translation>
+	<translation name="ParticleEmitter.WPType.Trail.TargetController.ToolTip">Controller in the trail emitter set to this type</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Controller.Lifetime">Lifetime</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Controller.Mass">Mass</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Controller.LinearVelocity">Linear Velocity</translation>
+	<translation name="ParticleEmitter.WPType.Trail.Controller.AngularVelocity">Angular Velocity</translation>
+	<translation name="ParticleEmitter.WPType.Group.Collision">Collision:</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Response">Response:</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Response.ToolTip">Collision response to use</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Response.Destroy">Destroy</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Response.Physical">Physical Response</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Response.Custom">Custom Response</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Emitter">Emitter:</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Emitter.ToolTip">Path to the particle emitter to create for impacts</translation>
+	<translation name="ParticleEmitter.WPType.Collision.MinImpulse">Min Impulse:</translation>
+	<translation name="ParticleEmitter.WPType.Collision.MinImpulse.ToolTip">Minimal impact impulse required to create a new collision emitter instance</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Controller">Controller:</translation>
+	<translation name="ParticleEmitter.WPType.Collision.Controller.ToolTip">Type of controller to set</translation>
+	<translation name="ParticleEmitter.WPType.Collision.TargetController.ToolTip">Controller in the collision emitter set to this type</translation>
+	<translation name="ParticleEmitter.WPType.Group.Parameters">Parameters:</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.ToolTip">Parameters</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.TimeToLive">Time to live</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Interval">Interval</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.ParticleCount">Particle Count</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.CastAngleX">Cast Angle X</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.CastAngleY">Cast Angle Y</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Size">Size</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Red">Red</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Green">Green</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Blue">Blue</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Transparency">Transparency</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Emissivity">Emissivity</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Mass">Mass</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Rotation">Rotation</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.LinearVelocity">Linear Velocity</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.AngularVelocity">Angular Velocity</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.BrownMotion">Brown Motion</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Damping">Damping</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Drag">Drag</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.GravityX">Gravity X</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.GravityY">Gravity Y</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.GravityZ">Gravity Z</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.LocalGravity">Local Gravity</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.ForceFieldDirect">Force Field Direct</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.ForceFieldSurface">Force Field Surface</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.ForceFieldMass">Force Field Mass</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.ForceFieldSpeed">Force Field Speed</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Elasticity">Elasticity</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.Roughness">Roughness</translation>
+	<translation name="ParticleEmitter.WPType.Parameters.EmitDirection">Emit Direction</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.CastRange">Cast Range:</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.CastRange.ToolTip">Pick cast value randomly between range given by a value and a spread</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.CastSpread">Cast Spread:</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.CastSpread.ToolTip">Maximum spread around the cast value</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.ControllerValue">Controller Value:</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.ControllerValue.ToolTip">Controller used to sample value from value curve</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.ControllerSpread">Controller Spread:</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.ControllerSpread.ToolTip">Controller used to sample value from spread curve</translation>
+	<translation name="ParticleEmitter.WPType.Parameter.None">&lt; None &gt;</translation>
+	<translation name="ParticleEmitter.WPType.Action.TypeAdd">Add...</translation>
+	<translation name="ParticleEmitter.WPType.Action.TypeAdd.ToolTip">Add type</translation>
+	<translation name="ParticleEmitter.WPType.Action.TypeRemove">Remove</translation>
+	<translation name="ParticleEmitter.WPType.Action.TypeRemove.ToolTip">Remove selected type</translation>
+	<translation name="ParticleEmitter.WPType.Action.TypeRename">Rename...</translation>
+	<translation name="ParticleEmitter.WPType.Action.TypeRename.ToolTip">Rename selected type</translation>
+	<translation name="ParticleEmitter.WPType.Dialog.AddType.Title">Add Type</translation>
+	<translation name="ParticleEmitter.WPType.Dialog.AddType.Name">Name:</translation>
+	<translation name="ParticleEmitter.WPType.Dialog.AddType.Error">A type with this name exists already.</translation>
+	<translation name="ParticleEmitter.WPType.Dialog.RenameType.Title">Rename Type</translation>
+	<translation name="ParticleEmitter.WPType.Dialog.RenameType.Name">Name:</translation>
+	<translation name="ParticleEmitter.WPType.Dialog.RenameType.Error">A type with this name exists already.</translation>
+	
+	<!-- WP View -->
+	<translation name="ParticleEmitter.WPView.Camera">Camera:</translation>
+	<translation name="ParticleEmitter.WPView.Sky">Sky:</translation>
+	<translation name="ParticleEmitter.WPView.EnvironmentObject">Environment Object:</translation>
+	<translation name="ParticleEmitter.WPView.Group.Preview">Preview:</translation>
+	<translation name="ParticleEmitter.WPView.Position">Position:</translation>
+	<translation name="ParticleEmitter.WPView.Position.ToolTip">Position of the emitter in meters.</translation>
+	<translation name="ParticleEmitter.WPView.Rotation">Rotation:</translation>
+	<translation name="ParticleEmitter.WPView.Rotation.ToolTip">Rotation of the emitter in degrees</translation>
+	<translation name="ParticleEmitter.WPView.BurstInterval">Burst Interval:</translation>
+	<translation name="ParticleEmitter.WPView.BurstInterval.ToolTip">Interval in seconds between bursts</translation>
+	<translation name="ParticleEmitter.WPView.WarmUpTime">Warm-Up Time:</translation>
+	<translation name="ParticleEmitter.WPView.WarmUpTime.ToolTip">Warm-Up time in seconds for the first enabling casting</translation>
+	<translation name="ParticleEmitter.WPView.EnableCasting">Enable Casting</translation>
+	<translation name="ParticleEmitter.WPView.EnableCasting.ToolTip">Determines if casting is enabled</translation>
+	
+	<!-- Window Curves -->
+	<translation name="ParticleEmitter.WindowCurves.Curves.ToolTip">Curve to edit</translation>
+	<translation name="ParticleEmitter.WindowCurves.Curve.Value">Value</translation>
+	<translation name="ParticleEmitter.WindowCurves.Curve.Spread">Spread</translation>
+	<translation name="ParticleEmitter.WindowCurves.Curve.Progress">Progress</translation>
+	<translation name="ParticleEmitter.WindowCurves.Curve.Beam">Beam</translation>
+	
+	<!-- Undo Actions: Controller -->
+	<translation name="ParticleEmitter.Undo.Controller.Add">Add Controller</translation>
+	<translation name="ParticleEmitter.Undo.Controller.Remove">Remove Controller</translation>
+	<translation name="ParticleEmitter.Undo.Controller.MoveUp">Move Controller Up</translation>
+	<translation name="ParticleEmitter.Undo.Controller.MoveDown">Move Controller Down</translation>
+	<translation name="ParticleEmitter.Undo.Controller.SetName">Set Controller Name</translation>
+	<translation name="ParticleEmitter.Undo.Controller.SetLower">Set Controller Lower</translation>
+	<translation name="ParticleEmitter.Undo.Controller.SetUpper">Set Controller Upper</translation>
+	<translation name="ParticleEmitter.Undo.Controller.ToggleClamp">Toggle Controller Clamp</translation>
+	<translation name="ParticleEmitter.Undo.Controller.ToggleFrozen">Toggle Controller Frozen</translation>
+	<translation name="ParticleEmitter.Undo.Controller.ToggleLinkToTime">Toggle Controller Link To Time</translation>
+	
+	<!-- Undo Actions: Emitter -->
+	<translation name="ParticleEmitter.Undo.Emitter.SetBurstLifetime">Set Emitter Burst Lifetime</translation>
+	<translation name="ParticleEmitter.Undo.Emitter.ToggleEmitBurst">Set Emitter Emit Burst</translation>
+	
+	<!-- Undo Actions: Type -->
+	<translation name="ParticleEmitter.Undo.Type.Add">Add Type</translation>
+	<translation name="ParticleEmitter.Undo.Type.Remove">Remove Type</translation>
+	<translation name="ParticleEmitter.Undo.Type.MoveUp">Move Type Up</translation>
+	<translation name="ParticleEmitter.Undo.Type.MoveDown">Move Type Down</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetName">Set Type Name</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetSkinPath">Set Type Skin Path</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetModelPath">Set Type Model Path</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetModelSkinPath">Set Type Model Skin Path</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetCastFrom">Set Type Cast From</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetSimulationType">Set Type Simulation Type</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetIntervalAsDistance">Set Type Interval As Distance</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetPhysicsSize">Set Type Physics Size</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetCollisionResponse">Set Type Collision Response</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetPathCollisionEmitter">Set Type Path Collision Emitter</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetPathTrailEmitter">Set Type Path Trail Emitter</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetEmitMinImpulse">Set Type Emit Min Impulse</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetEmitController">Set Type Emit Controller</translation>
+	<translation name="ParticleEmitter.Undo.Type.SetTrailController">Set Type Trail Controller</translation>
+	
+	<!-- Undo Actions: Parameter -->
+	<translation name="ParticleEmitter.Undo.Parameter.SetValue">Set Parameter Value</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetSpread">Set Parameter Spread</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetCurveValue">Set Parameter Cast Curve</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetCurveSpread">Set Parameter Spread Curve</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetCurveBeam">Set Parameter Beam Curve</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetCurveProgress">Set Parameter Progress Curve</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetControllerValue">Set Parameter Value Curve Controller</translation>
+	<translation name="ParticleEmitter.Undo.Parameter.SetControllerSpread">Set Parameter Spread Curve Controller</translation>
+	
+	<!-- Task and Dynamic Strings -->
+	<translation name="ParticleEmitter.Task.SyncGameDefinition">Particle Emitter Editor: Synchronize Game Definition</translation>
+	<translation name="ParticleEmitter.WPController.DefaultName">Controller #{0}</translation>
+	<translation name="ParticleEmitter.WPType.DefaultName">Type</translation>
+</languagePack>

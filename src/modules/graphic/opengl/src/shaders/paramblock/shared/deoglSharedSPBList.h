@@ -25,13 +25,13 @@
 #ifndef _DEOGLSHAREDSPBLIST_H_
 #define _DEOGLSHAREDSPBLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
+#include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
 
 class deoglRenderThread;
 class deoglSharedSPB;
-class deoglSharedSPBElement;
 
 
 
@@ -43,7 +43,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	const deoglShaderParameterBlock::Ref pLayout;
 	int pSize;
-	decObjectList pSPBs;
+	decTObjectList<deoglSharedSPB> pSPBs;
 	
 	
 	
@@ -51,7 +51,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block list. */
-	deoglSharedSPBList( deoglRenderThread &renderThread, deoglShaderParameterBlock *layout );
+	deoglSharedSPBList(deoglRenderThread &renderThread, deoglShaderParameterBlock *layout);
 	
 public:
 	/** Clean up shared shader parameter block list. */
@@ -75,7 +75,7 @@ public:
 	int GetCount() const;
 	
 	/** Block at index. */
-	deoglSharedSPB *GetAt( int index ) const;
+	deoglSharedSPB *GetAt(int index) const;
 	
 	/**
 	 * Add element.
@@ -83,7 +83,7 @@ public:
 	 * Caller obtains reference to the element. Release reference if not used anymore.
 	 * Element is removed from the shared parameter block once all references are released.
 	 */
-	deoglSharedSPBElement *AddElement();
+	deoglSharedSPBElement::Ref AddElement();
 	/*@}*/
 	
 	

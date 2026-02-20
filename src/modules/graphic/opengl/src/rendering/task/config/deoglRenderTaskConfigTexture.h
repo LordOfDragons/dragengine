@@ -57,6 +57,10 @@ public:
 	/** Create render task texture configuration. */
 	deoglRenderTaskConfigTexture();
 	
+	/** Copy render task texture configuration. */
+	deoglRenderTaskConfigTexture(const deoglRenderTaskConfigTexture &other);
+	deoglRenderTaskConfigTexture &operator=(const deoglRenderTaskConfigTexture &other);
+	
 	/** Clean up render task texture configuration. */
 	~deoglRenderTaskConfigTexture();
 	/*@}*/
@@ -69,31 +73,31 @@ public:
 	inline int GetRenderTaskFilter() const{ return pRenderTaskFilter; }
 	
 	/** Set render task filter. */
-	void SetRenderTaskFilter( int filter );
+	void SetRenderTaskFilter(int filter);
 	
 	/** Pipeline. */
 	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
-	void SetPipeline( const deoglPipeline *pipeline );
+	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Texture. */
 	inline const deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set texture. */
-	void SetTexture( const deoglRenderTaskSharedTexture *texture );
+	void SetTexture(const deoglRenderTaskSharedTexture *texture);
 	
 	/** VAO. */
 	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
-	void SetVAO( const deoglRenderTaskSharedVAO *vao );
+	void SetVAO(const deoglRenderTaskSharedVAO *vao);
 	
 	/** Instance. */
 	inline const deoglRenderTaskSharedInstance *GetInstance() const{ return pInstance; }
 	
 	/** Set instance. */
-	void SetInstance( const deoglRenderTaskSharedInstance *instance );
+	void SetInstance(const deoglRenderTaskSharedInstance *instance);
 	
 	
 	
@@ -115,7 +119,7 @@ public:
 	inline int GetGroupIndex() const{ return pGroupIndex; }
 	
 	/** Set sub instance group index. */
-	void SetGroupIndex( int groupIndex );
+	void SetGroupIndex(int groupIndex);
 	
 	
 	

@@ -39,7 +39,8 @@ igdeNativeNullComboBoxFilter::igdeNativeNullComboBoxFilter(){
 igdeNativeNullComboBoxFilter::~igdeNativeNullComboBoxFilter(){
 }
 
-igdeNativeNullComboBoxFilter *igdeNativeNullComboBoxFilter::CreateNativeWidget( igdeComboBoxFilter& ){
+igdeNativeNullComboBoxFilter *igdeNativeNullComboBoxFilter::CreateNativeWidget(igdeComboBoxFilter&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullComboBoxFilter;
 }
 
@@ -58,10 +59,10 @@ void igdeNativeNullComboBoxFilter::DestroyNativeWidget(){
 void igdeNativeNullComboBoxFilter::BuildList(){
 }
 
-void igdeNativeNullComboBoxFilter::UpdateItem( int ){
+void igdeNativeNullComboBoxFilter::UpdateItem(int){
 }
 
-void igdeNativeNullComboBoxFilter::SyncSelection( bool ){
+void igdeNativeNullComboBoxFilter::SyncSelection(bool){
 }
 
 void igdeNativeNullComboBoxFilter::OnInvalidValueChanged(){
@@ -70,16 +71,16 @@ void igdeNativeNullComboBoxFilter::OnInvalidValueChanged(){
 void igdeNativeNullComboBoxFilter::UpdateText(){
 }
 
-void igdeNativeNullComboBoxFilter::InsertItem( int, const igdeListItem & ){
+void igdeNativeNullComboBoxFilter::InsertItem(int, const igdeListItem &){
 }
 
-void igdeNativeNullComboBoxFilter::RemoveItem( int ){
+void igdeNativeNullComboBoxFilter::RemoveItem(int){
 }
 
 void igdeNativeNullComboBoxFilter::RemoveAllItems(){
 }
 
-void igdeNativeNullComboBoxFilter::MoveItem( int, int ){
+void igdeNativeNullComboBoxFilter::MoveItem(int, int){
 }
 
 void igdeNativeNullComboBoxFilter::Focus(){

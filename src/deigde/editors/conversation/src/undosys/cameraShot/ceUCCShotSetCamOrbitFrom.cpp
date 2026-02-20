@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCamOrbitFrom::ceUCCShotSetCamOrbitFrom( ceCameraShot *cameraShot, const decVector &newRot ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetCamOrbitFrom::ceUCCShotSetCamOrbitFrom(ceCameraShot *cameraShot, const decVector &newRot){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set Start Camera Rotition" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetStartCameraRotition");
 	
 	pOldRot = cameraShot->GetCameraOrbitFrom();
 	pNewRot = newRot;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamOrbitFrom::~ceUCCShotSetCamOrbitFrom(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetCamOrbitFrom::~ceUCCShotSetCamOrbitFrom(){
 ///////////////
 
 void ceUCCShotSetCamOrbitFrom::Undo(){
-	pCameraShot->SetCameraOrbitFrom( pOldRot );
+	pCameraShot->SetCameraOrbitFrom(pOldRot);
 }
 
 void ceUCCShotSetCamOrbitFrom::Redo(){
-	pCameraShot->SetCameraOrbitFrom( pNewRot );
+	pCameraShot->SetCameraOrbitFrom(pNewRot);
 }

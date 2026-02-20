@@ -25,15 +25,15 @@
 #ifndef _MEUPASTEOBJECT_H_
 #define _MEUPASTEOBJECT_H_
 
-#include "../../world/object/meObjectList.h"
+#include "../../world/object/meObject.h"
+#include "../../world/meWorld.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class meClipboardDataObject;
-class meWorld;
 
 
 
@@ -44,10 +44,14 @@ class meWorld;
  * from the current map.
  */
 class meUPasteObject : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUPasteObject>;
+	
+	
 private:
 	meWorld *pWorld;
-	meObjectList pObjects;
-	decIntList pAttachedToIndexList;
+	meObject::List pObjects;
+	decTList<int> pAttachedToIndexList;
 	
 	
 	
@@ -55,10 +59,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUPasteObject( meWorld *world, meClipboardDataObject *clip );
+	meUPasteObject(meWorld *world, meClipboardDataObject *clip);
 	
 	/** \brief Clean up undo object. */
-	virtual ~meUPasteObject();
+
+protected:
+	~meUPasteObject() override;
+
+public:
 	/*@}*/
 	
 	
@@ -66,16 +74,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

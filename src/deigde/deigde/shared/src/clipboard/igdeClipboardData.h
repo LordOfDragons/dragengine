@@ -40,6 +40,12 @@
  * data it can paste.
  */
 class DE_DLL_EXPORT igdeClipboardData : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeClipboardData>;
+	
+	
 private:
 	decString pTypeName;
 	
@@ -49,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	igdeClipboardData( const char *typeName );
+	igdeClipboardData(const char *typeName);
 	
 protected:
 	/**
@@ -58,7 +64,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeClipboardData();
+	~igdeClipboardData() override;
 	/*@}*/
 	
 	

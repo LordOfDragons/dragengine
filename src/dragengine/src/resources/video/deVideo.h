@@ -48,8 +48,7 @@ class deBaseGraphicVideo;
 class DE_DLL_EXPORT deVideo : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideo> Ref;
-	
+	using Ref = deTObjectReference<deVideo>;
 	
 	
 private:
@@ -75,18 +74,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video. */
-	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	deVideo(deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime, int width, int height, int componentCount,
 		int bitCount, float frameRate, int frameCount,
 		const decColorMatrix3 &colorConversionMatrix, int bytesPerSample,
-		int sampleCount, int sampleRate, int channelCount );
+		int sampleCount, int sampleRate, int channelCount);
 	
 	/**
 	 * \brief Create video for internal loading.
 	 * \warning For use by deResourceLoader only.
 	 */
-	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deVideo(deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -95,7 +94,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVideo();
+	~deVideo() override;
 	/*@}*/
 	
 	
@@ -148,7 +147,7 @@ public:
 	inline deBaseGraphicVideo *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicVideo *peer );
+	void SetPeerGraphic(deBaseGraphicVideo *peer);
 	/*@}*/
 	
 	
@@ -159,9 +158,9 @@ public:
 	 * \brief Finalize construction after asynchronous loading.
 	 * \warning For use by deResourceLoader only.
 	 */
-	void FinalizeConstruction( int width, int height, int componentCount, int bitCount,
+	void FinalizeConstruction(int width, int height, int componentCount, int bitCount,
 		float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
-		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
+		int bytesPerSample, int sampleCount, int sampleRate, int channelCount);
 	/*@}*/
 };
 

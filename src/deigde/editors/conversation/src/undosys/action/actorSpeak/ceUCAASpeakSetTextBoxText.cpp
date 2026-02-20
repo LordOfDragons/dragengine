@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetTextBoxText::ceUCAASpeakSetTextBoxText( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const decUnicodeString &newText ){
-	if( ! topic ) DETHROW( deeInvalidParam );
+ceUCAASpeakSetTextBoxText::ceUCAASpeakSetTextBoxText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const decUnicodeString &newText){
+	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	pOldText = actorSpeak->GetTextBoxText();
 	pNewText = newText;
 	
-	SetShortInfo( "Actor Speak Set Text Box Text" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetTextBoxText");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxText::~ceUCAASpeakSetTextBoxText(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCAASpeakSetTextBoxText::~ceUCAASpeakSetTextBoxText(){
 ///////////////
 
 void ceUCAASpeakSetTextBoxText::Undo(){
-	pActorSpeak->SetTextBoxText( pOldText );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetTextBoxText(pOldText);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetTextBoxText::Redo(){
-	pActorSpeak->SetTextBoxText( pNewText );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetTextBoxText(pNewText);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

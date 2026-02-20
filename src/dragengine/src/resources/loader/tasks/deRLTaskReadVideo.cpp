@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -50,24 +49,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadVideo::deRLTaskReadVideo( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deVideo *video ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertVideo ),
-pSucceeded( false )
+deRLTaskReadVideo::deRLTaskReadVideo(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deVideo *video) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertVideo),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	
 	// if already loaded set finished
-	if( video ){
+	if(video){
 		pVideo = video;
-		SetResource( video );
-		SetState( esSucceeded );
+		SetResource(video);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pVideo.TakeOver( new deVideo( engine.GetVideoManager(), vfs, path, 0 ) );
+	pVideo = deVideo::Ref::New(engine.GetVideoManager(), vfs, path, 0);
 	
 	LogCreateExit();
 }
@@ -83,31 +82,27 @@ deRLTaskReadVideo::~deRLTaskReadVideo(){
 void deRLTaskReadVideo::Run(){
 	LogRunEnter();
 	
-	deBaseVideoModule * const module = ( deBaseVideoModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtVideo, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseVideoModule * const module = (deBaseVideoModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtVideo, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
-	
-	decBaseFileReaderReference reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
 	deBaseVideoInfo videoInfo;
-	module->InitLoadVideo( reader, videoInfo );
-	reader = NULL;
+	module->InitLoadVideo(GetVFS()->OpenFileForReading(vfsPath), videoInfo);
 	
-	pVideo->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pVideo->SetAsynchron( true );
-	pVideo->FinalizeConstruction( videoInfo.GetWidth(), videoInfo.GetHeight(),
+	pVideo->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pVideo->SetAsynchron(true);
+	pVideo->FinalizeConstruction(videoInfo.GetWidth(), videoInfo.GetHeight(),
 		videoInfo.GetComponentCount(), videoInfo.GetBitCount(), videoInfo.GetFrameRate(),
 		videoInfo.GetFrameCount(), videoInfo.GetColorConversionMatrix(),
 		videoInfo.GetBytesPerSample(), videoInfo.GetSampleCount(),
-		videoInfo.GetSampleRate(), videoInfo.GetChannelCount() );
+		videoInfo.GetSampleRate(), videoInfo.GetChannelCount());
 	
 	// create peers. modules can request to load the video data if small enough
-	GetEngine().GetGraphicSystem()->LoadVideo( pVideo );
+	GetEngine().GetGraphicSystem()->LoadVideo(pVideo);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -116,29 +111,29 @@ void deRLTaskReadVideo::Run(){
 void deRLTaskReadVideo::Finished(){
 	LogFinishedEnter();
 	
-	if( ! pSucceeded ){
-		SetState( esFailed );
-		pVideo = NULL;
+	if(!pSucceeded){
+		SetState(esFailed);
+		pVideo = nullptr;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deVideoManager &videoManager = *GetEngine().GetVideoManager();
-	deVideo * const checkVideo = videoManager.GetVideoWith( GetPath() );
+	deVideo * const checkVideo = videoManager.GetVideoWith(GetPath());
 	
-	if( checkVideo ){
-		SetResource( checkVideo );
+	if(checkVideo){
+		SetResource(checkVideo);
 		
 	}else{
-		pVideo->SetAsynchron( false );
-		videoManager.AddLoadedVideo( pVideo );
-		SetResource( pVideo );
+		pVideo->SetAsynchron(false);
+		videoManager.AddLoadedVideo(pVideo);
+		SetResource(pVideo);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

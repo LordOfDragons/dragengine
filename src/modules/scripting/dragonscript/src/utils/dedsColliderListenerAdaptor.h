@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	dedsColliderListenerAdaptor( deScriptingDragonScript &ds );
+	dedsColliderListenerAdaptor(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up listener. */
-	virtual ~dedsColliderListenerAdaptor();
+	~dedsColliderListenerAdaptor() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set script listener. */
-	void SetListener( dsRealObject *object );
+	void SetListener(dsRealObject *object);
 	
 	/** \brief Reset. */
 	void Reset();
@@ -75,10 +75,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Collider can be hit. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/*@}*/
 };
 

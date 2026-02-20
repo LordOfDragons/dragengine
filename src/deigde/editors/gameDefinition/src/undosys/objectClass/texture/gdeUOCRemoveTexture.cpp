@@ -42,34 +42,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveTexture::gdeUOCRemoveTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ) :
-pObjectClass( NULL ),
-pTexture( NULL )
+gdeUOCRemoveTexture::gdeUOCRemoveTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) :
+
+pTexture(nullptr)
 {
-	if( ! objectClass || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetTextures().Has( texture ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetTextures().Has(texture)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove texture" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveTexture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveTexture::~gdeUOCRemoveTexture(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,29 +69,29 @@ gdeUOCRemoveTexture::~gdeUOCRemoveTexture(){
 ///////////////
 
 void gdeUOCRemoveTexture::Undo(){
-	pObjectClass->GetTextures().Add( pTexture );
+	pObjectClass->GetTextures().Add(pTexture);
 	pObjectClass->NotifyTexturesChanged();
 }
 
 void gdeUOCRemoveTexture::Redo(){
-	gdeOCComponentTextureList &list = pObjectClass->GetTextures();
+	gdeOCComponentTexture::List &list = pObjectClass->GetTextures();
 	
-	if( pTexture == pObjectClass->GetActiveTexture() ){
-		if( list.GetCount() > 1 ){
-			if( list.GetAt( 0 ) == pTexture ){
-				pObjectClass->SetActiveTexture( list.GetAt( 1 ) );
+	if(pTexture == pObjectClass->GetActiveTexture()){
+		if(list.GetCount() > 1){
+			if(list.GetAt(0) == pTexture){
+				pObjectClass->SetActiveTexture(list.GetAt(1));
 				
 			}else{
-				pObjectClass->SetActiveTexture( list.GetAt( 0 ) );
+				pObjectClass->SetActiveTexture(list.GetAt(0));
 			}
 			
 		}else{
-			pObjectClass->SetActiveTexture( NULL );
+			pObjectClass->SetActiveTexture(nullptr);
 		}
 		
-		pObjectClass->GetGameDefinition()->NotifyOCActiveTextureChanged( pObjectClass );
+		pObjectClass->GetGameDefinition()->NotifyOCActiveTextureChanged(pObjectClass);
 	}
 	
-	list.Remove( pTexture );
+	list.Remove(pTexture);
 	pObjectClass->NotifyTexturesChanged();
 }

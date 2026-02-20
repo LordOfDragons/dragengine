@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionLogic;
+#include "../../../conversation/condition/ceCConditionLogic.h"
 class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,29 +38,33 @@ class ceConversationTopic;
  * \brief Undo Logic Conversation Condition Add Condition.
  */
 class ceUCCLogicAdd : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCLogicAdd>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationCondition *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::Ref pCondition;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicAdd( ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition );
+	ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCLogicAdd();
+	~ceUCCLogicAdd() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

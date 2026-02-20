@@ -25,13 +25,13 @@
 #ifndef _DEVKDESCRIPTORPOOLPOOL_H_
 #define _DEVKDESCRIPTORPOOLPOOL_H_
 
+#include "devkDescriptorPoolSlot.h"
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDescriptorPool;
-class devkDescriptorPoolSlot;
 
 
 /**
@@ -40,8 +40,7 @@ class devkDescriptorPoolSlot;
 class devkDescriptorPoolPool : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDescriptorPoolPool> Ref;
-	
+	using Ref = deTObjectReference<devkDescriptorPoolPool>;
 	
 	
 private:
@@ -49,7 +48,7 @@ private:
 	
 	VkDescriptorPool pPool;
 	
-	decObjectList pFreeSlots;
+	decTObjectList<devkDescriptorPoolSlot> pFreeSlots;
 	bool pOutOfMemory;
 	
 	
@@ -58,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor pool pool. */
-	devkDescriptorPoolPool( devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo );
+	devkDescriptorPoolPool(devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo);
 	
 protected:
 	/** Clean up descriptor pool pool. */
-	virtual ~devkDescriptorPoolPool();
+	~devkDescriptorPoolPool() override;
 	/*@}*/
 	
 	
@@ -74,10 +73,10 @@ public:
 	inline devkDescriptorPool &GetOwner() const{ return pOwner; }
 	
 	/** Get next free slot or nullptr if pool is full. */
-	devkDescriptorPoolSlot *Get();
+	devkDescriptorPoolSlot::Ref Get();
 	
 	/** Return slot to pool. */
-	void Return( devkDescriptorPoolSlot *slot );
+	void Return(devkDescriptorPoolSlot *slot);
 	/*@}*/
 	
 	

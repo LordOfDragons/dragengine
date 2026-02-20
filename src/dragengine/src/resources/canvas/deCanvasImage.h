@@ -26,7 +26,7 @@
 #define _DECANVASIMAGE_H_
 
 #include "deCanvas.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 
 
 /**
@@ -35,12 +35,11 @@
 class DE_DLL_EXPORT deCanvasImage : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvasImage> Ref;
-	
+	using Ref = deTObjectReference<deCanvasImage>;
 	
 	
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	int pRepeatX;
 	int pRepeatY;
 	
@@ -50,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasImage( deCanvasManager *manager );
+	deCanvasImage(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -59,7 +58,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvasImage();
+	~deCanvasImage() override;
 	/*@}*/
 	
 	
@@ -68,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or NULL to unset. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Repeat count along X axis. */
 	inline int GetRepeatX() const{ return pRepeatX; }
@@ -80,7 +79,7 @@ public:
 	 * \brief Set repeat count along X axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatX( int count );
+	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
 	inline int GetRepeatY() const{ return pRepeatY; }
@@ -89,7 +88,7 @@ public:
 	 * \brief Set repeat count along Y axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatY( int count );
+	void SetRepeatY(int count);
 	/*@}*/
 	
 	
@@ -97,7 +96,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	void Visit(deCanvasVisitor &visitor) override;
 	/*@}*/
 };
 

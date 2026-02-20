@@ -26,9 +26,9 @@
 #define _REUSETSHAPESPHERERADIUS_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShapeSphere;
+#include "../../../rig/shape/reRigShapeSphere.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeSphere;
  * \brief Undo Set Shape Radius.
  */
 class reUSetShapeSphereRadius : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUSetShapeSphereRadius>;
+	
+	
 private:
-	reRigShapeSphere *pShape;
+	reRigShapeSphere::Ref pShape;
 	
 	float pOldRadius;
 	float pNewRadius;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeSphereRadius( reRigShapeSphere *shape, float radius );
+	reUSetShapeSphereRadius(reRigShapeSphere *shape, float radius);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetShapeSphereRadius();
+	~reUSetShapeSphereRadius() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

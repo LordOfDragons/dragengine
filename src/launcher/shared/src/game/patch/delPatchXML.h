@@ -39,10 +39,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	delPatchXML( deLogger *logger, const char *loggerSource );
+	delPatchXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up loader. */
-	virtual ~delPatchXML();
+	~delPatchXML() override;
 	/*@}*/
 	
 	
@@ -50,13 +50,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from file. */
-	void ReadFromFile( decBaseFileReader &reader, delPatch &patch );
+	void ReadFromFile(decBaseFileReader &reader, delPatch &patch);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadPatch( const decXmlElementTag &root, delPatch &patch );
+	void pReadPatch(const decXmlElementTag &root, delPatch &patch);
 };
 
 #endif

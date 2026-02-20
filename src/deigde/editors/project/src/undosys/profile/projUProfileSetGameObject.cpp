@@ -40,26 +40,22 @@
 ////////////////////////////
 
 projUProfileSetGameObject::projUProfileSetGameObject(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set game object" );
+	SetShortInfo("@Project.Undo.ProfileSetGameObject");
 	
 	pOldValue = profile->GetGameObject();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetGameObject::~projUProfileSetGameObject(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ projUProfileSetGameObject::~projUProfileSetGameObject(){
 ///////////////
 
 void projUProfileSetGameObject::Undo(){
-	pProfile->SetGameObject( pOldValue );
+	pProfile->SetGameObject(pOldValue);
 }
 
 void projUProfileSetGameObject::Redo(){
-	pProfile->SetGameObject( pNewValue );
+	pProfile->SetGameObject(pNewValue);
 }

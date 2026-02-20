@@ -61,7 +61,7 @@ void devkImageConfiguration::SetType(VkImageType type){
 }
 
 void devkImageConfiguration::SetSize(const decPoint3 &size){
-	if(! (size >= decPoint3(1, 1, 1))){
+	if(!(size >= decPoint3(1, 1, 1))){
 		DETHROW(deeInvalidParam);
 	}
 	

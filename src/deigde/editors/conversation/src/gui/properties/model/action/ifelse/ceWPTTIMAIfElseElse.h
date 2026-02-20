@@ -36,15 +36,17 @@ class ceWPTTIMAIfElse;
  */
 class ceWPTTIMAIfElseElse : public ceWPTTIMActions{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAIfElseElse>;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseElse( ceWindowMain &windowMain,
-		ceConversation &conversation, const ceConversationActionList &actions );
+	ceWPTTIMAIfElseElse(ceWindowMain &windowMain, ceConversation &conversation,
+		const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAIfElseElse();
+	~ceWPTTIMAIfElseElse() override;
 	/*@}*/
 	
 	
@@ -58,16 +60,16 @@ public:
 	
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child action. */
-	virtual void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
+	void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action) override;
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

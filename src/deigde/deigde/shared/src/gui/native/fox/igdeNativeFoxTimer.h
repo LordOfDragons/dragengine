@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXTIMER_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeTimer.h"
 
 
 class igdeTimer;
@@ -34,8 +35,8 @@ class igdeTimer;
 /**
  * \brief FOX toolkit Native Timer.
  */
-class igdeNativeFoxTimer : public FXObject{
-	FXDECLARE( igdeNativeFoxTimer )
+class igdeNativeFoxTimer : public FXObject, public igdeTimer::cNativeTimer{
+	FXDECLARE(igdeNativeFoxTimer)
 protected:
 	   igdeNativeFoxTimer();
 	
@@ -55,16 +56,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create timer. */
-	igdeNativeFoxTimer( igdeTimer &owner, FXApp *app );
+	igdeNativeFoxTimer(igdeTimer &owner, FXApp *app);
 	
 	/** \brief Clean up timer. */
-	virtual ~igdeNativeFoxTimer();
+	~igdeNativeFoxTimer() override;
 	
 	/** \brief Create native timer. */
-	static igdeNativeFoxTimer* CreateNativeTimer( igdeTimer &owner );
+	static igdeNativeFoxTimer* CreateNativeTimer(igdeTimer &owner);
 	
 	/** \brief Destroy native timer. */
-	virtual void DestroyNativeTimer();
+	void DestroyNativeTimer() override;
 	/*@}*/
 	
 	
@@ -72,20 +73,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start timer. */
-	virtual void StartTimer();
+	void StartTimer() override;
 	
 	/** \brief Stop timer. */
-	virtual void StopTimer();
+	void StopTimer() override;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onTimeout( FXObject*, FXSelector, void* );
+	long onTimeout(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxTimer igdeNativeTimer;
+using igdeNativeTimer = igdeNativeFoxTimer;
 
 #endif

@@ -39,11 +39,10 @@
 ////////////////////////////
 
 deoglEnvMapFader::deoglEnvMapFader() :
-pEnvMapActive( NULL ),
-pEnvMapFading( NULL ),
-pEnvMapDelayed( NULL ),
-pFadePerTime( 1.0f ),
-pBlendFactor( 1.0f ){
+
+
+pFadePerTime(1.0f),
+pBlendFactor(1.0f){
 }
 
 deoglEnvMapFader::~deoglEnvMapFader(){
@@ -54,8 +53,8 @@ deoglEnvMapFader::~deoglEnvMapFader(){
 // Management
 ///////////////
 
-void deoglEnvMapFader::SetFadePerTime( float fadePerTime ){
-	if( fadePerTime < 0.1f ){
+void deoglEnvMapFader::SetFadePerTime(float fadePerTime){
+	if(fadePerTime < 0.1f){
 		pFadePerTime = 0.1f;
 		
 	}else{
@@ -63,119 +62,96 @@ void deoglEnvMapFader::SetFadePerTime( float fadePerTime ){
 	}
 }
 
-void deoglEnvMapFader::FadeTo( deoglEnvironmentMap *envmap ){
-	if( envmap == pEnvMapActive ){
+void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
+	if(envmap == pEnvMapActive){
 		return;
 	}
 	
-	if( ! pEnvMapActive ){
+	if(!pEnvMapActive){
 		pEnvMapActive = envmap;
-		if( envmap ){
-			envmap->AddReference();
-		}
 		return;
 	}
 	
 	// has pEnvMapActive and it is not envmap
-	if( ! pEnvMapFading ){
+	if(!pEnvMapFading){
 		pEnvMapFading = envmap;
-		if( envmap ){
-			envmap->AddReference();
-		}
 		return;
 	}
 	
 	// has pEnvMapActive and it is not envmap. has pEnvMapFading which could be envmap.
 	// drop pEnvMapDelayed. this is correct no matter if pEnvMapFading is envmpa or not
-	if( pEnvMapDelayed ){
-		pEnvMapDelayed->FreeReference();
-		pEnvMapDelayed = NULL;
+	if(pEnvMapDelayed){
+		pEnvMapDelayed = nullptr;
 	}
 	
 	// here pEnvMapActive is not NULL, pEnvMapFading is not NULL and pEnvMapDelayed is NULL.
 	// add envmap as delayed env map in case it is not the fading one
-	if( envmap == pEnvMapFading ){
+	if(envmap == pEnvMapFading){
 		return;
 	}
 	
 	pEnvMapDelayed = envmap;
-	if( envmap ){
-		envmap->AddReference();
-	}
 	//printf( "fadeto %p: active=%p fading=%p delayed=%p\n", envmap, pEnvMapActive, pEnvMapFading, pEnvMapDelayed );
 }
 
-void deoglEnvMapFader::Drop( deoglEnvironmentMap *envmap ){
-	if( ! envmap ){
-		DETHROW( deeInvalidParam );
+void deoglEnvMapFader::Drop(deoglEnvironmentMap *envmap){
+	if(!envmap){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pEnvMapDelayed == envmap ){
-		pEnvMapDelayed->FreeReference();
-		pEnvMapDelayed = NULL;
+	if(pEnvMapDelayed == envmap){
+		pEnvMapDelayed = nullptr;
 	}
 	
-	if( pEnvMapFading == envmap ){
-		if( pEnvMapFading ){
-			pEnvMapFading->FreeReference();
-		}
+	if(pEnvMapFading == envmap){
 		pEnvMapFading = pEnvMapDelayed;
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 		pBlendFactor = 1.0f;
 	}
 	
-	if( pEnvMapActive == envmap ){
-		if( pEnvMapActive ){
-			pEnvMapActive->FreeReference();
-		}
+	if(pEnvMapActive == envmap){
 		pEnvMapActive = pEnvMapFading;
 		pEnvMapFading = pEnvMapDelayed;
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 		pBlendFactor = 1.0f;
 	}
 	//printf( "drop %p: active=%p fading=%p delayed=%p\n", envmap, pEnvMapActive, pEnvMapFading, pEnvMapDelayed );
 }
 
 void deoglEnvMapFader::DropAll(){
-	if( pEnvMapActive ){
-		pEnvMapActive->FreeReference();
-		pEnvMapActive = NULL;
+	if(pEnvMapActive){
+		pEnvMapActive = nullptr;
 	}
 	
-	if( pEnvMapFading ){
-		pEnvMapFading->FreeReference();
-		pEnvMapFading = NULL;
+	if(pEnvMapFading){
+		pEnvMapFading = nullptr;
 	}
 	
-	if( pEnvMapDelayed ){
-		pEnvMapDelayed->FreeReference();
-		pEnvMapDelayed = NULL;
+	if(pEnvMapDelayed){
+		pEnvMapDelayed = nullptr;
 	}
 	
 	pBlendFactor = 1.0f;
 }
 
 bool deoglEnvMapFader::IsFading() const{
-	return pEnvMapFading != NULL;
+	return pEnvMapFading != nullptr;
 }
 
-void deoglEnvMapFader::Update( float elapsed ){
-	if( ! pEnvMapFading ){
+void deoglEnvMapFader::Update(float elapsed){
+	if(!pEnvMapFading){
 		return;
 	}
 	
 	pBlendFactor -= pFadePerTime * elapsed;
 	//printf( "update: blend=%f\n", pBlendFactor );
 	
-	while( pBlendFactor <= 0.0f ){
-		if( pEnvMapActive ){
-			pEnvMapActive->FreeReference();
-		}
+	while(pBlendFactor <= 0.0f){
 		pEnvMapActive = pEnvMapFading;
 		pEnvMapFading = pEnvMapDelayed;
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 		
-		if( pEnvMapFading ){
+		if(pEnvMapFading){
 			pBlendFactor += 1.0f;
 			
 		}else{

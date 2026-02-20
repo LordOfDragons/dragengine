@@ -27,7 +27,7 @@
 
 #include "debpShape.h"
 
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -37,13 +37,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShape::debpShape( int type, decShape *shape ) :
-pType( type ),
-pShape( shape ),
-pCollisionVolume( NULL )
+debpShape::debpShape(int type, decShape *shape) :
+pType(type),
+pShape(shape),
+pCollisionVolume(nullptr)
 {
-	if( type < estSphere || type > estCapsule || ! shape ){
-		DETHROW( deeInvalidParam );
+	if(type < estSphere || type > estCapsule || !shape){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -55,11 +55,11 @@ debpShape::~debpShape(){
 // Management
 ///////////////
 
-void debpShape::SetCollisionVolume( debpDCollisionVolume *collisionVolume ){
+void debpShape::SetCollisionVolume(debpDCollisionVolume *collisionVolume){
 	pCollisionVolume = collisionVolume;
 }
 
-float debpShape::UniformScale( const decDMatrix &matrix ){
-	const decDVector scale( matrix.GetScale() );
-	return ( float )( ( scale.x + scale.y + scale.z ) / 3.0 );
+float debpShape::UniformScale(const decDMatrix &matrix){
+	const decDVector scale(matrix.GetScale());
+	return (float)((scale.x + scale.y + scale.z) / 3.0);
 }

@@ -33,21 +33,22 @@
  */
 class gdeMAParticleEmitterRemove : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeMAParticleEmitterRemove> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMAParticleEmitterRemove( gdeWindowMain &windowMain );
+	gdeMAParticleEmitterRemove(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	
 	/** \brief Request update of action parameters if required. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

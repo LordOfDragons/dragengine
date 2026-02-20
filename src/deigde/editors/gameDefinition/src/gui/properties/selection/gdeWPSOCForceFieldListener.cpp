@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCForceFieldListener::gdeWPSOCForceFieldListener( gdeWPSOCForceField &panel ) :
-pPanel( panel ){
+gdeWPSOCForceFieldListener::gdeWPSOCForceFieldListener(gdeWPSOCForceField &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCForceFieldListener::~gdeWPSOCForceFieldListener(){
@@ -53,43 +53,43 @@ gdeWPSOCForceFieldListener::~gdeWPSOCForceFieldListener(){
 // Management
 ///////////////
 
-void gdeWPSOCForceFieldListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCForceFieldListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCForceFieldListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCForceFieldListener::OCPropertiesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCForceFieldListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCForceFieldListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCForceFieldListener::OCForceFieldsChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCForceFieldListener::OCForceFieldsChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateForceField();
 }
 
-void gdeWPSOCForceFieldListener::OCForceFieldChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCForceField *field ){
-	if( pPanel.GetObjectClass() != objectClass || pPanel.GetForceField() != field ){
+void gdeWPSOCForceFieldListener::OCForceFieldChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCForceField *field){
+	if(pPanel.GetObjectClass() != objectClass || pPanel.GetForceField() != field){
 		return;
 	}
 	pPanel.UpdateForceField();
 }
 
-void gdeWPSOCForceFieldListener::ActiveOCForceFieldChanged( gdeGameDefinition* ){
+void gdeWPSOCForceFieldListener::ActiveOCForceFieldChanged(gdeGameDefinition*){
 	pPanel.UpdateForceField();
 }

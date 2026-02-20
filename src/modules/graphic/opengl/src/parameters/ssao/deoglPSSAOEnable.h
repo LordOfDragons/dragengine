@@ -36,17 +36,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSAOEnable( deGraphicOpenGl &ogl );
+	deoglPSSAOEnable(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPSSAOEnable();
+	~deoglPSSAOEnable() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual bool GetParameterBool();
+	bool GetParameterBool() override;
 	/** Sets the current value. */
-	virtual void SetParameterBool( bool value );
+	void SetParameterBool(bool value) override;
 	/*@}*/
 };
 

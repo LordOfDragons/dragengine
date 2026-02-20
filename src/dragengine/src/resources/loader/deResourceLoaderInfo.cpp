@@ -22,14 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deResourceLoaderInfo.h"
 #include "../deFileResource.h"
 #include "../../common/exceptions.h"
-
 
 
 // Class deResourceLoaderInfo
@@ -39,41 +34,24 @@
 ////////////////////////////
 
 deResourceLoaderInfo::deResourceLoaderInfo() :
-pResourceType( deResourceLoader::ertImage ),
-pResource( NULL ){
+pResourceType(deResourceLoader::ertImage){
 }
 
 deResourceLoaderInfo::~deResourceLoaderInfo(){
-	if( pResource ){
-		pResource->FreeReference();
-	}
 }
-
 
 
 // Management
 ///////////////
 
-void deResourceLoaderInfo::SetPath( const char *path ){
+void deResourceLoaderInfo::SetPath(const char *path){
 	pPath = path;
 }
 
-void deResourceLoaderInfo::SetResourceType( deResourceLoader::eResourceType resourceType ){
+void deResourceLoaderInfo::SetResourceType(deResourceLoader::eResourceType resourceType){
 	pResourceType = resourceType;
 }
 
-void deResourceLoaderInfo::SetResource( deFileResource *resource ){
-	if( resource == pResource ){
-		return;
-	}
-	
-	if( pResource ){
-		pResource->FreeReference();
-	}
-	
+void deResourceLoaderInfo::SetResource(deFileResource *resource){
 	pResource = resource;
-	
-	if( resource ){
-		resource->AddReference();
-	}
 }

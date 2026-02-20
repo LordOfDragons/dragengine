@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglShadowCaster.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,33 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShadowCaster::deoglShadowCaster( deoglRenderThread &renderThread ) :
-pFrameCounterTracker( renderThread ),
-pSolid( renderThread ),
-pTransparent( renderThread ),
-pAmbient( renderThread ),
+deoglShadowCaster::deoglShadowCaster(deoglRenderThread &renderThread) :
+pFrameCounterTracker(renderThread),
+pSolid(renderThread),
+pTransparent(renderThread),
+pAmbient(renderThread),
 
-pShadowType( estNoShadows ),
+pShadowType(estNoShadows),
 
-pStaticNear( 0.01f ),
-pStaticFar( 10.0f ),
-pStaticScale( 2.887585e-2f ),
-pStaticOffset( 2.887585e-4f ),
+pStaticNear(0.01f),
+pStaticFar(10.0f),
+pStaticScale(2.887585e-2f),
+pStaticOffset(2.887585e-4f),
 
-pDynamicNear( 0.01f ),
-pDynamicFar( 10.0f ),
-pDynamicScale( 2.887585e-2f ),
-pDynamicOffset( 2.887585e-4f ),
-
-pShadowLayers( NULL ),
-pShadowLayerCount( 0 ){
+pDynamicNear(0.01f),
+pDynamicFar(10.0f),
+pDynamicScale(2.887585e-2f),
+pDynamicOffset(2.887585e-4f){
 }
 
-deoglShadowCaster::~deoglShadowCaster(){
-	if( pShadowLayers ){
-		delete [] pShadowLayers;
-	}
-}
+deoglShadowCaster::~deoglShadowCaster() = default;
 
 
 
@@ -78,7 +67,7 @@ deoglShadowCaster::~deoglShadowCaster(){
 
 void deoglShadowCaster::Update(){
 	pFrameCounterTracker.Update();
-	if( ! pFrameCounterTracker.HasElapsedFrames() ){
+	if(!pFrameCounterTracker.HasElapsedFrames()){
 		return;
 	}
 	
@@ -109,57 +98,42 @@ void deoglShadowCaster::DropTemporary(){
 
 
 
-void deoglShadowCaster::SetShadowType( eShadowTypes shadowType ){
+void deoglShadowCaster::SetShadowType(eShadowTypes shadowType){
 	pShadowType = shadowType;
 }
 
-void deoglShadowCaster::SetStaticParams( float near, float far ){
+void deoglShadowCaster::SetStaticParams(float near, float far){
 	pStaticNear = near;
 	pStaticFar = far;
 	//pStaticScale = 1.0f / ( sqrtf( pStaticFar * pStaticFar * 3.0f ) - pStaticNear );
-	pStaticScale = 1.0f / ( pStaticFar - pStaticNear );
+	pStaticScale = 1.0f / (pStaticFar - pStaticNear);
 	pStaticOffset = -pStaticNear * pStaticScale;
 }
 
-void deoglShadowCaster::SetDynamicParams( float near, float far ){
+void deoglShadowCaster::SetDynamicParams(float near, float far){
 	pDynamicNear = near;
 	pDynamicFar = far;
 	//pDynamicScale = 1.0f / ( sqrtf( pDynamicFar * pDynamicFar * 3.0f ) - pDynamicNear );
-	pDynamicScale = 1.0f / ( pDynamicFar - pDynamicNear );
+	pDynamicScale = 1.0f / (pDynamicFar - pDynamicNear);
 	pDynamicOffset = -pDynamicNear * pDynamicScale;
 }
 
-void deoglShadowCaster::SetShadowLayerCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglShadowCaster::SetShadowLayerCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pShadowLayerCount ){
+	if(count == pShadowLayers.GetCount()){
 		return;
 	}
 	
-	if( pShadowLayers ){
-		delete [] pShadowLayers;
-		pShadowLayers = NULL;
-		pShadowLayerCount = 0;
-	}
-	
-	if( count > 0 ){
-		pShadowLayers = new sShadowLayer[ count ];
-		pShadowLayerCount = count;
-	}
+	pShadowLayers.SetAll(count, {});
 }
 
-const deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index ) const{
-	if( index < 0 || index >= pShadowLayerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pShadowLayers[ index ];
+const deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt(int index) const{
+	return pShadowLayers[index];
 }
 
-deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index ){
-	if( index < 0 || index >= pShadowLayerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pShadowLayers[ index ];
+deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt(int index){
+	return pShadowLayers[index];
 }

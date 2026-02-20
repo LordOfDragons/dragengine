@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,32 +37,35 @@ class ceStrip;
  * \brief Undo action actor speak conversation action set strip duration.
  */
 class ceUCAASpeakStripSetDuration : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
-	float pOldDuration;
-	float pNewDuration;
-	
 public:
+	using Ref = deTObjectReference<ceUCAASpeakStripSetDuration>;
+	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
+	float pOldDuration, pNewDuration;
+	
+protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetDuration( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newDuration );
+	ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newDuration);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripSetDuration();
+	~ceUCAASpeakStripSetDuration() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new duration. */
-	void SetNewDuration( float duration );
+	void SetNewDuration(float duration);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/** \brief Progressive redo action. */
 	void ProgressiveRedo();
 	/*@}*/

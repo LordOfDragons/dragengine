@@ -33,10 +33,12 @@
  */
 class seUMappedDuplicate : public seUMappedAdd{
 public:
+	using Ref = deTObjectReference<seUMappedDuplicate>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedDuplicate( seSkin *skin, const seMapped &mapped );
+	seUMappedDuplicate(seSkin *skin, const seMapped &mapped);
 	/*@}*/
 };
 

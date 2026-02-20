@@ -26,7 +26,7 @@
 #define _DEDAIHEIGHTTERRAIN_H_
 
 #include <dragengine/systems/modules/ai/deBaseAIHeightTerrain.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class dedaiWorld;
 class deDEAIModule;
@@ -44,7 +44,7 @@ private:
 	deDEAIModule &pDEAI;
 	const deHeightTerrain &pHeightTerrain;
 	
-	decObjectOrderedSet pSectors;
+	decTObjectOrderedSet<dedaiHeightTerrainSector> pSectors;
 	dedaiWorld *pParentWorld;
 	
 	
@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiHeightTerrain( deDEAIModule &deai, const deHeightTerrain &heightTerrain );
+	dedaiHeightTerrain(deDEAIModule &deai, const deHeightTerrain &heightTerrain);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiHeightTerrain();
+	~dedaiHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -75,18 +75,15 @@ public:
 	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
-	void SetParentWorld( dedaiWorld *world );
+	void SetParentWorld(dedaiWorld *world);
 	/*@}*/
 	
 	
 	
 	/** \name Sectors */
 	/*@{*/
-	/** \brief Count of sectors. */
-	int GetSectorCount() const;
-	
-	/** \brief Sector at index. */
-	dedaiHeightTerrainSector *GetSectorAt( int index ) const;
+	/** \brief Sectors. */
+	inline const decTObjectOrderedSet<dedaiHeightTerrainSector> &GetSectors() const{ return pSectors; }
 	/*@}*/
 	
 	
@@ -94,48 +91,48 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Parameter changes. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** \brief Sector added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	void SectorAdded(deHeightTerrainSector *sector) override;
 	
 	/** \brief Sector removed. */
-	virtual void SectorRemoved( int index );
+	void SectorRemoved(int index) override;
 	
 	/** \brief All sector removed. */
-	virtual void AllSectorsRemoved();
+	void AllSectorsRemoved() override;
 	
 	/** \brief Sector changed. */
-	virtual void SectorChanged( int index );
+	void SectorChanged(int index) override;
 	
 	
 	
 	/** \brief Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates) override;
 	
 	
 	
 	/** \brief Navigation space added. */
-	virtual void NavSpaceAdded( int sector, deHeightTerrainNavSpace *navspace );
+	void NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace) override;
 	
 	/** \brief Navigation space removed. */
-	virtual void NavSpaceRemoved( int sector, int index );
+	void NavSpaceRemoved(int sector, int index) override;
 	
 	/** \brief All navigation spaces removed. */
-	virtual void AllNavSpacesRemoved( int sector );
+	void AllNavSpacesRemoved(int sector) override;
 	
 	/** \brief Navigation space layer changed. */
-	virtual void NavSpaceLayerChanged( int sector, int index );
+	void NavSpaceLayerChanged(int sector, int index) override;
 	
 	/** \brief Navigation space type changed. */
-	virtual void NavSpaceTypeChanged( int sector, int index );
+	void NavSpaceTypeChanged(int sector, int index) override;
 	
 	/** \brief Navigation space snapping parameters changed. */
-	virtual void NavSpaceSnappingChanged( int sector, int index );
+	void NavSpaceSnappingChanged(int sector, int index) override;
 	
 	/** \brief Navigation space layout changed. */
-	virtual void NavSpaceLayoutChanged( int sector, int index );
+	void NavSpaceLayoutChanged(int sector, int index) override;
 	/*@}*/
 	
 	

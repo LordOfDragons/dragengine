@@ -41,31 +41,22 @@
 
 gdeUOCCameraSetPropertyRotation::gdeUOCCameraSetPropertyRotation(gdeObjectClass *objectClass,
 	gdeOCCamera *camera, const char *newValue) :
-pObjectClass(nullptr),
+
 pCamera(nullptr)
 {
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(camera)
 	
-	SetShortInfo("Camera set property rotation");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPropertyRotation");
 	
 	pOldValue = camera->GetPropRotation();
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetPropertyRotation::~gdeUOCCameraSetPropertyRotation(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

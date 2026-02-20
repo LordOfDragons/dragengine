@@ -25,13 +25,14 @@
 #ifndef _FEVIEWFIIMAGE_H_
 #define _FEVIEWFIIMAGE_H_
 
+#include "../../font/feFont.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
 
 class feWindowMain;
-class feFont;
 
 
 
@@ -39,18 +40,22 @@ class feFont;
  * \brief Preview font image.
  */
 class feViewFIImage : public igdeViewRenderWindow{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<feViewFIImage>;
+	
 private:
 	feWindowMain &pWindowMain;
 	
-	feFont *pFont;
+	feFont::Ref pFont;
 	
 	int pBorderSize;
 	int pZoom;
 	decPoint pOffset;
 	
-	deCanvasPaintReference pCanvasImageBackground;
-	deCanvasImageReference pCanvasFontImage;
-	deCanvasPaintReference pCanvasActiveGlyph;
+	deCanvasPaint::Ref pCanvasImageBackground;
+	deCanvasImage::Ref pCanvasFontImage;
+	deCanvasPaint::Ref pCanvasActiveGlyph;
 	
 	
 	
@@ -58,10 +63,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view font image renderer. */
-	feViewFIImage( feWindowMain &windowMain );
+	feViewFIImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up view font image renderer. */
-	virtual ~feViewFIImage();
+protected:
+	~feViewFIImage() override;
+public:
 	/*@}*/
 	
 	
@@ -74,10 +81,10 @@ public:
 	
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	
 	
@@ -85,13 +92,13 @@ public:
 	inline int GetZoom() const{ return pZoom; }
 	
 	/** \brief Set zoom factor in percentage. */
-	void SetZoom( int zoom );
+	void SetZoom(int zoom);
 	
 	/** \brief Offset in pixels. */
 	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset in pixels. */
-	void SetOffset( const decPoint &offset );
+	void SetOffset(const decPoint &offset);
 	
 	
 	
@@ -101,13 +108,13 @@ public:
 	
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	
 	

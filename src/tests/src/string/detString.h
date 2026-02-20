@@ -12,11 +12,11 @@
 class detString : public detCase{
 public:
 	detString();
-	~detString();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detString() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestConstructor();
@@ -33,6 +33,8 @@ private:
 	void TestReplace();
 	void TestTrim();
 	void TestLowerUpper();
+	void TestDEHash();
+	void TestDECompare();
 };
 
 // end of include only once

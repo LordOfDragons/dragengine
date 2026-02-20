@@ -26,6 +26,7 @@
 #define _DEMAPANIMATIONBONES_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
 class deAnimation;
@@ -38,8 +39,7 @@ class dearBoneStateList;
  */
 class dearMapAnimationBones{
 private:
-	int *pIndices;
-	int pCount;
+	decTList<int> pIndices;
 	
 	
 	
@@ -57,17 +57,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Indices. */
+	inline const decTList<int> &GetIndices() const{ return pIndices; }
+	
 	/** Count of entries. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{ return pIndices.GetCount(); }
 	
 	/** Clear map. */
 	void Clear();
 	
 	/** Init map. */
-	void Init( const dearRule &rule );
+	void Init(const dearRule &rule);
 	
 	/** Animation bone index for rule bone index or -1. */
-	int GetAt( int ruleBoneIndex ) const;
+	int GetAt(int ruleBoneIndex) const;
 	/*@}*/
 };
 

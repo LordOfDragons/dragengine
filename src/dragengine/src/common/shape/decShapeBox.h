@@ -37,6 +37,11 @@
  * the box.
  */
 class DE_DLL_EXPORT decShapeBox : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeBox>;
+	
+	
 private:
 	decVector pHalfExtends;
 	decVector2 pTapering;
@@ -47,28 +52,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create box shape. */
-	decShapeBox( const decVector &halfExtends );
+	decShapeBox(const decVector &halfExtends);
 	
 	/** \brief Create box shape. */
-	decShapeBox( const decVector &halfExtends, const decVector &position );
+	decShapeBox(const decVector &halfExtends, const decVector &position);
 	
 	/** \brief Create box shape. */
-	decShapeBox( const decVector &halfExtends, const decVector &position,
-		const decQuaternion &orientation );
+	decShapeBox(const decVector &halfExtends, const decVector &position,
+		const decQuaternion &orientation);
 	
 	/** \brief Create tapered box shape. */
-	decShapeBox( const decVector &halfExtends, const decVector2 &tapering );
+	decShapeBox(const decVector &halfExtends, const decVector2 &tapering);
 	
 	/** \brief Create tapered box shape. */
-	decShapeBox( const decVector &halfExtends, const decVector2 &tapering,
-		const decVector &position );
+	decShapeBox(const decVector &halfExtends, const decVector2 &tapering,
+		const decVector &position);
 	
 	/** \brief Create tapered box shape. */
-	decShapeBox( const decVector &halfExtends, const decVector2 &tapering,
-		const decVector &position, const decQuaternion &orientation );
-	
-	/** \brief Clean up box shape. */
-	virtual ~decShapeBox();
+	decShapeBox(const decVector &halfExtends, const decVector2 &tapering,
+		const decVector &position, const decQuaternion &orientation);
 	/*@}*/
 	
 	
@@ -79,18 +81,18 @@ public:
 	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	
 	/** \brief Set half extends. */
-	void SetHalfExtends( const decVector &halfExtends );
+	void SetHalfExtends(const decVector &halfExtends);
 	
 	/** \brief Tapering. */
 	inline const decVector2 &GetTapering() const{ return pTapering; }
 	
 	/** \brief Set tapering. */
-	void SetTapering( const decVector2 &tapering );
+	void SetTapering(const decVector2 &tapering);
 	
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	
@@ -98,7 +100,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	void Visit(decShapeVisitor &visitor) override;
 	/*@}*/
 };
 

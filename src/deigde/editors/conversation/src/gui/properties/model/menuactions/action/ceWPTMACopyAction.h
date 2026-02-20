@@ -45,15 +45,16 @@ protected:
 	ceWPTMACopyAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMACopyAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACopyAction( ceWindowMain &windowMain,
-		ceConversationAction *action );
+	ceWPTMACopyAction(ceWindowMain &windowMain,
+		ceConversationAction *action);
 	
 	/** \brief Crete menu action. */
-	ceWPTMACopyAction( ceWindowMain &windowMain,
-		ceConversationAction *action, const char *text, igdeIcon *icon );
+	ceWPTMACopyAction(ceWindowMain &windowMain,
+		ceConversationAction *action, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -64,7 +65,7 @@ public:
 	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

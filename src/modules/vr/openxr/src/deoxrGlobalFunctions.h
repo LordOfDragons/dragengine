@@ -29,14 +29,14 @@
 
 #ifdef INTERNAL_XR_LOADER
 
-#define EXPORTED_OPENXR_FUNCTION( name ) extern PFN_##name name;
-#define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) extern PFN_##name name;
+#define EXPORTED_OPENXR_FUNCTION(name) extern PFN_##name name;
+#define GLOBAL_LEVEL_OPENXR_FUNCTION(name) extern PFN_##name name;
 
 #include "deoxrFunctionNames.h"
 
 extern XRAPI_ATTR XrResult XRAPI_CALL xrEnumerateApiLayerProperties(
 	uint32_t propertyCapacityInput, uint32_t *propertyCountOutput,
-	XrApiLayerProperties *properties );
+	XrApiLayerProperties *properties);
 
 #undef EXPORTED_OPENXR_FUNCTION
 #undef GLOBAL_LEVEL_OPENXR_FUNCTION

@@ -33,20 +33,22 @@
  */
 class deoxrDPSimpleController : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPSimpleController>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPSimpleController( deoxrInstance &instance );
+	deoxrDPSimpleController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPSimpleController();
+	~deoxrDPSimpleController() override;
 	/*@}*/
 	
 	
 protected:
-	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

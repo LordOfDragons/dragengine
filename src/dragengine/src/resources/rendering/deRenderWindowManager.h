@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render window resource manager. */
-	deRenderWindowManager( deEngine *engine );
+	deRenderWindowManager(deEngine *engine);
 	
 	/** \brief Clean up render window resource manager and reports leaking resources. */
-	virtual ~deRenderWindowManager();
+	~deRenderWindowManager() override;
 	/*@}*/
 	
 	
@@ -64,27 +64,27 @@ public:
 	deRenderWindow *GetRootRenderWindow() const;
 	
 	/** \brief Create top level render window. */
-	deRenderWindow *CreateRenderWindow();
+	deRenderWindow::Ref CreateRenderWindow();
 	
 	/** \brief Create render window inside a host window. */
 	#ifdef OS_ANDROID
-	deRenderWindow *CreateRenderWindowInside(void *window);
+	deRenderWindow::Ref CreateRenderWindowInside(void *window);
 	
 	#elif defined OS_WEBWASM
-	deRenderWindow *CreateRenderWindowInside(void *window);
+	deRenderWindow::Ref CreateRenderWindowInside(void *window);
 	
 	#elif defined OS_BEOS
-	deRenderWindow *CreateRenderWindowInside(BWindow *window);
+	deRenderWindow::Ref CreateRenderWindowInside(BWindow *window);
 	
 	#elif defined OS_UNIX_X11
-	deRenderWindow *CreateRenderWindowInside(Window window);
+	deRenderWindow::Ref CreateRenderWindowInside(Window window);
 	
 	#elif defined OS_W32
-	deRenderWindow *CreateRenderWindowInside(HWND window);
+	deRenderWindow::Ref CreateRenderWindowInside(HWND window);
 	#endif
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -92,10 +92,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -107,7 +107,7 @@ public:
 	 * 
 	 * For use by deRenderWindow only.
 	 */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

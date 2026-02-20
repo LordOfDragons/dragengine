@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASnippet;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASnippet.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo Action Snippet Conversation Action Set Topic.
  */
 class ceUCASnippetSetTopic : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCASnippetSetTopic>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	decString pOldTopic;
 	decString pNewTopic;
 	
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASnippetSetTopic( ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic );
+	ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASnippetSetTopic();
+	~ceUCASnippetSetTopic() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

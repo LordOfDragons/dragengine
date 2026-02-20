@@ -25,9 +25,11 @@
 #ifndef _MEUNDODATANAVSPACE_H_
 #define _MEUNDODATANAVSPACE_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
-class meNavigationSpace;
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 
@@ -40,9 +42,13 @@ class meNavigationSpace;
  * If not owned the navigation space is just a pointer which will not be freed.
  * By default the navigation space is not owned.
  */
-class meUndoDataNavSpace{
+class meUndoDataNavSpace : public deObject{
+public:
+	using Ref = deTObjectReference<meUndoDataNavSpace>;
+	using List = decTObjectOrderedSet<meUndoDataNavSpace>;
+	
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	decDVector pOldPosition;
 	decVector pOldOrientation;
 	
@@ -50,18 +56,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create navigation space undo data. */
-	meUndoDataNavSpace( meNavigationSpace *navspace );
+	meUndoDataNavSpace(meNavigationSpace *navspace);
 	
+protected:
 	/** \brief Clean up navigation space undo data. */
-	virtual ~meUndoDataNavSpace();
+	~meUndoDataNavSpace() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline const meNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Position before action. */
 	inline const decDVector &GetOldPosition() const{ return pOldPosition; }

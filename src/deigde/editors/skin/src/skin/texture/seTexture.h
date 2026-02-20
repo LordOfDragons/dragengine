@@ -25,16 +25,17 @@
 #ifndef _SETEXTURE_H_
 #define _SETEXTURE_H_
 
-#include "../property/sePropertyList.h"
+#include "../property/seProperty.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/deObject.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class seSkin;
 
 class deEngine;
-class deSkin;
 
 
 
@@ -43,20 +44,20 @@ class deSkin;
  */
 class seTexture : public deObject{
 public:
-	typedef deTObjectReference<seTexture> Ref;
-	
+	using Ref = deTObjectReference<seTexture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seTexture>,seTexture>;
 	
 	
 private:
 	deEngine *pEngine;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 	seSkin *pSkin;
 	
 	decString pName;
 	
-	sePropertyList pPropertyList;
-	seProperty *pActiveProperty;
+	seProperty::List pProperties;
+	seProperty::Ref pActiveProperty;
 	
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
@@ -71,38 +72,40 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new texture. */
-	seTexture( deEngine *engine, const char *name = "Texture" );
+	seTexture(deEngine *engine, const char *name);
 	/** Creates a new texture as a copy of another texture. */
-	seTexture( const seTexture &texture );
+	seTexture(const seTexture &texture);
 	/** Cleans up the texture. */
-	virtual ~seTexture();
+protected:
+	~seTexture() override;
+public:
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
-	/** \brief Retrieves the texture engine skin or NULL if not created. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Retrieves the texture engine skin or nullptr if not created. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
-	/** Retrieves the parent skin or NULL if there is none. */
+	/** Retrieves the parent skin or nullptr if there is none. */
 	inline seSkin *GetSkin() const{ return pSkin; }
-	/** Sets the parent skin or NULL if there is none. */
-	void SetSkin( seSkin *skin );
+	/** Sets the parent skin or nullptr if there is none. */
+	void SetSkin(seSkin *skin);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Determines if the layer is the active one. */
 	inline bool GetActive() const{ return pActive; }
 	/** Sets if the layer is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	/** Determines if the layer is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	/** Sets if the layer is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** Invalidate engine skin. */
 	void InvalidateEngineSkin();
@@ -123,19 +126,19 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the property list read-only. */
-	inline const sePropertyList &GetPropertyList() const{ return pPropertyList; }
+	inline const seProperty::List &GetProperties() const{ return pProperties; }
 	/** Adds a new property. */
-	void AddProperty( seProperty *property );
+	void AddProperty(seProperty *property);
 	/** Removes a property. */
-	void RemoveProperty( seProperty *property );
+	void RemoveProperty(seProperty *property);
 	/** Removes all properties. */
 	void RemoveAllProperties();
-	/** Retrieves the active property or NULL if none is active. */
-	inline seProperty *GetActiveProperty() const{ return pActiveProperty; }
+	/** Retrieves the active property or nullptr if none is active. */
+	inline const seProperty::Ref &GetActiveProperty() const{ return pActiveProperty; }
 	/** Determines if there is an active property or not. */
 	bool HasActiveProperty() const;
-	/** Sets the active property or NULL if none is active. */
-	void SetActiveProperty( seProperty *property );
+	/** Sets the active property or nullptr if none is active. */
+	void SetActiveProperty(seProperty *property);
 	
 	/**
 	 * \brief Update all resources.
@@ -152,19 +155,19 @@ public:
 	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
 	
 	/** \brief Set texture coordinates offset. */
-	void SetTexCoordOffset( const decVector2 &offset );
+	void SetTexCoordOffset(const decVector2 &offset);
 	
 	/** \brief Texture coordinates scaling. */
 	inline const decVector2 &GetTexCoordScaling() const{ return pTexCoordScaling; }
 	
 	/** \brief Set texture coordinates scaling. */
-	void SetTexCoordScaling( const decVector2 &scaling );
+	void SetTexCoordScaling(const decVector2 &scaling);
 	
 	/** \brief Texture coordinates rotation. */
 	inline float GetTexCoordRotation() const{ return pTexCoordRotation; }
 	
 	/** \brief Set texture coordinates rotation. */
-	void SetTexCoordRotation( float rotation );
+	void SetTexCoordRotation(float rotation);
 	/*@}*/
 	
 	

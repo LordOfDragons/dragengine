@@ -37,19 +37,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValueVector2::deNetworkValueVector2( eValueFormats format, const decVector2 &value ) :
-pFormat( format ),
-pValue( value ),
-pPrecision( 0.001f )
+deNetworkValueVector2::deNetworkValueVector2(eValueFormats format, const decVector2 &value) :
+pFormat(format),
+pValue(value),
+pPrecision(0.001f)
 {
-	switch( format ){
+	switch(format){
 	case evfFloat16:
 	case evfFloat32:
 	case evfFloat64:
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -61,12 +61,12 @@ deNetworkValueVector2::~deNetworkValueVector2(){
 // Management
 ///////////////
 
-void deNetworkValueVector2::SetVector( const decVector2 &value ){
+void deNetworkValueVector2::SetVector(const decVector2 &value){
 	pValue = value;
 }
 
-void deNetworkValueVector2::SetPrecision( double precision ){
-	pPrecision = decMath::max( precision, DOUBLE_SAFE_EPSILON );
+void deNetworkValueVector2::SetPrecision(double precision){
+	pPrecision = decMath::max(precision, DOUBLE_SAFE_EPSILON);
 }
 
 
@@ -74,6 +74,6 @@ void deNetworkValueVector2::SetPrecision( double precision ){
 // Visiting
 /////////////
 
-void deNetworkValueVector2::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitVector2( this );
+void deNetworkValueVector2::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitVector2(this);
 }

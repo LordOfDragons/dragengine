@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "reBaseUndoRotate.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 // class reBaseUndoRotate
@@ -35,11 +34,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseUndoRotate::reBaseUndoRotate(){
+reBaseUndoRotate::reBaseUndoRotate(igdeEnvironment &environment) :
+pEnvironment(environment)
+{
 	pModifyPosition = true;
 	pModifyOrientation = true;
-	SetShortInfo( "Rotate ?" );
-	pAxis = decVector( 0.0f, 0.0f, 1.0f );
+	SetShortInfo("@Rig.Undo.Rotate");
+	pAxis = decVector(0.0f, 0.0f, 1.0f);
 }
 
 reBaseUndoRotate::~reBaseUndoRotate(){
@@ -50,45 +51,45 @@ reBaseUndoRotate::~reBaseUndoRotate(){
 // Management
 ///////////////
 
-void reBaseUndoRotate::SetAngle( float angle ){
+void reBaseUndoRotate::SetAngle(float angle){
 	pAngle = angle;
 	Update();
 }
 
-void reBaseUndoRotate::SetCenterSector( const decPoint3 &sector ){
+void reBaseUndoRotate::SetCenterSector(const decPoint3 &sector){
 	pCenterSector = sector;
 	Update();
 }
 
-void reBaseUndoRotate::SetCenterPosition( const decVector &position ){
+void reBaseUndoRotate::SetCenterPosition(const decVector &position){
 	pCenterPosition = position;
 	Update();
 }
 
-void reBaseUndoRotate::SetAxis( const decVector &axis ){
+void reBaseUndoRotate::SetAxis(const decVector &axis){
 	pAxis = axis;
 	pAxis.Normalize();
 	Update();
 }
 
-void reBaseUndoRotate::SetModifyPosition( bool modifyPosition ){
+void reBaseUndoRotate::SetModifyPosition(bool modifyPosition){
 	pModifyPosition = modifyPosition;
 }
 
-void reBaseUndoRotate::SetModifyOrientation( bool modifyOrientation ){
+void reBaseUndoRotate::SetModifyOrientation(bool modifyOrientation){
 	pModifyOrientation = modifyOrientation;
 }
 
 void reBaseUndoRotate::Update(){
-	pMatrix = decMatrix::CreateTranslation( -pCenterPosition )
+	pMatrix = decMatrix::CreateTranslation(-pCenterPosition)
 		* decMatrix::CreateRotationAxis( pAxis, pAngle )
 		* decMatrix::CreateTranslation( pCenterPosition );
 	
 	decString info;
-	info.Format( "axis(%g,%g,%g) center(%i,%i,%i - %g,%g,%g) angle=%g°",
+	info.FormatSafe(pEnvironment.GetTranslationManager().Translate("Rig.Undo.Rotate.Format").ToUTF8(),
 		pAxis.x, pAxis.y, pAxis.z, pCenterSector.x, pCenterSector.y, pCenterSector.z,
-		pCenterPosition.x, pCenterPosition.y, pCenterPosition.z, pAngle / DEG2RAD );
-	SetLongInfo( info.GetString() );
+		pCenterPosition.x, pCenterPosition.y, pCenterPosition.z, pAngle * RAD2DEG);
+	SetLongInfo(info);
 }
 
 

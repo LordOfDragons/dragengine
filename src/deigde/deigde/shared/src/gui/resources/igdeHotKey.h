@@ -48,13 +48,13 @@ public:
 	igdeHotKey();
 	
 	/** \brief Create hot-key. */
-	igdeHotKey( int modifiers, deInputEvent::eKeyCodes keyCode );
+	igdeHotKey(int modifiers, deInputEvent::eKeyCodes keyCode);
 	
 	/** \brief Create hot-key. */
-	igdeHotKey( int modifiers, int key );
+	igdeHotKey(int modifiers, int key);
 	
 	/** \brief Create copy of hot-key. */
-	igdeHotKey( const igdeHotKey &hotKey );
+	igdeHotKey(const igdeHotKey &hotKey);
 	/*@}*/
 	
 	
@@ -65,13 +65,13 @@ public:
 	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
 	/** \brief Set platform independent key code or ekcUndefined if not set. */
-	void SetKeyCode( deInputEvent::eKeyCodes keyCode );
+	void SetKeyCode(deInputEvent::eKeyCodes keyCode);
 	
 	/** \brief Platform dependent key or 0 if not set. */
 	inline int GetKey() const{ return pKey; }
 	
 	/** \brief Set platform dependent key or 0 if not set. */
-	void SetKey( int key );
+	void SetKey(int key);
 	
 	/**
 	 * \brief Modifiers using flags from deInputEvent::eStateModifiers.
@@ -91,7 +91,7 @@ public:
 	 * - esmControl
 	 * - esmAlt
 	 */
-	void SetModifiers( int modifiers );
+	void SetModifiers(int modifiers);
 	/*@}*/
 	
 	
@@ -99,10 +99,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Hot-keys are equal. */
-	const bool operator==( const igdeHotKey &hotKey ) const;
+	const bool operator==(const igdeHotKey &hotKey) const;
 	
 	/** \brief Set hot-key. */
-	igdeHotKey &operator=( const igdeHotKey &hotKey );
+	igdeHotKey &operator=(const igdeHotKey &hotKey);
 	/*@}*/
 };
 

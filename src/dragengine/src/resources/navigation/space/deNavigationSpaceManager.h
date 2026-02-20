@@ -44,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new manager. */
-	deNavigationSpaceManager( deEngine *engine );
+	deNavigationSpaceManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
-	virtual ~deNavigationSpaceManager();
+	~deNavigationSpaceManager() override;
 	/*@}*/
 	
 	
@@ -61,10 +61,10 @@ public:
 	deNavigationSpace *GetRootNavigationSpace() const;
 	
 	/** \brief Create new navigation space. */
-	deNavigationSpace *CreateNavigationSpace();
+	deNavigationSpace::Ref CreateNavigationSpace();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief AI System Peers of all stored resources have to be created. */
-	virtual void SystemAILoad();
+	void SystemAILoad() override;
 	
 	/** \brief AI System Peers of all stored resources have to be freed. */
-	virtual void SystemAIUnload();
+	void SystemAIUnload() override;
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

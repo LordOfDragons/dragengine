@@ -27,6 +27,7 @@
 
 #include <deigde/utils/igdeBaseXML.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class meHeightTerrain;
@@ -40,7 +41,12 @@ class deLogger;
 /**
  * \brief Load Height Terrain Interface.
  */
-class meLSHeightTerrain : public igdeBaseXML{
+class meLSHeightTerrain : public deObject, public igdeBaseXML{
+public:
+	using Ref = deTObjectReference<meLSHeightTerrain>;
+	using List = decTObjectOrderedSet<meLSHeightTerrain>;
+	
+	
 private:
 	decString pName;
 	decString pPattern;
@@ -49,26 +55,30 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader. */
-	meLSHeightTerrain( deLogger *logger, const char *loggerSource );
+	meLSHeightTerrain(deLogger *logger, const char *loggerSource);
+	
+protected:
 	/** Cleans up the loader. */
-	virtual ~meLSHeightTerrain();
+	~meLSHeightTerrain() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const char *GetName() const{ return pName.GetString(); }
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the pattern. */
-	inline const char *GetPattern() const{ return pPattern.GetString(); }
+	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** Loads a height terrain. */
-	virtual void LoadFromFile( meHeightTerrain &heightTerrain, decBaseFileReader &file ) = 0;
+	virtual void LoadFromFile(meHeightTerrain &heightTerrain, decBaseFileReader &file) = 0;
 	/** Saves the height terrain. */
-	virtual void SaveToFile( meHeightTerrain &heightTerrain, decBaseFileWriter &file ) = 0;
+	virtual void SaveToFile(meHeightTerrain &heightTerrain, decBaseFileWriter &file) = 0;
 	/*@}*/
 };
 

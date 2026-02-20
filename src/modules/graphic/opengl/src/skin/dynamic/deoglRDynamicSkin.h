@@ -26,7 +26,7 @@
 #define _DEOGLRDYNAMICSKIN_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRDSRenderable;
 class deoglRenderThread;
@@ -40,19 +40,23 @@ class deoglRDynamicSkin : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decObjectList pRenderables;
+	decTObjectList<deoglRDSRenderable> pRenderables;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDynamicSkin>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin. */
-	deoglRDynamicSkin( deoglRenderThread &renderThread );
+	deoglRDynamicSkin(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up render dynamic skin. */
-	virtual ~deoglRDynamicSkin();
+	~deoglRDynamicSkin() override;
 	/*@}*/
 	
 	
@@ -67,19 +71,19 @@ public:
 	int GetRenderableCount() const;
 	
 	/** Renderable at index. */
-	deoglRDSRenderable *GetRenderableAt( int index ) const;
+	deoglRDSRenderable *GetRenderableAt(int index) const;
 	
 	/** Named renderable or \em NULL if absent. */
-	deoglRDSRenderable *GetRenderableNamed( const char *name ) const;
+	deoglRDSRenderable *GetRenderableNamed(const char *name) const;
 	
 	/** Index of named renderable or -1 if absent. */
-	int IndexOfRenderableNamed( const char *name ) const;
+	int IndexOfRenderableNamed(const char *name) const;
 	
 	/** Remove all renderables. */
 	void RemoveAllRenderables();
 	
 	/** Add renderable. */
-	void AddRenderable( deoglRDSRenderable *renderable );
+	void AddRenderable(deoglRDSRenderable *renderable);
 	/*@}*/
 };
 

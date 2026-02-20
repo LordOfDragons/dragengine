@@ -25,14 +25,13 @@
 #ifndef _DEOGLLIGHT_H_
 #define _DEOGLLIGHT_H_
 
+#include "deoglRLight.h"
 #include "../canvas/deoglCanvasViewListener.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
 
-class deoglRLight;
 class deoglSkinStateController;
 class deoglWorld;
 class deoglDynamicSkin;
@@ -51,7 +50,7 @@ class deoglLight : public deBaseGraphicLight, deoglDynamicSkinListener, deoglCan
 public:
 	deGraphicOpenGl &pOgl;
 	const deLight &pLight;
-	deoglRLight *pRLight;
+	deoglRLight::Ref pRLight;
 	deoglSkinStateController *pSkinStateController;
 	deoglWorld *pParentWorld;
 	deoglDynamicSkin *pDynamicSkin;
@@ -91,7 +90,7 @@ public:
 	
 	bool pRequiresUpdateEverySync;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoglLight>::Element pLLSyncWorld;
 	
 	
 	
@@ -99,10 +98,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light peer. */
-	deoglLight( deGraphicOpenGl &ogl, const deLight &light );
+	deoglLight(deGraphicOpenGl &ogl, const deLight &light);
 	
 	/** Clean up light peer. */
-	virtual ~deoglLight();
+	~deoglLight() override;
 	/*@}*/
 	
 	
@@ -124,12 +123,12 @@ public:
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
 	/** Render light. */
-	inline deoglRLight *GetRLight() const{ return pRLight; }
+	inline const deoglRLight::Ref &GetRLight() const{ return pRLight; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -144,18 +143,18 @@ public:
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	
 	
 	/** \name Canvas view listener */
 	/*@{*/
-	virtual void CanvasViewDestroyed();
-	virtual void CanvasViewRequiresSync();
+	void CanvasViewDestroyed() override;
+	void CanvasViewRequiresSync() override;
 	/*@}*/
 	
 	
@@ -163,13 +162,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Light type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** Geomtry parameter changed. */
-	virtual void GeometryParameterChanged();
+	void GeometryParameterChanged() override;
 	
 	/** Attenuation changed. */
-	virtual void AttenuationChanged();
+	void AttenuationChanged() override;
 	
 	/**
 	 * Light parameter changed.
@@ -180,46 +179,46 @@ public:
 	 * - Spot Smoothness
 	 * - Spot Exponent
 	 */
-	virtual void LightParameterChanged();
+	void LightParameterChanged() override;
 	
 	/** Shadow parameter changed. */
-	virtual void ShadowParameterChanged();
+	void ShadowParameterChanged() override;
 	
 	/** Light shape changed. */
-	virtual void ShapeChanged();
+	void ShapeChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** Shadow layer mask changed. */
-	virtual void ShadowLayerMaskChanged();
+	void ShadowLayerMaskChanged() override;
 	
 	/** Shadow ignore components changed. */
-	virtual void ShadowIgnoreComponentsChanged();
+	void ShadowIgnoreComponentsChanged() override;
 	
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Image, video or canvas view changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	/** Transform changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Activated changed. */
-	virtual void ActivatedChanged();
+	void ActivatedChanged() override;
 	
 	/** Hint changed. */
-	virtual void HintChanged();
+	void HintChanged() override;
 	
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoglLight>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoglLight>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

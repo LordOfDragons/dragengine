@@ -25,6 +25,7 @@
 #ifndef _DEOGLTRIANGLESORTER_H_
 #define _DEOGLTRIANGLESORTER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -40,26 +41,24 @@ private:
 		decVector vertex1;
 		decVector vertex2;
 		decVector vertex3;
-		float distance;
+		float distance = 0.0f;
+		
+		inline sTriangle() = default;
+		inline sTriangle(const decVector &v1, const decVector &v2, const decVector &v3) :
+		vertex1(v1), vertex2(v2), vertex3(v3){}
 	};
 	
 	
-	
-private:
-	sTriangle **pTriangles;
-	int pTriangleCount;
-	int pTriangleSize;
-	
+	private:
+	decTList<sTriangle> pTriangles;
+	decTList<const sTriangle*> pSortedTriangles;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create triangle sorter. */
-	deoglTriangleSorter();
-	
-	/** Clean up triangle sorter. */
-	~deoglTriangleSorter();
+	deoglTriangleSorter() = default;
 	/*@}*/
 	
 	
@@ -67,19 +66,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of triangles. */
-	inline int GetTriangleCount() const{ return pTriangleCount; }
+	inline int GetTriangleCount() const{ return pSortedTriangles.GetCount(); }
 	
 	/** First vertex of triangle at index. */
-	const decVector &GetTriangleVertex1( int triangle ) const;
+	const decVector &GetTriangleVertex1(int triangle) const;
 	
 	/** Second vertex of triangle at index. */
-	const decVector &GetTriangleVertex2( int triangle ) const;
+	const decVector &GetTriangleVertex2(int triangle) const;
 	
 	/** Third vertex of triangle at index. */
-	const decVector &GetTriangleVertex3( int triangle ) const;
+	const decVector &GetTriangleVertex3(int triangle) const;
 	
 	/** Add triangle. */
-	void AddTriangle( const decVector &vertex1, const decVector &vertex2, const decVector &vertex3 );
+	void AddTriangle(const decVector &vertex1, const decVector &vertex2, const decVector &vertex3);
 	
 	/** Remove all triangles. */
 	void RemoveAllTriangles();
@@ -90,17 +89,11 @@ public:
 	/** \name Sorting */
 	/*@{*/
 	/** Sort objects linear. */
-	void SortLinear( const decVector &position, const decVector &view );
+	void SortLinear(const decVector &position, const decVector &view);
 	
 	/** Sort objects radial. */
-	void SortRadial( const decVector &position );
+	void SortRadial(const decVector &position);
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
-	void pQuickSortDistance( int left, int right );
 };
 
 #endif

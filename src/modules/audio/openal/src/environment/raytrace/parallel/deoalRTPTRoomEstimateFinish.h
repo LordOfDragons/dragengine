@@ -27,19 +27,24 @@
 
 #include "deoalRTParallelEnvProbe.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
-class decPointerList;
 
 
 /**
  * \brief Finish ray tracing parallel task estimating room parameters.
  */
 class deoalRTPTRoomEstimateFinish : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoalRTPTRoomEstimateFinish>;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	
-	decPointerList pTasks;
+	decTOrderedSet<deoalRTPTRoomEstimate*> pTasks;
 	float pRange;
 	const deoalRayTraceConfig *pProbeConfig;
 	
@@ -51,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTRoomEstimateFinish( deoalRTParallelEnvProbe &owner );
+	deoalRTPTRoomEstimateFinish(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
-	virtual ~deoalRTPTRoomEstimateFinish();
+	~deoalRTPTRoomEstimateFinish() override;
 	/*@}*/
 	
 	
@@ -64,27 +69,27 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies( const decPointerList &tasks );
+	void AddDependencies(const decTOrderedSet<deoalRTPTRoomEstimate*> &tasks);
 	
 	/** \brief Set range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set room parameters to update. */
-	void SetRoomParameters( deoalRTParallelEnvProbe::sRoomParameters *roomParameters );
+	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
-	/** \brief Estimate tasks (deoalRTPTRoomEstimateFinish*). */
-	inline decPointerList GetEstimateTasks(){ return pTasks; }
+	/** \brief Estimate tasks. */
+	inline decTOrderedSet<deoalRTPTRoomEstimate*> GetEstimateTasks(){ return pTasks; }
 	
 	
 	
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -92,10 +97,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	

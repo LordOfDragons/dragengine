@@ -39,7 +39,8 @@ igdeNativeNullSpinTextField::igdeNativeNullSpinTextField(){
 igdeNativeNullSpinTextField::~igdeNativeNullSpinTextField(){
 }
 
-igdeNativeNullSpinTextField *igdeNativeNullSpinTextField::CreateNativeWidget( igdeSpinTextField& ){
+igdeNativeNullSpinTextField *igdeNativeNullSpinTextField::CreateNativeWidget(igdeSpinTextField&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullSpinTextField;
 }
 

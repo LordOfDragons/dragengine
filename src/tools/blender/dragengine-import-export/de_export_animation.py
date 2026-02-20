@@ -23,19 +23,15 @@
 #
 
 import bpy
-import blf
-import bgl
 import os
 import re
-import math
 import struct
-import mathutils
 
 from bpy_extras.io_utils import ExportHelper
 from mathutils import Vector, Matrix
 
 from .de_math import transformPosition, transformBonePosition, convertMatrixBone, ONE_PI
-from .de_math import vector_by_matrix, matrixToEuler, vecLength, vecSub, quatDot, quatNegate
+from .de_math import vector_by_matrix, matrixToEuler
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
@@ -608,9 +604,6 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 				float(progressCounter) / float(countMoves), move.name), peek=True)
 			self.progress.advance("Export {}...".format(move.name))
 			
-			"""bgl.glColor3f(0.34, 0.50, 0.76)
-			blf.position(0, 0, 0, 0)
-			blf.draw(0, move.name)"""
 			#Blender.Window.DrawProgressBar(0.2 + progressCounter * 0.8 / countMoves, "Writing Move %s..." % move.name)
 			playtime = 0
 			firstFrame = 1000000

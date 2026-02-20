@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -36,26 +36,30 @@ class aeRuleAnimationDifference;
  * Undo rule animation difference set enable vertex position set.
  */
 class aeURuleAnimDiffToggleEnableVertexPositionSet : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleAnimDiffToggleEnableVertexPositionSet>;
+	
+	
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleAnimDiffToggleEnableVertexPositionSet( aeRuleAnimationDifference *rule );
+	aeURuleAnimDiffToggleEnableVertexPositionSet(aeRuleAnimationDifference *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleAnimDiffToggleEnableVertexPositionSet();
+	~aeURuleAnimDiffToggleEnableVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

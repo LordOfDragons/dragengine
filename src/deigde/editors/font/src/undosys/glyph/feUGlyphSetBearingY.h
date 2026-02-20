@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 /**
  * \brief Glyph Set BearingY Undo Action.
  */
 class feUGlyphSetBearingY : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUGlyphSetBearingY>;
+	
+	
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	int pOldValue, pNewValue;
 	
 	

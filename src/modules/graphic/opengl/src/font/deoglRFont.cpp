@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRFont::deoglRFont( deoglRenderThread &renderThread, const deFont &font ) :
+deoglRFont::deoglRFont(deoglRenderThread &renderThread, const deFont &font) :
 pFilename(font.GetFilename()),
 pIsColorFont(font.GetIsColorFont()),
 pGlyphs(renderThread, font)
@@ -76,14 +76,13 @@ deoglRFontSize *deoglRFont::GetFontSizeFor(deFont &font, int lineHeight){
 	const int count = pSizes.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		deoglRFontSize * const rsize = (deoglRFontSize*)pSizes.GetAt(i);
+		deoglRFontSize * const rsize = pSizes.GetAt(i);
 		if(rsize->GetGlyphs().GetLineHeight() == lineHeight){
 			return rsize;
 		}
 	}
 	
-	const deoglRFontSize::Ref rsize(deoglRFontSize::Ref::New(
-		new deoglRFontSize(pGlyphs.GetRenderThread(), *this, *size)));
+	const deoglRFontSize::Ref rsize(deoglRFontSize::Ref::New(pGlyphs.GetRenderThread(), *this, *size));
 	pSizes.Add(rsize);
 	return rsize;
 }

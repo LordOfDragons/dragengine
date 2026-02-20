@@ -25,7 +25,9 @@
 #ifndef _DEOGLRENDERTASKVAO_H_
 #define _DEOGLRENDERTASKVAO_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
@@ -41,15 +43,16 @@ class deoglRenderTaskSharedInstance;
  * Render Task VAO.
  */
 class deoglRenderTaskVAO{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglRenderTaskVAO>;
+	
 private:
 	const deoglRenderTaskSharedVAO *pVAO;
 	
-	decPointerList pInstances;
+	decTList<deoglRenderTaskInstance*> pHasInstance;
+	decTUniqueList<deoglRenderTaskInstance> pInstances;
 	int pInstanceCount;
-	
-	deoglRenderTaskInstance **pHasInstance;
-	int pHasInstanceCount;
-	int pHasInstanceSize;
 	
 	
 	
@@ -84,7 +87,7 @@ public:
 	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
-	void SetVAO( const deoglRenderTaskSharedVAO *vao );
+	void SetVAO(const deoglRenderTaskSharedVAO *vao);
 	
 	
 	
@@ -92,14 +95,14 @@ public:
 	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** Render task instance at index. */
-	deoglRenderTaskInstance *GetInstanceAt( int index ) const;
+	deoglRenderTaskInstance *GetInstanceAt(int index) const;
 	
 	/** Add render task instance. */
-	deoglRenderTaskInstance *AddInstance( const deoglRenderTaskSharedInstance *instance );
+	deoglRenderTaskInstance *AddInstance(const deoglRenderTaskSharedInstance *instance);
 	
 	/** Sort instances by distance. */
-	void SortInstancesByDistance( deoglQuickSorter &sorter, const decDVector &position,
-		const decDVector &direction, double posDotDir );
+	void SortInstancesByDistance(deoglQuickSorter &sorter, const decDVector &position,
+		const decDVector &direction, double posDotDir);
 	/*@}*/
 };
 

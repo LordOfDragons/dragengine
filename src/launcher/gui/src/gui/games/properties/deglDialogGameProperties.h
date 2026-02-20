@@ -31,7 +31,6 @@
 #include <delauncher/game/delGame.h>
 
 class deglWindowMain;
-class delGameProfileList;
 class deglCalculateDirectorySize;
 
 
@@ -39,7 +38,7 @@ class deglCalculateDirectorySize;
  * Game properties panel.
  */
 class deglDialogGameProperties : public FXDialogBox{
-	FXDECLARE( deglDialogGameProperties )
+	FXDECLARE(deglDialogGameProperties)
 protected:
 	deglDialogGameProperties();
 	
@@ -132,8 +131,7 @@ private:
 	FXTextField *pEditSizeConfigDir;
 	FXTextField *pEditSizeCaches;
 	FXIconList *pListCaches;
-	sCache *pCaches;
-	int pCacheCount;
+	decTList<sCache> pCaches;
 	
 	deglCalculateDirectorySize *pCalcSizeDataDir;
 	deglCalculateDirectorySize *pCalcSizeCaptureDir;
@@ -146,10 +144,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDialogGameProperties( deglWindowMain *windowMain, delGame *game, FXWindow *owner );
+	deglDialogGameProperties(deglWindowMain *windowMain, delGame *game, FXWindow *owner);
 	
 	/** Clean up dialog. */
-	virtual ~deglDialogGameProperties();
+	~deglDialogGameProperties() override;
 	/*@}*/
 	
 	
@@ -184,25 +182,25 @@ public:
 	void SwitchToDiscUsage();
 	
 	/** Run modal invocation of the dialog. */
-	virtual FXuint execute( FXuint placement = PLACEMENT_OWNER );
+	FXuint execute(FXuint placement = PLACEMENT_OWNER) override;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onTabPanelsChanged( FXObject *sender, FXSelector selector, void *data );
+	long onTabPanelsChanged(FXObject *sender, FXSelector selector, void *data);
 	
-	long onBtnScriptModuleInfo( FXObject *sender, FXSelector selector, void *data );
+	long onBtnScriptModuleInfo(FXObject *sender, FXSelector selector, void *data);
 	
-	long onCBProfileChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnEditProfiles( FXObject *sender, FXSelector selector, void *data );
-	long onBtnDropCustomProfile( FXObject *sender, FXSelector selector, void *data );
-	long onCBPatchesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnPatches( FXObject *sender, FXSelector selector, void *data );
-	long onPUPatchUninstall( FXObject *sender, FXSelector selector, void *data );
+	long onCBProfileChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnEditProfiles(FXObject *sender, FXSelector selector, void *data);
+	long onBtnDropCustomProfile(FXObject *sender, FXSelector selector, void *data);
+	long onCBPatchesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnPatches(FXObject *sender, FXSelector selector, void *data);
+	long onPUPatchUninstall(FXObject *sender, FXSelector selector, void *data);
 	
-	long onTimerUpdateCalcSize( FXObject *sender, FXSelector selector, void *data );
+	long onTimerUpdateCalcSize(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 	
 	
@@ -210,12 +208,12 @@ public:
 private:
 	void pDeleteCaches();
 	
-	FXString FormatSize1024( uint64_t size ) const;
-	FXString FormatSize1000( uint64_t size ) const;
+	FXString FormatSize1024(uint64_t size) const;
+	FXString FormatSize1000(uint64_t size) const;
 	
-	static FXint fSortCache( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortCache(const FXIconItem *item1, const FXIconItem *item2);
 	
-	void pLogException( const char *source, const decStringList &exception );
+	void pLogException(const char *source, const decStringList &exception);
 };
 
 #endif

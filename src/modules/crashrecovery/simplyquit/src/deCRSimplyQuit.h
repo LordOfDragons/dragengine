@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deCRSimplyQuit( deLoadableModule &loadableModule );
+	deCRSimplyQuit(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up core fault. */
-	virtual ~deCRSimplyQuit();
+	~deCRSimplyQuit() override;
 	/*@}*/
 	
 	
@@ -57,21 +57,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Initialize module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** \brief Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	
 	/** \brief Recover from error. */
-	virtual bool RecoverFromError();
+	bool RecoverFromError() override;
 	/*@}*/
 	
 	
 	
 private:
 	void pPrintTrace();
-	void pPrintTracePoint( int number, deErrorTracePoint *point );
-	void pPrintTraceValue( int level, deErrorTraceValue *value );
+	void pPrintTracePoint(int number, deErrorTracePoint *point);
+	void pPrintTraceValue(int level, deErrorTraceValue *value);
 };
 
 #endif

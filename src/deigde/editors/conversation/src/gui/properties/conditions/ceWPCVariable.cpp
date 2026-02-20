@@ -47,12 +47,12 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -69,25 +69,25 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	cComboOperator( ceWPCVariable &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboOperator>;
+	cComboOperator(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || ! comboBox->GetSelectedItem() ){
+		if(!topic || !action || !condition || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const ceCConditionVariable::eOperators newOperator =
-			( ceCConditionVariable::eOperators )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( newOperator == condition->GetOperator() ){
+			(ceCConditionVariable::eOperators)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(newOperator == condition->GetOperator()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCVarSetOperator( topic, action, condition, newOperator ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetOperator::Ref::New(topic, action, condition, newOperator));
 	}
 };
 
@@ -95,19 +95,19 @@ class cTextVariable : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	cTextVariable( ceWPCVariable &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextVariable>;
+	cTextVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || condition->GetVariable() == textField->GetText() ){
+		if(!topic || !action || !condition || condition->GetVariable() == textField->GetText()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCVarSetVariable( topic, action, condition, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetVariable::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -115,24 +115,24 @@ class cTextTestValue : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	cTextTestValue( ceWPCVariable &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextTestValue>;
+	cTextTestValue(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
 		const int value = textField->GetInteger();
-		if( value == condition->GetTestValue() ){
+		if(value == condition->GetTestValue()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCVarSetTestValue( topic, action, condition, value ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetTestValue::Ref::New(topic, action, condition, value));
 	}
 };
 
@@ -140,19 +140,19 @@ class cTextTestVariable : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	cTextTestVariable( ceWPCVariable &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextTestVariable>;
+	cTextTestVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || condition->GetTestVariable() == textField->GetText() ){
+		if(!topic || !action || !condition || condition->GetTestVariable() == textField->GetText()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCVarSetTestVariable( topic, action, condition, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetTestVariable::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -166,26 +166,27 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCVariable::ceWPCVariable( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCVariable::ceWPCVariable(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	helper.ComboBox( *this, "Operator:", "Operator to compare variable value with test value",
-		pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "Equal", NULL, ( void* )( intptr_t )ceCConditionVariable::eopEqual );
-	pCBOperator->AddItem( "Not Equal", NULL, ( void* )( intptr_t )ceCConditionVariable::eopNotEqual );
-	pCBOperator->AddItem( "Less", NULL, ( void* )( intptr_t )ceCConditionVariable::eopLess );
-	pCBOperator->AddItem( "Less or Equal", NULL, ( void* )( intptr_t )ceCConditionVariable::eopLessEqual );
-	pCBOperator->AddItem( "Greater", NULL, ( void* )( intptr_t )ceCConditionVariable::eopGreater );
-	pCBOperator->AddItem( "Greater or Equal", NULL, ( void* )( intptr_t )ceCConditionVariable::eopGreaterEqual );
+	helper.ComboBox(*this, "@Conversation.WPConditionVariable.Operator", "@Conversation.VariableOperator.ToolTip",
+		pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.NotEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopNotEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.Less", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLess);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.LessOrEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.Greater", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreater);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.GreaterOrEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
 	
-	helper.EditString( *this, "Variable:", "Variable to compare",
-		pEditVariable, new cTextVariable( *this ) );
-	helper.EditInteger( *this, "Test Value:", "Value to compare against",
-		pEditTestValue, new cTextTestValue( *this ) );
-	helper.EditString( *this, "Test Variable:",
-		"Variable to compare against or empty string to use 'Test Value'",
-		pEditTestVariable, new cTextTestVariable( *this ) );
+	helper.EditString(*this, "@Conversation.WPConditionVariable.Variable", "@Conversation.VariableToCompare.ToolTip",
+		pEditVariable, cTextVariable::Ref::New(*this));
+	helper.EditInteger(*this, "@Conversation.WPConditionVariable.TestValue", "@Conversation.WPConditionVariable.TestValue.ToolTip",
+		pEditTestValue, cTextTestValue::Ref::New(*this));
+	helper.EditString(*this, "@Conversation.WPConditionVariable.TestVariable",
+		"@Conversation.VariableToCompareAgainst.ToolTip",
+		pEditTestVariable, cTextTestVariable::Ref::New(*this));
 }
 
 ceWPCVariable::~ceWPCVariable(){
@@ -199,25 +200,25 @@ ceWPCVariable::~ceWPCVariable(){
 ceCConditionVariable *ceWPCVariable::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectVariable ){
-		return ( ceCConditionVariable* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectVariable){
+		return (ceCConditionVariable*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 void ceWPCVariable::UpdateCondition(){
 	const ceCConditionVariable * const condition = GetCondition();
 	
-	if( condition ){
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )condition->GetOperator() );
-		pEditVariable->SetText( condition->GetVariable() );
-		pEditTestValue->SetInteger( condition->GetTestValue() );
-		pEditTestVariable->SetText( condition->GetTestVariable() );
+	if(condition){
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)condition->GetOperator());
+		pEditVariable->SetText(condition->GetVariable());
+		pEditTestValue->SetInteger(condition->GetTestValue());
+		pEditTestVariable->SetText(condition->GetTestVariable());
 		
 	}else{
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )ceCConditionVariable::eopEqual );
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)ceCConditionVariable::eopEqual);
 		pEditVariable->ClearText();
 		pEditTestValue->ClearText();
 		pEditTestVariable->ClearText();

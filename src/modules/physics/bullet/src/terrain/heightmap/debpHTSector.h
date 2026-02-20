@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPHTSECTOR_H_
 #define _DEBPHTSECTOR_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include "../../debpBulletShape.h"
 
-// predefinitions
-class debpBulletShape;
+#include <dragengine/common/collection/decTList.h>
+
+#include <dragengine/common/math/decMath.h>
+
 class debpHeightTerrain;
 class debpHeightTerrainShape;
 class debpPhysicsBody;
@@ -64,26 +64,26 @@ private:
 	
 	int pImageDim;
 	
-	debpHTSCluster *pClusters;
+	decTList<debpHTSCluster> pClusters;
 	int pClusterCount;
 	
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	decVector *pPoints;
+	decTList<decVector> pPoints;
 	bool pDirtyPoints;
 	
 	bool pMarked;
 	
 	debpPhysicsBody *pPhyBody;
 	debpHeightTerrainShape *pShape;
-	debpBulletShape *pBulletShape;
+	debpBulletShape::Ref pBulletShape;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sector. */
-	debpHTSector( debpHeightTerrain *heightTerrain, deHeightTerrainSector *sector );
+	debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSector *sector);
 	/** Cleans up the sector. */
 	~debpHTSector();
 	/*@}*/
@@ -100,10 +100,13 @@ public:
 	
 	/** Retrieves the number of clusters in the both direction. */
 	inline int GetClusterCount() const{ return pClusterCount; }
+	
+	/** Clusters. */
+	inline decTList<debpHTSCluster> &GetClusters(){ return pClusters; }
+	inline const decTList<debpHTSCluster> &GetClusters() const{ return pClusters; }
+	
 	/** Retrieves the cluster at the given location. */
-	debpHTSCluster &GetClusterAt( int x, int z ) const;
-	/** Retrieves the list of clusters. */
-	inline debpHTSCluster *GetClusters() const{ return pClusters; }
+	debpHTSCluster &GetClusterAt(int x, int z);
 	
 	/** Retrieves the minimum extend. */
 	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
@@ -113,13 +116,14 @@ public:
 	/** Retrieves the marked flag. */
 	inline bool GetMarked() const{ return pMarked; }
 	/** Sets the marked flag. */
-	inline void SetMarked( bool marked ){ pMarked = marked; }
+	inline void SetMarked(bool marked){pMarked = marked;}
 	
-	/** Retrieves the points for a height map with or without modifications. */
-	inline decVector *GetPoints() const{ return pPoints; }
+	/** Points. */
+	inline decTList<decVector> &GetPoints(){ return pPoints; }
+	inline const decTList<decVector> &GetPoints() const{ return pPoints; }
 	
 	/** Update heights. */
-	void UpdateHeights( int fromX, int fromY, int toX, int toY );
+	void UpdateHeights(int fromX, int fromY, int toX, int toY);
 	
 	/** Update. */
 	void Update();

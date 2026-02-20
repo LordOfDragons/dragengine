@@ -41,7 +41,7 @@
 #include "igdeEditVector2Listener.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeComboBox.h"
 #include "../igdeComboBoxFilter.h"
 #include "../igdeTextField.h"
@@ -49,7 +49,7 @@
 #include "../igdeColorBox.h"
 #include "../igdeCheckBox.h"
 #include "../igdeSwitcher.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeColorBoxListener.h"
 #include "../event/igdeComboBoxListener.h"
@@ -62,7 +62,6 @@
 #include "../../triggersystem/igdeTriggerTargetList.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -76,10 +75,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_TextField( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_TextField>;
 	
-	virtual void OnTextChanged( igdeTextField* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_TextField(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnTextChanged(igdeTextField*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -88,10 +89,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_EditPoint( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditPoint>;
 	
-	virtual void OnPointChanged( igdeEditPoint* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_EditPoint(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnPointChanged(igdeEditPoint*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -100,10 +103,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_EditPoint3( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditPoint3>;
 	
-	virtual void OnPoint3Changed( igdeEditPoint3* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_EditPoint3(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnPoint3Changed(igdeEditPoint3*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -112,10 +117,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_EditVector( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditVector>;
 	
-	virtual void OnVectorChanged( igdeEditVector* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_EditVector(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnVectorChanged(igdeEditVector*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -124,10 +131,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_EditVector2( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditVector2>;
 	
-	virtual void OnVector2Changed( igdeEditVector2* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_EditVector2(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnVector2Changed(igdeEditVector2*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -136,10 +145,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ColorBox( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ColorBox>;
 	
-	virtual void OnColorChanged( igdeColorBox* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_ColorBox(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnColorChanged(igdeColorBox*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -148,16 +159,18 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ActionBoolean( igdeEditPropertyValue &widget ) : 
-	igdeAction( "Value", "Boolean property value" ), pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionBoolean>;
 	
-	virtual void OnAction(){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_ActionBoolean(igdeEditPropertyValue &widget) : 
+	igdeAction("@Igde.EditPropertyValue.Action.Value", "@Igde.EditPropertyValue.Action.Value.ToolTip"), pWidget(widget){}
+	
+	void OnAction() override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWidget.GetEnabled() );
-		SetSelected( pWidget.GetValue() != "0" );
+	void Update() override{
+		SetEnabled(pWidget.GetEnabled());
+		SetSelected(pWidget.GetValue() != "0");
 	}
 };
 
@@ -166,10 +179,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_EditPath( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditPath>;
 	
-	virtual void OnEditPathChanged( igdeEditPath* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_EditPath(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnEditPathChanged(igdeEditPath*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -178,14 +193,16 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_EditSliderText( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditSliderText>;
 	
-	virtual void OnSliderTextValueChanged( igdeEditSliderText* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_EditSliderText(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnSliderTextValueChanged(igdeEditSliderText*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 	
-	virtual void OnSliderTextValueChanging( igdeEditSliderText* ){
-		pWidget.EditWidgetValueChanged( true );
+	void OnSliderTextValueChanging(igdeEditSliderText*) override{
+		pWidget.EditWidgetValueChanged(true);
 	}
 };
 
@@ -194,10 +211,12 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ComboBox( igdeEditPropertyValue &widget ) : pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ComboBox>;
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		pWidget.EditWidgetValueChanged( false );
+	igdeEditPropertyValue_ComboBox(igdeEditPropertyValue &widget) : pWidget(widget){}
+	
+	void OnTextChanged(igdeComboBox*) override{
+		pWidget.EditWidgetValueChanged(false);
 	}
 };
 
@@ -207,22 +226,23 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ActionEditRawValue( igdeEditPropertyValue &widget ) : 
-	igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiConfig ),
-		"Edit raw property value" ), pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditRawValue>;
 	
-	virtual void OnAction(){
-		decString value( pWidget.GetValue() );
-		if( igdeCommonDialogs::GetMultilineString( &pWidget, "Edit Raw Property Value",
-			"Raw property value. Values entered here can violate the\n"
-			"property type so be careful what you enter", value ) ){
-				pWidget.SetValue( value, pWidget.GetGDProperty() );
+	igdeEditPropertyValue_ActionEditRawValue(igdeEditPropertyValue &widget) : 
+	igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiConfig),
+		"@Igde.EditPropertyValue.Action.EditRawValue"), pWidget(widget){}
+	
+	void OnAction() override{
+		decString value(pWidget.GetValue());
+		if(igdeCommonDialogs::GetMultilineString(pWidget, "@Igde.EditPropertyValue.Dialog.EditRawValue.Title",
+			"@Igde.EditPropertyValue.Dialog.EditRawValue.Message", value)){
+				pWidget.SetValue(value, pWidget.GetGDProperty());
 				pWidget.NotifyPropertyValueChanged();
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWidget.GetEnabled() );
+	void Update() override{
+		SetEnabled(pWidget.GetEnabled());
 	}
 };
 
@@ -231,16 +251,18 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ActionEditList( igdeEditPropertyValue &widget ) :
-		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
-			"Edit list" ), pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditList>;
 	
-	virtual void OnAction(){
+	igdeEditPropertyValue_ActionEditList(igdeEditPropertyValue &widget) :
+		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
+			"@Igde.EditPropertyValue.Action.EditList"), pWidget(widget){}
+	
+	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWidget.GetEnabled() );
+	void Update() override{
+		SetEnabled(pWidget.GetEnabled());
 	}
 };
 
@@ -249,34 +271,34 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ActionEditTriggerExpression( igdeEditPropertyValue &widget ) :
-		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
-			"Edit trigger expression" ), pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditTriggerExpression>;
 	
-	virtual void OnAction(){
+	igdeEditPropertyValue_ActionEditTriggerExpression(igdeEditPropertyValue &widget) :
+		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
+			"@Igde.EditPropertyValue.Action.EditTriggerExpression"), pWidget(widget){}
+	
+	void OnAction() override{
 		igdeTriggerTargetList *triggerTargetList = pWidget.GetTriggerTargets();
-		if( ! triggerTargetList ){
+		if(!triggerTargetList){
 			static igdeTriggerTargetList dummyList;
 			dummyList.RemoveAll();
 			triggerTargetList = &dummyList;
 		}
 		
-		igdeDialogReference refDialog;
-		refDialog.TakeOver( new igdeTriggerExpressionDialog( pWidget.GetEnvironment(),
-			*triggerTargetList, pWidget.GetTriggerExpressionParser() ) );
-		igdeTriggerExpressionDialog &dialog = ( igdeTriggerExpressionDialog& )( igdeDialog& )refDialog;
+		igdeTriggerExpressionDialog::Ref dialog(igdeTriggerExpressionDialog::Ref::New(
+			pWidget.GetEnvironment(), *triggerTargetList, pWidget.GetTriggerExpressionParser()));
 		
-		dialog.SetExpression( pWidget.GetValue() );
-		if( ! dialog.Run( &pWidget ) || dialog.GetExpression() == pWidget.GetValue() ){
+		dialog->SetExpression(pWidget.GetValue());
+		if(!dialog->Run(&pWidget) || dialog->GetExpression() == pWidget.GetValue()){
 			return;
 		}
 		
-		pWidget.SetValue( dialog.GetExpression(), pWidget.GetGDProperty() );
-		pWidget.EditWidgetValueChanged( false );
+		pWidget.SetValue(dialog->GetExpression(), pWidget.GetGDProperty());
+		pWidget.EditWidgetValueChanged(false);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWidget.GetEnabled() );
+	void Update() override{
+		SetEnabled(pWidget.GetEnabled());
 	}
 };
 
@@ -285,16 +307,18 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ActionEditShape( igdeEditPropertyValue &widget ) :
-		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
-			"Edit shape" ), pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditShape>;
 	
-	virtual void OnAction(){
+	igdeEditPropertyValue_ActionEditShape(igdeEditPropertyValue &widget) :
+		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
+			"@Igde.EditPropertyValue.Action.EditShape"), pWidget(widget){}
+	
+	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWidget.GetEnabled() );
+	void Update() override{
+		SetEnabled(pWidget.GetEnabled());
 	}
 };
 
@@ -303,16 +327,18 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	igdeEditPropertyValue_ActionEditShapeList( igdeEditPropertyValue &widget ) :
-		igdeAction( "", widget.GetEnvironment().GetStockIcon( igdeEnvironment::esiEdit ),
-			"Edit shape list" ), pWidget( widget ){ }
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditShapeList>;
 	
-	virtual void OnAction(){
+	igdeEditPropertyValue_ActionEditShapeList(igdeEditPropertyValue &widget) :
+		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
+			"@Igde.EditPropertyValue.Action.EditShapeList"), pWidget(widget){}
+	
+	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWidget.GetEnabled() );
+	void Update() override{
+		SetEnabled(pWidget.GetEnabled());
 	}
 };
 
@@ -324,14 +350,14 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditPropertyValue::igdeEditPropertyValue( igdeUIHelper &helper ) :
-igdeContainerFlow( helper.GetEnvironment(), eaX, esFirst ),
-pGDProperty( NULL ),
-pEnabled( true ),
-pPreventEditing( false ),
-pTriggerTargets( NULL )
+igdeEditPropertyValue::igdeEditPropertyValue(igdeUIHelper &helper) :
+igdeContainerFlow(helper.GetEnvironment(), eaX, esFirst),
+pGDProperty(nullptr),
+pEnabled(true),
+pPreventEditing(false),
+pTriggerTargets(nullptr)
 {
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
 igdeEditPropertyValue::~igdeEditPropertyValue(){
@@ -343,8 +369,8 @@ igdeEditPropertyValue::~igdeEditPropertyValue(){
 // Management
 ///////////////
 
-void igdeEditPropertyValue::SetValue( const char *value, const igdeGDProperty *gdProperty ){
-	if( value == pValue && gdProperty == pGDProperty ){
+void igdeEditPropertyValue::SetValue(const char *value, const igdeGDProperty *gdProperty){
+	if(value == pValue && gdProperty == pGDProperty){
 		return;
 	}
 	
@@ -354,42 +380,42 @@ void igdeEditPropertyValue::SetValue( const char *value, const igdeGDProperty *g
 }
 
 void igdeEditPropertyValue::ClearValue(){
-	if( pValue.IsEmpty() ){
+	if(pValue.IsEmpty()){
 		return;
 	}
 	
 	pValue.Empty();
-	pGDProperty = NULL;
+	pGDProperty = nullptr;
 	pUpdateEditWidgets();
 }
 
 
 
-void igdeEditPropertyValue::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void igdeEditPropertyValue::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
 	
-	pString->SetEnabled( enabled );
-	pInteger->SetEnabled( enabled );
-	pPoint->SetEnabled( enabled );
-	pPoint3->SetEnabled( enabled );
-	pFloat->SetEnabled( enabled );
-	pVector->SetEnabled( enabled );
-	pVector2->SetEnabled( enabled );
-	pColor->SetEnabled( enabled );
-	pBoolean->SetEnabled( enabled );
-	pPath->SetEnabled( enabled );
-	pRange->SetEnabled( enabled );
-	pSelect->SetEnabled( enabled );
-	pList->SetEnabled( enabled );
-	pTriggerExpression->SetEnabled( enabled );
-	pTriggerTarget->SetEnabled( enabled );
-	pShape->SetEnabled( enabled );
-	pShapeList->SetEnabled( enabled );
-	pIdentifier->SetEnabled( enabled );
+	pString->SetEnabled(enabled);
+	pInteger->SetEnabled(enabled);
+	pPoint->SetEnabled(enabled);
+	pPoint3->SetEnabled(enabled);
+	pFloat->SetEnabled(enabled);
+	pVector->SetEnabled(enabled);
+	pVector2->SetEnabled(enabled);
+	pColor->SetEnabled(enabled);
+	pBoolean->SetEnabled(enabled);
+	pPath->SetEnabled(enabled);
+	pRange->SetEnabled(enabled);
+	pSelect->SetEnabled(enabled);
+	pList->SetEnabled(enabled);
+	pTriggerExpression->SetEnabled(enabled);
+	pTriggerTarget->SetEnabled(enabled);
+	pShape->SetEnabled(enabled);
+	pShapeList->SetEnabled(enabled);
+	pIdentifier->SetEnabled(enabled);
 	
 	pActionEditRawValue->Update();
 	pActionBooleanValue->Update();
@@ -400,12 +426,12 @@ void igdeEditPropertyValue::SetEnabled( bool enabled ){
 }
 
 void igdeEditPropertyValue::Focus(){
-	if( ! pGDProperty ){
+	if(!pGDProperty){
 		pString->Focus();
 		return;
 	}
 	
-	switch( pGDProperty->GetType() ){
+	switch(pGDProperty->GetType()){
 	case igdeGDProperty::eptString:
 	default:
 		pString->Focus();
@@ -483,8 +509,8 @@ void igdeEditPropertyValue::Focus(){
 
 
 
-void igdeEditPropertyValue::SetIdentifiers( const decStringSet &identifiers ){
-	const decString selection( pIdentifier->GetText() );
+void igdeEditPropertyValue::SetIdentifiers(const decStringSet &identifiers){
+	const decString selection(pIdentifier->GetText());
 	
 	pIdentifier->RemoveAllItems();
 	
@@ -492,81 +518,71 @@ void igdeEditPropertyValue::SetIdentifiers( const decStringSet &identifiers ){
 	
 	const int count = identifiers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pIdentifier->AddItem( identifiers.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pIdentifier->AddItem(identifiers.GetAt(i));
 	}
 	pIdentifier->SortItems();
 	pIdentifier->StoreFilterItems();
 	
-	pIdentifier->SetText( selection );
+	pIdentifier->SetText(selection);
 }
 
-void igdeEditPropertyValue::SetTriggerTargets( igdeTriggerTargetList *triggerTargets ){
-	const decString selection( pTriggerTarget->GetText() );
+void igdeEditPropertyValue::SetTriggerTargets(igdeTriggerTargetList *triggerTargets){
+	const decString selection(pTriggerTarget->GetText());
 	
 	pTriggerTarget->RemoveAllItems();
 	
 	pTriggerTargets = triggerTargets;
 	
-	if( triggerTargets ){
-		const int count = triggerTargets->GetCount();
-		int i;
-		for( i=0; i<count; i++ ){
-			pTriggerTarget->AddItem( triggerTargets->GetAt( i )->GetName() );
-		}
+	if(triggerTargets){
+		triggerTargets->GetTargets().Visit([&](const igdeTriggerTarget &t){
+			pTriggerTarget->AddItem(t.GetName());
+		});
 		pTriggerTarget->SortItems();
 		pTriggerTarget->StoreFilterItems();
 	}
 	
-	pTriggerTarget->SetText( selection );
+	pTriggerTarget->SetText(selection);
 }
 
 
 
-void igdeEditPropertyValue::AddListener( igdeEditPropertyValueListener* listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeEditPropertyValue::AddListener(igdeEditPropertyValueListener* listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeEditPropertyValue::RemoveListener( igdeEditPropertyValueListener* listener ){
-	pListeners.Remove( listener );
+void igdeEditPropertyValue::RemoveListener(igdeEditPropertyValueListener* listener){
+	pListeners.Remove(listener);
 }
-
 void igdeEditPropertyValue::NotifyPropertyValueChanged(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditPropertyValueListener* )listeners.GetAt( i ) )->OnPropertyValueChanged( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPropertyValueListener &l){
+		l.OnPropertyValueChanged(this);
+	});
 }
 
 void igdeEditPropertyValue::NotifyPropertyValueChanging(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditPropertyValueListener* )listeners.GetAt( i ) )->OnPropertyValueChanging( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPropertyValueListener &l){
+		l.OnPropertyValueChanging(this);
+	});
 }
 
 
-
-void igdeEditPropertyValue::EditWidgetValueChanged( bool changing ){
-	if( pPreventEditing ){
+void igdeEditPropertyValue::EditWidgetValueChanged(bool changing){
+	if(pPreventEditing){
 		return;
 	}
 	
-	if( ! pGDProperty ){
-		if( pValue == pString->GetText() ){
+	if(!pGDProperty){
+		if(pValue == pString->GetText()){
 			return;
 		}
 		pValue = pString->GetText();
-		if( changing ){
+		if(changing){
 			NotifyPropertyValueChanging();
 			
 		}else{
@@ -577,38 +593,38 @@ void igdeEditPropertyValue::EditWidgetValueChanged( bool changing ){
 	
 	decString newValue;
 	
-	switch( pGDProperty->GetType() ){
+	switch(pGDProperty->GetType()){
 	case igdeGDProperty::eptString:
 	default:
 		newValue = pString->GetText();
 		break;
 		
 	case igdeGDProperty::eptInteger:
-		newValue.Format( "%d", pInteger->GetInteger() );
+		newValue.Format("%d", pInteger->GetInteger());
 		break;
 		
 	case igdeGDProperty::eptPoint2:
-		newValue.Format( "%d %d", pPoint->GetPoint().x, pPoint->GetPoint().y );
+		newValue.Format("%d %d", pPoint->GetPoint().x, pPoint->GetPoint().y);
 		break;
 		
 	case igdeGDProperty::eptPoint3:
-		newValue.Format( "%d %d %d", pPoint3->GetPoint3().x, pPoint3->GetPoint3().y, pPoint3->GetPoint3().z );
+		newValue.Format("%d %d %d", pPoint3->GetPoint3().x, pPoint3->GetPoint3().y, pPoint3->GetPoint3().z);
 		break;
 		
 	case igdeGDProperty::eptFloat:
-		newValue.Format( "%g", pFloat->GetFloat() );
+		newValue.Format("%g", pFloat->GetFloat());
 		break;
 		
 	case igdeGDProperty::eptVector2:
-		pCodec.EncodeVector2( pVector2->GetVector2(), newValue );
+		pCodec.EncodeVector2(pVector2->GetVector2(), newValue);
 		break;
 		
 	case igdeGDProperty::eptVector3:
-		pCodec.EncodeVector( pVector->GetVector(), newValue );
+		pCodec.EncodeVector(pVector->GetVector(), newValue);
 		break;
 		
 	case igdeGDProperty::eptColor:
-		pCodec.EncodeColor3( pColor->GetColor(), newValue );
+		pCodec.EncodeColor3(pColor->GetColor(), newValue);
 		break;
 		
 	case igdeGDProperty::eptBoolean:
@@ -620,7 +636,7 @@ void igdeEditPropertyValue::EditWidgetValueChanged( bool changing ){
 		break;
 		
 	case igdeGDProperty::eptRange:
-		newValue.Format( "%g", pRange->GetValue() );
+		newValue.Format("%g", pRange->GetValue());
 		break;
 		
 	case igdeGDProperty::eptSelect:
@@ -654,7 +670,7 @@ void igdeEditPropertyValue::EditWidgetValueChanged( bool changing ){
 	
 	pValue = newValue;
 	
-	if( changing ){
+	if(changing){
 		NotifyPropertyValueChanging();
 		
 	}else{
@@ -667,227 +683,210 @@ void igdeEditPropertyValue::EditWidgetValueChanged( bool changing ){
 // Private Functions
 //////////////////////
 
-void igdeEditPropertyValue::pCreateContent( igdeUIHelper &helper ){
+void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 	igdeEnvironment &env = helper.GetEnvironment();
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	
-	pActionEditRawValue.TakeOver( new igdeEditPropertyValue_ActionEditRawValue( *this ) );
-	pActionBooleanValue.TakeOver( new igdeEditPropertyValue_ActionBoolean( *this ) );
-	pActionEditList.TakeOver( new igdeEditPropertyValue_ActionEditList( *this ) );
-	pActionEditTriggerExpression.TakeOver( new igdeEditPropertyValue_ActionEditTriggerExpression( *this ) );
-	pActionEditShape.TakeOver( new igdeEditPropertyValue_ActionEditShape( *this ) );
-	pActionEditShapeList.TakeOver( new igdeEditPropertyValue_ActionEditShapeList( *this ) );
+	pActionEditRawValue = igdeEditPropertyValue_ActionEditRawValue::Ref::New(*this);
+	pActionBooleanValue = igdeEditPropertyValue_ActionBoolean::Ref::New(*this);
+	pActionEditList = igdeEditPropertyValue_ActionEditList::Ref::New(*this);
+	pActionEditTriggerExpression = igdeEditPropertyValue_ActionEditTriggerExpression::Ref::New(*this);
+	pActionEditShape = igdeEditPropertyValue_ActionEditShape::Ref::New(*this);
+	pActionEditShapeList = igdeEditPropertyValue_ActionEditShapeList::Ref::New(*this);
 	
-	pSwitcher.TakeOver( new igdeSwitcher( env ) );
-	AddChild( pSwitcher );
-	helper.Button( *this, pActionEditRawValue );
+	pSwitcher = igdeSwitcher::Ref::New(env);
+	AddChild(pSwitcher);
+	helper.Button(*this, pActionEditRawValue);
 	
-	helper.EditString( pSwitcher, "Property value", pString,
-		new igdeEditPropertyValue_TextField( *this ) );
+	helper.EditString(pSwitcher, "@Igde.EditPropertyValue.PropertyValue.ToolTip", pString, igdeEditPropertyValue_TextField::Ref::New(*this));
 	
-	helper.EditInteger( pSwitcher, "Integer property value", pInteger,
-		new igdeEditPropertyValue_TextField( *this ) );
+	helper.EditInteger(pSwitcher, "@Igde.EditPropertyValue.Integer.ToolTip", pInteger, igdeEditPropertyValue_TextField::Ref::New(*this));
 	
-	helper.EditPoint( pSwitcher, "Point property value", pPoint,
-		new igdeEditPropertyValue_EditPoint( *this ) );
+	helper.EditPoint(pSwitcher, "@Igde.EditPropertyValue.Point.ToolTip", pPoint, igdeEditPropertyValue_EditPoint::Ref::New(*this));
 	
-	helper.EditPoint3( pSwitcher, "3-Component point property value", pPoint3,
-		new igdeEditPropertyValue_EditPoint3( *this ) );
+	helper.EditPoint3(pSwitcher, "3-Component point property value", pPoint3, igdeEditPropertyValue_EditPoint3::Ref::New(*this));
 	
-	helper.EditFloat( pSwitcher, "Floating point property value", pFloat,
-		new igdeEditPropertyValue_TextField( *this ) );
+	helper.EditFloat(pSwitcher, "@Igde.EditPropertyValue.Float.ToolTip", pFloat, igdeEditPropertyValue_TextField::Ref::New(*this));
 	
-	helper.EditVector2( pSwitcher, "2-Component vector property value", pVector2,
-		new igdeEditPropertyValue_EditVector2( *this ) );
+	helper.EditVector2(pSwitcher, "2-Component vector property value", pVector2, igdeEditPropertyValue_EditVector2::Ref::New(*this));
 	
-	helper.EditVector( pSwitcher, "Vector property value", pVector,
-		new igdeEditPropertyValue_EditVector( *this ) );
+	helper.EditVector(pSwitcher, "@Igde.EditPropertyValue.Vector.ToolTip", pVector, igdeEditPropertyValue_EditVector::Ref::New(*this));
 	
-	helper.ColorBox( pSwitcher, "Color property value", pColor,
-		new igdeEditPropertyValue_ColorBox( *this ) );
+	helper.ColorBox(pSwitcher, "@Igde.EditPropertyValue.Color.ToolTip", pColor, igdeEditPropertyValue_ColorBox::Ref::New(*this));
 	
-	helper.CheckBoxOnly( pSwitcher, pBoolean, pActionBooleanValue );
+	helper.CheckBoxOnly(pSwitcher, pBoolean, pActionBooleanValue);
 	
-	helper.EditPath( pSwitcher, "Path property value", igdeEnvironment::efpltAll, pPath,
-		new igdeEditPropertyValue_EditPath( *this ) );
+	helper.EditPath(pSwitcher, "@Igde.EditPropertyValue.Path.ToolTip", igdeEnvironment::efpltAll, pPath, igdeEditPropertyValue_EditPath::Ref::New(*this));
 	
-	helper.EditSliderText( pSwitcher, "Range property value", 0.0f, 0.0f, 6, 3, 1.0f, pRange,
-		new igdeEditPropertyValue_EditSliderText( *this ) );
+	helper.EditSliderText(pSwitcher, "@Igde.EditPropertyValue.Range.ToolTip", 0.0f, 0.0f, 6, 3, 1.0f, pRange, igdeEditPropertyValue_EditSliderText::Ref::New(*this));
 	
-	helper.ComboBox( pSwitcher, "Selection property value", pSelect,
-		new igdeEditPropertyValue_ComboBox( *this ) );
+	helper.ComboBox(pSwitcher, "@Igde.EditPropertyValue.Select.ToolTip", pSelect, igdeEditPropertyValue_ComboBox::Ref::New(*this));
 	
-	frameLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	helper.EditString( frameLine, "List property value", pList,
-		new igdeEditPropertyValue_TextField( *this ) );
-	helper.Button( frameLine, pActionEditList );
-	pSwitcher->AddChild( frameLine );
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.List.ToolTip", pList, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.Button(frameLine, pActionEditList);
+	pSwitcher->AddChild(frameLine);
 	
-	frameLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	helper.EditString( frameLine, "Trigger expression property value", pTriggerExpression,
-		new igdeEditPropertyValue_TextField( *this ) );
-	helper.Button( frameLine, pActionEditTriggerExpression );
-	pSwitcher->AddChild( frameLine );
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.TriggerExpression.ToolTip", pTriggerExpression, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.Button(frameLine, pActionEditTriggerExpression);
+	pSwitcher->AddChild(frameLine);
 	
-	helper.ComboBoxFilter( pSwitcher, true, "Trigger target property value", pTriggerTarget,
-		new igdeEditPropertyValue_ComboBox( *this ) );
+	helper.ComboBoxFilter(pSwitcher, true, "@Igde.EditPropertyValue.TriggerTarget.ToolTip", pTriggerTarget, igdeEditPropertyValue_ComboBox::Ref::New(*this));
 	pTriggerTarget->SetDefaultSorter();
 	
-	frameLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	helper.EditString( frameLine, "Shape property value", pShape,
-		new igdeEditPropertyValue_TextField( *this ) );
-	helper.Button( frameLine, pActionEditShape );
-	pSwitcher->AddChild( frameLine );
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.Shape.ToolTip", pShape, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.Button(frameLine, pActionEditShape);
+	pSwitcher->AddChild(frameLine);
 	
-	frameLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	helper.EditString( frameLine, "Shape list property value", pShapeList,
-		new igdeEditPropertyValue_TextField( *this ) );
-	helper.Button( frameLine, pActionEditShapeList );
-	pSwitcher->AddChild( frameLine );
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.ShapeList.ToolTip", pShapeList, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.Button(frameLine, pActionEditShapeList);
+	pSwitcher->AddChild(frameLine);
 	
-	helper.ComboBoxFilter( pSwitcher, true, "Identifier property value", pIdentifier,
-		new igdeEditPropertyValue_ComboBox( *this ) );
+	helper.ComboBoxFilter(pSwitcher, true, "@Igde.EditPropertyValue.Identifier.ToolTip", pIdentifier, igdeEditPropertyValue_ComboBox::Ref::New(*this));
 	pIdentifier->SetDefaultSorter();
 }
 
 
 
 void igdeEditPropertyValue::pUpdateEditWidgets(){
-	if( ! pGDProperty ){
-		pSwitcher->SetCurrent( 0 );
-		pString->SetText( pValue );
+	if(!pGDProperty){
+		pSwitcher->SetCurrent(0);
+		pString->SetText(pValue);
 		return;
 	}
 	
 	pPreventEditing = true;
 	
 	try{
-		switch( pGDProperty->GetType() ){
+		switch(pGDProperty->GetType()){
 		case igdeGDProperty::eptString:
 		default:
-			pSwitcher->SetCurrent( 0 );
-			pString->SetText( pValue );
+			pSwitcher->SetCurrent(0);
+			pString->SetText(pValue);
 			break;
 			
 		case igdeGDProperty::eptInteger:
-			pSwitcher->SetCurrent( 1 );
-			pInteger->SetInteger( pValue.ToIntValid() );
+			pSwitcher->SetCurrent(1);
+			pInteger->SetInteger(pValue.ToIntValid());
 			break;
 			
 		case igdeGDProperty::eptPoint2:{
-			pSwitcher->SetCurrent( 2 );
-			int values[ 2 ] = { 0, 0 };
-			pCodec.DecodeFixedIntList( pValue, values, 2 );
-			pPoint->SetPoint( decPoint( values[ 0 ], values[ 1 ] ) );
+			pSwitcher->SetCurrent(2);
+			int values[2] = {0, 0};
+			pCodec.DecodeFixedIntList(pValue, values, 2);
+			pPoint->SetPoint(decPoint(values[0], values[1]));
 			}break;
 			
 		case igdeGDProperty::eptPoint3:{
-			pSwitcher->SetCurrent( 3 );
-			int values[ 3 ] = { 0, 0, 0 };
-			pCodec.DecodeFixedIntList( pValue, values, 3 );
-			pPoint3->SetPoint3( decPoint3( values[ 0 ], values[ 1 ], values[ 2 ] ) );
+			pSwitcher->SetCurrent(3);
+			int values[3] = {0, 0, 0};
+			pCodec.DecodeFixedIntList(pValue, values, 3);
+			pPoint3->SetPoint3(decPoint3(values[0], values[1], values[2]));
 			}break;
 			
 		case igdeGDProperty::eptFloat:
-			pSwitcher->SetCurrent( 4 );
-			pFloat->SetFloat( pValue.ToFloatValid() );
+			pSwitcher->SetCurrent(4);
+			pFloat->SetFloat(pValue.ToFloatValid());
 			break;
 			
 		case igdeGDProperty::eptVector2:{
-			pSwitcher->SetCurrent( 5 );
-			float values[ 2 ] = { 0.0f, 0.0f };
-			pCodec.DecodeFixedFloatList( pValue, values, 2 );
-			pVector2->SetVector2( decVector2( values[ 0 ], values[ 1 ] ) );
+			pSwitcher->SetCurrent(5);
+			float values[2] = {0.0f, 0.0f};
+			pCodec.DecodeFixedFloatList(pValue, values, 2);
+			pVector2->SetVector2(decVector2(values[0], values[1]));
 			}break;
 			
 		case igdeGDProperty::eptVector3:{
-			pSwitcher->SetCurrent( 6 );
-			float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
-			pCodec.DecodeFixedFloatList( pValue, values, 3 );
-			pVector->SetVector( decVector( values[ 0 ], values[ 1 ], values[ 2 ] ) );
+			pSwitcher->SetCurrent(6);
+			float values[3] = {0.0f, 0.0f, 0.0f};
+			pCodec.DecodeFixedFloatList(pValue, values, 3);
+			pVector->SetVector(decVector(values[0], values[1], values[2]));
 			}break;
 			
 		case igdeGDProperty::eptColor:{
-			pSwitcher->SetCurrent( 7 );
-			float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
-			pCodec.DecodeFixedFloatList( pValue, values, 3 );
-			pColor->SetColor( decColor( values[ 0 ], values[ 1 ], values[ 2 ] ) );
+			pSwitcher->SetCurrent(7);
+			float values[3] = {0.0f, 0.0f, 0.0f};
+			pCodec.DecodeFixedFloatList(pValue, values, 3);
+			pColor->SetColor(decColor(values[0], values[1], values[2]));
 			}break;
 			
 		case igdeGDProperty::eptBoolean:
-			pSwitcher->SetCurrent( 8 );
-			DEASSERT_TRUE( pValue == "0" || pValue == "1" );
-			pBoolean->SetChecked( pValue != "0" );
+			pSwitcher->SetCurrent(8);
+			DEASSERT_TRUE(pValue == "0" || pValue == "1");
+			pBoolean->SetChecked(pValue != "0");
 			break;
 			
 		case igdeGDProperty::eptPath:
-			pSwitcher->SetCurrent( 9 );
-			pPath->GetCustomPatternList().RemoveAllFilePatterns();
+			pSwitcher->SetCurrent(9);
+			pPath->GetCustomPatternList().RemoveAll();
 			
-			switch( pGDProperty->GetPathPatternType() ){
+			switch(pGDProperty->GetPathPatternType()){
 			case igdeGDProperty::epptAll:
-				pPath->SetResourceType( igdeEnvironment::efpltAll );
+				pPath->SetResourceType(igdeEnvironment::efpltAll);
 				break;
 				
 			case igdeGDProperty::epptModel:
 			case igdeGDProperty::epptAudioModel:
-				pPath->SetResourceType( igdeEnvironment::efpltModel );
+				pPath->SetResourceType(igdeEnvironment::efpltModel);
 				break;
 				
 			case igdeGDProperty::epptSkin:
-				pPath->SetResourceType( igdeEnvironment::efpltSkin );
+				pPath->SetResourceType(igdeEnvironment::efpltSkin);
 				break;
 				
 			case igdeGDProperty::epptRig:
-				pPath->SetResourceType( igdeEnvironment::efpltRig );
+				pPath->SetResourceType(igdeEnvironment::efpltRig);
 				break;
 				
 			case igdeGDProperty::epptAnimation:
-				pPath->SetResourceType( igdeEnvironment::efpltAnimation );
+				pPath->SetResourceType(igdeEnvironment::efpltAnimation);
 				break;
 				
 			case igdeGDProperty::epptAnimator:
-				pPath->SetResourceType( igdeEnvironment::efpltAnimator );
+				pPath->SetResourceType(igdeEnvironment::efpltAnimator);
 				break;
 				
 			case igdeGDProperty::epptImage:
-				pPath->SetResourceType( igdeEnvironment::efpltImage );
+				pPath->SetResourceType(igdeEnvironment::efpltImage);
 				break;
 				
 			case igdeGDProperty::epptOcclusionMesh:
-				pPath->SetResourceType( igdeEnvironment::efpltOcclusionMesh );
+				pPath->SetResourceType(igdeEnvironment::efpltOcclusionMesh);
 				break;
 				
 			case igdeGDProperty::epptNavigationSpace:
-				pPath->SetResourceType( igdeEnvironment::efpltNavigationSpace );
+				pPath->SetResourceType(igdeEnvironment::efpltNavigationSpace);
 				break;
 				
 			case igdeGDProperty::epptParticleEmitter:
-				pPath->SetResourceType( igdeEnvironment::efpltParticleEmitter );
+				pPath->SetResourceType(igdeEnvironment::efpltParticleEmitter);
 				break;
 				
 			case igdeGDProperty::epptSound:
-				pPath->SetResourceType( igdeEnvironment::efpltSound );
+				pPath->SetResourceType(igdeEnvironment::efpltSound);
 				break;
 				
 			case igdeGDProperty::epptSynthesizer:
-				pPath->SetResourceType( igdeEnvironment::efpltSynthesizer );
+				pPath->SetResourceType(igdeEnvironment::efpltSynthesizer);
 				break;
 				
 			case igdeGDProperty::epptVideo:
-				pPath->SetResourceType( igdeEnvironment::efpltVideo );
+				pPath->SetResourceType(igdeEnvironment::efpltVideo);
 				break;
 				
 			case igdeGDProperty::epptFont:
-				pPath->SetResourceType( igdeEnvironment::efpltFont );
+				pPath->SetResourceType(igdeEnvironment::efpltFont);
 				break;
 				
 			case igdeGDProperty::epptSky:
-				pPath->SetResourceType( igdeEnvironment::efpltSky );
+				pPath->SetResourceType(igdeEnvironment::efpltSky);
 				break;
 				
 			case igdeGDProperty::epptCamera:
-				pPath->SetResourceType( igdeEnvironment::efpltCamera );
+				pPath->SetResourceType(igdeEnvironment::efpltCamera);
 				break;
 				
 			case igdeGDProperty::epptWorld:
@@ -896,90 +895,90 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 				
 			case igdeGDProperty::epptCustom:
 			default:
-				pPath->SetResourceType( igdeEnvironment::efpltAll );
+				pPath->SetResourceType(igdeEnvironment::efpltAll);
 				pPath->GetCustomPatternList() = pGDProperty->GetCustomPathPattern();
 				break;
 			}
 			
 			pPath->SetSelectPathActions();
-			pPath->SetPath( pValue );
+			pPath->SetPath(pValue);
 			break;
 			
 		case igdeGDProperty::eptRange:
-			pSwitcher->SetCurrent( 10 );
-			pRange->SetRange( pGDProperty->GetMinimumValue(), pGDProperty->GetMaximumValue() );
-			pRange->SetTickSpacing( ( pGDProperty->GetMaximumValue() - pGDProperty->GetMinimumValue() ) * 0.1f );
-			pRange->SetValue( pValue.ToFloatValid() );
+			pSwitcher->SetCurrent(10);
+			pRange->SetRange(pGDProperty->GetMinimumValue(), pGDProperty->GetMaximumValue());
+			pRange->SetTickSpacing((pGDProperty->GetMaximumValue() - pGDProperty->GetMinimumValue()) * 0.1f);
+			pRange->SetValue(pValue.ToFloatValid());
 			break;
 			
 		case igdeGDProperty::eptSelect:{
-			pSwitcher->SetCurrent( 11 );
+			pSwitcher->SetCurrent(11);
 			
 			const decStringList &options = pGDProperty->GetOptions();
 			const int count = options.GetCount();
 			int i;
 			
 			pSelect->RemoveAllItems();
-			for( i=0; i<count; i++ ){
-				pSelect->AddItem( options.GetAt( i ) );
+			for(i=0; i<count; i++){
+				pSelect->AddItem(options.GetAt(i));
 			}
-			pSelect->SetText( pValue );
+			pSelect->SetText(pValue);
 			}break;
 			
 		case igdeGDProperty::eptList:
-			pSwitcher->SetCurrent( 12 );
-			pList->SetText( pValue );
+			pSwitcher->SetCurrent(12);
+			pList->SetText(pValue);
 			break;
 			
 		case igdeGDProperty::eptTriggerExpression:
-			pSwitcher->SetCurrent( 13 );
-			pTriggerExpression->SetText( pValue );
+			pSwitcher->SetCurrent(13);
+			pTriggerExpression->SetText(pValue);
 			break;
 			
 		case igdeGDProperty::eptTriggerTarget:
-			pSwitcher->SetCurrent( 14 );
-			pTriggerTarget->SetText( pValue );
+			pSwitcher->SetCurrent(14);
+			pTriggerTarget->SetText(pValue);
 			break;
 			
 		case igdeGDProperty::eptShape:
-			pSwitcher->SetCurrent( 15 );
-			pShape->SetText( pValue );
+			pSwitcher->SetCurrent(15);
+			pShape->SetText(pValue);
 			break;
 			
 		case igdeGDProperty::eptShapeList:
-			pSwitcher->SetCurrent( 16 );
-			pShapeList->SetText( pValue );
+			pSwitcher->SetCurrent(16);
+			pShapeList->SetText(pValue);
 			break;
 			
 		case igdeGDProperty::eptIdentifier:
-			pSwitcher->SetCurrent( 17 );
-			pIdentifier->SetText( pValue );
+			pSwitcher->SetCurrent(17);
+			pIdentifier->SetText(pValue);
 			break;
 		}
 		
-	}catch( const deException & ){
-		pSwitcher->SetCurrent( 0 );
-		pString->SetText( pValue );
+	}catch(const deException &){
+		pSwitcher->SetCurrent(0);
+		pString->SetText(pValue);
 	}
 	
 	pPreventEditing = false;
 }
 
 /*
-void igdeEditPropertyValue::pMinifyFloat( decString &value ) const{
+void igdeEditPropertyValue::pMinifyFloat(decString &value) const{
 	const int len = value.GetLength();
 	int cut;
 	
-	for( cut=len-1; cut>=0; cut-- ){
-		if( value[ cut ] != '0' ){
+	for(cut=len-1; cut>=0; cut--){
+		if(value[cut] != '0'){
 			break;
 		}
 	}
 	
-	if( cut >= 0 && value[ cut ] == '.' ){
+	if(cut >= 0 && value[cut] == '.'){
 		cut--;
 	}
 	
-	value = value.GetLeft( cut + 1 );
+	value = value.GetLeft(cut + 1);
 }
 */

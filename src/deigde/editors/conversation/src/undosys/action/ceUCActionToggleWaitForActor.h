@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,19 +36,23 @@ class ceConversationTopic;
  * \brief Undo Action Conversation Action Toggle Wait For Actor.
  */
 class ceUCActionToggleWaitForActor : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCActionToggleWaitForActor>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionToggleWaitForActor( ceConversationTopic *topic, ceConversationAction *action );
+	ceUCActionToggleWaitForActor(ceConversationTopic *topic, ceConversationAction *action);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCActionToggleWaitForActor();
+	~ceUCActionToggleWaitForActor() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

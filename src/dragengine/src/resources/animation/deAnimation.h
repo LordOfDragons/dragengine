@@ -25,15 +25,17 @@
 #ifndef _DEANIMATION_H_
 #define _DEANIMATION_H_
 
+#include "deAnimationBone.h"
+#include "deAnimationMove.h"
+
 #include "../deFileResource.h"
 #include "../../common/string/decStringList.h"
+#include "../../common/collection/decTUniqueList.h"
 
 class deBaseAnimatorAnimation;
 class deEngine;
 class deAnimationManager;
-class deAnimationBone;
 class deAnimationVertexPositionSet;
-class deAnimationMove;
 class deModel;
 class deBaseAnimatorAnimation;
 
@@ -54,20 +56,15 @@ class deBaseAnimatorAnimation;
 class DE_DLL_EXPORT deAnimation : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimation> Ref;
-	
+	using Ref = deTObjectReference<deAnimation>;
 	
 	
 private:
-	deAnimationBone **pBones;
-	int pBoneCount;
-	int pBoneSize;
+	deAnimationBone::List pBones;
 	
 	decStringList pVertexPositionSets;
 	
-	deAnimationMove **pMoves;
-	int pMoveCount;
-	int pMoveSize;
+	deAnimationMove::List pMoves;
 	
 	deBaseAnimatorAnimation *pPeerAnimator;
 	
@@ -77,8 +74,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new animation resource with the given resource manager and filename. */
-	deAnimation( deAnimationManager *resourceManager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deAnimation(deAnimationManager *resourceManager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -87,7 +84,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimation();
+	~deAnimation() override;
 	/*@}*/
 	
 public:
@@ -97,24 +94,27 @@ public:
 	 * \brief Bones of an animation match to those of a model.
 	 * \brief This function is depracted and will be removed soon.
 	 */
-	bool MatchesModel( deModel *model ) const;
+	bool MatchesModel(deModel *model) const;
 	/*@}*/
 	
 	
 	
 	/** \name Bone Management */
 	/*@{*/
+	/** \brief Bones. */
+	inline const deAnimationBone::List &GetBones() const{ return pBones; }
+	
 	/** \brief Count of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/** \brief Bone at the given index. */
-	deAnimationBone *GetBone( int index ) const;
+	const deAnimationBone::Ref &GetBone(int index) const;
 	
 	/** \brief Index for the bone with the given name or -1 if not found. */
-	int FindBone( const char *name ) const;
+	int FindBone(const char *name) const;
 	
 	/** \brief Adds a new bone */
-	void AddBone( deAnimationBone *bone );
+	void AddBone(deAnimationBone::Ref &&bone);
 	/*@}*/
 	
 	
@@ -131,17 +131,20 @@ public:
 	
 	/** \name Move Management */
 	/*@{*/
+	/** \brief Moves. */
+	inline const deAnimationMove::List &GetMoves() const{ return pMoves; }
+	
 	/** \brief Count of moves. */
-	inline int GetMoveCount() const{ return pMoveCount; }
+	inline int GetMoveCount() const{ return pMoves.GetCount(); }
 	
 	/** \brief Move at the given index. */
-	deAnimationMove *GetMove( int index ) const;
+	const deAnimationMove::Ref &GetMove(int index) const;
 	
 	/** \brief Index of the move with the given name or -1 if not found. */
-	int FindMove( const char *name ) const;
+	int FindMove(const char *name) const;
 	
 	/** \brief Adds the given move */
-	void AddMove( deAnimationMove *move );
+	void AddMove(deAnimationMove::Ref &&move);
 	/*@}*/
 	
 	
@@ -152,7 +155,7 @@ public:
 	inline deBaseAnimatorAnimation *GetPeerAnimator() const{ return pPeerAnimator; }
 	
 	/** \brief Set animator system peer object. */
-	void SetPeerAnimator( deBaseAnimatorAnimation *peer );
+	void SetPeerAnimator(deBaseAnimatorAnimation *peer);
 	/*@}*/
 	
 	

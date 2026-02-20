@@ -36,8 +36,7 @@
  */
 class deoglSkinStateCNText : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNText> Ref;
-	
+	using Ref = deTObjectReference<deoglSkinStateCNText>;
 	
 	
 private:
@@ -47,7 +46,7 @@ private:
 	const decString pText;
 	decColor pColor;
 	
-	int pTextMapped[ deSkinPropertyNodeText::TextMappedCount ];
+	int pTextMapped[deSkinPropertyNodeText::TextMappedCount];
 	
 	
 	
@@ -55,14 +54,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNText( deSkinPropertyNodeText &node );
+	deoglSkinStateCNText(deSkinPropertyNodeText &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNText( const deoglSkinStateCNText &node );
+	deoglSkinStateCNText(const deoglSkinStateCNText &node);
 	
 protected:
 	/** Clean up skin state mapped. */
-	virtual ~deoglSkinStateCNText() override;
+	~deoglSkinStateCNText() override;
 	/*@}*/
 	
 	
@@ -86,7 +85,7 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Mapped for type. */
-	int GetTextMappedFor( deSkinPropertyNodeText::eTextMapped type ) const;
+	int GetTextMappedFor(deSkinPropertyNodeText::eTextMapped type) const;
 	
 	
 	
@@ -94,13 +93,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	void Update(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
-	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
+	deoglSkinStateConstructedNode::Ref Copy() const override;
 	/*@}*/
 };
 

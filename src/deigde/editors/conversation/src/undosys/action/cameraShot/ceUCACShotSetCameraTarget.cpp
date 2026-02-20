@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget( ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget ){
-	if( ! topic || ! newTarget ) DETHROW( deeInvalidParam );
+ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget){
+	if(!topic || !newTarget) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pCameraShot = NULL;
+	pTopic = nullptr;
+	pCameraShot = nullptr;
 	pOldTarget = cameraShot->GetCameraTarget();
 	pNewTarget = newTarget;
 	
-	SetShortInfo( "Set Camera Target" );
+	SetShortInfo("@Conversation.Undo.SetCameraTarget");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetCameraTarget::~ceUCACShotSetCameraTarget(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCACShotSetCameraTarget::~ceUCACShotSetCameraTarget(){
 ///////////////
 
 void ceUCACShotSetCameraTarget::Undo(){
-	pCameraShot->SetCameraTarget( pOldTarget.GetString() );
-	pTopic->NotifyActionChanged( pCameraShot );
+	pCameraShot->SetCameraTarget(pOldTarget.GetString());
+	pTopic->NotifyActionChanged(pCameraShot);
 }
 
 void ceUCACShotSetCameraTarget::Redo(){
-	pCameraShot->SetCameraTarget( pNewTarget.GetString() );
-	pTopic->NotifyActionChanged( pCameraShot );
+	pCameraShot->SetCameraTarget(pNewTarget.GetString());
+	pTopic->NotifyActionChanged(pCameraShot);
 }

@@ -35,6 +35,10 @@ class feFont;
  * \brief Font Toggle Color Font.
  */
 class feUFontToggleColorFont : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUFontToggleColorFont>;
+	
+	
 private:
 	feFont *pFont;
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontToggleColorFont( feFont *font );
+	feUFontToggleColorFont(feFont *font);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUFontToggleColorFont();
+	~feUFontToggleColorFont() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

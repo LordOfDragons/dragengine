@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "ceCAWait.h"
 #include "../condition/ceConversationCondition.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -40,52 +37,29 @@
 ////////////////////////////
 
 ceCAWait::ceCAWait() :
-ceConversationAction( eatWait ),
-pCondition( NULL ),
-pInterval( 0.0f ),
-pTIMExpanded( true ),
-pTIMConditionExpanded( true ),
-pTIMActionsExpanded( true ){
+ceConversationAction(eatWait),
+pInterval(0.0f),
+pTIMExpanded(true),
+pTIMConditionExpanded(true),
+pTIMActionsExpanded(true){
 }
 
-ceCAWait::ceCAWait( const ceCAWait &action ) :
-ceConversationAction( action ),
-pCondition( NULL ),
-pInterval( action.GetInterval() ),
-pTIMExpanded( action.pTIMExpanded ),
-pTIMConditionExpanded( action.pTIMConditionExpanded ),
-pTIMActionsExpanded( action.pTIMActionsExpanded )
+ceCAWait::ceCAWait(const ceCAWait &action) :
+ceConversationAction(action),
+pInterval(action.GetInterval()),
+pTIMExpanded(action.pTIMExpanded),
+pTIMConditionExpanded(action.pTIMConditionExpanded),
+pTIMActionsExpanded(action.pTIMActionsExpanded)
 {
-	const ceConversationActionList &actions = action.GetActions();
-	ceConversationAction *newAction = NULL;
-	int i, count;
-	
-	try{
-		if( action.GetCondition() ){
-			pCondition = action.GetCondition()->CreateCopy();
-		}
-		
-		count = actions.GetCount();
-		for( i=0; i<count; i++ ){
-			newAction = actions.GetAt( i )->CreateCopy();
-			pActions.Add( newAction );
-			newAction->FreeReference();
-			newAction = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( newAction ){
-			newAction->FreeReference();
-		}
-		SetCondition( NULL );
-		pActions.RemoveAll();
-		throw;
+	if(action.GetCondition()){
+		pCondition = action.GetCondition()->CreateCopy();
 	}
+	action.GetActions().Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceCAWait::~ceCAWait(){
-	SetCondition( NULL );
-	pActions.RemoveAll();
 }
 
 
@@ -93,48 +67,31 @@ ceCAWait::~ceCAWait(){
 // Management
 ///////////////
 
-void ceCAWait::SetCondition( ceConversationCondition *condition ){
-	if( condition != pCondition ){
-		if( pCondition ){
-			pCondition->FreeReference();
-		}
-		
-		pCondition = condition;
-		
-		if( condition ){
-			condition->AddReference();
-		}
-	}
+void ceCAWait::SetCondition(ceConversationCondition *condition){
+	pCondition = condition;
 }
 
-void ceCAWait::SetInterval( float interval ){
-	if( interval < 0.0f ){
-		pInterval = 0.0f;
-		
-	}else{
-		pInterval = interval;
-	}
+void ceCAWait::SetInterval(float interval){
+	pInterval = decMath::max(interval, 0.0f);
 }
 
 
-
-ceConversationAction *ceCAWait::CreateCopy() const{
-	return new ceCAWait( *this );
+ceConversationAction::Ref ceCAWait::CreateCopy() const{
+	return ceCAWait::Ref::New(*this);
 }
-
 
 
 // UI
 ///////
 
-void ceCAWait::SetTIMExpanded( bool expanded ){
+void ceCAWait::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }
 
-void ceCAWait::SetTIMConditionExpanded( bool expanded ){
+void ceCAWait::SetTIMConditionExpanded(bool expanded){
 	pTIMConditionExpanded = expanded;
 }
 
-void ceCAWait::SetTIMActionsExpanded( bool expanded ){
+void ceCAWait::SetTIMActionsExpanded(bool expanded){
 	pTIMActionsExpanded = expanded;
 }

@@ -25,6 +25,7 @@
 #ifndef _IGDESTEPABLETASK_H_
 #define _IGDESTEPABLETASK_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -45,7 +46,12 @@
  * required or if the task finished. Progress is measured from 0 to 1
  * usually displayed as 100 percent.
  */
-class DE_DLL_EXPORT igdeStepableTask{
+class DE_DLL_EXPORT igdeStepableTask : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeStepableTask>;
+	
+	
 private:
 	decString pMessage;
 	float pProgress;
@@ -60,37 +66,38 @@ public:
 	/** \brief Create task. */
 	igdeStepableTask();
 	
+protected:
 	/** \brief Clean up task. */
-	virtual ~igdeStepableTask();
+	~igdeStepableTask() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Message. */
 	inline const decString &GetMessage() const{ return pMessage; }
 	
 	/** \brief Set message. */
-	void SetMessage( const char *message );
+	void SetMessage(const char *message);
 	
 	/** \brief Progress. */
 	inline float GetProgress() const{ return pProgress; }
 	
 	/** \brief Set progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	
 	/** \brief Message is dirty. */
 	inline bool GetDirtyMessage() const{ return pDirtyMessage; }
 	
 	/** \brief Set message dirty flag. */
-	void SetDirtyMessage( bool dirty );
+	void SetDirtyMessage(bool dirty);
 	
 	/** \brief Progress is dirty. */
 	inline bool GetDirtyProgress() const{ return pDirtyProgress; }
 	
 	/** \brief Set if progress is dirty. */
-	void SetDirtyProgress( bool dirty );
+	void SetDirtyProgress(bool dirty);
 	
 	
 	

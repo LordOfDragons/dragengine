@@ -39,24 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown( aeRuleGroup *group, aeRule *rule ){
-	if( ! group || ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup *group, aeRule *rule){
+	if(!group || !rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pGroup = NULL;
-	pRule = NULL;
+	pGroup = nullptr;
+	pRule = nullptr;
 	
-	pIndex = group->GetRules().IndexOf( rule );
-	if( pIndex == -1 || pIndex == group->GetRules().GetCount() - 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = group->GetRules().IndexOf(rule);
+	if(pIndex == -1 || pIndex == group->GetRules().GetCount() - 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupMoveRuleDown::~aeURuleGroupMoveRuleDown(){
@@ -69,11 +66,11 @@ aeURuleGroupMoveRuleDown::~aeURuleGroupMoveRuleDown(){
 ///////////////
 
 void aeURuleGroupMoveRuleDown::Undo(){
-	pGroup->MoveRuleTo( pRule, pIndex );
+	pGroup->MoveRuleTo(pRule, pIndex);
 }
 
 void aeURuleGroupMoveRuleDown::Redo(){
-	pGroup->MoveRuleTo( pRule, pIndex + 1 );
+	pGroup->MoveRuleTo(pRule, pIndex + 1);
 }
 
 
@@ -82,10 +79,4 @@ void aeURuleGroupMoveRuleDown::Redo(){
 //////////////////////
 
 void aeURuleGroupMoveRuleDown::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
-	if( pGroup ){
-		pGroup->FreeReference();
-	}
 }

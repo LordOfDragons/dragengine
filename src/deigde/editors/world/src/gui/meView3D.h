@@ -25,19 +25,20 @@
 #ifndef _MEVIEW3D_H_
 #define _MEVIEW3D_H_
 
+#include "meView3DListener.h"
+#include "vieweditor/meViewEditor.h"
+#include "../world/meWorld.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
-class meView3DListener;
-class meViewEditor;
-
-class meWorld;
 class meWindowMain;
 
 
@@ -45,22 +46,24 @@ class meWindowMain;
  * \brief 3D view of the world.
  */
 class meView3D : public igdeViewRenderWindow{
+public:
+	using Ref = deTObjectReference<meView3D>;
+	
 private:
 	meWindowMain &pWindowMain;
-	meView3DListener *pListener;
+	meView3DListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	igdeMouseKeyListenerReference pListenerEditor;
-	meViewEditor *pEditor;
+	igdeMouseKeyListener::Ref pListenerEditor;
+	meViewEditor::Ref pEditor;
 	
-	int pFPSHistory[ 30 ];
+	int pFPSHistory[30];
 	float pFPSRedrawCanvasDelay;
 	
-	deFont::Ref pFontStats;
-	deFontSize::Ref pFontSizeStats;
-	deCanvasViewReference pCanvasFPS;
-	deCanvasTextReference pCanvasFPSText;
+	igdeFont::Ref pFontStats;
+	deCanvasView::Ref pCanvasFPS;
+	deCanvasText::Ref pCanvasFPSText;
 	
 	
 	
@@ -68,11 +71,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	meView3D( meWindowMain &windowMain );
+	meView3D(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~meView3D();
+	~meView3D() override;
 	/*@}*/
 	
 	
@@ -87,19 +90,19 @@ public:
 	void ResetView();
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world render. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Resize canvas to fit window size. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Mode changed. */
 	void ModeChanged();
@@ -107,8 +110,8 @@ public:
 	/** \brief Active camera changed. */
 	void ActiveCameraChanged();
 	
-	/** \brief Editor or NULL. */
-	inline meViewEditor *GetEditor() const{ return pEditor; }
+	/** \brief Editor or nullptr. */
+	inline const meViewEditor::Ref &GetEditor() const{ return pEditor; }
 	/*@}*/
 };
 

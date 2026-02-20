@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
-class gdeProperty;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
+#include "../../../gamedef/property/gdeProperty.h"
 
 
 
@@ -39,10 +39,14 @@ class gdeProperty;
  * \brief Undo action object class add texture property.
  */
 class gdeUOCTexPropertyAdd : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
+public:
+	using Ref = deTObjectReference<gdeUOCTexPropertyAdd>;
 	
-	gdeProperty *pProperty;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	
+	gdeProperty::Ref pProperty;
 	
 	
 	
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTexPropertyAdd( gdeObjectClass *objectClass, gdeProperty *property );
+	gdeUOCTexPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCTexPropertyAdd();
+	~gdeUOCTexPropertyAdd() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

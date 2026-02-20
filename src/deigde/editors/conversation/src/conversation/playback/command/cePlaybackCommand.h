@@ -26,6 +26,7 @@
 #define _CEPLAYBACKCOMMAND_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -39,14 +40,18 @@ private:
 	bool pValue;
 	
 public:
+	using Ref = deTObjectReference<cePlaybackCommand>;
+	using List = decTObjectOrderedSet<cePlaybackCommand>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new command. */
-	cePlaybackCommand( const char *command, bool value );
+	cePlaybackCommand(const char *command, bool value);
 	
 protected:
 	/** Cleans up the info. */
-	virtual ~cePlaybackCommand();
+	~cePlaybackCommand() override;
 	/*@}*/
 	
 public:
@@ -57,7 +62,7 @@ public:
 	/** \brief Retrieves the value. */
 	inline bool GetValue() const{ return pValue; }
 	/** \brief Sets the value. */
-	void SetValue( bool value );
+	void SetValue(bool value);
 	/*@}*/
 };
 

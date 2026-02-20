@@ -25,11 +25,11 @@
 #ifndef _DENETWORKSTATEMANAGER_H_
 #define _DENETWORKSTATEMANAGER_H_ 
 
+#include "deNetworkState.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deNetworkState;
 
 
 /**
@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network state resource manager linked to the given engine. */
-	deNetworkStateManager( deEngine *engine );
+	deNetworkStateManager(deEngine *engine);
 	
 	/** \brief Clean up network state resource manager and reports leaking resources. */
-	virtual ~deNetworkStateManager();
+	~deNetworkStateManager() override;
 	/*@}*/
 	
 	
@@ -62,10 +62,10 @@ public:
 	deNetworkState *GetRootNetworkState() const;
 	
 	/** \brief Create network state. */
-	deNetworkState *CreateState( bool readOnly );
+	deNetworkState::Ref CreateState(bool readOnly);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,16 +73,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Network System Peers of all stored resources have to be created. */
-	virtual void SystemNetworkLoad();
+	void SystemNetworkLoad() override;
 	
 	/** \brief Network System Peers of all stored resources have to be freed. */
-	virtual void SystemNetworkUnload();
+	void SystemNetworkUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

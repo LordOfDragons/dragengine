@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -35,8 +35,12 @@ class peeType;
  * \brief Undo Action Set Type Emit Min Impulse.
  */
 class peeUTypeSetEmitMinImpulse : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeSetEmitMinImpulse>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	float pOldImpulse;
 	float pNewImpulse;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetEmitMinImpulse( peeType *type, float newImpulse );
+	peeUTypeSetEmitMinImpulse(peeType *type, float newImpulse);
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUTypeSetEmitMinImpulse();
+	~peeUTypeSetEmitMinImpulse() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

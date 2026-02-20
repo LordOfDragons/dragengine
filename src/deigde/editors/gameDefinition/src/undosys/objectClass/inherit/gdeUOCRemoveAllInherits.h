@@ -26,10 +26,11 @@
 #ifndef _GDEUOCREMOVEALLINHERITS_H_
 #define _GDEUOCREMOVEALLINHERITS_H_
 
-#include "../../../gamedef/objectClass/inherit/gdeOCInheritList.h"
+#include "../../../gamedef/objectClass/inherit/gdeOCInherit.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -37,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class remove inherit.
  */
 class gdeUOCRemoveAllInherits : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCRemoveAllInherits>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCInheritList pInherits;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCInherit::List pInherits;
 	
 	
 	
@@ -47,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveAllInherits( gdeObjectClass *objectClass );
+	gdeUOCRemoveAllInherits(gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCRemoveAllInherits();
+	~gdeUOCRemoveAllInherits() override;
 	/*@}*/
 	
 	
@@ -60,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

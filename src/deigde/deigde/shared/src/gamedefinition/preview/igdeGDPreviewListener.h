@@ -35,6 +35,10 @@ class deImage;
  * \brief Listener for creating preview images.
  */
 class DE_DLL_EXPORT igdeGDPreviewListener : public deObject{
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDPreviewListener>;
+
+
 public:
 	/**  \name Constructors and Destructors */
 	/*@{*/
@@ -50,7 +54,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGDPreviewListener();
+	~igdeGDPreviewListener() override;
 	/*@}*/
 	
 	
@@ -66,7 +70,7 @@ public:
 	 * manager release the reference to the listener. The subclass has to
 	 * add a reference to the image to hold it.
 	 */
-	virtual void ImageCreated( deImage *image ) = 0;
+	virtual void ImageCreated(deImage *image) = 0;
 	/*@}*/
 };
 

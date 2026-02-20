@@ -27,6 +27,7 @@
 
 #include "dedsResourceLoader.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deFileResource;
@@ -47,18 +48,16 @@ private:
 	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;
 	
-	dsValue **pListeners;
-	int pListenerCount;
-	int pListenerSize;
+	decTOrderedSet<dsValue*> pListeners;
 	
 	
-	
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new task. */
-	dedsResourceLoaderTask( deScriptingDragonScript *ds, const char *filename,
-		deResourceLoader::eResourceType resourceType );
+	dedsResourceLoaderTask(deScriptingDragonScript *ds, const char *filename,
+		deResourceLoader::eResourceType resourceType);
 	/** Cleans up the task. */
 	~dedsResourceLoaderTask();
 	/*@}*/
@@ -70,17 +69,17 @@ public:
 	/** Retrieves the resource type. */
 	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
 	/** Determines if this task matches the given filename/resourceType. */
-	bool Matches( const char *filename, deResourceLoader::eResourceType resourceType ) const;
+	bool Matches(const char *filename, deResourceLoader::eResourceType resourceType) const;
 	
 	/** Retrieves the number of listeners. */
-	inline int GetListenerCount() const{ return pListenerCount; }
+	inline int GetListenerCount() const{ return pListeners.GetCount(); }
 	/** Adds a listener. */
-	void AddListener( dsRealObject *listener );
+	void AddListener(dsRealObject *listener);
 	/** Removes a listener. */
-	void RemoveListener( dsRealObject *listener );
+	void RemoveListener(dsRealObject *listener);
 	
 	/** Notifies all that the resource finished loading successfully. */
-	void NotifyLoadingFinished( deFileResource *resource );
+	void NotifyLoadingFinished(deFileResource *resource);
 	/** Notifies all that the resource failed to load. */
 	void NotifyLoadingFailed();
 	/*@}*/

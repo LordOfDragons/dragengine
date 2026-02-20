@@ -25,42 +25,51 @@
 #ifndef _REUREMOVECONSTRAINT_H_
 #define _REUREMOVECONSTRAINT_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/constraint/reRigConstraint.h"
+#include "../../../rig/bone/reRigBone.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigConstraint;
-class reRigBone;
-class reRigConstraintList;
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
  * \brief Undo Remove Constraint.
  */
 class reURemoveConstraint : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reURemoveConstraint>;
+	
+	
 private:
-	struct sEntry{
-		reRigConstraint *constraint;
-		reRigBone *bone;
+	class cEntry : public deObject{
+	public:
+		using Ref = deTObjectReference<cEntry>;
+		
+		reRigConstraint::Ref constraint;
+		reRigBone::Ref bone;
+		
+		cEntry() = default;
+	protected:
+		~cEntry() override = default;
 	};
 	
 private:
 	reRig *pRig;
 	
-	sEntry *pEntries;
-	int pEntryCount;
-	
+	decTObjectList<cEntry> pEntries;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURemoveConstraint( reRigConstraintList &list );
+	reURemoveConstraint(reRigConstraint::List &list);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reURemoveConstraint();
+	~reURemoveConstraint() override;
 	/*@}*/
 	
 	
@@ -69,16 +78,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

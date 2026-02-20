@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXNVNODE_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFontReference.h"
+#include "../../../nodeview/igdeNVNode.h"
+#include "../../../resources/igdeFont.h"
 
 
 class igdeNVNode;
@@ -36,8 +37,8 @@ class igdeGuiTheme;
 /**
  * \brief FOX toolkit Native NodeView Node.
  */
-class igdeNativeFoxNVNode : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxNVNode )
+class igdeNativeFoxNVNode : public FXVerticalFrame, public igdeNVNode::cNativeNVNode{
+	FXDECLARE(igdeNativeFoxNVNode)
 protected:
 	   igdeNativeFoxNVNode();
 	
@@ -52,7 +53,7 @@ public:
 	
 private:
 	igdeNVNode *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 	FXLabel *pLabTitle;
 	FXHorizontalFrame *pFrameTitle;
@@ -73,13 +74,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxNVNode( igdeNVNode &owner, FXComposite *parent, const igdeGuiTheme &guitheme );
+	igdeNativeFoxNVNode(igdeNVNode &owner, FXComposite *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxNVNode();
+	~igdeNativeFoxNVNode() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxNVNode* CreateNativeWidget( igdeNVNode &owner );
+	static igdeNativeFoxNVNode* CreateNativeWidget(igdeNVNode &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -92,55 +93,55 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
 	
 	/** \brief Update title from owner. */
-	virtual void UpdateTitle();
+	void UpdateTitle() override;
 	
 	/** \brief Update description from owner. */
-	virtual void UpdateDescription();
+	void UpdateDescription() override;
 	
 	/** \brief Update enabled from owner. */
-	virtual void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update active from owner. */
-	virtual void UpdateActive();
+	void UpdateActive() override;
 	
 	/** \brief Update color from owner. */
-	virtual void UpdateColors();
+	void UpdateColors() override;
 	
 	/** \brief Update position from owner. */
-	virtual void UpdatePosition();
+	void UpdatePosition() override;
 	
 	/** \brief Resize node to fit size to content. */
-	virtual void FitSizeToContent();
+	void FitSizeToContent() override;
 	
 	/** \brief Get Size. */
-	virtual decPoint GetSize();
+	decPoint GetSize() override;
 	
 	
-	static int NVNodeFlags( const igdeNVNode &owner );
-	static igdeFont *NVNodeFont( const igdeNVNode &owner, const igdeGuiTheme &guitheme );
-	static int NVNodePadLeft( const igdeGuiTheme &guitheme );
-	static int NVNodePadRight( const igdeGuiTheme &guitheme );
-	static int NVNodePadTop( const igdeGuiTheme &guitheme );
-	static int NVNodePadBottom( const igdeGuiTheme &guitheme );
+	static int NVNodeFlags(const igdeNVNode &owner);
+	static igdeFont *NVNodeFont(const igdeNVNode &owner, const igdeGuiTheme &guitheme);
+	static int NVNodePadLeft(const igdeGuiTheme &guitheme);
+	static int NVNodePadRight(const igdeGuiTheme &guitheme);
+	static int NVNodePadTop(const igdeGuiTheme &guitheme);
+	static int NVNodePadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onTitleLeftMouseDown( FXObject*, FXSelector, void* );
-	long onTitleLeftMouseUp( FXObject*, FXSelector, void* );
-	long onTitleMouseMove( FXObject*, FXSelector, void* );
-	long onRightMousePress( FXObject*, FXSelector, void* );
-	long onRightMouseRelease( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onTitleLeftMouseDown(FXObject*, FXSelector, void*);
+	long onTitleLeftMouseUp(FXObject*, FXSelector, void*);
+	long onTitleMouseMove(FXObject*, FXSelector, void*);
+	long onRightMousePress(FXObject*, FXSelector, void*);
+	long onRightMouseRelease(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxNVNode igdeNativeNVNode;
+using igdeNativeNVNode = igdeNativeFoxNVNode;
 
 #endif

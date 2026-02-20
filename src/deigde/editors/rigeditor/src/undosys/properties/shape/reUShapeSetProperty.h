@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigShape;
+#include "../../../rig/shape/reRigShape.h"
 
 
 
@@ -35,8 +35,12 @@ class reRigShape;
  * \brief Undo shape set property.
  */
 class reUShapeSetProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUShapeSetProperty>;
+	
+	
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decString pOldProperty;
 	decString pNewProperty;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUShapeSetProperty( reRigShape *shape, const char *newProperty );
+	reUShapeSetProperty(reRigShape *shape, const char *newProperty);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUShapeSetProperty();
+	~reUShapeSetProperty() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWindowCurvesListener::peeWindowCurvesListener( peeWindowCurves &window ) :
-pWindow( window ){
+peeWindowCurvesListener::peeWindowCurvesListener(peeWindowCurves &window) :
+pWindow(window){
 }
 
 peeWindowCurvesListener::~peeWindowCurvesListener(){
@@ -53,21 +53,21 @@ peeWindowCurvesListener::~peeWindowCurvesListener(){
 // Management
 ///////////////
 
-void peeWindowCurvesListener::TypeStructureChanged( peeEmitter* ){
+void peeWindowCurvesListener::TypeStructureChanged(peeEmitter*){
 	pWindow.DropProgressiveUndo();
 	pWindow.UpdateCurve();
 }
 
-void peeWindowCurvesListener::TypeParameterChanged( peeEmitter*, peeType *type, peeParameter *parameter ){
-	if( ! type->GetActive() || ! parameter->GetActive() ){
+void peeWindowCurvesListener::TypeParameterChanged(peeEmitter*, peeType *type, peeParameter *parameter){
+	if(!type->GetActive() || !parameter->GetActive()){
 		return;
 	}
 	
 	pWindow.UpdateCurve();
 }
 
-void peeWindowCurvesListener::ActiveTypeParameterChanged( peeEmitter*, peeType *type ){
-	if( ! type->GetActive() ){
+void peeWindowCurvesListener::ActiveTypeParameterChanged(peeEmitter*, peeType *type){
+	if(!type->GetActive()){
 		return;
 	}
 	
@@ -75,7 +75,7 @@ void peeWindowCurvesListener::ActiveTypeParameterChanged( peeEmitter*, peeType *
 	pWindow.UpdateCurve();
 }
 
-void peeWindowCurvesListener::ActiveTypeChanged( peeEmitter* ){
+void peeWindowCurvesListener::ActiveTypeChanged(peeEmitter*){
 	pWindow.DropProgressiveUndo();
 	pWindow.UpdateCurve();
 }

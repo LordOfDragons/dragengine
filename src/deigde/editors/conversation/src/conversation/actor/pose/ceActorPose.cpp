@@ -37,7 +37,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -59,68 +59,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceActorPose::ceActorPose( igdeEnvironment &environment, const char *name ) :
-pEnvironment( environment ),
-pEngAnimator( NULL ),
-pName( name ){
+ceActorPose::ceActorPose(igdeEnvironment &environment, const char *name) :
+pEnvironment(environment),
+pName(name){
 }
 
-ceActorPose::ceActorPose( const ceActorPose &pose ) :
-pEnvironment( pose.pEnvironment ),
-pEngAnimator( NULL ),
-pName( pose.pName ),
-pPathAnimator( pose.pPathAnimator ),
-pControllerNames( pose.pControllerNames )
+ceActorPose::ceActorPose(const ceActorPose &pose) :
+pEnvironment(pose.pEnvironment),
+pName(pose.pName),
+pPathAnimator(pose.pPathAnimator),
+pControllerNames(pose.pControllerNames)
 {
-	// clone gestures
-	const int gestureCount = pose.pGestures.GetCount();
-	int i;
+	pose.pGestures.Visit([&](const ceActorGesture &g){
+		pGestures.Add(ceActorGesture::Ref::New(g));
+	});
 	
-	for( i=0; i<gestureCount; i++ ){
-		ceActorGesture *gesture = NULL;
-		
-		try{
-			gesture = new ceActorGesture( *pose.pGestures.GetAt( i ) );
-			pGestures.Add( gesture );
-			gesture->FreeReference();
-			
-		}catch( const deException & ){
-			if( gesture ){
-				gesture->FreeReference();
-			}
-			throw;
-		}
-	}
-	
-	// take over animator
 	pEngAnimator = pose.pEngAnimator;
-	if( pEngAnimator ){
-		pEngAnimator->AddReference();
-	}
 	
-	// clone controllers
-	const int controllerCount = pose.pControllers.GetCount();
-	for( i=0; i<controllerCount; i++ ){
-		ceActorController *controller = NULL;
-		
-		try{
-			controller = new ceActorController( *pose.pControllers.GetAt( i ) );
-			pControllers.Add( controller );
-			controller->FreeReference();
-			
-		}catch( const deException & ){
-			if( controller ){
-				controller->FreeReference();
-			}
-			throw;
-		}
-	}
+	pose.pControllers.Visit([&](const ceActorController &c){
+		pControllers.Add(ceActorController::Ref::New(c));
+	});
 }
 
 ceActorPose::~ceActorPose(){
-	if( pEngAnimator ){
-		pEngAnimator->SetRig( NULL );
-		pEngAnimator->FreeReference();
+	if(pEngAnimator){
+		pEngAnimator->SetRig(nullptr);
 	}
 }
 
@@ -129,12 +92,12 @@ ceActorPose::~ceActorPose(){
 // Management
 ///////////////
 
-void ceActorPose::SetName( const char *name ){
+void ceActorPose::SetName(const char *name){
 	pName = name;
 }
 
-void ceActorPose::SetPathAnimator( const char *path ){
-	if( pPathAnimator.Equals( path ) ){
+void ceActorPose::SetPathAnimator(const char *path){
+	if(pPathAnimator.Equals(path)){
 		return;
 	}
 	
@@ -150,43 +113,31 @@ void ceActorPose::SetPathAnimator( const char *path ){
 void ceActorPose::pLoadAnimator(){
 	pControllerNames.RemoveAll();
 	
-	if( pPathAnimator.IsEmpty() ){
+	if(pPathAnimator.IsEmpty()){
 		return;
 	}
 	
 	// load animator
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	decBaseFileReaderReference reader;
-	deAnimator *animator = NULL;
+	deAnimator::Ref animator;
 	
 	try{
-		reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading(
-			decPath::CreatePathUnix( pPathAnimator ) ) );
 		animator = engine.GetAnimatorManager()->CreateAnimator();
 		
-		igdeLoadAnimator( pEnvironment, pEnvironment.GetLogger(), LOGSOURCE ).
-			Load( pPathAnimator, *animator, reader );
-		
-		if( pEngAnimator ){
-			pEngAnimator->FreeReference();
-		}
+		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
+			Load(pPathAnimator, *animator, engine.GetVirtualFileSystem()->
+				OpenFileForReading(decPath::CreatePathUnix(pPathAnimator)));
 		pEngAnimator = animator;
 		
-	}catch( const deException &e ){
-		if( animator ){
-			animator->FreeReference();
-		}
-		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development
 		return;
 	}
 	
 	// update controller name list
-	const int count = animator->GetControllerCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pControllerNames.Add( animator->GetControllerAt( i )->GetName() );
-	}
+	animator->GetControllers().Visit([&](const deAnimatorController &c){
+		pControllerNames.Add(c.GetName());
+	});
 }

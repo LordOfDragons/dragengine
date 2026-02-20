@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetRotation::gdeUOCForceFieldSetRotation( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const decVector &newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetRotation::gdeUOCForceFieldSetRotation(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const decVector &newValue) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set rotation" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetRotation");
 	
 	pOldValue = forceField->GetRotation();
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetRotation::~gdeUOCForceFieldSetRotation(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetRotation::~gdeUOCForceFieldSetRotation(){
 ///////////////
 
 void gdeUOCForceFieldSetRotation::Undo(){
-	pForceField->SetRotation( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetRotation(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetRotation::Redo(){
-	pForceField->SetRotation( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetRotation(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

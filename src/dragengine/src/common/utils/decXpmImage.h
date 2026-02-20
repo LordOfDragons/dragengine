@@ -26,6 +26,7 @@
 #define _DECXPMIMAGE_H_
 
 #include "../../dragengine_export.h"
+#include "../collection/decTList.h"
 
 
 /**
@@ -35,10 +36,20 @@
  * It is very basic and stores the image as RGB format.
  */
 class DE_DLL_EXPORT decXpmImage{
-private:
-	int pWidth, pHeight;
-	char *pData;
+public:
+	struct rgba{
+		unsigned char r, g, b, a;
+	};
 	
+	
+private:
+	struct colorEntry{
+		rgba color;
+		char index[4];
+	};
+	
+	int pWidth, pHeight;
+	decTList<rgba> pDataRgba;
 	
 	
 public:
@@ -49,7 +60,7 @@ public:
 	 * \param xpmData Pointer to the xpm data. Usually the pointer to the compiled in xpm data.
 	 * \param flip Determines if the image has to be flippep upside down.
 	 */
-	decXpmImage( const char *xpmData[], bool flip );
+	decXpmImage(const char *xpmData[], bool flip);
 	
 	/** \brief Clean up xpm image object. */
 	~decXpmImage();
@@ -66,14 +77,14 @@ public:
 	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Pointer to the RGB aligned data. */
-	inline const char *GetData() const{ return pData; }
+	inline const rgba *GetData() const{ return pDataRgba.GetArrayPointer(); }
 	/*@}*/
 	
 	
 	
 private:
-	int pReadInt( const char **pdata );
-	int pReadColor( const char **pdata );
+	int pReadInt(const char **pdata);
+	int pReadColor(const char **pdata);
 };
 
 #endif

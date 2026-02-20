@@ -36,7 +36,7 @@ class deoglShaderCompileListener;
  */
 class deoglShaderLoadTask : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderLoadTask> Ref;
+	using Ref = deTObjectReference<deoglShaderLoadTask>;
 	
 	
 private:
@@ -50,11 +50,12 @@ public:
 	/** Create shader compile task. */
 	deoglShaderLoadTask(deoglShaderProgram *program, deoglShaderCompileListener *listener);
 	
+protected:
 	/** Clean up shader compile task. */
 	~deoglShaderLoadTask() override;
 	/*@}*/
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Program to compile. */

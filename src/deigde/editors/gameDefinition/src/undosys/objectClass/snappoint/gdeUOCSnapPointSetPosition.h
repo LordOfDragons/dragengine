@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCSnapPoint;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class snap point set position.
  */
 class gdeUOCSnapPointSetPosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCSnapPointSetPosition>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSnapPoint *pSnapPoint;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSnapPointSetPosition( gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, const decVector &newValue );
+	gdeUOCSnapPointSetPosition(gdeObjectClass *objectClass,
+		gdeOCSnapPoint *snapPoint, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSnapPointSetPosition();
+	~gdeUOCSnapPointSetPosition() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

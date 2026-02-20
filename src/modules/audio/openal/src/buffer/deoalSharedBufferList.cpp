@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoalSharedBuffer.h"
 #include "deoalSharedBufferList.h"
 
@@ -42,13 +39,6 @@ deoalSharedBufferList::deoalSharedBufferList(){
 }
 
 deoalSharedBufferList::~deoalSharedBufferList(){
-	const int count = pBuffers.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		delete ( deoalSharedBuffer* )pBuffers.GetAt( i );
-	}
-	pBuffers.RemoveAll();
 }
 
 
@@ -56,46 +46,28 @@ deoalSharedBufferList::~deoalSharedBufferList(){
 // Management
 ///////////////
 
-deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer(int size){
+	DEASSERT_TRUE(size >= 0)
 	
-	const int count = pBuffers.GetCount();
-	deoalSharedBuffer *buffer = NULL;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		buffer = ( deoalSharedBuffer* )pBuffers.GetAt( i );
-		if( ! buffer->GetInUse() ){
-			if( size > buffer->GetSize() ){
-				buffer->SetSize( size );
-			}
-			buffer->SetInUse( true );
-			return buffer;
+	deoalSharedBuffer * const foundBuffer = pBuffers.FindOrDefault([&](const deoalSharedBuffer &b){
+		return !b.GetInUse();
+	});
+	if(foundBuffer){
+		if(size > foundBuffer->GetSize()){
+			foundBuffer->SetSize(size);
 		}
+		foundBuffer->SetInUse(true);
+		return foundBuffer;
 	}
 	
-	buffer = NULL;
-	try{
-		buffer = new deoalSharedBuffer;
-		buffer->SetSize( size );
-		buffer->SetInUse( true );
-		pBuffers.Add( buffer );
-		return buffer;
-		
-	}catch( const deException & ){
-		if( buffer ){
-			delete buffer;
-		}
-		throw;
-	}
+	const deTObjectReference<deoalSharedBuffer> buffer(deTObjectReference<deoalSharedBuffer>::New());
+	buffer->SetSize(size);
+	buffer->SetInUse(true);
+	pBuffers.Add(buffer);
+	return buffer;
 }
 
-void deoalSharedBufferList::ReleaseBuffer( deoalSharedBuffer *buffer ){
-	if( ! buffer ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	buffer->SetInUse( false );
+void deoalSharedBufferList::ReleaseBuffer(deoalSharedBuffer *buffer){
+	DEASSERT_NOTNULL(buffer)
+	buffer->SetInUse(false);
 }

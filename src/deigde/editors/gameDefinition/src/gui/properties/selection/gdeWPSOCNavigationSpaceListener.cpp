@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCNavigationSpaceListener::gdeWPSOCNavigationSpaceListener( gdeWPSOCNavigationSpace &panel ) :
-pPanel( panel ){
+gdeWPSOCNavigationSpaceListener::gdeWPSOCNavigationSpaceListener(gdeWPSOCNavigationSpace &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCNavigationSpaceListener::~gdeWPSOCNavigationSpaceListener(){
@@ -53,47 +53,47 @@ gdeWPSOCNavigationSpaceListener::~gdeWPSOCNavigationSpaceListener(){
 // Management
 ///////////////
 
-void gdeWPSOCNavigationSpaceListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationSpaceListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCNavigationSpaceListener::OCPropertiesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationSpaceListener::OCPropertiesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCNavigationSpaceListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCNavigationSpaceListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCNavigationSpaceListener::OCNavigationSpacesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationSpaceListener::OCNavigationSpacesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateNavigationSpace();
 }
 
-void gdeWPSOCNavigationSpaceListener::OCNavigationSpaceChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationSpaceListener::OCNavigationSpaceChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetNavigationSpace() != navspace ){
+	if(pPanel.GetNavigationSpace() != navspace){
 		return;
 	}
 	pPanel.UpdateNavigationSpace();
 }
 
-void gdeWPSOCNavigationSpaceListener::ActiveOCNavigationSpaceChanged( gdeGameDefinition* ){
+void gdeWPSOCNavigationSpaceListener::ActiveOCNavigationSpaceChanged(gdeGameDefinition*){
 	pPanel.UpdateNavigationSpace();
 }

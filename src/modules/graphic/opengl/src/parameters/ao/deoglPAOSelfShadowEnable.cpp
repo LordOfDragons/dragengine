@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPAOSelfShadowEnable::deoglPAOSelfShadowEnable( deGraphicOpenGl &ogl ) :
-deoglParameterBool( ogl )
+deoglPAOSelfShadowEnable::deoglPAOSelfShadowEnable(deGraphicOpenGl &ogl) :
+deoglParameterBool(ogl)
 {
-	SetName( "aoSelfShadowEnable" );
-	SetDescription( "Enables Ambient Occlusion (AO) self shadowing."
-		" This adds more details to shadows near object surface." );
-	SetCategory( ecBasic );
-	SetDisplayName( "AO Self Shadow" );
-	SetDefaultValue( "1" );
+	SetName("aoSelfShadowEnable");
+	SetDescription("Enables Ambient Occlusion (AO) self shadowing."
+		" This adds more details to shadows near object surface.");
+	SetCategory(ecBasic);
+	SetDisplayName("AO Self Shadow");
+	SetDefaultValue("1");
 }
 
 deoglPAOSelfShadowEnable::~deoglPAOSelfShadowEnable(){
@@ -63,6 +63,6 @@ bool deoglPAOSelfShadowEnable::GetParameterBool(){
 	return pOgl.GetConfiguration().GetAOSelfShadowEnable();
 }
 
-void deoglPAOSelfShadowEnable::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetAOSelfShadowEnable( value );
+void deoglPAOSelfShadowEnable::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetAOSelfShadowEnable(value);
 }

@@ -25,7 +25,7 @@
 #ifndef _DEOGLSKINSTATECNGROUP_H_
 #define _DEOGLSKINSTATECNGROUP_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "deoglSkinStateConstructedNode.h"
 
@@ -37,12 +37,11 @@ class deSkinPropertyNodeGroup;
  */
 class deoglSkinStateCNGroup : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNGroup> Ref;
-	
+	using Ref = deTObjectReference<deoglSkinStateCNGroup>;
 	
 	
 private:
-	decObjectList pNodes;
+	decTObjectList<deoglSkinStateConstructedNode> pNodes;
 	
 	
 	
@@ -50,14 +49,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNGroup( deSkinPropertyNodeGroup &node );
+	deoglSkinStateCNGroup(deSkinPropertyNodeGroup &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNGroup( const deoglSkinStateCNGroup &node );
+	deoglSkinStateCNGroup(const deoglSkinStateCNGroup &node);
 	
 protected:
 	/** Clean up skin state mapped. */
-	virtual ~deoglSkinStateCNGroup() override;
+	~deoglSkinStateCNGroup() override;
 	/*@}*/
 	
 	
@@ -69,7 +68,7 @@ public:
 	int GetNodeCount() const;
 	
 	/** Child node at index. */
-	deoglSkinStateConstructedNode *GetNodeAt( int index ) const;
+	deoglSkinStateConstructedNode *GetNodeAt(int index) const;
 	
 	
 	
@@ -77,16 +76,16 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	void Update(deoglSkinState &state) override;
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state ) override;
+	void PrepareForRender(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
-	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
+	deoglSkinStateConstructedNode::Ref Copy() const override;
 	/*@}*/
 };
 

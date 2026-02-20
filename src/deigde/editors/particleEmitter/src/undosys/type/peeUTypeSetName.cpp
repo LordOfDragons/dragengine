@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetName::peeUTypeSetName( peeType *type, const char *newName ){
-	if( ! type || ! newName ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
+	if(!type || !newName){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Set Type Name" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetName");
 	
 	pOldName = type->GetName();
 	pNewName = newName;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetName::~peeUTypeSetName(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ peeUTypeSetName::~peeUTypeSetName(){
 ///////////////
 
 void peeUTypeSetName::Undo(){
-	pType->SetName( pOldName.GetString() );
+	pType->SetName(pOldName.GetString());
 }
 
 void peeUTypeSetName::Redo(){
-	pType->SetName( pNewName.GetString() );
+	pType->SetName(pNewName.GetString());
 }

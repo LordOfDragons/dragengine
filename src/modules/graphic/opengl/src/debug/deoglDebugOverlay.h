@@ -27,10 +27,12 @@
 
 #include "deoglDebugOverlay.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deCanvasView;
 class deGraphicOpenGl;
+class deoglDebugOverlayImage;
+class deCanvas;
 
 
 /**
@@ -39,7 +41,7 @@ class deGraphicOpenGl;
 class deoglDebugOverlay{
 private:
 	deGraphicOpenGl &pOgl;
-	decPointerList pList1, pList2;
+	decTList<deCanvas*> pList1, pList2;
 	
 	
 	
@@ -47,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug overlay manager. */
-	deoglDebugOverlay( deGraphicOpenGl &ogl );
+	deoglDebugOverlay(deGraphicOpenGl &ogl);
 	
 	/** Clean up debug overlay manager. */
 	~deoglDebugOverlay();
@@ -62,13 +64,13 @@ public:
 	 * 
 	 * Aligns the children canvas and synchronizes.
 	 */
-	void PrepareOverlay( deCanvasView &canvasView );
+	void PrepareOverlay(deCanvasView &canvasView);
 	/*@}*/
 	
 	
 	
 private:
-	void pSortViews( deCanvasView &canvasView );
+	void pSortViews(deCanvasView &canvasView);
 	void pAlignViews();
 };
 

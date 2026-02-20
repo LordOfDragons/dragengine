@@ -26,12 +26,11 @@
 #define _IGDESCROLLBAR_H_
 
 #include "igdeWidget.h"
-#include "event/igdeActionReference.h"
+#include "event/igdeAction.h"
+#include "event/igdeScrollBarListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-
-class igdeScrollBarListener;
 
 
 /**
@@ -39,6 +38,10 @@ class igdeScrollBarListener;
  */
 class DE_DLL_EXPORT igdeScrollBar : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeScrollBar>;
+	
+	
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */
@@ -48,6 +51,13 @@ public:
 		eoVertical
 	};
 	
+	class cNativeScrollBar{
+	public:
+		virtual ~cNativeScrollBar() = default;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateEnabled() = 0;
+	};
 	
 	
 private:
@@ -57,19 +67,22 @@ private:
 	int pPageSize;
 	int pValue;
 	bool pEnabled;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeScrollBarListener> pListeners;
 	
+	
+protected:
+	cNativeScrollBar *pNativeScrollBar;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create button. */
-	igdeScrollBar( igdeEnvironment &environment, eOrientation orientation );
+	igdeScrollBar(igdeEnvironment &environment, eOrientation orientation);
 	
 	/** \brief Create button. */
-	igdeScrollBar( igdeEnvironment &environment, eOrientation orientation,
-		int lower, int upper, int pageSize, int value );
+	igdeScrollBar(igdeEnvironment &environment, eOrientation orientation,
+		int lower, int upper, int pageSize, int value);
 	
 	
 	
@@ -80,7 +93,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeScrollBar();
+	~igdeScrollBar() override;
 	/*@}*/
 	
 	
@@ -95,42 +108,42 @@ public:
 	inline int GetLower() const{ return pLower; }
 	
 	/** \brief Set range lower value. */
-	void SetLower( int lower );
+	void SetLower(int lower);
 	
 	/** \brief Range upper value. */
 	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range upper value. */
-	void SetUpper( int upper );
+	void SetUpper(int upper);
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	
 	/** \brief Page size. */
 	inline int GetPageSize() const{ return pPageSize; }
 	
 	/** \brief Set page size. */
-	void SetPageSize( int pageSize );
+	void SetPageSize(int pageSize);
 	
 	/** \brief Value. */
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief ScrollBar is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeScrollBarListener *listener );
+	void AddListener(igdeScrollBarListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeScrollBarListener *listener );
+	void RemoveListener(igdeScrollBarListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	void NotifyValueChanged();
@@ -147,14 +160,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

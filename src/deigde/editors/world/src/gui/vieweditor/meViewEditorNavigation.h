@@ -27,7 +27,7 @@
 
 #include "meViewEditor.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -40,6 +40,9 @@
  * in progress. Otherwise simply do nothing if the right mouse button is pressed during mouse move.
  */
 class meViewEditorNavigation : public meViewEditor{
+public:
+	using Ref = deTObjectReference<meViewEditorNavigation>;
+	
 private:
 	float pOldDist;
 	float pOldZoom;
@@ -48,16 +51,20 @@ private:
 	
 	bool pNavigating;
 	
-	igdeUndoReference pUndoCameraMove;
-	igdeUndoReference pUndoCameraRotate;
+	igdeUndo::Ref pUndoCameraMove;
+	igdeUndo::Ref pUndoCameraRotate;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
-	meViewEditorNavigation( meView3D &view );
+	meViewEditorNavigation(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
-	virtual ~meViewEditorNavigation();
+	~meViewEditorNavigation() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -69,13 +76,13 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** The right mouse button has been pressed. Return true if handled. */
-	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnRightMouseButtonPress(int x, int y, bool shift, bool control) override;
 	/** The right mouse button has been released. Return true if handled. */
-	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnRightMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	void OnMouseWheel(int steps, bool shift, bool control) override;
 	/*@}*/
 };
 

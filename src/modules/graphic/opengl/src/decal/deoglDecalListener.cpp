@@ -43,14 +43,14 @@ deoglDecalListener::~deoglDecalListener(){
 // Notifications
 //////////////////
 
-void deoglDecalListener::DecalDestroyed( deoglRDecal& ){
+void deoglDecalListener::DecalDestroyed(deoglRDecal&){
 }
 
-void deoglDecalListener::GeometryChanged( deoglRDecal& ){
+void deoglDecalListener::GeometryChanged(deoglRDecal&){
 }
 
-void deoglDecalListener::TextureChanged( deoglRDecal& ){
+void deoglDecalListener::TextureChanged(deoglRDecal&){
 }
 
-void deoglDecalListener::TUCChanged( deoglRDecal& ){
+void deoglDecalListener::TUCChanged(deoglRDecal&){
 }

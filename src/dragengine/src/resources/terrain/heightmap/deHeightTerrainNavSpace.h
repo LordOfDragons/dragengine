@@ -25,9 +25,8 @@
 #ifndef _DEHEIGHTTERRAINNAVSPACE_H_
 #define _DEHEIGHTTERRAINNAVSPACE_H_
 
+#include "deHeightTerrainNavSpaceEdge.h"
 #include "../../navigation/space/deNavigationSpace.h"
-
-class deHeightTerrainNavSpaceEdge;
 
 
 /**
@@ -45,14 +44,9 @@ private:
 	float pSnapDistance;
 	float pSnapAngle;
 	
-	unsigned int *pCorners;
-	int pCornerCount;
-	
-	deHeightTerrainNavSpaceEdge *pEdges;
-	int pEdgeCount;
-	
-	deNavigationSpaceFace *pFaces;
-	int pFaceCount;
+	decTList<unsigned int> pCorners;
+	decTList<deHeightTerrainNavSpaceEdge> pEdges;
+	decTList<deNavigationSpaceFace> pFaces;
 	
 	
 	
@@ -74,13 +68,13 @@ public:
 	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set navigation space type. */
-	void SetType( deNavigationSpace::eSpaceTypes type );
+	void SetType(deNavigationSpace::eSpaceTypes type);
 	
 	/** \brief Navigation layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set navigation layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	
 	
@@ -96,7 +90,7 @@ public:
 	 * 
 	 * The default snap distance is 0.001 (1mm).
 	 */
-	void SetSnapDistance( float distance );
+	void SetSnapDistance(float distance);
 	
 	/**
 	 * \brief Snap angle in radians up to which edges are linked to neighbor spaces.
@@ -110,61 +104,20 @@ public:
 	 * 
 	 * The default snap angle is 180° in radians.
 	 */
-	void SetSnapAngle( float angle );
-	/*@}*/
+	void SetSnapAngle(float angle);
 	
 	
+	/** \brief Corners. */
+	inline decTList<unsigned int> &GetCorners(){ return pCorners; }
+	inline const decTList<unsigned int> &GetCorners() const{ return pCorners; }
 	
-	/** \name Corners */
-	/*@{*/
-	/** \brief Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
+	/** \brief Edges. */
+	inline decTList<deHeightTerrainNavSpaceEdge> &GetEdges(){ return pEdges; }
+	inline const decTList<deHeightTerrainNavSpaceEdge> &GetEdges() const{ return pEdges; }
 	
-	/** \brief Set number of corners. */
-	void SetCornerCount( int count );
-	
-	/** \brief Corner at index . */
-	unsigned int GetCornerAt( int index ) const;
-	
-	/** \brief Set corner at index . */
-	void SetCornerAt( int index, unsigned int corner );
-	
-	/** \brief Pointer to corners. */
-	inline unsigned int *GetCorners() const{ return pCorners; }
-	/*@}*/
-	
-	
-	
-	/** \name Edges */
-	/*@{*/
-	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{ return pEdgeCount; }
-	
-	/** \brief Set number edges. */
-	void SetEdgeCount( int count );
-	
-	/** \brief Edge at the given position. */
-	deHeightTerrainNavSpaceEdge &GetEdgeAt( int index ) const;
-	
-	/** \brief Pointer to the edges. */
-	inline deHeightTerrainNavSpaceEdge *GetEdges() const{ return pEdges; }
-	/*@}*/
-	
-	
-	
-	/** \name Faces */
-	/*@{*/
-	/** \brief Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
-	
-	/** \brief Set number faces. */
-	void SetFaceCount( int count );
-	
-	/** \brief Face at the given position. */
-	deNavigationSpaceFace &GetFaceAt( int index ) const;
-	
-	/** \brief Pointer to the faces. */
-	inline deNavigationSpaceFace *GetFaces() const{ return pFaces; }
+	/** \brief Faces. */
+	inline decTList<deNavigationSpaceFace> &GetFaces(){ return pFaces; }
+	inline const decTList<deNavigationSpaceFace> &GetFaces() const{ return pFaces; }
 	/*@}*/
 };
 

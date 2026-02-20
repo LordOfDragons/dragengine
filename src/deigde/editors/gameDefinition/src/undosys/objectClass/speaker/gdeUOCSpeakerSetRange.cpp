@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRange::gdeUOCSpeakerSetRange( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetRange::gdeUOCSpeakerSetRange(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set range" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetRange");
 	
 	pOldValue = speaker->GetRange();
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetRange::~gdeUOCSpeakerSetRange(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCSpeakerSetRange::~gdeUOCSpeakerSetRange(){
 ///////////////
 
 void gdeUOCSpeakerSetRange::Undo(){
-	pSpeaker->SetRange( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetRange(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetRange::Redo(){
-	pSpeaker->SetRange( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetRange(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

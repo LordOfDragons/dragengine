@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates result callback. */
-	debpTSRayResultCallback( deCollisionInfo *colinfo, const debpTouchSensor &touchSensor );
+	debpTSRayResultCallback(deCollisionInfo *colinfo, const debpTouchSensor &touchSensor);
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Collision is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	/*@}*/
 };
 

@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXTEXTFIELD_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeTextField.h"
+#include "../../resources/igdeFont.h"
 
 class igdeTextField;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native textField.
  */
-class igdeNativeFoxTextField : public FXTextField{
-	FXDECLARE( igdeNativeFoxTextField )
+class igdeNativeFoxTextField : public FXTextField, public igdeTextField::cNativeTextField{
+	FXDECLARE(igdeNativeFoxTextField)
 	
 protected:
 	igdeNativeFoxTextField();
@@ -50,7 +51,7 @@ public:
 	
 private:
 	igdeTextField *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXColor pOrgBackColor;
 	FXColor pInvalidBackColor;
 	bool pPreventKeyPressHook;
@@ -59,14 +60,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxTextField( igdeTextField &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxTextField(igdeTextField &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTextField();
+	~igdeNativeFoxTextField() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxTextField* CreateNativeWidget( igdeTextField &owner );
+	static igdeNativeFoxTextField* CreateNativeWidget(igdeTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -79,33 +80,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void OnInvalidValueChanged();
-	virtual void UpdateText();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
-	virtual void UpdateEditable();
+	void Focus() override;
+	void OnInvalidValueChanged() override;
+	void UpdateText() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
+	void UpdateEditable() override;
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition( int position );
+	void SetCursorPosition(int position) override;
 	
-	static int TextFieldFlags( const igdeTextField &owner );
-	static igdeFont *TextFieldFont( const igdeTextField &owner, const igdeGuiTheme &guitheme );
-	static int TextFieldPadLeft( const igdeGuiTheme &guitheme );
-	static int TextFieldPadRight( const igdeGuiTheme &guitheme );
-	static int TextFieldPadTop( const igdeGuiTheme &guitheme );
-	static int TextFieldPadBottom( const igdeGuiTheme &guitheme );
+	static int TextFieldFlags(const igdeTextField &owner);
+	static igdeFont *TextFieldFont(const igdeTextField &owner, const igdeGuiTheme &guitheme);
+	static int TextFieldPadLeft(const igdeGuiTheme &guitheme);
+	static int TextFieldPadRight(const igdeGuiTheme &guitheme);
+	static int TextFieldPadTop(const igdeGuiTheme &guitheme);
+	static int TextFieldPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
-	long onKeyPress( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
+	long onKeyPress(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxTextField igdeNativeTextField;
+using igdeNativeTextField = igdeNativeFoxTextField;
 
 #endif

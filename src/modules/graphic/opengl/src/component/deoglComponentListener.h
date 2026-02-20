@@ -35,54 +35,59 @@ class deoglRComponent;
  */
 class deoglComponentListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglComponentListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component listener. */
 	deoglComponentListener();
 	
+protected:
 	/** Clean up component listener. */
-	virtual ~deoglComponentListener();
+	~deoglComponentListener() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** Component has been destroyed. */
-	virtual void ComponentDestroyed( deoglRComponent &component );
+	virtual void ComponentDestroyed(deoglRComponent &component);
 	
 	/** Component changed parent world. */
-	virtual void ParentWorldChanged( deoglRComponent &component );
+	virtual void ParentWorldChanged(deoglRComponent &component);
 	
 	/** Component changed layer mask. */
-	virtual void LayerMaskChanged( deoglRComponent &component );
+	virtual void LayerMaskChanged(deoglRComponent &component);
 	
 	/** Component changed render static. */
-	virtual void RenderStaticChanged( deoglRComponent &component );
+	virtual void RenderStaticChanged(deoglRComponent &component);
 	
 	/** Component geometry changed or dislocated. */
-	virtual void BoundariesChanged( deoglRComponent &component );
+	virtual void BoundariesChanged(deoglRComponent &component);
 	
 	/** Occlusion mesh geometry changed. */
-	virtual void OcclusionMeshChanged( deoglRComponent &component );
+	virtual void OcclusionMeshChanged(deoglRComponent &component);
 	
 	/** Textures changed. */
-	virtual void TexturesChanged( deoglRComponent &component );
+	virtual void TexturesChanged(deoglRComponent &component);
 	
 	/** TUC changed. */
-	virtual void TUCChanged( deoglRComponent &component );
+	virtual void TUCChanged(deoglRComponent &component);
 	
 	/** Movement hint changed. */
-	virtual void MovementHintChanged( deoglRComponent &component );
+	virtual void MovementHintChanged(deoglRComponent &component);
 	
 	/** GI importance changed. */
-	virtual void GIImportanceChanged( deoglRComponent &component );
+	virtual void GIImportanceChanged(deoglRComponent &component);
 	
 	/** Visibility changed. */
-	virtual void VisibilityChanged( deoglRComponent &component );
+	virtual void VisibilityChanged(deoglRComponent &component);
 	
 	/** Model changed. */
-	virtual void ModelChanged( deoglRComponent &component );
+	virtual void ModelChanged(deoglRComponent &component);
 	/*@}*/
 };
 

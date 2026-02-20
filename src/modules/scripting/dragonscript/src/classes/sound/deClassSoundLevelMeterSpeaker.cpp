@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -31,6 +33,7 @@
 
 #include "deClassSoundLevelMeterSpeaker.h"
 #include "deClassSpeaker.h"
+#include "../dedsHelpers.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -40,8 +43,8 @@
 
 
 struct sSLMSNatDat{
-	deSpeaker *speaker;
-	float volume;
+	deSpeaker::Ref speaker;
+	float volume = 1.0f;
 };
 
 
@@ -50,26 +53,25 @@ struct sSLMSNatDat{
 //////////////////////////////
 
 // private func new()
-deClassSoundLevelMeterSpeaker::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeterSpeaker, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid ){
+deClassSoundLevelMeterSpeaker::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeterSpeaker, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSoundLevelMeterSpeaker::nfNew::RunFunction( dsRunTime*, dsValue* ){
-	DSTHROW( dueInvalidAction );
+void deClassSoundLevelMeterSpeaker::nfNew::RunFunction(dsRunTime*, dsValue*){
+	DSTHROW(dueInvalidAction);
 }
 
 // public func destructor()
-deClassSoundLevelMeterSpeaker::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeterSpeaker, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSoundLevelMeterSpeaker::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeterSpeaker, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSoundLevelMeterSpeaker::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
-	sSLMSNatDat &nd = *( ( sSLMSNatDat* )p_GetNativeData( myself ) );
-	
-	if( nd.speaker ){
-		nd.speaker->FreeReference();
-		nd.speaker = NULL;
+void deClassSoundLevelMeterSpeaker::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
 	}
+	
+	dedsGetNativeData<sSLMSNatDat>(p_GetNativeData(myself)).~sSLMSNatDat();
 }
 
 
@@ -78,26 +80,26 @@ void deClassSoundLevelMeterSpeaker::nfDestructor::RunFunction( dsRunTime*, dsVal
 ///////////////
 
 // public func Speaker getSpeaker()
-deClassSoundLevelMeterSpeaker::nfGetSpeaker::nfGetSpeaker( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeterSpeaker, "getSpeaker", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSpeaker ){
+deClassSoundLevelMeterSpeaker::nfGetSpeaker::nfGetSpeaker(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeterSpeaker, "getSpeaker", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSpeaker){
 }
-void deClassSoundLevelMeterSpeaker::nfGetSpeaker::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSLMSNatDat &nd = *( ( sSLMSNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeterSpeaker* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeterSpeaker::nfGetSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSLMSNatDat &nd = dedsGetNativeData<sSLMSNatDat>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassSoundLevelMeterSpeaker*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassSpeaker()->PushSpeaker( rt, nd.speaker );
+	ds.GetClassSpeaker()->PushSpeaker(rt, nd.speaker);
 }
 
 // public func float getVolume()
-deClassSoundLevelMeterSpeaker::nfGetVolume::nfGetVolume( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeterSpeaker, "getVolume", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassSoundLevelMeterSpeaker::nfGetVolume::nfGetVolume(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeterSpeaker, "getVolume", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSoundLevelMeterSpeaker::nfGetVolume::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSLMSNatDat &nd = *( ( sSLMSNatDat* )p_GetNativeData( myself ) );
+void deClassSoundLevelMeterSpeaker::nfGetVolume::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSLMSNatDat &nd = dedsGetNativeData<sSLMSNatDat>(p_GetNativeData(myself));
 	
-	rt->PushFloat( nd.volume );
+	rt->PushFloat(nd.volume);
 }
 
 
@@ -108,14 +110,14 @@ void deClassSoundLevelMeterSpeaker::nfGetVolume::RunFunction( dsRunTime *rt, dsV
 // Constructor
 ////////////////
 
-deClassSoundLevelMeterSpeaker::deClassSoundLevelMeterSpeaker( deScriptingDragonScript &ds ) :
-dsClass( "SoundLevelMeterSpeaker", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassSoundLevelMeterSpeaker::deClassSoundLevelMeterSpeaker(deScriptingDragonScript &ds) :
+dsClass("SoundLevelMeterSpeaker", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSLMSNatDat ) );
+	p_SetNativeDataSize(dedsNativeDataSize<sSLMSNatDat>());
 }
 
 deClassSoundLevelMeterSpeaker::~deClassSoundLevelMeterSpeaker(){
@@ -126,7 +128,7 @@ deClassSoundLevelMeterSpeaker::~deClassSoundLevelMeterSpeaker(){
 // Management
 ///////////////
 
-void deClassSoundLevelMeterSpeaker::CreateClassMembers( dsEngine *engine ){
+void deClassSoundLevelMeterSpeaker::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -142,30 +144,26 @@ void deClassSoundLevelMeterSpeaker::CreateClassMembers( dsEngine *engine ){
 	init.clsSpeaker = pDS.GetClassSpeaker();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetSpeaker( init ) );
-	AddFunction( new nfGetVolume( init ) );
+	AddFunction(new nfGetSpeaker(init));
+	AddFunction(new nfGetVolume(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-void deClassSoundLevelMeterSpeaker::PushSoundLevelMeterSpeaker( dsRunTime* rt,
-const deSoundLevelMeter::cAudibleSpeaker &speaker ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassSoundLevelMeterSpeaker::PushSoundLevelMeterSpeaker(dsRunTime* rt,
+const deSoundLevelMeter::cAudibleSpeaker &speaker){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
+	rt->CreateObjectNakedOnStack(this);
 	
-	sSLMSNatDat &nd = *( ( sSLMSNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	sSLMSNatDat &nd = dedsNewNativeData<sSLMSNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	nd.speaker = speaker.GetSpeaker();
-	if( nd.speaker ){
-		nd.speaker->AddReference();
-	}
-	
 	nd.volume = speaker.GetVolume();
 }

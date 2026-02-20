@@ -25,7 +25,7 @@
 #ifndef _DEOALSHAREDBUFFERLIST_H_
 #define _DEOALSHAREDBUFFERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalSharedBuffer;
 
@@ -36,7 +36,7 @@ class deoalSharedBuffer;
  */
 class deoalSharedBufferList{
 private:
-	decPointerList pBuffers;
+	decTObjectList<deoalSharedBuffer> pBuffers;
 	
 	
 	
@@ -59,12 +59,12 @@ public:
 	 * \details Claims next free buffer or creates a new one. Claimed buffer is marked
 	 *          as in use and resized to \em size floats if not large enough.
 	 */
-	deoalSharedBuffer *ClaimBuffer( int size );
+	deoalSharedBuffer *ClaimBuffer(int size);
 	
 	/**
 	 * \brief Release buffer.
 	 */
-	void ReleaseBuffer( deoalSharedBuffer *buffer );
+	void ReleaseBuffer(deoalSharedBuffer *buffer);
 	/*@}*/
 };
 

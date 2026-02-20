@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 
@@ -35,6 +35,10 @@ class saeSAnimation;
  * Undo Action Speech Animation Set Rig Path.
  */
 class saeUSAnimSetRigPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUSAnimSetRigPath>;
+	
+	
 private:
 	saeSAnimation *pSAnimation;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetRigPath( saeSAnimation *sanimation, const char *newName );
+	saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *newName);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUSAnimSetRigPath();
+	~saeUSAnimSetRigPath() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

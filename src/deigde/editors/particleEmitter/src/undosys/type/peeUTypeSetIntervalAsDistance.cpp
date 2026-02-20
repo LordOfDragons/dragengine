@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance( peeType *type ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Set Type Interval As Distance" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetIntervalAsDistance");
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetIntervalAsDistance::~peeUTypeSetIntervalAsDistance(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -64,9 +60,9 @@ peeUTypeSetIntervalAsDistance::~peeUTypeSetIntervalAsDistance(){
 ///////////////
 
 void peeUTypeSetIntervalAsDistance::Undo(){
-	pType->SetIntervalAsDistance( ! pType->GetIntervalAsDistance() );
+	pType->SetIntervalAsDistance(!pType->GetIntervalAsDistance());
 }
 
 void peeUTypeSetIntervalAsDistance::Redo(){
-	pType->SetIntervalAsDistance( ! pType->GetIntervalAsDistance() );
+	pType->SetIntervalAsDistance(!pType->GetIntervalAsDistance());
 }

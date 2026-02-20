@@ -25,19 +25,20 @@
 #ifndef _AEUCONTROLLERSETMAXIMUMVALUE_H_
 #define _AEUCONTROLLERSETMAXIMUMVALUE_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
  * Undo action controller set maximum value.
  */
 class aeUControllerSetMaximumValue : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerSetMaximumValue>;
+	
+	
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	
@@ -47,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetMaximumValue( aeController *controller, float newValue );
+	aeUControllerSetMaximumValue(aeController *controller, float newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerSetMaximumValue();
+	~aeUControllerSetMaximumValue() override;
 	/*@}*/
 	
 	
@@ -60,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

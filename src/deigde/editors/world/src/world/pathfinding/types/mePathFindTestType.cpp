@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "mePathFindTestType.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,7 +34,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-mePathFindTestType::mePathFindTestType( int typeNumber ){
+mePathFindTestType::mePathFindTestType(int typeNumber){
 	pTypeNumber = typeNumber;
 	pFixCost = 0.0f;
 	pCostPerMeter = 1.0f;
@@ -52,22 +48,18 @@ mePathFindTestType::~mePathFindTestType(){
 // Management
 ///////////////
 
-void mePathFindTestType::SetTypeNumber( int typeNumber ){
+void mePathFindTestType::SetTypeNumber(int typeNumber){
 	pTypeNumber = typeNumber;
 }
 
-void mePathFindTestType::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void mePathFindTestType::SetName(const char *name){
 	pName = name;
 }
 
-void mePathFindTestType::SetFixCost( float fixCost ){
+void mePathFindTestType::SetFixCost(float fixCost){
 	pFixCost = fixCost;
 }
 
-void mePathFindTestType::SetCostPerMeter( float costPerMeter ){
+void mePathFindTestType::SetCostPerMeter(float costPerMeter){
 	pCostPerMeter = costPerMeter;
 }

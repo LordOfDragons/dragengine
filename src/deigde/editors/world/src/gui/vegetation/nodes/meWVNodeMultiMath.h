@@ -27,8 +27,8 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
 
 class meHTVRuleMultiMath;
 
@@ -38,11 +38,14 @@ class meHTVRuleMultiMath;
  * \brief Vegetation Editing Window Node Multi Math.
  */
 class meWVNodeMultiMath : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeMultiMath>;
+	
 private:
 	meHTVRuleMultiMath *pRuleMultiMath;
 	
-	igdeContainerReference pFraParameters;
-	igdeComboBoxReference pCBOperator;
+	igdeContainer::Ref pFraParameters;
+	igdeComboBox::Ref pCBOperator;
 	
 	
 	
@@ -50,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMultiMath( meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule );
+	meWVNodeMultiMath(meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeMultiMath();
+	~meWVNodeMultiMath() override;
 	/*@}*/
 	
 	
@@ -66,7 +69,7 @@ public:
 	inline meHTVRuleMultiMath *GetRuleMultiMath() const{ return pRuleMultiMath; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

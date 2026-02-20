@@ -50,8 +50,18 @@ public:
 	/** Create cluster. */
 	deoglCollideListPropFieldCluster();
 	
+	deoglCollideListPropFieldCluster(deoglPropFieldCluster *cluster);
+	
+	/** Copy. */
+	deoglCollideListPropFieldCluster(const deoglCollideListPropFieldCluster &cluster) = delete;
+	deoglCollideListPropFieldCluster &operator=(const deoglCollideListPropFieldCluster &cluster) = delete;
+	
+	/** Move. */
+	deoglCollideListPropFieldCluster(deoglCollideListPropFieldCluster &&other) noexcept;
+	deoglCollideListPropFieldCluster &operator=(deoglCollideListPropFieldCluster &&other) noexcept;
+	
 	/** Clean up cluster. */
-	~deoglCollideListPropFieldCluster();
+	~deoglCollideListPropFieldCluster() override;
 	/*@}*/
 	
 	
@@ -65,25 +75,25 @@ public:
 	inline deoglPropFieldCluster *GetCluster() const{ return pCluster; }
 	
 	/** Set cluster. */
-	void SetCluster( deoglPropFieldCluster *cluster );
+	void SetCluster(deoglPropFieldCluster *cluster);
 	
 	/** Component is culled. */
 	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set component is culled. */
-	void SetCulled( bool culled );
+	void SetCulled(bool culled);
 	
 	/** Cascade mask. */
 	inline int GetCascadeMask() const{ return pCascadeMask; }
 	
 	/** Set cascade mask. */
-	void SetCascadeMask( int mask );
+	void SetCascadeMask(int mask);
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create capabilities object. */
-	deoalCapabilities( deoalAudioThread &renderThread );
+	deoalCapabilities(deoalAudioThread &renderThread);
 	
 	/** \brief Clean up capabilities object. */
 	~deoalCapabilities();

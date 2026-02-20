@@ -25,35 +25,34 @@
 #ifndef _IGDEGDCLASS_H_
 #define _IGDEGDCLASS_H_
 
-#include "billboard/igdeGDCBillboardList.h"
-#include "component/igdeGDCComponentList.h"
-#include "component/igdeGDCCTextureList.h"
-#include "envmapprobe/igdeGDCEnvMapProbeList.h"
-#include "light/igdeGDCLightList.h"
-#include "snappoint/igdeGDCSnapPointList.h"
-#include "navspace/igdeGDCNavigationSpaceList.h"
-#include "navblocker/igdeGDCNavigationBlockerList.h"
-#include "particleemitter/igdeGDCParticleEmitterList.h"
-#include "forcefield/igdeGDCForceFieldList.h"
-#include "speaker/igdeGDCSpeakerList.h"
-#include "world/igdeGDCWorldList.h"
+#include "billboard/igdeGDCBillboard.h"
+#include "component/igdeGDCComponent.h"
+#include "component/igdeGDCCTexture.h"
+#include "envmapprobe/igdeGDCEnvMapProbe.h"
+#include "light/igdeGDCLight.h"
+#include "snappoint/igdeGDCSnapPoint.h"
+#include "navspace/igdeGDCNavigationSpace.h"
+#include "navblocker/igdeGDCNavigationBlocker.h"
+#include "particleemitter/igdeGDCParticleEmitter.h"
+#include "forcefield/igdeGDCForceField.h"
+#include "speaker/igdeGDCSpeaker.h"
+#include "world/igdeGDCWorld.h"
 #include "../igdeTagManager.h"
-#include "../property/igdeGDPropertyList.h"
+#include "../property/igdeGDProperty.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decIntList.h>
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deglIntList;
 class igdeGDClassInherit;
 class igdeGDCamera;
 class igdeGDClassManager;
-class deImage;
 
 
 
@@ -65,7 +64,15 @@ class deImage;
 class DE_DLL_EXPORT igdeGDClass : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDClass> Ref;
+	using Ref = deTObjectReference<igdeGDClass>;
+	
+	using IndexList = decTList<int>;
+	
+	using InheritClassesList = decTObjectOrderedSet<igdeGDClassInherit>;
+	
+	/** \brief List of classes. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeGDClass>,igdeGDClass>;
+	
 	
 	/** \brief Scale modes. */
 	enum eScaleModes{
@@ -105,32 +112,32 @@ private:
 	igdeGDCamera *pCamera;
 	bool pHasCamera, pIsGhost, pCanInstantiate, pIsAttachableBehavior;
 	decString pCategory;
-	igdeGDPropertyList pListProperties;
+	igdeGDProperty::List pListProperties;
 	decStringDictionary pPropertyValues;
-	igdeGDPropertyList pTextureProperties;
-	igdeGDCBillboardList pListBillboards;
-	igdeGDCComponentList pListComponents;
-	igdeGDCLightList pListLights;
-	igdeGDCSnapPointList pSnapPoints;
-	igdeGDCParticleEmitterList pListParticleEmitters;
-	igdeGDCForceFieldList pListForceFields;
-	igdeGDCEnvMapProbeList pListEnvMapProbes;
-	igdeGDCSpeakerList pListSpeakers;
-	igdeGDCNavigationSpaceList pListNavigationSpaces;
-	igdeGDCNavigationBlockerList pListNavigationBlockers;
-	igdeGDCWorldList pListWorlds;
+	igdeGDProperty::List pTextureProperties;
+	igdeGDCBillboard::List pListBillboards;
+	igdeGDCComponent::List pListComponents;
+	igdeGDCLight::List pListLights;
+	igdeGDCSnapPoint::List pSnapPoints;
+	igdeGDCParticleEmitter::List pListParticleEmitters;
+	igdeGDCForceField::List pListForceFields;
+	igdeGDCEnvMapProbe::List pListEnvMapProbes;
+	igdeGDCSpeaker::List pListSpeakers;
+	igdeGDCNavigationSpace::List pListNavigationSpaces;
+	igdeGDCNavigationBlocker::List pListNavigationBlockers;
+	igdeGDCWorld::List pListWorlds;
 	int pInheritSubObjects;
 	
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;
 	
-	decObjectOrderedSet pInheritClasses;
+	InheritClassesList pInheritClasses;
 	decString pDefaultInheritPropertyPrefix;
 	
 	decString pPathEClass;
-	igdeGDCCTextureList pComponentTextures;
+	igdeGDCCTexture::List pComponentTextures;
 	
-	deImage *pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	
@@ -138,16 +145,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create named game definition class. */
-	igdeGDClass( const char *name );
+	igdeGDClass(const char *name);
 	
 	/** \brief Create game definition class as a copy of another game definition class. */
-	igdeGDClass( const igdeGDClass &gdclass );
-	
+	igdeGDClass(const igdeGDClass &gdclass);
+	igdeGDClass& operator=(const igdeGDClass& gdclass) = delete;
 	
 	
 protected:
 	/** \brief Clean up game definition class. */
-	virtual ~igdeGDClass();
+	~igdeGDClass() override;
 	/*@}*/
 	
 	
@@ -162,19 +169,19 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description of the class. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Scale mode. */
 	inline eScaleModes GetScaleMode() const{ return pScaleMode; }
 	
 	/** \brief Set scale mode. */
-	void SetScaleMode( eScaleModes mode );
+	void SetScaleMode(eScaleModes mode);
 	
 	/** \brief Cathegory. */
 	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set cathegory. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** \brief Class camera. */
 	inline igdeGDCamera *GetCamera() const{ return pCamera; }
@@ -183,19 +190,19 @@ public:
 	inline bool GetHasCamera() const{ return pHasCamera; }
 	
 	/** \brief Sets if the class has a camera. */
-	void SetHasCamera( bool hasCamera );
+	void SetHasCamera(bool hasCamera);
 	
 	/** \brief Determines if this is a ghost object not blocking other objects. */
 	inline bool GetIsGhost() const{ return pIsGhost; }
 	
 	/** \brief Sets if this is a ghost object not blocking other objects. */
-	void SetIsGhost( bool isGhost );
+	void SetIsGhost(bool isGhost);
 	
 	/** \brief Object can be instantiated. */
 	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** \brief Set if object can be instantiated. */
-	void SetCanInstantiate( bool canInstantiate );
+	void SetCanInstantiate(bool canInstantiate);
 	
 	/** Object class is an attachable behavior. */
 	inline bool GetIsAttachableBehavior() const{ return pIsAttachableBehavior; }
@@ -215,38 +222,35 @@ public:
 	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
 	
 	/** \brief Set inherit sub objects filter. */
-	void SetInheritSubObjects( int filter );
+	void SetInheritSubObjects(int filter);
 	
 	
 	
-	/** \brief Count of inherit classes. */
-	int GetInheritClassCount() const;
-	
-	/** \brief Inherit class at index. */
-	igdeGDClassInherit *GetInheritClassAt( int index ) const;
+	/** \brief Inherit classes. */
+	inline const InheritClassesList &GetInheritClasses() const{ return pInheritClasses; }
 	
 	/** \brief Add inherit class. */
-	void AddInheritClass( igdeGDClassInherit *inheritClass );
+	void AddInheritClass(igdeGDClassInherit *inheritClass);
 	
 	/** \brief Find inherited classes from their names if present. */
-	void ResolveInheritClasses( const igdeGDClassManager &classManager );
+	void ResolveInheritClasses(const igdeGDClassManager &classManager);
 	
 	/** \brief Remove all inherit classes. */
 	void RemoveAllInheritClasses();
 	
 	/** \brief Class directly or indirectly inherits another class. */
-	bool Inherits( igdeGDClass *gdclass ) const;
+	bool Inherits(igdeGDClass *gdclass) const;
 	
 	
 	
 	/** \brief Checks the class for errors. */
 	void Check();
 	
-	/** \brief Preview image or NULL if not created yet. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	/** \brief Preview image or nullptr if not created yet. */
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
-	/** \brief Set preview image or NULL if not created yet. */
-	void SetPreviewImage( deImage *image );
+	/** \brief Set preview image or nullptr if not created yet. */
+	void SetPreviewImage(deImage *image);
 	
 	/** \brief Default inherit property prefix. */
 	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
@@ -258,14 +262,14 @@ public:
 	inline const decString &GetPathEClass() const{ return pPathEClass; }
 	
 	/** \brief Set element class path or empty string if defined manually. */
-	void SetPathEClass( const decString &pathEClass );
+	void SetPathEClass(const decString &pathEClass);
 	
 	/** \brief Component texture replacements. */
-	inline igdeGDCCTextureList &GetComponentTextures(){ return pComponentTextures; }
-	inline const igdeGDCCTextureList &GetComponentTextures() const{ return pComponentTextures; }
+	inline igdeGDCCTexture::List &GetComponentTextures(){ return pComponentTextures; }
+	inline const igdeGDCCTexture::List &GetComponentTextures() const{ return pComponentTextures; }
 	
 	/** \brief Build flattened component texture replacements list. */
-	void GetDeepComponentTextures( igdeGDCCTextureList &list ) const;
+	void GetDeepComponentTextures(igdeGDCCTexture::List &list) const;
 	/*@}*/
 	
 	
@@ -273,13 +277,13 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief List of class properties. */
-	inline const igdeGDPropertyList &GetListProperties() const{ return pListProperties; }
+	inline const igdeGDProperty::List &GetListProperties() const{ return pListProperties; }
 	
 	/** \brief Adds a class property. */
-	void AddProperty( igdeGDProperty *property );
+	void AddProperty(igdeGDProperty *property);
 	
 	/** \brief Removes a class property. */
-	void RemoveProperty( igdeGDProperty *property );
+	void RemoveProperty(igdeGDProperty *property);
 	
 	/** \brief Removes all class properties. */
 	void RemoveAllProperties();
@@ -288,10 +292,10 @@ public:
 	inline const decStringDictionary &GetPropertyValues() const{ return pPropertyValues; }
 	
 	/** \brief Set property values. */
-	void SetPropertyValues( const decStringDictionary &values );
+	void SetPropertyValues(const decStringDictionary &values);
 	
-	/** \brief First named property in class and inherited or NULL if not found. */
-	igdeGDProperty *GetPropertyNamed( const char *name ) const;
+	/** \brief First named property in class and inherited or nullptr if not found. */
+	igdeGDProperty *GetPropertyNamed(const char *name) const;
 	
 	/**
 	 * \brief Get default property value including parent classes.
@@ -304,7 +308,7 @@ public:
 	 * \retval true Default value has been found and has been written to \em value.
 	 * \retval false Default value has not been found. \em value is left untouched.
 	 */
-	bool GetDefaultPropertyValue( const char *name, decString &value ) const;
+	bool GetDefaultPropertyValue(const char *name, decString &value) const;
 	
 	/**
 	 * \brief Check if default property exists value including parent classes.
@@ -316,14 +320,14 @@ public:
 	 * \retval true Default value is present.
 	 * \retval false Default value is absent.
 	 */
-	bool HasDefaultPropertyValue( const char *name ) const;
+	bool HasDefaultPropertyValue(const char *name) const;
 	
 	/**
 	 * \brief Add property names in this class and optionally inherited classes.
 	 * \param[out] set Set to add property names to.
 	 * \param[in] inherited Include inherited parameters.
 	 */
-	void AddPropertyNames( decStringSet &set, bool inherited = false ) const;
+	void AddPropertyNames(decStringSet &set, bool inherited = false) const;
 	/*@}*/
 	
 	
@@ -331,22 +335,22 @@ public:
 	/** \name Texture properties */
 	/*@{*/
 	/** \brief Texture properties. */
-	inline const igdeGDPropertyList &GetTextureProperties() const{ return pTextureProperties; }
+	inline const igdeGDProperty::List &GetTextureProperties() const{ return pTextureProperties; }
 	
 	/** \brief Set texture properties. */
-	void SetTextureProperties( const igdeGDPropertyList &properties );
+	void SetTextureProperties(const igdeGDProperty::List &properties);
 	
 	/** \brief Add texture property. */
-	void AddTextureProperty( igdeGDProperty *property );
+	void AddTextureProperty(igdeGDProperty *property);
 	
 	/** \brief Remove texture property. */
-	void RemoveTextureProperty( igdeGDProperty *property );
+	void RemoveTextureProperty(igdeGDProperty *property);
 	
 	/** \brief Remove all texture properties. */
 	void RemoveAllTextureProperties();
 	
-	/** \brief First named texture property in class and inherited or NULL if not found. */
-	igdeGDProperty *GetTexturePropertyNamed( const char *name ) const;
+	/** \brief First named texture property in class and inherited or nullptr if not found. */
+	igdeGDProperty *GetTexturePropertyNamed(const char *name) const;
 	
 	/**
 	 * \brief Get default texture property value including parent classes.
@@ -359,7 +363,7 @@ public:
 	 * \retval true Default value has been found and has been written to \em value.
 	 * \retval false Default value has not been found. \em value is left untouched.
 	 */
-	bool GetDefaultTexturePropertyValue( const char *name, decString &value ) const;
+	bool GetDefaultTexturePropertyValue(const char *name, decString &value) const;
 	
 	/**
 	 * \brief Check if default texture property exists value including parent classes.
@@ -371,14 +375,14 @@ public:
 	 * \retval true Default value is present.
 	 * \retval false Default value is absent.
 	 */
-	bool HasDefaultTexturePropertyValue( const char *name ) const;
+	bool HasDefaultTexturePropertyValue(const char *name) const;
 	
 	/**
 	 * \brief Add texture property names in this class and optionally inherited classes.
 	 * \param[out] set Set to add texture property names to.
 	 * \param[in] inherited Include inherited parameters.
 	 */
-	void AddTexturePropertyNames( decStringSet &set, bool inherited = false ) const;
+	void AddTexturePropertyNames(decStringSet &set, bool inherited = false) const;
 	/*@}*/
 	
 	
@@ -386,25 +390,25 @@ public:
 	/** \name Components */
 	/*@{*/
 	/** \brief List of components. */
-	inline const igdeGDCComponentList &GetComponentList() const{ return pListComponents; }
+	inline const igdeGDCComponent::List &GetComponentList() const{ return pListComponents; }
 	
 	/** \brief Adds a component. */
-	void AddComponent( igdeGDCComponent *component );
+	void AddComponent(igdeGDCComponent *component);
 	
 	/** \brief Removes a component. */
-	void RemoveComponent( igdeGDCComponent *component );
+	void RemoveComponent(igdeGDCComponent *component);
 	
 	/** \brief Removes all components. */
 	void RemoveAllComponents();
 	
 	/** \brief Determines if a component has a named linked property. */
-	bool HasComponentLinkedProperty( const char *name ) const;
+	bool HasComponentLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of components with a named linked property. */
-	const igdeGDCComponentList GetComponentsWithLinkedProperty( const char *name ) const;
+	const igdeGDCComponent::List GetComponentsWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of components with a named linked property. */
-	const decIntList GetComponentIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetComponentIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -412,25 +416,25 @@ public:
 	/** \name Lights */
 	/*@{*/
 	/** \brief List of lights. */
-	inline const igdeGDCLightList &GetLightList() const{ return pListLights; }
+	inline const igdeGDCLight::List &GetLightList() const{ return pListLights; }
 	
 	/** \brief Adds a light. */
-	void AddLight( igdeGDCLight *light );
+	void AddLight(igdeGDCLight *light);
 	
 	/** \brief Removes a light. */
-	void RemoveLight( igdeGDCLight *light );
+	void RemoveLight(igdeGDCLight *light);
 	
 	/** \brief Removes all lights. */
 	void RemoveAllLights();
 	
 	/** \brief Determines if a light has a named linked property. */
-	bool HasLightLinkedProperty( const char *name ) const;
+	bool HasLightLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of lights with a named linked property. */
-	const igdeGDCLightList GetLightWithLinkedProperty( const char *name ) const;
+	const igdeGDCLight::List GetLightWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of lights with a named linked property. */
-	const decIntList GetLightIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetLightIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -438,25 +442,25 @@ public:
 	/** \name Billboards */
 	/*@{*/
 	/** \brief List of billboards. */
-	inline const igdeGDCBillboardList &GetBillboardList() const{ return pListBillboards; }
+	inline const igdeGDCBillboard::List &GetBillboardList() const{ return pListBillboards; }
 	
 	/** \brief Adds a billboard. */
-	void AddBillboard( igdeGDCBillboard *billboard );
+	void AddBillboard(igdeGDCBillboard *billboard);
 	
 	/** \brief Removes a billboard. */
-	void RemoveBillboard( igdeGDCBillboard *billboard );
+	void RemoveBillboard(igdeGDCBillboard *billboard);
 	
 	/** \brief Removes all billboards. */
 	void RemoveAllBillboards();
 	
 	/** \brief Determines if a billboard has a named linked property. */
-	bool HasBillboardLinkedProperty( const char *name ) const;
+	bool HasBillboardLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of billboards with a named linked property. */
-	const igdeGDCBillboardList GetBillboardWithLinkedProperty( const char *name ) const;
+	const igdeGDCBillboard::List GetBillboardWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of billboards with a named linked property. */
-	const decIntList GetBillboardIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetBillboardIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -464,13 +468,13 @@ public:
 	/** \name SnapPoints */
 	/*@{*/
 	/** \brief List of snap points. */
-	inline const igdeGDCSnapPointList &GetSnapPointList() const{ return pSnapPoints; }
+	inline const igdeGDCSnapPoint::List &GetSnapPointList() const{ return pSnapPoints; }
 	
 	/** \brief Add snap point. */
-	void AddSnapPoint( igdeGDCSnapPoint *snappoint );
+	void AddSnapPoint(igdeGDCSnapPoint *snappoint);
 	
 	/** \brief Remove snap point. */
-	void RemoveSnapPoint( igdeGDCSnapPoint *snapppoint );
+	void RemoveSnapPoint(igdeGDCSnapPoint *snapppoint);
 	
 	/** \brief Remove all snap points. */
 	void RemoveAllSnapPoints();
@@ -481,13 +485,13 @@ public:
 	/** \name Particle Emitters */
 	/*@{*/
 	/** \brief List of particle emitters. */
-	inline const igdeGDCParticleEmitterList &GetParticleEmitterList() const{ return pListParticleEmitters; }
+	inline const igdeGDCParticleEmitter::List &GetParticleEmitterList() const{ return pListParticleEmitters; }
 	
 	/** \brief Adds a particle emitter. */
-	void AddParticleEmitter( igdeGDCParticleEmitter *emitter );
+	void AddParticleEmitter(igdeGDCParticleEmitter *emitter);
 	
 	/** \brief Removes a particle emitter. */
-	void RemoveParticleEmitter( igdeGDCParticleEmitter *emitter );
+	void RemoveParticleEmitter(igdeGDCParticleEmitter *emitter);
 	
 	/** \brief Removes all particle emitters. */
 	void RemoveAllParticleEmitters();
@@ -498,13 +502,13 @@ public:
 	/** \name Force Fields */
 	/*@{*/
 	/** \brief List of force fields. */
-	inline const igdeGDCForceFieldList &GetForceFieldList() const{ return pListForceFields; }
+	inline const igdeGDCForceField::List &GetForceFieldList() const{ return pListForceFields; }
 	
 	/** \brief Adds a force field. */
-	void AddForceField( igdeGDCForceField *field );
+	void AddForceField(igdeGDCForceField *field);
 	
 	/** \brief Removes a force field. */
-	void RemoveForceField( igdeGDCForceField *field );
+	void RemoveForceField(igdeGDCForceField *field);
 	
 	/** \brief Removes all force fields. */
 	void RemoveAllForceFields();
@@ -515,25 +519,25 @@ public:
 	/** \name Environment Map Probes */
 	/*@{*/
 	/** \brief List of environment map probes. */
-	inline const igdeGDCEnvMapProbeList &GetEnvironmentMapProbeList() const{ return pListEnvMapProbes; }
+	inline const igdeGDCEnvMapProbe::List &GetEnvironmentMapProbeList() const{ return pListEnvMapProbes; }
 	
 	/** \brief Adds an environment map probe. */
-	void AddEnvironmentMapProbe( igdeGDCEnvMapProbe *probe );
+	void AddEnvironmentMapProbe(igdeGDCEnvMapProbe *probe);
 	
 	/** \brief Removes an environment map probe. */
-	void RemoveEnvironmentMapProbe( igdeGDCEnvMapProbe *probe );
+	void RemoveEnvironmentMapProbe(igdeGDCEnvMapProbe *probe);
 	
 	/** \brief Removes all environment map probes. */
 	void RemoveAllEnvironmentMapProbes();
 	
 	/** \brief Determines if an environment map probes has a named linked property. */
-	bool HasEnvMapProbesLinkedProperty( const char *name ) const;
+	bool HasEnvMapProbesLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of environment map probes with a named linked property. */
-	const igdeGDCEnvMapProbeList GetEnvMapProbesWithLinkedProperty( const char *name ) const;
+	const igdeGDCEnvMapProbe::List GetEnvMapProbesWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of environment map probes with a named linked property. */
-	const decIntList GetEnvMapProbesIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetEnvMapProbesIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -541,25 +545,25 @@ public:
 	/** \name Speakers */
 	/*@{*/
 	/** \brief List of speakers. */
-	inline const igdeGDCSpeakerList &GetSpeakerList() const{ return pListSpeakers; }
+	inline const igdeGDCSpeaker::List &GetSpeakerList() const{ return pListSpeakers; }
 	
 	/** \brief Adds a speaker. */
-	void AddSpeaker( igdeGDCSpeaker *speaker );
+	void AddSpeaker(igdeGDCSpeaker *speaker);
 	
 	/** \brief Removes a speaker. */
-	void RemoveSpeaker( igdeGDCSpeaker *speaker );
+	void RemoveSpeaker(igdeGDCSpeaker *speaker);
 	
 	/** \brief Removes all speakers. */
 	void RemoveAllSpeakers();
 	
 	/** \brief Determines if a speaker has a named linked property. */
-	bool HasSpeakerLinkedProperty( const char *name ) const;
+	bool HasSpeakerLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of speakers with a named linked property. */
-	const igdeGDCSpeakerList GetSpeakerWithLinkedProperty( const char *name ) const;
+	const igdeGDCSpeaker::List GetSpeakerWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of speakers with a named linked property. */
-	const decIntList GetSpeakerIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetSpeakerIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -567,25 +571,25 @@ public:
 	/** \name Navigation spaces */
 	/*@{*/
 	/** \brief List of navigation spaces. */
-	inline const igdeGDCNavigationSpaceList &GetNavigationSpaceList() const{ return pListNavigationSpaces; }
+	inline const igdeGDCNavigationSpace::List &GetNavigationSpaceList() const{ return pListNavigationSpaces; }
 	
 	/** \brief Adds a navigation space. */
-	void AddNavigationSpace( igdeGDCNavigationSpace *navSpace );
+	void AddNavigationSpace(igdeGDCNavigationSpace *navSpace);
 	
 	/** \brief Removes a navigation space. */
-	void RemoveNavigationSpace( igdeGDCNavigationSpace *navSpace );
+	void RemoveNavigationSpace(igdeGDCNavigationSpace *navSpace);
 	
 	/** \brief Removes all navigation spaces. */
 	void RemoveAllNavigationSpaces();
 	
 	/** \brief Determines if a navigation space has a named linked property. */
-	bool HasNavSpaceLinkedProperty( const char *name ) const;
+	bool HasNavSpaceLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of navigation spaces with a named linked property. */
-	const igdeGDCNavigationSpaceList GetNavSpaceWithLinkedProperty( const char *name ) const;
+	const igdeGDCNavigationSpace::List GetNavSpaceWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of navigation spaces with a named linked property. */
-	const decIntList GetNavSpaceIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetNavSpaceIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -593,25 +597,25 @@ public:
 	/** \name Navigation blockers */
 	/*@{*/
 	/** \brief List of navigation blockers. */
-	inline const igdeGDCNavigationBlockerList &GetNavigationBlockerList() const{ return pListNavigationBlockers; }
+	inline const igdeGDCNavigationBlocker::List &GetNavigationBlockerList() const{ return pListNavigationBlockers; }
 	
 	/** \brief Adds a navigation blocker. */
-	void AddNavigationBlocker( igdeGDCNavigationBlocker *blocker );
+	void AddNavigationBlocker(igdeGDCNavigationBlocker *blocker);
 	
 	/** \brief Removes a navigation blocker. */
-	void RemoveNavigationBlocker( igdeGDCNavigationBlocker *blocker );
+	void RemoveNavigationBlocker(igdeGDCNavigationBlocker *blocker);
 	
 	/** \brief Removes all navigation blockers. */
 	void RemoveAllNavigationBlockers();
 	
 	/** \brief Determines if a navigation blocker has a named linked property. */
-	bool HasNavBlockerLinkedProperty( const char *name ) const;
+	bool HasNavBlockerLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of navigation blockers with a named linked property. */
-	const igdeGDCNavigationBlockerList GetNavBlockerWithLinkedProperty( const char *name ) const;
+	const igdeGDCNavigationBlocker::List GetNavBlockerWithLinkedProperty(const char *name) const;
 	
 	/** \brief Retrieves a list of indices of navigation blockers with a named linked property. */
-	const decIntList GetNavBlockerIndicesWithLinkedProperty( const char *name ) const;
+	const IndexList GetNavBlockerIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
@@ -619,7 +623,7 @@ public:
 	/** \name Worlds */
 	/*@{*/
 	/** \brief List of worlds. */
-	inline const igdeGDCWorldList &GetWorldList() const{ return pListWorlds; }
+	inline const igdeGDCWorld::List &GetWorldList() const{ return pListWorlds; }
 	
 	/** \brief Add world. */
 	void AddWorld(igdeGDCWorld *world);
@@ -634,18 +638,18 @@ public:
 	bool HasWorldLinkedProperty(const char *name) const;
 	
 	/** \brief List of worlds with named linked property. */
-	const igdeGDCWorldList GetWorldsWithLinkedProperty(const char *name) const;
+	const igdeGDCWorld::List GetWorldsWithLinkedProperty(const char *name) const;
 	
 	/** \brief List of indices of worlds with named linked property. */
-	const decIntList GetWorldIndicesWithLinkedProperty(const char *name) const;
+	const IndexList GetWorldIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pAddPropertyNames( decStringSet &set, const decString &prefix ) const;
-	void pAddTexturePropertyNames( decStringSet &set, const decString &prefix ) const;
+	void pAddPropertyNames(decStringSet &set, const decString &prefix) const;
+	void pAddTexturePropertyNames(decStringSet &set, const decString &prefix) const;
 };
 
 #endif

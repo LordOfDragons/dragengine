@@ -34,15 +34,16 @@
  */
 class ceWPTTIMAActorCommand : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAActorCommand>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAActorCommand( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAActorCommand *action );
+	ceWPTTIMAActorCommand(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAActorCommand *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAActorCommand();
+	~ceWPTTIMAActorCommand() override;
 	/*@}*/
 	
 	
@@ -52,11 +53,11 @@ public:
 	/*@{*/
 	/** \brief Action. */
 	inline ceCAActorCommand *GetActionActorCommand() const{
-		return ( ceCAActorCommand* )GetAction();
+		return (ceCAActorCommand*)GetAction().Pointer();
 	}
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

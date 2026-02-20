@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create action. */
-	declActionGames( declLauncher &launcher );
+	declActionGames(declLauncher &launcher);
 	
 	/** Clean up action. */
 	~declActionGames();

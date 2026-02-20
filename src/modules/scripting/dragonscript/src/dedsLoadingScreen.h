@@ -38,7 +38,8 @@ class deScriptingDragonScript;
  */
 class dedsLoadingScreen : public deObject{
 public:
-	typedef deTObjectReference<dedsLoadingScreen> Ref;
+	using Ref = deTObjectReference<dedsLoadingScreen>;
+	
 	
 private:
 	deScriptingDragonScript &pDS;
@@ -52,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loading screen. */
-	dedsLoadingScreen( deScriptingDragonScript &ds );
+	dedsLoadingScreen(deScriptingDragonScript &ds);
 	
 protected:
 	/** Clean up loading screen. */
-	virtual ~dedsLoadingScreen();
+	~dedsLoadingScreen() override;
 	/*@}*/
 	
 	

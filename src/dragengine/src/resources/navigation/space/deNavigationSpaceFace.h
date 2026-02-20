@@ -45,6 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create new navigation space face. */
 	deNavigationSpaceFace();
+	deNavigationSpaceFace(int cornerCount, unsigned short type);
 	
 	/** \brief Clean up navigation space face. */
 	~deNavigationSpaceFace();
@@ -58,13 +59,13 @@ public:
 	inline unsigned short GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
-	void SetCornerCount( unsigned short count );
+	void SetCornerCount(unsigned short count);
 	
 	/** \brief Type number for crossing this face. */
 	inline unsigned short GetType() const{ return pType; }
 	
 	/** \brief Set type number for crossing this face. */
-	void SetType( unsigned short type );
+	void SetType(unsigned short type);
 	/*@}*/
 };
 

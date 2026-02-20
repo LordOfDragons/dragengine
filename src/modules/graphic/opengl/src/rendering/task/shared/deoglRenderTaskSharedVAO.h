@@ -36,8 +36,7 @@ class deoglRenderTaskSharedPool;
  */
 class deoglRenderTaskSharedVAO : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderTaskSharedVAO> Ref;
-	
+	using Ref = deTObjectReference<deoglRenderTaskSharedVAO>;
 	
 	
 private:
@@ -52,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared render task shader. */
-	deoglRenderTaskSharedVAO( deoglRenderTaskSharedPool &pool, int index );
+	deoglRenderTaskSharedVAO(deoglRenderTaskSharedPool &pool, int index);
 	
 protected:
 	/** Clean up shared render task shader. */
-	virtual ~deoglRenderTaskSharedVAO();
+	~deoglRenderTaskSharedVAO() override;
 	/*@}*/
 	
 	
@@ -76,7 +75,7 @@ public:
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set vao. */
-	void SetVAO( deoglVAO *shader );
+	void SetVAO(deoglVAO *shader);
 	
 	
 	

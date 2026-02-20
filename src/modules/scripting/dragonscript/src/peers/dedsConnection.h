@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsConnection( deScriptingDragonScript &ds, deConnection *connection );
+	dedsConnection(deScriptingDragonScript &ds, deConnection *connection);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsConnection();
+	~dedsConnection() override;
 	/*@}*/
 	
 	
@@ -59,13 +59,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Connection has been closed by the local or remote host. */
-	virtual void ConnectionClosed();
+	void ConnectionClosed() override;
 	
 	/** \brief A long message is in progress of receiving. */
-	virtual void MessageProgress( int bytesReceived );
+	void MessageProgress(int bytesReceived) override;
 	
 	/** \brief A message has been received. */
-	virtual void MessageReceived( deNetworkMessage *message );
+	void MessageReceived(deNetworkMessage *message) override;
 	
 	/**
 	 * \brief Host send state to link.
@@ -73,7 +73,7 @@ public:
 	 * \param message Additional information.
 	 * \returns true to accept the link or false to deny it.
 	 */
-	virtual bool LinkState( deNetworkState *networkState, deNetworkMessage *message );
+	bool LinkState(deNetworkState *networkState, deNetworkMessage *message) override;
 	/*@}*/
 	
 	
@@ -84,7 +84,7 @@ public:
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or NULL if not set. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	/*@}*/
 };
 

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vao. */
-	deoglVAO( deoglRenderThread &renderThread );
+	deoglVAO(deoglRenderThread &renderThread);
 	
 	/** Clean up vao. */
 	virtual ~deoglVAO();
@@ -75,7 +75,7 @@ public:
 	inline deoglVBOLayout::eIndexTypes GetIndexType() const{ return pIndexType; }
 	
 	/** Set index type. */
-	void SetIndexType( deoglVBOLayout::eIndexTypes indexType );
+	void SetIndexType(deoglVBOLayout::eIndexTypes indexType);
 	
 	/** Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }

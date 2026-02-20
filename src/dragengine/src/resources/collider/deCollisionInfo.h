@@ -25,12 +25,12 @@
 #ifndef _DECOLLISIONINFO_H_
 #define _DECOLLISIONINFO_H_
 
+#include "deCollider.h"
 #include "../particle/deParticleEmitterType.h"
+#include "../terrain/heightmap/deHeightTerrain.h"
 #include "../../common/math/decMath.h"
 #include "../../deObject.h"
 
-class deCollider;
-class deHeightTerrain;
 class deHeightTerrainSector;
 
 
@@ -44,8 +44,7 @@ class deHeightTerrainSector;
 class DE_DLL_EXPORT deCollisionInfo : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCollisionInfo> Ref;
-	
+	using Ref = deTObjectReference<deCollisionInfo>;
 	
 	
 private:
@@ -53,9 +52,9 @@ private:
 	int pOwnerShape;
 	int pOwnerFace;
 	
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	deHeightTerrainSector *pHTSector;
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	int pBone;
 	int pShape;
 	int pFace;
@@ -82,7 +81,7 @@ public:
 	deCollisionInfo();
 	
 	/** \brief Create copy of collision info. */
-	deCollisionInfo( const deCollisionInfo &info );
+	deCollisionInfo(const deCollisionInfo &info);
 	
 protected:
 	/**
@@ -91,7 +90,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCollisionInfo();
+	~deCollisionInfo() override;
 	/*@}*/
 	
 	
@@ -103,28 +102,28 @@ public:
 	inline int GetOwnerBone() const{ return pOwnerBone; }
 	
 	/** \brief Set owner bone or -1 if not applicable. */
-	void SetOwnerBone( int bone );
+	void SetOwnerBone(int bone);
 	
 	/** \brief Owner shape or -1 if not applicable. */
 	inline int GetOwnerShape() const{ return pOwnerShape; }
 	
 	/** \brief Set owner shape or -1 if not applicable. */
-	void SetOwnerShape( int shape );
+	void SetOwnerShape(int shape);
 	
 	/** \brief Owner face or -1 if not applicable. */
 	inline int GetOwnerFace() const{ return pOwnerFace; }
 	
 	/** \brief Set owner face or -1 if not applicable. */
-	void SetOwnerFace( int face );
+	void SetOwnerFace(int face);
 	
 	/** \brief Height terrain or NULL if none is hit. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Height terrain sector or NULL if none is hit. */
 	inline deHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Collider or NULL if none is hit. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/**
 	 * \brief Bone index or -1 if none is hit.
@@ -160,7 +159,7 @@ public:
 	bool HasCollision() const;
 	
 	/** \brief Set height terrain sector. */
-	void SetHTSector( deHeightTerrain *heightTerrain, deHeightTerrainSector *sector );
+	void SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrainSector *sector);
 	
 	/**
 	 * \brief Set collider.
@@ -168,7 +167,7 @@ public:
 	 * \param[in] shape Index of hit rig or bone shape otherwsie -1.
 	 * \param[in] face Index of hit face otherwise -1.
 	 */
-	void SetCollider( deCollider *collider, int bone, int shape, int face );
+	void SetCollider(deCollider *collider, int bone, int shape, int face);
 	
 	/** \brief Clear collision. */
 	void Clear();
@@ -179,31 +178,31 @@ public:
 	inline float GetParticleLifetime() const{ return pParticleLifetime; }
 	
 	/** \brief Set particle lifetime. */
-	void SetParticleLifetime( float lifetime );
+	void SetParticleLifetime(float lifetime);
 	
 	/** \brief Particle mass. */
 	inline float GetParticleMass() const{ return pParticleMass; }
 	
 	/** \brief Set particle mass. */
-	void SetParticleMass( float mass );
+	void SetParticleMass(float mass);
 	
 	/** \brief Particle position. */
 	inline const decDVector &GetParticlePosition() const{ return pParticlePosition; }
 	
 	/** \brief Set particle position. */
-	void SetParticlePosition( const decDVector &position );
+	void SetParticlePosition(const decDVector &position);
 	
 	/** \brief Particle velocity. */
 	inline const decVector &GetParticleVelocity() const{ return pParticleVelocity; }
 	
 	/** \brief Set particle velocity. */
-	void SetParticleVelocity( const decVector &velocity );
+	void SetParticleVelocity(const decVector &velocity);
 	
 	/** \brief Collision response to apply to particle. */
 	inline deParticleEmitterType::eCollisionResponses GetParticleResponse() const{ return pParticleResponse; }
 	
 	/** \brief Set collision response to apply to particle. */
-	void SetParticleResponse( deParticleEmitterType::eCollisionResponses respone );
+	void SetParticleResponse(deParticleEmitterType::eCollisionResponses respone);
 	
 	
 	
@@ -225,25 +224,25 @@ public:
 	 * physical collision detection as carried out by the physics module this is the
 	 * remaining movement time after the collision point.
 	 */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	/** \brief Hit normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set hit normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/** \brief Hit position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set hit position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Hit impulse. */
 	inline float GetImpulse() const{ return pImpulse; }
 	
 	/** \brief Set hit impulse. */
-	void SetImpulse( float impulse );
+	void SetImpulse(float impulse);
 	
 	
 	
@@ -251,14 +250,14 @@ public:
 	inline bool GetStopTesting() const{ return pStopTesting; }
 	
 	/** \brief Set if collision detection has to be stopped. */
-	void SetStopTesting( bool stopTesting );
+	void SetStopTesting(bool stopTesting);
 	
 	
 	
 	/** \name Operator */
 	/*@{*/
 	/** \brief Copy from collision information. */
-	deCollisionInfo &operator=( const deCollisionInfo &info );
+	deCollisionInfo &operator=(const deCollisionInfo &info);
 	/*@}*/
 };
 

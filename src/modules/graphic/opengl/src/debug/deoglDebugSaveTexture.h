@@ -96,7 +96,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new debug save texture object. */
-	deoglDebugSaveTexture( deoglRenderThread &renderThread );
+	deoglDebugSaveTexture(deoglRenderThread &renderThread);
 	/** Cleans up the debug save texture object. */
 	~deoglDebugSaveTexture();
 	/*@}*/
@@ -106,64 +106,64 @@ public:
 	/** Retrieves the base path where images are stored under. */
 	inline const decString &GetBasePath() const{ return pBasePath; }
 	/** Sets the base path where images are stored under. */
-	void SetBasePath( const char *path );
+	void SetBasePath(const char *path);
 	
 	/** Saves a texture to file. */
-	void SaveTexture( deoglTexture &texture, const char *name );
+	void SaveTexture(deoglTexture &texture, const char *name);
 	/** Saves a level of a texture to file. */
-	void SaveTextureLevel( deoglTexture &texture, int level, const char *name );
+	void SaveTextureLevel(deoglTexture &texture, int level, const char *name);
 	/** Saves a texture to file with conversion. */
-	void SaveTextureConversion( deoglTexture &texture, const char *name, eConvertions conversion );
+	void SaveTextureConversion(deoglTexture &texture, const char *name, eConvertions conversion);
 	/** Saves a level of a texture to file with conversion. */
-	void SaveTextureLevelConversion( deoglTexture &texture, int level, const char *name, eConvertions conversion );
+	void SaveTextureLevelConversion(deoglTexture &texture, int level, const char *name, eConvertions conversion);
 	/** Saves a depth texture to file. */
-	void SaveDepthTexture( deoglTexture &texture, const char *name, eDepthTypes type );
+	void SaveDepthTexture(deoglTexture &texture, const char *name, eDepthTypes type);
 	/** Saves a depth texture level to file. */
-	void SaveDepthTextureLevel( deoglTexture &texture, int level, const char *name, eDepthTypes type );
+	void SaveDepthTextureLevel(deoglTexture &texture, int level, const char *name, eDepthTypes type);
 	/** Saves a stencil texture to file. */
-	void SaveStencilTexture( deoglTexture &texture, const char *name );
+	void SaveStencilTexture(deoglTexture &texture, const char *name);
 	/** Saves a stencil texture to file. */
-	void SaveStencilArrayTexture( deoglArrayTexture &texture, const char *name );
+	void SaveStencilArrayTexture(deoglArrayTexture &texture, const char *name);
 	
 	/** Saves a cube map to file. */
-	void SaveCubeMap( deoglCubeMap &cubemap, const char *name, bool upsideDown );
+	void SaveCubeMap(deoglCubeMap &cubemap, const char *name, bool upsideDown);
 	/** Saves a level of a cubemap to file. */
-	void SaveCubeMapLevel( deoglCubeMap &cubemap, int level, const char *name, bool upsideDown );
+	void SaveCubeMapLevel(deoglCubeMap &cubemap, int level, const char *name, bool upsideDown);
 	/** Saves a cubemap to file with conversion. */
-	void SaveCubeMapConversion( deoglCubeMap &cubemap, const char *name, bool upsideDown, eConvertions conversion );
+	void SaveCubeMapConversion(deoglCubeMap &cubemap, const char *name, bool upsideDown, eConvertions conversion);
 	/** Saves a level of a cubemap to file with conversion. */
-	void SaveCubeMapLevelConversion( deoglCubeMap &cubemap, int level, const char *name, bool upsideDown, eConvertions conversion );
+	void SaveCubeMapLevelConversion(deoglCubeMap &cubemap, int level, const char *name, bool upsideDown, eConvertions conversion);
 	
 	/** Saves a depth cube map to file. */
-	void SaveDepthCubeMap( deoglCubeMap &cubemap, const char *name, bool linearDepth );
-	void SaveDepthCubeMapLevel( deoglCubeMap &cubemap, int level, const char *name, bool linearDepth );
+	void SaveDepthCubeMap(deoglCubeMap &cubemap, const char *name, bool linearDepth);
+	void SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int level, const char *name, bool linearDepth);
 	
 	/** Saves an array texture to file. */
-	void SaveArrayTexture( deoglArrayTexture &texture, const char *name );
+	void SaveArrayTexture(deoglArrayTexture &texture, const char *name);
 	/** Saves a level of an array texture to file. */
-	void SaveArrayTextureLevel( deoglArrayTexture &texture, int level, const char *name );
+	void SaveArrayTextureLevel(deoglArrayTexture &texture, int level, const char *name);
 	/** Saves array texture to file with conversion. */
-	void SaveArrayTextureConversion( deoglArrayTexture &texture, const char *name, eConvertions conversion );
+	void SaveArrayTextureConversion(deoglArrayTexture &texture, const char *name, eConvertions conversion);
 	/** Saves level of an array texture to file with conversion. */
-	void SaveArrayTextureLevelConversion( deoglArrayTexture &texture, int level, const char *name, eConvertions conversion );
+	void SaveArrayTextureLevelConversion(deoglArrayTexture &texture, int level, const char *name, eConvertions conversion);
 	/** Saves an array texture to file. */
-	void SaveDepthArrayTexture( deoglArrayTexture &texture, const char *name, bool linearDepth );
+	void SaveDepthArrayTexture(deoglArrayTexture &texture, const char *name, bool linearDepth);
 	/** Saves an array texture to file. */
-	void SaveDepthArrayTextureLevel( deoglArrayTexture &texture, int level, const char *name, bool linearDepth );
+	void SaveDepthArrayTextureLevel(deoglArrayTexture &texture, int level, const char *name, bool linearDepth);
 	
 	/** Retrieves the pixel buffer type opengl pixel format and type. */
-	deoglPixelBuffer::ePixelFormats GetPixelBufferType( GLenum &pixelFormat, GLenum &pixelType ) const;
+	deoglPixelBuffer::ePixelFormats GetPixelBufferType(GLenum &pixelFormat, GLenum &pixelType) const;
 	/** Retrieves the stride for a pixel buffer format. */
-	int GetStride( int width, int pixelBufferType ) const;
+	int GetStride(int width, int pixelBufferType) const;
 	/** Component count for pixel buffer type. */
-	int GetComponentCount( int pixelBufferType );
+	int GetComponentCount(int pixelBufferType);
 	/** Bit count for pixel buffer type. */
-	int GetBitCount( int pixelBufferType );
+	int GetBitCount(int pixelBufferType);
 	/*@}*/
 	
 private:
-	void pConvertDataRGBA( const deoglPixelBuffer::sFloat4 *inputData, sRGBA8 *outputData,
-		int width, int height, bool yflip, eConvertions conversion );
+	void pConvertDataRGBA(const deoglPixelBuffer::sFloat4 *inputData, sRGBA8 *outputData,
+		int width, int height, bool yflip, eConvertions conversion);
 };
 
 #endif

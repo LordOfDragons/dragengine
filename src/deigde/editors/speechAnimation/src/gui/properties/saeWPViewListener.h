@@ -35,6 +35,9 @@ class saeWPView;
  * View panel listener.
  */
 class saeWPViewListener : public saeSAnimationListener{
+public:
+	using Ref = deTObjectReference<saeWPViewListener>;
+	
 private:
 	saeWPView &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	saeWPViewListener( saeWPView &panel );
+	saeWPViewListener(saeWPView &panel);
 	
 	/** Clean up listener. */
-	virtual ~saeWPViewListener();
+protected:
+	~saeWPViewListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,16 +60,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation changed. */
-	virtual void SAnimationChanged( saeSAnimation *sanimation );
+	void SAnimationChanged(saeSAnimation *sanimation) override;
 	
 	/** Model changed. */
-	virtual void ModelChanged( saeSAnimation *sanimation );
+	void ModelChanged(saeSAnimation *sanimation) override;
 	
 	/** Sky changed. */
-	virtual void SkyChanged( saeSAnimation *sanimation );
+	void SkyChanged(saeSAnimation *sanimation) override;
 	
 	/** Camera changed. */
-	virtual void CameraChanged( saeSAnimation *sanimation );
+	void CameraChanged(saeSAnimation *sanimation) override;
 	/*@}*/
 };
 

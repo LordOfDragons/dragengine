@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCACoordSystemRemove;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCACoordSystemRemove.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo action coordinate system remove conversation action set coordinate system id.
  */
 class ceUCACoordSysRemoveSetCoordSysID : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCACoordSysRemoveSetCoordSysID>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCACoordSystemRemove *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCACoordSystemRemove::Ref pAction;
 	decString pOldCoordSystemID;
 	decString pNewCoordSystemID;
 	
@@ -46,18 +50,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCACoordSysRemoveSetCoordSysID( ceConversationTopic *topic, ceCACoordSystemRemove *action, const char *newCoordSystemID );
+	ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic, ceCACoordSystemRemove *action, const char *newCoordSystemID);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCACoordSysRemoveSetCoordSysID();
+protected:
+	~ceUCACoordSysRemoveSetCoordSysID() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

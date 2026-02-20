@@ -26,9 +26,9 @@
 #ifndef _PROJUPROFILESETGAMEOBJECT_H_
 #define _PROJUPROFILESETGAMEOBJECT_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/profile/projProfile.h"
 
-class projProfile;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetGameObject : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -45,13 +45,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProfileSetGameObject>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetGameObject( projProfile *profile, const char *newValue );
+	projUProfileSetGameObject(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProfileSetGameObject();
+protected:
+	~projUProfileSetGameObject() override;
+public:
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

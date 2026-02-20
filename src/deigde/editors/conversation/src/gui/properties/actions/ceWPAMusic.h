@@ -36,19 +36,20 @@ class ceCAMusic;
  */
 class ceWPAMusic : public ceWPAction{
 private:
-	igdeTextFieldReference pEditName;
+	igdeTextField::Ref pEditName;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPAMusic>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAMusic( ceWPTopic &parentPanel );
+	ceWPAMusic(ceWPTopic &parentPanel);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPAMusic();
+	~ceWPAMusic() override;
 	/*@}*/
 	
 	

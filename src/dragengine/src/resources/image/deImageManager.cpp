@@ -55,8 +55,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deImageManager::deImageManager( deEngine *engine ) : deFileResourceManager( engine, ertImage ){
-	SetLoggingName( "image" );
+deImageManager::deImageManager(deEngine *engine) : deFileResourceManager(engine, ertImage){
+	SetLoggingName("image");
 }
 
 deImageManager::~deImageManager(){
@@ -73,163 +73,139 @@ int deImageManager::GetImageCount() const{
 }
 
 deImage *deImageManager::GetRootImage() const{
-	return ( deImage* )pImages.GetRoot();
+	return (deImage*)pImages.GetRoot();
 }
 
-deImage * deImageManager::GetImageWith( const char *filename ) const{
-	return GetImageWith( GetEngine()->GetVirtualFileSystem(), filename );
+deImage * deImageManager::GetImageWith(const char *filename) const{
+	return GetImageWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-deImage *deImageManager::GetImageWith( deVirtualFileSystem *vfs, const char *filename ) const{
-	deImage * const image = ( deImage* )pImages.GetWithFilename( vfs, filename );
-	return image && ! image->GetOutdated() ? image : NULL;
+deImage *deImageManager::GetImageWith(deVirtualFileSystem *vfs, const char *filename) const{
+	deImage * const image = (deImage*)pImages.GetWithFilename(vfs, filename);
+	return image && !image->GetOutdated() ? image : nullptr;
 }
 
-deImage *deImageManager::CreateImage( int width, int height, int depth, int componentCount, int bitCount ){
-	deImage *image = NULL;
-	
-	try{
-		image = new deImage( this, GetEngine()->GetVirtualFileSystem(), "",
-			decDateTime::GetSystemTime(), width, height, depth, componentCount, bitCount );
-		GetGraphicSystem()->LoadImage(image);
-		
-		pImages.Add(image);
-		
-	}catch( const deException & ){
-		if( image ){
-			image->FreeReference();
-		}
-		throw;
-	}
+deImage::Ref deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
+	const deImage::Ref image(deImage::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
+		"", decDateTime::GetSystemTime(), width, height, depth, componentCount, bitCount));
+	GetGraphicSystem()->LoadImage(image);
+	pImages.Add(image);
 	return image;
 }
 
-deImage *deImageManager::LoadImage( const char *filename, const char *basePath ){
-	return LoadImage( GetEngine()->GetVirtualFileSystem(), filename, basePath );
+deImage::Ref deImageManager::LoadImage(const char *filename, const char *basePath){
+	return LoadImage(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deImage *deImageManager::LoadImage( deVirtualFileSystem *vfs, const char *filename, const char *basePath ){
-	decBaseFileReader *fileReader = NULL;
+deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	deBaseImageModule *module;
-	deBaseImageInfo *imageInfos = NULL;
-	deImage *image = NULL, *findImage;
+	deBaseImageInfo *imageInfos = nullptr;
+	deImage::Ref image;
 	decPath path;
 	
 //	LogInfoFormat( "Loading '%s'", filename );
 	try{
 		// locate file
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the image with this filename already exists
-		findImage = ( deImage* )pImages.GetWithFilename( vfs, path.GetPathUnix() );
+		deImage *findImage = (deImage*)pImages.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findImage && findImage->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Image '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findImage && findImage->GetModificationTime() != modificationTime){
+			LogInfoFormat("Image '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findImage->MarkOutdated();
-			findImage = NULL;
+			findImage = nullptr;
 		}
 		
-		if( findImage ){
-			findImage->AddReference();
+		if(findImage){
 			image = findImage;
 			
 		}else{
 			// find the module able to handle this image file
-			module = ( deBaseImageModule* )GetModuleSystem()->GetModuleAbleToLoad(
-				deModuleSystem::emtImage, path.GetPathUnix() );
+			module = (deBaseImageModule*)GetModuleSystem()->GetModuleAbleToLoad(
+				deModuleSystem::emtImage, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix());
+			const decBaseFileReader::Ref fileReader(OpenFileForReading(*vfs, path.GetPathUnix()));
 			
-			imageInfos = module->InitLoadImage( *fileReader );
-			if( ! imageInfos ) DETHROW( deeInvalidParam );
+			imageInfos = module->InitLoadImage(*fileReader);
+			if(!imageInfos) DETHROW(deeInvalidParam);
 			
-			image = new deImage( this, vfs, path.GetPathUnix(), modificationTime,
+			image = deImage::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				imageInfos->GetWidth(), imageInfos->GetHeight(), imageInfos->GetDepth(),
-				imageInfos->GetComponentCount(), imageInfos->GetBitCount() );
-			image->SetAsynchron( false );
+				imageInfos->GetComponentCount(), imageInfos->GetBitCount());
+			image->SetAsynchron(false);
 			
-			module->LoadImage( *fileReader, *image, *imageInfos );
-			fileReader->FreeReference(); fileReader = NULL;
-			delete imageInfos; imageInfos = NULL;
+			module->LoadImage(*fileReader, *image, *imageInfos);
+			delete imageInfos; imageInfos = nullptr;
 			
 			// load into graphic system
-			GetGraphicSystem()->LoadImage( image );
+			GetGraphicSystem()->LoadImage(image);
 			
 			// add image
-			pImages.Add( image );
+			pImages.Add(image);
 //			LogInfoFormat( "Loading '%s' succeeded", path->GetPath() );
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Loading image '%s' (base path '%s') failed", filename, basePath ? basePath : "" );
+	}catch(const deException &){
+		LogErrorFormat("Loading image '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		//LogException( e );
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		if( image ){
-			image->FreeReference();
-		}
-		if( imageInfos ) delete imageInfos;
+		if(imageInfos) delete imageInfos;
 		throw;
 	}
 	
-	if( image ){
-		image->SetAsynchron( false );
+	if(image){
+		image->SetAsynchron(false);
 		image->PeersRetainImageData();
 	}
 	
 	return image;
 }
 
-deImage *deImageManager::LoadDefault(){
-	deImage *image = NULL, *findImage;
-	decXpmImage *xpmImage = NULL;
+deImage::Ref deImageManager::LoadDefault(){
+	decXpmImage *xpmImage = nullptr;
+	deImage::Ref image;
 	
 	try{
-		findImage = ( deImage* )pImages.GetWithFilename(
-			GetEngine()->GetVirtualFileSystem(), IMAGE_NO_TEXTURE );
-		if( findImage ){
-			if( ! findImage->GetPeerGraphic() ){
-				GetGraphicSystem()->LoadImage( findImage );
+		deImage * const findImage = (deImage*)pImages.GetWithFilename(
+			GetEngine()->GetVirtualFileSystem(), IMAGE_NO_TEXTURE);
+		if(findImage){
+			if(!findImage->GetPeerGraphic()){
+				GetGraphicSystem()->LoadImage(findImage);
 			}
-			findImage->AddReference();
 			image = findImage;
 			
 		}else{
 			// load image
-			xpmImage = new decXpmImage( no_tex_xpm, true );
-			image = new deImage( this, GetEngine()->GetVirtualFileSystem(),
-				IMAGE_NO_TEXTURE, decDateTime::GetSystemTime(), xpmImage );
-			delete xpmImage; xpmImage = NULL;
+			xpmImage = new decXpmImage(no_tex_xpm, true);
+			image = deImage::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
+				IMAGE_NO_TEXTURE, decDateTime::GetSystemTime(), xpmImage);
+			delete xpmImage; xpmImage = nullptr;
 			
 			// load into graphic system
-			GetGraphicSystem()->LoadImage( image );
+			GetGraphicSystem()->LoadImage(image);
 			
 			// add image
-			pImages.Add( image );
+			pImages.Add(image);
 		}
 		
-	}catch( const deException & ){
-		if( image ){
-			image->FreeReference();
-		}
-		if( xpmImage ) delete xpmImage;
+	}catch(const deException &){
+		if(xpmImage) delete xpmImage;
 		throw;
 	}
 	
 	return image;
 }
 
-void deImageManager::SaveImage( deImage *image, const char *filename ){
-	SaveImage( GetEngine()->GetVirtualFileSystem(), image, filename );
+void deImageManager::SaveImage(deImage *image, const char *filename){
+	SaveImage(GetEngine()->GetVirtualFileSystem(), image, filename);
 }
 
-void deImageManager::SaveImage( deVirtualFileSystem *vfs, deImage *image, const char *filename ){
+void deImageManager::SaveImage(deVirtualFileSystem *vfs, deImage *image, const char *filename){
 	DEASSERT_NOTNULL(image)
 	DEASSERT_NOTNULL(vfs)
 	DEASSERT_NOTNULL(filename)
@@ -239,7 +215,7 @@ void deImageManager::SaveImage( deVirtualFileSystem *vfs, deImage *image, const 
 			GetModuleAbleToLoad(deModuleSystem::emtImage, filename);
 		DEASSERT_NOTNULL(module)
 		
-		module->SaveImage(decBaseFileWriter::Ref::New(OpenFileForWriting(*vfs, filename)), *image);
+		module->SaveImage(OpenFileForWriting(*vfs, filename), *image);
 		
 	}catch(const deException &e){
 		LogErrorFormat("Saving image '%s' failed", filename);
@@ -255,21 +231,18 @@ void deImageManager::AddLoadedImage(deImage *image){
 }
 
 
-
 void deImageManager::ReleaseLeakingResources(){
 	const int count = GetImageCount();
 	
-	if( count > 0 ){
-		deImage *image = ( deImage* )pImages.GetRoot();
+	if(count > 0){
+		LogWarnFormat("%i leaking images", count);
 		
-		LogWarnFormat( "%i leaking images", count );
+		pImages.GetResources().Visit([&](deResource *res){
+			deImage *image = static_cast<deImage*>(res);
+			LogWarnFormat("- %s", image->GetFilename().IsEmpty() ? "<temporary>" : image->GetFilename().GetString());
+		});
 		
-		while( image ){
-			LogWarnFormat( "- %s", image->GetFilename().IsEmpty() ? "<temporary>" : image->GetFilename().GetString() );
-			image = ( deImage* )image->GetLLManagerNext();
-		}
-		
-		pImages.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pImages.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -279,36 +252,32 @@ void deImageManager::ReleaseLeakingResources(){
 ///////////////////////////
 
 void deImageManager::SystemGraphicLoad(){
-	deImage *image = ( deImage* )pImages.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while( image ){
-		if( ! image->GetPeerGraphic() ){
+	pImages.GetResources().Visit([&](deResource *res){
+		deImage *image = static_cast<deImage*>(res);
+		if(!image->GetPeerGraphic()){
 			image->RetainImageData();
 			try{
-				graSys.LoadImage( image );
+				graSys.LoadImage(image);
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				image->ReleaseImageData();
 				throw;
 			}
 			image->ReleaseImageData();
 		}
-		image = ( deImage* )image->GetLLManagerNext();
-	}
+	});
 }
 
 void deImageManager::SystemGraphicUnload(){
-	deImage *image = ( deImage* )pImages.GetRoot();
-	
-	while( image ){
-		image->SetPeerGraphic( NULL );
-		image = ( deImage* )image->GetLLManagerNext();
-	}
+	pImages.GetResources().Visit([](deResource *res)->void{
+		static_cast<deImage*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 
 
-void deImageManager::RemoveResource( deResource *resource ){
-	pImages.RemoveIfPresent( resource );
+void deImageManager::RemoveResource(deResource *resource){
+	pImages.RemoveIfPresent(resource);
 }

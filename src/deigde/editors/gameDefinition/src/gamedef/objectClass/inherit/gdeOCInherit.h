@@ -26,6 +26,7 @@
 #define _GDEOCINHERIT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -41,17 +42,24 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeOCInherit>;
+
+	/** \brief Type holding list. */
+	using List = decTObjectOrderedSet<gdeOCInherit>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create inherit object. */
-	gdeOCInherit( const char *name );
+	gdeOCInherit(const char *name);
 	
 	/** \brief Create copy of inherit object. */
-	gdeOCInherit( const gdeOCInherit &inherit );
+	gdeOCInherit(const gdeOCInherit &inherit);
 	
 protected:
 	/** \brief Cleans up the link. */
-	virtual ~gdeOCInherit();
+	~gdeOCInherit() override;
 	/*@}*/
 	
 	
@@ -63,13 +71,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of class to inherit if present. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Prefix to add to properties defined in inherited class. */
 	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
-	void SetPropertyPrefix( const char *prefix );
+	void SetPropertyPrefix(const char *prefix);
 	/*@}*/
 };
 

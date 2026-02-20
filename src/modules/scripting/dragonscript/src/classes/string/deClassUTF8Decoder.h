@@ -39,34 +39,34 @@ class deClassUTF8Decoder : public dsClass{
 public:
 	// constructor
 	deClassUTF8Decoder();
-	~deClassUTF8Decoder();
+	~deClassUTF8Decoder() override;
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	decUTF8Decoder &GetUTF8Decoder( dsRealObject *myself ) const;
+	void CreateClassMembers(dsEngine *engine) override;
+	decUTF8Decoder &GetUTF8Decoder(dsRealObject *myself) const;
 	
 private:
 	struct sInitData{
 		dsClass *clsU8D, *clsVoid, *clsInt, *clsStr, *clsObj, *clsBool;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetString );
-	DEF_NATFUNC( nfGetLength );
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfHasReachedEnd );
-	DEF_NATFUNC( nfSetString );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfDecodeNextCharacter );
+	DEF_NATFUNC(nfGetString);
+	DEF_NATFUNC(nfGetLength);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfHasReachedEnd);
+	DEF_NATFUNC(nfSetString);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfDecodeNextCharacter);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

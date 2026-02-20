@@ -26,15 +26,15 @@
 #define _MEVIEWEDITORADDNEW_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../filter/meFilterObjectsByClass.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class meCLAddDecal;
 class meCLClosestElement;
 class meCLSnapPoint;
-class meFilterObjectsByClass;
 
 
 
@@ -42,14 +42,17 @@ class meFilterObjectsByClass;
  * \brief View editor add new element.
  */
 class meViewEditorAddNew : public meViewEditorNavigation{
+public:
+	using Ref = deTObjectReference<meViewEditorAddNew>;
+	
 private:
 	meCLClosestElement *pClosestElement;
 	meCLSnapPoint *pCLSnapPoint;
-	meFilterObjectsByClass *pFilterObjectsByClass;
+	meFilterObjectsByClass::Ref pFilterObjectsByClass;
 	meCLAddDecal *pAddDecal;
-	igdeUndoReference pUndoAddObject;
-	igdeUndoReference pUndoAddNavSpace;
-	deColliderReference pCLCollider;
+	igdeUndo::Ref pUndoAddObject;
+	igdeUndo::Ref pUndoAddNavSpace;
+	deCollider::Ref pCLCollider;
 	
 	
 	
@@ -57,10 +60,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditorAddNew( meView3D &view );
+	meViewEditorAddNew(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditorAddNew();
+	~meViewEditorAddNew() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -98,7 +104,7 @@ private:
 		bool useSnapPoint = false;
 	};
 	
-	void pUpdateUndo( bool shift, bool control );
+	void pUpdateUndo(bool shift, bool control);
 	void pCreateClosestElementVisitor();
 	void pCastIntoWorld(sCastIntoWorldParams &params);
 };

@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSubAnimToggleEnableRotation::aeURuleSubAnimToggleEnableRotation( aeRuleSubAnimator *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSubAnimToggleEnableRotation::aeURuleSubAnimToggleEnableRotation(aeRuleSubAnimator *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleSubAnimatorToggleEnableRotation");
 		
-		SetShortInfo( "Rule sub animator toggle enable rotation" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleSubAnimToggleEnableRotation::~aeURuleSubAnimToggleEnableRotation(){
 ///////////////
 
 void aeURuleSubAnimToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeURuleSubAnimToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleSubAnimToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleSubAnimToggleEnableRotation::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

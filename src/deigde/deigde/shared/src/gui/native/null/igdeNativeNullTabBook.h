@@ -31,7 +31,7 @@
 /**
  * Null tabBook.
  */
-class igdeNativeNullTabBook{
+class igdeNativeNullTabBook : public igdeTabBook::cNativeTabBook{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullTabBook();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullTabBook* CreateNativeWidget( igdeTabBook &owner );
+	static igdeNativeNullTabBook* CreateNativeWidget(igdeTabBook &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,10 +55,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void AddHeader( const igdeTabBook::cHeader &header );
-	virtual void RemoveHeader( int index );
-	virtual void RemoveAllHeaders();
-	virtual void ChangePanel( int index );
+	void AddHeader(const igdeTabBook::cHeader &header) override;
+	void UpdateHeader(int index, const igdeTabBook::cHeader &header) override;
+	void RemoveHeader(int index) override;
+	void RemoveAllHeaders() override;
+	void ChangePanel(int index) override;
 	virtual void *GetNativeContainer();
 	/*@}*/
 };

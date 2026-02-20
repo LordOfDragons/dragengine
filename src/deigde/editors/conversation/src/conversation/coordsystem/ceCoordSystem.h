@@ -26,6 +26,7 @@
 #define _CECOORDSYSTEM_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -46,37 +47,50 @@ private:
 	decVector pOrientation;
 	
 public:
+	using Ref = deTObjectReference<ceCoordSystem>;
+	
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<ceCoordSystem>,ceCoordSystem>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<ceCoordSystem>,ceCoordSystem>::decTCollectionQueryByName;
+		
+		/** \brief Retrieves the coordinate system with the given id or alias id or nullptr if not found. */
+		ceCoordSystem *GetWithIDOrAliasID(const char *id) const;
+	};
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new coordinate system. */
 	ceCoordSystem();
 	/** \brief Cleans up the conversation actor. */
-	virtual ~ceCoordSystem();
+protected:
+	~ceCoordSystem() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the parent conversation or NULL if not set. */
+	/** \brief Retrieves the parent conversation or nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
-	/** \brief Sets the parent conversation or NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	/** \brief Sets the parent conversation or nullptr if not set. */
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Retrieves the id. */
 	inline const decString &GetID() const{ return pID; }
 	/** \brief Sets the id. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	/** \brief Retrieves the alias id. */
 	inline const decString &GetAliasID() const{ return pAliasID; }
 	/** \brief Sets the alias id. */
-	void SetAliasID( const char *id );
+	void SetAliasID(const char *id);
 	/** \brief Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** \brief Retrieves the orientation. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** \brief Sets the orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Notifies all that the coordinate system changed. */
 	void NotifyCoordSystemChanged();

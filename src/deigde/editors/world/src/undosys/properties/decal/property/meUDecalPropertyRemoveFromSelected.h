@@ -25,22 +25,21 @@
 #ifndef _MEUDECALPROPERTYREMOVEFROMSELECTED_H_
 #define _MEUDECALPROPERTYREMOVEFROMSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataDecalProperty.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class meDecal;
-class meDecalList;
-class meUndoDataDecalProperty;
-
 
 
 /**
  * \brief Undo action decal remove property from all selected decals.
  */
 class meUDecalPropertyRemoveFromSelected : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalPropertyRemoveFromSelected>;
+	
+	
 private:
-	decObjectList pList;
+	meUndoDataDecalProperty::List pList;
 	decString pKey;
 	
 	
@@ -49,11 +48,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalPropertyRemoveFromSelected( const meDecalList &list, const char *key );
+	meUDecalPropertyRemoveFromSelected(const meDecal::List &list, const char *key);
 	
 protected:
 	/** \brief Clean up undo decal. */
-	virtual ~meUDecalPropertyRemoveFromSelected();
+
+protected:
+	~meUDecalPropertyRemoveFromSelected() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,20 +65,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of decals to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataDecalProperty::List &GetList(){ return pList; }
+	inline const meUndoDataDecalProperty::List &GetList() const{ return pList; }
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

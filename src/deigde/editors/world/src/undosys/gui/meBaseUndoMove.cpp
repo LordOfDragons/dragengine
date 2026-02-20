@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meBaseUndoMove.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 
@@ -35,8 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meBaseUndoMove::meBaseUndoMove() :
-pModifyOrientation( false ){
+meBaseUndoMove::meBaseUndoMove(igdeEnvironment &environment) :
+pEnvironment(environment),
+pModifyOrientation(false){
 }
 
 meBaseUndoMove::~meBaseUndoMove(){
@@ -47,29 +48,27 @@ meBaseUndoMove::~meBaseUndoMove(){
 // Management
 ///////////////
 
-void meBaseUndoMove::SetDistance( const decDVector &distance ){
-	decString info;
-	
+void meBaseUndoMove::SetDistance(const decDVector &distance){
 	pDistance = distance;
 	
-	info.Format( "distance (%g,%g,%g)", distance.x, distance.y, distance.z );
-	SetLongInfo( info.GetString() );
+	SetLongInfo(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("World.BaseUndoMove.Distance").ToUTF8(),
+		distance.x, distance.y, distance.z));
 }
 
-void meBaseUndoMove::SetModifyOrientation( bool modify ){
+void meBaseUndoMove::SetModifyOrientation(bool modify){
 	pModifyOrientation = modify;
 }
 
-void meBaseUndoMove::SetMatrix( const decDMatrix &matrix ){
+void meBaseUndoMove::SetMatrix(const decDMatrix &matrix){
 	pMatrix = matrix;
 	
-	const decDVector displacement( matrix.GetPosition() );
-	const decDVector rotation( matrix.GetEulerAngles() / DEG2RAD );
+	const decDVector displacement(matrix.GetPosition());
+	const decDVector rotation(matrix.GetEulerAngles() * RAD2DEG);
 	
-	decString info;
-	info.Format( "distance(%g,%g,%g) rotation=(%g,%g,%g)",
-		displacement.x, displacement.y, displacement.z,
-		rotation.x, rotation.y, rotation.z );
+	SetLongInfo(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("World.BaseUndoMove.DistanceRotation").ToUTF8(),
+		displacement.x, displacement.y, displacement.z, rotation.x, rotation.y, rotation.z));
 }
 
 
@@ -77,35 +76,35 @@ void meBaseUndoMove::SetMatrix( const decDMatrix &matrix ){
 // Undo and Redo actions
 //////////////////////////
 
-void meBaseUndoMove::TransformElement( decDVector &position, decDVector &rotation ){
-	const decDMatrix matrix = decDMatrix::CreateRT( rotation * DEG2RAD, position ) * pMatrix;
+void meBaseUndoMove::TransformElement(decDVector &position, decDVector &rotation){
+	const decDMatrix matrix = decDMatrix::CreateRT(rotation * DEG2RAD, position) * pMatrix;
 	
 	// orientation
-	const decDVector view( matrix.TransformView().Normalized() );
-	const decDVector up( matrix.TransformUp().Normalized() );
+	const decDVector view(matrix.TransformView().Normalized());
+	const decDVector up(matrix.TransformUp().Normalized());
 	
-	rotation = decDMatrix::CreateWorld( decDVector(), view, up ).GetEulerAngles() / DEG2RAD;
+	rotation = decDMatrix::CreateWorld(decDVector(), view, up).GetEulerAngles() * RAD2DEG;
 	
-	if( fabs( rotation.x ) < FLOAT_SAFE_EPSILON ){
+	if(fabs(rotation.x) < FLOAT_SAFE_EPSILON){
 		rotation.x = 0.0;
 	}
-	if( fabs( rotation.y ) < FLOAT_SAFE_EPSILON ){
+	if(fabs(rotation.y) < FLOAT_SAFE_EPSILON){
 		rotation.y = 0.0;
 	}
-	if( fabs( rotation.z ) < FLOAT_SAFE_EPSILON ){
+	if(fabs(rotation.z) < FLOAT_SAFE_EPSILON){
 		rotation.z = 0.0;
 	}
 	
 	// position
 	position = matrix.GetPosition();
 	
-	if( fabs( position.x ) < FLOAT_SAFE_EPSILON ){
+	if(fabs(position.x) < FLOAT_SAFE_EPSILON){
 		position.x = 0.0;
 	}
-	if( fabs( position.y ) < FLOAT_SAFE_EPSILON ){
+	if(fabs(position.y) < FLOAT_SAFE_EPSILON){
 		position.y = 0.0;
 	}
-	if( fabs( position.z ) < FLOAT_SAFE_EPSILON ){
+	if(fabs(position.z) < FLOAT_SAFE_EPSILON){
 		position.z = 0.0;
 	}
 }

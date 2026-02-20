@@ -43,61 +43,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicPaste::ceUCCLogicPaste( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionLogic *logic, const ceConversationConditionList &conditions ){
-	if( ! topic || ! action || ! logic || conditions.GetCount() == 0 ) DETHROW( deeInvalidParam );
+ceUCCLogicPaste::ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionLogic *logic, const ceConversationCondition::List &conditions){
+	DEASSERT_NOTNULL(topic)
+	DEASSERT_NOTNULL(action)
+	DEASSERT_NOTNULL(logic)
+	DEASSERT_TRUE(conditions.IsNotEmpty())
 	
-	const int count = conditions.GetCount();
-	ceConversationCondition *newCondition = NULL;
-	int i;
-	
-	pTopic = NULL;
-	pAction = NULL;
-	pLogic = NULL;
-	
-	if( count == 1 ){
-		SetShortInfo( "Logic Paste Condition" );
+	if(conditions.GetCount() == 1){
+		SetShortInfo("@Conversation.Undo.LogicPasteCondition");
 		
 	}else{
-		SetShortInfo( "Logic Paste Conditions" );
+		SetShortInfo("@Conversation.Undo.LogicPasteConditions");
 	}
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
 	
-	try{
-		for( i=0; i<count; i++ ){
-			newCondition = conditions.GetAt( i )->CreateCopy();
-			pConditions.Add( newCondition );
-			newCondition->FreeReference();
-			newCondition = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( newCondition ){
-			newCondition->FreeReference();
-		}
-		throw;
-	}
+	conditions.Visit([&](const ceConversationCondition &c){
+		pConditions.Add(c.CreateCopy());
+	});
 }
 
 ceUCCLogicPaste::~ceUCCLogicPaste(){
-	pConditions.RemoveAll();
-	if( pLogic ){
-		pLogic->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -106,61 +75,48 @@ ceUCCLogicPaste::~ceUCCLogicPaste(){
 ///////////////
 
 void ceUCCLogicPaste::Undo(){
-	const int count = pConditions.GetCount();
-	if( count == 0 ){
+	if(pConditions.IsEmpty()){
 		return;
 	}
 	
 	ceConversationCondition * const activateCondition = ActivateConditionAfterRemove();
+	pConditions.Visit([&](ceConversationCondition *c){
+		pLogic->GetConditions().Remove(c);
+	});
 	
-	int i;
-	for( i=0; i<count; i++ ){
-		pLogic->GetConditions().Remove( pConditions.GetAt( i ) );
-	}
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->NotifyConditionStructureChanged( pAction );
-	
-	pTopic->SetActive( pAction, activateCondition ? activateCondition : pLogic );
+	pTopic->SetActive(pAction, activateCondition ? activateCondition : pLogic);
 }
 
 void ceUCCLogicPaste::Redo(){
-	const int count = pConditions.GetCount();
-	if( count == 0 ){
+	if(pConditions.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for( i=0; i<count; i++ ){
-		pLogic->GetConditions().Add( pConditions.GetAt( i ) );
-	}
+	pConditions.Visit([&](ceConversationCondition *c){
+		pLogic->GetConditions().Add(c);
+	});
 	
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive( pAction, pConditions.GetAt( 0 ) );
+	pTopic->SetActive(pAction, pConditions.GetAt(0));
 }
 
 ceConversationCondition *ceUCCLogicPaste::ActivateConditionAfterRemove() const{
-	if( pConditions.GetCount() == 0 ){
-		return NULL;
+	if(pConditions.IsEmpty()){
+		return nullptr;
 	}
 	
-	int index = pLogic->GetConditions().IndexOf( pConditions.GetAt( pConditions.GetCount() - 1 ) );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( index < pLogic->GetConditions().GetCount() - 1 ){
-		return pLogic->GetConditions().GetAt( index + 1 );
+	int index = pLogic->GetConditions().IndexOf(pConditions.Last());
+	DEASSERT_TRUE(index != -1)
+	
+	if(index < pLogic->GetConditions().GetCount() - 1){
+		return pLogic->GetConditions().GetAt(index + 1);
 	}
 	
-	index = pLogic->GetConditions().IndexOf( pConditions.GetAt( 0 ) );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	index = pLogic->GetConditions().IndexOf(pConditions.First());
+	DEASSERT_TRUE(index != -1)
 	
-	if( index > 0 ){
-		return pLogic->GetConditions().GetAt( index - 1 );
-		
-	}else{
-		return NULL;
-	}
+	return index > 0 ? pLogic->GetConditions().GetAt(index - 1).Pointer() : nullptr;
 }

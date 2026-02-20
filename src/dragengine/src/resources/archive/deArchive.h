@@ -47,8 +47,7 @@ class deBaseArchiveContainer;
 class DE_DLL_EXPORT deArchive : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deArchive> Ref;
-	
+	using Ref = deTObjectReference<deArchive>;
 	
 	
 private:
@@ -60,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive resource. */
-	deArchive( deArchiveManager *manager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deArchive(deArchiveManager *manager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -70,7 +69,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deArchive();
+	~deArchive() override;
 	/*@}*/
 	
 	
@@ -88,7 +87,7 @@ public:
 	deBaseArchiveContainer *GetPeerContainer() const{ return pPeerContainer; }
 	
 	/** \brief Set peer container. */
-	void SetPeerContainer( deBaseArchiveContainer *peer );
+	void SetPeerContainer(deBaseArchiveContainer *peer);
 	/*@}*/
 };
 

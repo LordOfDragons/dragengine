@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotAngle::gdeUOCLightSetSpotAngle( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetSpotAngle::gdeUOCLightSetSpotAngle(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set spot angle" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotAngle");
 	
 	pOldValue = light->GetSpotAngle();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetSpotAngle::~gdeUOCLightSetSpotAngle(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetSpotAngle::~gdeUOCLightSetSpotAngle(){
 ///////////////
 
 void gdeUOCLightSetSpotAngle::Undo(){
-	pLight->SetSpotAngle( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotAngle(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetSpotAngle::Redo(){
-	pLight->SetSpotAngle( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotAngle(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

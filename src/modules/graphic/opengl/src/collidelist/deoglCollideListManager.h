@@ -22,38 +22,42 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLCOLLIDELISTMANAGER_H_
 #define _DEOGLCOLLIDELISTMANAGER_H_
 
-// includes
+#include <dragengine/common/collection/decTUniqueList.h>
 
-// predefinitions
 class deoglCollideList;
-
 
 
 // opengl collide list manager
 class deoglCollideListManager {
 private:
 	struct sList{
-		deoglCollideList *list;
-		bool inUse;
+		deTUniqueReference<deoglCollideList> list;
+		bool inUse = false;
+		
+		sList() = default;
+		
+		sList(const sList &other) = delete;
+		sList& operator=(const sList &other) = delete;
+		
+		sList(sList &&other) noexcept;
+		sList& operator=(sList &&other) noexcept;
 	};
+	
 private:
-	sList *pLists;
-	int pListCount, pListSize;
+	decTUniqueList<sList> pLists;
+	
 public:
 	// constructor, destructor
 	deoglCollideListManager();
 	~deoglCollideListManager();
+	
 	// collide list management
-	inline int GetListCount() const{ return pListCount; }
+	inline int GetListCount() const{ return pLists.GetCount(); }
 	deoglCollideList *GetList();
-	void ReleaseList( deoglCollideList *list );
-private:
-	int pFindNextList() const;
+	void ReleaseList(deoglCollideList *list);
 };
 
-// end of include only once
 #endif

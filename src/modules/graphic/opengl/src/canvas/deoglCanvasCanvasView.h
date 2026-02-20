@@ -27,8 +27,8 @@
 
 #include "deoglCanvas.h"
 #include "deoglCanvasViewListener.h"
+#include "render/deoglRCanvasCanvasView.h"
 
-class deoglRCanvasCanvasView;
 
 class deCanvasCanvasView;
 
@@ -39,7 +39,7 @@ class deCanvasCanvasView;
 class deoglCanvasCanvasView : public deoglCanvas, deoglCanvasViewListener{
 private:
 	deCanvasCanvasView &pCanvasCanvasView;
-	deoglRCanvasCanvasView *pRCanvasCanvasView;
+	deoglRCanvasCanvasView::Ref pRCanvasCanvasView;
 	deoglCanvasView *pCanvasView;
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasCanvasView( deGraphicOpenGl &ogl, deCanvasCanvasView &canvas );
+	deoglCanvasCanvasView(deGraphicOpenGl &ogl, deCanvasCanvasView &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasCanvasView();
+	~deoglCanvasCanvasView() override;
 	/*@}*/
 	
 	
@@ -58,19 +58,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	
 	/** Canvas view has been destroyed. Owner has to drop weak reference to canvas view. */
-	virtual void CanvasViewDestroyed();
+	void CanvasViewDestroyed() override;
 	
 	/** Canvas view requires sync. */
-	virtual void CanvasViewRequiresSync();
+	void CanvasViewRequiresSync() override;
 	/*@}*/
 	
 	
@@ -78,14 +78,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 };
 
 #endif

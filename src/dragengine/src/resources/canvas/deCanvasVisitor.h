@@ -56,28 +56,28 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void VisitCanvas( deCanvas &canvas );
+	virtual void VisitCanvas(deCanvas &canvas);
 	
 	/** \brief Visit image canvas. */
-	virtual void VisitImage( deCanvasImage &canvas );
+	virtual void VisitImage(deCanvasImage &canvas);
 	
 	/** \brief Visit paint canvas. */
-	virtual void VisitPaint( deCanvasPaint &canvas );
+	virtual void VisitPaint(deCanvasPaint &canvas);
 	
 	/** \brief Visit canvas view canvas. */
-	virtual void VisitCanvasView( deCanvasCanvasView &canvas );
+	virtual void VisitCanvasView(deCanvasCanvasView &canvas);
 	
 	/** \brief Visit render world canvas. */
-	virtual void VisitRenderWorld( deCanvasRenderWorld &canvas );
+	virtual void VisitRenderWorld(deCanvasRenderWorld &canvas);
 	
 	/** \brief Visit text canvas. */
-	virtual void VisitText( deCanvasText &canvas );
+	virtual void VisitText(deCanvasText &canvas);
 	
 	/** \brief Visit video player canvas. */
-	virtual void VisitVideoPlayer( deCanvasVideoPlayer &canvas );
+	virtual void VisitVideoPlayer(deCanvasVideoPlayer &canvas);
 	
 	/** \brief Visit view canvas. */
-	virtual void VisitView( deCanvasView &canvas );
+	virtual void VisitView(deCanvasView &canvas);
 	/*@}*/
 };
 

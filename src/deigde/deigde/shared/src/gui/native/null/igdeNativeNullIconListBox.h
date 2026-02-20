@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLICONLISTBOX_H_
 #define _IGDENATIVENULLICONLISTBOX_H_
 
+#include "../../igdeIconListBox.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class igdeListItem;
@@ -34,7 +36,7 @@ class igdeIconListBox;
 /**
  * \brief Null icon list box.
  */
-class igdeNativeNullIconListBox{
+class igdeNativeNullIconListBox : public igdeIconListBox::cNativeIconListBox{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -45,7 +47,7 @@ public:
 	virtual ~igdeNativeNullIconListBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullIconListBox* CreateNativeWidget( igdeIconListBox &owner );
+	static igdeNativeNullIconListBox* CreateNativeWidget(igdeIconListBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -58,21 +60,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void BuildHeader();
-	virtual void BuildList();
-	virtual void InsertItem( int index, igdeListItem &item );
-	virtual void UpdateItem( int index );
-	virtual void MoveItem( int fromIndex, int toIndex );
-	virtual void RemoveItem( int index );
-	virtual void UpdateSelection();
-	virtual void UpdateHeader();
-	virtual void UpdateStyles();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
-	virtual void UpdateMinimumSize();
-	virtual void Focus();
-	virtual void MakeItemVisible( int index );
-	virtual void RemoveAllItems();
+	void BuildHeader() override;
+	void BuildList() override;
+	void InsertItem(int index, igdeListItem &item) override;
+	void UpdateItem(int index) override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void RemoveItem(int index) override;
+	void UpdateSelection() override;
+	void UpdateHeader() override;
+	void UpdateStyles() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+	void UpdateMinimumSize() override;
+	void Focus() override;
+	void MakeItemVisible(int index) override;
+	void RemoveAllItems() override;
+	virtual decPoint GetContentPosition() const;
+	void SetContentPosition(const decPoint &position) override;
 	/*@}*/
 };
 

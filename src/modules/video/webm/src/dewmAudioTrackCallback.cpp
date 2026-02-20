@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewmAudioTrackCallback::dewmAudioTrackCallback( deVideoWebm &module ) :
-dewmTrackCallback( module ),
-pResBuffer( nullptr ),
-pResSize( 0 ),
-pResPosition( 0 ),
-pSampleSize( 1 ),
-pStreamVorbis( nullptr ){
+dewmAudioTrackCallback::dewmAudioTrackCallback(deVideoWebm &module) :
+dewmTrackCallback(module),
+pResBuffer(nullptr),
+pResSize(0),
+pResPosition(0),
+pSampleSize(1),
+pStreamVorbis(nullptr){
 }
 
 dewmAudioTrackCallback::~dewmAudioTrackCallback(){
-	if( pStreamVorbis ){
+	if(pStreamVorbis){
 		delete pStreamVorbis;
 	}
 }
@@ -61,10 +61,10 @@ dewmAudioTrackCallback::~dewmAudioTrackCallback(){
 // Management
 ///////////////
 
-void dewmAudioTrackCallback::SetResBuffer( void *buffer, int samples ){
-	DEASSERT_TRUE( ! buffer || IsStreamOpen() )
+void dewmAudioTrackCallback::SetResBuffer(void *buffer, int samples){
+	DEASSERT_TRUE(!buffer || IsStreamOpen())
 	
-	pResBuffer = ( uint8_t* )buffer;
+	pResBuffer = (uint8_t*)buffer;
 	pResSize = samples;
 	pResPosition = 0;
 }
@@ -74,28 +74,28 @@ bool dewmAudioTrackCallback::IsStreamOpen(){
 }
 
 void dewmAudioTrackCallback::Rewind(){
-	DEASSERT_TRUE( IsStreamOpen() )
+	DEASSERT_TRUE(IsStreamOpen())
 	
-	if( pStreamVorbis ){
+	if(pStreamVorbis){
 		pStreamVorbis->Rewind();
 	}
 }
 
-bool dewmAudioTrackCallback::OpenTrack( const webm::TrackEntry &track ){
-	return pOpenTrack( track );
+bool dewmAudioTrackCallback::OpenTrack(const webm::TrackEntry &track){
+	return pOpenTrack(track);
 }
 
-void dewmAudioTrackCallback::UpdateInfos( dewmInfos &infos ){
-	DEASSERT_TRUE( IsStreamOpen() )
+void dewmAudioTrackCallback::UpdateInfos(dewmInfos &infos){
+	DEASSERT_TRUE(IsStreamOpen())
 	
-	if( pStreamVorbis ){
-		infos.SetBytesPerSample( pStreamVorbis->GetBytesPerSample() );
-		infos.SetSampleRate( pStreamVorbis->GetSampleRate() );
-		infos.SetChannelCount( pStreamVorbis->GetChannelCount() );
+	if(pStreamVorbis){
+		infos.SetBytesPerSample(pStreamVorbis->GetBytesPerSample());
+		infos.SetSampleRate(pStreamVorbis->GetSampleRate());
+		infos.SetChannelCount(pStreamVorbis->GetChannelCount());
 	}
 }
 
-void dewmAudioTrackCallback::AdvanceResPosition( int bytes ){
+void dewmAudioTrackCallback::AdvanceResPosition(int bytes){
 	pResPosition += bytes;
 }
 
@@ -104,18 +104,18 @@ void dewmAudioTrackCallback::AdvanceResPosition( int bytes ){
 // Protected Functions
 ////////////////////////
 
-bool dewmAudioTrackCallback::pOpenTrack( const webm::TrackEntry &track ){
-	if( track.track_type.value() != webm::TrackType::kAudio ){
+bool dewmAudioTrackCallback::pOpenTrack(const webm::TrackEntry &track){
+	if(track.track_type.value() != webm::TrackType::kAudio){
 		return false;
 	}
 	
-	if( pStreamVorbis ){
+	if(pStreamVorbis){
 		return false;
 	}
 	
-	if( track.codec_id.value() == "A_VORBIS" ){
-		pStreamVorbis = new dewmVorbisStream( *this );
-		if( pStreamVorbis->OpenTrack( track ) ){
+	if(track.codec_id.value() == "A_VORBIS"){
+		pStreamVorbis = new dewmVorbisStream(*this);
+		if(pStreamVorbis->OpenTrack(track)){
 			pSampleSize = pStreamVorbis->GetBufferSampleSize();
 			return true;
 		}
@@ -127,11 +127,11 @@ bool dewmAudioTrackCallback::pOpenTrack( const webm::TrackEntry &track ){
 	return false;
 }
 
-void dewmAudioTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining ){
+void dewmAudioTrackCallback::pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining){
 	// copy remaining samples in context until buffer is full
 	pCopySamples();
 	
-	if( pResPosition == pResSize ){
+	if(pResPosition == pResSize){
 		// found enough remaining samples to fill the buffer. the data from this frame is
 		// not required. by not touching bytes_remaining this frame will be process again
 		// the next time the parser is run
@@ -140,11 +140,11 @@ void dewmAudioTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t 
 	
 	// we need more samples. load frame data and copy samples until buffer is full.
 	// after this call bytes_remaining will be 0 and the next frame will be process
-	pLoadFrameData( reader, bytes_remaining );
+	pLoadFrameData(reader, bytes_remaining);
 	pCopySamples();
 	
 	// if the buffer is not full we need more frames to complete it otherwise we can stop
-	SetNeedMoreFrames( pResPosition < pResSize );
+	SetNeedMoreFrames(pResPosition < pResSize);
 }
 
 void dewmAudioTrackCallback::pEndSegment(){
@@ -154,8 +154,8 @@ void dewmAudioTrackCallback::pEndSegment(){
 	// in this case we fill up with last sample written
 	/*
 	GetModule().LogInfoFormat("pEndSegment %d %d", pResPosition, pResSize);
-	if( pResPosition < pResSize ){
-		if( pStreamVorbis ){
+	if(pResPosition < pResSize){
+		if(pStreamVorbis){
 			pStreamVorbis->FillUpBuffer();
 			pResPosition = pResSize;
 		}
@@ -169,13 +169,13 @@ void dewmAudioTrackCallback::pEndSegment(){
 //////////////////////
 
 void dewmAudioTrackCallback::pCopySamples(){
-	if( pStreamVorbis ){
+	if(pStreamVorbis){
 		pStreamVorbis->CopySamples();
 	}
 }
 
-void dewmAudioTrackCallback::pLoadFrameData( webm::Reader &reader, std::uint64_t &bytes_remaining ){
-	if( bytes_remaining == 0 ){
+void dewmAudioTrackCallback::pLoadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining){
+	if(bytes_remaining == 0){
 		// frame consumed
 		return;
 	}
@@ -183,9 +183,9 @@ void dewmAudioTrackCallback::pLoadFrameData( webm::Reader &reader, std::uint64_t
 	// read frame data and load it. bytes_remaining will become 0 after reading
 	// the frame so if we know the next time the frame has been consumed
 	const uint64_t frameSize = bytes_remaining;
-	pReadFrameData( reader, bytes_remaining );
+	pReadFrameData(reader, bytes_remaining);
 	
-	if( pStreamVorbis ){
-		pStreamVorbis->LoadFrameData( frameSize );
+	if(pStreamVorbis){
+		pStreamVorbis->LoadFrameData(frameSize);
 	}
 }

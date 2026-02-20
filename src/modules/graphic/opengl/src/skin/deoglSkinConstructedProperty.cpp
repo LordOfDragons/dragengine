@@ -33,10 +33,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinConstructedProperty::deoglSkinConstructedProperty( const deSkinPropertyConstructed &constructed ) :
-pContent( deoglSkinStateCNGroup::Ref::New( new deoglSkinStateCNGroup( constructed.GetContent() ) ) ),
-pBitCount( constructed.GetBitCount() ),
-pColor( constructed.GetColor() ){
+deoglSkinConstructedProperty::deoglSkinConstructedProperty(const deSkinPropertyConstructed &constructed) :
+pContent(deoglSkinStateCNGroup::Ref::New(constructed.GetContent())),
+pBitCount(constructed.GetBitCount()),
+pColor(constructed.GetColor()){
 }
 
 deoglSkinConstructedProperty::~deoglSkinConstructedProperty(){

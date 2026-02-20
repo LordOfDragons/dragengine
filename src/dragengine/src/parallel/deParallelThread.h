@@ -59,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create thread. */
-	deParallelThread( deParallelProcessing &parallelProcessing, int number, bool takeLowPriorityTasks );
+	deParallelThread(deParallelProcessing &parallelProcessing, int number, bool takeLowPriorityTasks);
 	
 	/** \brief Clean up thread. */
-	virtual ~deParallelThread();
+	~deParallelThread() override;
 	/*@}*/
 	
 	
@@ -92,7 +92,7 @@ public:
 	
 	
 	/** \brief Run task. */
-	virtual void Run();
+	void Run() override;
 	/*@}*/
 };
 

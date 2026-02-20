@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new peer. */
-	dedsNetworkState( deScriptingDragonScript &ds, deNetworkState *state );
+	dedsNetworkState(deScriptingDragonScript &ds, deNetworkState *state);
 	
 	/** \brief Cleans up the peer. */
-	virtual ~dedsNetworkState();
+	~dedsNetworkState() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief State value changed. */
-	virtual void StateValueChanged( int index );
+	void StateValueChanged(int index) override;
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or NULL if not set. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	/*@}*/
 };
 

@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSParticleEmitterListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSParticleEmitterListener( gdeWPSParticleEmitter &panel );
+	gdeWPSParticleEmitterListener(gdeWPSParticleEmitter &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSParticleEmitterListener();
+protected:
+	~gdeWPSParticleEmitterListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,16 +58,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Particle emitter categories changed. */
-	virtual void ParticleEmitterCategoriesChanged( gdeGameDefinition *gameDefinition );
+	void ParticleEmitterCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Particle emitter changed. */
-	virtual void ParticleEmitterChanged( gdeGameDefinition *gameDefinition,
-		gdeParticleEmitter *particleEmitter );
+	void ParticleEmitterChanged(gdeGameDefinition *gameDefinition,
+		gdeParticleEmitter *particleEmitter) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveParticleEmitterChanged( gdeGameDefinition *gameDefinition );
+	void ActiveParticleEmitterChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

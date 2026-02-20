@@ -37,17 +37,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPShowLightCB( deGraphicOpenGl &ogl );
+	deoglPShowLightCB(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPShowLightCB();
+	~deoglPShowLightCB() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual bool GetParameterBool();
+	bool GetParameterBool() override;
 	/** Sets the current value. */
-	virtual void SetParameterBool( bool value );
+	void SetParameterBool(bool value) override;
 	/*@}*/
 };
 

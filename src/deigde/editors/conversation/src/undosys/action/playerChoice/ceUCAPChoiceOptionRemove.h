@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoiceOption;
-class ceCAPlayerChoice;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
 
 
 
@@ -37,29 +37,33 @@ class ceCAPlayerChoice;
  * \brief Undo Action Player Choice Remove Option.
  */
 class ceUCAPChoiceOptionRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAPChoiceOptionRemove>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceOptionRemove( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option );
+	ceUCAPChoiceOptionRemove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAPChoiceOptionRemove();
+	~ceUCAPChoiceOptionRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

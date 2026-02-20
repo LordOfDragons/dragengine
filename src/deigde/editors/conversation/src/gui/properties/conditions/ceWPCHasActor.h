@@ -25,8 +25,8 @@
 #ifndef _CEWPCHASACTOR_H_
 #define _CEWPCHASACTOR_H_
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPCondition.h"
 
@@ -38,9 +38,12 @@ class ceCConditionHasActor;
  * \brief Has Actor Conversation Condition property window.
  */
 class ceWPCHasActor : public ceWPCondition{
+public:
+	using Ref = deTObjectReference<ceWPCHasActor>;
+
 private:
-	igdeComboBoxReference pCBActor;
-	igdeCheckBoxReference pChkNegate;
+	igdeComboBox::Ref pCBActor;
+	igdeCheckBox::Ref pChkNegate;
 	
 	
 	
@@ -48,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCHasActor( ceWPTopic &parentPanel );
+	ceWPCHasActor(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCHasActor();
+	~ceWPCHasActor() override;
 	/*@}*/
 	
 	

@@ -43,43 +43,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicAdd::ceUCCLogicAdd( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionLogic *logic, ceConversationCondition *condition ){
-	if( ! topic || ! action || ! logic || ! condition ) DETHROW( deeInvalidParam );
+ceUCCLogicAdd::ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionLogic *logic, ceConversationCondition *condition){
+	if(!topic || !action || !logic || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pLogic = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pLogic = nullptr;
+	pCondition = nullptr;
 	
-	SetShortInfo( "Logic Add Condition" );
+	SetShortInfo("@Conversation.Undo.LogicAddCondition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCLogicAdd::~ceUCCLogicAdd(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pLogic ){
-		pLogic->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -89,17 +70,17 @@ ceUCCLogicAdd::~ceUCCLogicAdd(){
 
 void ceUCCLogicAdd::Undo(){
 	ceConversationCondition * const activateCondition =
-		ceUConditionHelpers::ActivateConditionAfterRemove( pLogic->GetConditions(), pCondition );
+		ceUConditionHelpers::ActivateConditionAfterRemove(pLogic->GetConditions(), pCondition);
 	
-	pLogic->GetConditions().Remove( pCondition );
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pLogic->GetConditions().Remove(pCondition);
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive( pAction, activateCondition ? activateCondition : pLogic );
+	pTopic->SetActive(pAction, activateCondition ? activateCondition : pLogic);
 }
 
 void ceUCCLogicAdd::Redo(){
-	pLogic->GetConditions().Add( pCondition );
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pLogic->GetConditions().Add(pCondition);
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive( pAction, pCondition );
+	pTopic->SetActive(pAction, pCondition);
 }

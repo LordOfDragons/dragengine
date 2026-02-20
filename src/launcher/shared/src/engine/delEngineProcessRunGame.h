@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create run game thread. */
-	delEngineProcessRunGame( delEngineProcess &process );
+	delEngineProcessRunGame(delEngineProcess &process);
 	
 	/** \brief Cleas up run game thread. */
-	virtual ~delEngineProcessRunGame();
+	~delEngineProcessRunGame() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run thread function. */
-	virtual void Run();
+	void Run() override;
 	
 	/**
 	 * \brief Read command from pipe.

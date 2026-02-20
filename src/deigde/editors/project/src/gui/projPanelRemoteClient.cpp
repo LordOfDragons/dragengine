@@ -39,6 +39,7 @@
 #include <dragengine/logger/deLogger.h>
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
@@ -46,18 +47,16 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/layout/igdeContainerScrollReference.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeTextStyle.h>
-#include <deigde/gui/resources/igdeTextStyleReference.h>
 
 
 
@@ -69,9 +68,10 @@ namespace{
 class cActionDisconnect : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	cActionDisconnect(projPanelRemoteClient &panel) : igdeAction("Disconnect",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit), "Disconnect remote client"),
-	pPanel(panel){ }
+	using Ref = deTObjectReference<cActionDisconnect>;
+	cActionDisconnect(projPanelRemoteClient &panel) : igdeAction("@Project.PanelRemoteClient.Action.Disconnect",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit), "@Project.PanelRemoteClient.Action.Disconnect.Description"),
+	pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.Disconnect();
@@ -81,6 +81,7 @@ public:
 class cComboLaunchProfile : public igdeComboBoxListener{
 	projPanelRemoteClient &pPanel;
 public:
+	using Ref = deTObjectReference<cComboLaunchProfile>;
 	cComboLaunchProfile(projPanelRemoteClient &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -101,10 +102,11 @@ public:
 class cActionSynchronize : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	cActionSynchronize(projPanelRemoteClient &panel) : igdeAction("Synchronize",
+	using Ref = deTObjectReference<cActionSynchronize>;
+	cActionSynchronize(projPanelRemoteClient &panel) : igdeAction("@Project.PanelRemoteClient.Action.Synchronize",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
-		"Synchronize profile specific project data to client"),
-	pPanel(panel){ }
+		"@Project.PanelRemoteClient.Action.Synchronize.Description"),
+	pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.Synchronize();
@@ -119,8 +121,10 @@ public:
 class cActionStart : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	cActionStart(projPanelRemoteClient &panel) : igdeAction("Start",
-		panel.GetPanelTestRun().GetWindowMain().GetIconStart(), "Test-Run project using selected profile"),
+	using Ref = deTObjectReference<cActionStart>;
+	
+	cActionStart(projPanelRemoteClient &panel) : igdeAction("@Project.PanelRemoteClient.Action.Start",
+		panel.GetPanelTestRun().GetWindowMain().GetIconStart(), "@Project.PanelRemoteClient.Action.Start.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -135,8 +139,10 @@ public:
 class cActionStop : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	cActionStop(projPanelRemoteClient &panel) : igdeAction("Stop",
-		panel.GetPanelTestRun().GetWindowMain().GetIconStop(), "Stop Test-Run project"),
+	using Ref = deTObjectReference<cActionStop>;
+	
+	cActionStop(projPanelRemoteClient &panel) : igdeAction("@Project.PanelRemoteClient.Action.Stop",
+		panel.GetPanelTestRun().GetWindowMain().GetIconStop(), "@Project.PanelRemoteClient.Action.Stop.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -151,8 +157,10 @@ public:
 class cActionKill : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	cActionKill(projPanelRemoteClient &panel) : igdeAction("Kill",
-		panel.GetPanelTestRun().GetWindowMain().GetIconKill(), "Kill Test-Run project"),
+	using Ref = deTObjectReference<cActionKill>;
+	
+	cActionKill(projPanelRemoteClient &panel) : igdeAction("@Project.PanelRemoteClient.Action.Kill",
+		panel.GetPanelTestRun().GetWindowMain().GetIconKill(), "@Project.PanelRemoteClient.Action.Kill.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -179,11 +187,11 @@ const char *projPanelRemoteClient::styleError = "error";
 
 projPanelRemoteClient::projPanelRemoteClient(projPanelTestRun &panelTestRun,
 	const projRemoteClient::Ref &client) :
-igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espLeft, 200),
+igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espLeft,
+	igdeApplication::app().DisplayScaled(200)),
 preventUpdate(true),
 pPanelTestRun(panelTestRun),
 pClient(client),
-pListener(nullptr),
 pMaxLines(500)
 {
 	igdeEnvironment &env = panelTestRun.GetEnvironment();
@@ -191,77 +199,76 @@ pMaxLines(500)
 	
 	
 	// side panel
-	igdeContainerScrollReference scroll;
-	igdeContainerReference sidePanel;
+	igdeContainerScroll::Ref scroll;
+	igdeContainer::Ref sidePanel;
 	helper.SidePanel(scroll, sidePanel, false, 5);
 	sidePanel->SetWidgetGuiThemeName("");
 	AddChild(scroll, eaSide);
 	
 	
 	// client information
-	igdeContainerReference groupBox;
-	helper.GroupBoxFlow(sidePanel, groupBox, "Client:");
+	igdeContainer::Ref groupBox;
+	helper.GroupBoxFlow(sidePanel, groupBox, "@Project.PanelRemoteClient.GroupBox.Client");
 	
-	helper.Label(groupBox, "Name:");
-	helper.EditString(groupBox, "Client name", 15, pEditName, nullptr);
+	helper.Label(groupBox, "@Project.PanelRemoteClient.Client.Name");
+	helper.EditString(groupBox, "@Project.PanelRemoteClient.Client.Name.ToolTip", 15, pEditName, {});
 	pEditName->SetText(client->GetName().c_str());
 	pEditName->SetEditable(false);
 	
-	helper.Label(groupBox, "Address:");
-	helper.EditString(groupBox, "IP address of connected client", 15, pEditAddress, nullptr);
+	helper.Label(groupBox, "@Project.PanelRemoteClient.Client.Address");
+	helper.EditString(groupBox, "@Project.PanelRemoteClient.Client.Address.ToolTip", 15, pEditAddress, {});
 	pEditAddress->SetText(client->GetAddress().c_str());
 	pEditAddress->SetEditable(false);
 	
-	helper.Button(groupBox, pBtnDisconnect, new cActionDisconnect(*this), true);
+	helper.Button(groupBox, pBtnDisconnect, cActionDisconnect::Ref::New(*this));
 	
 	
 	// synchronize
-	helper.GroupBoxFlow(sidePanel, groupBox, "Synchronize:");
+	helper.GroupBoxFlow(sidePanel, groupBox, "@Project.PanelRemoteClient.GroupBox.Synchronize");
 	
-	helper.Button(groupBox, pBtnSynchronize, new cActionSynchronize(*this), true);
+	helper.Button(groupBox, pBtnSynchronize, cActionSynchronize::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Synchronize state", 15, pEditSyncState, nullptr);
+	helper.EditString(groupBox, "@Project.PanelRemoteClient.Synchronize.State.ToolTip", 15, pEditSyncState, {});
 	pEditSyncState->SetText(client->GetSynchronizeDetails().c_str());
 	pEditSyncState->SetEditable(false);
 	
 	
 	// launching
-	helper.GroupBoxFlow(sidePanel, groupBox, "Launching:");
+	helper.GroupBoxFlow(sidePanel, groupBox, "@Project.PanelRemoteClient.GroupBox.Launching");
 	
-	helper.Label(groupBox, "Launch Profile:");
-	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
-		pCBLaunchProfile, new cComboLaunchProfile(*this));
+	helper.Label(groupBox, "@Project.PanelRemoteClient.Launching.LaunchProfile");
+	helper.ComboBox(groupBox, "@Project.PanelRemoteClient.Launching.LaunchProfile.ToolTip",
+		pCBLaunchProfile, cComboLaunchProfile::Ref::New(*this));
 	pCBLaunchProfile->SetDefaultSorter();
 	
-	helper.Button(groupBox, pBtnStart, new cActionStart(*this));
-	helper.Button(groupBox, pBtnStop, new cActionStop(*this));
-	helper.Button(groupBox, pBtnKill, new cActionKill(*this));
+	helper.Button(groupBox, pBtnStart, cActionStart::Ref::New(*this));
+	helper.Button(groupBox, pBtnStop, cActionStop::Ref::New(*this));
+	helper.Button(groupBox, pBtnKill, cActionKill::Ref::New(*this));
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent = igdeTabBook::Ref::New(env);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs = igdeTextArea::Ref::New(env, 60, 10, false);
 	
-	igdeTextStyleReference style;
-	style.TakeOver(new igdeTextStyle(styleWarning));
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style = igdeTextStyle::Ref::New(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold(true);
 	pEditLogs->AddStyle(style);
 	
-	pTabContent->AddChild(pEditLogs, "Logs");
+	pTabContent->AddChild(pEditLogs, "@Project.PanelRemoteClient.Tab.Logs");
 	
 	
 	// finish
-	pListener = new projPanelRemoteClientListener(*this);
+	pListener = projPanelRemoteClientListener::Ref::New(*this);
 	client->AddListener(pListener);
 	
 	preventUpdate = false;
@@ -273,7 +280,6 @@ pMaxLines(500)
 projPanelRemoteClient::~projPanelRemoteClient(){
 	if(pListener){
 		pClient->RemoveListener(pListener);
-		pListener->FreeReference();
 	}
 }
 
@@ -291,8 +297,8 @@ void projPanelRemoteClient::Synchronize(){
 		pPanelTestRun.GetWindowMain().SaveProject();
 	}
 	
-	if(!GetEnvironment().RequestSaveDocuments("Start Test-Running",
-	"Unsaved changes are present. To start Test-Running it is recommended to save them")){
+	if(!GetEnvironment().RequestSaveDocuments("@Project.PanelRemoteClient.Dialog.StartTestRunning.Title",
+	"@Project.PanelRemoteClient.Dialog.StartTestRunning.Message")){
 		return;
 	}
 	
@@ -300,7 +306,7 @@ void projPanelRemoteClient::Synchronize(){
 		pClient->Synchronize();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -320,8 +326,8 @@ void projPanelRemoteClient::Start(){
 		pPanelTestRun.GetWindowMain().SaveProject();
 	}
 	
-	if(!GetEnvironment().RequestSaveDocuments("Start Test-Running",
-	"Unsaved changes are present. To start Test-Running it is recommended to save them")){
+	if(!GetEnvironment().RequestSaveDocuments("@Project.PanelRemoteClient.Dialog.StartTestRunning.Title",
+	"@Project.PanelRemoteClient.Dialog.StartTestRunning.Message")){
 		return;
 	}
 	
@@ -336,7 +342,7 @@ void projPanelRemoteClient::Start(){
 		}catch(const deException &){
 		}
 		
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	pEditLogs->ClearText();
@@ -352,7 +358,7 @@ void projPanelRemoteClient::Stop(){
 		pClient->StopApplication();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -367,7 +373,7 @@ void projPanelRemoteClient::Kill(){
 		pClient->KillApplication();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	UpdateWidgetEnabled();

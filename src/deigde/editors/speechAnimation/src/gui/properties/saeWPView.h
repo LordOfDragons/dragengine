@@ -25,15 +25,16 @@
 #ifndef _SAEWPVIEW_H_
 #define _SAEWPVIEW_H_
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include "saeWPViewListener.h"
+#include "../../sanimation/saeSAnimation.h"
+
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
 
 class saeWindowProperties;
 class saeGameDefinition;
-class saeWPViewListener;
-class saeSAnimation;
 
 
 
@@ -41,17 +42,20 @@ class saeSAnimation;
  * View property window.
  */
 class saeWPView : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<saeWPView>;
+	
 private:
 	saeWindowProperties &pWindowProperties;
-	saeWPViewListener *pListener;
-	saeSAnimation *pSAnimation;
+	saeWPViewListener::Ref pListener;
+	saeSAnimation::Ref pSAnimation;
 	
-	igdeEditPathReference pEditDisplayModelPath;
-	igdeEditPathReference pEditDisplaySkinPath;
-	igdeEditPathReference pEditDisplayRigPath;
+	igdeEditPath::Ref pEditDisplayModelPath;
+	igdeEditPath::Ref pEditDisplaySkinPath;
+	igdeEditPath::Ref pEditDisplayRigPath;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPCameraReference pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPCamera::Ref pWPCamera;
 	
 	
 	
@@ -59,11 +63,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWPView( saeWindowProperties &windowProperties );
+	saeWPView(saeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~saeWPView();
+	~saeWPView() override;
 	/*@}*/
 	
 	
@@ -75,10 +79,10 @@ public:
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Update view. */
 	void UpdateView();

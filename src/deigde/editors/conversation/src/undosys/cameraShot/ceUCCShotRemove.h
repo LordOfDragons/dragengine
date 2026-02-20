@@ -25,10 +25,11 @@
 #ifndef _CEUCCSHOTREMOVE_H_
 #define _CEUCCSHOTREMOVE_H_
 
+#include "../../conversation/camerashot/ceCameraShot.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceCameraShot;
 
 
 
@@ -36,27 +37,31 @@ class ceCameraShot;
  * \brief Undo Action Remove Camera Shot.
  */
 class ceUCCShotRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotRemove>;
+	
+	
 private:
 	ceConversation *pConversation;
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotRemove( ceCameraShot *cameraShot );
+	ceUCCShotRemove(ceCameraShot *cameraShot);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotRemove();
+	~ceUCCShotRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

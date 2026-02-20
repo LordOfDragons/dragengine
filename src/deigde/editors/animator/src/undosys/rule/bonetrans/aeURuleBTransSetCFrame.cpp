@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetCFrame::aeURuleBTransSetCFrame( aeRuleBoneTransformator *rule,
-deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetCFrame::aeURuleBTransSetCFrame(aeRuleBoneTransformator *rule,
+deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pOldCoordFrame = rule->GetCoordinateFrame();
 	pNewCoordFrame = newCoordFrame;
 	
-	SetShortInfo( "Bone transformator set coordinate frame" );
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetCoordinateFrame");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetCFrame::~aeURuleBTransSetCFrame(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ aeURuleBTransSetCFrame::~aeURuleBTransSetCFrame(){
 ///////////////
 
 void aeURuleBTransSetCFrame::Undo(){
-	pRule->SetCoordinateFrame( pOldCoordFrame );
+	pRule->SetCoordinateFrame(pOldCoordFrame);
 }
 
 void aeURuleBTransSetCFrame::Redo(){
-	pRule->SetCoordinateFrame( pNewCoordFrame );
+	pRule->SetCoordinateFrame(pNewCoordFrame);
 }

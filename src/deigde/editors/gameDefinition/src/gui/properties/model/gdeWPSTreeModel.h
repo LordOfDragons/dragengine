@@ -25,15 +25,16 @@
 #ifndef _GDEWPSTREEMODEL_H_
 #define _GDEWPSTREEMODEL_H_
 
+#include "gdeWPSTreeModelListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
 #include <deigde/gui/igdeTreeList.h>
 
-class gdeGameDefinition;
 class gdeWPSTIMCategories;
 class gdeWPSTIMObjectClasses;
 class gdeWPSTIMParticleEmitters;
 class gdeWPSTIMSkins;
 class gdeWPSTIMSkies;
-class gdeWPSTreeModelListener;
 class gdeWindowMain;
 
 class igdeMenuCascade;
@@ -49,8 +50,8 @@ class gdeWPSTreeModel{
 private:
 	igdeTreeList &pTreeList;
 	gdeWindowMain &pWindowMain;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPSTreeModelListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPSTreeModelListener::Ref pListener;
 	
 	gdeWPSTIMCategories *pCategories;
 	gdeWPSTIMObjectClasses *pObjectClasses;
@@ -66,7 +67,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree model. */
-	gdeWPSTreeModel( igdeTreeList &treeList, gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition );
+	gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition);
 	
 	/** \brief Clean up tree model. */
 	~gdeWPSTreeModel();
@@ -81,7 +82,7 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Categories model. */
 	inline gdeWPSTIMCategories &GetCategories() const{ return *pCategories; }
@@ -112,10 +113,10 @@ public:
 	
 	
 	/** \brief User requests context menu for selected item. */
-	void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string);
 	
 	
 	
@@ -123,13 +124,13 @@ public:
 	inline bool GetIgnoreSelectionChange() const{ return pIgnoreSelectionChange; }
 	
 	/** \brief Set ignore selection change in tree list. */
-	void SetIgnoreSelectionChange( bool ignore );
+	void SetIgnoreSelectionChange(bool ignore);
 	
 	/** \brief Helper for ignore selection. */
 	class HelperIgnoreSelection{
 		gdeWPSTreeModel &pTree;
 	public:
-		HelperIgnoreSelection( gdeWPSTreeModel &tree );
+		HelperIgnoreSelection(gdeWPSTreeModel &tree);
 		~HelperIgnoreSelection();
 	};
 	/*@}*/

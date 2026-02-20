@@ -32,10 +32,10 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataAction.h"
-#include "../../../../../conversation/action/ceConversationActionList.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -44,22 +44,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACopyAction::ceWPTMACopyAction( ceWindowMain &windowMain,
-ceConversationAction *action ) :
-ceWPTMenuAction( windowMain, "Copy Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ) ),
-pAction( action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+ceWPTMACopyAction::ceWPTMACopyAction(ceWindowMain &windowMain,
+ceConversationAction *action) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.CopyAction",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
+pAction(action){
+	if(!action){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-ceWPTMACopyAction::ceWPTMACopyAction( ceWindowMain &windowMain,
-ceConversationAction *action, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pAction( action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+ceWPTMACopyAction::ceWPTMACopyAction(ceWindowMain &windowMain,
+ceConversationAction *action, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pAction(action){
+	if(!action){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -69,10 +69,8 @@ pAction( action ){
 ///////////////
 
 void ceWPTMACopyAction::OnAction(){
-	ceConversationActionList actions;
-	actions.Add( pAction );
+	ceConversationAction::List actions;
+	actions.Add(pAction);
 	
-	igdeClipboardDataReference cdata;
-	cdata.TakeOver( new ceClipboardDataAction( actions ) );
-	GetWindowMain().GetClipboard().Set( cdata );
+	GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::New(actions));
 }

@@ -31,6 +31,7 @@
 #include "../buffer/devkBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDescriptorPool;
 
@@ -43,8 +44,7 @@ class devkDescriptorPool;
 class devkDescriptorSet : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDescriptorSet> Ref;
-	
+	using Ref = deTObjectReference<devkDescriptorSet>;
 	
 	
 private:
@@ -55,9 +55,9 @@ private:
 	VkDescriptorSetLayout pLayout;
 	VkDescriptorSet pSet;
 	
-	VkDescriptorBufferInfo *pBindings;
-	VkWriteDescriptorSet *pWriteSets;
-	devkBuffer::Ref *pBuffers;
+	decTList<VkDescriptorBufferInfo> pBindings;
+	decTList<VkWriteDescriptorSet> pWriteSets;
+	decTList<devkBuffer::Ref> pBuffers;
 	int pBindingCount;
 	
 	
@@ -66,11 +66,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor set. */
-	devkDescriptorSet( devkDescriptorPool &pool );
+	devkDescriptorSet(devkDescriptorPool &pool);
 	
 protected:
 	/** Clean up descriptor set. */
-	virtual ~devkDescriptorSet();
+	~devkDescriptorSet() override;
 	/*@}*/
 	
 	
@@ -88,11 +88,11 @@ public:
 	inline VkDescriptorSet GetSet() const{ return pSet; }
 	
 	/** Set binding. */
-	void SetBinding( int index, devkBuffer *buffer,
-		VkDeviceSize offset = 0, VkDeviceSize range = VK_WHOLE_SIZE );
+	void SetBinding(int index, devkBuffer *buffer,
+		VkDeviceSize offset = 0, VkDeviceSize range = VK_WHOLE_SIZE);
 	
 	/** Clear binding. */
-	void ClearBinding( int index );
+	void ClearBinding(int index);
 	
 	/** Clear all bindings. */
 	void ClearAllBindings();
@@ -100,11 +100,6 @@ public:
 	/** Write bindings to descriptor set. */
 	void Update();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

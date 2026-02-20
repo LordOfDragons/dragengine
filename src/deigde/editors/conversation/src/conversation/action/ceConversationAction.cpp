@@ -38,19 +38,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceConversationAction::ceConversationAction( eActionTypes type ) :
-pType( type ),
-pWaitForActor( true ),
-pWaitSpeakOnly( false ),
-pDelay( 0.0f ){
+ceConversationAction::ceConversationAction(eActionTypes type) :
+pType(type),
+pWaitForActor(true),
+pWaitSpeakOnly(false),
+pDelay(0.0f){
 }
 
-ceConversationAction::ceConversationAction( const ceConversationAction &action ) :
-pType( action.pType ),
-pWaitForActor( action.pWaitForActor ),
-pWaitSpeakOnly( action.pWaitSpeakOnly ),
-pWaitForActorID( action.pWaitForActorID ),
-pDelay( action.pDelay ){
+ceConversationAction::ceConversationAction(const ceConversationAction &action) :
+pType(action.pType),
+pWaitForActor(action.pWaitForActor),
+pWaitSpeakOnly(action.pWaitSpeakOnly),
+pWaitForActorID(action.pWaitForActorID),
+pDelay(action.pDelay){
 }
 
 ceConversationAction::~ceConversationAction(){
@@ -61,18 +61,18 @@ ceConversationAction::~ceConversationAction(){
 // Management
 ///////////////
 
-void ceConversationAction::SetWaitForActor( bool wait ){
+void ceConversationAction::SetWaitForActor(bool wait){
 	pWaitForActor = wait;
 }
 
-void ceConversationAction::SetWaitSpeakOnly( bool speakOnly ){
+void ceConversationAction::SetWaitSpeakOnly(bool speakOnly){
 	pWaitSpeakOnly = speakOnly;
 }
 
-void ceConversationAction::SetWaitForActorID( const char *wait ){
+void ceConversationAction::SetWaitForActorID(const char *wait){
 	pWaitForActorID = wait;
 }
 
-void ceConversationAction::SetDelay( float delay ){
+void ceConversationAction::SetDelay(float delay){
 	pDelay = delay;
 }

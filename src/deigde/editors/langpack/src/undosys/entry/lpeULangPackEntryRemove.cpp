@@ -40,28 +40,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntryRemove::lpeULangPackEntryRemove( lpeLangPack *langpack,
-	const lpeLangPackEntryList &list, lpeLangPack *refLangpack ) :
-pLangPack( langpack ),
-pList( list )
+lpeULangPackEntryRemove::lpeULangPackEntryRemove(lpeLangPack *langpack,
+	const lpeLangPackEntry::List &list, lpeLangPack *refLangpack) :
+pLangPack(langpack),
+pList(list)
 {
 	const int count = list.GetCount();
-	DEASSERT_NOTNULL( langpack )
-	DEASSERT_TRUE( count > 0 )
+	DEASSERT_NOTNULL(langpack)
+	DEASSERT_TRUE(count > 0)
 	
-	if( refLangpack ){
-		const lpeLangPackEntryList &refEntries = refLangpack->GetEntryList();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			lpeLangPackEntry * const refEntry = refEntries.GetNamed( list.GetAt( i )->GetName() );
-			if( refEntry ){
-				pListRef.Add( refEntry );
+	if(refLangpack){
+		const lpeLangPackEntry::List &refEntries = refLangpack->GetEntries();
+		list.Visit([&](const lpeLangPackEntry &e){
+			const lpeLangPackEntry::Ref *refEntry = nullptr;
+			if(refEntries.Find(refEntry, [&](const lpeLangPackEntry &e2){
+				return e2.GetName() == e.GetName();
+			})){
+				pListRef.Add(*refEntry);
 			}
-		}
+		});
 	}
 	
-	SetShortInfo( count == 1 ? "Remove entry" : "Remove entries" );
+	SetShortInfo(count == 1 ? "@LangPack.Undo.EntryRemove" : "@LangPack.Undo.EntryRemoveMultiple");
 }
 
 lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
@@ -74,18 +74,13 @@ lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
 
 void lpeULangPackEntryRemove::Undo(){
 	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
-	const int count = pList.GetCount();
-	int i;
 	
 	lpes.Reset();
 	
-	for( i=0; i<count; i++ ){
-		lpeLangPackEntry * const entry = pList.GetAt( i );
-		pLangPack->AddEntry( entry );
-		lpes.Add( entry );
-	}
-	
-	lpes.ActivateNext();
+	pList.Visit([&](lpeLangPackEntry *e){
+		pLangPack->AddEntry(e);
+		lpes.Add(e);
+	});
 	
 	pLangPack->NotifyEntrySelectionChanged();
 	pLangPack->NotifyActiveEntryChanged();
@@ -93,22 +88,17 @@ void lpeULangPackEntryRemove::Undo(){
 
 void lpeULangPackEntryRemove::Redo(){
 	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
-	const int count = pList.GetCount();
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		lpeLangPackEntry * const entry = pList.GetAt( i );
-		
-		lpes.Remove( entry );
-		pLangPack->RemoveEntry( entry );
-	}
+	pList.Visit([&](lpeLangPackEntry *e){
+		lpes.Remove(e);
+		pLangPack->RemoveEntry(e);
+	});
 	
-	const int refCount = pListRef.GetCount();
-	if( refCount > 0 ){
-		for( i=0; i<refCount; i++ ){
-			lpes.Add( pListRef.GetAt( i ) );
-		}
-		lpes.SetActive( pListRef.GetAt( 0 ) );
+	if(pListRef.IsNotEmpty()){
+		pListRef.Visit([&](lpeLangPackEntry *e){
+			lpes.Add(e);
+		});
+		lpes.SetActive(pListRef.First());
 	}
 	
 	pLangPack->NotifyEntrySelectionChanged();

@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModMinRotation::aeUSetRuleSModMinRotation( aeRuleStateManipulator *rule, const decVector &newMin ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModMinRotation::aeUSetRuleSModMinRotation(aeRuleStateManipulator *rule, const decVector &newMin){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Set state manipulator rule minimum rotation" );
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimumRotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleSModMinRotation::~aeUSetRuleSModMinRotation(){
 ///////////////
 
 void aeUSetRuleSModMinRotation::Undo(){
-	pRule->SetMinimumRotation( pOldMin );
+	pRule->SetMinimumRotation(pOldMin);
 }
 
 void aeUSetRuleSModMinRotation::Redo(){
-	pRule->SetMinimumRotation( pNewMin );
+	pRule->SetMinimumRotation(pNewMin);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleSModMinRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinRotation::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

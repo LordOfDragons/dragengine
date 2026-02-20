@@ -25,19 +25,29 @@
 #ifndef _DELGPDISABLEMODULEVERSION_H_
 #define _DELGPDISABLEMODULEVERSION_H_
 
-#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
-
 
 
 /**
  * \brief Game profile module version disabling.
  */
-class DE_DLL_EXPORT delGPDisableModuleVersion : public deObject{
+class DE_DLL_EXPORT delGPDisableModuleVersion{
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGPDisableModuleVersion> Ref;
-	
+	/** \brief Game profile module version disabling list. */
+	class DE_DLL_EXPORT List : public decTList<delGPDisableModuleVersion>{
+	public:
+		using decTList<delGPDisableModuleVersion>::decTList;
+		
+		/** \brief Matching entry or nullptr if absent. */
+		const delGPDisableModuleVersion *GetWith(const char *name, const char *version) const;
+		
+		/** \brief Matching entry is present. */
+		bool HasWith(const char *name, const char *version) const;
+		
+		/** \brief Index of matching entry or -1 if absent. */
+		int IndexOfWith(const char *name, const char *version) const;
+	};
 	
 	
 private:
@@ -53,32 +63,33 @@ public:
 	delGPDisableModuleVersion();
 	
 	/** \brief Create game profile disable module version. */
-	delGPDisableModuleVersion( const char *name, const char *version );
+	delGPDisableModuleVersion(const char *name, const char *version);
 	
 	/** \brief Create copy of game profile disable module version. */
-	delGPDisableModuleVersion( const delGPDisableModuleVersion &copy );
+	delGPDisableModuleVersion(const delGPDisableModuleVersion &copy);
 	
-protected:
+	/** \brief Move. */
+	delGPDisableModuleVersion(delGPDisableModuleVersion &&other) noexcept;
+	delGPDisableModuleVersion &operator=(delGPDisableModuleVersion &&other) noexcept;
+	
 	/** \brief Clean up game profile disable module version. */
-	virtual ~delGPDisableModuleVersion();
+	~delGPDisableModuleVersion();
 	/*@}*/
 	
 	
-	
-public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Module version. */
 	inline const decString &GetVersion() const{ return pVersion; }
 	
 	/** \brief Set module version. */
-	void SetVersion( const char *version );
+	void SetVersion(const char *version);
 	/*@}*/
 	
 	
@@ -90,17 +101,17 @@ public:
 	 * 
 	 * Two disable module versions are the same if they have the same name and version.
 	 */
-	bool operator==( const delGPDisableModuleVersion &other ) const;
+	bool operator==(const delGPDisableModuleVersion &other) const;
 	
 	/**
 	 * \brief Determine if two disable module versions are not the same.
 	 * 
 	 * Two disable module versions are the same if they have the same name and version.
 	 */
-	bool operator!=( const delGPDisableModuleVersion &other ) const;
+	bool operator!=(const delGPDisableModuleVersion &other) const;
 	
 	/** \brief Set disable module version to another one. */
-	delGPDisableModuleVersion &operator=( const delGPDisableModuleVersion &other );
+	delGPDisableModuleVersion &operator=(const delGPDisableModuleVersion &other);
 	/*@}*/
 };
 

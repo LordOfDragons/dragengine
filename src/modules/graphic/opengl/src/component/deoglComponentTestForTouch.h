@@ -42,10 +42,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglComponentTestForTouch( deoglRComponent *component );
+	deoglComponentTestForTouch(deoglRComponent *component);
 	
 	/** Clean up visitor. */
-	virtual ~deoglComponentTestForTouch();
+	~deoglComponentTestForTouch() override;
 	/*@}*/
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit ocree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	/*@}*/
 };
 

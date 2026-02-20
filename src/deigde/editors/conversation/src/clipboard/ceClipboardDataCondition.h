@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATACONDITION_H_
 #define _CECLIPBOARDDATACONDITION_H_
 
-#include "../conversation/condition/ceConversationConditionList.h"
+#include "../conversation/condition/ceConversationCondition.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class ceClipboardDataCondition : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceClipboardDataCondition>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	ceConversationConditionList pConditions;
+	ceConversationCondition::List pConditions;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataCondition( const ceConversationConditionList &conditions );
+	ceClipboardDataCondition(const ceConversationCondition::List &conditions);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~ceClipboardDataCondition();
+	~ceClipboardDataCondition() override;
 	/*@}*/
 	
 	
@@ -68,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the condition. */
-	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
+	inline const ceConversationCondition::List &GetConditions() const{ return pConditions; }
 	/*@}*/
 };
 

@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetMoveName::saeUPhonemeSetMoveName( saePhoneme *phoneme, const char *newName ){
-	if( ! phoneme || ! newName ) DETHROW( deeInvalidParam );
+saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName){
+	if(!phoneme || !newName) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
-	SetShortInfo( "Phoneme Set Move Name" );
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetMoveName");
 	
 	pOldName = phoneme->GetMoveName();
 	pNewName = newName;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
-	if( pPhoneme ){
-		pPhoneme->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
 ///////////////
 
 void saeUPhonemeSetMoveName::Undo(){
-	pPhoneme->SetMoveName( pOldName.GetString() );
+	pPhoneme->SetMoveName(pOldName.GetString());
 }
 
 void saeUPhonemeSetMoveName::Redo(){
-	pPhoneme->SetMoveName( pNewName.GetString() );
+	pPhoneme->SetMoveName(pNewName.GetString());
 }

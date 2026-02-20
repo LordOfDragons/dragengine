@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSpeakerAdd::gdeMAOCSpeakerAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Speaker...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class speaker" )
+gdeMAOCSpeakerAdd::gdeMAOCSpeakerAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCSpeakerAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Speaker...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference speaker;
-	speaker.TakeOver( new gdeOCSpeaker );
-	return new gdeUOCAddSpeaker( &objectClass, ( gdeOCSpeaker* )( deObject* )speaker );
+igdeUndo::Ref gdeMAOCSpeakerAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddSpeaker::Ref::New(&objectClass, gdeOCSpeaker::Ref::New());
 }
 
 void gdeMAOCSpeakerAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

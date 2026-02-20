@@ -26,17 +26,19 @@
 #define _DESKINPROPERTYCONSTRUCTED_H_
 
 #include "deSkinProperty.h"
+#include "node/deSkinPropertyNodeGroup.h"
 #include "../../../common/math/decMath.h"
-
-class deSkinPropertyNodeGroup;
 
 
 /**
  * \brief Skin texture constructed property.
  */
 class DE_DLL_EXPORT deSkinPropertyConstructed : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyConstructed>;
+	
 private:
-	deSkinPropertyNodeGroup *pContent;
+	deSkinPropertyNodeGroup::Ref pContent;
 	decColor pColor;
 	bool pTileX;
 	bool pTileY;
@@ -52,10 +54,10 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinPropertyConstructed( const char *type );
+	deSkinPropertyConstructed(const char *type);
 	
 	/** \brief Clean up constructed property. */
-	virtual ~deSkinPropertyConstructed();
+	~deSkinPropertyConstructed() override;
 	/*@}*/
 	
 	
@@ -63,25 +65,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Content. */
-	inline deSkinPropertyNodeGroup &GetContent() const{ return *pContent; }
+	inline const deSkinPropertyNodeGroup::Ref &GetContent() const{ return pContent; }
 	
 	/** \brief Base color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set base color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Nodes are tiled along x axis. */
 	inline bool GetTileX() const{ return pTileX; }
 	
 	/** \brief Set if nodes are tiled along x axis. */
-	void SetTileX( bool tileX );
+	void SetTileX(bool tileX);
 	
 	/** \brief Nodes are tiled along y axis. */
 	inline bool GetTileY() const{ return pTileY; }
 	
 	/** \brief Set if nodes are tiled along y axis. */
-	void SetTileY( bool tileY );
+	void SetTileY(bool tileY);
 	
 	/**
 	 * \brief Bit count.
@@ -95,7 +97,7 @@ public:
 	 * 
 	 * Allowed are 8, 16 or 32.
 	 */
-	void SetBitCount( int bitCount );
+	void SetBitCount(int bitCount);
 	/*@}*/
 	
 	
@@ -103,7 +105,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	void Visit(deSkinPropertyVisitor &visitor) override;
 	/*@}*/
 };
 

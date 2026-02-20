@@ -25,7 +25,7 @@
 #ifndef _DEOXRDEVICEPROFILEMANAGER_H_
 #define _DEOXRDEVICEPROFILEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/input/deInputDevice.h>
 
 class deoxrDeviceProfile;
@@ -36,7 +36,7 @@ class deoxrDeviceProfile;
  */
 class deoxrDeviceProfileManager{
 private:
-	decObjectOrderedSet pProfiles;
+	decTObjectOrderedSet<deoxrDeviceProfile> pProfiles;
 	
 	
 	
@@ -54,14 +54,11 @@ public:
 	
 	/** \name Module Management */
 	/*@{*/
-	/** Count of devices. */
-	int GetCount() const;
-	
-	/** Profile at index. */
-	deoxrDeviceProfile *GetAt( int index ) const;
+	/** Profiles. */
+	inline const decTObjectOrderedSet<deoxrDeviceProfile> &GetProfiles() const{ return pProfiles; }
 	
 	/** Add profile. */
-	void Add( deoxrDeviceProfile *profile );
+	void Add(deoxrDeviceProfile *profile);
 	
 	/** Remove all profiles. */
 	void RemoveAll();
@@ -79,7 +76,7 @@ public:
 	void ClearActions();
 	
 	/** Remove device if matching type. */
-	void RemoveDevice( deInputDevice::eDeviceTypes type );
+	void RemoveDevice(deInputDevice::eDeviceTypes type);
 	
 	/** Sessions ends. */
 	void OnSessionEnd();

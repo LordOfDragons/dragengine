@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCParticleEmitter;
+#include "../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCParticleEmitter;
  */
 class gdeClipboardDataOCParticleEmitter : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCParticleEmitter>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCParticleEmitter( gdeOCParticleEmitter *particleEmitter );
+	gdeClipboardDataOCParticleEmitter(gdeOCParticleEmitter *particleEmitter);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCParticleEmitter();
+	~gdeClipboardDataOCParticleEmitter() override;
 	/*@}*/
 	
 	

@@ -25,6 +25,7 @@
 #ifndef _DEANIMATORLINK_H_
 #define _DEANIMATORLINK_H_
 
+#include "../../deObject.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/string/decString.h"
 
@@ -59,8 +60,11 @@
  * If controller is -1 a vertex position set name can be set. This will use
  * the vertex position set weight as input.
  */
-class DE_DLL_EXPORT deAnimatorLink{
+class DE_DLL_EXPORT deAnimatorLink : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deAnimatorLink>;
+	
 	/**
 	 * \brief Bone parameter to use.
 	 * \version 1.6
@@ -118,11 +122,20 @@ public:
 	deAnimatorLink();
 	
 	/** \brief Create copy of link. */
-	deAnimatorLink( const deAnimatorLink &copy );
-	
-	/** \brief Clean up link. */
-	~deAnimatorLink();
+	deAnimatorLink(const deAnimatorLink &copy);
 	/*@}*/
+	
+	
+
+protected:
+	/** \brief Clean up link. */
+	~deAnimatorLink() override;
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
 	
 	
 	
@@ -138,13 +151,13 @@ public:
 	 * \brief Set linked controller or -1 to not set.
 	 * \throws deeInvalidParam \em controller is less than -1.
 	 */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Curve. */
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** \brief Repeat count of input value. */
 	inline int GetRepeat() const{ return pRepeat; }
@@ -153,7 +166,7 @@ public:
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	
 	/**
 	 * \brief Bone to use parameter of as input or empty string to not use.
@@ -165,7 +178,7 @@ public:
 	 * \brief Set bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	
 	/**
 	 * \brief Bone parameter to use as input.
@@ -177,7 +190,7 @@ public:
 	 * \brief Set bone parameter to use as input.
 	 * \version 1.6
 	 */
-	void SetBoneParameter( eBoneParameter parameter );
+	void SetBoneParameter(eBoneParameter parameter);
 	
 	/**
 	 * \brief Minimum bone parameter value.
@@ -195,7 +208,7 @@ public:
 	 * \brief Set bone value range.
 	 * \version 1.6
 	 */
-	void SetBoneValueRange( float minimum, float maximum );
+	void SetBoneValueRange(float minimum, float maximum);
 	
 	/**
 	 * \brief Vertex position set to use as input or empty string to not use.
@@ -207,7 +220,7 @@ public:
 	 * \brief Set vertex position set to use as input or empty string to not use.
 	 * \version 1.17
 	 */
-	void SetVertexPositionSet( const char *vertexPositionSet );
+	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/**
 	 * \brief Minimum vertex position set value.
@@ -225,7 +238,7 @@ public:
 	 * \brief Set vertex position set range.
 	 * \version 1.17
 	 */
-	void SetVertexPositionSetValueRange( float minimum, float maximum );
+	void SetVertexPositionSetValueRange(float minimum, float maximum);
 	
 	/**
 	 * \brief Wrap Y value instead of clamping.
@@ -237,7 +250,7 @@ public:
 	 * \brief Set to wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	void SetWrapY( bool wrap );
+	void SetWrapY(bool wrap);
 	/*@}*/
 	
 	
@@ -245,7 +258,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	deAnimatorLink &operator=( const deAnimatorLink &copy );
+	deAnimatorLink &operator=(const deAnimatorLink &copy);
 	/*@}*/
 };
 

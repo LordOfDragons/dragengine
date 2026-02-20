@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, const decShapeList &newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, const decShape::List &newValue) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker set shapes" );
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetShapeList");
 	
 	pOldValue = navblocker->GetShapeList();
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetShapeList::~gdeUOCNavBlockerSetShapeList(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,10 +68,10 @@ gdeUOCNavBlockerSetShapeList::~gdeUOCNavBlockerSetShapeList(){
 
 void gdeUOCNavBlockerSetShapeList::Undo(){
 	pNavBlocker->GetShapeList() = pOldValue;
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetShapeList::Redo(){
 	pNavBlocker->GetShapeList() = pNewValue;
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

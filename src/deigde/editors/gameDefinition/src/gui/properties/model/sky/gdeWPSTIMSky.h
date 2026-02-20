@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeSky;
+#include "../../../../gamedef/sky/gdeSky.h"
 
 
 /**
@@ -35,18 +35,20 @@ class gdeSky;
  */
 class gdeWPSTIMSky : public gdeWPSTreeItemModel{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMSky> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSky( gdeWPSTreeModel &tree, gdeSky *sky );
+	gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky *sky);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMSky();
+	~gdeWPSTIMSky() override;
 	/*@}*/
 	
 	
@@ -55,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline gdeSky *GetSky() const{ return pSky; }
+	inline const gdeSky::Ref &GetSky() const{ return pSky; }
 	
 	
 	
@@ -67,16 +69,16 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

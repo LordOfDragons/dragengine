@@ -41,19 +41,19 @@
 ////////////////////////////
 
 deAnimatorRuleForeignState::deAnimatorRuleForeignState() :
-pSourceCoordinateFrame( ecfBoneLocal ),
-pDestCoordinateFrame( ecfBoneLocal ),
-pScalePosition( 1.0f ),
-pScaleOrientation( 1.0f ),
-pScaleSize( 1.0f ),
-pScaleVertexPositionSet( 1.0f ),
-pModifyX( true ),
-pModifyY( true ),
-pModifyZ( true ),
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true ){
+pSourceCoordinateFrame(ecfBoneLocal),
+pDestCoordinateFrame(ecfBoneLocal),
+pScalePosition(1.0f),
+pScaleOrientation(1.0f),
+pScaleSize(1.0f),
+pScaleVertexPositionSet(1.0f),
+pModifyX(true),
+pModifyY(true),
+pModifyZ(true),
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true){
 }
 
 deAnimatorRuleForeignState::~deAnimatorRuleForeignState(){
@@ -64,63 +64,63 @@ deAnimatorRuleForeignState::~deAnimatorRuleForeignState(){
 // Management
 ///////////////
 
-void deAnimatorRuleForeignState::SetForeignBone( const char *boneName ){
+void deAnimatorRuleForeignState::SetForeignBone(const char *boneName){
 	pForeignBone = boneName;
 }
 
-void deAnimatorRuleForeignState::SetForeignVertexPositionSet( const char *vertexPositionSet ){
+void deAnimatorRuleForeignState::SetForeignVertexPositionSet(const char *vertexPositionSet){
 	pForeignVertexPositionSet = vertexPositionSet;
 }
 
-void deAnimatorRuleForeignState::SetScalePosition( float scalePosition ){
+void deAnimatorRuleForeignState::SetScalePosition(float scalePosition){
 	pScalePosition = scalePosition;
 }
 
-void deAnimatorRuleForeignState::SetScaleOrientation( float scaleOrientation ){
+void deAnimatorRuleForeignState::SetScaleOrientation(float scaleOrientation){
 	pScaleOrientation = scaleOrientation;
 }
 
-void deAnimatorRuleForeignState::SetScaleSize( float scaleSize ){
+void deAnimatorRuleForeignState::SetScaleSize(float scaleSize){
 	pScaleSize = scaleSize;
 }
 
-void deAnimatorRuleForeignState::SetScaleVertexPositionSet( float scale ){
+void deAnimatorRuleForeignState::SetScaleVertexPositionSet(float scale){
 	pScaleVertexPositionSet = scale;
 }
 
-void deAnimatorRuleForeignState::SetModifyX( bool modify ){
+void deAnimatorRuleForeignState::SetModifyX(bool modify){
 	pModifyX = modify;
 }
 
-void deAnimatorRuleForeignState::SetModifyY( bool modify ){
+void deAnimatorRuleForeignState::SetModifyY(bool modify){
 	pModifyY = modify;
 }
 
-void deAnimatorRuleForeignState::SetModifyZ( bool modify ){
+void deAnimatorRuleForeignState::SetModifyZ(bool modify){
 	pModifyZ = modify;
 }
 
-void deAnimatorRuleForeignState::SetSourceCoordinateFrame( eCoordinateFrames coordinateFrame ){
+void deAnimatorRuleForeignState::SetSourceCoordinateFrame(eCoordinateFrames coordinateFrame){
 	pSourceCoordinateFrame = coordinateFrame;
 }
 
-void deAnimatorRuleForeignState::SetDestCoordinateFrame( eCoordinateFrames coordinateFrame ){
+void deAnimatorRuleForeignState::SetDestCoordinateFrame(eCoordinateFrames coordinateFrame){
 	pDestCoordinateFrame = coordinateFrame;
 }
 
-void deAnimatorRuleForeignState::SetEnablePosition( bool enable ){
+void deAnimatorRuleForeignState::SetEnablePosition(bool enable){
 	pEnablePosition = enable;
 }
 
-void deAnimatorRuleForeignState::SetEnableOrientation( bool enable ){
+void deAnimatorRuleForeignState::SetEnableOrientation(bool enable){
 	pEnableOrientation = enable;
 }
 
-void deAnimatorRuleForeignState::SetEnableSize( bool enable ){
+void deAnimatorRuleForeignState::SetEnableSize(bool enable){
 	pEnableSize = enable;
 }
 
-void deAnimatorRuleForeignState::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleForeignState::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
@@ -129,6 +129,6 @@ void deAnimatorRuleForeignState::SetEnableVertexPositionSet( bool enabled ){
 // Visiting
 /////////////
 
-void deAnimatorRuleForeignState::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitForeignState( *this );
+void deAnimatorRuleForeignState::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitForeignState(*this);
 }

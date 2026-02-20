@@ -37,8 +37,7 @@ class deoglRenderThread;
  */
 class deoglFence : public deObject{
 public:
-	typedef deTObjectReference<deoglFence> Ref;
-	
+	using Ref = deTObjectReference<deoglFence>;
 	
 	
 private:
@@ -51,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create fence. */
-	deoglFence( deoglRenderThread &renderThread );
+	deoglFence(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up fence. */
-	virtual ~deoglFence();
+	~deoglFence() override;
 	/*@}*/
 	
 	

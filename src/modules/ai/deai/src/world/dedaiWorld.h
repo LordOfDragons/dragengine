@@ -25,7 +25,7 @@
 #ifndef _DEDAIWORLD_H_
 #define _DEDAIWORLD_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 #include <dragengine/systems/modules/ai/deBaseAIWorld.h>
@@ -50,7 +50,7 @@ private:
 	
 	dedaiHeightTerrain *pHeightTerrain;
 	
-	decObjectList pLayers;
+	decTObjectList<dedaiLayer> pLayers;
 	
 	unsigned int pDevModeUpdateTracker;
 	
@@ -60,10 +60,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiWorld( deDEAIModule &deai, deWorld &world );
+	dedaiWorld(deDEAIModule &deai, deWorld &world);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiWorld();
+	~dedaiWorld() override;
 	/*@}*/
 	
 	
@@ -83,12 +83,15 @@ public:
 	
 	
 	
+	/** \brief Layers. */
+	const decTObjectList<dedaiLayer> &GetLayers() const{ return pLayers; }
+	
 	/**
 	 * \brief Layer with layer number.
 	 * \details If not present it is created. Layers live as long as the world lives.
 	 *          It is not necessary to add/free references.
 	 */
-	dedaiLayer *GetLayer( int layer );
+	dedaiLayer *GetLayer(int layer);
 	
 	
 	
@@ -101,37 +104,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Update world. */
-	virtual void Update( float elapsed );
+	void Update(float elapsed) override;
 	
 	/** \brief Navigation space has been added. */
-	virtual void NavigationSpaceAdded( deNavigationSpace *navspace );
+	void NavigationSpaceAdded(deNavigationSpace *navspace) override;
 	
 	/** \brief Navigation space has been removed. */
-	virtual void NavigationSpaceRemoved( deNavigationSpace *navspace );
+	void NavigationSpaceRemoved(deNavigationSpace *navspace) override;
 	
 	/** \brief All navigation spaces have been removed. */
-	virtual void AllNavigationSpacesRemoved();
+	void AllNavigationSpacesRemoved() override;
 	
 	/** \brief Navigation blocker has been added. */
-	virtual void NavigationBlockerAdded( deNavigationBlocker *blocker );
+	void NavigationBlockerAdded(deNavigationBlocker *blocker) override;
 	
 	/** \brief Navigation blocker has been removed. */
-	virtual void NavigationBlockerRemoved( deNavigationBlocker *blocker );
+	void NavigationBlockerRemoved(deNavigationBlocker *blocker) override;
 	
 	/** \brief All navigation blockers have been removed. */
-	virtual void AllNavigationBlockersRemoved();
+	void AllNavigationBlockersRemoved() override;
 	
 	/** \brief Navigator has been added. */
-	virtual void NavigatorAdded( deNavigator *navigator );
+	void NavigatorAdded(deNavigator *navigator) override;
 	
 	/** \brief Navigator has been removed. */
-	virtual void NavigatorRemoved( deNavigator *navigator );
+	void NavigatorRemoved(deNavigator *navigator) override;
 	
 	/** \brief Remove all navigators. */
-	virtual void AllNavigatorsRemoved();
+	void AllNavigatorsRemoved() override;
 	
 	/** \brief Height Terrain changed. */
-	virtual void HeightTerrainChanged();
+	void HeightTerrainChanged() override;
 	/*@}*/
 	
 	

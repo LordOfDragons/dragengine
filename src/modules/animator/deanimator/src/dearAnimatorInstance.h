@@ -27,16 +27,17 @@
 
 #include <dragengine/systems/modules/animator/deBaseAnimatorAnimatorInstance.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decIntList.h>
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/resources/component/deComponent.h>
 
 #include "dearBoneStateList.h"
 #include "dearVPSStateList.h"
 #include "dearControllerStates.h"
+#include "task/dearTaskApplyRules.h"
 
 class dearComponent;
-class dearTaskApplyRules;
 class deRig;
 class deAnimatorControllerTarget;
 class deAnimatorInstance;
@@ -73,35 +74,35 @@ private:
 	
 	dearAnimation *pAnimation;
 	dearComponent *pComponent;
+	deComponent::Ref pEngComponent;
 	
 	dearBoneStateList pBoneStateList;
-	decIntList pMappingRigToState;
+	decTList<int> pMappingRigToState;
 	
 	dearVPSStateList pVPSStateList;
-	decIntList pMappingModelToVPSState;
+	decTList<int> pMappingModelToVPSState;
 	
 	dearControllerStates pControllerStates;
 	
-	decPointerList pLinks;
+	decTList<dearLink*> pLinks;
 	
-	dearRule **pRules;
-	int pRuleCount;
+	decTUniqueList<dearRule> pRules;
 	bool pDirtyRules;
 	
 	bool pCaptureComponentState;
 	
 	bool pUseParallelTask;
 	dearTaskApplyRules *pActiveTaskApplyRule;
-	decThreadSafeObjectOrderedSet pTaskApplyRules;
+	decTThreadSafeObjectOrderedSet<dearTaskApplyRules> pTaskApplyRules;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	dearAnimatorInstance( deDEAnimator &module, deAnimatorInstance &instance );
+	dearAnimatorInstance(deDEAnimator &module, deAnimatorInstance &instance);
 	
 	/** Clean up peer. */
-	virtual ~dearAnimatorInstance();
+	~dearAnimatorInstance() override;
 	/*@}*/
 	
 	
@@ -139,10 +140,10 @@ public:
 	int GetLinkCount() const;
 	
 	/** Link at index. */
-	dearLink *GetLinkAt( int index ) const;
+	dearLink *GetLinkAt(int index) const;
 	
 	/** Add link. */
-	void AddLink( dearLink *link );
+	void AddLink(dearLink *link);
 	
 	
 	
@@ -176,19 +177,19 @@ public:
 	 *          resources take care of waiting for the result to become ready
 	 *          if required.
 	 */
-	virtual void Apply( bool direct );
+	void Apply(bool direct) override;
 	
 	/**
 	 * Capture current state of component into rules matching identifier.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	void CaptureStateInto(int identifier) override;
 	
 	/**
 	 * Store animation frame from animation into rules matching identifier.
 	 * \details If \em moveName does not exist in the animation a default state is captured.
 	 * \throws deeInvalidParam \em moveName is nullptr.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime) override;
 	/*@}*/
 	
 	
@@ -196,25 +197,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Animator changed. */
-	virtual void AnimatorChanged();
+	void AnimatorChanged() override;
 	
 	/** Component changed. */
-	virtual void ComponentChanged();
+	void ComponentChanged() override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged();
+	void AnimationChanged() override;
 	
 	/** Blend factor changed. */
-	virtual void BlendFactorChanged();
+	void BlendFactorChanged() override;
 	
 	/** Enable retargeting changed. */
-	virtual void EnableRetargetingChanged();
+	void EnableRetargetingChanged() override;
 	
 	/** Protect dynamic bones changed. */
-	virtual void ProtectDynamicBonesChanged();
+	void ProtectDynamicBonesChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int index );
+	void ControllerChanged(int index) override;
 	/*@}*/
 	
 	

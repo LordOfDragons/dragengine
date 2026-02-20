@@ -22,12 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLSPTREENODE_H_
 #define _DEOGLSPTREENODE_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -41,6 +40,8 @@
  */
 class deoglSPTreeNode{
 public:
+	using Ref = deTUniqueReference<deoglSPTreeNode>;
+	
 	/** Determines along which axis a split happened if any. */
 	enum eSplitState{
 		/** No splitting present. */
@@ -64,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new space partition tree node. */
-	deoglSPTreeNode( const decVector &center, const decVector &halfSize );
+	deoglSPTreeNode(const decVector &center, const decVector &halfSize);
 	/** Cleans up the space partition tree node. */
 	~deoglSPTreeNode();
 	/*@}*/
@@ -81,7 +82,7 @@ public:
 	 * Sets the split state. This affects the left and right child if
 	 * different than the current split state.
 	 */
-	void SetSplitState( int splitState );
+	void SetSplitState(int splitState);
 	/** Retrieves the left child or NULL. */
 	inline deoglSPTreeNode *GetLeftChild() const{ return pChildLeft; }
 	/** Retrieves the right child or NULL. */

@@ -25,11 +25,11 @@
 #ifndef _CEUCACTIONPASTE_H_
 #define _CEUCACTIONPASTE_H_
 
-#include "../../conversation/action/ceConversationActionList.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
 
 
 
@@ -37,19 +37,23 @@ class ceConversationTopic;
  * \brief Undo Action Add Conversation Action.
  */
 class ceUCActionPaste : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCActionPaste>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationActionList pActions;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::List pActions;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionPaste( ceConversationTopic *topic, const ceConversationActionList &actions, int index );
+	ceUCActionPaste(ceConversationTopic *topic, const ceConversationAction::List &actions, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCActionPaste();
+	~ceUCActionPaste() override;
 	/*@}*/
 	
 public:
@@ -59,22 +63,22 @@ public:
 	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
 	
 	/** \brief Retrieves the list of actions. */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 protected:
-	void pInsertActions( ceConversationActionList &list );
-	void pRemoveActions( ceConversationActionList &list );
+	void pInsertActions(ceConversationAction::List &list);
+	void pRemoveActions(ceConversationAction::List &list);
 	void pSelectInserted();
-	ceConversationAction *ActivateActionAfterRemove( const ceConversationActionList &list ) const;
+	ceConversationAction *ActivateActionAfterRemove(const ceConversationAction::List &list) const;
 };
 
 #endif

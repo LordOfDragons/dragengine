@@ -29,7 +29,6 @@
 #include "../../../conversation/action/ceCAActorSpeak.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../langpack/ceLangPack.h"
-#include "../../../langpack/ceLangPackEntry.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -38,28 +37,31 @@
  * Undo action move actor speak conversation action text box text to translation.
  */
 class ceUCAASpeakMoveTbt2Translation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakMoveTbt2Translation>;
+	
+	
 private:
 	const ceConversationTopic::Ref pTopic;
 	const ceConversation::Ref pConversation;
 	const ceCAActorSpeak::Ref pActorSpeak;
 	const ceLangPack::Ref pLangPack;
-	const ceLangPackEntry::Ref pEntry;
+	const decUnicodeString pTextBoxText, pOldEntryText;
+	const decString pTranslationName, pOldTranslationName;
 	const bool pAddEntry;
-	const decUnicodeString pTextBoxText;
-	const decUnicodeString pOldEntryText;
-	const decString pOldTranslationName;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	ceUCAASpeakMoveTbt2Translation( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-		ceLangPackEntry *entry, bool addEntry, const decUnicodeString &text );
+	ceUCAASpeakMoveTbt2Translation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+		const decString &translationName, const decUnicodeString *oldEntryText,
+		const decUnicodeString &text);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~ceUCAASpeakMoveTbt2Translation() override;
+	~ceUCAASpeakMoveTbt2Translation() override;
 	/*@}*/
 	
 	
@@ -68,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

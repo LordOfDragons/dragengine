@@ -13,11 +13,11 @@ class decUnicode;
 class detUnicodeString : public detCase{
 public:
 	detUnicodeString();
-	~detUnicodeString();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detUnicodeString() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 private:
 	void TestDecodeUTF8();
 	void TestConstructor();
@@ -34,6 +34,8 @@ private:
 	void TestReplace();
 	void TestTrim();
 	void TestLowerUpper();
+	void TestDEHash();
+	void TestDECompare();
 };
 
 // end of include only once

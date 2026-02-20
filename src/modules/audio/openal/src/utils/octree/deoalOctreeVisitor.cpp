@@ -47,5 +47,5 @@ deoalOctreeVisitor::~deoalOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoalOctreeVisitor::VisitNode( deoalOctree *node, int intersection ){
+void deoalOctreeVisitor::VisitNode(deoalOctree *node, int intersection){
 }

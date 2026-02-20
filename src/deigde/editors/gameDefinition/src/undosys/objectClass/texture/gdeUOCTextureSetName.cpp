@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetName::gdeUOCTextureSetName( gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const char *newValue ) :
-pObjectClass( NULL ),
-pTexture( NULL )
+gdeUOCTextureSetName::gdeUOCTextureSetName(gdeObjectClass *objectClass,
+gdeOCComponentTexture *texture, const char *newValue) :
+
+pTexture(nullptr)
 {
-	if( ! objectClass || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Texture set name" );
+	SetShortInfo("@GameDefinition.Undo.OCTextureSetName");
 	
 	pOldValue = texture->GetName();
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetName::~gdeUOCTextureSetName(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCTextureSetName::~gdeUOCTextureSetName(){
 ///////////////
 
 void gdeUOCTextureSetName::Undo(){
-	pTexture->SetName( pOldValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetName(pOldValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }
 
 void gdeUOCTextureSetName::Redo(){
-	pTexture->SetName( pNewValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetName(pNewValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }

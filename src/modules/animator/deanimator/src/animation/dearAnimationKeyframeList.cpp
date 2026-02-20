@@ -31,7 +31,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
-#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+
 
 
 
@@ -41,14 +41,11 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearAnimationKeyframeList::dearAnimationKeyframeList( const deAnimationKeyframeList &list ){
-	pKeyframes = NULL;
-	pKeyframeCount = 0;
-	
+dearAnimationKeyframeList::dearAnimationKeyframeList(const deAnimationKeyframe::List &list){
 	try{
-		pCreateKeyframes( list );
+		pCreateKeyframes(list);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,30 +60,23 @@ dearAnimationKeyframeList::~dearAnimationKeyframeList(){
 // Management
 ///////////////
 
-dearAnimationKeyframe &dearAnimationKeyframeList::GetAt( int index ) const{
-	if( index < 0 || index >= pKeyframeCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pKeyframes[ index ];
-}
-
-dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime( float time ) const{
-	if( pKeyframeCount == 0 ){
-		return NULL;
+const dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime(float time) const{
+	if(pKeyframes.IsEmpty()){
+		return nullptr;
 	}
 	
-	if( time <= pKeyframes[ 0 ].GetTime() ){
-		return pKeyframes;
+	if(time <= pKeyframes.First().GetTime()){
+		return &pKeyframes.First();
 	}
 	
 	int i;
-	for( i=1; i<pKeyframeCount; i++ ){
-		if( time < pKeyframes[ i ].GetTime() ){
-			return pKeyframes + ( i - 1 );
+	for(i=1; i<pKeyframes.GetCount(); i++){
+		if(time < pKeyframes[i].GetTime()){
+			return &pKeyframes[i - 1];
 		}
 	}
 	
-	return pKeyframes + ( pKeyframeCount - 1 );
+	return &pKeyframes.Last();
 }
 
 
@@ -95,31 +85,26 @@ dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime( float time ) cons
 //////////////////////
 
 void dearAnimationKeyframeList::pCleanUp(){
-	if( pKeyframes ){
-		delete [] pKeyframes;
-	}
 }
 
 
 
-void dearAnimationKeyframeList::pCreateKeyframes( const deAnimationKeyframeList &list ){
-	const int count = list.GetKeyframeCount();
-	if( count == 0 ){
+void dearAnimationKeyframeList::pCreateKeyframes(const deAnimationKeyframe::List &list){
+	const int count = list.GetCount();
+	if(count == 0){
 		return;
 	}
 	
-	pKeyframes = new dearAnimationKeyframe[ count ];
+	pKeyframes.AddRange(count, {});
 	bool negate = false;
 	
-	while( pKeyframeCount < count ){
-		if( pKeyframeCount < count - 1 ){
-			pKeyframes[ pKeyframeCount ].Set( *list.GetKeyframe( pKeyframeCount ),
-				*list.GetKeyframe( pKeyframeCount + 1 ), negate );
+	int i;
+	for(i=0; i<count; i++){
+		if(i < count - 1){
+			pKeyframes[i].Set(list[i], list[i + 1], negate);
 			
 		}else{
-			pKeyframes[ pKeyframeCount ].Set( *list.GetKeyframe( pKeyframeCount ), negate );
+			pKeyframes[i].Set(list[i], negate);
 		}
-		
-		pKeyframeCount++;
 	}
 }

@@ -25,15 +25,15 @@
 #ifndef _CETEXTBOX_H_
 #define _CETEXTBOX_H_
 
+#include "ceTextBoxText.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-#include "ceTextBoxTextList.h"
-
-class deCanvasView;
 class deEngine;
 class deLogger;
 class deGraphicContext;
@@ -43,7 +43,10 @@ class deGraphicContext;
 /**
  * \brief Text box rendering actor speech in a conversation.
  */
-class ceTextBox{
+class ceTextBox : public deObject{
+public:
+	using Ref = deTObjectReference<ceTextBox>;
+	
 private:
 	deEngine &pEngine;
 	deLogger &pLogger;
@@ -58,18 +61,20 @@ private:
 	int pPadding;
 	int pTextOffset;
 	
-	ceTextBoxTextList pTexts;
+	ceTextBoxText::List pTexts;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box. */
-	ceTextBox( deEngine &engine, deLogger &logger );
+	ceTextBox(deEngine &engine, deLogger &logger);
 	
 	/** \brief Clean up text box. */
-	~ceTextBox();
+protected:
+	~ceTextBox() override;
+public:
 	/*@}*/
 	
 	
@@ -86,47 +91,47 @@ public:
 	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
 	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
-	void SetPathFont( const char *path );
+	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
 	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
 	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
-	void SetTextSize( int size );
+	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
 	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Offset of the text. */
 	inline int GetTextOffset() const{ return pTextOffset; }
 	
 	/** \brief Set offset of the text. */
-	void SetTextOffset( int offset );
+	void SetTextOffset(int offset);
 	
 	/** \brief List of texts. */
-	inline ceTextBoxTextList &GetTextList(){ return pTexts; }
-	inline const ceTextBoxTextList &GetTextList() const{ return pTexts; }
+	inline ceTextBoxText::List &GetTexts(){ return pTexts; }
+	inline const ceTextBoxText::List &GetTexts() const{ return pTexts; }
 	
 	/**
 	 * \brief Update canvas.

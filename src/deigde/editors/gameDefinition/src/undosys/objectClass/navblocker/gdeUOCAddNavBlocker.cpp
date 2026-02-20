@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddNavBlocker::gdeUOCAddNavBlocker( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCAddNavBlocker::gdeUOCAddNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add navblocker" );
+	SetShortInfo("@GameDefinition.Undo.OCAddNavBlocker");
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddNavBlocker::~gdeUOCAddNavBlocker(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -74,18 +65,23 @@ gdeUOCAddNavBlocker::~gdeUOCAddNavBlocker(){
 
 void gdeUOCAddNavBlocker::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCNavigationBlocker() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCNavigationBlocker()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCNavigationBlocker( NULL );
+		gameDefinition->SetActiveOCNavigationBlocker(nullptr);
 	}
 	
-	pObjectClass->GetNavigationBlockers().Remove( pNavBlocker );
+	pObjectClass->GetNavigationBlockers().Remove(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
 }
 
 void gdeUOCAddNavBlocker::Redo(){
-	pObjectClass->GetNavigationBlockers().Add( pNavBlocker );
+	pObjectClass->GetNavigationBlockers().Add(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCNavigationBlocker(pNavBlocker);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCNavigationBlocker);
 }

@@ -38,18 +38,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetU::feUGlyphSetU( feFontGlyph *glyph, int newU ){
-	SetShortInfo( "GLyph set u" );
+feUGlyphSetU::feUGlyphSetU(feFontGlyph *glyph, int newU){
+	SetShortInfo("@Font.Undo.GlyphSetU");
 	
 	pOldU = glyph->GetU();
 	pNewU = newU;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetU::~feUGlyphSetU(){
-	if( pGlyph ) pGlyph->FreeReference();
 }
 
 
@@ -58,9 +56,9 @@ feUGlyphSetU::~feUGlyphSetU(){
 ///////////////
 
 void feUGlyphSetU::Undo(){
-	pGlyph->SetU( pOldU );
+	pGlyph->SetU(pOldU);
 }
 
 void feUGlyphSetU::Redo(){
-	pGlyph->SetU( pNewU );
+	pGlyph->SetU(pNewU);
 }

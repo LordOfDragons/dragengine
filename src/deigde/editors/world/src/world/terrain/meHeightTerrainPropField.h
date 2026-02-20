@@ -25,14 +25,17 @@
 #ifndef _MEHEIGHTTERRAINPROPFIELD_H_
 #define _MEHEIGHTTERRAINPROPFIELD_H_
 
+#include "../heightterrain/meHTVInstance.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/propfield/dePropField.h>
 
 class meHeightTerrainSector;
 class meUpdateHeightTerrainPropField;
-class meHTVInstance;
 
 class deEngine;
-class dePropField;
 class dePropFieldType;
 class dePropFieldInstance;
 
@@ -43,7 +46,12 @@ class igdeEnvironment;
 /**
  * \brief Height terrain prop field.
  */
-class meHeightTerrainPropField{
+class meHeightTerrainPropField : public deObject{
+public:
+	using Ref = deTObjectReference<meHeightTerrainPropField>;
+	using List = decTObjectOrderedSet<meHeightTerrainPropField>;
+	
+	
 private:
 	meHeightTerrainSector *pHTSector;
 	
@@ -51,11 +59,9 @@ private:
 	decVector2 pMaxExtend;
 	
 	deEngine *pEngine;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	
-	meHTVInstance *pVInstances;
-	int pVInstanceCount;
-	int pVInstanceSize;
+	meHTVInstance::List pVInstances;
 	bool pDirtyVInstances;
 	
 	bool pDirty;
@@ -69,21 +75,22 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meHeightTerrainPropField( deEngine *engine );
+	explicit meHeightTerrainPropField(deEngine *engine);
 	
+protected:
 	/** \brief Clean up object. */
-	virtual ~meHeightTerrainPropField();
+	~meHeightTerrainPropField() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent height terrain sector or \em NULL. */
+	/** \brief Parent height terrain sector or \em nullptr. */
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
-	/** \brief Set parent height terrain sector or \em NULL. */
-	void SetHTSector( meHeightTerrainSector *htsector );
+	/** \brief Set parent height terrain sector or \em nullptr. */
+	void SetHTSector(meHeightTerrainSector *htsector);
 	
 	
 	
@@ -94,17 +101,17 @@ public:
 	inline const decVector2 &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** \brief Set extends. */
-	void SetExtend( const decVector2 &minimum, const decVector2 &maximum );
+	void SetExtend(const decVector2 &minimum, const decVector2 &maximum);
 	
 	
 	
 	/** \brief Engine prop field. */
-	inline dePropField *GetEnginePropField() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePropField() const{ return pEngPF; }
 	
 	
 	
 	/** \brief Init delegates. */
-	void InitDelegates( igdeEnvironment *environment );
+	void InitDelegates(igdeEnvironment *environment);
 	
 	/** \brief Invalidate prop field. */
 	void Invalidate();
@@ -130,14 +137,11 @@ public:
 	/** \brief Prop field has to be kept clean. */
 	inline bool GetKeepClean() const{ return pKeepClean; }
 	
-	/** \brief Number of vegetation instances. */
-	inline int GetVInstanceCount() const{ return pVInstanceCount; }
-	
-	/** \brief Vegetation instance at index. */
-	meHTVInstance &GetVInstanceAt( int index ) const;
+	/** Vegetation instances. */
+	inline const meHTVInstance::List &GetVInstances() const{ return pVInstances; }
 	
 	/** \brief Add vegetation instance. */
-	meHTVInstance &AddVInstance();
+	const meHTVInstance::Ref &AddVInstance();
 	
 	/** \brief Remove all vegetation instances. */
 	void RemoveAllVInstances();

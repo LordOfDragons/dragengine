@@ -25,14 +25,17 @@
 #ifndef _DEOGLRSKYINSTANCE_H_
 #define _DEOGLRSKYINSTANCE_H_
 
+#include "deoglRSky.h"
+#include "deoglRSkyInstanceLayer.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSky;
-class deoglRSkyInstanceLayer;
 class deoglGIState;
 class deoglRComponent;
 
@@ -48,17 +51,15 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	int pOrder;
 	decLayerMask pLayerMask;
 	float pPassthroughTransparency;
 	
-	float *pControllerStates;
-	int pControllerStateCount;
+	decTList<float> pControllerStates;
 	
-	deoglRSkyInstanceLayer **pLayers;
-	int pLayerCount;
+	deoglRSkyInstanceLayer::List pLayers;
 	
 	float pTotalSkyLightIntensity;
 	float pTotalSkyAmbientIntensity;
@@ -72,17 +73,22 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRSkyInstance>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky instance. */
-	deoglRSkyInstance( deoglRenderThread &renderThread );
+	deoglRSkyInstance(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render sky instance. */
-	virtual ~deoglRSkyInstance();
+	~deoglRSkyInstance() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -92,19 +98,19 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
-	void SetParentWorld( deoglRWorld *world );
+	void SetParentWorld(deoglRWorld *world);
 	
 	
 	
 	/** Render sky or \em NULL. */
-	inline deoglRSky *GetRSky() const{ return pRSky; }
+	inline const deoglRSky::Ref &GetRSky() const{ return pRSky; }
 	
 	/**
 	 * Set render sky or \em NULL.
 	 * 
 	 * Called during synchronization time.
 	 */
-	void SetRSky( deoglRSky *rsky );
+	void SetRSky(deoglRSky *rsky);
 	
 	
 	
@@ -112,13 +118,13 @@ public:
 	inline int GetOrder() const{ return pOrder; }
 	
 	/** Set rendering order. */
-	void SetOrder( int order );
+	void SetOrder(int order);
 	
 	/** Layer mask. */
-	inline  const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Passthrough transparency factor. */
 	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
@@ -127,26 +133,23 @@ public:
 	void SetPassthroughTransparency(float transparency);
 	
 	
-	/** Number of controller states. */
-	inline int GetControllerStateCount() const{ return pControllerStateCount; }
-	
-	/** Controller state at index. */
-	float GetControllerStateAt( int index ) const;
+	/** Controller states. */
+	inline const decTList<float> &GetControllerStates() const{ return pControllerStates; }
 	
 	/**
 	 * Update controller states.
 	 * 
 	 * Called during synchronization time.
 	 */
-	void UpdateControllerStates( const deSkyInstance &instance );
+	void UpdateControllerStates(const deSkyInstance &instance);
 	
 	
 	
-	/** Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	/** Layers. */
+	inline const deoglRSkyInstanceLayer::List &GetLayers() const{ return pLayers; }
 	
 	/** Layer at index. */
-	deoglRSkyInstanceLayer &GetLayerAt( int index ) const;
+	deoglRSkyInstanceLayer &GetLayerAt(int index) const;
 	
 	/** Rebuild layers. */
 	void RebuildLayers();
@@ -171,7 +174,7 @@ public:
 	inline float GetEnvironmentMapTimer() const{ return pEnvMapTimer; }
 	
 	/** Set environment map timer. */
-	void SetEnvironmentMapTimer( float timer );
+	void SetEnvironmentMapTimer(float timer);
 	
 	
 	
@@ -182,7 +185,7 @@ public:
 	void NotifySkyChanged();
 	
 	/** Drop all pointers to GI State. */
-	void DropGIState( const deoglGIState *giState );
+	void DropGIState(const deoglGIState *giState);
 	
 	/** Drop all pointers to GI States. */
 	void DropAllGIStates();
@@ -193,7 +196,7 @@ public:
 	void PrepareQuickDispose();
 	
 	/** Notify skies render static component changed requiring updates. */
-	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	void NotifyUpdateStaticComponent(deoglRComponent *component);
 	/*@}*/
 	
 	
@@ -210,7 +213,7 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 };
 

@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates parameter. */
-	debnPLogLevel( deNetworkBasic &network );
+	debnPLogLevel(deNetworkBasic &network);
 	
 	/** Cleans up parameter. */
-	virtual ~debnPLogLevel();
+	~debnPLogLevel() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

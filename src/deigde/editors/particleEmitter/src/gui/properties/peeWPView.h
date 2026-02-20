@@ -25,17 +25,18 @@
 #ifndef _PEEWPVIEW_H_
 #define _PEEWPVIEW_H_
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
+#include "peeWPViewListener.h"
+#include "../../emitter/peeEmitter.h"
 
-class peeEmitter;
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+
 class peeWindowProperties;
-class peeWPViewListener;
 
 
 
@@ -43,20 +44,24 @@ class peeWPViewListener;
  * \brief View Panel.
  */
 class peeWPView : public igdeContainerScroll{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWPView>;
+	
 private:
 	peeWindowProperties &pWindowProperties;
-	peeEmitter *pEmitter;
-	peeWPViewListener *pListener;
+	peeEmitter::Ref pEmitter;
+	peeWPViewListener::Ref pListener;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPEnvObject;
-	igdeWPCameraReference pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPEnvObject;
+	igdeWPCamera::Ref pWPCamera;
 	
-	igdeEditVectorReference pEditEmitterPosition;
-	igdeEditVectorReference pEditEmitterRotation;
-	igdeTextFieldReference pEditEmitterBurstInterval;
-	igdeTextFieldReference pEditEmitterWarmUpTime;
-	igdeCheckBoxReference pChkEmitterEnableCasting;
+	igdeEditVector::Ref pEditEmitterPosition;
+	igdeEditVector::Ref pEditEmitterRotation;
+	igdeTextField::Ref pEditEmitterBurstInterval;
+	igdeTextField::Ref pEditEmitterWarmUpTime;
+	igdeCheckBox::Ref pChkEmitterEnableCasting;
 	
 	
 	
@@ -64,11 +69,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPView( peeWindowProperties &windowProperties );
+	peeWPView(peeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up the rig. */
-	virtual ~peeWPView();
+	~peeWPView() override;
 	/*@}*/
 	
 	
@@ -77,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Update view. */
 	void UpdateView();

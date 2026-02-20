@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,18 +46,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsRemoveAction::ceWPTMAWaitActionsRemoveAction( ceWindowMain &windowMain,
+ceWPTMAWaitActionsRemoveAction::ceWPTMAWaitActionsRemoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAWait &wait, ceConversationAction *action ) :
-ceWPTMenuAction( windowMain, "Remove Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pWait( &wait ),
-pAction( action )
+ceCAWait &wait, ceConversationAction *action) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveAction",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pWait(&wait),
+pAction(action)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(!action){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -67,7 +67,5 @@ pAction( action )
 ///////////////
 
 void ceWPTMAWaitActionsRemoveAction::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAWaitRemove( pTopic, pWait, pAction ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAWaitRemove::Ref::New(pTopic, pWait, pAction));
 }

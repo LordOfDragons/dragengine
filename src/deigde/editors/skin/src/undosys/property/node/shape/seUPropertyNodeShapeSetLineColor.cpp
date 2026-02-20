@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetLineColor::seUPropertyNodeShapeSetLineColor(
-sePropertyNodeShape *node, const decColor &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeShape *node, const decColor &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node shape set line color" );
+	SetShortInfo("@Skin.Undo.NodeShapeSetLineColor");
 	
 	pOldValue = node->GetLineColor();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeShapeSetLineColor::~seUPropertyNodeShapeSetLineColor(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeShapeSetLineColor::~seUPropertyNodeShapeSetLineColor(){
 ///////////////
 
 void seUPropertyNodeShapeSetLineColor::Undo(){
-	pNode->SetLineColor( pOldValue );
+	pNode->SetLineColor(pOldValue);
 }
 
 void seUPropertyNodeShapeSetLineColor::Redo(){
-	pNode->SetLineColor( pNewValue );
+	pNode->SetLineColor(pNewValue);
 }

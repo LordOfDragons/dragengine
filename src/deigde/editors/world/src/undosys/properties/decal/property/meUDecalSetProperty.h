@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meDecal;
+#include "../../../../world/decal/meDecal.h"
 
 
 
@@ -35,8 +35,12 @@ class meDecal;
  * \brief Undo action deal set property.
  */
 class meUDecalSetProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalSetProperty>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decString pKey;
 	decString pOldValue;
@@ -48,11 +52,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalSetProperty( meDecal *decal, const char *key, const char *oldValue, const char *newValue );
+	meUDecalSetProperty(meDecal *decal, const char *key, const char *oldValue, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo decal. */
-	virtual ~meUDecalSetProperty();
+
+protected:
+	~meUDecalSetProperty() override;
+
+public:
 	/*@}*/
 	
 	
@@ -61,13 +69,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new value. */
-	void SetNewValue( const char *value );
+	void SetNewValue(const char *value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();

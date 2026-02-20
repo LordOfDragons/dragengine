@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASetActorParameter;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASetActorParameter.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo Action Set Actor Parameter Conversation Action Set Value.
  */
 class ceUCASetAParamSetValue : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCASetAParamSetValue>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	int pOldValue;
 	int pNewValue;
 	
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetValue( ceConversationTopic *topic, ceCASetActorParameter *action, int newValue );
+	ceUCASetAParamSetValue(ceConversationTopic *topic, ceCASetActorParameter *action, int newValue);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASetAParamSetValue();
+	~ceUCASetAParamSetValue() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

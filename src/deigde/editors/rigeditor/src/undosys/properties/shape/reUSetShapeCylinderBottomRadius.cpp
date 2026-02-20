@@ -24,7 +24,7 @@
 
 #include "reUSetShapeCylinderBottomRadius.h"
 #include "../../../rig/shape/reRigShapeCylinder.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,21 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCylinderBottomRadius::reUSetShapeCylinderBottomRadius( reRigShapeCylinder *shape, float bottomRadius ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCylinderBottomRadius::reUSetShapeCylinderBottomRadius(reRigShapeCylinder *shape, float bottomRadius){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
 	pOldBottomRadius = shape->GetBottomRadius();
 	pNewBottomRadius = bottomRadius;
 	
-	SetShortInfo( "Set Cylinder Shape Half Height" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeCylinderSetBottomRadius");
 }
 
 reUSetShapeCylinderBottomRadius::~reUSetShapeCylinderBottomRadius(){
-	pShape->FreeReference();
 }
 
 
@@ -57,9 +54,9 @@ reUSetShapeCylinderBottomRadius::~reUSetShapeCylinderBottomRadius(){
 ///////////////
 
 void reUSetShapeCylinderBottomRadius::Undo(){
-	pShape->SetBottomRadius( pOldBottomRadius );
+	pShape->SetBottomRadius(pOldBottomRadius);
 }
 
 void reUSetShapeCylinderBottomRadius::Redo(){
-	pShape->SetBottomRadius( pNewBottomRadius );
+	pShape->SetBottomRadius(pNewBottomRadius);
 }

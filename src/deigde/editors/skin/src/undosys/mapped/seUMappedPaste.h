@@ -35,10 +35,12 @@ class seClipboardDataMapped;
  */
 class seUMappedPaste : public seUMappedAdd{
 public:
+	using Ref = deTObjectReference<seUMappedPaste>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedPaste( seSkin *skin, const seClipboardDataMapped &data  );
+	seUMappedPaste(seSkin *skin, const seClipboardDataMapped &data);
 	/*@}*/
 };
 

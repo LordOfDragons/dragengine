@@ -25,16 +25,17 @@
 #ifndef _IGDECREATEPROJECT_H_
 #define _IGDECREATEPROJECT_H_
 
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
-class igdeGameProject;
 class igdeTemplate;
 class igdeTemplateFile;
 class igdeTemplateReplace;
 class igdeWindowMain;
-class igdeGameDefinition;
 
 
 
@@ -55,16 +56,16 @@ private:
 	decStringList pBaseGameDefs;
 	const igdeTemplate *pTemplate;
 	
-	igdeGameProject *pProject;
+	igdeGameProject::Ref pProject;
 	
 	decPath pNativePathProject;
 	decString pNativePathData;
 	decString pGameId;
 	decString pGameAliasId;
 	
-	igdeGameDefinition *pGameDef;
+	igdeGameDefinition::Ref pGameDef;
 	decString pSharedGameDefContent;
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	decStringList pFileRenameTokens;
 	decStringList pFileRenameValues;
@@ -75,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project creator. */
-	igdeCreateProject( igdeWindowMain &windowMain );
+	igdeCreateProject(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	~igdeCreateProject();
@@ -86,36 +87,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Path project game definition. */
-	void SetPathGameDefProject( const char *path );
+	void SetPathGameDefProject(const char *path);
 	
 	/** \brief Set path project. */
-	void SetPathProject( const char *path );
+	void SetPathProject(const char *path);
 	
 	/** \brief Set path data. */
-	void SetPathData( const char *path );
+	void SetPathData(const char *path);
 	
 	/** \brief Set path cache. */
-	void SetPathCache( const char *path );
+	void SetPathCache(const char *path);
 	
 	/** \brief Script module. */
-	void SetScriptModule( const char *module );
+	void SetScriptModule(const char *module);
 	
 	/** \brief Base game definitions. */
 	inline decStringList &GetBaseGameDefs(){ return pBaseGameDefs; }
 	
-	/** \brief Set project template or \em NULL. */
-	void SetTemplate( const igdeTemplate *atemplate );
+	/** \brief Set project template or \em nullptr. */
+	void SetTemplate(const igdeTemplate *atemplate);
 	
 	
 	
-	/** \brief Created project or \em NULL. */
-	inline igdeGameProject *GetProject() const{ return pProject; }
+	/** \brief Created project or \em nullptr. */
+	inline const igdeGameProject::Ref &GetProject() const{ return pProject; }
 	
 	
 	
@@ -134,21 +135,21 @@ private:
 	void pCreateGameDefinition();
 	void pLoadSharedGameDefContent();
 	void pSharedGameDefContentReplace();
-	decString pReplaceTokens( const decString &string, const decStringList &tokens,
-		const decStringList &values );
-	void pCreateProjectReplacements( decStringList &tokens, decStringList &values );
-	void pXmlEscapeValues( decStringList &values );
-	decString pReplaceProjectTokens( const decString &string );
-	decString pReplaceProjectTokensXml( const decString &string );
+	decString pReplaceTokens(const decString &string, const decStringList &tokens,
+		const decStringList &values);
+	void pCreateProjectReplacements(decStringList &tokens, decStringList &values);
+	void pXmlEscapeValues(decStringList &values);
+	decString pReplaceProjectTokens(const decString &string);
+	decString pReplaceProjectTokensXml(const decString &string);
 	void pStoreBaseGameDefs();
 	void pApplyTemplate();
-	void pTemplateCreateFile( const igdeTemplateFile &file );
+	void pTemplateCreateFile(const igdeTemplateFile &file);
 	void pCreateFileRenames();
-	void pCreateFileReplacements( const igdeTemplateFile &file,
-		decStringList &tokens, decStringList &values );
-	decString pEscapeStringC( const decString &string );
-	decString pEscapeStringXml( const decString &string );
-	decString pEscapeStringXmlMultiline( const decString &string );
+	void pCreateFileReplacements(const igdeTemplateFile &file,
+		decStringList &tokens, decStringList &values);
+	decString pEscapeStringC(const decString &string);
+	decString pEscapeStringXml(const decString &string);
+	decString pEscapeStringXmlMultiline(const decString &string);
 };
 
 #endif

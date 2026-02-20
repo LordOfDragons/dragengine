@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLOCCLUSIONQUERYMANAGER_H_
 #define _DEOGLOCCLUSIONQUERYMANAGER_H_
 
-// predefinitions
+#include "deoglOcclusionQuery.h"
+
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
-class deoglOcclusionQuery;
 
 
 
@@ -47,10 +48,7 @@ class deoglOcclusionQueryManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglOcclusionQuery **pQueries;
-	int pQueryCount;
-	int pQuerySize;
-	
+	decTUniqueList<deoglOcclusionQuery> pQueries;
 	int pFreeQueryCount;
 	
 	deoglOcclusionQuery *pActiveQuery;
@@ -59,9 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion queries. */
-	deoglOcclusionQueryManager( deoglRenderThread &renderThread );
-	/** Cleans up the occlusion queries. */
-	~deoglOcclusionQueryManager();
+	deoglOcclusionQueryManager(deoglRenderThread &renderThread);
 	/*@}*/
 	
 	/** \name Management */
@@ -72,18 +68,18 @@ public:
 	/** Claim a new query. */
 	deoglOcclusionQuery *ClaimQuery();
 	/** Release a claimed query. */
-	void ReleaseQuery( deoglOcclusionQuery *query );
+	void ReleaseQuery(deoglOcclusionQuery *query);
 	
 	/** Retrieves the active query. */
 	inline deoglOcclusionQuery *GetActiveQuery() const{ return pActiveQuery; }
 	/** Sets the active query. */
-	void SetActiveQuery( deoglOcclusionQuery *query );
+	void SetActiveQuery(deoglOcclusionQuery *query);
 	/** Ends the active query if there is one. */
 	void EndActiveQuery();
 	/*@}*/
 	
 private:
-	int IndexOfQuery( deoglOcclusionQuery *query, int from, int to ) const;
+	int IndexOfQuery(deoglOcclusionQuery *query, int from, int to) const;
 };
 
 // end of include only once

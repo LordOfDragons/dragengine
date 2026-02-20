@@ -25,15 +25,13 @@
 #ifndef _SEMAPPED_H_
 #define _SEMAPPED_H_
 
-#include "../property/sePropertyList.h"
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/skin/deSkinMapped.h>
 
 class seSkin;
-class seMappedList;
 
 
 /**
@@ -41,8 +39,8 @@ class seMappedList;
  */
 class seMapped : public deObject{
 public:
-	typedef deTObjectReference<seMapped> Ref;
-	
+	using Ref = deTObjectReference<seMapped>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seMapped>,seMapped>;
 	
 	
 private:
@@ -70,14 +68,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new mapped. */
-	seMapped( const char *name = "Mapped" );
+	explicit seMapped(const char *name);
 	
 	/** Create copy of mapped. */
-	seMapped( const seMapped &mapped );
+	seMapped(const seMapped &mapped);
 	
 protected:
 	/** Clean up mapped. */
-	virtual ~seMapped();
+	~seMapped() override;
 	/*@}*/
 	
 	
@@ -89,7 +87,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set parent skin or nullptr. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	
 	
@@ -97,70 +95,70 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Make name uniqueu. */
-	void MakeNameUnique( const seMappedList &list );
+	void MakeNameUnique(const seMapped::List &list);
 	
 	/** Curve. */
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** Input type. */
 	inline deSkinMapped::eInputTypes GetInputType() const{ return pInputType; }
 	
 	/** Set input type. */
-	void SetInputType( deSkinMapped::eInputTypes inputType );
+	void SetInputType(deSkinMapped::eInputTypes inputType);
 	
 	/** Lower input range. */
 	inline float GetInputLower() const{ return pInputLower; }
 	
 	/** Set lower input range. */
-	void SetInputLower( float lower );
+	void SetInputLower(float lower);
 	
 	/** Upper input range. */
 	inline float GetInputUpper() const{ return pInputUpper; }
 	
 	/** Set upper input range. */
-	void SetInputUpper( float upper );
+	void SetInputUpper(float upper);
 	
 	/** Input value is clamped to range instead of wrapping around. */
 	inline bool GetInputClamped() const{ return pInputClamped; }
 	
 	/** Set if input value is clamped to range instead of wrapping around. */
-	void SetInputClamped( bool inputClamped );
+	void SetInputClamped(bool inputClamped);
 	
 	/** Lower output range. */
 	inline float GetOutputLower() const{ return pOutputLower; }
 	
 	/** Set lower output range. */
-	void SetOutputLower( float lower );
+	void SetOutputLower(float lower);
 	
 	/** Upper output range. */
 	inline float GetOutputUpper() const{ return pOutputUpper; }
 	
 	/** Set upper output range. */
-	void SetOutputUpper( float upper );
+	void SetOutputUpper(float upper);
 	
 	/** Bone name if bone related input type is used. */
 	inline const decString &GetBone() const{ return pBone; }
 	
 	/** Set bone name if bone related input type is used. */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	
 	/** Renderable name if renderable related input type is used. */
 	inline const decString &GetRenderable() const{ return pRenderable; }
 	
 	/** Set renderable name if renderable related input type is used. */
-	void SetRenderable( const char *renderable );
+	void SetRenderable(const char *renderable);
 	
 	/** Color component to use if renderable is of color type. */
 	inline deSkinMapped::eRenderableComponent GetRenderableComponent() const{ return pRenderableComponent; }
 	
 	/** Set color component to use if renderable is of color type. */
-	void SetRenderableComponent( deSkinMapped::eRenderableComponent component );
+	void SetRenderableComponent(deSkinMapped::eRenderableComponent component);
 	
 	
 	
@@ -168,13 +166,13 @@ public:
 	inline bool GetActive() const{ return pActive; }
 	
 	/** Set if mapped is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Mapped is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** Set if mapped is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	

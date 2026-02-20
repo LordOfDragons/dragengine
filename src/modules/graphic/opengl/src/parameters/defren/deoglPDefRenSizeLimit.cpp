@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPDefRenSizeLimit::deoglPDefRenSizeLimit( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "defRenSizeLimit" );
-	SetDescription( "Sets the size limit for deferred rendering. Some graphic cards or"
+deoglPDefRenSizeLimit::deoglPDefRenSizeLimit(deGraphicOpenGl &ogl) : deoglParameterInt(ogl){
+	SetName("defRenSizeLimit");
+	SetDescription("Sets the size limit for deferred rendering. Some graphic cards or"
 		" drivers have troubles with large render resolutions especially if used with"
 		" deferred rendering. In this case limiting the internal rendering size can help."
 		" To use the limit set defRenSizeLimit to a value larger than 0. If the rendering"
 		" would be larger than this value the internal rendering is scaled proportionally"
 		" so that neither the width nor the height is larger. Once finished rendering the"
-		" image is scaled up to the desired size." );
-	SetCategory( ecExpert );
+		" image is scaled up to the desired size.");
+	SetCategory(ecExpert);
 }
 
 deoglPDefRenSizeLimit::~deoglPDefRenSizeLimit(){
@@ -64,6 +64,6 @@ int deoglPDefRenSizeLimit::GetParameterInt(){
 	return pOgl.GetConfiguration().GetDefRenSizeLimit();
 }
 
-void deoglPDefRenSizeLimit::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetDefRenSizeLimit( value );
+void deoglPDefRenSizeLimit::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetDefRenSizeLimit(value);
 }

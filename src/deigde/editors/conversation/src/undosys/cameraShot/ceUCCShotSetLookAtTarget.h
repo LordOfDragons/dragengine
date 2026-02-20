@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,8 +35,12 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set Look-At Target.
  */
 class ceUCCShotSetLookAtTarget : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotSetLookAtTarget>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldTarget;
 	decString pNewTarget;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetLookAtTarget( ceCameraShot *cameraShot, const char *newTarget );
+	ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, const char *newTarget);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetLookAtTarget();
+	~ceUCCShotSetLookAtTarget() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

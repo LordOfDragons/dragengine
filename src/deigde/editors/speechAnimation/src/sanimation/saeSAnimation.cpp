@@ -44,7 +44,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animation/deAnimation.h>
-#include <dragengine/resources/animation/deAnimationReference.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
@@ -52,7 +51,7 @@
 #include <dragengine/resources/animator/deAnimatorInstanceManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
-#include <dragengine/resources/animator/rule/deAnimatorRuleReference.h>
+#include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleAnimation.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleStateManipulator.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -60,10 +59,8 @@
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/rig/deRig.h>
-#include <dragengine/resources/rig/deRigReference.h>
 #include <dragengine/resources/rig/deRigManager.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/world/deWorldManager.h>
@@ -83,53 +80,51 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeSAnimation::saeSAnimation( igdeEnvironment* environment ) :
-igdeEditableEntity( environment ),
-pSky( NULL ),
-pCamera( NULL ),
-pActivePhoneme( NULL ),
-pActiveWord( NULL ),
-pDisplayMode( edmWord ),
-pDispWordPos( -1 ),
-pDispWordElapsed( 0.0f ),
-pDirtyAnimator( true )
+saeSAnimation::saeSAnimation(igdeEnvironment* environment) :
+igdeEditableEntity(environment),
+pSky(nullptr),
+pCamera(nullptr),
+pDisplayMode(edmWord),
+pDispWordPos(-1),
+pDispWordElapsed(0.0f),
+pDirtyAnimator(true)
 {
 	deEngine * const engine = GetEngine();
 	
 	try{
-		SetFilePath( "new.desanim" );
+		SetFilePath("new.desanim");
 		
 		// create world
-		pEngWorld.TakeOver( engine->GetWorldManager()->CreateWorld() );
-		pEngWorld->SetGravity( decVector( 0.0f, 0.0f, 0.0f ) );
-		pEngWorld->SetDisableLights( false );
-		pEngWorld->SetAmbientLight( decColor( 0.0f, 0.0f, 0.0f ) );
+		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld->SetGravity(decVector(0.0f, 0.0f, 0.0f));
+		pEngWorld->SetDisableLights(false);
+		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 		
 		// create camera
-		pCamera = new igdeCamera( engine );
-		pCamera->SetEngineWorld( pEngWorld );
+		pCamera = new igdeCamera(engine);
+		pCamera->SetEngineWorld(pEngWorld);
 		pCamera->Reset();
-		pCamera->SetFov( 30.0f );
-		pCamera->SetHighestIntensity( 20.0f );
-		pCamera->SetLowestIntensity( 20.0f );
-		pCamera->SetAdaptionTime( 0.0f );
-		pCamera->SetDistance( 0.6f ); // 0.4
-		pCamera->SetOrientation( decVector( 0.0f, 180.0f, 0.0f ) );
-		pCamera->SetPosition( decDVector( 0.0, 1.6, 0.0 ) );
+		pCamera->SetFov(30.0f);
+		pCamera->SetHighestIntensity(20.0f);
+		pCamera->SetLowestIntensity(20.0f);
+		pCamera->SetAdaptionTime(0.0f);
+		pCamera->SetDistance(0.6f); // 0.4
+		pCamera->SetOrientation(decVector(0.0f, 180.0f, 0.0f));
+		pCamera->SetPosition(decDVector(0.0, 1.6, 0.0));
 		
 		// create sky
-		pSky = new igdeWSky( *environment );
+		pSky = new igdeWSky(*environment);
 		pSky->SetGDDefaultSky();
-		pSky->SetWorld( pEngWorld );
+		pSky->SetWorld(pEngWorld);
 		
 		// create animator
-		pEngAnimator.TakeOver( engine->GetAnimatorManager()->CreateAnimator() );
+		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		// create animator instance
-		pEngAnimatorInstance.TakeOver( engine->GetAnimatorInstanceManager()->CreateAnimatorInstance() );
-		pEngAnimatorInstance->SetAnimator( pEngAnimator );
+		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -152,58 +147,58 @@ void saeSAnimation::Dispose(){
 
 
 
-void saeSAnimation::SetDisplayModelPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void saeSAnimation::SetDisplayModelPath(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pDisplayModelPath.Equals( path ) ){
+	if(!pDisplayModelPath.Equals(path)){
 		pDisplayModelPath = path;
 		pUpdateComponent();
 		NotifyModelChanged();
 	}
 }
 
-void saeSAnimation::SetDisplaySkinPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void saeSAnimation::SetDisplaySkinPath(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pDisplaySkinPath.Equals( path ) ){
+	if(!pDisplaySkinPath.Equals(path)){
 		pDisplaySkinPath = path;
 		pUpdateComponent();
 		NotifyModelChanged();
 	}
 }
 
-void saeSAnimation::SetDisplayRigPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void saeSAnimation::SetDisplayRigPath(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pDisplayRigPath.Equals( path ) ){
+	if(!pDisplayRigPath.Equals(path)){
 		pDisplayRigPath = path;
 		pUpdateComponent();
 		NotifyModelChanged();
 	}
 }
 
-void saeSAnimation::SetRigPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void saeSAnimation::SetRigPath(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pRigPath.Equals( path ) ){
+	if(!pRigPath.Equals(path)){
 		pRigPath = path;
 		pUpdateAnimRig();
 		NotifySAnimationChanged();
 	}
 }
 
-void saeSAnimation::SetAnimationPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void saeSAnimation::SetAnimationPath(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pAnimationPath.Equals( path ) ){
+	if(!pAnimationPath.Equals(path)){
 		pAnimationPath = path;
 		pUpdateAnimRig();
 		NotifySAnimationChanged();
 	}
 }
 
-void saeSAnimation::SetNeutralMoveName( const char *name ){
-	if( pNeutralMoveName == name ){
+void saeSAnimation::SetNeutralMoveName(const char *name){
+	if(pNeutralMoveName == name){
 		return;
 	}
 	
@@ -212,8 +207,8 @@ void saeSAnimation::SetNeutralMoveName( const char *name ){
 	NotifySAnimationChanged();
 }
 
-void saeSAnimation::SetNeutralVertexPositionSets( const decStringSet &sets ){
-	if( pNeutralVertexPositionSets == sets ){
+void saeSAnimation::SetNeutralVertexPositionSets(const decStringSet &sets){
+	if(pNeutralVertexPositionSets == sets){
 		return;
 	}
 	
@@ -224,10 +219,10 @@ void saeSAnimation::SetNeutralVertexPositionSets( const decStringSet &sets ){
 
 
 
-void saeSAnimation::SetDisplayMode( eDisplayModes displayMode ){
-	if( displayMode < 0 || displayMode > edmWord ) DETHROW( deeInvalidParam );
+void saeSAnimation::SetDisplayMode(eDisplayModes displayMode){
+	if(displayMode < 0 || displayMode > edmWord) DETHROW(deeInvalidParam);
 	
-	if( displayMode != pDisplayMode ){
+	if(displayMode != pDisplayMode){
 		pDisplayMode = displayMode;
 		pDispWordPos = -1;
 		pDispWordElapsed = 0.0f;
@@ -238,20 +233,20 @@ void saeSAnimation::SetDisplayMode( eDisplayModes displayMode ){
 
 
 void saeSAnimation::RebuildAnimator(){
-	if( pDirtyAnimator ){
-		const int phonemeCount = pPhonemeList.GetCount();
+	if(pDirtyAnimator){
+		const int phonemeCount = pPhonemes.GetCount();
 		int i, j;
 		
 		// remove dirty early to avoid race condition if something goes wrong
 		pDirtyAnimator = false;
 		
 		// clear the engine controllers of all phonemes
-		for( i=0; i<phonemeCount; i++ ){
-			pPhonemeList.GetAt( i )->SetEngineController( -1 );
+		for(i=0; i<phonemeCount; i++){
+			pPhonemes.GetAt(i)->SetEngineController(-1);
 		}
 		
 		// remove the animator from the instance just for safety
-		pEngAnimatorInstance->SetAnimator( nullptr );
+		pEngAnimatorInstance->SetAnimator(nullptr);
 		
 		// rebuild the animator. for each animation move used in all phonemes
 		// one controller and one animation rule is added. these are considered
@@ -265,27 +260,27 @@ void saeSAnimation::RebuildAnimator(){
 		
 		// reset the animation state to a well known state for testing purpose
 		const deAnimatorRuleStateManipulator::Ref ruleReset(
-			deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
-		ruleReset->SetEnablePosition( true );
-		pEngAnimator->AddRule( ruleReset );
+			deAnimatorRuleStateManipulator::Ref::New());
+		ruleReset->SetEnablePosition(true);
+		pEngAnimator->AddRule(ruleReset);
 		
 		// usually we would need a rule for neutral vertex position sets. since though we use
 		// a reset rule at the top all vertex position sets are reset already. if this rule
 		// is not ues the following code has ot be enabled
 		/*
-		if( pNeutralVertexPositionSets.GetCount() > 0 ){
+		if(pNeutralVertexPositionSets.GetCount() > 0){
 			const deAnimatorRuleStateManipulator::Ref rule(
-				deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
-			rule->SetEnableRotation( false );
+				deAnimatorRuleStateManipulator::Ref::New());
+			rule->SetEnableRotation(false);
 			rule->GetListVertexPositionSets() = pNeutralVertexPositionSets;
-			pEngAnimator->AddRule( rule );
+			pEngAnimator->AddRule(rule);
 		}
 		*/
 		
 		// add all unique visemes used by all phonemes
-		for( i=0; i<phonemeCount; i++ ){
-			saePhoneme &phoneme = *pPhonemeList.GetAt( i );
-			if( phoneme.GetEngineController() != -1 ){
+		for(i=0; i<phonemeCount; i++){
+			saePhoneme &phoneme = *pPhonemes.GetAt(i);
+			if(phoneme.GetEngineController() != -1){
 				continue;
 			}
 			
@@ -293,50 +288,50 @@ void saeSAnimation::RebuildAnimator(){
 			const decString &moveName = phoneme.GetMoveName();
 			
 			// add a controller for the new viseme
-			const int controllerIndex = pEngAnimator->GetControllerCount();
-			pEngAnimator->AddController( new deAnimatorController );
+			const int controllerIndex = pEngAnimator->GetControllers().GetCount();
+			pEngAnimator->AddController(deAnimatorController::Ref::New());
 			
 			// add a link for the new viseme
-			const int linkIndex = pEngAnimator->GetLinkCount();
+			const int linkIndex = pEngAnimator->GetLinks().GetCount();
 			
-			deAnimatorLink * const engLink = new deAnimatorLink;
-			engLink->SetController( controllerIndex );
-			pEngAnimator->AddLink( engLink );
+			const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
+			engLink->SetController(controllerIndex);
+			pEngAnimator->AddLink(engLink);
 			
 			// add an animation rule for the new viseme
-			if( ! vertexPositionSet.IsEmpty() ){
+			if(!vertexPositionSet.IsEmpty()){
 				const deAnimatorRuleStateManipulator::Ref rule(
-					deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
-				rule->GetListVertexPositionSets().Add( vertexPositionSet );
-				rule->SetEnableRotation( false );
-				rule->SetMaximumVertexPositionSet( 1.0f );
-				rule->GetTargetVertexPositionSet().AddLink( linkIndex );
-				pEngAnimator->AddRule( rule );
+					deAnimatorRuleStateManipulator::Ref::New());
+				rule->GetListVertexPositionSets().Add(vertexPositionSet);
+				rule->SetEnableRotation(false);
+				rule->SetMaximumVertexPositionSet(1.0f);
+				rule->GetTargetVertexPositionSet().AddLink(linkIndex);
+				pEngAnimator->AddRule(rule);
 				
 			}else{
 				const deAnimatorRuleAnimation::Ref rule(
-					deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
-				rule->SetMoveName( moveName );
-				rule->SetBlendMode( deAnimatorRule::ebmOverlay );
-				rule->GetTargetBlendFactor().AddLink( linkIndex );
-				pEngAnimator->AddRule( rule );
+					deAnimatorRuleAnimation::Ref::New());
+				rule->SetMoveName(moveName);
+				rule->SetBlendMode(deAnimatorRule::ebmOverlay);
+				rule->GetTargetBlendFactor().AddLink(linkIndex);
+				pEngAnimator->AddRule(rule);
 			}
 			
 			// assign the controller to this phoneme and all other phonemes
 			// using the same move name
-			phoneme.SetEngineController( controllerIndex );
+			phoneme.SetEngineController(controllerIndex);
 			
-			for( j=i+1; j<phonemeCount; j++ ){
-				saePhoneme &phoneme2 = *pPhonemeList.GetAt( j );
+			for(j=i+1; j<phonemeCount; j++){
+				saePhoneme &phoneme2 = *pPhonemes.GetAt(j);
 				
-				if( moveName == phoneme2.GetMoveName() && vertexPositionSet == phoneme2.GetVertexPositionSet() ){
-					phoneme2.SetEngineController( controllerIndex );
+				if(moveName == phoneme2.GetMoveName() && vertexPositionSet == phoneme2.GetVertexPositionSet()){
+					phoneme2.SetEngineController(controllerIndex);
 				}
 			}
 		}
 		
 		// reassign the animator
-		pEngAnimatorInstance->SetAnimator( pEngAnimator );
+		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 	}
 }
 
@@ -346,43 +341,43 @@ void saeSAnimation::Reset(){
 	GetUndoSystem()->RemoveAll();
 }
 
-void saeSAnimation::Update( float elapsed ){
+void saeSAnimation::Update(float elapsed){
 	RebuildAnimator();
 	
-	switch( pDisplayMode ){
+	switch(pDisplayMode){
 	case edmPhoneme:{
-		const int controllerCount = pEngAnimatorInstance->GetControllerCount();
+		const int controllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		int i;
 		
-		if( pActivePhoneme ){
+		if(pActivePhoneme){
 			const int controllerIndex = pActivePhoneme->GetEngineController();
 			
-			for( i=0; i<controllerCount; i++ ){
-				if( i == controllerIndex ){
-					pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 1.0f );
+			for(i=0; i<controllerCount; i++){
+				if(i == controllerIndex){
+					pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(1.0f);
 					
 				}else{
-					pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 0.0f );
+					pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 				}
 				
-				pEngAnimatorInstance->NotifyControllerChangedAt( i );
+				pEngAnimatorInstance->NotifyControllerChangedAt(i);
 			}
 			
 		}else{
-			for( i=0; i<controllerCount; i++ ){
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 0.0f );
-				pEngAnimatorInstance->NotifyControllerChangedAt( i );
+			for(i=0; i<controllerCount; i++){
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
+				pEngAnimatorInstance->NotifyControllerChangedAt(i);
 			}
 		}
 		}break;
 		
 	case edmWord:{
-		if( ! pActiveWord ){
+		if(!pActiveWord){
 			break;
 		}
 		
 		const float talkSpeed = 1.0f;
-		const int controllerCount = pEngAnimatorInstance->GetControllerCount();
+		const int controllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		const decUnicodeString &phonetics = pActiveWord->GetPhonetics();
 		const int phoneticsLen = phonetics.GetLength();
 		const float wordGapTime = 2.0f * talkSpeed;
@@ -397,50 +392,56 @@ void saeSAnimation::Update( float elapsed ){
 		// determine which phoneme to display and the blending
 		pDispWordElapsed += elapsed;
 		
-		while( true ){
+		while(true){
 			saePhoneme *phoneme1 = nullptr;
 			saePhoneme *phoneme2 = nullptr;
 			
-			if( pDispWordPos >= 0 && pDispWordPos < phoneticsLen ){
-				phoneme1 = pPhonemeList.GetIPA( phonetics.GetAt( pDispWordPos ) );
+			if(pDispWordPos >= 0 && pDispWordPos < phoneticsLen){
+				const int ipa1 = phonetics.GetAt(pDispWordPos);
+				phoneme1 = pPhonemes.FindOrDefault([ipa1](saePhoneme *phoneme){
+					return phoneme->GetIPA() == ipa1;
+				});
 			}
 			
-			if( pDispWordPos + 1 < phoneticsLen ){
-				phoneme2 = pPhonemeList.GetIPA( phonetics.GetAt( pDispWordPos + 1 ) );
+			if(pDispWordPos + 1 < phoneticsLen){
+				const int ipa2 = phonetics.GetAt(pDispWordPos + 1);
+				phoneme2 = pPhonemes.FindOrDefault([ipa2](saePhoneme *phoneme){
+					return phoneme->GetIPA() == ipa2;
+				});
 			}
 			
-			if( pDispWordPos == -1 ){
+			if(pDispWordPos == -1){
 				phonemeLen = windUpTime;
 				
-			}else if( pDispWordPos == phoneticsLen ){
+			}else if(pDispWordPos == phoneticsLen){
 				phonemeLen = wordGapTime;
 				
-			}else if( phoneme1 ){
+			}else if(phoneme1){
 				phonemeLen = phoneme1->GetLength() * talkSpeed;
 				
 			}else{
 				phonemeLen = pauseTime;
 			}
 			
-			if( pDispWordElapsed < phonemeLen ){
+			if(pDispWordElapsed < phonemeLen){
 				//if( pDispWordElapsed < phonemeLen - windUpTime ){
 				//	blendFactor = 1.0f;
 				//	
 				//}else{
 					//blendFactor = ( phonemeLen - pDispWordElapsed ) / windUpTime;
 					//blendFactor = 1.0f - pDispWordElapsed / phonemeLen;
-					blendFactor = 0.5f + cosf( ( pDispWordElapsed / phonemeLen ) * PI ) * 0.5f;
+					blendFactor = 0.5f + cosf((pDispWordElapsed / phonemeLen) * PI) * 0.5f;
 				//}
 				
-				if( phoneme1 ){
+				if(phoneme1){
 					controller1 = phoneme1->GetEngineController();
 				}
 				
-				if( phoneme2 ){
+				if(phoneme2){
 					controller2 = phoneme2->GetEngineController();
 				}
 				
-				if( controller1 == controller2 ){
+				if(controller1 == controller2){
 					controller2 = -1;
 					blendFactor = 1.0f;
 				}
@@ -448,7 +449,7 @@ void saeSAnimation::Update( float elapsed ){
 				break;
 			}
 			
-			if( pDispWordPos < phoneticsLen ){
+			if(pDispWordPos < phoneticsLen){
 				pDispWordPos++;
 				
 			}else{
@@ -459,18 +460,18 @@ void saeSAnimation::Update( float elapsed ){
 		}
 		
 		// update the controllers
-		for( i=0; i<controllerCount; i++ ){
-			if( i == controller1 ){
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( blendFactor );
+		for(i=0; i<controllerCount; i++){
+			if(i == controller1){
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(blendFactor);
 				
-			}else if( i == controller2 ){
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 1.0f - blendFactor );
+			}else if(i == controller2){
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(1.0f - blendFactor);
 				
 			}else{
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 0.0f );
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 			}
 			
-			pEngAnimatorInstance->NotifyControllerChangedAt( i );
+			pEngAnimatorInstance->NotifyControllerChangedAt(i);
 		}
 		}break;
 		
@@ -479,7 +480,7 @@ void saeSAnimation::Update( float elapsed ){
 	}
 	
 	pEngAnimatorInstance->Apply();
-	pEngWorld->Update( elapsed );
+	pEngWorld->Update(elapsed);
 }
 
 
@@ -487,70 +488,59 @@ void saeSAnimation::Update( float elapsed ){
 // Phonemes
 /////////////
 
-void saeSAnimation::AddPhoneme( saePhoneme *phoneme ){
-	pPhonemeList.Add( phoneme );
-	phoneme->SetSAnimation( this );
+void saeSAnimation::AddPhoneme(saePhoneme *phoneme){
+	pPhonemes.AddOrThrow(phoneme);
+	phoneme->SetSAnimation(this);
 	NotifyPhonemeStructureChanged();
 	
-	if( ! pActivePhoneme ){
-		SetActivePhoneme( phoneme );
+	if(!pActivePhoneme){
+		SetActivePhoneme(phoneme);
 	}
 }
 
-void saeSAnimation::RemovePhoneme( saePhoneme *phoneme ){
-	if( ! phoneme || phoneme->GetSAnimation() != this ) DETHROW( deeInvalidParam );
+void saeSAnimation::RemovePhoneme(saePhoneme *phoneme){
+	const saePhoneme::Ref guard(phoneme);
+	pPhonemes.RemoveOrThrow(phoneme);
 	
-	if( phoneme->GetActive() ){
-		if( pPhonemeList.GetCount() == 1 ){
-			SetActivePhoneme( NULL );
-			
-		}else{
-			if( pPhonemeList.GetAt( 0 ) == phoneme ){
-				SetActivePhoneme( pPhonemeList.GetAt( 1 ) );
-				
-			}else{
-				SetActivePhoneme( pPhonemeList.GetAt( 0 ) );
-			}
-		}
+	if(pActivePhoneme == phoneme){
+		pActivePhoneme = nullptr;
 	}
 	
-	phoneme->SetSAnimation( NULL );
-	pPhonemeList.Remove( phoneme );
+	phoneme->SetSAnimation(nullptr);
 	NotifyPhonemeStructureChanged();
 }
 
 void saeSAnimation::RemoveAllPhonemes(){
-	const int count = pPhonemeList.GetCount();
-	int i;
-	
-	SetActivePhoneme( NULL );
-	
-	for( i=0; i<count; i++ ){
-		pPhonemeList.GetAt( i )->SetSAnimation( NULL );
+	if(pPhonemes.IsEmpty()){
+		return;
 	}
-	pPhonemeList.RemoveAll();
+	
+	SetActivePhoneme(nullptr);
+	
+	pPhonemes.Visit([](saePhoneme &p){
+		p.SetSAnimation(nullptr);
+	});
+	pPhonemes.RemoveAll();
 	NotifyPhonemeStructureChanged();
 }
 
 bool saeSAnimation::HasActivePhoneme() const{
-	return pActivePhoneme != NULL;
+	return pActivePhoneme != nullptr;
 }
 
-void saeSAnimation::SetActivePhoneme( saePhoneme *phoneme ){
-	if( phoneme == pActivePhoneme ){
+void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
+	if(phoneme == pActivePhoneme){
 		return;
 	}
 	
-	if( pActivePhoneme ){
-		pActivePhoneme->SetActive( false );
-		pActivePhoneme->FreeReference();
+	if(pActivePhoneme){
+		pActivePhoneme->SetActive(false);
 	}
 	
 	pActivePhoneme = phoneme;
 	
-	if( phoneme ){
-		phoneme->AddReference();
-		phoneme->SetActive( true );
+	if(phoneme){
+		phoneme->SetActive(true);
 	}
 	
 	NotifyActivePhonemeChanged();
@@ -561,70 +551,59 @@ void saeSAnimation::SetActivePhoneme( saePhoneme *phoneme ){
 // Words
 /////////////
 
-void saeSAnimation::AddWord( saeWord *word ){
-	pWordList.Add( word );
-	word->SetSAnimation( this );
+void saeSAnimation::AddWord(saeWord *word){
+	pWords.AddOrThrow(word);
+	word->SetSAnimation(this);
 	NotifyWordStructureChanged();
 	
-	if( ! pActiveWord ){
-		SetActiveWord( word );
+	if(!pActiveWord){
+		SetActiveWord(word);
 	}
 }
 
-void saeSAnimation::RemoveWord( saeWord *word ){
-	if( ! word || word->GetSAnimation() != this ) DETHROW( deeInvalidParam );
+void saeSAnimation::RemoveWord(saeWord *word){
+	const saeWord::Ref guard(word);
+	pWords.RemoveOrThrow(word);
 	
-	if( word->GetActive() ){
-		if( pWordList.GetCount() == 1 ){
-			SetActiveWord( NULL );
-			
-		}else{
-			if( pWordList.GetAt( 0 ) == word ){
-				SetActiveWord( pWordList.GetAt( 1 ) );
-				
-			}else{
-				SetActiveWord( pWordList.GetAt( 0 ) );
-			}
-		}
+	if(pActiveWord == word){
+		pActiveWord = nullptr;
 	}
 	
-	word->SetSAnimation( NULL );
-	pWordList.Remove( word );
+	word->SetSAnimation(nullptr);
 	NotifyWordStructureChanged();
 }
 
 void saeSAnimation::RemoveAllWords(){
-	const int count = pWordList.GetCount();
-	int i;
-	
-	SetActiveWord( NULL );
-	
-	for( i=0; i<count; i++ ){
-		pWordList.GetAt( i )->SetSAnimation( NULL );
+	if(pWords.IsEmpty()){
+		return;
 	}
-	pWordList.RemoveAll();
+	
+	SetActiveWord(nullptr);
+	
+	pWords.Visit([](saeWord &w){
+		w.SetSAnimation(nullptr);
+	});
+	pWords.RemoveAll();
 	NotifyWordStructureChanged();
 }
 
 bool saeSAnimation::HasActiveWord() const{
-	return pActiveWord != NULL;
+	return pActiveWord != nullptr;
 }
 
-void saeSAnimation::SetActiveWord( saeWord *word ){
-	if( word == pActiveWord ){
+void saeSAnimation::SetActiveWord(saeWord *word){
+	if(word == pActiveWord){
 		return;
 	}
 	
-	if( pActiveWord ){
-		pActiveWord->SetActive( false );
-		pActiveWord->FreeReference();
+	if(pActiveWord){
+		pActiveWord->SetActive(false);
 	}
 	
 	pActiveWord = word;
 	
-	if( word ){
-		word->AddReference();
-		word->SetActive( true );
+	if(word){
+		word->SetActive(true);
 	}
 	
 	pDispWordPos = -1;
@@ -638,164 +617,120 @@ void saeSAnimation::SetActiveWord( saeWord *word ){
 // Listeners
 //////////////
 
-void saeSAnimation::AddListener( saeSAnimationListener *listener ){
-	if( ! listener ) DETHROW( deeInvalidParam );
+void saeSAnimation::AddListener(saeSAnimationListener *listener){
+	DEASSERT_NOTNULL(listener)
 	
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void saeSAnimation::RemoveListener( saeSAnimationListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void saeSAnimation::RemoveListener(saeSAnimationListener *listener){
+	pListeners.Remove(listener);
 }
-
 
 
 void saeSAnimation::NotifyStateChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->StateChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.StateChanged(this);
+	});
 }
 
 void saeSAnimation::NotifyUndoChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->UndoChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.UndoChanged(this);
+	});
 }
 
 void saeSAnimation::NotifyViewChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->ViewChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.ViewChanged(this);
+	});
 }
 
 void saeSAnimation::NotifySAnimationChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.SAnimationChanged(this);
+	});
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->SAnimationChanged( this );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void saeSAnimation::NotifyModelChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.ModelChanged(this);
+	});
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->ModelChanged( this );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void saeSAnimation::NotifySkyChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->SkyChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.SkyChanged(this);
+	});
 }
 
 void saeSAnimation::NotifyCameraChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->CameraChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.CameraChanged(this);
+	});
 }
 
 
 
 void saeSAnimation::NotifyPhonemeStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.PhonemeStructureChanged(this);
+	});
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->PhonemeStructureChanged( this );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 	pDirtyAnimator = true;
 }
 
-void saeSAnimation::NotifyPhonemeChanged( saePhoneme *phoneme ){
-	const int listenerCount = pListeners.GetCount();
-	int l;
+void saeSAnimation::NotifyPhonemeChanged(saePhoneme *phoneme){
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.PhonemeChanged(this, phoneme);
+	});
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->PhonemeChanged( this, phoneme );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 	pDirtyAnimator = true;
 }
 
 void saeSAnimation::NotifyActivePhonemeChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->ActivePhonemeChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.ActivePhonemeChanged(this);
+	});
 }
 
 
 
 void saeSAnimation::NotifyWordStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.WordStructureChanged(this);
+	});
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->WordStructureChanged( this );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void saeSAnimation::NotifyWordNameChanged( saeWord *word ){
-	const int count = pListeners.GetCount();
-	int i;
+void saeSAnimation::NotifyWordNameChanged(saeWord *word){
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.WordNameChanged(this, word);
+	});
 	
-	for( i=0; i<count; i++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( i ) )->WordNameChanged( this, word );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void saeSAnimation::NotifyWordChanged( saeWord *word ){
-	const int listenerCount = pListeners.GetCount();
-	int l;
+void saeSAnimation::NotifyWordChanged(saeWord *word){
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.WordChanged(this, word);
+	});
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->WordChanged( this, word );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void saeSAnimation::NotifyActiveWordChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->ActiveWordChanged( this );
-	}
+	pListeners.Visit([&](saeSAnimationListener &l){
+		l.ActiveWordChanged(this);
+	});
 }
-
 
 
 // Private Functions
@@ -804,16 +739,16 @@ void saeSAnimation::NotifyActiveWordChanged(){
 void saeSAnimation::pCleanUp(){
 	pListeners.RemoveAll();
 	
-	SetActiveWord( NULL );
+	SetActiveWord(nullptr);
 	RemoveAllWords();
 	
-	SetActivePhoneme( NULL );
+	SetActivePhoneme(nullptr);
 	RemoveAllPhonemes();
 	
-	if( pSky ){
+	if(pSky){
 		delete pSky;
 	}
-	if( pCamera ){
+	if(pCamera){
 		delete pCamera;
 	}
 }
@@ -823,84 +758,84 @@ void saeSAnimation::pCleanUp(){
 void saeSAnimation::pUpdateComponent(){
 	const igdeGameDefinition * const gamedef = GetGameDefinition();
 	deEngine &engine = *GetEngine();
-	deModelReference displayModel;
-	deSkinReference displaySkin;
-	deRigReference displayRig;
+	deModel::Ref displayModel;
+	deSkin::Ref displaySkin;
+	deRig::Ref displayRig;
 	
 	// try to load the resources if possible
 	try{
-		if( ! pDisplayModelPath.IsEmpty() ){
-			displayModel.TakeOver( engine.GetModelManager()->LoadModel( pDisplayModelPath, GetDirectoryPath() ) );
+		if(!pDisplayModelPath.IsEmpty()){
+			displayModel = engine.GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath());
 		}
-		if( ! pDisplaySkinPath.IsEmpty() ){
-			displaySkin.TakeOver( engine.GetSkinManager()->LoadSkin( pDisplaySkinPath, GetDirectoryPath() ) );
+		if(!pDisplaySkinPath.IsEmpty()){
+			displaySkin = engine.GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath());
 		}
-		if( ! pDisplayRigPath.IsEmpty() ){
-			displayRig.TakeOver( engine.GetRigManager()->LoadRig( pDisplayRigPath, GetDirectoryPath() ) );
+		if(!pDisplayRigPath.IsEmpty()){
+			displayRig = engine.GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
 		}
 		
-	}catch( const deException &e ){
-		GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
 	// if the skin is missing use the default one
-	if( ! displaySkin && gamedef ){
+	if(!displaySkin && gamedef){
 		displaySkin = gamedef->GetDefaultSkin();
 	}
 	
 	// reset the animator
-	pEngAnimatorInstance->SetComponent( NULL ); // otherwise the animator is not reset
+	pEngAnimatorInstance->SetComponent(nullptr); // otherwise the animator is not reset
 	
 	// update the component with the model and skin
-	if( displayModel && displaySkin ){
-		if( pEngComponent ){
-			pEngComponent->SetModelAndSkin( displayModel, displaySkin );
+	if(displayModel && displaySkin){
+		if(pEngComponent){
+			pEngComponent->SetModelAndSkin(displayModel, displaySkin);
 			
 		}else{
-			pEngComponent.TakeOver( engine.GetComponentManager()->CreateComponent( displayModel, displaySkin ) );
-			pEngWorld->AddComponent( pEngComponent );
+			pEngComponent = engine.GetComponentManager()->CreateComponent(displayModel, displaySkin);
+			pEngWorld->AddComponent(pEngComponent);
 		}
 		
-	}else if( pEngComponent ){
-		pEngWorld->RemoveComponent( pEngComponent );
-		pEngComponent = NULL;
+	}else if(pEngComponent){
+		pEngWorld->RemoveComponent(pEngComponent);
+		pEngComponent = nullptr;
 	}
 	
 	// set the rig if the component exists
-	if( pEngComponent ){
-		pEngComponent->SetRig( displayRig );
-		pEngComponent->SetVisible( true );
-		pEngComponent->SetPosition( decDVector() );
-		pEngComponent->SetOrientation( decQuaternion() );
+	if(pEngComponent){
+		pEngComponent->SetRig(displayRig);
+		pEngComponent->SetVisible(true);
+		pEngComponent->SetPosition(decDVector());
+		pEngComponent->SetOrientation(decQuaternion());
 	}
 	
 	// update the animator
-	pEngAnimatorInstance->SetComponent( pEngComponent );
+	pEngAnimatorInstance->SetComponent(pEngComponent);
 }
 
 void saeSAnimation::pUpdateAnimRig(){
 	deEngine &engine = *GetEngine();
-	deAnimationReference animation;
-	deRigReference rig;
+	deAnimation::Ref animation;
+	deRig::Ref rig;
 	
 	try{
-		if( ! pAnimationPath.IsEmpty() ){
-			animation.TakeOver( engine.GetAnimationManager()->LoadAnimation(
-				pAnimationPath, GetDirectoryPath() ) );
+		if(!pAnimationPath.IsEmpty()){
+			animation = engine.GetAnimationManager()->LoadAnimation(
+				pAnimationPath, GetDirectoryPath());
 		}
 		
-	}catch( const deException &e ){
-		GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		GetLogger()->LogException(LOGSOURCE, e);
 	}
-	pEngAnimator->SetAnimation( animation );
+	pEngAnimator->SetAnimation(animation);
 	
 	try{
-		if( ! pRigPath.IsEmpty() ){
-			rig.TakeOver( engine.GetRigManager()->LoadRig( pRigPath, GetDirectoryPath() ) );
+		if(!pRigPath.IsEmpty()){
+			rig = engine.GetRigManager()->LoadRig(pRigPath, GetDirectoryPath());
 		}
 		
-	}catch( const deException &e ){
-		GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		GetLogger()->LogException(LOGSOURCE, e);
 	}
-	pEngAnimator->SetRig( rig );
+	pEngAnimator->SetRig(rig);
 }

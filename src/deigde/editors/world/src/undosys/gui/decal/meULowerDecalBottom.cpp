@@ -27,7 +27,7 @@
 #include "../../../world/decal/meDecal.h"
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -37,26 +37,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meULowerDecalBottom::meULowerDecalBottom( meWorld *world, meDecal *decal ){
-	if( ! world || ! decal ) DETHROW( deeInvalidParam );
+meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
+	if(!world || !decal) DETHROW(deeInvalidParam);
 	
-	if( ! decal->GetParentObject() ) DETHROW( deeInvalidParam );
+	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	//if( decal->GetParentObject() ){
-		pOldIndex = decal->GetParentObject()->IndexOfDecal( decal );
+		pOldIndex = decal->GetParentObject()->GetDecals().IndexOf(decal);
 	//}
 	
-	SetShortInfo( "Lower decal to the bottom." );
-	SetLongInfo( "" );
+	SetShortInfo("@World.ULowerDecalBottom.LowerDecalToBottom");
+	SetLongInfo("");
 }
 
 meULowerDecalBottom::~meULowerDecalBottom(){
-	if( pDecal ) pDecal->FreeReference();
 }
 
 
@@ -67,21 +64,21 @@ meULowerDecalBottom::~meULowerDecalBottom(){
 void meULowerDecalBottom::Undo(){
 	meObject *object = pDecal->GetParentObject();
 	
-	if( object ){
-		object->MoveDecalTo( pDecal, pOldIndex );
+	if(object){
+		object->MoveDecalTo(pDecal, pOldIndex);
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 void meULowerDecalBottom::Redo(){
 	meObject *object = pDecal->GetParentObject();
 	
-	if( object ){
-		object->MoveDecalTo( pDecal, 0 );
+	if(object){
+		object->MoveDecalTo(pDecal, 0);
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

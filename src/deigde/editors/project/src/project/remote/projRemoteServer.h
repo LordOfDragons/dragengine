@@ -27,9 +27,10 @@
 
 #include <deremotelauncher/derlServer.h>
 
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>
-#include <dragengine/filesystem/dePathList.h>
+
 
 class projProject;
 class projProfile;
@@ -43,14 +44,14 @@ class deVirtualFileSystem;
  */
 class projRemoteServer : public derlServer{
 public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
+	using Ref = std::shared_ptr<projRemoteServer>;
 	
 	/** \brief Profile data for use by task processors. */
 	struct TaskProfileData{
-		typedef std::shared_ptr<TaskProfileData> Ref;
+		using Ref = std::shared_ptr<TaskProfileData>;
 		
 		decStringSet excludePatterns;
-		dePathList excludeBaseGameDefPath;
+		decPath::List excludeBaseGameDefPath;
 		deVirtualFileSystem *vfs;
 	};
 	

@@ -25,7 +25,9 @@
 #ifndef _DECOLLIDERATTACHEMENT_H_
 #define _DECOLLIDERATTACHEMENT_H_
 
-#include "../deResourceReference.h"
+#include "../deResource.h"
+#include "../../common/collection/decTUniqueList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 
@@ -61,6 +63,12 @@
  */
 class DE_DLL_EXPORT deColliderAttachment{
 public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deColliderAttachment>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deColliderAttachment>;
+	
 	/** \brief Attachment types. */
 	enum eAttachType{
 		 /**
@@ -120,21 +128,20 @@ public:
 		/** \brief Bone weight in the range from 0 to 1. */
 		float weight;
 		/** \brief Constructor. */
-		inline sWeight() : weight( 0.0f ){}
+		inline sWeight() : weight(0.0f){}
 	};
 	
 	
 	
 private:
 	eAttachType pAttachType;
-	deResourceReference pResource;
+	deResource::Ref pResource;
 	decVector pPosition;
 	decQuaternion pOrientation;
 	decVector pScaling;
 	bool pNoScaling;
 	decString pTrackBone;
-	sWeight *pWeights;
-	int pWeightCount;
+	decTList<sWeight> pWeights;
 	
 	
 	
@@ -150,7 +157,7 @@ public:
 	 * \throws EInvalidParam \em resource is NULL.
 	 * \throws EInvalidParam CanAttachResource() returns false for \em resource.
 	 */
-	deColliderAttachment( deResource *resource );
+	deColliderAttachment(deResource *resource);
 	
 	/** \brief Clean up the collider attachement object. */
 	~deColliderAttachment();
@@ -167,10 +174,10 @@ public:
 	 * \brief Set attach type.
 	 * \throws EInvalidParam \em attachType does not match any of deColliderAttachment::eAttachType.
 	 */
-	void SetAttachType( eAttachType attachType );
+	void SetAttachType(eAttachType attachType);
 	
 	/** \brief Attached resource. */
-	inline deResource *GetResource() const{ return pResource; }
+	inline const deResource::Ref &GetResource() const{ return pResource; }
 	
 	
 	
@@ -178,25 +185,25 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position of the attached resource relative to the attachment point. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation of the attached resource relative to the attachment point. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation of the attached resource relative to the attachment point. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling of the attached resource relative to the attachment point. */
 	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling of the attached resource relative to the attachment point. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	/** \brief Ignore scaling. */
 	inline bool GetNoScaling() const{ return pNoScaling; }
 	
 	/** \brief Set if scaling is ignored. */
-	void SetNoScaling( bool noScaling );
+	void SetNoScaling(bool noScaling);
 	
 	
 	
@@ -207,19 +214,24 @@ public:
 	 * \brief Set name of the bone to track in the target collider or an empty string if not used.
 	 * \throws EInvalidParam \em bone is NULL.
 	 */
-	void SetTrackBone( const char *bone );
+	void SetTrackBone(const char *bone);
+	
+	/** \brief Weights. */
+	inline decTList<sWeight> &GetWeights(){ return pWeights; }
+	inline const decTList<sWeight> &GetWeights() const{ return pWeights; }
 	
 	/** \brief Count of bone weights. */
-	inline int GetWeightCount() const{ return pWeightCount; }
+	inline int GetWeightCount() const{ return pWeights.GetCount(); }
 	
-	/** \brief Pointer to array of bone weights. */
-	inline sWeight *GetWeights() const{ return pWeights; }
+	/** \brief Weight at index. */
+	inline sWeight &GetWeightAt(int index){ return pWeights.GetAt(index); }
+	inline const sWeight &GetWeightAt(int index) const{ return pWeights.GetAt(index); }
 	
 	/**
 	 * \brief Set number of bone weights.
 	 * \throws EInvalidParam \em count is less than 0.
 	 */
-	void SetWeightCount( int count );
+	void SetWeightCount(int count);
 	
 	
 	
@@ -228,7 +240,7 @@ public:
 	 * 
 	 * Creating an attachment fails if \em CanAttachResource returns false.
 	 */
-	static bool CanAttachResource( const deResource &resource );
+	static bool CanAttachResource(const deResource &resource);
 	/*@}*/
 };
 

@@ -52,75 +52,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModel::deModel( deModelManager *manager, deVirtualFileSystem *vfs, const char *filename,
-	TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
+deModel::deModel(deModelManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime),
 
-pBones( NULL ),
-pBoneCount( 0 ),
-pBoneSize( 0 ),
-
-pTextures( NULL ),
-pTextureCount( 0 ),
-pTextureSize( 0 ),
-
-pLODs( NULL ),
-pLODCount( 0 ),
-pLODSize( 0 ),
-
-pVertexPositionSets( nullptr ),
-pVertexPositionSetCount( 0 ),
-pVertexPositionSetSize( 0 ),
-
-pPeerGraphic ( NULL ),
-pPeerPhysics ( NULL ),
-pPeerAudio ( NULL ){
+pPeerGraphic (nullptr),
+pPeerPhysics (nullptr),
+pPeerAudio (nullptr){
 }
 
 deModel::~deModel(){
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
-	}
-	
-	if( pLODs ){
-		while( pLODCount > 0 ){
-			pLODCount--;
-			delete pLODs[ pLODCount ];
-		}
-		delete [] pLODs;
-	}
-	
-	if( pTextures ){
-		while( pTextureCount > 0 ){
-			pTextureCount--;
-			delete pTextures[ pTextureCount ];
-		}
-		delete [] pTextures;
-	}
-	
-	if( pVertexPositionSets ){
-		while( pVertexPositionSetCount > 0 ){
-			pVertexPositionSetCount--;
-			delete pVertexPositionSets[ pVertexPositionSetCount ];
-		}
-		delete [] pVertexPositionSets;
-	}
-	
-	if( pBones ){
-		while( pBoneCount > 0 ){
-			pBoneCount--;
-			delete pBones[ pBoneCount ];
-		}
-		delete [] pBones;
+		pPeerGraphic = nullptr;
 	}
 }
 
@@ -130,76 +82,69 @@ deModel::~deModel(){
 ///////////////
 
 bool deModel::Verify(){
-	bool *visited = nullptr;
 	int i, j, parent;
 	bool success = true;
 	
 	// verify there is at least one LOD mesh
-	if( pLODCount < 1 ){
+	if(pLODs.GetCount() < 1){
 		return false;
 	}
 	
 	// verify that all bones are free of cyclic parentship
-	if( pBoneCount > 0 ){
-		try{
-			visited = new bool[ pBoneCount ];
+	const int boneCount = pBones.GetCount();
+	if(boneCount > 0){
+		decTList<bool> visited;
+		visited.AddRange(boneCount, false);
+		
+		// check bone parents are valid
+		for(i=0; i<boneCount; i++){
+			for(j=0; j<boneCount; j++){
+				visited[j] = false;
+			}
 			
-			// check bone parents are valid
-			for( i=0; i<pBoneCount; i++ ){
-				for( j=0; j<pBoneCount; j++ ){
-					visited[ j ] = false;
-				}
-				
-				parent = pBones[ i ]->GetParent();
-				while( parent != -1 ){
-					if( parent < -1 || parent >= pBoneCount || visited[ parent ] ){
-						success = false;
-						break;
-					}
-					visited[ parent ] = true;
-					parent = pBones[ parent ]->GetParent();
-				}
-				
-				if( ! success ){
+			parent = pBones.GetAt(i)->GetParent();
+			while(parent != -1){
+				if(parent < -1 || parent >= boneCount || visited[parent]){
+					success = false;
 					break;
 				}
+				visited[parent] = true;
+				parent = pBones.GetAt(parent)->GetParent();
 			}
 			
-			// clean up
-			delete [] visited;
-			
-		}catch( const deException & ){
-			if( visited ){
-				delete [] visited;
+			if(!success){
+				break;
 			}
-			throw;
 		}
 	}
 	
 	// verify that each lod level has the correct number of texture coordinates sets and texture coordinates per set
 	const int texCoordSetCount = pTextureCoordinatesSetList.GetCount();
 	
-	if( texCoordSetCount < 1 ){
+	if(texCoordSetCount < 1){
 		return false;
 	}
 	
-	for( i=0; i<pLODCount; i++ ){
-		const int texCoordCount = pLODs[ i ]->GetTextureCoordinatesCount();
+	const int lodCount = pLODs.GetCount();
+	for(i=0; i<lodCount; i++){
+		const int texCoordCount = pLODs.GetAt(i)->GetTextureCoordinatesCount();
 		
-		if( pLODs[ i ]->GetTextureCoordinatesSetCount() != texCoordSetCount ){
+		if(pLODs.GetAt(i)->GetTextureCoordinatesSets().GetCount() != texCoordSetCount){
 			return false;
 		}
 		
-		for( j=0; j<texCoordSetCount; j++ ){
-			if( pLODs[ i ]->GetTextureCoordinatesSetAt( j ).GetTextureCoordinatesCount() != texCoordCount ){
+		
+		for(j=0; j<texCoordSetCount; j++){
+			if(pLODs.GetAt(i)->GetTextureCoordinatesSets()[j].GetTextureCoordinates().GetCount() != texCoordCount){
 				return false;
 			}
 		}
 	}
 	
 	// verify each lod level has the correct count of vertex position sets
-	for( i=0; i<pLODCount; i++ ){
-		if( pLODs[ i ]->GetVertexPositionSetCount() != pVertexPositionSetCount ){
+	const int vertexPositionSetCount = pVertexPositionSets.GetCount();
+	for(i=0; i<lodCount; i++){
+		if(pLODs.GetAt(i)->GetVertexPositionSets().GetCount() != vertexPositionSetCount){
 			return false;
 		}
 	}
@@ -217,50 +162,22 @@ void deModel::Prepare(){
 // Bones
 //////////
 
-int deModel::IndexOfBoneNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pBoneCount; i++ ){
-		if( pBones[ i ]->GetName() == name ){
-			return i;
-		}
-	}
-	return -1;
+int deModel::IndexOfBoneNamed(const char *name) const{
+	return pBones.IndexOfMatching([&](const deModelBone &bone){
+		return bone.GetName() == name;
+	});
 }
 
-bool deModel::HasBoneNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pBoneCount; i++ ){
-		if( pBones[ i ]->GetName() == name ){
-			return true;
-		}
-	}
-	return false;
+bool deModel::HasBoneNamed(const char *name) const{
+	return pBones.HasMatching([&](const deModelBone &bone){
+		return bone.GetName() == name;
+	});
 }
 
-deModelBone *deModel::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pBones[ index ];
-}
-
-void deModel::AddBone( deModelBone *bone ){
-	if( ! bone ){
-		DETHROW( deeInvalidParam );
-	}
+void deModel::AddBone(deTUniqueReference<deModelBone> &&bone){
+	DEASSERT_NOTNULL(bone)
 	
-	if( pBoneCount == pBoneSize ){
-		int i, newSize = pBoneSize * 3 / 2 + 1;
-		deModelBone **newArray = new deModelBone*[ newSize ];
-		if( pBones ){
-			for( i=0; i<pBoneCount; i++ ) newArray[ i ] = pBones[ i ];
-			delete [] pBones;
-		}
-		pBones = newArray;
-		pBoneSize = newSize;
-	}
-	
-	pBones[ pBoneCount++ ] = bone;
+	pBones.Add(std::move(bone));
 }
 
 
@@ -268,50 +185,22 @@ void deModel::AddBone( deModelBone *bone ){
 // Textures
 /////////////
 
-int deModel::IndexOfTextureNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pTextureCount; i++ ){
-		if( pTextures[ i ]->GetName() == name ){
-			return i;
-		}
-	}
-	return -1;
+int deModel::IndexOfTextureNamed(const char *name) const{
+	return pTextures.IndexOfMatching([&](const deModelTexture &texture){
+		return texture.GetName() == name;
+	});
 }
 
-bool deModel::HasTextureNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pTextureCount; i++ ){
-		if( pTextures[ i ]->GetName() == name ){
-			return true;
-		}
-	}
-	return false;
+bool deModel::HasTextureNamed(const char *name) const{
+	return pTextures.HasMatching([&](const deModelTexture &texture){
+		return texture.GetName() == name;
+	});
 }
 
-deModelTexture *deModel::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pTextures[ index ];
-}
-
-void deModel::AddTexture( deModelTexture *texture ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
-	}
+void deModel::AddTexture(deTUniqueReference<deModelTexture> &&texture){
+	DEASSERT_NOTNULL(texture)
 	
-	if( pTextureCount == pTextureSize ){
-		int i, newSize = pTextureSize * 3 / 2 + 1;
-		deModelTexture **newArray = new deModelTexture*[ newSize ];
-		if( pTextures ){
-			for( i=0; i<pTextureCount; i++ ) newArray[ i ] = pTextures[ i ];
-			delete [] pTextures;
-		}
-		pTextures = newArray;
-		pTextureSize = newSize;
-	}
-	
-	pTextures[ pTextureCount++ ] = texture;
+	pTextures.Add(std::move(texture));
 }
 
 
@@ -319,30 +208,10 @@ void deModel::AddTexture( deModelTexture *texture ){
 // LODs
 /////////
 
-deModelLOD *deModel::GetLODAt( int index ) const{
-	if( index < 0 || index >= pLODCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pLODs[ index ];
-}
-
-void deModel::AddLOD( deModelLOD *lod ){
-	if( ! lod ){
-		DETHROW( deeInvalidParam );
-	}
+void deModel::AddLOD(deTUniqueReference<deModelLOD> &&lod){
+	DEASSERT_NOTNULL(lod)
 	
-	if( pLODCount == pLODSize ){
-		int i, newSize = pLODSize * 3 / 2 + 1;
-		deModelLOD **newArray = new deModelLOD*[ newSize ];
-		if( pLODs ){
-			for( i=0; i<pLODCount; i++ ) newArray[ i ] = pLODs[ i ];
-			delete [] pLODs;
-		}
-		pLODs = newArray;
-		pLODSize = newSize;
-	}
-	
-	pLODs[ pLODCount++ ] = lod;
+	pLODs.Add(std::move(lod));
 }
 
 
@@ -350,52 +219,22 @@ void deModel::AddLOD( deModelLOD *lod ){
 // Vertex position sets
 /////////////////////////
 
-int deModel::IndexOfVertexPositionSetNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pVertexPositionSetCount; i++ ){
-		if( pVertexPositionSets[ i ]->GetName() == name ){
-			return i;
-		}
-	}
-	return -1;
+int deModel::IndexOfVertexPositionSetNamed(const char *name) const{
+	return pVertexPositionSets.IndexOfMatching([&](const deModelVertexPositionSet &set){
+		return set.GetName() == name;
+	});
 }
 
-bool deModel::HasVertexPositionSetNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pVertexPositionSetCount; i++ ){
-		if( pVertexPositionSets[ i ]->GetName() == name ){
-			return true;
-		}
-	}
-	return false;
+bool deModel::HasVertexPositionSetNamed(const char *name) const{
+	return pVertexPositionSets.HasMatching([&](const deModelVertexPositionSet &set){
+		return set.GetName() == name;
+	});
 }
 
-deModelVertexPositionSet *deModel::GetVertexPositionSetAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pVertexPositionSetCount )
+void deModel::AddVertexPositionSet(deTUniqueReference<deModelVertexPositionSet> &&set){
+	DEASSERT_NOTNULL(set)
 	
-	return pVertexPositionSets[ index ];
-}
-
-void deModel::AddVertexPositionSet( deModelVertexPositionSet *set ){
-	DEASSERT_NOTNULL( set )
-	
-	if( pVertexPositionSetCount == pVertexPositionSetSize ){
-		const int newSize = pVertexPositionSetSize * 3 / 2 + 1;
-		int i;
-		
-		deModelVertexPositionSet ** const newArray = new deModelVertexPositionSet*[ newSize ];
-		if( pVertexPositionSets ){
-			for( i=0; i<pVertexPositionSetCount; i++ ){
-				newArray[ i ] = pVertexPositionSets[ i ];
-			}
-			delete [] pVertexPositionSets;
-		}
-		pVertexPositionSets = newArray;
-		pVertexPositionSetSize = newSize;
-	}
-	
-	pVertexPositionSets[ pVertexPositionSetCount++ ] = set;
+	pVertexPositionSets.Add(std::move(set));
 }
 
 
@@ -403,8 +242,8 @@ void deModel::AddVertexPositionSet( deModelVertexPositionSet *set ){
 // System Peers
 /////////////////
 
-void deModel::SetPeerGraphic( deBaseGraphicModel *peer ){
-	if( peer == pPeerGraphic ){
+void deModel::SetPeerGraphic(deBaseGraphicModel *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
@@ -412,13 +251,13 @@ void deModel::SetPeerGraphic( deBaseGraphicModel *peer ){
 	
 	pPeerGraphic = peer;
 	
-	if( deletePeer ){
+	if(deletePeer){
 		delete deletePeer;
 	}
 }
 
-void deModel::SetPeerAudio ( deBaseAudioModel *peer ){
-	if( peer == pPeerAudio ){
+void deModel::SetPeerAudio (deBaseAudioModel *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
@@ -426,13 +265,13 @@ void deModel::SetPeerAudio ( deBaseAudioModel *peer ){
 	
 	pPeerAudio = peer;
 	
-	if( deletePeer ){
+	if(deletePeer){
 		delete deletePeer;
 	}
 }
 
-void deModel::SetPeerPhysics( deBasePhysicsModel *peer ){
-	if( peer == pPeerPhysics ){
+void deModel::SetPeerPhysics(deBasePhysicsModel *peer){
+	if(peer == pPeerPhysics){
 		return;
 	}
 	
@@ -440,7 +279,7 @@ void deModel::SetPeerPhysics( deBasePhysicsModel *peer ){
 	
 	pPeerPhysics = peer;
 	
-	if( deletePeer ){
+	if(deletePeer){
 		delete deletePeer;
 	}
 }
@@ -451,59 +290,46 @@ void deModel::SetPeerPhysics( deBasePhysicsModel *peer ){
 //////////////////////
 
 void deModel::pCalcBoneMatrices(){
-	if( pBoneCount == 0 ){
+	const int boneCount = pBones.GetCount();
+	if(boneCount == 0){
 		return;
 	}
 	
-	bool *calculated = NULL;
 	int i;
 	
-	try{
-		// create a temporary array to hold the calculated status
-		calculated = new bool[ pBoneCount ];
-		for( i=0; i<pBoneCount; i++ ){
-			calculated[ i ] = false;
-		}
-		
-		// keeps track of the count of bones in need of calculation
-		int remaining = pBoneCount;
-		
-		// loop until there are no more remaining bones
-		while( remaining > 0 ){
-			// loop over all bones and calculate those not done so yet
-			for( i=0; i<pBoneCount; i++ ){
-				// if calculated skip the bone
-				if( calculated[ i ] ){
-					continue;
-				}
-				deModelBone &bone = *pBones[ i ];
-				
-				// check if the parent if present is calculated
-				const int parent = bone.GetParent();
-				if( parent != -1 && ! calculated[ parent ] ){
-					continue;
-				}
-				
-				// calculate the matrix
-				decMatrix matrix( decMatrix::CreateWorld( bone.GetPosition(), bone.GetOrientation() ) );
-				if( parent != -1 ){
-					matrix *= pBones[ parent ]->GetMatrix();
-				}
-				bone.SetMatrix( matrix );
-				
-				// mark as calculate and decrease count of remaining bones by one
-				calculated[ i ] = true;
-				remaining--;
+	// create a temporary array to hold the calculated status
+	decTList<bool> calculated;
+	calculated.AddRange(boneCount, false);
+	
+	// keeps track of the count of bones in need of calculation
+	int remaining = boneCount;
+	
+	// loop until there are no more remaining bones
+	while(remaining > 0){
+		// loop over all bones and calculate those not done so yet
+		for(i=0; i<boneCount; i++){
+			// if calculated skip the bone
+			if(calculated[i]){
+				continue;
 			}
+			deModelBone &bone = *pBones.GetAt(i);
+			
+			// check if the parent if present is calculated
+			const int parent = bone.GetParent();
+			if(parent != -1 && !calculated[parent]){
+				continue;
+			}
+			
+			// calculate the matrix
+			decMatrix matrix(decMatrix::CreateWorld(bone.GetPosition(), bone.GetOrientation()));
+			if(parent != -1){
+				matrix *= pBones.GetAt(parent)->GetMatrix();
+			}
+			bone.SetMatrix(matrix);
+			
+			// mark as calculate and decrease count of remaining bones by one
+			calculated[i] = true;
+			remaining--;
 		}
-		
-		// free temporary array
-		delete [] calculated;
-		
-	}catch( const deException & ){
-		if( calculated ){
-			delete [] calculated;
-		}
-		throw;
 	}
 }

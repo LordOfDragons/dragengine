@@ -27,10 +27,10 @@
 
 #include "../../../deoglGL.h"
 #include "deoglSkinStateConstructedNode.h"
+#include "../../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 
-class deoglSharedVBOBlock;
 
 
 /**
@@ -38,8 +38,7 @@ class deoglSharedVBOBlock;
  */
 class deoglSkinStateCNShape : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNShape> Ref;
-	
+	using Ref = deTObjectReference<deoglSkinStateCNShape>;
 	
 	
 private:
@@ -48,11 +47,11 @@ private:
 	decColor pLineColor;
 	float pThickness;
 	
-	int pShapeMapped[ deSkinPropertyNodeShape::ShapeMappedCount ];
+	int pShapeMapped[deSkinPropertyNodeShape::ShapeMappedCount];
 	
 	bool pIsThick;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	bool pDirtyVBOBlock;
 	int pVBOBlockPointCount;
 	
@@ -70,14 +69,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNShape( deSkinPropertyNodeShape &node );
+	deoglSkinStateCNShape(deSkinPropertyNodeShape &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNShape( const deoglSkinStateCNShape &node );
+	deoglSkinStateCNShape(const deoglSkinStateCNShape &node);
 	
 protected:
 	/** Clean up skin state mapped. */
-	virtual ~deoglSkinStateCNShape() override;
+	~deoglSkinStateCNShape() override;
 	/*@}*/
 	
 	
@@ -98,7 +97,7 @@ public:
 	inline float GetThickness() const{ return pThickness; }
 	
 	/** Shape mapped for type. */
-	int GetShapeMappedFor( deSkinPropertyNodeShape::eShapeMapped type ) const;
+	int GetShapeMappedFor(deSkinPropertyNodeShape::eShapeMapped type) const;
 	
 	
 	
@@ -106,23 +105,23 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	void Update(deoglSkinState &state) override;
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state ) override;
+	void PrepareForRender(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
-	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
+	deoglSkinStateConstructedNode::Ref Copy() const override;
 	
 	
 	
 	/** \name Points */
 	/*@{*/
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	
 	
@@ -151,10 +150,10 @@ public:
 	
 private:
 	int pRequiredPointCount();
-	void pPrepareVBOBlock( deoglSkinState &state );
-	void pWriteVBOData( deoglSkinState &state );
-	void pCalcArc( decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
-		float startAngle, float stopAngle, int stepCount );
+	void pPrepareVBOBlock(deoglSkinState &state);
+	void pWriteVBOData(deoglSkinState &state);
+	void pCalcArc(decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
+		float startAngle, float stopAngle, int stepCount);
 };
 
 #endif

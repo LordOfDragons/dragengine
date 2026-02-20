@@ -25,10 +25,15 @@
 #ifndef _DEOGLRSKYLAYER_H_
 #define _DEOGLRSKYLAYER_H_
 
+#include <dragengine/deTUniqueReference.h>
+
+#include "../skin/deoglRSkin.h"
+
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class deoglRSkin;
 class deoglRSkyControllerTarget;
 
 
@@ -38,11 +43,13 @@ class deoglRSkyControllerTarget;
  */
 class deoglRSkyLayer{
 public:
+	using Ref = deTUniqueReference<deoglRSkyLayer>;
+	
 	/** Sky layer body. */
 	struct sBody {
-		deoglRSkin *skin;
-		decVector vertex[ 4 ];
-		decVector2 texCoords[ 4 ];
+		deoglRSkin::Ref skin;
+		decVector vertex[4];
+		decVector2 texCoords[4];
 		decColor color;
 		decVector2 size;
 		decQuaternion orientation;
@@ -89,13 +96,12 @@ public:
 private:
 	eLayerTypes pLayerType;
 	
-	int pTextures[ 6 ];
-	deoglRSkin *pSkin;
+	int pTextures[6];
+	deoglRSkin::Ref pSkin;
 	
-	sBody *pBodies;
-	int pBodyCount;
+	decTList<sBody> pBodies;
 	
-	deoglRSkyControllerTarget *pTargets[ deSkyLayer::etAmbientIntensity + 1 ];
+	deTUniqueReference<deoglRSkyControllerTarget> pTargets[deSkyLayer::etAmbientIntensity + 1];
 	
 	const decVector pOffset;
 	const decVector pOrientation;
@@ -117,7 +123,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky layer. */
-	deoglRSkyLayer( const deSkyLayer &layer );
+	deoglRSkyLayer(const deSkyLayer &layer);
 	
 	/** Clean up sky. */
 	~deoglRSkyLayer();
@@ -131,24 +137,21 @@ public:
 	inline eLayerTypes GetLayerType() const{ return pLayerType; }
 	
 	/** Textures. */
-	inline const int *GetTextures() const{ return &pTextures[ 0 ]; }
+	inline const int *GetTextures() const{ return &pTextures[0]; }
 	
 	/** Render skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	
 	
 	/** Bodies. */
-	inline const sBody *GetBodies() const{ return pBodies; }
-	
-	/** Number of bodies. */
-	inline int GetBodyCount() const{ return pBodyCount; }
+	inline const decTList<sBody> &GetBodies() const{ return pBodies; }
 	
 	
 	
 	/** Target. */
 	inline const deoglRSkyControllerTarget **GetTargets() const{
-		return ( const deoglRSkyControllerTarget ** )pTargets; }
+		return (const deoglRSkyControllerTarget **)pTargets;}
 	
 	
 	
@@ -194,7 +197,7 @@ public:
 	
 private:
 	void pUpdateSkins();
-	void pInitBodies( const deSkyLayer &layer );
+	void pInitBodies(const deSkyLayer &layer);
 };
 
 #endif

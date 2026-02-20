@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -28,9 +28,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeControllerList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -41,9 +38,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeType.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeTypeList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurves.cpp">
@@ -62,9 +56,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMainListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWindowProperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPController.cpp">
@@ -89,6 +80,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPViewListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWindowProperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveEmitter.cpp">
@@ -223,205 +217,199 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\configuration\peeConfiguration.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\configuration\peeConfigurationXML.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeControllerList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeEmitterListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeParameter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeType.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\emitter\peeTypeList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurves.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\curves\peeWindowCurvesListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeTaskSyncGameDefinition.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeViewEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMain.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\peeWindowMainListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWindowProperties.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPControllerListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPType.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPTypeListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPUndoHistory.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPUndoHistoryListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPView.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWPViewListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\gui\properties\peeWindowProperties.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\loadsave\peeLoadSaveSystem.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\particleEmitterEditor.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\peeIGDEModule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerAdd.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveDown.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveUp.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetName.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetUpper.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleClamp.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleFrozen.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerToggleLinkToTime.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\emitter\peeUEmitterSetBurstLifetime.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\emitter\peeUEmitterToggleEmitBurst.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetControllerSpread.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetControllerValue.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurve.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveBeam.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveProgress.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveSpread.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetCurveValue.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetSpread.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\parameter\peeUParameterSetValue.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeAdd.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeMoveDown.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeMoveUp.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeRemove.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetCastFrom.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetCollisionResponse.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetEmitController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetEmitMinImpulse.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetIntervalAsDistance.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetModelPath.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetModelSkinPath.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetName.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPathCollisionEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPathTrailEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetPhysicsSize.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetSimulationType.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetSkinPath.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\type\peeUTypeSetTrailController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

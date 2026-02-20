@@ -35,8 +35,7 @@ class deoglRHeightTerrain;
  */
 class deoglHeightTerrainListener : public deObject{
 public:
-	typedef deTObjectReference<deoglHeightTerrainListener> Ref;
-	
+	using Ref = deTObjectReference<deoglHeightTerrainListener>;
 	
 	
 	/** \name Constructors and Destructors */
@@ -44,19 +43,20 @@ public:
 	/** Create height terrain listener. */
 	deoglHeightTerrainListener();
 	
+protected:
 	/** Clean up height terrain listener. */
-	virtual ~deoglHeightTerrainListener();
+	~deoglHeightTerrainListener() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** Height terrain has been destroyed. */
-	virtual void HeightTerrainDestroyed( deoglRHeightTerrain &heightTerrain );
+	virtual void HeightTerrainDestroyed(deoglRHeightTerrain &heightTerrain);
 	
 	/** Sectors changed. */
-	virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+	virtual void SectorsChanged(deoglRHeightTerrain &heightTerrain);
 	/*@}*/
 };
 

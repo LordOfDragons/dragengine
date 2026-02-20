@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -40,32 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\eossdk\src\module.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosResourceUrl.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdk.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkPendingRequest.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkServiceEos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosResourceUrl.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdk.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkPendingRequest.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkServiceEos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -279,4 +253,30 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosResourceUrl.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdk.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkPendingRequest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkServiceEos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosResourceUrl.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdk.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkPendingRequest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkServiceEos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.h" />
+  </ItemGroup>
 </Project>

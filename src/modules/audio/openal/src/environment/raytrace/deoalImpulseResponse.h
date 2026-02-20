@@ -25,12 +25,14 @@
 #ifndef _DEOALIMPULSERESPONSE_H_
 #define _DEOALIMPULSERESPONSE_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoalSoundRayInteraction;
 
 
 
 /**
- * \brief Impulse response.
+ * Impulse response.
  * 
  * List of time/values whereas values can have different meaning depending on the usage of the
  * impulse response. The list is greedy to avoid allocations. Entries can be added to the
@@ -39,7 +41,7 @@ class deoalSoundRayInteraction;
  */
 class deoalImpulseResponse{
 public:
-	/** \brief Impulse entry. */
+	/** Impulse entry. */
 	struct sImpulse{
 		float time;
 		float low;
@@ -50,22 +52,20 @@ public:
 	
 	
 private:
-	sImpulse *pImpulses;
-	int pCount;
-	int pSize;
+	decTList<sImpulse> pImpulses;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create impulse response. */
+	/** Create impulse response. */
 	deoalImpulseResponse();
 	
-	/** \brief Create copy of impulse response. */
-	deoalImpulseResponse( const deoalImpulseResponse &response );
+	/** Create copy of impulse response. */
+	deoalImpulseResponse(const deoalImpulseResponse &response);
 	
-	/** \brief Clean up impulse response. */
+	/** Clean up impulse response. */
 	~deoalImpulseResponse();
 	/*@}*/
 	
@@ -73,52 +73,49 @@ public:
 	
 	/** \name Manegement */
 	/*@{*/
-	/** \brief Number of impulses. */
-	inline int GetCount() const{ return pCount; }
+	/** \brief Impulses. */
+	inline const decTList<sImpulse> &GetImpulses() const{ return pImpulses; }
 	
-	/** \brief Impulse at index. */
-	const sImpulse &GetAt( int index ) const;
+	/** Add impulse producing unsorted impulse response. */
+	void Add(float time, float low, float medium, float high);
 	
-	/** \brief Add impulse producing unsorted impulse response. */
-	void Add( float time, float low, float medium, float high );
+	/** Add impulse response producing unsorted impulse response. */
+	void Add(const deoalImpulseResponse &response);
 	
-	/** \brief Add impulse response producing unsorted impulse response. */
-	void Add( const deoalImpulseResponse &response );
+	/** Insert impulse producing impulse response sorted by time. */
+	void Insert(float time, float low, float medium, float high);
 	
-	/** \brief Insert impulse producing impulse response sorted by time. */
-	void Insert( float time, float low, float medium, float high );
+	/** Insert impulse response producing impulse response sorted by time. */
+	void Insert(const deoalImpulseResponse &response);
 	
-	/** \brief Insert impulse response producing impulse response sorted by time. */
-	void Insert( const deoalImpulseResponse &response );
+	/** Insert scaled impulse response producing impulse response sorted by time. */
+	void InsertScaled(const deoalImpulseResponse &response, float scale);
 	
-	/** \brief Insert scaled impulse response producing impulse response sorted by time. */
-	void InsertScaled( const deoalImpulseResponse &response, float scale );
-	
-	/** \brief Clear impulse response. */
+	/** Clear impulse response. */
 	void Clear();
 	
-	/** \brief Reserve space in the array to make future Add/Insert more efficient. */
-	void ReserveSize( int size );
+	/** Reserve space in the array to make future Add/Insert more efficient. */
+	void ReserveSize(int size);
 	
 	
 	
-	/** \brief Square impulse response. */
+	/** Square impulse response. */
 	void Square();
 	
-	/** \brief Convert from pressure to SPL[dB] (sound pressure level). */
+	/** Convert from pressure to SPL[dB] (sound pressure level). */
 	void PressureToSPL();
 	
-	/** \brief Convert from energy/intensity to SIL[dB] (sound intensity level). */
+	/** Convert from energy/intensity to SIL[dB] (sound intensity level). */
 	void IntensityToSIL();
 	
-	/** \brief Convert from energy/intensity to pressure(OpenAL). */
+	/** Convert from energy/intensity to pressure(OpenAL). */
 	void IntensityToPressure();
 	
-	/** \brief Convert from pressure(OpenAL) to energy/intensity. */
+	/** Convert from pressure(OpenAL) to energy/intensity. */
 	void PressureToIntensity();
 	
 	/**
-	 * \brief Schroedinger backwards integration.
+	 * Schroedinger backwards integration.
 	 * 
 	 * Impulse response has be energy/intensity and will become sound power level (dB).
 	 * If impulse response is pressure call Square() first.
@@ -126,7 +123,7 @@ public:
 	void BackwardIntegrate();
 	
 	/**
-	 * \brief Calculate slope in dB/s from first to last impulse.
+	 * Calculate slope in dB/s from first to last impulse.
 	 * 
 	 * Valid only for impulse response after BackwardIntegrate() has been called.
 	 * The returned impulse contains these values:
@@ -140,7 +137,7 @@ public:
 	sImpulse Slopes() const;
 	
 	/**
-	 * \brief Calculate reverberation time from first to last impulse.
+	 * Calculate reverberation time from first to last impulse.
 	 * 
 	 * Valid only for impulse response after BackwardIntegrate() has been called.
 	 * The returned impulse contains these values:
@@ -153,25 +150,24 @@ public:
 	 * 
 	 * The reverberation time is calculated as "dropDb / slope[dB/s]" with default dropDb = 60.
 	 */
-	sImpulse ReverberationTime( float dropDb = 60.0f ) const;
+	sImpulse ReverberationTime(float dropDb = 60.0f) const;
 	/*@}*/
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Assign. */
-	deoalImpulseResponse &operator=( const deoalImpulseResponse &list );
+	/** Assign. */
+	deoalImpulseResponse &operator=(const deoalImpulseResponse &list);
 	
-	/** \brief Scale values by factor. */
-	deoalImpulseResponse &operator*=( float factor );
+	/** Scale values by factor. */
+	deoalImpulseResponse &operator*=(float factor);
 	/*@}*/
 	
 	
 	
 private:
-	void pResize( int size );
-	void pInsert( float time, float low, float medium, float high );
+	void pInsert(float time, float low, float medium, float high);
 };
 
 #endif

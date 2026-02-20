@@ -37,6 +37,11 @@
  * applied to the radius in the x and z direction.
  */
 class DE_DLL_EXPORT decShapeSphere : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeSphere>;
+	
+	
 private:
 	float pRadius;
 	decVector2 pAxisScaling;
@@ -47,19 +52,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sphere shape. */
-	decShapeSphere( float radius );
+	decShapeSphere(float radius);
 	
 	/** \brief Create sphere shape. */
-	decShapeSphere( float radius, const decVector &position );
+	decShapeSphere(float radius, const decVector &position);
 	
 	/** \brief Create tapered sphere shape. */
-	decShapeSphere( float radius, const decVector2 &axisScaling );
+	decShapeSphere(float radius, const decVector2 &axisScaling);
 	
 	/** \brief Create tapered sphere shape. */
-	decShapeSphere( float radius, const decVector2 &axisScaling, const decVector &position );
+	decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position);
 	
 	/** \brief Clean up sphere shape. */
-	virtual ~decShapeSphere();
+	~decShapeSphere() override;
 	/*@}*/
 	
 	
@@ -70,18 +75,18 @@ public:
 	inline float GetRadius() const{ return pRadius; }
 	
 	/** \brief Set radius. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** \brief Axis scaling. */
 	inline const decVector2 &GetAxisScaling() const{ return pAxisScaling; }
 	
 	/** \brief Set axis scaling. */
-	void SetAxisScaling( const decVector2 &axisScaling );
+	void SetAxisScaling(const decVector2 &axisScaling);
 	
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	
@@ -89,7 +94,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	void Visit(decShapeVisitor &visitor) override;
 	/*@}*/
 };
 

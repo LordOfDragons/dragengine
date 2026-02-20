@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -35,8 +35,12 @@ class peeType;
  * \brief Undo Action Set Type Name.
  */
 class peeUTypeSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeSetName>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldName;
 	decString pNewName;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetName( peeType *type, const char *newName );
+	peeUTypeSetName(peeType *type, const char *newName);
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUTypeSetName();
+	~peeUTypeSetName() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

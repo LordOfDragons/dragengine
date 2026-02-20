@@ -26,7 +26,7 @@
 #define _CECAACTORSPEAK_H_
 
 #include "ceConversationAction.h"
-#include "../strip/ceStripList.h"
+#include "../strip/ceStrip.h"
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
@@ -35,7 +35,7 @@
 class ceConversation;
 
 class deEngine;
-class deSound;
+#include <dragengine/resources/sound/deSound.h>
 
 
 
@@ -46,13 +46,12 @@ class deSound;
  */
 class ceCAActorSpeak : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCAActorSpeak> Ref;
-	
+	using Ref = deTObjectReference<ceCAActorSpeak>;
 	
 	
 private:
 	deEngine *pEngine;
-	deSound *pEngSound;
+	deSound::Ref pEngSound;
 	bool pLoaded;
 	
 	decString pActor;
@@ -60,12 +59,12 @@ private:
 	decString pTextBoxTextTranslate;
 	decString pTextBoxTextStyle;
 	decString pPathSound;
-	ceStripList pWords;
-	ceStripList pFacePoses;
-	ceStripList pGestures;
-	ceStripList pBodyLookAt;
-	ceStripList pHeadLookAt;
-	ceStripList pEyesLookAt;
+	ceStrip::List pWords;
+	ceStrip::List pFacePoses;
+	ceStrip::List pGestures;
+	ceStrip::List pBodyLookAt;
+	ceStrip::List pHeadLookAt;
+	ceStrip::List pEyesLookAt;
 	decString pMovement;
 	float pMinSpeechTime;
 	bool pUseSpeechAnimation;
@@ -75,11 +74,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new actor speak conversation action. */
-	ceCAActorSpeak( deEngine *engine );
+	ceCAActorSpeak(deEngine *engine);
 	/** Creates a new actor speak conversation action. */
-	ceCAActorSpeak( const ceCAActorSpeak &action );
+	ceCAActorSpeak(const ceCAActorSpeak &action);
 	/** Cleans up the actor speak conversation action. */
-	virtual ~ceCAActorSpeak();
+protected:
+	~ceCAActorSpeak() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -87,70 +88,70 @@ public:
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the sound file loading it if not loaded already. */
-	deSound *GetEngineSound();
+	const deSound::Ref &GetEngineSound();
 	
 	/** Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	
 	/** Retrieves the text box text. */
 	inline const decUnicodeString &GetTextBoxText() const{ return pTextBoxText; }
 	
 	/** Sets the text box text. */
-	void SetTextBoxText( const decUnicodeString &text );
+	void SetTextBoxText(const decUnicodeString &text);
 	
 	/** Translated text box text. */
 	inline const decString &GetTextBoxTextTranslate() const{ return pTextBoxTextTranslate; }
 	
 	/** Set translated text box text. */
-	void SetTextBoxTextTranslate( const char *text );
+	void SetTextBoxTextTranslate(const char *text);
 	
 	/** Resolved text box text. */
-	decUnicodeString ResolveTextBoxText( const ceConversation &conversation ) const;
+	decUnicodeString ResolveTextBoxText(const ceConversation &conversation) const;
 	
 	/** \brief Retrieves the text box text style. */
 	inline const decString &GetTextBoxTextStyle() const{ return pTextBoxTextStyle; }
 	/** \brief Sets the text box text style. */
-	void SetTextBoxTextStyle( const char *style );
+	void SetTextBoxTextStyle(const char *style);
 	/** Retrieves the path to the sound file or empty to use none. */
 	inline const decString &GetPathSound() const{ return pPathSound; }
 	/** Sets the path to the sound file or empty to use none. */
-	void SetPathSound( const char *path );
+	void SetPathSound(const char *path);
 	/** Retrieves the words list for lip-sync. */
-	inline ceStripList &GetWordList(){ return pWords; }
-	inline const ceStripList &GetWordList() const{ return pWords; }
+	inline ceStrip::List &GetWords(){ return pWords; }
+	inline const ceStrip::List &GetWords() const{ return pWords; }
 	/** Retrieves the face pose list. */
-	inline ceStripList &GetFacePoseList(){ return pFacePoses; }
-	inline const ceStripList &GetFacePoseList() const{ return pFacePoses; }
+	inline ceStrip::List &GetFacePoses(){ return pFacePoses; }
+	inline const ceStrip::List &GetFacePoses() const{ return pFacePoses; }
 	/** Retrieves the gesture list. */
-	inline ceStripList &GetGestureList(){ return pGestures; }
-	inline const ceStripList &GetGestureList() const{ return pGestures; }
+	inline ceStrip::List &GetGestures(){ return pGestures; }
+	inline const ceStrip::List &GetGestures() const{ return pGestures; }
 	/** Retrieves the body look-at list. */
-	inline ceStripList &GetBodyLookAtList(){ return pBodyLookAt; }
-	inline const ceStripList &GetBodyLookAtList() const{ return pBodyLookAt; }
+	inline ceStrip::List &GetBodyLookAts(){ return pBodyLookAt; }
+	inline const ceStrip::List &GetBodyLookAts() const{ return pBodyLookAt; }
 	/** Retrieves the head look-at list. */
-	inline ceStripList &GetHeadLookAtList(){ return pHeadLookAt; }
-	inline const ceStripList &GetHeadLookAtList() const{ return pHeadLookAt; }
+	inline ceStrip::List &GetHeadLookAts(){ return pHeadLookAt; }
+	inline const ceStrip::List &GetHeadLookAts() const{ return pHeadLookAt; }
 	/** Retrieves the eyes look-at list. */
-	inline ceStripList &GetEyesLookAtList(){ return pEyesLookAt; }
-	inline const ceStripList &GetEyesLookAtList() const{ return pEyesLookAt; }
+	inline ceStrip::List &GetEyesLookAts(){ return pEyesLookAt; }
+	inline const ceStrip::List &GetEyesLookAtList() const{ return pEyesLookAt; }
 	/** Retrieves the movement to use or empty to not change. */
 	inline const decString &GetMovement() const{ return pMovement; }
 	/** Sets the movement to use or empty to not change. */
-	void SetMovement( const char *movement );
+	void SetMovement(const char *movement);
 	/** \brief Retrieves the minimum time the actor is speaking. */
 	inline float GetMinSpeechTime() const{ return pMinSpeechTime; }
 	/** \brief Sets the minimum time the actor is speaking. */
-	void SetMinSpeechTime( float minSpeechTime );
+	void SetMinSpeechTime(float minSpeechTime);
 	
 	/** \brief Determines if speech animation is used for this action. */
 	inline bool GetUseSpeechAnimation() const{ return pUseSpeechAnimation; }
 	/** \brief Sets if speech animation is used for this action. */
-	void SetUseSpeechAnimation( bool useSpeechAnimation );
+	void SetUseSpeechAnimation(bool useSpeechAnimation);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 	
 private:

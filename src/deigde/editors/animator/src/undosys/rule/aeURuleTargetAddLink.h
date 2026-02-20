@@ -22,17 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _AEURULETARGETADDLINK_H_
 #define _AEURULETARGETADDLINK_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
 
-// predefinitions
-class aeRule;
-class aeLink;
-class aeControllerTarget;
+#include "../../animator/controller/aeControllerTarget.h"
+#include "../../animator/rule/aeRule.h"
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -42,29 +39,33 @@ class aeControllerTarget;
  * Adds a link to a rule target.
  */
 class aeURuleTargetAddLink : public igdeUndo{
-private:
-	aeRule *pRule;
-	aeControllerTarget *pTarget;
+public:
+	using Ref = deTObjectReference<aeURuleTargetAddLink>;
 	
-	aeLink *pLink;
+	
+private:
+	aeRule::Ref pRule;
+	aeControllerTarget::Ref pTarget;
+	
+	aeLink::Ref pLink;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTargetAddLink( aeRule *rule, aeControllerTarget *target, aeLink *link );
+	aeURuleTargetAddLink(aeRule *rule, aeControllerTarget *target, aeLink *link);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTargetAddLink();
+	~aeURuleTargetAddLink() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

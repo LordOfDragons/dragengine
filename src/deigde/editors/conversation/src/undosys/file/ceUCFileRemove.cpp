@@ -40,31 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileRemove::ceUCFileRemove( ceConversationFile *file ){
-	if( ! file ) DETHROW( deeInvalidParam );
+ceUCFileRemove::ceUCFileRemove(ceConversationFile *file){
+	if(!file) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = file->GetConversation();
-	if( ! conversation ) DETHROW( deeInvalidParam );
+	if(!conversation) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pFile = NULL;
+	pConversation = nullptr;
+	pFile = nullptr;
 	
-	SetShortInfo( "Remove File" );
+	SetShortInfo("@Conversation.Undo.RemoveFile");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileRemove::~ceUCFileRemove(){
-	if( pFile ){
-		pFile->FreeReference();
-	}
-	if( pConversation ){
-		pConversation->FreeReference();
-	}
 }
 
 
@@ -73,9 +64,9 @@ ceUCFileRemove::~ceUCFileRemove(){
 ///////////////
 
 void ceUCFileRemove::Undo(){
-	pConversation->AddFile( pFile );
+	pConversation->AddFile(pFile);
 }
 
 void ceUCFileRemove::Redo(){
-	pConversation->RemoveFile( pFile );
+	pConversation->RemoveFile(pFile);
 }

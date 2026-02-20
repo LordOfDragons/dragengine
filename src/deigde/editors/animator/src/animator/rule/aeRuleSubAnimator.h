@@ -26,13 +26,12 @@
 #define _AERULESUBANIMATOR_H_
 
 #include "aeRule.h"
+#include "../controller/aeController.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/animator/deAnimator.h>
 
-class aeController;
 class aeLoadSaveSystem;
-
-class deAnimator;
 class deAnimatorRuleSubAnimator;
 
 
@@ -42,28 +41,33 @@ class deAnimatorRuleSubAnimator;
  */
 class aeRuleSubAnimator : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleSubAnimator> Ref;
+	using Ref = deTObjectReference<aeRuleSubAnimator>;
+	
+	using ConnectionList = decTObjectList<aeController>;
+	
 	
 private:
 	decString pPathSubAnimator;
-	deAnimator *pSubAnimator;
+	deAnimator::Ref pSubAnimator;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	decObjectList pConnections;
+	ConnectionList pConnections;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new sub animator rule. */
-	aeRuleSubAnimator();
+	explicit aeRuleSubAnimator(const char *name);
 	/** Create a copy of a sub animator rule. */
-	aeRuleSubAnimator( const aeRuleSubAnimator &copy );
+	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */
-	virtual ~aeRuleSubAnimator();
+protected:
+	~aeRuleSubAnimator() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -71,66 +75,63 @@ public:
 	/** Retrieve the path to the sub animator. */
 	inline const decString &GetPathSubAnimator() const{ return pPathSubAnimator; }
 	/** Set the path to the sub animator. */
-	void SetPathSubAnimator( const char *path );
-	/** Retrieve the sub animator or NULL if not existing. */
-	inline deAnimator *GetSubAnimator() const{ return pSubAnimator; }
+	void SetPathSubAnimator(const char *path);
+	/** Retrieve the sub animator or nullptr if not existing. */
+	inline const deAnimator::Ref &GetSubAnimator() const{ return pSubAnimator; }
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
 	
-	/** Number of connections. */
-	int GetConnectionCount() const;
+	/** Connections. */
+	inline const ConnectionList &GetConnections() const{ return pConnections; }
 	
-	/** Controller for target controller or \em NULL. */
-	aeController *GetControllerAt( int position ) const;
-	
-	/** Set controller for target controller or \em NULL. */
-	void SetControllerAt( int position, aeController *controller );
+	/** Set controller for target controller or \em nullptr. */
+	void SetControllerAt(int position, aeController *controller);
 	
 	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	/** Determine if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Update Component and Animation. */
-	virtual void UpdateCompAnim();
+	void UpdateCompAnim() override;
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	void ListLinks(aeLink::List& list) override;
 	
 	/** Parent animator changed. */
-	virtual void OnParentAnimatorChanged();
+	void OnParentAnimatorChanged() override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another sub animator rule to this sub animator rule. */
-	virtual aeRuleSubAnimator &operator=( const aeRuleSubAnimator &copy );
+	virtual aeRuleSubAnimator &operator=(const aeRuleSubAnimator &copy);
 	/*@}*/
 	
 private:
-	void pUpdateConnections( deAnimatorRuleSubAnimator &rule ) const;
+	void pUpdateConnections(deAnimatorRuleSubAnimator &rule) const;
 };
 
 #endif

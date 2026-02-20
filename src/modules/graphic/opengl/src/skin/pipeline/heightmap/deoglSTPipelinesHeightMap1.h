@@ -36,32 +36,30 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesHeightMap1( const deoglSkinTexture &texture );
+	explicit deoglSTPipelinesHeightMap1(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesHeightMap1();
+	~deoglSTPipelinesHeightMap1() override;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
 	
-	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
+	void pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched) override;
 };
 
 #endif

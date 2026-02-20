@@ -38,29 +38,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionGPU::deoglMemoryConsumptionGPU( const char *name ) :
-pName( name ),
-pCount( 0 ),
-pConsumption( 0 ),
-pGroup( nullptr ),
-pGroup2( nullptr ){
+deoglMemoryConsumptionGPU::deoglMemoryConsumptionGPU(const char *name) :
+pName(name),
+pCount(0),
+pConsumption(0),
+pGroup(nullptr),
+pGroup2(nullptr){
 }
 
-deoglMemoryConsumptionGPU::deoglMemoryConsumptionGPU( const char *name, deoglMemoryConsumptionGPU &group ) :
-pName( name ),
-pCount( 0 ),
-pConsumption( 0 ),
-pGroup( &group ),
-pGroup2( nullptr ){
+deoglMemoryConsumptionGPU::deoglMemoryConsumptionGPU(const char *name, deoglMemoryConsumptionGPU &group) :
+pName(name),
+pCount(0),
+pConsumption(0),
+pGroup(&group),
+pGroup2(nullptr){
 }
 
-deoglMemoryConsumptionGPU::deoglMemoryConsumptionGPU( const char *name,
-	deoglMemoryConsumptionGPU &group, deoglMemoryConsumptionGPU &group2 ) :
-pName( name ),
-pCount( 0 ),
-pConsumption( 0 ),
-pGroup( &group ),
-pGroup2( &group2 ){
+deoglMemoryConsumptionGPU::deoglMemoryConsumptionGPU(const char *name,
+	deoglMemoryConsumptionGPU &group, deoglMemoryConsumptionGPU &group2) :
+pName(name),
+pCount(0),
+pConsumption(0),
+pGroup(&group),
+pGroup2(&group2){
 }
 
 deoglMemoryConsumptionGPU::~deoglMemoryConsumptionGPU(){
@@ -74,42 +74,42 @@ deoglMemoryConsumptionGPU::~deoglMemoryConsumptionGPU(){
 void deoglMemoryConsumptionGPU::IncrementCount(){
 	pCount++;
 	
-	if( pGroup ){
+	if(pGroup){
 		pGroup->IncrementCount();
 	}
-	if( pGroup2 ){
+	if(pGroup2){
 		pGroup2->IncrementCount();
 	}
 }
 
 void deoglMemoryConsumptionGPU::DecrementCount(){
-	if( pGroup2 ){
+	if(pGroup2){
 		pGroup2->DecrementCount();
 	}
-	if( pGroup ){
+	if(pGroup){
 		pGroup->DecrementCount();
 	}
 	
 	pCount--;
 }
 
-void deoglMemoryConsumptionGPU::IncrementConsumption( unsigned long long bytes ){
+void deoglMemoryConsumptionGPU::IncrementConsumption(unsigned long long bytes){
 	pConsumption += bytes;
 	
-	if( pGroup ){
-		pGroup->IncrementConsumption( bytes );
+	if(pGroup){
+		pGroup->IncrementConsumption(bytes);
 	}
-	if( pGroup2 ){
-		pGroup2->IncrementConsumption( bytes );
+	if(pGroup2){
+		pGroup2->IncrementConsumption(bytes);
 	}
 }
 
-void deoglMemoryConsumptionGPU::DecrementConsumption( unsigned long long bytes ){
-	if( pGroup2 ){
-		pGroup2->DecrementConsumption( bytes );
+void deoglMemoryConsumptionGPU::DecrementConsumption(unsigned long long bytes){
+	if(pGroup2){
+		pGroup2->DecrementConsumption(bytes);
 	}
-	if( pGroup ){
-		pGroup->DecrementConsumption( bytes );
+	if(pGroup){
+		pGroup->DecrementConsumption(bytes);
 	}
 	
 	pConsumption -= bytes;

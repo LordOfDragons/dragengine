@@ -44,7 +44,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -58,27 +57,30 @@
 namespace {
 
 class cActionFromEyesLookAt : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionFromEyesLookAt>;
+	
+private:
 protected:
 	ceWDSLaneHeadLookAt &pLane;
 	
 public:
-	cActionFromEyesLookAt( ceWDSLaneHeadLookAt &lane ) : igdeAction( "Set from Eyes Look-At",
-		NULL, "Set from Eyes Look-At" ),
-	pLane( lane ){ }
+	cActionFromEyesLookAt(ceWDSLaneHeadLookAt &lane) : igdeAction("@Conversation.DopeSheetLaneHeadLookAt.SetFromEyesLookAt",
+		nullptr, "@Conversation.DopeSheetLaneHeadLookAt.SetFromEyesLookAt"),
+	pLane(lane){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if( ! action ){
+		if(!action){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAASpeakHeadLAFromEyesLA( pLane.GetWindow().GetTopic(), action ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakHeadLAFromEyesLA::Ref::New(pLane.GetWindow().GetTopic(), action));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pLane.GetWindow().GetActionASpeak() );
+	void Update() override{
+		SetEnabled(pLane.GetWindow().GetActionASpeak());
 	}
 };
 
@@ -92,9 +94,9 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSLaneHeadLookAt::ceWDSLaneHeadLookAt( ceWindowDopeSheet &dopeSheet, int index,
-	const char *label, const char *description ) :
-ceWDSLane( dopeSheet, index, label, description ){
+ceWDSLaneHeadLookAt::ceWDSLaneHeadLookAt(ceWindowDopeSheet &dopeSheet, int index,
+	const char *label, const char *description) :
+ceWDSLane(dopeSheet, index, label, description){
 }
 
 ceWDSLaneHeadLookAt::~ceWDSLaneHeadLookAt(){
@@ -105,60 +107,60 @@ ceWDSLaneHeadLookAt::~ceWDSLaneHeadLookAt(){
 // Management
 ///////////////
 
-void ceWDSLaneHeadLookAt::OnContextMenu( igdeMenuCascade &menu, const decPoint &position ){
-	ceWDSLane::OnContextMenu( menu, position );
+void ceWDSLaneHeadLookAt::OnContextMenu(igdeMenuCascade &menu, const decPoint &position){
+	ceWDSLane::OnContextMenu(menu, position);
 	
 	igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-	helper.MenuCommand( menu, new cActionFromEyesLookAt( *this ), true );
+	helper.MenuCommand(menu, cActionFromEyesLookAt::Ref::New(*this));
 }
 
 
 
-const ceStripList &ceWDSLaneHeadLookAt::GetStripList() const{
+const ceStrip::List &ceWDSLaneHeadLookAt::GetStripList() const{
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? action->GetHeadLookAtList() : GetEmptyList();
+	return action ? action->GetHeadLookAts() : GetEmptyList();
 }
 
-void ceWDSLaneHeadLookAt::FillIDList( decStringList &list ){
-	FillIDListLookAt( list );
+void ceWDSLaneHeadLookAt::FillIDList(decStringList &list){
+	FillIDListLookAt(list);
 }
 
-igdeUndo *ceWDSLaneHeadLookAt::UndoStripAdd( ceStrip *strip, int index ){
+igdeUndo::Ref ceWDSLaneHeadLookAt::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLAAdd( GetWindow().GetTopic(), action, strip, index ) : NULL;
+	return action ? ceUCAASpeakHeadLAAdd::Ref::New(GetWindow().GetTopic(), action, strip, index) : ceUCAASpeakHeadLAAdd::Ref();
 }
 
-igdeUndo *ceWDSLaneHeadLookAt::UndoStripRemove( ceStrip *strip ){
+igdeUndo::Ref ceWDSLaneHeadLookAt::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLARemove( GetWindow().GetTopic(), action, strip ) : NULL;
+	return action ? ceUCAASpeakHeadLARemove::Ref::New(GetWindow().GetTopic(), action, strip) : ceUCAASpeakHeadLARemove::Ref();
 }
 
-igdeUndo *ceWDSLaneHeadLookAt::UndoStripRemoveAll(){
+igdeUndo::Ref ceWDSLaneHeadLookAt::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLAClear( GetWindow().GetTopic(), action ) : NULL;
+	return action ? ceUCAASpeakHeadLAClear::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakHeadLAClear::Ref();
 }
 
-igdeUndo *ceWDSLaneHeadLookAt::UndoStripReplace( ceStrip *strip, ceStrip *withStrip ){
+igdeUndo::Ref ceWDSLaneHeadLookAt::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLASet( GetWindow().GetTopic(), action, strip, withStrip ) : NULL;
+	return action ? ceUCAASpeakHeadLASet::Ref::New(GetWindow().GetTopic(), action, strip, withStrip) : ceUCAASpeakHeadLASet::Ref();
 }
 
-igdeUndo *ceWDSLaneHeadLookAt::UndoStripMove( ceStrip *strip, int toIndex ){
+igdeUndo::Ref ceWDSLaneHeadLookAt::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLAMove( GetWindow().GetTopic(), action, strip, toIndex ) : NULL;
+	return action ? ceUCAASpeakHeadLAMove::Ref::New(GetWindow().GetTopic(), action, strip, toIndex) : ceUCAASpeakHeadLAMove::Ref();
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneHeadLookAt::UndoStripSetPause( ceStrip *strip, float pause ){
+ceUCAASpeakStripSetPause::Ref ceWDSLaneHeadLookAt::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLASetPause( GetWindow().GetTopic(), action, strip, pause ) : NULL;
+	return action ? ceUCAASpeakHeadLASetPause::Ref::New(GetWindow().GetTopic(), action, strip, pause) : ceUCAASpeakHeadLASetPause::Ref();
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneHeadLookAt::UndoStripSetDuration( ceStrip *strip, float duration ){
+ceUCAASpeakStripSetDuration::Ref ceWDSLaneHeadLookAt::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLASetDuration( GetWindow().GetTopic(), action, strip, duration ) : NULL;
+	return action ? ceUCAASpeakHeadLASetDuration::Ref::New(GetWindow().GetTopic(), action, strip, duration) : ceUCAASpeakHeadLASetDuration::Ref();
 }
 
-ceUCAASpeakStripsScale *ceWDSLaneHeadLookAt::UndoScaleStrips(){
+ceUCAASpeakStripsScale::Ref ceWDSLaneHeadLookAt::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakHeadLAScale( GetWindow().GetTopic(), action ) : NULL;
+	return action ? ceUCAASpeakHeadLAScale::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakHeadLAScale::Ref();
 }

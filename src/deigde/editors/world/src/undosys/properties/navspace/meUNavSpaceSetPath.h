@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meNavigationSpace;
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 
@@ -35,8 +35,12 @@ class meNavigationSpace;
  * \brief Undo Action Navigation Space Set Path.
  */
 class meUNavSpaceSetPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUNavSpaceSetPath>;
+	
+	
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -45,20 +49,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUNavSpaceSetPath( meNavigationSpace *navspace, const char *newPath );
+	meUNavSpaceSetPath(meNavigationSpace *navspace, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUNavSpaceSetPath();
+
+protected:
+	~meUNavSpaceSetPath() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

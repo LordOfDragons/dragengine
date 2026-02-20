@@ -35,8 +35,7 @@ class deoglPipeline;
  */
 class deoglLightPipeline : public deObject{
 public:
-	typedef deTObjectReference<deoglLightPipeline> Ref;
-	
+	using Ref = deTObjectReference<deoglLightPipeline>;
 	
 	
 private:
@@ -49,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipeline( const deoglPipeline *pipeline, const deoglLightShader::Ref &shader );
+	deoglLightPipeline(const deoglPipeline *pipeline, const deoglLightShader::Ref &shader);
 	
 protected:
 	/** Clean up light pipeline. */
-	virtual ~deoglLightPipeline();
+	~deoglLightPipeline() override;
 	/*@}*/
 	
 	

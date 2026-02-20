@@ -29,10 +29,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -42,26 +42,30 @@ class aeRuleStateManipulator;
  * Undo to set enable rotation of a state manipulator rule.
  */
 class aeUSetRuleSModEnableRot : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleSModEnableRot>;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModEnableRot( aeRuleStateManipulator *rule );
+	aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModEnableRot();
+	~aeUSetRuleSModEnableRot() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

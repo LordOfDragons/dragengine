@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCBillboardTogglePartialHide::gdeUOCBillboardTogglePartialHide(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+
+pBillboard(nullptr)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle partial hide" );
+	SetShortInfo("@GameDefinition.Undo.OCBillboardTogglePartialHide");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardTogglePartialHide::~gdeUOCBillboardTogglePartialHide(){
-	if( pBillboard ){
-		pBillboard->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCBillboardTogglePartialHide::~gdeUOCBillboardTogglePartialHide(){
 ///////////////
 
 void gdeUOCBillboardTogglePartialHide::Undo(){
-	pBillboard->SetPartialHide( ! pBillboard->GetPartialHide() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetPartialHide(!pBillboard->GetPartialHide());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardTogglePartialHide::Redo(){

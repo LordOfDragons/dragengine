@@ -40,9 +40,9 @@
 /////////////////////////////////
 
 dearAnimationKeyframe::dearAnimationKeyframe() :
-pTime( 0.0f ),
-pTimeStep( 1.0f ),
-pScaling( 1.0f, 1.0f, 1.0f ){
+pTime(0.0f),
+pTimeStep(1.0f),
+pScaling(1.0f, 1.0f, 1.0f){
 }
 
 dearAnimationKeyframe::~dearAnimationKeyframe(){
@@ -53,61 +53,61 @@ dearAnimationKeyframe::~dearAnimationKeyframe(){
 // Management
 ///////////////
 
-decVector dearAnimationKeyframe::InterpolatePosition( float time ) const{
+decVector dearAnimationKeyframe::InterpolatePosition(float time) const{
 	return pPosition + pPositionStep * time;
 }
 
-decQuaternion dearAnimationKeyframe::InterpolateRotation( float time ) const{
+decQuaternion dearAnimationKeyframe::InterpolateRotation(float time) const{
 	return pRotation + pRotationStep * time;
 }
 
-decVector dearAnimationKeyframe::InterpolateScaling( float time ) const{
+decVector dearAnimationKeyframe::InterpolateScaling(float time) const{
 	return pScaling + pScalingStep * time;
 }
 
 
 
-void dearAnimationKeyframe::Set( const deAnimationKeyframe &keyframe, bool &negate ){
+void dearAnimationKeyframe::Set(const deAnimationKeyframe &keyframe, bool &negate){
 	pTime = keyframe.GetTime();
 	pTimeStep = 1.0f;
 	pPosition = keyframe.GetPosition();
 	pPositionStep.SetZero();
-	pRotation.SetFromEuler( keyframe.GetRotation() );
-	if( negate ){
+	pRotation.SetFromEuler(keyframe.GetRotation());
+	if(negate){
 		pRotation = -pRotation;
 	}
-	pRotationStep.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+	pRotationStep.Set(0.0f, 0.0f, 0.0f, 0.0f);
 	pScaling = keyframe.GetScale();
 	pScalingStep.SetZero();
 }
 
-void dearAnimationKeyframe::Set( const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate ){
-	if( nextKeyframe.GetTime() <= keyframe.GetTime() ){
-		Set( keyframe, negate );
+void dearAnimationKeyframe::Set(const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate){
+	if(nextKeyframe.GetTime() <= keyframe.GetTime()){
+		Set(keyframe, negate);
 		return;
 	}
 	
 	pTime = keyframe.GetTime();
-	pTimeStep = 1.0f / ( nextKeyframe.GetTime() - keyframe.GetTime() );
+	pTimeStep = 1.0f / (nextKeyframe.GetTime() - keyframe.GetTime());
 	pPosition = keyframe.GetPosition();
-	pPositionStep = ( nextKeyframe.GetPosition() - keyframe.GetPosition() ) * pTimeStep;
+	pPositionStep = (nextKeyframe.GetPosition() - keyframe.GetPosition()) * pTimeStep;
 	pScaling = keyframe.GetScale();
-	pScalingStep = ( nextKeyframe.GetScale() - keyframe.GetScale() ) * pTimeStep;
+	pScalingStep = (nextKeyframe.GetScale() - keyframe.GetScale()) * pTimeStep;
 	
 	// protect against uncontrolled flipping due to converting euler angles to quaternions. if the dot
 	// product with the previous quaterion is negative the conversion would cause the quaternion to
 	// animated the long way instead of the short way. negate the quaternion to fix this. the negation
 	// propagates forward until a quaternion is not required to be negated anymore
-	pRotation.SetFromEuler( keyframe.GetRotation() );
-	if( negate ){
+	pRotation.SetFromEuler(keyframe.GetRotation());
+	if(negate){
 		pRotation = -pRotation;
 	}
 	
-	decQuaternion nextRotation( decQuaternion::CreateFromEuler( nextKeyframe.GetRotation() ) );
-	negate = ( pRotation.Dot( nextRotation ) < 0.0f );
-	if( negate ){
+	decQuaternion nextRotation(decQuaternion::CreateFromEuler(nextKeyframe.GetRotation()));
+	negate = (pRotation.Dot(nextRotation) < 0.0f);
+	if(negate){
 		nextRotation = -nextRotation;
 	}
 	
-	pRotationStep = ( nextRotation - pRotation ) * pTimeStep;
+	pRotationStep = (nextRotation - pRotation) * pTimeStep;
 }

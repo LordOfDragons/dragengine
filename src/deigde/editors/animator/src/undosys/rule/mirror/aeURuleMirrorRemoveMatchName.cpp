@@ -34,20 +34,17 @@
 ////////////////////////////
 
 aeURuleMirrorRemoveMatchName::aeURuleMirrorRemoveMatchName(
-aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName ) :
-pRule( rule ),
-pMatchName( matchName )
+aeRuleMirror *rule, aeRuleMirror::MatchName *matchName) :
+pRule(rule),
+pMatchName(matchName)
 {
-	if( ! rule || ! matchName ){
-		DETHROW( deeInvalidAction );
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(matchName)
 	
-	pIndex = rule->IndexOfMatchName( matchName );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidAction );
-	}
+	pIndex = rule->GetMatchNames().IndexOf(matchName);
+	DEASSERT_TRUE(pIndex != -1)
 	
-	SetShortInfo( "Mirror rule remove match name" );
+	SetShortInfo("@Animator.Undo.RuleMirrorRemoveMatchName");
 }
 
 aeURuleMirrorRemoveMatchName::~aeURuleMirrorRemoveMatchName(){
@@ -59,9 +56,9 @@ aeURuleMirrorRemoveMatchName::~aeURuleMirrorRemoveMatchName(){
 ///////////////
 
 void aeURuleMirrorRemoveMatchName::Undo(){
-	pRule->InsertMatchName( pMatchName, pIndex );
+	pRule->InsertMatchName(pMatchName, pIndex);
 }
 
 void aeURuleMirrorRemoveMatchName::Redo(){
-	pRule->RemoveMatchName( pMatchName );
+	pRule->RemoveMatchName(pMatchName);
 }

@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -30,6 +32,7 @@
 #include "deClassInputDevice.h"
 #include "deClassInputDeviceFeedback.h"
 #include "deClassInputDeviceComponent.h"
+#include "../dedsHelpers.h"
 #include "../graphics/deClassImage.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -53,7 +56,7 @@
 /////////////////////
 
 struct sIDFeedbackNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int feedbackIndex;
 };
 
@@ -63,21 +66,16 @@ struct sIDFeedbackNatDat{
 /////////////////////
 
 // public func destructor()
-deClassInputDeviceFeedback::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassInputDeviceFeedback::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsIDFeedback, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassInputDeviceFeedback::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassInputDeviceFeedback::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sIDFeedbackNatDat &nd = *( ( sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	if( nd.device ){
-		nd.device->FreeReference();
-		nd.device = NULL;
-	}
-	nd.feedbackIndex = -1;
+	dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself)).~sIDFeedbackNatDat();
 }
 
 
@@ -86,276 +84,276 @@ void deClassInputDeviceFeedback::nfDestructor::RunFunction( dsRunTime*, dsValue 
 ///////////////
 
 // public func InputDevice getInputDevice()
-deClassInputDeviceFeedback::nfGetInputDevice::nfGetInputDevice( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getInputDevice", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice ){
+deClassInputDeviceFeedback::nfGetInputDevice::nfGetInputDevice(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getInputDevice", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice){
 }
-void deClassInputDeviceFeedback::nfGetInputDevice::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceFeedback::nfGetInputDevice::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device );
+	ds.GetClassInputDevice()->PushInputDevice(rt, nd.device);
 }
 
 // public func int getFeedbackIndex()
-deClassInputDeviceFeedback::nfGetFeedbackIndex::nfGetFeedbackIndex( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getFeedbackIndex", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassInputDeviceFeedback::nfGetFeedbackIndex::nfGetFeedbackIndex(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getFeedbackIndex", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassInputDeviceFeedback::nfGetFeedbackIndex::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
+void deClassInputDeviceFeedback::nfGetFeedbackIndex::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
 	
-	rt->PushInt( nd.feedbackIndex );
+	rt->PushInt(nd.feedbackIndex);
 }
 
 
 
 // public func String getID()
-deClassInputDeviceFeedback::nfGetID::nfGetID( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getID", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceFeedback::nfGetID::nfGetID(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getID", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceFeedback::nfGetID::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
+void deClassInputDeviceFeedback::nfGetID::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
-	rt->PushString( feedback.GetID() );
+	rt->PushString(feedback.GetID());
 }
 
 // public func String getName()
-deClassInputDeviceFeedback::nfGetName::nfGetName( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceFeedback::nfGetName::nfGetName(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceFeedback::nfGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
+void deClassInputDeviceFeedback::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
-	rt->PushString( feedback.GetName() );
+	rt->PushString(feedback.GetName());
 }
 
 // public func InputDeviceFeedbackType getType()
-deClassInputDeviceFeedback::nfGetType::nfGetType( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceFeedbackType ){
+deClassInputDeviceFeedback::nfGetType::nfGetType(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceFeedbackType){
 }
-void deClassInputDeviceFeedback::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
+void deClassInputDeviceFeedback::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
-	rt->PushValue( ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetClassInputDeviceFeedbackType()
-		->GetVariable( feedback.GetType() )->GetStaticValue() );
+	rt->PushValue((static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetClassInputDeviceFeedbackType()
+		->GetVariable(feedback.GetType())->GetStaticValue());
 }
 
 // public func String getComponent()
-deClassInputDeviceFeedback::nfGetComponent::nfGetComponent( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getComponent", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceFeedback::nfGetComponent::nfGetComponent(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceFeedback::nfGetComponent::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
+void deClassInputDeviceFeedback::nfGetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
-	rt->PushString( feedback.GetComponent() );
+	rt->PushString(feedback.GetComponent());
 }
 
 // public func Image getDisplayImage()
-deClassInputDeviceFeedback::nfGetDisplayImage::nfGetDisplayImage( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getDisplayImage", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
+deClassInputDeviceFeedback::nfGetDisplayImage::nfGetDisplayImage(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getDisplayImage", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
-void deClassInputDeviceFeedback::nfGetDisplayImage::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceFeedback::nfGetDisplayImage::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassImage()->PushImage( rt, feedback.GetDisplayImage() );
+	ds.GetClassImage()->PushImage(rt, feedback.GetDisplayImage());
 }
 
 // public func int getDisplayIconCount()
-deClassInputDeviceFeedback::nfGetDisplayIconCount::nfGetDisplayIconCount( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getDisplayIconCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassInputDeviceFeedback::nfGetDisplayIconCount::nfGetDisplayIconCount(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getDisplayIconCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassInputDeviceFeedback::nfGetDisplayIconCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
-	rt->PushInt( feedback.GetDisplayIconCount() );
+void deClassInputDeviceFeedback::nfGetDisplayIconCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
+	rt->PushInt(feedback.GetDisplayIcons().GetCount());
 }
 
 // public func Image getDisplayIconAt( int index )
-deClassInputDeviceFeedback::nfGetDisplayIconAt::nfGetDisplayIconAt( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getDisplayIconAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // index
+deClassInputDeviceFeedback::nfGetDisplayIconAt::nfGetDisplayIconAt(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getDisplayIconAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassInputDeviceFeedback::nfGetDisplayIconAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceFeedback::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassImage()->PushImage( rt, feedback.GetDisplayIconAt( rt->GetValue( 0 )->GetInt() ) );
+	ds.GetClassImage()->PushImage(rt, feedback.GetDisplayIcons().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func Image getLargestDisplayIconX( int maxWidth )
-deClassInputDeviceFeedback::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getLargestDisplayIconX", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // maxWidth
+deClassInputDeviceFeedback::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getLargestDisplayIconX", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // maxWidth
 }
-void deClassInputDeviceFeedback::nfGetLargestDisplayIconX::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
-	const int count = feedback.GetDisplayIconCount();
-	const int maxWidth = rt->GetValue( 0 )->GetInt();
-	deImage *bestIcon = NULL;
+void deClassInputDeviceFeedback::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
+	const int count = feedback.GetDisplayIcons().GetCount();
+	const int maxWidth = rt->GetValue(0)->GetInt();
+	deImage *bestIcon = nullptr;
 	int bestWidth = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deImage * const icon = feedback.GetDisplayIconAt( i );
-		if( icon->GetWidth() <= maxWidth && ( ! bestIcon || icon->GetWidth() >= bestWidth ) ){
+	for(i=0; i<count; i++){
+		deImage * const icon = feedback.GetDisplayIcons().GetAt(i);
+		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
 		}
 	}
 	
-	ds.GetClassImage()->PushImage( rt, bestIcon );
+	ds.GetClassImage()->PushImage(rt, bestIcon);
 }
 
 // public func Image getLargestDisplayIconY( int maxHeight )
-deClassInputDeviceFeedback::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getLargestDisplayIconY", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // maxHeight
+deClassInputDeviceFeedback::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getLargestDisplayIconY", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // maxHeight
 }
-void deClassInputDeviceFeedback::nfGetLargestDisplayIconY::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
-	const int count = feedback.GetDisplayIconCount();
-	const int maxHeight = rt->GetValue( 0 )->GetInt();
-	deImage *bestIcon = NULL;
+void deClassInputDeviceFeedback::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
+	const int count = feedback.GetDisplayIcons().GetCount();
+	const int maxHeight = rt->GetValue(0)->GetInt();
+	deImage *bestIcon = nullptr;
 	int bestHeight = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deImage * const icon = feedback.GetDisplayIconAt( i );
-		if( icon->GetHeight() <= maxHeight && ( ! bestIcon || icon->GetHeight() >= bestHeight ) ){
+	for(i=0; i<count; i++){
+		deImage * const icon = feedback.GetDisplayIcons().GetAt(i);
+		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
 		}
 	}
 	
-	ds.GetClassImage()->PushImage( rt, bestIcon );
+	ds.GetClassImage()->PushImage(rt, bestIcon);
 }
 
 // public func String getDisplayText()
-deClassInputDeviceFeedback::nfGetDisplayText::nfGetDisplayText( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getDisplayText", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceFeedback::nfGetDisplayText::nfGetDisplayText(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getDisplayText", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceFeedback::nfGetDisplayText::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceFeedback &axis = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
+void deClassInputDeviceFeedback::nfGetDisplayText::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	const deInputDeviceFeedback &axis = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
-	rt->PushString( axis.GetDisplayText() );
+	rt->PushString(axis.GetDisplayText());
 }
 
 
 
 // public func float getValue()
-deClassInputDeviceFeedback::nfGetValue::nfGetValue( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "getValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassInputDeviceFeedback::nfGetValue::nfGetValue(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "getValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassInputDeviceFeedback::nfGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceFeedback::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
-	switch( nd.device->GetDeviceSource() ){
+	switch(nd.device->GetDeviceSource()){
 	case deInputEvent::esInput:{
 		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 		
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		if( deviceIndex != -1 ){
-			rt->PushFloat( module.GetFeedbackValue( deviceIndex, nd.feedbackIndex ) );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		if(deviceIndex != -1){
+			rt->PushFloat(module.GetFeedbackValue(deviceIndex, nd.feedbackIndex));
 			
 		}else{
-			rt->PushFloat( 0.0f );
+			rt->PushFloat(0.0f);
 		}
 		}break;
 		
 	case deInputEvent::esVR:{
 		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 		
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		if( deviceIndex != -1 ){
-			rt->PushFloat( module.GetFeedbackValue( deviceIndex, nd.feedbackIndex ) );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		if(deviceIndex != -1){
+			rt->PushFloat(module.GetFeedbackValue(deviceIndex, nd.feedbackIndex));
 			
 		}else{
-			rt->PushFloat( 0.0f );
+			rt->PushFloat(0.0f);
 		}
 		}break;
 		
 	default:
-		DETHROW_INFO( deeInvalidParam, "input source" );
+		DETHROW_INFO(deeInvalidParam, "input source");
 	}
 }
 
 // public func void setValue( float value )
-deClassInputDeviceFeedback::nfSetValue::nfSetValue( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "setValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFloat ); // value
+deClassInputDeviceFeedback::nfSetValue::nfSetValue(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "setValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // value
 }
-void deClassInputDeviceFeedback::nfSetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceFeedback::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
-	switch( nd.device->GetDeviceSource() ){
+	switch(nd.device->GetDeviceSource()){
 	case deInputEvent::esInput:{
 		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 		
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		if( deviceIndex != -1 ){
-			module.SetFeedbackValue( deviceIndex, nd.feedbackIndex, rt->GetValue( 0 )->GetFloat() );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		if(deviceIndex != -1){
+			module.SetFeedbackValue(deviceIndex, nd.feedbackIndex, rt->GetValue(0)->GetFloat());
 		}
 		}break;
 		
 	case deInputEvent::esVR:{
 		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 		
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		if( deviceIndex != -1 ){
-			module.SetFeedbackValue( deviceIndex, nd.feedbackIndex, rt->GetValue( 0 )->GetFloat() );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		if(deviceIndex != -1){
+			module.SetFeedbackValue(deviceIndex, nd.feedbackIndex, rt->GetValue(0)->GetFloat());
 		}
 		}break;
 		
 	default:
-		DETHROW_INFO( deeInvalidParam, "input source" );
+		DETHROW_INFO(deeInvalidParam, "input source");
 	}
 }
 
 
 
 // public func bool equals( Object obj )
-deClassInputDeviceFeedback::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsIDFeedback, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // obj
+deClassInputDeviceFeedback::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsIDFeedback, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // obj
 }
-void deClassInputDeviceFeedback::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassInputDeviceFeedback * const clsIDFeedback = ( deClassInputDeviceFeedback* )GetOwnerClass();
-	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassInputDeviceFeedback::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassInputDeviceFeedback * const clsIDFeedback = static_cast<deClassInputDeviceFeedback*>(GetOwnerClass());
+	const sIDFeedbackNatDat &nd = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(myself));
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsIDFeedback ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(obj, clsIDFeedback)){
+		rt->PushBool(false);
 		
 	}else{
-		const sIDFeedbackNatDat &other = *( ( const sIDFeedbackNatDat* )p_GetNativeData( obj ) );
-		rt->PushBool( nd.device == other.device && nd.feedbackIndex == other.feedbackIndex );
+		const sIDFeedbackNatDat &other = dedsGetNativeData<sIDFeedbackNatDat>(p_GetNativeData(obj));
+		rt->PushBool(nd.device == other.device && nd.feedbackIndex == other.feedbackIndex);
 	}
 }
 
@@ -367,14 +365,14 @@ void deClassInputDeviceFeedback::nfEquals::RunFunction( dsRunTime *rt, dsValue *
 // Constructor, destructor
 ////////////////////////////
 
-deClassInputDeviceFeedback::deClassInputDeviceFeedback( deScriptingDragonScript &ds ) :
-dsClass( "InputDeviceFeedback", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassInputDeviceFeedback::deClassInputDeviceFeedback(deScriptingDragonScript &ds) :
+dsClass("InputDeviceFeedback", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sIDFeedbackNatDat ) );
+	p_SetNativeDataSize(dedsNativeDataSize<sIDFeedbackNatDat>());
 }
 
 deClassInputDeviceFeedback::~deClassInputDeviceFeedback(){
@@ -385,8 +383,8 @@ deClassInputDeviceFeedback::~deClassInputDeviceFeedback(){
 // Management
 ///////////////
 
-void deClassInputDeviceFeedback::CreateClassMembers( dsEngine *engine ){
-	pClsInputDeviceFeedbackType = engine->GetClass( "Dragengine.InputDeviceFeedbackType" );
+void deClassInputDeviceFeedback::CreateClassMembers(dsEngine *engine){
+	pClsInputDeviceFeedbackType = engine->GetClass("Dragengine.InputDeviceFeedbackType");
 	
 	sInitData init;
 	init.clsIDFeedback = this;
@@ -400,39 +398,37 @@ void deClassInputDeviceFeedback::CreateClassMembers( dsEngine *engine ){
 	init.clsInputDeviceFeedbackType = pClsInputDeviceFeedbackType;
 	init.clsImage = pDS.GetClassImage();
 	
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetInputDevice( init ) );
-	AddFunction( new nfGetFeedbackIndex( init ) );
+	AddFunction(new nfGetInputDevice(init));
+	AddFunction(new nfGetFeedbackIndex(init));
 	
-	AddFunction( new nfGetID( init ) );
-	AddFunction( new nfGetName( init ) );
-	AddFunction( new nfGetType( init ) );
-	AddFunction( new nfGetComponent( init ) );
-	AddFunction( new nfGetDisplayImage( init ) );
-	AddFunction( new nfGetDisplayIconCount( init ) );
-	AddFunction( new nfGetDisplayIconAt( init ) );
-	AddFunction( new nfGetLargestDisplayIconX( init ) );
-	AddFunction( new nfGetLargestDisplayIconY( init ) );
-	AddFunction( new nfGetDisplayText( init ) );
+	AddFunction(new nfGetID(init));
+	AddFunction(new nfGetName(init));
+	AddFunction(new nfGetType(init));
+	AddFunction(new nfGetComponent(init));
+	AddFunction(new nfGetDisplayImage(init));
+	AddFunction(new nfGetDisplayIconCount(init));
+	AddFunction(new nfGetDisplayIconAt(init));
+	AddFunction(new nfGetLargestDisplayIconX(init));
+	AddFunction(new nfGetLargestDisplayIconY(init));
+	AddFunction(new nfGetDisplayText(init));
 	
-	AddFunction( new nfGetValue( init ) );
-	AddFunction( new nfSetValue( init ) );
+	AddFunction(new nfGetValue(init));
+	AddFunction(new nfSetValue(init));
 	
-	AddFunction( new nfEquals( init ) );
+	AddFunction(new nfEquals(init));
 	
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceFeedback::PushFeedback( dsRunTime *rt, dedsInputDevice *device, int index ){
-	if( ! rt || ! device || index < 0 || index >= device->GetDevice()->GetFeedbackCount() ){
-		DSTHROW( dueInvalidParam );
+void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *device, int index){
+	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetFeedbacks().GetCount()){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sIDFeedbackNatDat &nd = *( ( sIDFeedbackNatDat* )p_GetNativeData(
-		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sIDFeedbackNatDat &nd = dedsNewNativeData<sIDFeedbackNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.feedbackIndex = index;
 }

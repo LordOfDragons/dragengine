@@ -41,31 +41,22 @@
 
 gdeUOCCameraSetPropertyPosition::gdeUOCCameraSetPropertyPosition(gdeObjectClass *objectClass,
 	gdeOCCamera *camera, const char *newValue) :
-pObjectClass(nullptr),
+
 pCamera(nullptr)
 {
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(camera)
 	
-	SetShortInfo("Camera set property position");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPropertyPosition");
 	
 	pOldValue = camera->GetPropPosition();
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetPropertyPosition::~gdeUOCCameraSetPropertyPosition(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -53,13 +53,13 @@ public:
 	virtual void ControllerCountChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** \brief Type count changed. */
 	virtual void TypeCountChanged();
 	
 	/** \brief Type changed. */
-	virtual void TypeChanged( int type );
+	virtual void TypeChanged(int type);
 	
 	/** \brief Requests of the Graphic Module changed. */
 	virtual void GraphicModuleRequestsChanged();

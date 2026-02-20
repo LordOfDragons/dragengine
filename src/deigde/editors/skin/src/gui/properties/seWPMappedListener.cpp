@@ -36,8 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPMappedListener::seWPMappedListener( seWPMapped &panel ) :
-pPanel( panel ){
+seWPMappedListener::seWPMappedListener(seWPMapped &panel) :
+pPanel(panel){
 }
 
 seWPMappedListener::~seWPMappedListener(){
@@ -48,32 +48,32 @@ seWPMappedListener::~seWPMappedListener(){
 // Management
 ///////////////
 
-void seWPMappedListener::MappedStructureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPMappedListener::MappedStructureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdateMappedList();
 }
 
-void seWPMappedListener::MappedChanged( seSkin *skin, seMapped *mapped ){
-	if( skin != pPanel.GetSkin() || ! mapped->GetActive() ){
+void seWPMappedListener::MappedChanged(seSkin *skin, seMapped *mapped){
+	if(skin != pPanel.GetSkin() || !mapped->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateMapped();
 }
 
-void seWPMappedListener::MappedNameChanged( seSkin *skin, seMapped* ){
-	if( skin != pPanel.GetSkin() ){
+void seWPMappedListener::MappedNameChanged(seSkin *skin, seMapped*){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdateMappedList();
 }
 
-void seWPMappedListener::ActiveMappedChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPMappedListener::ActiveMappedChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	

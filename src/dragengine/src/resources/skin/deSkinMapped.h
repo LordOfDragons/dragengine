@@ -26,6 +26,7 @@
 #define _DESKINPMAPPED_H_
 
 #include "../../deObject.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
@@ -56,7 +57,11 @@
 class DE_DLL_EXPORT deSkinMapped : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkinMapped> Ref;
+	using Ref = deTObjectReference<deSkinMapped>;
+	
+	/** \brief List of mapped. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deSkinMapped>,deSkinMapped>;
+	
 	
 	/** \brief Input types. */
 	enum eInputTypes{
@@ -134,10 +139,10 @@ public:
 	 * 
 	 * \param name Name of mapped value.
 	 */
-	deSkinMapped ( const char *name );
+	deSkinMapped (const char *name);
 	
 	/** \brief Clean up skin property color. */
-	virtual ~deSkinMapped();
+	~deSkinMapped() override;
 	/*@}*/
 	
 	
@@ -155,60 +160,60 @@ public:
 	inline eInputTypes GetInputType() const{ return pInputType; }
 	
 	/** \brief Set input type. */
-	void SetInputType( eInputTypes inputType );
+	void SetInputType(eInputTypes inputType);
 	
 	/** \brief Lower input range. */
 	inline float GetInputLower() const{ return pInputLower; }
 	
 	/** \brief Set lower input range. */
-	void SetInputLower( float lower );
+	void SetInputLower(float lower);
 	
 	/** \brief Upper input range. */
 	inline float GetInputUpper() const{ return pInputUpper; }
 	
 	/** \brief Set upper input range. */
-	void SetInputUpper( float upper );
+	void SetInputUpper(float upper);
 	
 	/** \brief Input value is clamped to range instead of wrapping around. */
 	inline bool GetInputClamped() const{ return pInputClamped; }
 	
 	/** \brief Set if input value is clamped to range instead of wrapping around. */
-	void SetInputClamped( bool inputClamped );
+	void SetInputClamped(bool inputClamped);
 	
 	/** \brief Lower output range. */
 	inline float GetOutputLower() const{ return pOutputLower; }
 	
 	/** \brief Set lower output range. */
-	void SetOutputLower( float lower );
+	void SetOutputLower(float lower);
 	
 	/** \brief Upper output range. */
 	inline float GetOutputUpper() const{ return pOutputUpper; }
 	
 	/** \brief Set upper output range. */
-	void SetOutputUpper( float upper );
+	void SetOutputUpper(float upper);
 	
 	/** \brief Bone name if bone related input type is used. */
 	inline const decString &GetBone() const{ return pBone; }
 	
 	/** \brief Set bone name if bone related input type is used. */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	
 	/** \brief Renderable name if renderable related input type is used. */
 	inline const decString &GetRenderable() const{ return pRenderable; }
 	
 	/** \brief Set renderable name if renderable related input type is used. */
-	void SetRenderable( const char *renderable );
+	void SetRenderable(const char *renderable);
 	
 	/** \brief Color component to use if renderable is of color type. */
 	inline eRenderableComponent GetRenderableComponent() const{ return pRenderableComponent; }
 	
 	/** \brief Set color component to use if renderable is of color type. */
-	void SetRenderableComponent( eRenderableComponent component );
+	void SetRenderableComponent(eRenderableComponent component);
 	
 	
 	
 	/** \brief Assign from other mapped value. */
-	deSkinMapped &operator=( const deSkinMapped &mapped );
+	deSkinMapped &operator=(const deSkinMapped &mapped);
 	/*@}*/
 };
 

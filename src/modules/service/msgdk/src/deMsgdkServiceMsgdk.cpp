@@ -36,6 +36,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSWindows.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
 #include <dragengine/resources/image/deImageManager.h>
@@ -61,7 +62,7 @@ deMsgdkServiceMsgdk::deMsgdkServiceMsgdk(deMicrosoftGdk &module,
 pModule(module),
 pService(service),
 pIsInitialized(false),
-pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Invalidator)),
+pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New()),
 pUser(nullptr),
 pUserId(0),
 pUserLocalId({}),
@@ -81,9 +82,9 @@ pAchievementsSynced(false)
 
 deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 {
-	while(pPendingRequests.GetCount() > 0)
+	while(pPendingRequests.IsNotEmpty())
 	{
-		CancelRequest(((deMsgdkPendingRequest*)pPendingRequests.GetAt(0))->id);
+		CancelRequest(pPendingRequests.First()->id);
 	}
 
 	SetUser(nullptr);
@@ -99,26 +100,31 @@ deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 
 void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObject& request)
 {
-	const decString &function = request.GetChildAt( "function" )->GetString();
+	const decString &function = request.GetChildAt("function")->GetString();
 	
 	if(function == "loadUserResource")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTLoadUserResource(*this, id, request);
 	}
 	else if(function == "userAdd")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTAddUser(*this, id, request);
 	}
 	else if(function == "getTokenAndSignature")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTGetTokenAndSignature(*this, id, request);
 	}
 	else if(function == "getStatsAndAchievements")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTGetStatsAndAchievements(*this, id, request);
 	}
 	else if(function == "setStatsAndAchievements")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTSetStatsAndAchievements(*this, id, request);
 	}
 	else
@@ -137,13 +143,13 @@ void deMsgdkServiceMsgdk::CancelRequest(const decUniqueID& id)
 	
 	pPendingRequests.RemoveFrom(pPendingRequests.IndexOf(pr));
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetStringChildAt("error", "Cancelled");
 	so->SetStringChildAt("message", "Request cancelled");
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, id, so);
 }
 
-deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &action )
+deServiceObject::Ref deMsgdkServiceMsgdk::RunAction(const deServiceObject &action)
 {
 	const decString &function = action.GetChildAt("function")->GetString();
 	
@@ -162,7 +168,7 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &acti
 	else if(function == "userRemove")
 	{
 		SetUser(nullptr);
-		return nullptr;
+		return {};
 	}
 	else if(function == "resetAllStats")
 	{
@@ -229,66 +235,37 @@ void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
 
 deMsgdkPendingRequest *deMsgdkServiceMsgdk::GetPendingRequestWithId(const decUniqueID &id) const
 {
-	const int count = pPendingRequests.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++)
-	{
-		deMsgdkPendingRequest * const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if(pr->id == id)
-		{
-			return pr;
-		}
-	}
-	
-	return nullptr;
+	return pPendingRequests.FindOrDefault([&](const deMsgdkPendingRequest& pr) {
+		return pr.id == id;
+	});
 }
 
-deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithId(
-	const decUniqueID &id)
+deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithId(const decUniqueID &id)
 {
-	const int count = pPendingRequests.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++)
+	const deMsgdkPendingRequest::Ref request(GetPendingRequestWithId(id));
+	if(request)
 	{
-		deMsgdkPendingRequest * const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if(pr->id == id)
-		{
-			const deMsgdkPendingRequest::Ref prr(pr);
-			pPendingRequests.RemoveFrom(i);
-			return prr;
-		}
+		pPendingRequests.Remove(request);
 	}
-	
-	return nullptr;
+	return request;
 }
 
-deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithFunction(
-	const char *function)
+deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithFunction(const char* function)
 {
-	const int count = pPendingRequests.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++)
+	const deMsgdkPendingRequest::Ref request(pPendingRequests.FindOrDefault([&](const deMsgdkPendingRequest& pr) {
+		return pr.function == function;
+	}));
+	if (request)
 	{
-		deMsgdkPendingRequest * const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if(pr->function == function)
-		{
-			const deMsgdkPendingRequest::Ref prr(pr);
-			pPendingRequests.RemoveFrom(i);
-			return prr;
-		}
+		pPendingRequests.Remove(request);
 	}
-	
-	return nullptr;
+	return request;
 }
 
 deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::NewPendingRequest(
 const decUniqueID &id, const decString &function, const deServiceObject::Ref &data)
 {
-	const deMsgdkPendingRequest::Ref pr(deMsgdkPendingRequest::Ref::New(
-		new deMsgdkPendingRequest(data)));
+	const deMsgdkPendingRequest::Ref pr(deMsgdkPendingRequest::Ref::New(data));
 	pr->id = id;
 	pr->function = function;
 	pr->data->SetStringChildAt("function", function);
@@ -300,21 +277,21 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserFeatures()
 {
 	if(!pAuthProviderIcon)
 	{
-		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
+		pAuthProviderIcon = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/");
 	}
 	if(!pAuthProviderImage)
 	{
-		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
+		pAuthProviderImage = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/");
 	}
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetBoolChildAt("canManualLogin", false);
 	so->SetBoolChildAt("canAutomaticLogin", true);
 	so->SetBoolChildAt("canLogout", false);
 	
-	const deServiceObject::Ref soAtp(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref soAtp(deServiceObject::Ref::New());
 	soAtp->SetStringChildAt("id", "xboxLive");
 	soAtp->SetResourceChildAt("icon", pAuthProviderIcon);
 	soAtp->SetResourceChildAt("image", pAuthProviderImage);
@@ -331,7 +308,7 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserInfo()
 		DETHROW_INFO(deeInvalidAction, "No user logged in");
 	}
 
-	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	char gamertag[101] = {};
 	size_t gamertagLen;
 
@@ -467,53 +444,43 @@ void deMsgdkServiceMsgdk::UpdateAchievementManager()
 void deMsgdkServiceMsgdk::AddFrameUpdateTask(deMsgdkAsyncTask* task)
 {
 	DEASSERT_NOTNULL(task)
-	DEASSERT_FALSE(pFrameUpdateTasks.Has(task))
-	pFrameUpdateTasks.Add(task);
+	DEASSERT_TRUE(pFrameUpdateTasks.Add(task));
 }
 
 void deMsgdkServiceMsgdk::RemoveFrameUpdateTask(deMsgdkAsyncTask* task)
 {
 	DEASSERT_NOTNULL(task)
-
-	const int index = pFrameUpdateTasks.IndexOf(task);
-	if(index != -1)
-	{
-		pFrameUpdateTasks.RemoveFrom(index);
-	}
+	pFrameUpdateTasks.Remove(task);
 }
 
 void deMsgdkServiceMsgdk::FrameUpdateTasks(float elapsed)
 {
-	const int count = pFrameUpdateTasks.GetCount();
-	if(count == 0)
+	if(pFrameUpdateTasks.IsEmpty())
 	{
 		return;
 	}
 
-	const decObjectList tasks(pFrameUpdateTasks);
-	int i;
-	for(i=0; i<count; i++)
-	{
-		((deMsgdkAsyncTask*)tasks.GetAt(i))->OnFrameUpdate(elapsed);
-	}
+	pFrameUpdateTasks.Visit([&](deMsgdkAsyncTask& task) {
+		task.OnFrameUpdate(elapsed);
+	});
 }
 
 decString deMsgdkServiceMsgdk::UriEncode(const char *url) const
 {
-	decUnicodeString wurl( decUnicodeString::NewFromUTF8( url ) );
-	wchar_t * const wwurl = new wchar_t[wurl.GetLength()];
-	deOSWindows::UnicodeToWide(wurl, wwurl, wurl.GetLength() + 1);
+	decUnicodeString wurl(decUnicodeString::NewFromUTF8(url));
+	decTList<wchar_t> wwurl(wurl.GetLength(), 0);
+	deOSWindows::UnicodeToWide(wurl, wwurl.GetArrayPointer(), wurl.GetLength() + 1);
 
 	const DWORD flags = 0;
 	DWORD lenEscaped = 1;
 	wchar_t dummy = 0;
-	UrlEscape(wwurl, &dummy, &lenEscaped, flags);
+	UrlEscape(wwurl.GetArrayPointer(), &dummy, &lenEscaped, flags);
 
-	wchar_t * const escaped = new wchar_t[lenEscaped + 1];
-	memset(escaped, 0, sizeof(wchar_t) * (lenEscaped + 1));
-	AssertResult(UrlEscape(wwurl, escaped, &lenEscaped, flags), "deMsgdkServiceMsgdk.UriEncode.UrlEscape");
+	decTList<wchar_t> escaped((int)lenEscaped + 1, 0);
+	AssertResult(UrlEscape(wwurl.GetArrayPointer(), escaped.GetArrayPointer(), &lenEscaped, flags),
+		"deMsgdkServiceMsgdk.UriEncode.UrlEscape");
 	
-	return deOSWindows::WideToUtf8(escaped);
+	return deOSWindows::WideToUtf8(escaped.GetArrayPointer());
 }
 
 

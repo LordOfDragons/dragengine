@@ -56,10 +56,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiLayer::dedaiLayer( dedaiWorld &world, int layer ) :
-pWorld( world ),
-pLayer( layer ),
-pDirty( true )
+dedaiLayer::dedaiLayer(dedaiWorld &world, int layer) :
+pWorld(world),
+pLayer(layer),
+pDirty(true)
 {
 }
 
@@ -71,14 +71,14 @@ dedaiLayer::~dedaiLayer(){
 // Management
 ///////////////
 
-void dedaiLayer::Update( float elapsed ){
-	if( pWorld.GetDEAI().GetDeveloperMode().GetEnabled() ){
+void dedaiLayer::Update(float elapsed){
+	if(pWorld.GetDEAI().GetDeveloperMode().GetEnabled()){
 		Prepare();
 	}
 }
 
 void dedaiLayer::Prepare(){
-	if( ! pDirty ){
+	if(!pDirty){
 		return;
 	}
 	
@@ -98,34 +98,34 @@ void dedaiLayer::MarkDirty(){
 
 
 
-dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo( const decDVector &position, float &distance ){
-	dedaiSpaceGridVertex *bestVertex = NULL;
+dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &position, float &distance){
+	dedaiSpaceGridVertex *bestVertex = nullptr;
 	float bestDistance = 0.0f;
 	float testDistance;
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() != this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() != this){
 					continue;
 				}
 				
 				dedaiSpaceGrid * const grid = space.GetGrid();
-				if( ! grid ){
+				if(!grid){
 					continue;
 				}
 				
-				const decVector testPosition( space.GetInverseMatrix() * position );
-				dedaiSpaceGridVertex * const testVertex = grid->GetVertexClosestTo( testPosition, testDistance );
-				if( testVertex && ( ! bestVertex || testDistance < bestDistance ) ){
+				const decVector testPosition(space.GetInverseMatrix() * position);
+				dedaiSpaceGridVertex * const testVertex = grid->GetVertexClosestTo(testPosition, testDistance);
+				if(testVertex && (!bestVertex || testDistance < bestDistance)){
 					bestVertex = testVertex;
 					bestDistance = testDistance;
 				}
@@ -134,72 +134,66 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo( const decDVector &posi
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() != this ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(space.GetLayer() != this){
+			return;
 		}
 		
 		dedaiSpaceGrid * const grid = space.GetGrid();
-		if( ! grid ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(!grid){
+			return;
 		}
 		
-		const decVector testPosition( space.GetInverseMatrix() * position );
-		dedaiSpaceGridVertex * const testVertex = grid->GetVertexClosestTo( testPosition, testDistance );
-		if( testVertex && ( ! bestVertex || testDistance < bestDistance ) ){
+		const decVector testPosition(space.GetInverseMatrix() * position);
+		dedaiSpaceGridVertex * const testVertex = grid->GetVertexClosestTo(testPosition, testDistance);
+		if(testVertex && (!bestVertex || testDistance < bestDistance)){
 			bestVertex = testVertex;
 			bestDistance = testDistance;
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
-	if( bestVertex ){
+	if(bestVertex){
 		distance = bestDistance;
 	}
 	return bestVertex;
 }
 
-dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo( const decDVector &position, float &distance ){
-	dedaiSpaceMeshFace *bestFace = NULL;
+dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position, float &distance){
+	dedaiSpaceMeshFace *bestFace = nullptr;
 	float bestDistance = 0.0f;
 	float testDistance;
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() != this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() != this){
 					continue;
 				}
 				
 				dedaiSpaceMesh * const navmesh = space.GetMesh();
 				
-				if( ! navmesh ){
+				if(!navmesh){
 					continue;
 				}
 				
-				const decVector testPosition( space.GetInverseMatrix() * position );
-				dedaiSpaceMeshFace * const testFace = navmesh->GetFaceClosestTo( testPosition, testDistance );
+				const decVector testPosition(space.GetInverseMatrix() * position);
+				dedaiSpaceMeshFace * const testFace = navmesh->GetFaceClosestTo(testPosition, testDistance);
 				
-				if( testFace && ( ! bestFace || testDistance < bestDistance ) ){
+				if(testFace && (!bestFace || testDistance < bestDistance)){
 					bestFace = testFace;
 					bestDistance = testDistance;
 				}
@@ -208,168 +202,154 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo( const decDVector &position
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() != this ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(space.GetLayer() != this){
+			return;
 		}
 		
 		dedaiSpaceMesh * const navmesh = space.GetMesh();
-		if( ! navmesh ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(!navmesh){
+			return;
 		}
 		
 // 		if( ! ( navspace->GetMaximumExtends() >= testMinExtend && navspace->GetMinimumExtends() <= testMaxExtend ) ){
-// 			engNavSpace = engNavSpace->GetLLWorldNext();
-// 			continue;
+// 			return;
 // 		}
 		
-		const decVector testPosition( space.GetInverseMatrix() * position );
-		dedaiSpaceMeshFace * const testFace = navmesh->GetFaceClosestTo( testPosition, testDistance );
+		const decVector testPosition(space.GetInverseMatrix() * position);
+		dedaiSpaceMeshFace * const testFace = navmesh->GetFaceClosestTo(testPosition, testDistance);
 		
-		if( testFace && ( ! bestFace || testDistance < bestDistance ) ){
+		if(testFace && (!bestFace || testDistance < bestDistance)){
 			bestFace = testFace;
 			bestDistance = testDistance;
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
-	if( bestFace ){
+	if(bestFace){
 		distance = bestDistance;
 	}
 	
 	return bestFace;
 }
 
-dedaiSpaceGridEdge *dedaiLayer::GetGridNearestPoint( const decDVector &point,
-float radius, decDVector &nearestPoint, float &nearestLambda ){
+dedaiSpaceGridEdge *dedaiLayer::GetGridNearestPoint(const decDVector &point,
+float radius, decDVector &nearestPoint, float &nearestLambda){
 	float testNearestDistance, testLambda, bestDistanceSquared = radius;
-	dedaiSpaceGridEdge *bestEdge = NULL;
+	dedaiSpaceGridEdge *bestEdge = nullptr;
 	decVector testNearestPosition;
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() != this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() != this){
 					continue;
 				}
 				
 				dedaiSpaceGrid * const grid = space.GetGrid();
-				if( ! grid ){
+				if(!grid){
 					continue;
 				}
 				
-				const decVector testPoint( space.GetInverseMatrix() * point );
-				dedaiSpaceGridEdge * const testEdge = grid->NearestPoint( testPoint, radius,
-					testNearestPosition, testNearestDistance, testLambda );
-				if( ! testEdge || testNearestDistance > bestDistanceSquared ){
+				const decVector testPoint(space.GetInverseMatrix() * point);
+				dedaiSpaceGridEdge * const testEdge = grid->NearestPoint(testPoint, radius,
+					testNearestPosition, testNearestDistance, testLambda);
+				if(!testEdge || testNearestDistance > bestDistanceSquared){
 					continue;
 				}
 				
 				bestEdge = testEdge;
 				bestDistanceSquared = testNearestDistance;
-				nearestPoint = space.GetMatrix() * decDVector( testNearestPosition );
+				nearestPoint = space.GetMatrix() * decDVector(testNearestPosition);
 				nearestLambda = testLambda;
 			}
 		}
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() != this ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(space.GetLayer() != this){
+			return;
 		}
 		
 		dedaiSpaceGrid * const grid = space.GetGrid();
-		if( ! grid ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(!grid){
+			return;
 		}
 		
-		const decVector testPosition( space.GetInverseMatrix() * point );
-		dedaiSpaceGridEdge * const testEdge = grid->NearestPoint( testPosition, radius,
-			testNearestPosition, testNearestDistance, testLambda );
-		if( ! testEdge || testNearestDistance > bestDistanceSquared ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		const decVector testPosition(space.GetInverseMatrix() * point);
+		dedaiSpaceGridEdge * const testEdge = grid->NearestPoint(testPosition, radius,
+			testNearestPosition, testNearestDistance, testLambda);
+		if(!testEdge || testNearestDistance > bestDistanceSquared){
+			return;
 		}
 		
 		bestEdge = testEdge;
 		bestDistanceSquared = testNearestDistance;
-		nearestPoint = space.GetMatrix() * decDVector( testNearestPosition );
+		nearestPoint = space.GetMatrix() * decDVector(testNearestPosition);
 		nearestLambda = testLambda;
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	return bestEdge;
 }
 
-dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint( const decDVector &point, float radius, decDVector &nearest ){
-	const decDVector testMinExtend( point - decDVector( ( double )radius, ( double )radius, ( double )radius ) );
-	const decDVector testMaxExtend( point + decDVector( ( double )radius, ( double )radius, ( double )radius ) );
-	dedaiSpaceMeshFace *bestFace = NULL;
+dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, float radius, decDVector &nearest){
+	const decDVector testMinExtend(point - decDVector((double)radius, (double)radius, (double)radius));
+	const decDVector testMaxExtend(point + decDVector((double)radius, (double)radius, (double)radius));
+	dedaiSpaceMeshFace *bestFace = nullptr;
 	float bestDistanceSquared = 0.0f;
 	decVector testNearestPosition;
 	float testNearestDistance;
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() != this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() != this){
 					continue;
 				}
 				
 				dedaiSpaceMesh * const navmesh = space.GetMesh();
-				if( ! navmesh ){
+				if(!navmesh){
 					continue;
 				}
 				
-				if( ! ( space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend ) ){
+				if(!(space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
 					continue;
 				}
 				
-				const decVector testPoint( ( space.GetInverseMatrix() * point ) );
-				dedaiSpaceMeshFace * const testFace = navmesh->NearestPoint( testPoint, radius, testNearestPosition, testNearestDistance );
+				const decVector testPoint((space.GetInverseMatrix() * point));
+				dedaiSpaceMeshFace * const testFace = navmesh->NearestPoint(testPoint, radius, testNearestPosition, testNearestDistance);
 				
-				if( testFace && ( ! bestFace || testNearestDistance < bestDistanceSquared ) ){
+				if(testFace && (!bestFace || testNearestDistance < bestDistanceSquared)){
 					bestFace = testFace;
-					nearest = space.GetMatrix() * decDVector( testNearestPosition );
+					nearest = space.GetMatrix() * decDVector(testNearestPosition);
 					bestDistanceSquared = testNearestDistance;
 				}
 			}
@@ -377,57 +357,49 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint( const decDVector &point,
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() != this ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(space.GetLayer() != this){
+			return;
 		}
 		
 		dedaiSpaceMesh * const navmesh = space.GetMesh();
-		if( ! navmesh ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(!navmesh){
+			return;
 		}
 		
-		if( ! ( space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend ) ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(!(space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
+			return;
 		}
 		
-		const decVector testPoint( ( space.GetInverseMatrix() * point ) );
-		dedaiSpaceMeshFace * const testFace = navmesh->NearestPoint( testPoint, radius, testNearestPosition, testNearestDistance );
+		const decVector testPoint((space.GetInverseMatrix() * point));
+		dedaiSpaceMeshFace * const testFace = navmesh->NearestPoint(testPoint, radius, testNearestPosition, testNearestDistance);
 		
-		if( testFace && ( ! bestFace || testNearestDistance < bestDistanceSquared ) ){
+		if(testFace && (!bestFace || testNearestDistance < bestDistanceSquared)){
 			bestFace = testFace;
-			nearest = space.GetMatrix() * decDVector( testNearestPosition );
+			nearest = space.GetMatrix() * decDVector(testNearestPosition);
 			bestDistanceSquared = testNearestDistance;
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	return bestFace;
 }
 
-bool dedaiLayer::NavMeshLineCollide( const decDVector &origin, const decVector &direction, float &distance ){
-	dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo( origin, distance );
-	if( ! curFace ){
+bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &direction, float &distance){
+	const dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo(origin, distance);
+	if(!curFace){
 		return false;
 	}
 	
-	const decDVector target( origin + decDVector( direction ) );
-	decDVector curOrigin( origin );
+	const decDVector target(origin + decDVector(direction));
+	decDVector curOrigin(origin);
 	
-	while( true ){
+	while(true){
 		// find edge crossed by line. the direction is not required to be co-planar with the
 		// face or edges. to solve this problem the face normal is used together with the edge
 		// vertices to form planes to do plane-side tests against the target position.
@@ -435,83 +407,83 @@ bool dedaiLayer::NavMeshLineCollide( const decDVector &origin, const decVector &
 		// edge. with the first found edge the test moves on to the neight face until no
 		// neighbor face exists or the direction is exhausted (no edge found)
 		const dedaiSpaceMesh * const navmesh = curFace->GetMesh();
-		if( ! navmesh ){
-			DETHROW( deeInvalidParam );
+		if(!navmesh){
+			DETHROW(deeInvalidParam);
 		}
 		
 		const int cornerCount = curFace->GetCornerCount();
-		if( cornerCount == 0 ){
+		if(cornerCount == 0){
 			return false;
 		}
 		
 		const decDMatrix &invMatrix = navmesh->GetSpace().GetInverseMatrix();
-		const decVector localTarget( invMatrix * target );
-		const decVector localOrigin( invMatrix * curOrigin );
-		const decVector localDirection( localTarget - localOrigin );
+		const decVector localTarget(invMatrix * target);
+		const decVector localOrigin(invMatrix * curOrigin);
+		const decVector localDirection(localTarget - localOrigin);
 		const int firstCorner = curFace->GetFirstCorner();
 		int i;
 		
 		const decVector &normal = curFace->GetNormal();
 		
-		for( i=0; i<cornerCount; i++ ){
-			const dedaiSpaceMeshCorner &c1 = navmesh->GetCornerAt( firstCorner + i );
-			const dedaiSpaceMeshCorner &c2 = navmesh->GetCornerAt( firstCorner + ( i + 1 ) % cornerCount );
-			const decVector &v1 = navmesh->GetVertexAt( c1.GetVertex() );
-			const decVector &v2 = navmesh->GetVertexAt( c2.GetVertex() );
+		for(i=0; i<cornerCount; i++){
+			const dedaiSpaceMeshCorner &c1 = navmesh->GetCorners()[firstCorner + i];
+			const dedaiSpaceMeshCorner &c2 = navmesh->GetCorners()[firstCorner + (i + 1) % cornerCount];
+			const decVector &v1 = navmesh->GetVertices()[c1.GetVertex()];
+			const decVector &v2 = navmesh->GetVertices()[c2.GetVertex()];
 			
-			const decVector dotDir( v2 - v1 );
-			if( dotDir.IsZero() ){
+			const decVector dotDir(v2 - v1);
+			if(dotDir.IsZero()){
 				continue; // sanity check
 			}
 			
-			if( ( normal % ( v1 - localOrigin ) ) * localDirection < 0.0f ){
+			if((normal % (v1 - localOrigin)) * localDirection < 0.0f){
 				continue; // outside left side of edge
 			}
-			if( ( normal % ( v2 - localOrigin ) ) * localDirection > 0.0f ){
+			if((normal % (v2 - localOrigin)) * localDirection > 0.0f){
 				continue; // outside right side of edge
 			}
 			
-			const decVector dotNormal( normal % dotDir.Normalized() );
+			const decVector dotNormal(normal % dotDir.Normalized());
 			const float denominator = dotNormal * localDirection;
-			if( fabsf( denominator ) < FLOAT_SAFE_EPSILON ){
+			if(fabsf(denominator) < FLOAT_SAFE_EPSILON){
 				continue; // co-linear to edge
 			}
 			
-			const float lambda = ( dotNormal * ( v1 - localOrigin ) ) / denominator;
-			if( lambda < 0.0f || lambda > 1.0f ){
+			const float lambda = (dotNormal * (v1 - localOrigin)) / denominator;
+			if(lambda < 0.0f || lambda > 1.0f){
 				continue; // line is not crossing the edge
 			}
 			
-			curOrigin += ( target - curOrigin ) * lambda;
+			curOrigin += (target - curOrigin) * lambda;
 			
 			// determine if this edge leads somewhere
-			const dedaiSpaceMeshEdge &edge = navmesh->GetEdgeAt( c1.GetEdge() );
-			dedaiSpaceMeshFace *nextFace = NULL;
+			const dedaiSpaceMeshEdge &edge = navmesh->GetEdges()[c1.GetEdge()];
+			const dedaiSpaceMeshFace *nextFace = nullptr;
 			
-			if( edge.GetFace2() == -1 ){
-				if( c1.GetLink() != -1 ){
-					const dedaiSpaceMeshLink &link = navmesh->GetLinkAt( c1.GetLink() );
-					nextFace = link.GetMesh()->GetFaces() + link.GetFace();
+			if(edge.GetFace2() == -1){
+				if(c1.GetLink() != -1){
+					const dedaiSpaceMeshLink &link = navmesh->GetLinks()[c1.GetLink()];
+					nextFace = link.GetMesh()->GetFaces().GetArrayPointer() + link.GetFace();
 					//linkedCorner = link.GetCorner();
 				}
 				
 			}else{
-				nextFace = &navmesh->GetFaceAt( edge.GetFace1() == curFace->GetIndex() ? edge.GetFace2() : edge.GetFace1() );
+				nextFace = &navmesh->GetFaces()[edge.GetFace1() == curFace->GetIndex() ? edge.GetFace2() : edge.GetFace1()];
 			}
 			
 			// if the next face exists test it
-			if( nextFace ){
+			if(nextFace){
 				curFace = nextFace;
 				break;
 			}
 			
 			// otherwise this is the end of the line
-			distance = ( float )( ( curOrigin - origin ).Length() / ( target - origin ).Length() );
+			distance = (float)((curOrigin - origin).Length() / (target - origin).Length());
 			return true;
 		}
 		
 		// if no edge matches the line ends inside the current face
-		if( i == cornerCount ){
+		if(i == cornerCount){
 			return false;
 		}
 	}
@@ -526,16 +498,16 @@ void dedaiLayer::InvalidateBlocking(){
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() == this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() == this){
 					space.InvalidateBlocking();
 				}
 			}
@@ -543,21 +515,17 @@ void dedaiLayer::InvalidateBlocking(){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() == this ){
+		if(space.GetLayer() == this){
 			space.InvalidateBlocking();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -565,21 +533,21 @@ void dedaiLayer::InvalidateBlocking(){
 	pDirty = true;
 }
 
-void dedaiLayer::InvalidateBlocking( deNavigationSpace::eSpaceTypes type ){
+void dedaiLayer::InvalidateBlocking(deNavigationSpace::eSpaceTypes type){
 	// TODO use an per-layer octree to improve this
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() == this && space.GetType() == type ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() == this && space.GetType() == type){
 					space.InvalidateBlocking();
 				}
 			}
@@ -587,21 +555,17 @@ void dedaiLayer::InvalidateBlocking( deNavigationSpace::eSpaceTypes type ){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() == this && space.GetType() == type ){
+		if(space.GetLayer() == this && space.GetType() == type){
 			space.InvalidateBlocking();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -609,28 +573,28 @@ void dedaiLayer::InvalidateBlocking( deNavigationSpace::eSpaceTypes type ){
 	pDirty = true;
 }
 
-void dedaiLayer::InvalidateBlocking( deNavigationSpace::eSpaceTypes type,
-const decDVector &boxMin, const decDVector &boxMax ){
+void dedaiLayer::InvalidateBlocking(deNavigationSpace::eSpaceTypes type,
+const decDVector &boxMin, const decDVector &boxMax){
 	// TODO use an per-layer octree to improve this
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() != this || space.GetType() != type ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() != this || space.GetType() != type){
 					continue;
 				}
 				
 				const decDVector &targetMinExtend = space.GetMinimumExtends();
 				const decDVector &targetMaxExtend = space.GetMaximumExtends();
-				if( targetMaxExtend >= boxMin && targetMinExtend <= boxMax ){
+				if(targetMaxExtend >= boxMin && targetMinExtend <= boxMax){
 					space.InvalidateBlocking();
 				}
 			}
@@ -638,28 +602,23 @@ const decDVector &boxMin, const decDVector &boxMax ){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() != this || space.GetType() != type ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(space.GetLayer() != this || space.GetType() != type){
+			return;
 		}
 		
 		const decDVector &targetMinExtend = space.GetMinimumExtends();
 		const decDVector &targetMaxExtend = space.GetMaximumExtends();
-		if( targetMaxExtend >= boxMin && targetMinExtend <= boxMax ){
+		if(targetMaxExtend >= boxMin && targetMinExtend <= boxMax){
 			space.InvalidateBlocking();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -674,16 +633,16 @@ void dedaiLayer::InvalidateLinks(){
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() == this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() == this){
 					space.ClearLinks();
 				}
 			}
@@ -691,21 +650,17 @@ void dedaiLayer::InvalidateLinks(){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() == this ){
+		if(space.GetLayer() == this){
 			space.ClearLinks();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -713,21 +668,21 @@ void dedaiLayer::InvalidateLinks(){
 	pDirty = true;
 }
 
-void dedaiLayer::InvalidateLinks( deNavigationSpace::eSpaceTypes type ){
+void dedaiLayer::InvalidateLinks(deNavigationSpace::eSpaceTypes type){
 	// TODO use an per-layer octree to improve this
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() == this && space.GetType() == type ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() == this && space.GetType() == type){
 					space.ClearLinks();
 				}
 			}
@@ -735,21 +690,17 @@ void dedaiLayer::InvalidateLinks( deNavigationSpace::eSpaceTypes type ){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() == this && space.GetType() == type ){
+		if(space.GetLayer() == this && space.GetType() == type){
 			space.ClearLinks();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -757,28 +708,28 @@ void dedaiLayer::InvalidateLinks( deNavigationSpace::eSpaceTypes type ){
 	pDirty = true;
 }
 
-void dedaiLayer::InvalidateLinks( deNavigationSpace::eSpaceTypes type,
-const decDVector &boxMin, const decDVector &boxMax ){
+void dedaiLayer::InvalidateLinks(deNavigationSpace::eSpaceTypes type,
+const decDVector &boxMin, const decDVector &boxMax){
 	// TODO use an per-layer octree to improve this
 	
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() != this || space.GetType() != type ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() != this || space.GetType() != type){
 					continue;
 				}
 				
 				const decDVector &targetMinExtend = space.GetMinimumExtends();
 				const decDVector &targetMaxExtend = space.GetMaximumExtends();
-				if( targetMaxExtend >= boxMin && targetMinExtend <= boxMax ){
+				if(targetMaxExtend >= boxMin && targetMinExtend <= boxMax){
 					space.ClearLinks();
 				}
 			}
@@ -786,28 +737,23 @@ const decDVector &boxMin, const decDVector &boxMax ){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( engNavSpace ){
-		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
-		if( ! navspace ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		if(!navspace){
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
-		if( space.GetLayer() != this || space.GetType() != type ){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+		if(space.GetLayer() != this || space.GetType() != type){
+			return;
 		}
 		
 		const decDVector &targetMinExtend = space.GetMinimumExtends();
 		const decDVector &targetMaxExtend = space.GetMaximumExtends();
-		if( targetMaxExtend >= boxMin && targetMinExtend <= boxMax ){
+		if(targetMaxExtend >= boxMin && targetMinExtend <= boxMax){
 			space.ClearLinks();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -821,104 +767,94 @@ const decDVector &boxMin, const decDVector &boxMax ){
 //////////////////////
 
 void dedaiLayer::pUpdateCostTable(){
-	if( ! pCostTable.GetChanged() ){
+	if(!pCostTable.GetChanged()){
 		return;
 	}
 	
-	deNavigator *navigator = pWorld.GetWorld().GetRootNavigator();
-	while( navigator ){
-		if( navigator->GetLayer() == pLayer ){
-			dedaiNavigator * const peer = ( dedaiNavigator* )navigator->GetPeerAI();
-			if( peer ){
+	pWorld.GetWorld().GetNavigators().Visit([&](deNavigator *navigator){
+		if(navigator->GetLayer() == pLayer){
+			dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
+			if(peer){
 				peer->CostTableDefinitionChanged();
 			}
 		}
-		navigator = navigator->GetLLWorldNext();
-	}
+	});
 	
 	pCostTable.ClearChanged();
 }
 
 void dedaiLayer::pNavSpacesPrepare(){
 	dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() == this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() == this){
 					space.Prepare();
 				}
 			}
 		}
 	}
 	
-	deNavigationBlocker *blocker = pWorld.GetWorld().GetRootNavigationBlocker();
-	while( blocker ){
-		if( blocker->GetLayer() == pLayer ){
-			dedaiNavBlocker * const peer = ( dedaiNavBlocker* )blocker->GetPeerAI();
-			if( peer ){
+	pWorld.GetWorld().GetNavigationBlockers().Visit([&](deNavigationBlocker *blocker){
+		if(blocker->GetLayer() == pLayer){
+			dedaiNavBlocker * const peer = (dedaiNavBlocker*)blocker->GetPeerAI();
+			if(peer){
 				peer->Prepare();
 			}
 		}
-		blocker = blocker->GetLLWorldNext();
-	}
+	});
 	
-	deNavigationSpace *navspace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( navspace ){
-		if( navspace->GetLayer() == pLayer ){
-			dedaiNavSpace * const peer = ( dedaiNavSpace* )navspace->GetPeerAI();
-			if( peer ){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
+		if(navspace->GetLayer() == pLayer){
+			dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
+			if(peer){
 				peer->GetSpace()->Prepare();
 			}
 		}
-		navspace = navspace->GetLLWorldNext();
-	}
+	});
 }
 
 void dedaiLayer::pNavSpacesPrepareLinks(){
 	dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-	if( heightTerrain ){
-		const int sectorCount = heightTerrain->GetSectorCount();
+	if(heightTerrain){
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
-				if( space.GetLayer() == this ){
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
+				if(space.GetLayer() == this){
 					space.PrepareLinks();
 				}
 			}
 		}
 	}
 	
-	deNavigationSpace *navspace = pWorld.GetWorld().GetRootNavigationSpace();
-	while( navspace ){
-		if( navspace->GetLayer() == pLayer ){
-			dedaiNavSpace * const peer = ( dedaiNavSpace* )navspace->GetPeerAI();
-			if( peer ){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
+		if(navspace->GetLayer() == pLayer){
+			dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
+			if(peer){
 				peer->GetSpace()->PrepareLinks();
 			}
 		}
-		navspace = navspace->GetLLWorldNext();
-	}
+	});
 }
 
 void dedaiLayer::pNavigatorsPrepare(){
-	deNavigator *navigator = pWorld.GetWorld().GetRootNavigator();
-	while( navigator ){
-		if( navigator->GetLayer() == pLayer ){
-			dedaiNavigator * const peer = ( dedaiNavigator* )navigator->GetPeerAI();
-			if( peer ){
+	pWorld.GetWorld().GetNavigators().Visit([&](deNavigator *navigator){
+		if(navigator->GetLayer() == pLayer){
+			dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
+			if(peer){
 				peer->Prepare();
 			}
 		}
-		navigator = navigator->GetLLWorldNext();
-	}
+	});
 }

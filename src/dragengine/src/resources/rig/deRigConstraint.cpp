@@ -55,66 +55,66 @@ deRigConstraint::~deRigConstraint(){
 // Management
 ///////////////
 
-void deRigConstraint::SetReferencePosition( const decVector &position ){
+void deRigConstraint::SetReferencePosition(const decVector &position){
 	pRefPosition = position;
 }
 
-void deRigConstraint::SetReferenceOrientation( const decQuaternion &orientation ){
+void deRigConstraint::SetReferenceOrientation(const decQuaternion &orientation){
 	pRefOrientation = orientation;
 }
 
-void deRigConstraint::SetBoneOffset( const decVector &offset ){
+void deRigConstraint::SetBoneOffset(const decVector &offset){
 	pBoneOffset = offset;
 }
 
 
 
-deColliderConstraintDof &deRigConstraint::GetDof( deColliderConstraint::eDegreesOfFreedom dof ){
-	if( dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+deColliderConstraintDof &deRigConstraint::GetDof(deColliderConstraint::eDegreesOfFreedom dof){
+	if(dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pDof[ dof ];
+	return pDof[dof];
 }
 
-const deColliderConstraintDof &deRigConstraint::GetDof( deColliderConstraint::eDegreesOfFreedom dof ) const{
-	if( dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+const deColliderConstraintDof &deRigConstraint::GetDof(deColliderConstraint::eDegreesOfFreedom dof) const{
+	if(dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pDof[ dof ];
+	return pDof[dof];
 }
 
 
 
-void deRigConstraint::SetLinearDamping( float damping ){
+void deRigConstraint::SetLinearDamping(float damping){
 	pDampingLinear = damping;
 }
 
-void deRigConstraint::SetAngularDamping( float damping ){
+void deRigConstraint::SetAngularDamping(float damping){
 	pDampingAngular = damping;
 }
 
-void deRigConstraint::SetSpringDamping( float damping ){
+void deRigConstraint::SetSpringDamping(float damping){
 	pDampingSpring = damping;
 }
 
 
 
-void deRigConstraint::SetIsRope( bool isRope ){
+void deRigConstraint::SetIsRope(bool isRope){
 	pIsRope = isRope;
 }
 
-void deRigConstraint::SetBreakingThreshold( float impulseThreshold ){
-	if( impulseThreshold < 0.0f ){
+void deRigConstraint::SetBreakingThreshold(float impulseThreshold){
+	if(impulseThreshold < 0.0f){
 		impulseThreshold = 0.0f;
 	}
 	pBreakingThreshold = impulseThreshold;
 }
 
-void deRigConstraint::SetParentBone( int bone ){
-	if( bone < -1 ){
-		DETHROW( deeInvalidParam );
+void deRigConstraint::SetParentBone(int bone){
+	if(bone < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pParentBone = bone;
 }

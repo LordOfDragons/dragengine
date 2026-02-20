@@ -26,36 +26,39 @@
 #define _GDEWPSOCWORLD_H_
 
 #include "../../../gamedef/objectClass/world/gdeOCWorld.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCWorldListener.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCWorldListener;
 
 
 /**
  * \brief Object class world property panel.
  */
 class gdeWPSOCWorld : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCWorld> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCWorldListener *pListener;
+	gdeWPSOCWorldListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPath;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
+	igdeEditPath::Ref pEditPath;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	
@@ -75,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or nullptr if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -88,7 +91,7 @@ public:
 	gdeOCWorld *GetWorld() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCWorld::eProperties GetPropertyName() const;
+	gdeOCWorld::eProperties GetPropertyName() const;
 	
 	
 	/** \brief Update object class property list. */

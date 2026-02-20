@@ -31,7 +31,7 @@
 #include "../../../world/decal/meDecalSelection.h"
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -41,21 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObjectDecal::meUAddObjectDecal( meWorld *world, meObject *parentObject ){
-	if( ! world || ! parentObject ) DETHROW( deeInvalidParam );
+meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
+	if(!world || !parentObject) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pParentObject = parentObject;
-	parentObject->AddReference();
-	
 	try{
-		pDecal = new meDecal( world->GetEnvironment() );
-		SetShortInfo( "Add Object Decal" );
+		pDecal = meDecal::Ref::New(world->GetEnvironment());
+		SetShortInfo("@World.UAddObjectDecal.AddObjectDecal");
 		UpdateInfos();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,7 +69,7 @@ meUAddObjectDecal::~meUAddObjectDecal(){
 ///////////////
 
 void meUAddObjectDecal::UpdateInfos(){
-	SetLongInfo( "" );
+	SetLongInfo("");
 }
 
 
@@ -82,20 +80,19 @@ void meUAddObjectDecal::UpdateInfos(){
 void meUAddObjectDecal::Undo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
-	selection.Remove( pDecal );
-	if( pDecal->GetActive() ) selection.ActivateNext();
+	selection.Remove(pDecal);
 	
-	pParentObject->RemoveDecal( pDecal );
+	pParentObject->RemoveDecal(pDecal);
 }
 
 void meUAddObjectDecal::Redo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
-	pParentObject->AddDecal( pDecal );
+	pParentObject->AddDecal(pDecal);
 	
 	selection.Reset();
-	selection.Add( pDecal );
-	selection.SetActive( pDecal );
+	selection.Add(pDecal);
+	selection.SetActive(pDecal);
 }
 
 
@@ -104,6 +101,4 @@ void meUAddObjectDecal::Redo(){
 //////////////////////
 
 void meUAddObjectDecal::pCleanUp(){
-	if( pDecal ) pDecal->FreeReference();
-	if( pParentObject ) pParentObject->FreeReference();
 }

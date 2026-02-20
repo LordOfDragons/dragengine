@@ -25,12 +25,14 @@
 #ifndef _CEUCFACEPOSESETNAME_H_
 #define _CEUCFACEPOSESETNAME_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/facepose/ceFacePose.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceFacePose;
-class ceConversationActionList;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationTopic;
 
 
@@ -39,36 +41,40 @@ class ceConversationTopic;
  * \brief Undo Action Face Pose Set Name.
  */
 class ceUCFacePoseSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCFacePoseSetName>;
+	
+	
 private:
-	ceFacePose *pFacePose;
+	ceFacePose::Ref pFacePose;
 	
 	decString pOldName;
 	decString pNewName;
 	
-	ceUndoCActionList pActionList;
+	decTObjectOrderedSet<ceUndoCAction> pActions;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFacePoseSetName( ceFacePose *file, const char *newName );
+	ceUCFacePoseSetName(ceFacePose *file, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCFacePoseSetName();
+	~ceUCFacePoseSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:
-	void pSetName( const char *oldNname, const char *newName );
-	void pAddActions( ceConversationTopic *topic, const ceConversationActionList &list );
+	void pSetName(const char *oldNname, const char *newName);
+	void pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list);
 };
 
 #endif

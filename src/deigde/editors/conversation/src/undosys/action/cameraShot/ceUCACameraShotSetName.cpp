@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACameraShotSetName::ceUCACameraShotSetName( ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName ){
-	if( ! topic || ! newName ) DETHROW( deeInvalidParam );
+ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName){
+	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pCameraShot = NULL;
+	pTopic = nullptr;
+	pCameraShot = nullptr;
 	pOldName = cameraShot->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Camera Shot Set Name" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetName");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACameraShotSetName::~ceUCACameraShotSetName(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCACameraShotSetName::~ceUCACameraShotSetName(){
 ///////////////
 
 void ceUCACameraShotSetName::Undo(){
-	pCameraShot->SetName( pOldName.GetString() );
-	pTopic->NotifyActionChanged( pCameraShot );
+	pCameraShot->SetName(pOldName.GetString());
+	pTopic->NotifyActionChanged(pCameraShot);
 }
 
 void ceUCACameraShotSetName::Redo(){
-	pCameraShot->SetName( pNewName.GetString() );
-	pTopic->NotifyActionChanged( pCameraShot );
+	pCameraShot->SetName(pNewName.GetString());
+	pTopic->NotifyActionChanged(pCameraShot);
 }

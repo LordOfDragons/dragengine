@@ -48,16 +48,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRCanvasRenderWorld::deoglRCanvasRenderWorld( deoglRenderThread &renderThread ) :
-deoglRCanvas( renderThread ),
-pCamera( NULL ),
-pForceToneMapAdaption( false ){
-	LEAK_CHECK_CREATE( renderThread, CanvasRenderWorld );
+deoglRCanvasRenderWorld::deoglRCanvasRenderWorld(deoglRenderThread &renderThread) :
+deoglRCanvas(renderThread),
+pForceToneMapAdaption(false){
+	LEAK_CHECK_CREATE(renderThread, CanvasRenderWorld);
 }
 
 deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
-	LEAK_CHECK_FREE( GetRenderThread(), CanvasRenderWorld );
-	SetCamera( NULL );
+	LEAK_CHECK_FREE(GetRenderThread(), CanvasRenderWorld);
+	SetCamera(nullptr);
 }
 
 
@@ -65,35 +64,25 @@ deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
 // Management
 ///////////////
 
-void deoglRCanvasRenderWorld::SetCamera( deoglRCamera *camera ){
-	if( camera == pCamera ){
+void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
+	if(camera == pCamera){
 		return;
 	}
-	
-	if( pCamera ){
-		pCamera->FreeReference();
-	}
-	
 	pCamera = camera;
-	
-	if( camera ){
-		camera->AddReference();
-	}
-	
 	pForceToneMapAdaption = true;
 }
 
 
 
-void deoglRCanvasRenderWorld::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
-	if( ! pCamera || ! pCamera->GetParentWorld() ){
+void deoglRCanvasRenderWorld::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+	if(!pCamera || !pCamera->GetParentWorld()){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender( renderPlanMask );
+	deoglRCanvas::PrepareForRender(renderPlanMask);
 	
-	if( pForceToneMapAdaption ){
-		pCamera->SetForceToneMapAdaption( true );
+	if(pForceToneMapAdaption){
+		pCamera->SetForceToneMapAdaption(true);
 		pForceToneMapAdaption = false;
 	}
 	
@@ -101,7 +90,7 @@ void deoglRCanvasRenderWorld::PrepareForRender( const deoglRenderPlanMasked *ren
 	//pCamera->GetParentWorld()->PrepareForRender( pCamera->GetPlan() );
 }
 
-void deoglRCanvasRenderWorld::Render( const deoglRenderCanvasContext &context ){
-	const deoglRenderCanvasContext renderWorldContext( context, *this );
-	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasRenderWorld( renderWorldContext, *this );
+void deoglRCanvasRenderWorld::Render(const deoglRenderCanvasContext &context){
+	const deoglRenderCanvasContext renderWorldContext(context, *this);
+	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasRenderWorld(renderWorldContext, *this);
 }

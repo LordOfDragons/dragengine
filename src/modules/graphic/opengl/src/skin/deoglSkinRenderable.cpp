@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinRenderable::deoglSkinRenderable( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+deoglSkinRenderable::deoglSkinRenderable(const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -55,6 +55,6 @@ deoglSkinRenderable::~deoglSkinRenderable(){
 // Management
 ///////////////
 
-void deoglSkinRenderable::SetRequiresTexture( bool requiresTexture ){
+void deoglSkinRenderable::SetRequiresTexture(bool requiresTexture){
 	pRequiresTexture = requiresTexture;
 }

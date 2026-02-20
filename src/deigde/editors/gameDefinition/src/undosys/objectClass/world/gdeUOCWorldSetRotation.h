@@ -37,6 +37,10 @@
  * \brief Undo action object class world set rotation.
  */
 class gdeUOCWorldSetRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCWorldSetRotation>;
+	
+	
 private:
 	const gdeObjectClass::Ref pObjectClass;
 	const gdeOCWorld::Ref pWorld;

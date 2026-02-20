@@ -25,23 +25,28 @@
 #ifndef _IGDENULLSCRIPTMODULE_H_
 #define _IGDENULLSCRIPTMODULE_H_
 
-#include "dragengine/systems/modules/deInternalModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingCollider.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/deInternalModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
 /**
- * \brief Null Script Module.
+ * \brief nullptr Script Module.
  */
 class DE_DLL_EXPORT igdeNullScriptModule : public deBaseScriptingModule{
 public:
 	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
-		cModule( deModuleSystem *system );
-		virtual ~cModule();
-		virtual void CreateModule();
+		using Ref = deTObjectReference<cModule>;
+		cModule(deModuleSystem *system);
+		
+	protected:
+		~cModule() override;
+		
+	public:
+		void CreateModule() override;
 	};
 	
 	
@@ -51,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	igdeNullScriptModule( deLoadableModule &loadableModule );
+	igdeNullScriptModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~igdeNullScriptModule();
+	~igdeNullScriptModule() override;
 	/*@}*/
 	
 	
@@ -64,16 +69,16 @@ public:
 	/**
 	 * \brief Directory relative to the module share directory where shared module data is located.
 	 * 
-	 * \returns NULL if no such directory is used.
+	 * \returns nullptr if no such directory is used.
 	 */
-	virtual const char *GetSharedDataDir() const;
+	const char *GetSharedDataDir() const override;
 	
 	/**
 	 * \brief VFS directory where the module share directory is shown at.
 	 * 
-	 * \returns NULL if no such directory is used.
+	 * \returns nullptr if no such directory is used.
 	 */
-	virtual const char *GetVFSSharedDataDir() const;
+	const char *GetVFSSharedDataDir() const override;
 	
 	/**
 	 * Prepares the scripting module to operate the game by checking the
@@ -84,10 +89,10 @@ public:
 	 * those requirements. After the Init function has exited the scripting
 	 * module is ready to operate the game.
 	 */
-	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	bool Init(const char *scriptDirectory, const char *gameObject) override;
 	
 	/** \brief Shut down scripting module and frees all resources. */
-	virtual void ShutDown();
+	void ShutDown() override;
 	/*@}*/
 	
 	
@@ -95,46 +100,46 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for the given collider object. */
-	virtual deBaseScriptingCollider *CreateCollider( deCollider *collider );
+	deBaseScriptingCollider *CreateCollider(deCollider *collider) override;
 	
 	/** \brief Create peer for the given server object. */
-	virtual deBaseScriptingServer *CreateServer( deServer *server );
+	deBaseScriptingServer *CreateServer(deServer *server) override;
 	
 	/** \brief Create peer for the given connection object. */
-	virtual deBaseScriptingConnection *CreateConnection( deConnection *connection );
+	deBaseScriptingConnection *CreateConnection(deConnection *connection) override;
 	
 	/** \brief Create peer for the given network state object. */
-	virtual deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state );
+	deBaseScriptingNetworkState *CreateNetworkState(deNetworkState *state) override;
 	
 	/** \brief Create peer for the given touch sensor object. */
-	virtual deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor );
+	deBaseScriptingTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor) override;
 	
 	/** \brief Create peer for the given prop field object. */
-	virtual deBaseScriptingPropField *CreatePropField( dePropField *propField );
+	deBaseScriptingPropField *CreatePropField(dePropField *propField) override;
 	
-	/** \brief Create peer for the given particle emitter instance object or NULL if not used. */
-	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
-		deParticleEmitterInstance *instance );
+	/** \brief Create peer for the given particle emitter instance object or nullptr if not used. */
+	deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
+		deParticleEmitterInstance *instance) override;
 	
 	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter) override;
 	
 	/** \brief Create deSpeaker peer. */
-	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	deBaseScriptingSpeaker *CreateSpeaker(deSpeaker *speaker) override;
 	
 	/**
 	 * \brief Initialize game scripts.
 	 * 
 	 * This usually involves creating the game objects and calling init functions on them.
 	 */
-	virtual bool InitGame();
+	bool InitGame() override;
 	
 	/**
 	 * \brief Exit game scripts.
 	 * 
 	 * This usually involves calling exit functions and freeing game objects.
 	 */
-	virtual bool ExitGame();
+	bool ExitGame() override;
 	
 	/**
 	 * \brief Called at the beginning of each update cycle.
@@ -145,25 +150,25 @@ public:
 	 * 
 	 * \return true if the call has been successfull or false otherwise
 	 */
-	virtual bool OnFrameUpdate();
+	bool OnFrameUpdate() override;
 	
 	/**
 	 * \brief Called after the render window changed size.
 	 */
-	virtual bool OnResizeRenderWindow();
+	bool OnResizeRenderWindow() override;
 	
 	/**
 	 * \brief Send the given event to game scripts.
 	 * \return true if the call has been successfull or false otherwise
 	 */
-	virtual bool SendEvent( deInputEvent *event );
+	bool SendEvent(deInputEvent *event) override;
 	
 	/**
 	 * \brief User requested window to be closed.
 	 * 
 	 * Default implementation calls deEngine.Quit().
 	 */
-	virtual void UserRequestQuit();
+	void UserRequestQuit() override;
 	/*@}*/
 };
 

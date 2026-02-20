@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget( ceCameraShot *cameraShot, const char *newTarget ){
-	if( ! cameraShot || ! newTarget ){
-		DETHROW( deeInvalidParam );
+ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, const char *newTarget){
+	if(!cameraShot || !newTarget){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set Look-At Target" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetLookAtTarget");
 	
 	pOldTarget = cameraShot->GetLookAtTarget();
 	pNewTarget = newTarget;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetLookAtTarget::~ceUCCShotSetLookAtTarget(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ ceUCCShotSetLookAtTarget::~ceUCCShotSetLookAtTarget(){
 ///////////////
 
 void ceUCCShotSetLookAtTarget::Undo(){
-	pCameraShot->SetLookAtTarget( pOldTarget );
+	pCameraShot->SetLookAtTarget(pOldTarget);
 }
 
 void ceUCCShotSetLookAtTarget::Redo(){
-	pCameraShot->SetLookAtTarget( pNewTarget );
+	pCameraShot->SetLookAtTarget(pNewTarget);
 }

@@ -28,6 +28,7 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 
 class devkDevice;
@@ -40,15 +41,13 @@ class decBaseFileReader;
 class devkShaderModule : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkShaderModule> Ref;
-	
+	using Ref = deTObjectReference<devkShaderModule>;
 	
 	
 private:
 	devkDevice &pDevice;
 	const decString pPath;
-	char *pSource;
-	int pSourceLength;
+	decTList<char> pSource;
 	
 	VkShaderModule pModule;
 	
@@ -57,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader module. */
-	devkShaderModule( devkDevice &device, const char *path, decBaseFileReader &reader );
+	devkShaderModule(devkDevice &device, const char *path, decBaseFileReader &reader);
 	
 protected:
 	/** Clean up shader module. */
-	virtual ~devkShaderModule();
+	~devkShaderModule() override;
 	/*@}*/
 	
 	
@@ -76,10 +75,10 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** Shader source. */
-	inline const char *GetSource() const{ return pSource; }
+	inline const char *GetSource() const{ return pSource.GetArrayPointer(); }
 	
 	/** Shader source length. */
-	inline int GetSourceLength() const{ return pSourceLength; }
+	inline int GetSourceLength() const{ return pSource.GetCount(); }
 	
 	/** Shader module. */
 	inline VkShaderModule GetModule() const{ return pModule; }

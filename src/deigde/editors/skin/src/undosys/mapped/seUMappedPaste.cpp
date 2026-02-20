@@ -35,9 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedPaste::seUMappedPaste( seSkin *skin, const seClipboardDataMapped &data ) :
-seUMappedAdd( skin, seMapped::Ref::New( new seMapped( data.GetAt( 0 ) ) ) )
+seUMappedPaste::seUMappedPaste(seSkin *skin, const seClipboardDataMapped &data) :
+seUMappedAdd(skin, seMapped::Ref::New(data.GetMapped().First()))
 {
-	pMapped->MakeNameUnique( skin->GetMappedList() );
-	SetShortInfo( "Paste Mapped" );
+	pMapped->MakeNameUnique(skin->GetMapped());
+	SetShortInfo("@Skin.Undo.PasteMapped");
 }

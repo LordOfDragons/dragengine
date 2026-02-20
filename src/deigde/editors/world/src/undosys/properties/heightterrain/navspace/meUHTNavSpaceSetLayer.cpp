@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceSetLayer::meUHTNavSpaceSetLayer( meHeightTerrainNavSpace *navspace, int newLayer ) :
-pNavSpace( NULL ),
-pNewLayer( newLayer )
+meUHTNavSpaceSetLayer::meUHTNavSpaceSetLayer(meHeightTerrainNavSpace *navspace, int newLayer) :
+
+pNewLayer(newLayer)
 {
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldLayer = navspace->GetLayer();
 	
-	SetShortInfo( "Height terrain nav-space set layer" );
+	SetShortInfo("@World.UHTNavSpaceSetLayer.HeightTerrainNavSpaceSetLayer");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceSetLayer::~meUHTNavSpaceSetLayer(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ meUHTNavSpaceSetLayer::~meUHTNavSpaceSetLayer(){
 ///////////////
 
 void meUHTNavSpaceSetLayer::Undo(){
-	pNavSpace->SetLayer( pOldLayer );
+	pNavSpace->SetLayer(pOldLayer);
 }
 
 void meUHTNavSpaceSetLayer::Redo(){
-	pNavSpace->SetLayer( pNewLayer );
+	pNavSpace->SetLayer(pNewLayer);
 }

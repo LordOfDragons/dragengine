@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTOVERLAYIMAGE_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectOverlayImage.h"
 
-class deoglREffectOverlayImage;
 class deEffectOverlayImage;
 
 
@@ -39,7 +39,7 @@ class deoglEffectOverlayImage : public deoglEffect{
 private:
 	const deEffectOverlayImage &pEffectOverlayImage;
 	
-	deoglREffectOverlayImage *pREffectOverlayImage;
+	deoglREffectOverlayImage::Ref pREffectOverlayImage;
 	
 	bool pDirtyTransparency;
 	bool pDirtyImage;
@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectOverlayImage( deGraphicOpenGl &ogl, const deEffectOverlayImage &effect );
+	deoglEffectOverlayImage(deGraphicOpenGl &ogl, const deEffectOverlayImage &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectOverlayImage();
+	~deoglEffectOverlayImage() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Image changed. */
-	virtual void ImageChanged();
+	void ImageChanged() override;
 	
 	/** Transparency changed. */
-	virtual void TransparencyChanged();
+	void TransparencyChanged() override;
 	/*@}*/
 };
 

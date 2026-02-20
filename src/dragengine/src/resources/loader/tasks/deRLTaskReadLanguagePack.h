@@ -26,15 +26,20 @@
 #define _DERLTASKREADLANGUAGEPACK_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../localization/deLanguagePackReference.h"
+#include "../../localization/deLanguagePack.h"
 
 
 /**
  * \brief Read languagePack resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadLanguagePack : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadLanguagePack>;
+	
+	
 private:
-	deLanguagePackReference pLanguagePack;
+	deLanguagePack::Ref pLanguagePack;
 	bool pSucceeded;
 	
 	
@@ -43,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadLanguagePack( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deLanguagePack *languagePack );
+	deRLTaskReadLanguagePack(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deLanguagePack *languagePack);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadLanguagePack();
+	~deRLTaskReadLanguagePack() override;
 	/*@}*/
 	
 	
@@ -55,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -66,7 +71,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

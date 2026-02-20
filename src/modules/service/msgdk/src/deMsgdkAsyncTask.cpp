@@ -42,12 +42,12 @@ void deMsgdkAsyncTask::ResetAsyncBlock()
 {
 	pAsyncBlock = {};
 	pAsyncBlock.queue = nullptr;
-    pAsyncBlock.context = this;
+	pAsyncBlock.context = this;
 	pAsyncBlock.callback = [](XAsyncBlock* ab){
 		deMsgdkAsyncTask * const myself = (deMsgdkAsyncTask*)(ab->context);
 		if(myself->pInvalidator->IsValid()){
 			myself->OnFinished();
 		}
 		myself->FreeReference();
-    };
+	};
 }

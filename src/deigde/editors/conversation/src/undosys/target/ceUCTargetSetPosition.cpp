@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetPosition::ceUCTargetSetPosition( ceTarget *target, const decVector &newPosition ){
-	if( ! target ) DETHROW( deeInvalidParam );
+ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition){
+	if(!target) DETHROW(deeInvalidParam);
 	
-	pTarget = NULL;
+	pTarget = nullptr;
 	
-	SetShortInfo( "Target Set Position" );
+	SetShortInfo("@Conversation.Undo.TargetSetPosition");
 	
 	pOldPosition = target->GetPosition();
 	pNewPosition = newPosition;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetPosition::~ceUCTargetSetPosition(){
-	if( pTarget ){
-		pTarget->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCTargetSetPosition::~ceUCTargetSetPosition(){
 ///////////////
 
 void ceUCTargetSetPosition::Undo(){
-	pTarget->SetPosition( pOldPosition );
+	pTarget->SetPosition(pOldPosition);
 }
 
 void ceUCTargetSetPosition::Redo(){
-	pTarget->SetPosition( pNewPosition );
+	pTarget->SetPosition(pNewPosition);
 }

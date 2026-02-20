@@ -40,26 +40,22 @@
 ////////////////////////////
 
 projUProjectSetPathConfig::projUProjectSetPathConfig(
-projProject *project, const char *newValue ) :
-pProject( NULL ),
-pNewValue( newValue )
+projProject *project, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! project ){
-		DETHROW( deeInvalidParam );
+	if(!project){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Project set config path" );
+	SetShortInfo("@Project.Undo.ProjectSetPathConfig");
 	
 	pOldValue = project->GetPathConfig();
 	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProjectSetPathConfig::~projUProjectSetPathConfig(){
-	if( pProject ){
-		pProject->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ projUProjectSetPathConfig::~projUProjectSetPathConfig(){
 ///////////////
 
 void projUProjectSetPathConfig::Undo(){
-	pProject->SetPathConfig( pOldValue );
+	pProject->SetPathConfig(pOldValue);
 }
 
 void projUProjectSetPathConfig::Redo(){
-	pProject->SetPathConfig( pNewValue );
+	pProject->SetPathConfig(pNewValue);
 }

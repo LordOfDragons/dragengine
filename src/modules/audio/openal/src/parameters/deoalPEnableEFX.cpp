@@ -40,12 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalPEnableEFX::deoalPEnableEFX( deAudioOpenAL &oal ) :
-deoalParameterBool( oal )
+deoalPEnableEFX::deoalPEnableEFX(deAudioOpenAL &oal) :
+deoalParameterBool(oal)
 {
-	SetName( "enableEFX" );
-	SetDescription( "Enable effects (EFX)" );
-	SetCategory( ecExpert );
+	SetName("enableEFX");
+	SetDescription("Enable effects (EFX)");
+	SetCategory(ecExpert);
 }
 
 deoalPEnableEFX::~deoalPEnableEFX(){
@@ -60,6 +60,6 @@ bool deoalPEnableEFX::GetParameterBool(){
 	return pOal.GetConfiguration().GetEnableEFX();
 }
 
-void deoalPEnableEFX::SetParameterBool( bool value ){
-	pOal.GetConfiguration().SetEnableEFX( value );
+void deoalPEnableEFX::SetParameterBool(bool value){
+	pOal.GetConfiguration().SetEnableEFX(value);
 }

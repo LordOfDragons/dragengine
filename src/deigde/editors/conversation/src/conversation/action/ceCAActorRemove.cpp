@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAActorRemove::ceCAActorRemove() : ceConversationAction( eatActorRemove ){
+ceCAActorRemove::ceCAActorRemove() : ceConversationAction(eatActorRemove){
 }
 
-ceCAActorRemove::ceCAActorRemove( const ceCAActorRemove &action ) : ceConversationAction( action ){
+ceCAActorRemove::ceCAActorRemove(const ceCAActorRemove &action) : ceConversationAction(action){
 	pActor = action.GetActor();
 }
 
@@ -53,15 +53,15 @@ ceCAActorRemove::~ceCAActorRemove(){
 // Management
 ///////////////
 
-void ceCAActorRemove::SetActor( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void ceCAActorRemove::SetActor(const char *id){
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	pActor = id;
 }
 
 
 
-ceConversationAction *ceCAActorRemove::CreateCopy() const{
-	return new ceCAActorRemove( *this );
+ceConversationAction::Ref ceCAActorRemove::CreateCopy() const{
+	return ceCAActorRemove::Ref::New(*this);
 }

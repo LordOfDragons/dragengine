@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,18 +50,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseRemove::ceWPTMAIfElseCaseRemove( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseRemove::ceWPTMAIfElseCaseRemove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase *ifCase ) :
-ceWPTMenuAction( windowMain, "Remove If-Case",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( ifCase )
+ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.IfElseCaseRemove",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(ifCase)
 {
-	if( ! ifCase ){
-		DETHROW( deeInvalidParam );
+	if(!ifCase){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -71,18 +71,17 @@ pIfCase( ifCase )
 ///////////////
 
 void ceWPTMAIfElseCaseRemove::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAIfElseCaseRemove( pTopic, pIfElse, pIfCase ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseCaseRemove::Ref::New(
+		pTopic, pIfElse, pIfCase));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAIfElse * const modelIfElse = ( ceWPTTIMAIfElse* )model.DeepFindAction( pIfElse );
-	if( ! modelIfElse ){
+	ceWPTTIMAIfElse * const modelIfElse = (ceWPTTIMAIfElse*)model.DeepFindAction(pIfElse);
+	if(!modelIfElse){
 		return;
 	}
 	

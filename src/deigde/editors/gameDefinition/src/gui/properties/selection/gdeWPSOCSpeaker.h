@@ -26,20 +26,20 @@
 #define _GDEWPSOSPEAKER_H_
 
 #include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCSpeakerListener.h"
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCSpeaker;
 class gdeWindowProperties;
-class gdeWPSOCSpeakerListener;
 
 
 
@@ -47,29 +47,32 @@ class gdeWPSOCSpeakerListener;
  * \brief Object class speaker property panel.
  */
 class gdeWPSOCSpeaker : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCSpeaker> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSpeakerListener *pListener;
+	gdeWPSOCSpeakerListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPathSound;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeCheckBoxReference pChkLooping;
-	igdeCheckBoxReference pChkPlaying;
-	igdeTextFieldReference pEditVolume;
-	igdeTextFieldReference pEditRange;
-	igdeTextFieldReference pEditRollOff;
-	igdeTextFieldReference pEditDistanceOffset;
-	igdeTextFieldReference pEditPlaySpeed;
+	igdeEditPath::Ref pEditPathSound;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeCheckBox::Ref pChkLooping;
+	igdeCheckBox::Ref pChkPlaying;
+	igdeTextField::Ref pEditVolume;
+	igdeTextField::Ref pEditRange;
+	igdeTextField::Ref pEditRollOff;
+	igdeTextField::Ref pEditDistanceOffset;
+	igdeTextField::Ref pEditPlaySpeed;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTriggerNames;
-	igdeComboBoxFilterReference pCBTriggerNameTarget;
+	igdeComboBox::Ref pCBTriggerNames;
+	igdeComboBoxFilter::Ref pCBTriggerNameTarget;
 	
 	
 	
@@ -77,35 +80,37 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCSpeaker( gdeWindowProperties &windowMain );
+	gdeWPSOCSpeaker(gdeWindowProperties &windowMain);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~gdeWPSOCSpeaker();
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class speaker or \em NULL if not set. */
+	/** \brief Active object class speaker or \em nullptr if not set. */
 	gdeOCSpeaker *GetSpeaker() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCSpeaker::eProperties GetPropertyName() const;
+	gdeOCSpeaker::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCSpeaker::eTriggers GetTriggerName() const;
+	gdeOCSpeaker::eTriggers GetTriggerName() const;
 	
 	
 	

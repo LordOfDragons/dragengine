@@ -32,7 +32,6 @@
 #include "meHeightTerrainPFType.h"
 #include "meUpdateHeightTerrainPropField.h"
 #include "../meWorld.h"
-#include "../heightterrain/meHTVInstance.h"
 #include "../heightterrain/meUpdateHTVInstances.h"
 #include "../heightterrain/meHTVegetationLayer.h"
 #include "../heightterrain/meHTVVariation.h"
@@ -60,27 +59,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHeightTerrainPropField::meHeightTerrainPropField( deEngine *engine ) :
-pHTSector( NULL ),
-pEngine( engine ),
-pEngPF( NULL ),
-pVInstances( NULL ),
-pVInstanceCount( 0 ),
-pVInstanceSize( 0 ),
-pDirtyVInstances( false ),
-pDirty( false ),
-pKeepClean( true ),
-pListener( NULL )
+meHeightTerrainPropField::meHeightTerrainPropField(deEngine *engine) :
+pHTSector(nullptr),
+pEngine(engine),
+pDirtyVInstances(false),
+pDirty(false),
+pKeepClean(true),
+pListener(nullptr)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(engine)
 	
 	try{
-		pListener = new meUpdateHeightTerrainPropField( this );
+		pListener = new meUpdateHeightTerrainPropField(this);
 		pEngPF = engine->GetPropFieldManager()->CreatePropField();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -95,31 +88,31 @@ meHeightTerrainPropField::~meHeightTerrainPropField(){
 // Management
 ///////////////
 
-void meHeightTerrainPropField::SetHTSector( meHeightTerrainSector *htsector ){
-	if( htsector == pHTSector ){
+void meHeightTerrainPropField::SetHTSector(meHeightTerrainSector *htsector){
+	if(htsector == pHTSector){
 		return;
 	}
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->GetWorld().GetEngineWorld()->RemovePropField( pEngPF );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->GetWorld().GetEngineWorld()->RemovePropField(pEngPF);
 	}
 	
 	pHTSector = htsector;
 	
-	if( htsector && htsector->GetHeightTerrain() ){
-		htsector->GetHeightTerrain()->GetWorld().GetEngineWorld()->AddPropField( pEngPF );
+	if(htsector && htsector->GetHeightTerrain()){
+		htsector->GetHeightTerrain()->GetWorld().GetEngineWorld()->AddPropField(pEngPF);
 	}
 }
 
 
 
-void meHeightTerrainPropField::SetExtend( const decVector2 &minimum, const decVector2 &maximum ){
+void meHeightTerrainPropField::SetExtend(const decVector2 &minimum, const decVector2 &maximum){
 	pMinExtend = minimum;
 	pMaxExtend = maximum;
 }
 
-void meHeightTerrainPropField::InitDelegates( igdeEnvironment *environment ){
-	environment->SetPropFieldDelegee( pEngPF, pListener );
+void meHeightTerrainPropField::InitDelegates(igdeEnvironment *environment){
+	environment->SetPropFieldDelegee(pEngPF, pListener);
 }
 
 void meHeightTerrainPropField::Invalidate(){
@@ -135,7 +128,7 @@ void meHeightTerrainPropField::Validate(){
 void meHeightTerrainPropField::Update(){
 	pKeepClean = false;
 	
-	if( pDirty ){
+	if(pDirty){
 		MarkVInstancesDirty();
 		pDirty = false;
 	}
@@ -146,7 +139,7 @@ void meHeightTerrainPropField::Update(){
 void meHeightTerrainPropField::Clear(){
 	pKeepClean = true;
 	
-	if( pEngPF ){
+	if(pEngPF){
 		pEngPF->RemoveAllTypes();
 	}
 }
@@ -154,104 +147,67 @@ void meHeightTerrainPropField::Clear(){
 
 
 void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
-	if( ! pEngPF ){
+	if(!pEngPF){
 		return;
 	}
 	
 	pEngPF->RemoveAllTypes();
 	
-	if( pKeepClean ){
+	if(pKeepClean){
 		return;
 	}
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
 	decLayerMask cfCategory;
-	cfCategory.SetBit( meWorld::eclmPropFields );
+	cfCategory.SetBit(meWorld::eclmPropFields);
 	
 	decLayerMask cfFilter;
-	cfFilter.SetBit( meWorld::eclmEditing );
-	cfFilter.SetBit( meWorld::eclmForceField );
-	cfFilter.SetBit( meWorld::eclmParticles );
+	cfFilter.SetBit(meWorld::eclmEditing);
+	cfFilter.SetBit(meWorld::eclmForceField);
+	cfFilter.SetBit(meWorld::eclmParticles);
 	
-	const decCollisionFilter collisionFilter( cfCategory, cfFilter );
+	const decCollisionFilter collisionFilter(cfCategory, cfFilter);
 	
-	const int layerCount = pHTSector->GetHeightTerrain()->GetVLayerCount();
-	dePropFieldType *engPFType = NULL;
-	int i, j;
-	
-	try{
-		for( i=0; i<layerCount; i++ ){
-			meHTVegetationLayer &vlayer = *pHTSector->GetHeightTerrain()->GetVLayerAt( i );
-			const int variationCount = vlayer.GetVariationCount();
-			
-			for( j=0; j<variationCount; j++ ){
-				meHTVVariation &variation = *vlayer.GetVariationAt( j );
-				
-				engPFType = new dePropFieldType;
-				engPFType->SetModel( variation.GetModel() );
-				engPFType->SetSkin( variation.GetSkin() );
-				engPFType->SetRotationPerForce( variation.GetRotationPerForce() * DEG2RAD );
-				engPFType->SetRestitution( variation.GetRestitution() );
-				engPFType->SetCollisionFilter( collisionFilter );
-				
-				pEngPF->AddType( engPFType );
-				engPFType = NULL;
-			}
-		}
-		
-	}catch( const deException & ){
-		if( engPFType ){
-			delete engPFType;
-		}
-		throw;
-	}
+	pHTSector->GetHeightTerrain()->GetVLayers().Visit([&](const meHTVegetationLayer &vlayer){
+		vlayer.GetVariations().Visit([&](meHTVVariation &variation){
+			auto engPFType = dePropFieldType::Ref::New();
+			engPFType->SetModel(variation.GetModel());
+			engPFType->SetSkin(variation.GetSkin());
+			engPFType->SetRotationPerForce(variation.GetRotationPerForce() * DEG2RAD);
+			engPFType->SetRestitution(variation.GetRestitution());
+			engPFType->SetCollisionFilter(collisionFilter);
+			pEngPF->AddType(std::move(engPFType));
+		});
+	});
 }
 
 
 
-meHTVInstance &meHeightTerrainPropField::GetVInstanceAt( int index ) const{
-	if( index < 0 || index >= pVInstanceCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pVInstances[ index ];
-}
-
-meHTVInstance &meHeightTerrainPropField::AddVInstance(){
-	if( pVInstanceCount == pVInstanceSize ){
-		const int newSize = pVInstanceSize + 500;
-		meHTVInstance * const newArray = new meHTVInstance[ newSize ];
-		if( pVInstances ){
-			memcpy( newArray, pVInstances, sizeof( meHTVInstance ) * pVInstanceSize );
-			delete [] pVInstances;
-		}
-		pVInstances = newArray;
-		pVInstanceSize = newSize;
-	}
-	
-	pVInstanceCount++;
-	return pVInstances[ pVInstanceCount - 1 ];
+const meHTVInstance::Ref &meHeightTerrainPropField::AddVInstance(){
+	pVInstances.Add(meHTVInstance::Ref::New());
+	return pVInstances.Last();
 }
 
 void meHeightTerrainPropField::RemoveAllVInstances(){
-	pVInstanceCount = 0;
+	pVInstances.RemoveAll();
 }
 
 void meHeightTerrainPropField::UpdateVInstances(){
-	if( ! pDirtyVInstances || ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(!pDirtyVInstances || !pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
-	meUpdateHTVInstances updater( *this );
+	meUpdateHTVInstances updater(*this);
 	updater.UpdateInstances();
 	
 	pDirtyVInstances = false;
-	pHTSector->SetPFCacheChanged( true );
+	pHTSector->SetPFCacheChanged(true);
 }
 
 void meHeightTerrainPropField::MarkVInstancesDirty(){
-	if( pDirtyVInstances ){
+	if(pDirtyVInstances){
 		return;
 	}
 	
@@ -269,17 +225,8 @@ void meHeightTerrainPropField::MarkVInstancesValid(){
 //////////////////////
 
 void meHeightTerrainPropField::pCleanUp(){
-	SetHTSector( NULL );
-	
-	if( pVInstances ){
-		delete [] pVInstances;
-	}
-	
-	if( pEngPF ){
-		pEngPF->FreeReference();
-	}
-	
-	if( pListener ){
+	SetHTSector(nullptr);
+	if(pListener){
 		delete pListener;
 	}
 }

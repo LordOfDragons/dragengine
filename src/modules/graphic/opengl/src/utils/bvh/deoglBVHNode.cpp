@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglBVHNode.h"
 
 #include <dragengine/common/exceptions.h>
@@ -37,27 +33,47 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglBVHNode::deoglBVHNode(){
+deoglBVHNode::deoglBVHNode() :
+pFirstIndex(0),
+pPrimitiveCount(0){
 }
 
-deoglBVHNode::~deoglBVHNode(){
+deoglBVHNode::deoglBVHNode(int firstIndex, int primitiveCount) :
+pFirstIndex(firstIndex),
+pPrimitiveCount(primitiveCount){
 }
+
+deoglBVHNode::deoglBVHNode(const deoglBVHNode &node){
+	*this = node;
+}
+
+deoglBVHNode &deoglBVHNode::operator=(const deoglBVHNode &node){
+	if(this != &node){
+		pMinExtend = node.pMinExtend;
+		pMaxExtend = node.pMaxExtend;
+		pFirstIndex = node.pFirstIndex;
+		pPrimitiveCount = node.pPrimitiveCount;
+	}
+	return *this;
+}
+
+deoglBVHNode::~deoglBVHNode() = default;
 
 
 
 // Management
 ///////////////
 
-void deoglBVHNode::SetExtends( const decVector &minExtend, const decVector &maxExtend ){
+void deoglBVHNode::SetExtends(const decVector &minExtend, const decVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
-void deoglBVHNode::SetFirstIndex( int index ){
+void deoglBVHNode::SetFirstIndex(int index){
 	pFirstIndex = index;
 }
 
-void deoglBVHNode::SetPrimitiveCount( int count ){
+void deoglBVHNode::SetPrimitiveCount(int count){
 	pPrimitiveCount = count;
 }
 

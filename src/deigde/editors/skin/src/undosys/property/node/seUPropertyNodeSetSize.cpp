@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeSetSize::seUPropertyNodeSetSize(
-sePropertyNode *node, const decPoint3 &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNode *node, const decPoint3 &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set size" );
+	SetShortInfo("@Skin.Undo.NodeSetSize");
 	
 	pOldValue = node->GetSize();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetSize::~seUPropertyNodeSetSize(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeSetSize::~seUPropertyNodeSetSize(){
 ///////////////
 
 void seUPropertyNodeSetSize::Undo(){
-	pNode->SetSize( pOldValue );
+	pNode->SetSize(pOldValue);
 }
 
 void seUPropertyNodeSetSize::Redo(){
-	pNode->SetSize( pNewValue );
+	pNode->SetSize(pNewValue);
 }

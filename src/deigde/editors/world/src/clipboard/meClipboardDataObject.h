@@ -25,10 +25,11 @@
 #ifndef _MECLIPBOARDDATAOBJECT_H_
 #define _MECLIPBOARDDATAOBJECT_H_
 
+#include "meCDOObject.h"
+
 #include <deigde/clipboard/igdeClipboardData.h>
 #include <dragengine/common/math/decMath.h>
 
-class meCDOObject;
 class meWorld;
 
 
@@ -38,14 +39,15 @@ class meWorld;
  */
 class meClipboardDataObject : public igdeClipboardData{
 public:
+	using Ref = deTObjectReference<meClipboardDataObject>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	meCDOObject **pObjects;
-	int pObjectCount;
+	meCDOObject::List pObjects;
 	
 	
 	
@@ -53,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data from selected objects. */
-	meClipboardDataObject( const meWorld &world );
+	meClipboardDataObject(const meWorld &world);
 	
 protected:
 	/**
@@ -62,7 +64,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~meClipboardDataObject();
+	~meClipboardDataObject() override;
 	/*@}*/
 	
 	
@@ -70,17 +72,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of objects. */
-	inline int GetObjectCount() const{ return pObjectCount; }
-	
-	/** \brief Object at index. */
-	meCDOObject *GetObjectAt( int index ) const;
+	/** Objects. */
+	inline const meCDOObject::List &GetObjects() const{ return pObjects; }
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

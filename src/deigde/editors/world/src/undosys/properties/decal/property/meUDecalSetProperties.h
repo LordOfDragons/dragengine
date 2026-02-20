@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meDecal;
+#include "../../../../world/decal/meDecal.h"
 
 
 
@@ -37,8 +37,12 @@ class meDecal;
  * \brief Undo action deal set properties.
  */
 class meUDecalSetProperties : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalSetProperties>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
@@ -49,11 +53,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalSetProperties( meDecal *decal, const decStringDictionary &newValues );
+	meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo decal. */
-	virtual ~meUDecalSetProperties();
+
+protected:
+	~meUDecalSetProperties() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

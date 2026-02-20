@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "meDecal.h"
-#include "meDecalList.h"
+#include "meDecal.h"
 #include "meDecalSelection.h"
 #include "../meWorld.h"
 
@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meDecalSelection::meDecalSelection(){
-	pActive = NULL;
+	pActive = nullptr;
 }
 
 meDecalSelection::~meDecalSelection(){
@@ -54,71 +54,74 @@ meDecalSelection::~meDecalSelection(){
 // Management
 ///////////////
 
-void meDecalSelection::Add( meDecal *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+void meDecalSelection::Add(meDecal *object){
+	DEASSERT_NOTNULL(object)
+	
+	if(!pSelection.Add(object)){
+		return;
 	}
 	
-	object->SetSelected( true );
-	pSelection.AddIfAbsent( object );
+	object->SetSelected(true);
+	
+	if(!pActive){
+		SetActive(object);
+	}
 }
 
-void meDecalSelection::Remove( meDecal *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+void meDecalSelection::Remove(meDecal *object){
+	const meDecal::Ref guard(object);
+	if(!pSelection.Remove(object)){
+		return;
 	}
 	
-	object->SetSelected( false );
-	pSelection.RemoveIfPresent( object );
+	object->SetSelected(false);
+	
+	if(pActive == object){
+		ActivateNext();
+	}
 }
 
 void meDecalSelection::RemoveAll(){
-	const int count = pSelection.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
-	}
-	
+	pSelection.Visit([&](meDecal &decal){
+		decal.SetSelected(false);
+	});
 	pSelection.RemoveAll();
 }
 
 
 
 bool meDecalSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
-void meDecalSelection::SetActive( meDecal *object ){
-	if( pActive ){
-		pActive->SetActive( false );
-		pActive->FreeReference();
+void meDecalSelection::SetActive(meDecal *object){
+	if(pActive){
+		pActive->SetActive(false);
 	}
 	
 	pActive = object;
 	
-	if( object ){
-		object->AddReference();
-		object->SetActive( true );
+	if(object){
+		object->SetActive(true);
 	}
 }
 
 void meDecalSelection::ActivateNext(){
 	const int count = pSelection.GetCount();
-	meDecal *next = NULL;
+	meDecal *next = nullptr;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
+	for(i=0; i<count; i++){
+		if(pActive != pSelection.GetAt(i)){
+			next = pSelection.GetAt(i);
 			break;
 		}
 	}
 	
-	SetActive( next );
+	SetActive(next);
 }
 
 void meDecalSelection::Reset(){
 	RemoveAll();
-	SetActive( NULL );
+	SetActive(nullptr);
 }

@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVVariation;
+#include "../../../../world/heightterrain/meHTVVariation.h"
 
 
 
@@ -40,8 +40,12 @@ class meHTVVariation;
  * Undo action to set the restitution of a vegetation layer variation.
  */
 class meUHTVVarSetRestitution : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVVarSetRestitution>;
+	
+	
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRestitution;
 	float pNewRestitution;
 	
@@ -49,20 +53,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVarSetRestitution( meHTVVariation *variation, float newRestitution );
+	meUHTVVarSetRestitution(meHTVVariation *variation, float newRestitution);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUHTVVarSetRestitution();
+
+protected:
+	~meUHTVVarSetRestitution() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

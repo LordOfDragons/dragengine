@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglPropField.h"
 #include "deoglPropFieldCluster.h"
 #include "deoglRPropField.h"
@@ -71,49 +67,49 @@
 // Class deoglPropFieldCluster::WorldComputeElement
 /////////////////////////////////////////////////////
 
-deoglPropFieldCluster::WorldComputeElement::WorldComputeElement( deoglPropFieldCluster &cluster ) :
-deoglWorldComputeElement( eetPropFieldCluster, &cluster ),
-pCluster( cluster ){
+deoglPropFieldCluster::WorldComputeElement::WorldComputeElement(deoglPropFieldCluster &cluster) :
+deoglWorldComputeElement(eetPropFieldCluster, &cluster),
+pCluster(cluster){
 }
 
-void deoglPropFieldCluster::WorldComputeElement::UpdateData( sDataElement &data ) const{
-	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition() - GetReferencePosition() );
+void deoglPropFieldCluster::WorldComputeElement::UpdateData(sDataElement &data) const{
+	const decDVector position(pCluster.GetPropFieldType().GetPropField().GetPosition() - GetReferencePosition());
 	
-	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
+	data.SetExtends(position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend());
 	data.SetEmptyLayerMask();
-	data.flags = ( uint32_t )( deoglWorldCompute::eefPropFieldCluster
-		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
+	data.flags = (uint32_t)(deoglWorldCompute::eefPropFieldCluster
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic);
 	data.geometryCount = 1;
 	data.highestLod = 0;
 }
 
-void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry *data) const{
 	deoglSkinTexture * const skinTexture = pCluster.GetPropFieldType().GetUseSkinTexture();
-	if( ! skinTexture ){
+	if(!skinTexture){
 		return;
 	}
 	
 	const deoglRModel * const model = pCluster.GetPropFieldType().GetModel();
-	if( ! model ){
+	if(!model){
 		return;
 	}
 	
-	const deoglModelLOD &modelLOD = model->GetLODAt( 0 );
-	if( ! modelLOD.GetVBOBlock() ){
+	const deoglModelLOD &modelLOD = model->GetLODAt(0);
+	if(!modelLOD.GetVBOBlock()){
 		return;
 	}
 	
-	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
+	const deoglModelTexture &modelTex = modelLOD.GetTextureAt(0);
 	
 	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
 	filters |= ertfShadow;
-	if( modelTex.GetDecal() ){
-		filters |= ertfDecal;
+	if(modelTex.GetDecal()){
+		filters |= ertfDecal | ertfDecalSolidParent;
 	}
 	
-	SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptPropField,
+	SetDataGeometry(*data, 0, filters, deoglSkinTexturePipelinesList::eptPropField,
 		modelTex.GetDoubleSided() ? deoglSkinTexturePipelines::emDoubleSided : 0, skinTexture,
-		modelLOD.GetVBOBlock()->GetVBO()->GetVAO(), pCluster.GetRTSInstance(), -1 );
+		modelLOD.GetVBOBlock()->GetVBO()->GetVAO(), pCluster.GetRTSInstance(), -1);
 	
 	sInfoTUC info;
 	info.geometry = pCluster.GetTUCGeometry();
@@ -123,7 +119,7 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElem
 	info.shadowCube = pCluster.GetTUCShadow();
 	info.envMap = pCluster.GetTUCEnvMap();
 	// info.giMaterial = pCluster.GetTUCGIMaterial(); // missing
-	SetDataGeometryTUCs( *data, info );
+	SetDataGeometryTUCs(*data, info);
 }
 
 
@@ -137,32 +133,26 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElem
 // Constructor, destructor
 ////////////////////////////
 
-deoglPropFieldCluster::deoglPropFieldCluster( deoglRPropFieldType &propFieldType ) :
-pPropFieldType( propFieldType ),
-pRenderThread( propFieldType.GetPropField().GetRenderThread() ),
-pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
+deoglPropFieldCluster::deoglPropFieldCluster(deoglRPropFieldType &propFieldType) :
+pPropFieldType(propFieldType),
+pRenderThread(propFieldType.GetPropField().GetRenderThread()),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
-pInstances( NULL ),
-pInstanceCount( 0 ),
+pTUCDepth(nullptr),
+pTUCGeometry(nullptr),
+pTUCShadow(nullptr),
+pTUCEnvMap(nullptr),
 
-pBendStateData( NULL ),
-pBendStateDataSize( 0 ),
+pDirtyTUCs(true),
+pDirtyBendStates(true),
 
-pTUCDepth( NULL ),
-pTUCGeometry( NULL ),
-pTUCShadow( NULL ),
-pTUCEnvMap( NULL ),
+pTBOInstances(0),
+pTBOBendStates(0),
+pVBOInstances(0),
+pVBOBendStates(0),
 
-pDirtyTUCs( true ),
-pDirtyBendStates( true ),
-
-pTBOInstances( 0 ),
-pTBOBendStates( 0 ),
-pVBOInstances( 0 ),
-pVBOBendStates( 0 ),
-
-pRTSInstance( NULL ),
-pDirtyRTSInstance( true ){
+pRTSInstance(nullptr),
+pDirtyRTSInstance(true){
 }
 
 deoglPropFieldCluster::~deoglPropFieldCluster(){
@@ -172,39 +162,32 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 	// the parent objects do not exist anymore. Render thread is thus stored aside during
 	// construction time which is valid and prevents the problem
 	
-	if( pRTSInstance ){
+	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
 	}
 	
-	if( pBendStateData ){
-		delete [] pBendStateData;
-	}
-	if( pInstances ){
-		delete [] pInstances;
-	}
-	
-	if( pTUCDepth ){
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
-	if( pTUCShadow ){
+	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLTexture( pTBOBendStates );
-	dops.DeleteOpenGLTexture( pTBOInstances );
-	dops.DeleteOpenGLBuffer( pVBOBendStates );
-	dops.DeleteOpenGLBuffer( pVBOInstances );
+	dops.DeleteOpenGLTexture(pTBOBendStates);
+	dops.DeleteOpenGLTexture(pTBOInstances);
+	dops.DeleteOpenGLBuffer(pVBOBendStates);
+	dops.DeleteOpenGLBuffer(pVBOInstances);
 }
 
 
@@ -212,8 +195,8 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 // Management
 ///////////////
 
-void deoglPropFieldCluster::SetExtends( const decVector &minExtend, const decVector &maxExtend ){
-	if( minExtend.IsEqualTo( pMinExtend ) && maxExtend.IsEqualTo( pMaxExtend ) ){
+void deoglPropFieldCluster::SetExtends(const decVector &minExtend, const decVector &maxExtend){
+	if(minExtend.IsEqualTo(pMinExtend) && maxExtend.IsEqualTo(pMaxExtend)){
 		return;
 	}
 	
@@ -223,24 +206,10 @@ void deoglPropFieldCluster::SetExtends( const decVector &minExtend, const decVec
 	pWorldComputeElement->ComputeUpdateElement();
 }
 
-void deoglPropFieldCluster::SetInstanceCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglPropFieldCluster::SetInstanceCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( count != pInstanceCount ){
-		sInstance *instances = NULL;
-		
-		if( count > 0 ){
-			instances = new sInstance[ count ];
-		}
-		
-		if( pInstances ){
-			delete [] pInstances;
-		}
-		pInstances = instances;
-		pInstanceCount = count;
-	}
+	pInstances.SetCount(count, {});
 	
 	pDirtyRTSInstance = true;
 }
@@ -253,46 +222,32 @@ void deoglPropFieldCluster::PrepareForRender(){
 	pPrepareRTSInstance();
 }
 
-void deoglPropFieldCluster::PrepareBendStateData( const dePropFieldType &type ){
+void deoglPropFieldCluster::PrepareBendStateData(const dePropFieldType &type){
 	// WARNING Called during synchronization by main thread.
 	
-	const dePropFieldBendState * const engBendStates = type.GetBendStates();
-	const int engBendStateCount = type.GetBendStateCount();
-	const int vboDataSize = pInstanceCount * 4; // sizeof( halfFloat ) * 2
+	const dePropFieldBendState * const engBendStates = type.GetBendStates().GetArrayPointer();
+	const int engBendStateCount = type.GetBendStates().GetCount();
+	const int vboDataSize = pInstances.GetCount() * 4; // sizeof(halfFloat) * 2
 	
-	if( vboDataSize > pBendStateDataSize ){
-		if( pBendStateData ){
-			delete [] pBendStateData;
-			pBendStateData = NULL;
-			pBendStateDataSize = 0;
-		}
-		
-		if( vboDataSize > 0 ){
-			pBendStateData = new char[ vboDataSize ];
-			pBendStateDataSize = vboDataSize;
-		}
-	}
+	pBendStateData.SetCountDiscard(vboDataSize);
 	
-	HALF_FLOAT * const vboData = ( HALF_FLOAT* )pBendStateData;
-	const HALF_FLOAT halfZero = CONVERT_FLOAT_TO_HALF( 0.0f );
+	HALF_FLOAT * const vboData = (HALF_FLOAT*)pBendStateData.GetArrayPointer();
+	const HALF_FLOAT halfZero = CONVERT_FLOAT_TO_HALF(0.0f);
 	HALF_FLOAT *vboDataPtr = vboData;
-	int i;
 	
-	for( i=0; i<pInstanceCount; i++ ){
-		const sInstance &instance = pInstances[ i ];
-		
+	pInstances.Visit([&](const sInstance &instance){
 		// pixel 1: bend.x, bend.z
-		if( instance.bstate >= 0 && instance.bstate < engBendStateCount ){
-			const dePropFieldBendState &engBendState = engBendStates[ instance.bstate ];
+		if(instance.bstate >= 0 && instance.bstate < engBendStateCount){
+			const dePropFieldBendState &engBendState = engBendStates[instance.bstate];
 			
-			*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( engBendState.GetBendX() ); // pixel 1 r: bend.x
-			*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( engBendState.GetBendZ() ); // pixel 1 g: bend.z
+			*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(engBendState.GetBendX()); // pixel 1 r: bend.x
+			*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(engBendState.GetBendZ()); // pixel 1 g: bend.z
 			
 		}else{
-			*( vboDataPtr++ ) = halfZero; // pixel 1 r: bend.x
-			*( vboDataPtr++ ) = halfZero; // pixel 1 g: bend.z
+			*(vboDataPtr++) = halfZero; // pixel 1 r: bend.x
+			*(vboDataPtr++) = halfZero; // pixel 1 g: bend.z
 		}
-	}
+	});
 	
 	pDirtyBendStates = true;
 	pPropFieldType.ClusterRequiresPrepareForRender();
@@ -300,8 +255,8 @@ void deoglPropFieldCluster::PrepareBendStateData( const dePropFieldType &type ){
 
 
 
-deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
-	switch( type ){
+deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const{
+	switch(type){
 	case deoglSkinTexturePipelines::etGeometry:
 	case deoglSkinTexturePipelines::etGeometryDepthTest:
 		return GetTUCGeometry();
@@ -326,49 +281,49 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType( deoglSkinText
 		return GetTUCEnvMap();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
+deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
-	if( ! skinTexture ){
-		return NULL;
+	if(!skinTexture){
+		return nullptr;
 	}
 	
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
+	deoglRDynamicSkin *dynamicSkin = nullptr;
+	deoglSkinState *skinState = nullptr;
+	deoglTexUnitsConfig *tuc = nullptr;
 	int target;
 	
 	deoglSkinShader &skinShader = *skinTexture->GetPipelines().
-		GetAt( deoglSkinTexturePipelinesList::eptPropField ).
-		GetWithRef( type ).GetShader();
+		GetAt(deoglSkinTexturePipelinesList::eptPropField).
+		GetWithRef(type).GetShader();
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon( &units[ 0 ], *skinTexture, skinState, dynamicSkin );
-		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
-			pPropFieldType.GetPropField().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr );
+		skinShader.SetTUCCommon(&units[0], *skinTexture, skinState, dynamicSkin);
+		skinShader.SetTUCPerObjectEnvMap(&units[0],
+			pPropFieldType.GetPropField().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr);
 		
-		target = skinShader.GetTextureTarget( deoglSkinShader::ettSubInstance1 );
-		if( target != -1 ){
-			units[ target ].EnableTBO( pTBOInstances );
+		target = skinShader.GetTextureTarget(deoglSkinShader::ettSubInstance1);
+		if(target != -1){
+			units[target].EnableTBO(pTBOInstances);
 		}
 		
-		target = skinShader.GetTextureTarget( deoglSkinShader::ettSubInstance2 );
-		if( target != -1 ){
-			units[ target ].EnableTBO( pTBOBendStates );
+		target = skinShader.GetTextureTarget(deoglSkinShader::ettSubInstance2);
+		if(target != -1){
+			units[target].EnableTBO(pTBOBendStates);
 		}
 		
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetTextureUnitCount(),
-			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			&units[0], skinShader.GetTextureUnitCount(),
+			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if( ! tuc ){
-		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
-			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	if(!tuc){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
+			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
 	
@@ -388,8 +343,8 @@ void deoglPropFieldCluster::DirtyRTSInstance(){
 
 
 
-void deoglPropFieldCluster::AddToWorldCompute( deoglWorldCompute &worldCompute ){
-	worldCompute.AddElement( pWorldComputeElement );
+void deoglPropFieldCluster::AddToWorldCompute(deoglWorldCompute &worldCompute){
+	worldCompute.AddElement(pWorldComputeElement);
 }
 
 void deoglPropFieldCluster::UpdateWorldCompute(){
@@ -410,62 +365,62 @@ void deoglPropFieldCluster::RemoveFromWorldCompute(){
 //////////////////////
 
 void deoglPropFieldCluster::pPrepareTUCs(){
-	if( ! pDirtyTUCs ){
+	if(!pDirtyTUCs){
 		return;
 	}
 	pDirtyTUCs = false;
 	
 	// depth
-	if( pTUCDepth ){
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
+	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 	
 	// geometry
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
+	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
 	// shadow
-	if( pTUCShadow ){
+	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
+	pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 	
 	// envmap
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
 	
-	if( skinTexture ){
-		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
-		deoglTexUnitConfig unit[ 8 ];
+	if(skinTexture){
+		deoglRDynamicSkin *dynamicSkin = nullptr;
+		deoglSkinState *skinState = nullptr;
+		deoglTexUnitConfig unit[8];
 		
-		if( skinTexture->GetVariationU() || skinTexture->GetVariationV() ){
-			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *skinTexture, deoglSkinChannel::ectColor,
-				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetColorArray() );
+		if(skinTexture->GetVariationU() || skinTexture->GetVariationV()){
+			unit[0].EnableArrayTextureFromChannel(pRenderThread, *skinTexture, deoglSkinChannel::ectColor,
+				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetColorArray());
 			
-			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *skinTexture, deoglSkinChannel::ectEmissivity,
-				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetEmissivityArray() );
+			unit[1].EnableArrayTextureFromChannel(pRenderThread, *skinTexture, deoglSkinChannel::ectEmissivity,
+				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetEmissivityArray());
 			
 		}else{
-			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *skinTexture, deoglSkinChannel::ectColor,
-				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetColor() );
+			unit[0].EnableTextureFromChannel(pRenderThread, *skinTexture, deoglSkinChannel::ectColor,
+				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetColor());
 			
-			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *skinTexture, deoglSkinChannel::ectEmissivity,
-				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetEmissivity() );
+			unit[1].EnableTextureFromChannel(pRenderThread, *skinTexture, deoglSkinChannel::ectEmissivity,
+				skinState, dynamicSkin, pRenderThread.GetDefaultTextures().GetEmissivity());
 		}
 		
-		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
-			pPropFieldType.GetUseSkinTexture()->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(&unit[0], 2,
+			pPropFieldType.GetUseSkinTexture()->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 		pTUCEnvMap->EnsureRTSTexture();
 	}
 }
@@ -473,11 +428,11 @@ void deoglPropFieldCluster::pPrepareTUCs(){
 
 
 void deoglPropFieldCluster::pPrepareTBOs(){
-	if( ! pVBOInstances ){
+	if(!pVBOInstances){
 		pUpdateTBOInstances();
 	}
 	
-	if( pDirtyBendStates ){
+	if(pDirtyBendStates){
 		pDirtyBendStates = false;
 		pUpdateTBOBendStates();
 	}
@@ -485,78 +440,70 @@ void deoglPropFieldCluster::pPrepareTBOs(){
 
 void deoglPropFieldCluster::pUpdateTBOInstances(){
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	const int vboDataSize = pInstanceCount * 24; // sizeof( HALF_FLOAT ) * 12
-	HALF_FLOAT * const vboData = ( HALF_FLOAT* )pRenderThread.GetBufferObject().GetTemporaryVBOData( vboDataSize );
+	const int vboDataSize = pInstances.GetCount() * 24; // sizeof(HALF_FLOAT) * 12
+	HALF_FLOAT * const vboData = (HALF_FLOAT*)pRenderThread.GetBufferObject().GetTemporaryVBOData(vboDataSize);
 	HALF_FLOAT *vboDataPtr = vboData;
-	int i;
 	
-	for( i=0; i<pInstanceCount; i++ ){
-		const sInstance &instance = pInstances[ i ];
-		
+	pInstances.Visit([&](const sInstance &instance){
 		// pixel 1: pos.x,           pos.y,           pos.z,           rot.a13 * scale
 		// pixel 2: rot.a11 * scale, rot.a21 * scale, rot.a31 * scale, rot.a23 * scale
 		// pixel 3: rot.a12 * scale, rot.a22 * scale, rot.a32 * scale, rot.a33 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.position[ 0 ] );                    // pixel 1 r: pos.x
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.position[ 1 ] );                    // pixel 1 g: pos.y
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.position[ 2 ] );                    // pixel 1 b: pos.z
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 2 ] * instance.scaling ); // pixel 1 a: rot.a13 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.position[0]);                    // pixel 1 r: pos.x
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.position[1]);                    // pixel 1 g: pos.y
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.position[2]);                    // pixel 1 b: pos.z
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[2] * instance.scaling); // pixel 1 a: rot.a13 * scale
 		
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 0 ] * instance.scaling ); // pixel 2 r: rot.a11 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 3 ] * instance.scaling ); // pixel 2 g: rot.a21 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 6 ] * instance.scaling ); // pixel 2 b: rot.a31 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 5 ] * instance.scaling ); // pixel 2 a: rot.a23 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[0] * instance.scaling); // pixel 2 r: rot.a11 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[3] * instance.scaling); // pixel 2 g: rot.a21 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[6] * instance.scaling); // pixel 2 b: rot.a31 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[5] * instance.scaling); // pixel 2 a: rot.a23 * scale
 		
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 1 ] * instance.scaling ); // pixel 3 r: rot.a12 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 4 ] * instance.scaling ); // pixel 3 g: rot.a22 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 7 ] * instance.scaling ); // pixel 3 b: rot.a32 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 8 ] * instance.scaling ); // pixel 3 a: rot.a33 * scale
-	}
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[1] * instance.scaling); // pixel 3 r: rot.a12 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[4] * instance.scaling); // pixel 3 g: rot.a22 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[7] * instance.scaling); // pixel 3 b: rot.a32 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[8] * instance.scaling); // pixel 3 a: rot.a33 * scale
+	});
 	
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOInstances ) );
-	if( ! pVBOInstances ){
-		DETHROW( deeOutOfMemory );
-	}
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBOInstances ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, vboDataSize, vboData, GL_STATIC_DRAW ) );
+	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOInstances));
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOInstances));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, vboData, GL_STATIC_DRAW));
 	
-	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBOInstances ) );
-	if( ! pTBOInstances ){
-		DETHROW( deeInvalidParam );
+	OGL_CHECK(pRenderThread, glGenTextures(1, &pTBOInstances));
+	if(!pTBOInstances){
+		DETHROW(deeInvalidParam);
 	}
-	tsmgr.EnableBareTBO( 0, pTBOInstances );
-	OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16F, pVBOInstances ) );
+	tsmgr.EnableBareTBO(0, pTBOInstances);
+	OGL_CHECK(pRenderThread, pglTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA16F, pVBOInstances));
 	
-	tsmgr.DisableStage( 0 );
+	tsmgr.DisableStage(0);
 	
 // 	renderThread.GetLogger().LogInfoFormat( "PropField %p Type %p Cluster %p: Create TBO Instances (tbo=%u vbo=%u size=%i count=%i)",
 // 		&pPropFieldType.GetPropField(), &pPropFieldType, this, pTBOInstances, pVBOInstances, vboDataSize, pInstanceCount );
 }
 
 void deoglPropFieldCluster::pUpdateTBOBendStates(){
-	const int vboDataSize = pInstanceCount * 4; // sizeof( halfFloat ) * 2
+	const int vboDataSize = pInstances.GetCount() * 4; // sizeof(halfFloat) * 2
 	
-	if( ! pVBOBendStates ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOBendStates ) );
-		if( ! pVBOBendStates ){
-			DETHROW( deeOutOfMemory );
-		}
+	if(!pVBOBendStates){
+		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOBendStates));
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBOBendStates ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, vboDataSize, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, vboDataSize, pBendStateData, GL_STREAM_DRAW ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOBendStates));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, nullptr, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER,
+		vboDataSize, pBendStateData.GetArrayPointer(), GL_STREAM_DRAW));
 	
-	if( ! pTBOBendStates ){
+	if(!pTBOBendStates){
 		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 		
-		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBOBendStates ) );
-		if( ! pTBOBendStates ){
-			DETHROW( deeInvalidParam );
+		OGL_CHECK(pRenderThread, glGenTextures(1, &pTBOBendStates));
+		if(!pTBOBendStates){
+			DETHROW(deeInvalidParam);
 		}
-		tsmgr.EnableBareTBO( 0, pTBOBendStates );
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG16F, pVBOBendStates ) );
+		tsmgr.EnableBareTBO(0, pTBOBendStates);
+		OGL_CHECK(pRenderThread, pglTexBuffer(GL_TEXTURE_BUFFER, GL_RG16F, pVBOBendStates));
 		
-		tsmgr.DisableStage( 0 );
+		tsmgr.DisableStage(0);
 		
 // 		renderThread.GetLogger().LogInfoFormat( "PropField %p Type %p Cluster %p: Create TBO Bend States (tbo=%u vbo=%u size=%i count=%i)",
 // 			&pPropFieldType.GetPropField(), &pPropFieldType, this, pTBOBendStates, pVBOBendStates, vboDataSize, pInstanceCount );
@@ -566,50 +513,50 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 
 
 void deoglPropFieldCluster::pPrepareRTSInstance(){
-	if( ! pDirtyRTSInstance ){
+	if(!pDirtyRTSInstance){
 		return;
 	}
 	pDirtyRTSInstance = false;
 	
-	if( pPropFieldType.GetModel() ){
-		if( ! pRTSInstance ){
+	if(pPropFieldType.GetModel()){
+		if(!pRTSInstance){
 			pRTSInstance = pRenderThread.GetRenderTaskSharedPool().GetInstance();
 			pUpdateRTSInstances();
 		}
 		
 	}else{
-		if( pRTSInstance ){
+		if(pRTSInstance){
 			pRTSInstance->ReturnToPool();
-			pRTSInstance = NULL;
+			pRTSInstance = nullptr;
 		}
 	}
 }
 
 void deoglPropFieldCluster::pUpdateRTSInstances(){
-	if( ! pRTSInstance ){
+	if(!pRTSInstance){
 		return;
 	}
 	
-	pRTSInstance->SetParameterBlock( pPropFieldType.GetParamBlock() );
-	pRTSInstance->SetParameterBlockSpecial( nullptr );
-	pRTSInstance->SetPointCount( 0 );
-	pRTSInstance->SetPrimitiveType( GL_TRIANGLES );
+	pRTSInstance->SetParameterBlock(pPropFieldType.GetParamBlock());
+	pRTSInstance->SetParameterBlockSpecial(nullptr);
+	pRTSInstance->SetPointCount(0);
+	pRTSInstance->SetPrimitiveType(GL_TRIANGLES);
 	
-	const deoglModelLOD &modelLod = pPropFieldType.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLod = pPropFieldType.GetModel()->GetLODAt(0);
 	
-	const deoglModelTexture &modelTexture = modelLod.GetTextureAt( 0 );
-	pRTSInstance->SetIndexCount( modelTexture.GetFaceCount() * 3 );
+	const deoglModelTexture &modelTexture = modelLod.GetTextureAt(0);
+	pRTSInstance->SetIndexCount(modelTexture.GetFaceCount() * 3);
 	
-	if( modelLod.GetVBOBlock() ){
+	if(modelLod.GetVBOBlock()){
 		const deoglSharedVBOBlock &vboBlock = *modelLod.GetVBOBlock();
-		pRTSInstance->SetFirstPoint( vboBlock.GetOffset() );
-		pRTSInstance->SetFirstIndex( vboBlock.GetIndexOffset() + modelTexture.GetFirstFace() * 3 );
-		pRTSInstance->SetSubInstanceCount( pInstanceCount );
+		pRTSInstance->SetFirstPoint(vboBlock.GetOffset());
+		pRTSInstance->SetFirstIndex(vboBlock.GetIndexOffset() + modelTexture.GetFirstFace() * 3);
+		pRTSInstance->SetSubInstanceCount(pInstances.GetCount());
 		
 	}else{
-		pRTSInstance->SetFirstPoint( 0 );
-		pRTSInstance->SetFirstIndex( 0 );
-		pRTSInstance->SetSubInstanceCount( 0 );
+		pRTSInstance->SetFirstPoint(0);
+		pRTSInstance->SetFirstIndex(0);
+		pRTSInstance->SetSubInstanceCount(0);
 	}
 	
 	/*

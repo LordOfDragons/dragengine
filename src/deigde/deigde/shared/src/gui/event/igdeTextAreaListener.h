@@ -36,6 +36,12 @@ class igdeTextArea;
  * \brief IGDE UI TextArea Listener.
  */
 class DE_DLL_EXPORT igdeTextAreaListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTextAreaListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTextAreaListener();
+	~igdeTextAreaListener() override;
 	/*@}*/
 	
 	
@@ -64,7 +70,7 @@ public:
 	 * 
 	 * User entered text and accepted it.
 	 */
-	virtual void OnTextChanged( igdeTextArea *textArea );
+	virtual void OnTextChanged(igdeTextArea *textArea);
 	
 	/**
 	 * \brief TextArea text is changing.
@@ -72,7 +78,7 @@ public:
 	 * User is entering text but has not yet accepted the input. This event is send each
 	 * time the user changes the text. Once accepted OnTextChanged() is called.
 	 */
-	virtual void OnTextChanging( igdeTextArea *textArea );
+	virtual void OnTextChanging(igdeTextArea *textArea);
 	/*@}*/
 };
 

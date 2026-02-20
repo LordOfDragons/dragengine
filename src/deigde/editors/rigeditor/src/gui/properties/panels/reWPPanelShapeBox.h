@@ -27,7 +27,7 @@
 
 #include "reWPPanelShape.h"
 
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 class reRigShapeBox;
 
@@ -37,10 +37,13 @@ class reRigShapeBox;
  * \brief Rig shape box panel.
  */
 class reWPPanelShapeBox : public reWPPanelShape{
+public:
+	using Ref = deTObjectReference<reWPPanelShapeBox>;
+	
 private:
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditHalfExtends;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditHalfExtends;
 	
 	
 	
@@ -48,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeBox( reWPShape &wpShapes );
+	reWPPanelShapeBox(reWPShape &wpShapes);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShapeBox();
+	~reWPPanelShapeBox() override;
 	/*@}*/
 	
 	
@@ -61,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update . */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	/*@}*/
 };
 

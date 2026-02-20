@@ -43,6 +43,10 @@
  */
 class meHTVRuleMapping : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleMapping>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Mapped value. */
@@ -68,10 +72,13 @@ public:
 	meHTVRuleMapping();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleMapping( const meHTVRuleMapping &rule );
+	meHTVRuleMapping(const meHTVRuleMapping &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleMapping();
+	~meHTVRuleMapping() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -79,27 +86,27 @@ public:
 	/** Retrieves the value to use if there is no input value. */
 	inline float GetValue() const{ return pValue; }
 	/** Sets the value to use if there is no input value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/** Retrieves the lower bound to use if there is no input lower bound. */
 	inline float GetLower() const{ return pLower; }
 	/** Sets the lower bound to use if there is no input lower bound. */
-	void SetLower( float lower );
+	void SetLower(float lower);
 	/** Retrieves the upper bound to use if there is no input upper bound. */
 	inline float GetUpper() const{ return pUpper; }
 	/** Sets the upper bound to use if there is no input upper bound. */
-	void SetUpper( float upper );
+	void SetUpper(float upper);
 	/** Determines if the mapping is inversed. */
 	inline bool GetInversed() const{ return pInversed; }
 	/** Sets if the mapping is inverse. */
-	void SetInversed( bool inversed );
+	void SetInversed(bool inversed);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

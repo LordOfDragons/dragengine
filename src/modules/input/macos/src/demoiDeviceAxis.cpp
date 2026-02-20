@@ -41,17 +41,17 @@
 ////////////////////////////
 
 demoiDeviceAxis::demoiDeviceAxis() :
-pIndex( -1 ),
-pType( deInputDeviceAxis::eatGeneric ),
-pMinimum( -100 ),
-pMaximum( 100 ),
-pAbsolute( true ),
-pWheelOtherAxis( false ),
+pIndex(-1),
+pType(deInputDeviceAxis::eatGeneric),
+pMinimum(-100),
+pMaximum(100),
+pAbsolute(true),
+pWheelOtherAxis(false),
 
-pValue( 0.0f ),
-pChangedValue( 0.0f ),
+pValue(0.0f),
+pChangedValue(0.0f),
 
-pMOCode( 0 ){
+pMOCode(0){
 }
 
 demoiDeviceAxis::~demoiDeviceAxis(){
@@ -62,79 +62,79 @@ demoiDeviceAxis::~demoiDeviceAxis(){
 // Management
 ///////////////
 
-void demoiDeviceAxis::SetIndex( int index ){
+void demoiDeviceAxis::SetIndex(int index){
     pIndex = index;
 }
 
-void demoiDeviceAxis::SetID( const char *id ){
+void demoiDeviceAxis::SetID(const char *id){
     pID = id;
 }
 
-void demoiDeviceAxis::SetName( const char *name ){
+void demoiDeviceAxis::SetName(const char *name){
 	pName = name;
 }
 
-void demoiDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
+void demoiDeviceAxis::SetType(deInputDeviceAxis::eAxisTypes type){
     pType = type;
 }
 
 
 
-void demoiDeviceAxis::SetMinimum( int minimum ){
+void demoiDeviceAxis::SetMinimum(int minimum){
     pMinimum = minimum;
 }
 
-void demoiDeviceAxis::SetMaximum( int maximum ){
+void demoiDeviceAxis::SetMaximum(int maximum){
     pMaximum = maximum;
 }
 
-void demoiDeviceAxis::SetAbsolute( bool absolute ){
+void demoiDeviceAxis::SetAbsolute(bool absolute){
     pAbsolute = absolute;
 }
 
-void demoiDeviceAxis::SetWheelOtherAxis( bool otherAxis ){
+void demoiDeviceAxis::SetWheelOtherAxis(bool otherAxis){
     pWheelOtherAxis = otherAxis;
 }
 
 
 
-void demoiDeviceAxis::SetValue( float value ){
-    if( pAbsolute ){
-        value = decMath::clamp( value, -1.0f, 1.0f );
+void demoiDeviceAxis::SetValue(float value){
+    if(pAbsolute){
+        value = decMath::clamp(value, -1.0f, 1.0f);
     }
     pValue = value;
 }
 
 
 
-void demoiDeviceAxis::SetMOCode( int code ){
+void demoiDeviceAxis::SetMOCode(int code){
     pMOCode = code;
 }
 
 
 
-void demoiDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
-	info.SetID( pID );
-	info.SetName( pName );
-    info.SetType( pType );
+void demoiDeviceAxis::GetInfo(deInputDeviceAxis &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
+    info.SetType(pType);
 }
 
-void demoiDeviceAxis::SendEvents( demoiDevice &device ){
-    if( pAbsolute ){
-        if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
+void demoiDeviceAxis::SendEvents(demoiDevice &device){
+    if(pAbsolute){
+        if(fabsf(pChangedValue - pValue) < FLOAT_SAFE_EPSILON){
             return;
         }
         
         pValue = pChangedValue;
-        device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
+        device.GetModule().AddAxisChanged(device.GetIndex(), pIndex, pValue, pLastEventTime);
         
     }else{
-        if( fabsf( pChangedValue ) < FLOAT_SAFE_EPSILON ){
+        if(fabsf(pChangedValue) < FLOAT_SAFE_EPSILON){
             return;
         }
         
         pValue = pChangedValue;
         pChangedValue = 0.0f;
-        device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
+        device.GetModule().AddAxisChanged(device.GetIndex(), pIndex, pValue, pLastEventTime);
     }
 }

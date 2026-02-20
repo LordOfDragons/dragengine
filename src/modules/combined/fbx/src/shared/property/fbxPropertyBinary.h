@@ -30,14 +30,19 @@
 
 #include "../fbxProperty.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * \brief FBX property string.
  */
 class fbxPropertyBinary : public fbxProperty{
+public:
+	using Ref = deTObjectReference<fbxPropertyBinary>;
+	
+	
 private:
-	uint8_t *pValue;
-	int pLength;
+	decTList<uint8_t> pValue;
 	
 	
 	
@@ -48,11 +53,11 @@ public:
 	fbxPropertyBinary();
 	
 	/** \brief Load property. */
-	fbxPropertyBinary( decBaseFileReader &reader );
+	explicit fbxPropertyBinary(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyBinary();
+	~fbxPropertyBinary() override;
 	/*@}*/
 	
 	
@@ -60,25 +65,25 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Value. */
-	inline const uint8_t *GetValue() const{ return pValue; }
+	/** \brief Values. */
+	inline const decTList<uint8_t> &GetValue() const{ return pValue; }
 	
 	/** \brief Value length. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{ return pValue.GetCount(); }
 	
 	/** \brief Set value. */
-	void SetValue( const uint8_t *value, int length );
+	void SetValue(const uint8_t *value, int length);
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyBinary &CastBinary();
+	fbxPropertyBinary &CastBinary() override;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const override;
 	/*@}*/
 };
 

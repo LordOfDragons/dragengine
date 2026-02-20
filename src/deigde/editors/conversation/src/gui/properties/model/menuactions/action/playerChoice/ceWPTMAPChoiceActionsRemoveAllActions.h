@@ -36,6 +36,9 @@ class ceCAPlayerChoice;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAPChoiceActionsRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceActionsRemoveAllActions>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -50,8 +53,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsRemoveAllActions( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice );
+	ceWPTMAPChoiceActionsRemoveAllActions(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice);
 	/*@}*/
 	
 	
@@ -65,7 +68,7 @@ public:
 	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
 
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

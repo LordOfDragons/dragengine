@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkyLayer.h"
 #include "deSkyLayerBody.h"
 #include "deSkyControllerTarget.h"
@@ -41,118 +37,87 @@
 ////////////////////////////
 
 deSkyLayer::deSkyLayer() :
-pColor( 1.0f, 1.0f, 1.0f ),
-pIntensity( 1.0f ),
-pTransparency( 1.0f ),
+pColor(1.0f, 1.0f, 1.0f),
+pIntensity(1.0f),
+pTransparency(1.0f),
 
-pLightColor( 1.0f, 1.0f, 1.0f ),
-pLightIntensity( 0.0f ),
-pAmbientIntensity( 0.0f ),
+pLightColor(1.0f, 1.0f, 1.0f),
+pLightIntensity(0.0f),
+pAmbientIntensity(0.0f),
 
-pBodies( NULL ),
-pBodyCount( 0 ),
-
-pMulBySkyLight( false ),
-pMulBySkyColor( false ){
+pMulBySkyLight(false),
+pMulBySkyColor(false){
 }
 
-deSkyLayer::~deSkyLayer(){
-	if( pBodies ){
-		delete [] pBodies;
-	}
-}
+deSkyLayer::~deSkyLayer() = default;
 
 
 
 // Management
 ///////////////
 
-void deSkyLayer::SetOffset( const decVector &offset ){
+void deSkyLayer::SetOffset(const decVector &offset){
 	pOffset = offset;
 }
 
-void deSkyLayer::SetOrientation( const decVector &orientation ){
+void deSkyLayer::SetOrientation(const decVector &orientation){
 	pOrientation = orientation;
 }
 
-void deSkyLayer::SetColor( const decColor &color ){
+void deSkyLayer::SetColor(const decColor &color){
 	pColor = color;
 }
 
-void deSkyLayer::SetIntensity( float intensity ){
-	pIntensity = decMath::max( intensity, 0.0f );
+void deSkyLayer::SetIntensity(float intensity){
+	pIntensity = decMath::max(intensity, 0.0f);
 }
 
-void deSkyLayer::SetTransparency( float transparency ){
-	pTransparency = decMath::clamp( transparency, 0.0f, 1.0f );
+void deSkyLayer::SetTransparency(float transparency){
+	pTransparency = decMath::clamp(transparency, 0.0f, 1.0f);
 }
 
-void deSkyLayer::SetSkin( deSkin *skin ){
+void deSkyLayer::SetSkin(deSkin *skin){
 	pSkin = skin;
 }
 
 
 
-void deSkyLayer::SetLightOrientation( const decQuaternion &orientation ){
+void deSkyLayer::SetLightOrientation(const decQuaternion &orientation){
 	pLightOrientation = orientation;
 }
 
-void deSkyLayer::SetLightColor( const decColor &color ){
+void deSkyLayer::SetLightColor(const decColor &color){
 	pLightColor = color;
 }
 
-void deSkyLayer::SetLightIntensity( float intensity ){
-	pLightIntensity = decMath::max( intensity, 0.0f );
+void deSkyLayer::SetLightIntensity(float intensity){
+	pLightIntensity = decMath::max(intensity, 0.0f);
 }
 
-void deSkyLayer::SetAmbientIntensity( float intensity ){
-	pAmbientIntensity = decMath::max( intensity, 0.0f );
+void deSkyLayer::SetAmbientIntensity(float intensity){
+	pAmbientIntensity = decMath::max(intensity, 0.0f);
 }
 
 
-
-void deSkyLayer::SetBodyCount( int count ){
-	if( pBodies ){
-		delete [] pBodies;
-		pBodies = NULL;
-		pBodyCount = 0;
+const deSkyControllerTarget &deSkyLayer::GetTarget(eTargets target) const{
+	if(target < etOffsetX || target > etAmbientIntensity){
+		DETHROW(deeInvalidParam);
 	}
-	
-	if( count > 0 ){
-		pBodies = new deSkyLayerBody[ count ];
-		pBodyCount = count;
-	}
+	return pTargets[target];
 }
 
-deSkyLayerBody &deSkyLayer::GetBodyAt( int index ) const{
-	if( index < 0 || index >= pBodyCount ){
-		DETHROW( deeInvalidParam );
+deSkyControllerTarget &deSkyLayer::GetTarget(eTargets target){
+	if(target < etOffsetX || target > etAmbientIntensity){
+		DETHROW(deeInvalidParam);
 	}
-	return pBodies[ index ];
+	return pTargets[target];
 }
 
 
-
-const deSkyControllerTarget &deSkyLayer::GetTarget( eTargets target ) const{
-	if( target < etOffsetX || target > etAmbientIntensity ){
-		DETHROW( deeInvalidParam );
-	}
-	return pTargets[ target ];
-}
-
-deSkyControllerTarget &deSkyLayer::GetTarget( eTargets target ){
-	if( target < etOffsetX || target > etAmbientIntensity ){
-		DETHROW( deeInvalidParam );
-	}
-	return pTargets[ target ];
-}
-
-
-
-void deSkyLayer::SetMultiplyBySkyLight( bool multiply ){
+void deSkyLayer::SetMultiplyBySkyLight(bool multiply){
 	pMulBySkyLight = multiply;
 }
 
-void deSkyLayer::SetMultiplyBySkyColor( bool multiply ){
+void deSkyLayer::SetMultiplyBySkyColor(bool multiply){
 	pMulBySkyColor = multiply;
 }

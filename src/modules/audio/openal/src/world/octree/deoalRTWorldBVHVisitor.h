@@ -98,27 +98,27 @@ public:
 	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
-	void SetRay( const decVector &origin, const decVector &direction );
+	void SetRay(const decVector &origin, const decVector &direction);
 	
 	/** \brief Set test ray. */
-	void SetRay( const deoalRTWorldBVH &bvh, const decDVector &origin, const decDVector &direction );
+	void SetRay(const deoalRTWorldBVH &bvh, const decDVector &origin, const decDVector &direction);
 	
 	
 	
 	/** \brief Visit optimized ray-trace BVH node. */
-	void VisitBVH( const deoalRTWorldBVH &bvh );
+	void VisitBVH(const deoalRTWorldBVH &bvh);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( const deoalRTWorldBVH::sVisitComponent &rtcomponent );
+	virtual void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent);
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node );
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends ) const;
+	void pVisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node);
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends) const;
 // 	bool pRayHitsSphere( const decVector &center, float radiusSquared ) const;
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends, float &closestDistance ) const;
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends, float &closestDistance) const;
 };
 
 #endif

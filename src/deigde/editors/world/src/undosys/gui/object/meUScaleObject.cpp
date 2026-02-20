@@ -22,12 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meUScaleObject.h"
 #include "meUndoDataObject.h"
-
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
@@ -44,36 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUScaleObject::meUScaleObject( meWorld *world, const meObjectList &objects ){
-	if( ! world ){
-		DETHROW( deeInvalidParam );
-	}
+meUScaleObject::meUScaleObject(meWorld *world, const meObject::List &objects) :
+meBaseUndoScale(*world->GetEnvironment())
+{
+	DEASSERT_NOTNULL(world)
 	
-	const int count = objects.GetCount();
-	deObjectReference ref;
+	SetShortInfo("@World.UScaleObject.ScaleObject");
 	
-	SetShortInfo( "Scale Object" );
+	pWorld = world;
 	
-	pWorld = NULL;
-	
-	try{
-		pWorld = world;
-		world->AddReference();
-		
-		int i;
-		for( i=0; i<count; i++ ){
-			ref.TakeOver( new meUndoDataObject( objects.GetAt( i ) ) );
-			pObjects.Add( ref );
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	meUndoDataObject::AddObjectsWithAttachments(objects, pObjects);
 }
 
 meUScaleObject::~meUScaleObject(){
-	pCleanUp();
 }
 
 
@@ -82,67 +61,77 @@ meUScaleObject::~meUScaleObject(){
 /////////////////////////////
 
 void meUScaleObject::Undo(){
-	const int count = pObjects.GetCount();
-	meObject *object;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
-		object = data.GetObject();
-		object->SetPosition( data.GetOldPosition() );
-		object->SetSize( data.GetOldSize() );
-		pWorld->NotifyObjectGeometryChanged( object );
-	}
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meUScaleObject::Redo(){
-	const int count = pObjects.GetCount();
 	const decVector &factors = GetFactors();
 	const decDVector &pivot = GetPivot();
 	bool modifyPosition = GetModifyPosition();
 	float uniformFactor = GetUniformFactor();
 	bool modifySize = GetModifySize();
-	decDVector position;
-	meObject *object;
-	int i, scaleMode;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
-		object = data.GetObject();
+	pObjects.Visit([&](const meUndoDataObject &data){
+		meObject * const object = data.GetObject();
 		
-		if( modifySize ){
+		if(modifySize){
 			const decVector &size = data.GetOldSize();
-			scaleMode = object->GetScaleMode();
-			
-			if( scaleMode == igdeGDClass::esmUniform ){
-				object->SetSize( size * uniformFactor );
+			switch(object->GetScaleMode()){
+			case igdeGDClass::esmUniform:
+				object->SetSize(size * uniformFactor);
+				break;
 				
-			}else if( scaleMode == igdeGDClass::esmFree ){
-				object->SetSize( decVector( size.x * factors.x, size.y * factors.y, size.z * factors.z ) );
+			case igdeGDClass::esmFree:
+				object->SetSize(decVector(size.x * factors.x, size.y * factors.y, size.z * factors.z));
+				break;
+				
+			default:
+				break;
 			}
 		}
 		
-		if( modifyPosition ){
-			position = data.GetOldPosition() - pivot;
-			position.x = pivot.x + position.x * ( double )factors.x;
-			position.y = pivot.y + position.y * ( double )factors.y;
-			position.z = pivot.z + position.z * ( double )factors.z;
-			object->SetPosition( position );
+		if(modifyPosition){
+			decDVector position(data.GetOldPosition() - pivot);
+			position.x = pivot.x + position.x * (double)factors.x;
+			position.y = pivot.y + position.y * (double)factors.y;
+			position.z = pivot.z + position.z * (double)factors.z;
+			object->SetPosition(position);
 		}
 		
-		pWorld->NotifyObjectGeometryChanged( object );
-	}
+		pWorld->NotifyObjectGeometryChanged(object);
+		
+		if(data.GetAttachedObjects().IsNotEmpty()){
+			const decDMatrix m(data.GetOldMatrixInverse() * object->GetObjectMatrix());
+			data.GetAttachedObjects().Visit([&](const meUndoDataObject &attachedData){
+				const decDMatrix m2(attachedData.GetOldMatrix() * m);
+				meObject * const attached = attachedData.GetObject();
+				
+				if(modifyPosition){
+					attached->SetPosition(m2.GetPosition());
+				}
+				
+				if(modifySize){
+					const decVector scaling(m2.GetScale());
+					switch(object->GetScaleMode()){
+					case igdeGDClass::esmUniform:
+						attached->SetScaling(decVector(scaling.y, scaling.y, scaling.y));
+						break;
+						
+					case igdeGDClass::esmFree:
+						attached->SetScaling(scaling);
+						break;
+						
+					default:
+						break;
+					}
+				}
+				
+				pWorld->NotifyObjectGeometryChanged(attached);
+			});
+		}
+	});
 }
 
 void meUScaleObject::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUScaleObject::pCleanUp(){
-	if( pWorld ) pWorld->FreeReference();
 }

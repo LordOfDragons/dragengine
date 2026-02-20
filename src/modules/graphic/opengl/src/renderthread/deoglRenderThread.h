@@ -27,6 +27,7 @@
 
 #include "deoglRTLeakTracker.h"
 #include "../deoglBasics.h"
+#include "../canvas/render/deoglRCanvasView.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
@@ -35,9 +36,9 @@
 #ifdef BACKEND_OPENGL
 	#include <deSharedVulkan.h>
 	#include <devkDevice.h>
-#endif
+#endif	
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deMutex.h>
@@ -55,8 +56,8 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglRCanvasView;
 class deoglRRenderWindow;
+class deoglRCaptureCanvas;
 class deoglShadowMapper;
 class deoglTriangleSorter;
 class deoglPersistentRenderTaskPool;
@@ -116,11 +117,11 @@ private:
 	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
 	deoglMemoryManager pMemoryManager;
-	decObjectOrderedSet pRRenderWindowList;
-	decObjectOrderedSet pRCaptureCanvasList;
-	deoglRCanvasView *pCanvasInputOverlay;
-	deoglRCanvasView *pCanvasDebugOverlay;
-	deoglRCanvasView *pCanvasOverlay;
+	decTObjectOrderedSet<deoglRRenderWindow> pRRenderWindowList;
+	decTObjectOrderedSet<deoglRCaptureCanvas> pRCaptureCanvasList;
+	deoglRCanvasView::Ref pCanvasInputOverlay;
+	deoglRCanvasView::Ref pCanvasDebugOverlay;
+	deoglRCanvasView::Ref pCanvasOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -233,10 +234,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread. */
-	deoglRenderThread( deGraphicOpenGl &ogl );
+	deoglRenderThread(deGraphicOpenGl &ogl);
 	
 	/** Clean up render thread. */
-	virtual ~deoglRenderThread();
+	~deoglRenderThread() override;
 	/*@}*/
 	
 	
@@ -260,40 +261,40 @@ public:
 	inline deoglRCamera *GetVRCamera() const{ return pVRCamera; }
 	
 	/** Set VR camera or nullptr. */
-	void SetVRCamera( deoglRCamera *camera );
+	void SetVRCamera(deoglRCamera *camera);
 	
 	/** VR debug panel matrix. */
 	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
 	
 	/** Set VR debug panel matrix. */
-	void SetVRDebugPanelMatrix( const decDMatrix &matrix );
+	void SetVRDebugPanelMatrix(const decDMatrix &matrix);
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
 	/** Render render window list. */
-	inline decObjectOrderedSet &GetRRenderWindowList(){ return pRRenderWindowList; }
+	inline decTObjectOrderedSet<deoglRRenderWindow> &GetRRenderWindowList(){ return pRRenderWindowList; }
 	
 	/** Rendr capture canvas list. */
-	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
+	inline decTObjectOrderedSet<deoglRCaptureCanvas> &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
 	/** Input overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
+	inline const deoglRCanvasView::Ref &GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or nullptr. */
-	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
+	void SetCanvasInputOverlay(deoglRCanvasView *canvas);
 	
 	/** Debug overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
+	inline const deoglRCanvasView::Ref &GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or nullptr. */
-	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
+	void SetCanvasDebugOverlay(deoglRCanvasView *canvas);
 	
 	/** Overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
+	inline const deoglRCanvasView::Ref &GetCanvasOverlay() const{ return pCanvasOverlay; }
 	
 	/** Set overlay canvas view or nullptr. */
-	void SetCanvasOverlay( deoglRCanvasView *canvas );
+	void SetCanvasOverlay(deoglRCanvasView *canvas);
 	
 	
 	
@@ -369,7 +370,7 @@ public:
 	inline deoglGI &GetGI() const{ return *pGI; }
 	
 	/** Light boundary box having at least the given size. */
-	deoglLightBoundaryMap &GetLightBoundaryMap( int size );
+	deoglLightBoundaryMap &GetLightBoundaryMap(int size);
 	
 	/** Triangle sorter. */
 	deoglTriangleSorter &GetTriangleSorter() const{ return *pTriangleSorter; }
@@ -390,7 +391,7 @@ public:
 	
 #ifdef BACKEND_OPENGL
 	/** Vulkan if present. */
-	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
+	inline const deSharedVulkan::Ref &GetVulkan() const{ return pVulkan; }
 	
 	/** Vulkan device if present. */
 	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }
@@ -414,7 +415,7 @@ public:
 	
 	
 	/** Initialize. */
-	void Init( deRenderWindow *renderWindow );
+	void Init(deRenderWindow *renderWindow);
 	
 	/** Clean up. */
 	void CleanUp();
@@ -430,7 +431,7 @@ public:
 	
 	
 	/** Run render thread. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Finalize asynchronously loaded resources. */
 	void FinalizeAsyncResLoading();
@@ -476,7 +477,7 @@ public:
 	void Unfreeze();
 	
 	/** Create a render window thread safe. */
-	void CreateRenderWindow( deoglRRenderWindow *window );
+	void CreateRenderWindow(deoglRRenderWindow *window);
 	
 	/** FPS Rate. */
 	inline int GetFPSRate() const{ return pFPSRate; }
@@ -502,8 +503,8 @@ public:
 	
 	#ifdef WITH_OPENGLES
 	bool DoesDebugMemoryUsage() const;
-	void DebugMemoryUsage( const char *prefix );
-	void DebugMemoryUsageSmall( const char *prefix );
+	void DebugMemoryUsage(const char *prefix);
+	void DebugMemoryUsageSmall(const char *prefix);
 	#endif
 	/*@}*/
 	
@@ -540,7 +541,7 @@ private:
 	void pVREndFrame();
 	void pCaptureCanvas();
 	void pEndFrame();
-	void pLimitFrameRate( float elapsed );
+	void pLimitFrameRate(float elapsed);
 	
 	void pUpdateConfigFrameLimiter();
 	void pCleanUpThread();

@@ -25,11 +25,12 @@
 #ifndef _DESYNCREATESYNTHESIZEREFFECT_H_
 #define _DESYNCREATESYNTHESIZEREFFECT_H_
 
+#include "effect/desynSynthesizerEffect.h"
+
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectVisitor.h>
 
 class deDESynthesizer;
 class desynSynthesizer;
-class desynSynthesizerEffect;
 class desynSynthesizerSource;
 
 
@@ -43,7 +44,7 @@ private:
 	desynSynthesizerSource &pSource;
 	const int pFirstLink;
 	
-	desynSynthesizerEffect *pEffect;
+	desynSynthesizerEffect::Ref pEffect;
 	desynSynthesizerEffect *pPreviousEffect;
 	
 	
@@ -52,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desynCreateSynthesizerEffect( const desynSynthesizer &synthesizer,
-		int firstLink, desynSynthesizerSource &source );
+	desynCreateSynthesizerEffect(const desynSynthesizer &synthesizer,
+		int firstLink, desynSynthesizerSource &source);
 	
 	/** \brief Clean up visitor. */
-	virtual ~desynCreateSynthesizerEffect();
+	~desynCreateSynthesizerEffect() override;
 	/*@}*/
 	
 	
@@ -64,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created effect or \em NULL if not present. */
-	inline desynSynthesizerEffect *GetEffect() const{ return pEffect; }
+	inline desynSynthesizerEffect::Ref &GetEffect(){ return pEffect; }
 	
 	/** \brief Reset. */
 	void Reset();
@@ -75,10 +76,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect( deSynthesizerEffect &effect );
+	void VisitEffect(deSynthesizerEffect &effect) override;
 	
 	/** \brief Visit stretch effect. */
-	virtual void VisitStretch( deSynthesizerEffectStretch &effect );
+	void VisitStretch(deSynthesizerEffectStretch &effect) override;
 	/*@}*/
 };
 

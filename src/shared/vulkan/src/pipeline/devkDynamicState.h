@@ -42,7 +42,7 @@ public:
 	devkDynamicState();
 	
 	/** Create copy of pipeline dynamic state. */
-	devkDynamicState( const devkDynamicState &state );
+	devkDynamicState(const devkDynamicState &state);
 	
 	/** Clean up pipeline dynamic state. */
 	~devkDynamicState();
@@ -246,10 +246,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Dynamic states are equal. */
-	bool operator==( const devkDynamicState &state ) const;
-	
-	/** Copy dynamic state. */
-	devkDynamicState &operator=( const devkDynamicState &state );
+	bool operator==(const devkDynamicState &state) const;
 	/*@}*/
 	
 	
@@ -257,7 +254,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply dynamic state. */
-	void Apply( devkCommandBuffer &commandBuffer, const devkPipeline &pipeline ) const;
+	void Apply(devkCommandBuffer &commandBuffer, const devkPipeline &pipeline) const;
 	/*@}*/
 };
 

@@ -26,6 +26,7 @@
 #define _GDESKIN_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -48,19 +49,28 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeSkin>;
+	
+	/** \brief Type holding list. */
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<gdeSkin>,gdeSkin>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin. */
 	gdeSkin();
 	
 	/** \brief Create skin. */
-	gdeSkin( const char *path, const char *name );
+	gdeSkin(const char *path, const char *name);
 	
 	/** \brief Create copy of skin. */
-	gdeSkin( const gdeSkin &skin );
+	gdeSkin(const gdeSkin &skin);
 	
 	/** \brief Clean up skin. */
-	virtual ~gdeSkin();
+protected:
+	~gdeSkin() override;
+public:
 	/*@}*/
 	
 	
@@ -71,7 +81,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set parent game definition. */
-	void SetGameDefinition( gdeGameDefinition *gamedef );
+	void SetGameDefinition(gdeGameDefinition *gamedef);
 	
 	
 	
@@ -79,31 +89,31 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Cathegory. */
 	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set cathegory. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** \brief Tags. */
 	inline const decStringSet &GetTags() const{ return pTags; }
 	
 	/** \brief Set tags. */
-	void SetTags( const decStringSet &tags );
+	void SetTags(const decStringSet &tags);
 	/*@}*/
 	
 	

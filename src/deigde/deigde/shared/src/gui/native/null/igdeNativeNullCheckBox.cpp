@@ -39,7 +39,8 @@ igdeNativeNullCheckBox::igdeNativeNullCheckBox(){
 igdeNativeNullCheckBox::~igdeNativeNullCheckBox(){
 }
 
-igdeNativeNullCheckBox *igdeNativeNullCheckBox::CreateNativeWidget( igdeCheckBox& ){
+igdeNativeNullCheckBox *igdeNativeNullCheckBox::CreateNativeWidget(igdeCheckBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullCheckBox;
 }
 
@@ -54,6 +55,9 @@ void igdeNativeNullCheckBox::DestroyNativeWidget(){
 
 // Management
 ///////////////
+
+void igdeNativeNullCheckBox::Focus(){
+}
 
 void igdeNativeNullCheckBox::UpdateChecked(){
 }

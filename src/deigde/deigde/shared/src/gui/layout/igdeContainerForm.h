@@ -40,6 +40,10 @@
  */
 class DE_DLL_EXPORT igdeContainerForm : public igdeContainer{
 public:
+	/** \brief Strong reference. */
+	using Ref = deTObjectReference<igdeContainerForm>;
+	
+	
 	/** \brief Stretching. */
 	enum eStretching{
 		/** \brief No stretching. */
@@ -65,8 +69,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerForm( igdeEnvironment &environment, eStretching stretching = esNone,
-		int columnSpacing = 15, int rowSpacing = 1 );
+	igdeContainerForm(igdeEnvironment &environment, eStretching stretching = esNone,
+		int columnSpacing = 15, int rowSpacing = 1);
 	
 	
 	
@@ -77,7 +81,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainerForm();
+	~igdeContainerForm() override;
 	/*@}*/
 	
 	
@@ -97,7 +101,7 @@ public:
 	
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	void RemoveChild(igdeWidget *child) override;
 	/*@}*/
 	
 	
@@ -111,13 +115,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

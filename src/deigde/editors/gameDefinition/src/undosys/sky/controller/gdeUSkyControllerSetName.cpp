@@ -40,37 +40,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerSetName::gdeUSkyControllerSetName( gdeSky *sky,
-gdeSkyController *controller, const char *newValue ) :
-pSky( NULL ),
-pController( NULL ),
-pNewValue( newValue )
+gdeUSkyControllerSetName::gdeUSkyControllerSetName(gdeSky *sky,
+gdeSkyController *controller, const char *newValue) :
+
+
+pNewValue(newValue)
 {
-	if( ! sky || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!sky || !controller){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! sky->GetControllers().Has( controller ) ){
-		DETHROW( deeInvalidParam );
+	if(!sky->GetControllers().Has(controller)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky controller set name" );
+	SetShortInfo("@GameDefinition.Undo.SkyControllerSetName");
 	
 	pOldValue = controller->GetName();
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerSetName::~gdeUSkyControllerSetName(){
-	if( pController ){
-		pController->FreeReference();
-	}
-	if( pSky ){
-		pSky->FreeReference();
-	}
 }
 
 
@@ -79,11 +70,11 @@ gdeUSkyControllerSetName::~gdeUSkyControllerSetName(){
 ///////////////
 
 void gdeUSkyControllerSetName::Undo(){
-	pController->SetName( pOldValue );
-	pSky->NotifyControllerChanged( pController );
+	pController->SetName(pOldValue);
+	pSky->NotifyControllerChanged(pController);
 }
 
 void gdeUSkyControllerSetName::Redo(){
-	pController->SetName( pNewValue );
-	pSky->NotifyControllerChanged( pController );
+	pController->SetName(pNewValue);
+	pSky->NotifyControllerChanged(pController);
 }

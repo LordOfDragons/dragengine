@@ -42,31 +42,21 @@
 ////////////////////////////
 
 ceUCAASpeakSetTextBoxTextTranslate::ceUCAASpeakSetTextBoxTextTranslate(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText ) :
-pTopic( nullptr ),
-pActorSpeak( nullptr ),
-pNewText( newText )
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText) :
+
+pNewText(newText)
 {
-	DEASSERT_NOTNULL( topic )
+	DEASSERT_NOTNULL(topic)
 	
 	pOldText = actorSpeak->GetTextBoxTextTranslate();
 	
-	SetShortInfo( "Actor speak set text box text translate" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetTextBoxTextTranslate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxTextTranslate::~ceUCAASpeakSetTextBoxTextTranslate(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ ceUCAASpeakSetTextBoxTextTranslate::~ceUCAASpeakSetTextBoxTextTranslate(){
 ///////////////
 
 void ceUCAASpeakSetTextBoxTextTranslate::Undo(){
-	pActorSpeak->SetTextBoxTextTranslate( pOldText );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetTextBoxTextTranslate(pOldText);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetTextBoxTextTranslate::Redo(){
-	pActorSpeak->SetTextBoxTextTranslate( pNewText );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetTextBoxTextTranslate(pNewText);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

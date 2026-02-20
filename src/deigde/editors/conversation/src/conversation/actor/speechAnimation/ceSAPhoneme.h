@@ -26,6 +26,7 @@
 #define _CESAPHONEME_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -44,12 +45,18 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<ceSAPhoneme>;
+	using Map = decTObjectDictionary<ceSAPhoneme,int>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new phoneme. */
-	ceSAPhoneme( int ipa );
+	ceSAPhoneme(int ipa);
 	/** Cleans up the phoneme. */
-	virtual ~ceSAPhoneme();
+protected:
+	~ceSAPhoneme() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -61,31 +68,31 @@ public:
 	inline float GetLength() const{ return pLength; }
 	
 	/** Set length of phoneme. */
-	void SetLength( float length );
+	void SetLength(float length);
 	
 	/** Move name. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
 	
 	/** Set move name. */
-	void SetMoveName( const char *name );
+	void SetMoveName(const char *name);
 	
 	/** Vertex position set. */
 	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
 	
 	/** Set vertex position set. */
-	void SetVertexPositionSet( const char *vertexPositionSet );
+	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Sample text. */
 	inline const decString &GetSampleText() const{ return pSampleText; }
 	
 	/** Set sample text. */
-	void SetSampleText( const char *sampleText );
+	void SetSampleText(const char *sampleText);
 	
 	/** Engine controller or -1 if not used. */
 	inline int GetEngineController() const{ return pEngController; }
 	
 	/** Set engine controller or -1 if not used. */
-	void SetEngineController( int controller );
+	void SetEngineController(int controller);
 	/*@}*/
 };
 

@@ -45,12 +45,12 @@ debpBPConstraintBase::~debpBPConstraintBase(){
 // Management
 ///////////////
 
-debpBPConstraintBase *debpBPConstraintBase::GetBase( btTypedConstraint *constraint ){
-	if( constraint->getUserConstraintId() == -1 ){
+debpBPConstraintBase *debpBPConstraintBase::GetBase(btTypedConstraint *constraint){
+	if(constraint->getUserConstraintId() == -1){
 		return NULL;
 		
 	}else{
-		return ( debpBPConstraintBase* )constraint->getUserConstraintPtr();
+		return (debpBPConstraintBase*)constraint->getUserConstraintPtr();
 	}
 }
 
@@ -61,6 +61,6 @@ int debpBPConstraintBase::GetConstraintFrictionCount(){
 	return 0;
 }
 
-void debpBPConstraintBase::GetConstraintFriction( btTypedConstraint::btConstraintInfo2 &info ){
+void debpBPConstraintBase::GetConstraintFriction(btTypedConstraint::btConstraintInfo2 &info){
 	(void)info;
 }

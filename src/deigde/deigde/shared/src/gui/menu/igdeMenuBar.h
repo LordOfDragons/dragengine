@@ -33,10 +33,14 @@
  */
 class DE_DLL_EXPORT igdeMenuBar : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeMenuBar>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeMenuBar( igdeEnvironment &environment );
+	igdeMenuBar(igdeEnvironment &environment);
 	
 	
 	
@@ -47,7 +51,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMenuBar();
+	~igdeMenuBar() override;
 	/*@}*/
 	
 	
@@ -68,13 +72,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

@@ -41,8 +41,7 @@ class decDataChunk;
 class DE_DLL_EXPORT decBaseFileReader : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decBaseFileReader> Ref;
-	
+	using Ref = deTObjectReference<decBaseFileReader>;
 	
 	
 public:
@@ -58,7 +57,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~decBaseFileReader();
+	~decBaseFileReader() override;
 	/*@}*/
 	
 	
@@ -79,20 +78,20 @@ public:
 	virtual int GetPosition() = 0;
 	
 	/** \brief Set file position for the next read action. */
-	virtual void SetPosition( int position ) = 0;
+	virtual void SetPosition(int position) = 0;
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset ) = 0;
+	virtual void MovePosition(int offset) = 0;
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position ) = 0;
+	virtual void SetPositionEnd(int position) = 0;
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
 	 * \throws deeInvalidParam \em buffer is NULL.
 	 * \throws deeInvalidParam \em size is less than 1.
 	 */
-	virtual void Read( void *buffer, int size ) = 0;
+	virtual void Read(void *buffer, int size) = 0;
 	
 	/** \brief Duplicate file reader. */
 	virtual Ref Duplicate() = 0;
@@ -162,7 +161,7 @@ public:
 	/**
 	 * \brief Read string prefixed by a 1-byte length field and advances the file pointer.
 	 */
-	void ReadString8Into( decString &string );
+	void ReadString8Into(decString &string);
 	
 	/**
 	 * \brief Read a string prefixed by a 2-bytes length field and advances the file pointer.
@@ -174,7 +173,7 @@ public:
 	/**
 	 * \brief Read string prefixed by a 2-bytes length field and advances the file pointer.
 	 */
-	void ReadString16Into( decString &string );
+	void ReadString16Into(decString &string);
 	
 	/**
 	 * \brief Read a string prefixed by a 4-bytes length field and advances the file pointer.
@@ -186,7 +185,7 @@ public:
 	/**
 	 * \brief Read string prefixed by a 4-bytes length field and advances the file pointer.
 	 */
-	void ReadString32Into( decString &string );
+	void ReadString32Into(decString &string);
 	
 	/**
 	 * \brief Read a variable string prefixed by a 1-4 bytes length field and advances the file pointer.
@@ -201,7 +200,7 @@ public:
 	 * 
 	 * The length is stored as variable unsigned integer (ReadVarUInt).
 	 */
-	void ReadVarStringInto( decString &string );
+	void ReadVarStringInto(decString &string);
 	
 	/**
 	 * \brief Read a 3-float vector and advances the file pointer.
@@ -215,7 +214,7 @@ public:
 	 * 
 	 * The vector components are read in the order x, y and z.
 	 */
-	void ReadVectorInto( decVector &vector );
+	void ReadVectorInto(decVector &vector);
 	
 	/**
 	 * \brief Read a 2-float vector and advances the file pointer.
@@ -229,7 +228,7 @@ public:
 	 * 
 	 * The vector components are read in the order x and y.
 	 */
-	void ReadVector2Into( decVector2 &vector );
+	void ReadVector2Into(decVector2 &vector);
 	
 	/**
 	 * \brief Read a 4-float quaternion and advances the file pointer.
@@ -243,7 +242,7 @@ public:
 	 * 
 	 * The quaternion components are read in the order x, y, z and w.
 	 */
-	void ReadQuaternionInto( decQuaternion &quaternion );
+	void ReadQuaternionInto(decQuaternion &quaternion);
 	
 	/**
 	 * \brief Read a 2-int point and advances the file pointer.
@@ -257,7 +256,7 @@ public:
 	 * 
 	 * The point components are read in the order x and y.
 	 */
-	void ReadPointInto( decPoint &point );
+	void ReadPointInto(decPoint &point);
 	
 	/**
 	 * \brief Read a 3-int point and advances the file pointer.
@@ -271,7 +270,7 @@ public:
 	 * 
 	 * The point components are read in the order x, y and z.
 	 */
-	void ReadPoint3Into( decPoint3 &point );
+	void ReadPoint3Into(decPoint3 &point);
 	
 	/**
 	 * \brief Read a 3-double vector and advances the file pointer.
@@ -285,7 +284,7 @@ public:
 	 * 
 	 * The vector components are read in the order x, y and z.
 	 */
-	void ReadDVectorInto( decDVector &vector );
+	void ReadDVectorInto(decDVector &vector);
 	
 	/**
 	 * \brief Read a 4-component color and advances the file pointer.
@@ -299,7 +298,7 @@ public:
 	 * 
 	 * The color components are read in the order r, g, b and a.
 	 */
-	void ReadColorInto( decColor &color );
+	void ReadColorInto(decColor &color);
 	
 	/**
 	 * \brief Read a 3-component color and advances the file pointer.
@@ -313,7 +312,7 @@ public:
 	 * 
 	 * The color components are read in the order r, g and b.
 	 */
-	void ReadColor3Into( decColor &color );
+	void ReadColor3Into(decColor &color);
 	
 	
 	

@@ -27,8 +27,6 @@
 
 #include "deoglRenderBase.h"
 
-#include <dragengine/common/collection/decPointerList.h>
-
 class deoglRWorld;
 class deoglSharedVBOBlock;
 
@@ -52,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderVR( deoglRenderThread &renderThread );
+	deoglRenderVR(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	~deoglRenderVR();
+	~deoglRenderVR() override;
 	/*@}*/
 	
 	
@@ -63,14 +61,14 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render hidden area. */
-	void RenderHiddenArea( deoglRenderPlan &plan, bool clearMask );
+	void RenderHiddenArea(deoglRenderPlan &plan, bool clearMask);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pRenderHiddenArea( const deoglSharedVBOBlock &vboBlock );
+	void pRenderHiddenArea(const deoglSharedVBOBlock &vboBlock);
 };
 
 #endif

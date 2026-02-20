@@ -33,25 +33,27 @@
  */
 class deoxrDPMicrosoftMixedRealityMotionController : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPMicrosoftMixedRealityMotionController>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPMicrosoftMixedRealityMotionController( deoxrInstance &instance );
+	deoxrDPMicrosoftMixedRealityMotionController(deoxrInstance &instance);
 	
 protected:
 	/** Create device profile. */
 	deoxrDPMicrosoftMixedRealityMotionController(
-		deoxrInstance &instance, const deoxrPath &path, const char *name );
+		deoxrInstance &instance, const deoxrPath &path, const char *name);
 	
 	/** Clean up device profile. */
-	virtual ~deoxrDPMicrosoftMixedRealityMotionController();
+	~deoxrDPMicrosoftMixedRealityMotionController() override;
 	/*@}*/
 	
 	
 protected:
 	virtual const char *pDeviceIdPrefix() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

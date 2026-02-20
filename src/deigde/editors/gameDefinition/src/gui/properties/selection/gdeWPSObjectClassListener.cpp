@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSObjectClassListener::gdeWPSObjectClassListener( gdeWPSObjectClass &panel ) :
-pPanel( panel ){
+gdeWPSObjectClassListener::gdeWPSObjectClassListener(gdeWPSObjectClass &panel) :
+pPanel(panel){
 }
 
 gdeWPSObjectClassListener::~gdeWPSObjectClassListener(){
@@ -52,32 +52,20 @@ gdeWPSObjectClassListener::~gdeWPSObjectClassListener(){
 // Management
 ///////////////
 
-void gdeWPSObjectClassListener::ObjectClassUsedTagsChanged( gdeGameDefinition* ){
+void gdeWPSObjectClassListener::ObjectClassUsedTagsChanged(gdeGameDefinition*){
 	pPanel.UpdateUsedTagsList();
 }
 
-void gdeWPSObjectClassListener::ObjectClassCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSObjectClassListener::ObjectClassCategoriesChanged(gdeGameDefinition*){
 	pPanel.UpdateCategoryList();
 }
 
-void gdeWPSObjectClassListener::BasePathChanged( gdeGameDefinition *gameDefinition ){
-	if( pPanel.GetGameDefinition() != gameDefinition ){
+void gdeWPSObjectClassListener::BasePathChanged(gdeGameDefinition *gameDefinition){
+	if(pPanel.GetGameDefinition() != gameDefinition){
 		return;
 	}
 	
-	if( gameDefinition->GetIsProjectGameDef() ){
-		return;
-	}
-	
-	pPanel.UpdateUsedTagsList();
-	pPanel.UpdateCategoryList();
-	pPanel.UpdateClassLists();
-	
-	pPanel.UpdateObjectClass();
-}
-
-void gdeWPSObjectClassListener::BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition ){
-	if( pPanel.GetGameDefinition() != gameDefinition ){
+	if(gameDefinition->GetIsProjectGameDef()){
 		return;
 	}
 	
@@ -88,8 +76,20 @@ void gdeWPSObjectClassListener::BaseGameDefinitionsChanged( gdeGameDefinition *g
 	pPanel.UpdateObjectClass();
 }
 
-void gdeWPSObjectClassListener::DefinedUsedIDsChanged( gdeGameDefinition *gameDefinition ){
-	if( pPanel.GetGameDefinition() != gameDefinition ){
+void gdeWPSObjectClassListener::BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition){
+	if(pPanel.GetGameDefinition() != gameDefinition){
+		return;
+	}
+	
+	pPanel.UpdateUsedTagsList();
+	pPanel.UpdateCategoryList();
+	pPanel.UpdateClassLists();
+	
+	pPanel.UpdateObjectClass();
+}
+
+void gdeWPSObjectClassListener::DefinedUsedIDsChanged(gdeGameDefinition *gameDefinition){
+	if(pPanel.GetGameDefinition() != gameDefinition){
 		return;
 	}
 	
@@ -98,77 +98,77 @@ void gdeWPSObjectClassListener::DefinedUsedIDsChanged( gdeGameDefinition *gameDe
 
 
 
-void gdeWPSObjectClassListener::ObjectClassStructureChanged( gdeGameDefinition* ){
+void gdeWPSObjectClassListener::ObjectClassStructureChanged(gdeGameDefinition*){
 	pPanel.UpdateClassLists();
 }
 
-void gdeWPSObjectClassListener::ObjectClassChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() == objectClass ){
+void gdeWPSObjectClassListener::ObjectClassChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() == objectClass){
 		pPanel.UpdateObjectClass();
 	}
 }
 
-void gdeWPSObjectClassListener::ObjectClassNameChanged( gdeGameDefinition*, gdeObjectClass* ){
+void gdeWPSObjectClassListener::ObjectClassNameChanged(gdeGameDefinition*, gdeObjectClass*){
 	pPanel.UpdateClassLists();
 }
 
-void gdeWPSObjectClassListener::OCPropertyChanged( gdeGameDefinition*, gdeObjectClass*,
-gdeProperty *property ){
-	if( pPanel.GetProperty() == property ){
+void gdeWPSObjectClassListener::OCPropertyChanged(gdeGameDefinition*, gdeObjectClass*,
+gdeProperty *property){
+	if(pPanel.GetProperty() == property){
 		pPanel.UpdateProperty();
 	}
 }
 
-void gdeWPSObjectClassListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() == objectClass ){
+void gdeWPSObjectClassListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() == objectClass){
 		pPanel.UpdateProperties();
 		pPanel.UpdatePropertyValueKeys();
 	}
 }
 
-void gdeWPSObjectClassListener::OCPropertiesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() == objectClass ){
+void gdeWPSObjectClassListener::OCPropertiesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() == objectClass){
 		pPanel.UpdateProperties();
 		pPanel.UpdatePropertyValueKeys();
 	}
 }
 
-void gdeWPSObjectClassListener::OCPropertyValuesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() == objectClass ){
+void gdeWPSObjectClassListener::OCPropertyValuesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() == objectClass){
 		pPanel.UpdatePropertyValues();
 	}
 }
 
-void gdeWPSObjectClassListener::OCTexturePropertyChanged( gdeGameDefinition*,
-gdeObjectClass*, gdeProperty *property ){
-	if( pPanel.GetTextureProperty() == property ){
+void gdeWPSObjectClassListener::OCTexturePropertyChanged(gdeGameDefinition*,
+gdeObjectClass*, gdeProperty *property){
+	if(pPanel.GetTextureProperty() == property){
 		pPanel.UpdateTextureProperty();
 	}
 }
 
-void gdeWPSObjectClassListener::OCTexturePropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() == objectClass ){
+void gdeWPSObjectClassListener::OCTexturePropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() == objectClass){
 		pPanel.UpdateTextureProperties();
 	}
 }
 
-void gdeWPSObjectClassListener::OCTexturePropertiesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() == objectClass ){
+void gdeWPSObjectClassListener::OCTexturePropertiesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() == objectClass){
 		pPanel.UpdateTextureProperties();
 	}
 }
 
-void gdeWPSObjectClassListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSObjectClassListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdateObjectClass();
 }
 
-void gdeWPSObjectClassListener::OCInheritsChanged( gdeGameDefinition*, gdeObjectClass* objectClass){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSObjectClassListener::OCInheritsChanged(gdeGameDefinition*, gdeObjectClass* objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	
@@ -176,8 +176,8 @@ void gdeWPSObjectClassListener::OCInheritsChanged( gdeGameDefinition*, gdeObject
 	pPanel.UpdatePropertyValueKeys();
 }
 
-void gdeWPSObjectClassListener::OCInheritChanged( gdeGameDefinition*, gdeObjectClass *objectClass, gdeOCInherit* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSObjectClassListener::OCInheritChanged(gdeGameDefinition*, gdeObjectClass *objectClass, gdeOCInherit*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	
@@ -185,24 +185,24 @@ void gdeWPSObjectClassListener::OCInheritChanged( gdeGameDefinition*, gdeObjectC
 	pPanel.UpdatePropertyValueKeys();
 }
 
-void gdeWPSObjectClassListener::OCTexturesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSObjectClassListener::OCTexturesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	
 	pPanel.UpdateTextureList();
 }
 
-void gdeWPSObjectClassListener::OCTextureChanged( gdeGameDefinition*, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
-	if( pPanel.GetObjectClass() != objectClass || pPanel.GetTexture() != texture ){
+void gdeWPSObjectClassListener::OCTextureChanged(gdeGameDefinition*, gdeObjectClass *objectClass, gdeOCComponentTexture *texture){
+	if(pPanel.GetObjectClass() != objectClass || pPanel.GetTexture() != texture){
 		return;
 	}
 	
 	pPanel.UpdateTexture();
 }
 
-void gdeWPSObjectClassListener::OCActiveTextureChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSObjectClassListener::OCActiveTextureChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	

@@ -46,75 +46,46 @@ deoxrDeviceProfileManager::~deoxrDeviceProfileManager(){
 // Management
 ///////////////
 
-int deoxrDeviceProfileManager::GetCount() const{
-	return pProfiles.GetCount();
-}
-
-deoxrDeviceProfile *deoxrDeviceProfileManager::GetAt( int index ) const{
-	return ( deoxrDeviceProfile* )pProfiles.GetAt( index );
-}
-
-void deoxrDeviceProfileManager::Add( deoxrDeviceProfile *profile ){
-	if( ! profile ){
-		DETHROW_INFO( deeNullPointer, "profile" );
-	}
-	pProfiles.Add( profile );
+void deoxrDeviceProfileManager::Add(deoxrDeviceProfile *profile){
+	DEASSERT_NOTNULL(profile)
+	pProfiles.AddOrThrow(profile);
 }
 
 void deoxrDeviceProfileManager::RemoveAll(){
 	pProfiles.RemoveAll();
 }
-
 void deoxrDeviceProfileManager::AllOnActionsSynced(){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->OnActionsSynced();
-	}
+	pProfiles.Visit([](deoxrDeviceProfile &profile){
+		profile.OnActionsSynced();
+	});
 }
 
 void deoxrDeviceProfileManager::AllOnSessionStateChanged(){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->OnSessionStateChanged();
-	}
+	pProfiles.Visit([](deoxrDeviceProfile &profile){
+		profile.OnSessionStateChanged();
+	});
 }
 
 void deoxrDeviceProfileManager::CheckAllAttached(){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->CheckAttached();
-	}
+	pProfiles.Visit([](deoxrDeviceProfile &profile){
+		profile.CheckAttached();
+	});
 }
 
 void deoxrDeviceProfileManager::ClearActions(){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->ClearActions();
-	}
+	pProfiles.Visit([](deoxrDeviceProfile &profile){
+		profile.ClearActions();
+	});
 }
 
-void deoxrDeviceProfileManager::RemoveDevice( deInputDevice::eDeviceTypes type ){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->RemoveDevice( type );
-	}
+void deoxrDeviceProfileManager::RemoveDevice(deInputDevice::eDeviceTypes type){
+	pProfiles.Visit([&](deoxrDeviceProfile &profile){
+		profile.RemoveDevice(type);
+	});
 }
 
 void deoxrDeviceProfileManager::OnSessionEnd(){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoxrDeviceProfile*)pProfiles.GetAt(i))->OnSessionEnd();
-	}
+	pProfiles.Visit([](deoxrDeviceProfile &profile){
+		profile.OnSessionEnd();
+	});
 }

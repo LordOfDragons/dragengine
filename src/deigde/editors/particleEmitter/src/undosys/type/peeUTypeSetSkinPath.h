@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -35,8 +35,12 @@ class peeType;
  * \brief Undo Action Set Type Skin Path.
  */
 class peeUTypeSetSkinPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeSetSkinPath>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetSkinPath( peeType *type, const char *newPath );
+	peeUTypeSetSkinPath(peeType *type, const char *newPath);
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUTypeSetSkinPath();
+	~peeUTypeSetSkinPath() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 };
 
 #endif

@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "deoalRayTraceHitElement.h"
+#include "../../component/deoalAComponent.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,21 +40,26 @@
 /////////////////////////////////
 
 deoalRayTraceHitElement::deoalRayTraceHitElement() :
-pDistance( 1.0f ),
-pForwardFacing( true ),
-pComponent( NULL ),
-pComponentFace( -1 ){
+pDistance(1.0f),
+pForwardFacing(true),
+pComponent(nullptr),
+pComponentFace(-1){
 }
 
-deoalRayTraceHitElement::deoalRayTraceHitElement( const deoalRayTraceHitElement &element ) :
-pDistance( element.pDistance ),
-pPoint( element.pPoint ),
-pNormal( element.pNormal ),
-pForwardFacing( element.pForwardFacing ),
-pComponent( element.pComponent ),
-pComponentFace( element.pComponentFace ){
+deoalRayTraceHitElement::deoalRayTraceHitElement(const deoalRayTraceHitElement &element) :
+pDistance(element.pDistance),
+pPoint(element.pPoint),
+pNormal(element.pNormal),
+pForwardFacing(element.pForwardFacing),
+pComponent(element.pComponent),
+pComponentFace(element.pComponentFace){
 }
 
+deoalRayTraceHitElement::deoalRayTraceHitElement(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing)
+{
+	SetComponentFace(distance, point, normal, component, face, frontFacing);
+}
 
 
 // Manegement
@@ -64,14 +70,14 @@ void deoalRayTraceHitElement::SetEmpty(){
 	pPoint.SetZero();
 	pNormal.SetZero();
 	pForwardFacing = true;
-	pComponent = NULL;
+	pComponent = nullptr;
 	pComponentFace = -1;
 }
 
-void deoalRayTraceHitElement::SetComponentFace( float distance, const decDVector &point,
-const decDVector &normal, deoalAComponent *component, int face, bool frontFacing ){
-	if( ! component || face < 0 ){
-		DETHROW( deeInvalidParam );
+void deoalRayTraceHitElement::SetComponentFace(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
+	if(!component || face < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDistance = distance;
@@ -84,7 +90,7 @@ const decDVector &normal, deoalAComponent *component, int face, bool frontFacing
 
 
 
-deoalRayTraceHitElement &deoalRayTraceHitElement::operator=( const deoalRayTraceHitElement &element ){
+deoalRayTraceHitElement &deoalRayTraceHitElement::operator=(const deoalRayTraceHitElement &element){
 	pDistance = element.pDistance;
 	pPoint = element.pPoint;
 	pNormal = element.pNormal;
@@ -92,4 +98,15 @@ deoalRayTraceHitElement &deoalRayTraceHitElement::operator=( const deoalRayTrace
 	pComponent = element.pComponent;
 	pComponentFace = element.pComponentFace;
 	return *this;
+}
+
+
+
+// Class deoalRayTraceHitElement::List
+////////////////////////////////////////
+
+void deoalRayTraceHitElement::List::AddComponentFace(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
+	decTList<deoalRayTraceHitElement>::Add(
+		deoalRayTraceHitElement{distance, point, normal, component, face, frontFacing});
 }

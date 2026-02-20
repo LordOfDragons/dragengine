@@ -42,7 +42,6 @@
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputEventQueue.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/systems/deInputSystem.h>
 
@@ -51,79 +50,77 @@
 // Class dexsiDevice
 /////////////////////////////
 
-Atom dexsiDevice::pXDeviceTypeAtoms[ dexsiDevice::exdtOther ];
+Atom dexsiDevice::pXDeviceTypeAtoms[dexsiDevice::exdtOther];
 bool dexsiDevice::pXDeviceTypeAtomsReady = false;
 
 // Constructor, destructor
 ////////////////////////////
 
-dexsiDevice::dexsiDevice( deXSystemInput &module, eSources source ) :
-pModule( module ),
-pIndex( -1 ),
-pSource( source ),
-pType( deInputDevice::edtMouse ),
+dexsiDevice::dexsiDevice(deXSystemInput &module, eSources source) :
+pModule(module),
+pIndex(-1),
+pSource(source),
+pType(deInputDevice::edtMouse),
 
-pXi2Id( 0 ),
-pXDeviceType( exdtOther ),
+pXi2Id(0),
+pXDeviceType(exdtOther),
 
-pX11FirstKeyCode( 0 ),
-pX11KeyCodeCount( 0 ),
-pX11KeyCodeMap( NULL ),
+pX11FirstKeyCode(0),
+pX11KeyCodeCount(0),
 
-pDirtyAxesValues( false ){
+pDirtyAxesValues(false){
 }
 
-dexsiDevice::dexsiDevice( deXSystemInput &module, const XIDeviceInfo &info ) :
-pModule( module ),
-pIndex( -1 ),
-pSource( esXInput ),
-pType( deInputDevice::edtMouse ),
-pID( decString( XINP_DEVID_PREFIX ) + dexsiDeviceManager::NormalizeID( info.name ) ),
-pName( info.name ),
+dexsiDevice::dexsiDevice(deXSystemInput &module, const XIDeviceInfo &info) :
+pModule(module),
+pIndex(-1),
+pSource(esXInput),
+pType(deInputDevice::edtMouse),
+pID(decString(XINP_DEVID_PREFIX) + dexsiDeviceManager::NormalizeID(info.name)),
+pName(info.name),
 
-pXi2Id( info.deviceid ),
-pXDeviceType( exdtOther ),
+pXi2Id(info.deviceid),
+pXDeviceType(exdtOther),
 
-pX11FirstKeyCode( 0 ),
-pX11KeyCodeCount( 0 ),
-pX11KeyCodeMap( NULL ),
+pX11FirstKeyCode(0),
+pX11KeyCodeCount(0),
 
-pDirtyAxesValues( false )
+pDirtyAxesValues(false)
 {
 #if 0
 	pPrepareXDeviceTypeAtoms();
 	
 	int i;
-	for( i=exdtKeyboard; i<exdtOther; i++ ){
-		if( info.type == pXDeviceTypeAtoms[ i ] ){
-			pXDeviceType = ( eXDeviceTypes )i;
+	for(i=exdtKeyboard; i<exdtOther; i++){
+		if(info.type == pXDeviceTypeAtoms[i]){
+			pXDeviceType = (eXDeviceTypes)i;
 			break;
 		}
 	}
 	
-	module.LogInfoFormat( "Device: xid=%d id='%s' name='%s' type=%d use=%d", pXi2Id,
-		pID.GetString(), pName.GetString(), pXDeviceType, info.use );
+	module.LogInfoFormat("Device: xid=%d id='%s' name='%s' type=%d use=%d", pXi2Id,
+		pID.GetString(), pName.GetString(), pXDeviceType, info.use);
 	
-	const char *ptr = ( const char* )info.inputclassinfo;
-	for( i=0; i<info.num_classes; i++ ){
-		const XAnyClassInfo &cinfo = *( ( const XAnyClassInfo * )ptr );
-		module.LogInfoFormat( "  Class %d: %d (%d)", i, cinfo.c_class, cinfo.length );
+	const char *ptr = (const char*)info.inputclassinfo;
+	for(i=0; i<info.num_classes; i++){
+		const XAnyClassInfo &cinfo = *((const XAnyClassInfo *)ptr);
+		module.LogInfoFormat("  Class %d: %d (%d)", i, cinfo.c_class, cinfo.length);
 		
-		if( cinfo.c_class == KeyClass ){
-			const XKeyInfo &keyinfo = ( const XKeyInfo & )cinfo;
-			module.LogInfoFormat( "    keys=%d codes=%d-%d", keyinfo.num_keys,
-				keyinfo.min_keycode, keyinfo.max_keycode );
+		if(cinfo.c_class == KeyClass){
+			const XKeyInfo &keyinfo = (const XKeyInfo &)cinfo;
+			module.LogInfoFormat("    keys=%d codes=%d-%d", keyinfo.num_keys,
+				keyinfo.min_keycode, keyinfo.max_keycode);
 			
-		}else if( cinfo.c_class == ButtonClass ){
-			const XButtonInfo &buttoninfo = ( const XButtonInfo & )cinfo;
-			module.LogInfoFormat( "    buttons=%d", buttoninfo.num_buttons );
+		}else if(cinfo.c_class == ButtonClass){
+			const XButtonInfo &buttoninfo = (const XButtonInfo &)cinfo;
+			module.LogInfoFormat("    buttons=%d", buttoninfo.num_buttons);
 			
-		}else if( cinfo.c_class == ValuatorClass ){
-			const XValuatorInfo &valuatorinfo = ( const XValuatorInfo & )cinfo;
+		}else if(cinfo.c_class == ValuatorClass){
+			const XValuatorInfo &valuatorinfo = (const XValuatorInfo &)cinfo;
 			int j;
-			for( j=0; j<valuatorinfo.num_axes; j++ ){
-				module.LogInfoFormat( "    axis %d: min=%d max=%d", j,
-					valuatorinfo.axes[ j ].min_value, valuatorinfo.axes[ j ].max_value );
+			for(j=0; j<valuatorinfo.num_axes; j++){
+				module.LogInfoFormat("    axis %d: min=%d max=%d", j,
+					valuatorinfo.axes[j].min_value, valuatorinfo.axes[j].max_value);
 			}
 		}
 		
@@ -137,9 +134,6 @@ pDirtyAxesValues( false )
 // https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
 dexsiDevice::~dexsiDevice(){
-	if( pX11KeyCodeMap ){
-		delete [] pX11KeyCodeMap;
-	}
 }
 
 
@@ -147,27 +141,27 @@ dexsiDevice::~dexsiDevice(){
 // Management
 ///////////////
 
-void dexsiDevice::SetIndex( int index ){
+void dexsiDevice::SetIndex(int index){
 	pIndex = index;
 }
 
-void dexsiDevice::SetType( deInputDevice::eDeviceTypes type ){
+void dexsiDevice::SetType(deInputDevice::eDeviceTypes type){
 	pType = type;
 }
 
-void dexsiDevice::SetID( const char *id ){
+void dexsiDevice::SetID(const char *id){
 	pID = id;
 }
 
-void dexsiDevice::SetName( const char *name ){
+void dexsiDevice::SetName(const char *name){
 	pName = name;
 }
 
-void dexsiDevice::SetDisplayImages( const char *name ){
+void dexsiDevice::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(!name){
 		return;
 	}
 	
@@ -176,303 +170,188 @@ void dexsiDevice::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/device";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
-	deImageReference icon;
+	const int sizes[4] = {128, 64, 32, 16};
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 
-void dexsiDevice::SetDisplayText( const char *text ){
+void dexsiDevice::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-int dexsiDevice::GetButtonCount() const{
-	return pButtons.GetCount();
+void dexsiDevice::AddButton(dexsiDeviceButton *button){
+	DEASSERT_NOTNULL(button)
+	pButtons.Add(button);
 }
 
-void dexsiDevice::AddButton( dexsiDeviceButton *button ){
-	DEASSERT_NOTNULL( button )
-	pButtons.Add( button );
+dexsiDeviceButton *dexsiDevice::GetButtonWithID(const char *id) const{
+	return pButtons.FindOrDefault([&](const dexsiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
-dexsiDeviceButton *dexsiDevice::GetButtonAt( int index ) const{
-	return ( dexsiDeviceButton* )pButtons.GetAt( index );
+dexsiDeviceButton *dexsiDevice::GetButtonWithX11Code(int code) const{
+	return pButtons.FindOrDefault([&](const dexsiDeviceButton &button){
+		return button.GetX11Code() == code;
+	});
 }
 
-dexsiDeviceButton *dexsiDevice::GetButtonWithID( const char *id ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		dexsiDeviceButton * const button = ( dexsiDeviceButton* )pButtons.GetAt( i );
-		if( button->GetID() == id ){
-			return button;
-		}
+int dexsiDevice::IndexOfButtonWithID(const char *id) const{
+	return pButtons.IndexOfMatching([&](const dexsiDeviceButton &button){
+		return button.GetID() == id;
+	});
+}
+
+int dexsiDevice::IndexOfButtonWithX11Code(int code) const{
+	return pButtons.IndexOfMatching([&](const dexsiDeviceButton &button){
+		return button.GetX11Code() == code;
+	});
+}
+
+
+
+void dexsiDevice::AddAxis(dexsiDeviceAxis *axis){
+	DEASSERT_NOTNULL(axis)
+	pAxes.Add(axis);
+}
+
+dexsiDeviceAxis *dexsiDevice::GetAxisWithID(const char *id) const{
+	return pAxes.FindOrDefault([&](const dexsiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
+}
+
+dexsiDeviceAxis *dexsiDevice::GetAxisWithX11Code(int code) const{
+	return pAxes.FindOrDefault([&](const dexsiDeviceAxis &axis){
+		return axis.GetX11Code() == code;
+	});
+}
+
+int dexsiDevice::IndexOfAxisWithID(const char *id) const{
+	return pAxes.IndexOfMatching([&](const dexsiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
+}
+
+int dexsiDevice::IndexOfAxisWithX11Code(int code) const{
+	return pAxes.IndexOfMatching([&](const dexsiDeviceAxis &axis){
+		return axis.GetX11Code() == code;
+	});
+}
+
+
+
+void dexsiDevice::AddFeedback(dexsiDeviceFeedback *feedback){
+	if(!feedback){
+		DETHROW(deeNullPointer);
+	}
+	pFeedbacks.Add(feedback);
+}
+
+dexsiDeviceFeedback *dexsiDevice::GetFeedbackWithID(const char *id) const{
+	return pFeedbacks.FindOrDefault([&](const dexsiDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
+}
+
+int dexsiDevice::IndexOfFeedbackWithID(const char *id) const{
+	return pFeedbacks.IndexOfMatching([&](const dexsiDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
+}
+
+
+
+void dexsiDevice::ResetX11KeyCodeMap(int firstKeyCode, int keyCodeCount){
+	if(firstKeyCode < 0 || keyCodeCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return NULL;
-}
-
-dexsiDeviceButton *dexsiDevice::GetButtonWithX11Code( int code ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		dexsiDeviceButton * const button = ( dexsiDeviceButton* )pButtons.GetAt( i );
-		if( button->GetX11Code() == code ){
-			return button;
-		}
-	}
-	
-	return NULL;
-}
-
-int dexsiDevice::IndexOfButtonWithID( const char *id ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const dexsiDeviceButton &button = *( ( dexsiDeviceButton* )pButtons.GetAt( i ) );
-		if( button.GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-int dexsiDevice::IndexOfButtonWithX11Code( int code ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const dexsiDeviceButton &button = *( ( dexsiDeviceButton* )pButtons.GetAt( i ) );
-		if( button.GetX11Code() == code ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-
-
-int dexsiDevice::GetAxisCount() const{
-	return pAxes.GetCount();
-}
-
-void dexsiDevice::AddAxis( dexsiDeviceAxis *axis ){
-	DEASSERT_NOTNULL( axis )
-	pAxes.Add( axis );
-}
-
-dexsiDeviceAxis *dexsiDevice::GetAxisAt( int index ) const{
-	return ( dexsiDeviceAxis* )pAxes.GetAt( index );
-}
-
-dexsiDeviceAxis *dexsiDevice::GetAxisWithID( const char *id ) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		dexsiDeviceAxis * const axis = ( dexsiDeviceAxis* )pAxes.GetAt( i );
-		if( axis->GetID() == id ){
-			return axis;
-		}
-	}
-	
-	return NULL;
-}
-
-dexsiDeviceAxis *dexsiDevice::GetAxisWithX11Code( int code ) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		dexsiDeviceAxis * const axis = ( dexsiDeviceAxis* )pAxes.GetAt( i );
-		if( axis->GetX11Code() == code ){
-			return axis;
-		}
-	}
-	
-	return NULL;
-}
-
-int dexsiDevice::IndexOfAxisWithID( const char *id ) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		const dexsiDeviceAxis &axis = *( ( dexsiDeviceAxis* )pAxes.GetAt( i ) );
-		if( axis.GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-int dexsiDevice::IndexOfAxisWithX11Code( int code ) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		const dexsiDeviceAxis &axis = *( ( dexsiDeviceAxis* )pAxes.GetAt( i ) );
-		if( axis.GetX11Code() == code ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-
-
-int dexsiDevice::GetFeedbackCount() const{
-	return pFeedbacks.GetCount();
-}
-
-void dexsiDevice::AddFeedback( dexsiDeviceFeedback *feedback ){
-	if( ! feedback ){
-		DETHROW( deeNullPointer );
-	}
-	pFeedbacks.Add( feedback );
-}
-
-dexsiDeviceFeedback *dexsiDevice::GetFeedbackAt( int index ) const{
-	return ( dexsiDeviceFeedback* )pFeedbacks.GetAt( index );
-}
-
-dexsiDeviceFeedback *dexsiDevice::GetFeedbackWithID( const char *id ) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		dexsiDeviceFeedback * const feedback = ( dexsiDeviceFeedback* )pFeedbacks.GetAt( i );
-		if( feedback->GetID() == id ){
-			return feedback;
-		}
-	}
-	
-	return NULL;
-}
-
-int dexsiDevice::IndexOfFeedbackWithID( const char *id ) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		const dexsiDeviceFeedback &feedback = *( ( dexsiDeviceFeedback* )pFeedbacks.GetAt( i ) );
-		if( feedback.GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-
-
-void dexsiDevice::ResetX11KeyCodeMap( int firstKeyCode, int keyCodeCount ){
-	if( firstKeyCode < 0 || keyCodeCount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pX11KeyCodeMap ){
-		delete [] pX11KeyCodeMap;
-		pX11KeyCodeMap = NULL;
-	}
+	pX11KeyCodeMap.RemoveAll();
 	
 	pX11FirstKeyCode = firstKeyCode;
 	pX11KeyCodeCount = keyCodeCount;
 	
-	if( keyCodeCount > 0 ){
-		pX11KeyCodeMap = new int[ keyCodeCount ];
-		
-		int i;
-		for( i=0; i<pX11KeyCodeCount; i++ ){
-			pX11KeyCodeMap[ i ] = -1;
-		}
+	if(keyCodeCount > 0){
+		pX11KeyCodeMap.AddRange(keyCodeCount, -1);
 	}
 }
 
-void dexsiDevice::SetLookupX11KeyCode( int keyCode, int button ){
-	if( keyCode < pX11FirstKeyCode || keyCode >= pX11FirstKeyCode + pX11KeyCodeCount ){
-		DETHROW( deeInvalidParam );
+void dexsiDevice::SetLookupX11KeyCode(int keyCode, int button){
+	if(keyCode < pX11FirstKeyCode || keyCode >= pX11FirstKeyCode + pX11KeyCodeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pX11KeyCodeMap[ keyCode - pX11FirstKeyCode ] = button;
+	pX11KeyCodeMap[keyCode - pX11FirstKeyCode] = button;
 }
 
-int dexsiDevice::LookupX11KeyCode( int keyCode ) const{
-	if( keyCode < pX11FirstKeyCode || keyCode >= pX11FirstKeyCode + pX11KeyCodeCount ){
+int dexsiDevice::LookupX11KeyCode(int keyCode) const{
+	if(keyCode < pX11FirstKeyCode || keyCode >= pX11FirstKeyCode + pX11KeyCodeCount){
 		return -1;
 	}
 	
-	return pX11KeyCodeMap[ keyCode - pX11FirstKeyCode ];
+	return pX11KeyCodeMap[keyCode - pX11FirstKeyCode];
 }
 
 
 
-void dexsiDevice::SetDirtyAxesValues( bool dirty ){
+void dexsiDevice::SetDirtyAxesValues(bool dirty){
 	pDirtyAxesValues = dirty;
 }
 
 
 
-void dexsiDevice::GetInfo( deInputDevice &info ) const{
-	int i;
+void dexsiDevice::GetInfo(deInputDevice &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
+	info.SetDisplayImage(pDisplayImage);
+	pDisplayIcons.Visit([&](deImage *icon){
+		info.AddDisplayIcon(icon);
+	});
+	info.SetDisplayText(pDisplayText);
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
-	info.SetDisplayImage( pDisplayImage );
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
-	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayModel(nullptr);
+	info.SetDisplaySkin(nullptr);
 	
-	info.SetDisplayModel( NULL );
-	info.SetDisplaySkin( NULL );
+	info.SetButtonCount(pButtons.GetCount());
+	pButtons.VisitIndexed([&](int i, const dexsiDeviceButton &button){
+		button.GetInfo(info.GetButtons().GetAt(i));
+	});
 	
-	const int buttonCount = pButtons.GetCount();
-	info.SetButtonCount( buttonCount );
-	for( i=0; i<buttonCount; i++ ){
-		( ( dexsiDeviceButton* )pButtons.GetAt( i ) )->GetInfo( info.GetButtonAt( i ) );
-	}
+	info.SetAxisCount(pAxes.GetCount());
+	pAxes.VisitIndexed([&](int i, const dexsiDeviceAxis &axis){
+		axis.GetInfo(info.GetAxes().GetAt(i));
+	});
 	
-	const int axisCount = pAxes.GetCount();
-	info.SetAxisCount( axisCount );
-	for( i=0; i<axisCount; i++ ){
-		( ( dexsiDeviceAxis* )pAxes.GetAt( i ) )->GetInfo( info.GetAxisAt( i ) );
-	}
-	
-	const int feedbackCount = pFeedbacks.GetCount();
-	info.SetFeedbackCount( feedbackCount );
-	for( i=0; i<feedbackCount; i++ ){
-		( ( dexsiDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
-	}
+	info.SetFeedbackCount(pFeedbacks.GetCount());
+	pFeedbacks.VisitIndexed([&](int i, const dexsiDeviceFeedback &feedback){
+		feedback.GetInfo(info.GetFeedbacks().GetAt(i));
+	});
 }
 
 void dexsiDevice::Update(){
 }
 
 void dexsiDevice::SendDirtyAxisEvents(){
-	if( ! pDirtyAxesValues ){
+	if(!pDirtyAxesValues){
 		return;
 	}
 	
 	pDirtyAxesValues = false;
 	
-	const int axisCount = pAxes.GetCount();
-	int i;
-	for( i=0; i<axisCount; i++ ){
-		( ( dexsiDeviceAxis* )pAxes.GetAt( i ) )->SendEvents( *this );
-	}
+	pAxes.Visit([&](dexsiDeviceAxis &axis){
+		axis.SendEvents(*this);
+	});
 }
 
 
@@ -481,12 +360,12 @@ void dexsiDevice::SendDirtyAxisEvents(){
 //////////////////////
 
 void dexsiDevice::pPrepareXDeviceTypeAtoms(){
-	if( pXDeviceTypeAtomsReady ){
+	if(pXDeviceTypeAtomsReady){
 		return;
 	}
 	
 	/*
-	const char * const names[ exdtOther ] = {
+	const char * const names[exdtOther] = {
 		XI_KEYBOARD,
 		XI_MOUSE,
 		XI_TABLET,
@@ -508,9 +387,9 @@ void dexsiDevice::pPrepareXDeviceTypeAtoms(){
 		XI_JOYSTICK
 	};
 	
-	if( ! XInternAtoms( pModule.GetOSUnix()->GetDisplay(), ( char** )names,
-	exdtOther, false, &pXDeviceTypeAtoms[ 0 ] ) ){
-		DETHROW( deeInvalidParam );
+	if(!XInternAtoms(pModule.GetOSUnix()->GetDisplay(), (char**)names,
+	exdtOther, false, &pXDeviceTypeAtoms[0])){
+		DETHROW(deeInvalidParam);
 	}
 	*/
 	

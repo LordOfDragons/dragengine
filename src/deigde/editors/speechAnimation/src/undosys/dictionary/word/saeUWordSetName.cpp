@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetName::saeUWordSetName( saeWord *word, const char *newName ){
-	if( ! word || ! newName ) DETHROW( deeInvalidParam );
+saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
+	if(!word || !newName) DETHROW(deeInvalidParam);
 	
-	pWord = NULL;
+	pWord = nullptr;
 	
-	SetShortInfo( "Word Set Name" );
+	SetShortInfo("@SpeechAnimation.Undo.WordSetName");
 	
 	pOldName = word->GetName();
 	pNewName = newName;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetName::~saeUWordSetName(){
-	if( pWord ){
-		pWord->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUWordSetName::~saeUWordSetName(){
 ///////////////
 
 void saeUWordSetName::Undo(){
-	pWord->SetName( pOldName.GetString() );
+	pWord->SetName(pOldName.GetString());
 }
 
 void saeUWordSetName::Redo(){
-	pWord->SetName( pNewName.GetString() );
+	pWord->SetName(pNewName.GetString());
 }

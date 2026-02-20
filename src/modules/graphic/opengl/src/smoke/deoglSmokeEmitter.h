@@ -59,9 +59,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	deoglSmokeEmitter( deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter );
+	deoglSmokeEmitter(deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter);
 	/** Cleans up the peer. */
-	virtual ~deoglSmokeEmitter();
+	~deoglSmokeEmitter() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -74,7 +74,7 @@ public:
 	/** Retrieves the parent world. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
-	void SetParentWorld( deoglWorld *parentWorld );
+	void SetParentWorld(deoglWorld *parentWorld);
 	
 	/** Retrieves the minimum extend. */
 	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
@@ -82,7 +82,7 @@ public:
 	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Updates the smoke emitter if required. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Prepares the smoke emitter for rendering. */
 	void PrepareForRender();
 	/*@}*/
@@ -90,11 +90,11 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Volume position changed. */
-	virtual void VolumePositionChanged();
+	void VolumePositionChanged() override;
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	/** Points changed. */
-	virtual void PointsChanged();
+	void PointsChanged() override;
 	/*@}*/
 	
 private:

@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoiceOption;
-class ceCAPlayerChoice;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
 
 
 
@@ -38,10 +38,14 @@ class ceCAPlayerChoice;
  * \brief Undo Action Player Choice Option Set Text.
  */
 class ceUCAPChoiceOptionSetText : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAPChoiceOptionSetText>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	
@@ -49,20 +53,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceOptionSetText( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-		ceCAPlayerChoiceOption *option, const decUnicodeString &newText );
+	ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+		ceCAPlayerChoiceOption *option, const decUnicodeString &newText);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAPChoiceOptionSetText();
+	~ceUCAPChoiceOptionSetText() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

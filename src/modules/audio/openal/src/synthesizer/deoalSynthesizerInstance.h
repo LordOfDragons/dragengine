@@ -25,11 +25,12 @@
 #ifndef _DEOALSYNTHESIZERINSTANCE_H_
 #define _DEOALSYNTHESIZERINSTANCE_H_
 
+#include "deoalASynthesizerInstance.h"
+
 #include <dragengine/resources/synthesizer/deSynthesizerInstance.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSynthesizerInstance.h>
 
 class deAudioOpenAL;
-class deoalASynthesizerInstance;
 
 class deSynthesizerInstance;
 
@@ -42,7 +43,7 @@ class deoalSynthesizerInstance : public deBaseAudioSynthesizerInstance{
 private:
 	deAudioOpenAL &pOal;
 	deSynthesizerInstance &pInstance;
-	deoalASynthesizerInstance *pAInstance;
+	deoalASynthesizerInstance::Ref pAInstance;
 	unsigned int pUpdateTracker;
 	bool pDirtyParameters;
 	
@@ -52,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	deoalSynthesizerInstance( deAudioOpenAL &oal, deSynthesizerInstance &instance );
+	deoalSynthesizerInstance(deAudioOpenAL &oal, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up peer. */
-	virtual ~deoalSynthesizerInstance();
+	~deoalSynthesizerInstance() override;
 	/*@}*/
 	
 	
@@ -69,7 +70,7 @@ public:
 	inline deSynthesizerInstance &GetInstance() const{ return pInstance; }
 	
 	/** \brief Audio peer. */
-	inline deoalASynthesizerInstance *GetAInstance() const{ return pAInstance; }
+	inline const deoalASynthesizerInstance::Ref &GetAInstance() const{ return pAInstance; }
 	
 	/** \brief Update tracker. */
 	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
@@ -88,10 +89,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged();
+	void SynthesizerChanged() override;
 	
 	/** \brief Play time changed. */
-	virtual void PlayTimeChanged();
+	void PlayTimeChanged() override;
 	/*@}*/
 };
 

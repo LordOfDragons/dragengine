@@ -38,9 +38,9 @@
 #include "../../../../../undosys/action/ceUCActionPaste.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -49,11 +49,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPasteSnippet::ceWPTMAPasteSnippet( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Paste Conversation Snippet...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation ){
+ceWPTMAPasteSnippet::ceWPTMAPasteSnippet(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.PasteConversationSnippet",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation){
 }
 
 
@@ -63,20 +63,18 @@ pConversation( &conversation ){
 
 void ceWPTMAPasteSnippet::OnAction(){
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
-	igdeDialogReference refDialog;
-	refDialog.TakeOver( new ceDialogPasteSnippet( GetWindowMain().GetEnvironment(), pConversation ) );
-	ceDialogPasteSnippet &dialog = ( ceDialogPasteSnippet& )( igdeDialog& )refDialog;
+	ceDialogPasteSnippet::Ref dialog(ceDialogPasteSnippet::Ref::New(
+		GetWindowMain().GetEnvironment(), pConversation));
 	
-	if( ! dialog.Run( &GetWindowMain() ) || dialog.GetActions().GetCount() == 0 ){
+	if(!dialog->Run(&GetWindowMain()) || dialog->GetActions().GetCount() == 0){
 		return;
 	}
 	
-	igdeUndoReference undo;
-	undo.TakeOver( CreateUndo( dialog.GetActions() ) );
+	igdeUndo::Ref undo(CreateUndo(dialog->GetActions()));
 	//undo->SetShortInfo( "Paste Conversation Snippet" );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(undo);
 }

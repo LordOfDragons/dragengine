@@ -26,6 +26,7 @@
 #define _DECSHAPE_H_
 
 #include "../math/decMath.h"
+#include "../collection/decTUniqueList.h"
 
 class decShapeVisitor;
 
@@ -39,6 +40,33 @@ class decShapeVisitor;
  * and the orientation.
  */
 class DE_DLL_EXPORT decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShape>;
+	
+	/**
+	 * \brief List of shapes.
+	 * 
+	 * Provides support for visiting shapes in the list.
+	 */
+	class DE_DLL_EXPORT List : public decTUniqueList<decShape>{
+	public:
+		using decTUniqueList<decShape>::decTUniqueList;
+		using decTUniqueList<decShape>::Visit;
+		
+		/** \brief Create deep copy of list. */
+		List(const List &list);
+		List& operator=(const List &list);
+		
+		/** \brief Move list. */
+		List(List&&) noexcept = default;
+		List& operator=(List&&) = default;
+
+		/** \brief Visit shapes. */
+		void Visit(decShapeVisitor &visitor);
+	};
+	
+	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;
@@ -52,11 +80,17 @@ public:
 	decShape();
 	
 	/** \brief Create shape with the given position and orientation (0,0,0,1). */
-	decShape( const decVector &position );
+	decShape(const decVector &position);
 	
 	/** \brief Create shape with the given position and orientation. */
-	decShape( const decVector &position, const decQuaternion &orientation );
+	decShape(const decVector &position, const decQuaternion &orientation);
 	
+	decShape(const decShape&) = delete;
+	decShape& operator=(const decShape&) = delete;
+
+	decShape(decShape&&) noexcept = default;
+	decShape& operator=(decShape&&) noexcept = default;
+
 	/** \brief Clean up shape. */
 	virtual ~decShape();
 	/*@}*/
@@ -69,18 +103,18 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	virtual Ref Copy() const = 0;
 	/*@}*/
 	
 	
@@ -88,7 +122,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	virtual void Visit(decShapeVisitor &visitor);
 	/*@}*/
 };
 

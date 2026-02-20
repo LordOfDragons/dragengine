@@ -26,6 +26,7 @@
 #define _DEOBJECT_H_
 
 #include "deTObjectReference.h"
+#include "dragengine_export.h"
 
 
 /**
@@ -42,13 +43,44 @@
 class DE_DLL_EXPORT deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deObject> Ref;
+	using Ref = deTObjectReference<deObject>;
 	
+	
+	/** \brief Weak reference data. */
+	class DE_DLL_EXPORT cWeakRefData{
+	private:
+		deObject *pObject;
+		int pRefCount;
+		
+		
+	public:
+		/** \brief Constructor. */
+		explicit cWeakRefData(deObject *object);
+		
+		/** \brief Destructor. */
+		~cWeakRefData();
+		
+		/** \brief Object or nullptr if deleted. */
+		inline deObject *Object() const{ return pObject; }
+		
+		/** \brief Reference count. */
+		inline int RefCount() const{ return pRefCount; }
+		
+		/** \brief Increase reference count by one. */
+		void AddReference();
+		
+		/** \brief Decrease reference count by one and delete data if count reaches 0. */
+		void FreeReference();
+		
+		friend class deObject;
+	};
+	
+	friend class cWeakRefData;
 	
 	
 private:
 	int pRefCount;
-	
+	cWeakRefData *pWeakRefData;
 	
 	
 public:
@@ -80,6 +112,9 @@ public:
 	
 	/** \brief Decrease reference count by one and delete object if count reaches 0. */
 	void FreeReference();
+	
+	/** \brief Add weak reference. */
+	cWeakRefData *AddWeakReference();
 	/*@}*/
 };
 

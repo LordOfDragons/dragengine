@@ -25,7 +25,7 @@
 #ifndef _DECZFILEREADER_H_
 #define _DECZFILEREADER_H_
 
-#include <stdio.h>
+#include <zlib.h>
 
 #include "decBaseFileReader.h"
 
@@ -46,8 +46,7 @@
 class DE_DLL_EXPORT decZFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decZFileReader> Ref;
-	
+	using Ref = deTObjectReference<decZFileReader>;
 	
 	
 private:
@@ -59,7 +58,7 @@ private:
 	
 	void *pZStream;
 	
-	void *pBufferIn;
+	decTList<Bytef> pBufferIn;
 	int pBufferInSize;
 	int pBufferInPosition;
 	
@@ -85,7 +84,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em reader is NULL.
 	 */
-	decZFileReader( decBaseFileReader *reader );
+	decZFileReader(decBaseFileReader *reader);
 	
 	/**
 	 * \brief Create z-compressed file reader object for another file reader.
@@ -102,7 +101,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em reader is NULL.
 	 */
-	decZFileReader( decBaseFileReader *reader, bool pureMode, int pureLength );
+	decZFileReader(decBaseFileReader *reader, bool pureMode, int pureLength);
 	
 protected:
 	/**
@@ -111,7 +110,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~decZFileReader();
+	~decZFileReader() override;
 	/*@}*/
 	
 	
@@ -120,25 +119,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the file. */
-	virtual const char *GetFilename();
+	const char *GetFilename() override;
 	
 	/** \brief Length of the file. */
-	virtual int GetLength();
+	int GetLength() override;
 	
 	/** \brief Modification time. */
-	virtual TIME_SYSTEM GetModificationTime();
+	TIME_SYSTEM GetModificationTime() override;
 	
 	/** \brief Current reading position in the file. */
-	virtual int GetPosition();
+	int GetPosition() override;
 	
 	/** \brief Set file position for the next read action. */
-	virtual void SetPosition( int position );
+	void SetPosition(int position) override;
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	void MovePosition(int offset) override;
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	void SetPositionEnd(int position) override;
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
@@ -146,17 +145,17 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 * \throws deeInvalidParam Error decompressing content.
 	 */
-	virtual void Read( void *buffer, int size );
+	void Read(void *buffer, int size) override;
 	
 	/** \brief Duplicate file reader. */
-	virtual decBaseFileReader::Ref Duplicate();
+	decBaseFileReader::Ref Duplicate() override;
 	/*@}*/
 	
 	
 	
 private:
-	void pInit( decBaseFileReader *reader, bool pureMode, int pureLength );
-	void pSetContentPosition( int position );
+	void pInit(decBaseFileReader *reader, bool pureMode, int pureLength);
+	void pSetContentPosition(int position);
 	void pDecompressAll();
 };
 

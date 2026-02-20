@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVVariation;
+#include "../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../world/heightterrain/meHTVVariation.h"
 
 
 
@@ -41,29 +41,37 @@ class meHTVVariation;
  * Undo action to remove a variation to a vegetation layer.
  */
 class meUHTVVariationRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVVariationRemove>;
+	
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVariation;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVariation;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVariationRemove( meHTVegetationLayer *vlayer, meHTVVariation *variation );
+	meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVVariation *variation);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUHTVVariationRemove();
+
+protected:
+	~meUHTVVariationRemove() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -34,18 +34,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModEnableVertexPositionSet::aeUSetRuleSModEnableVertexPositionSet( aeRuleStateManipulator *rule ){
-	DEASSERT_NOTNULL( rule )
+aeUSetRuleSModEnableVertexPositionSet::aeUSetRuleSModEnableVertexPositionSet(aeRuleStateManipulator *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnableVertexPositionSet");
 		
-		SetShortInfo( "Set state manipulator rule enable vertex position set" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -61,11 +59,11 @@ aeUSetRuleSModEnableVertexPositionSet::~aeUSetRuleSModEnableVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleSModEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeUSetRuleSModEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 
@@ -74,7 +72,4 @@ void aeUSetRuleSModEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnableVertexPositionSet::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

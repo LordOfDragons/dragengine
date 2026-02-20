@@ -35,6 +35,9 @@ class saeWindowMain;
  * Synchronize game definition task.
  */
 class saeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<saeTaskSyncGameDefinition> Ref;
+	
 private:
 	saeWindowMain &pWindowMain;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	saeTaskSyncGameDefinition( saeWindowMain &windowMain );
+	saeTaskSyncGameDefinition(saeWindowMain &windowMain);
 	
 	/** Clean up task. */
+protected:
 	virtual ~saeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

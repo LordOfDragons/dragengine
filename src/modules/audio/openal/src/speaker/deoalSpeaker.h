@@ -25,12 +25,13 @@
 #ifndef _DEOALSPEAKER_H_
 #define _DEOALSPEAKER_H_
 
+#include "deoalASpeaker.h"
+
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSpeaker.h>
 
 class deAudioOpenAL;
-class deoalASpeaker;
 class deoalSound;
 class deoalSynthesizerInstance;
 class deoalVideoPlayer;
@@ -48,7 +49,7 @@ class deoalSpeaker : public deBaseAudioSpeaker{
 private:
 	deAudioOpenAL &pOal;
 	deSpeaker &pSpeaker;
-	deoalASpeaker *pASpeaker;
+	deoalASpeaker::Ref pASpeaker;
 	
 	deoalWorld *pParentWorld;
 	deoalMicrophone *pParentMicrophone;
@@ -71,8 +72,8 @@ private:
 	bool pDirtyVideoPlayer;
 	bool pDirtyResetStreaming;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
-	decPointerLinkedList::cListEntry pLLSyncMic;
+	decTLinkedList<deoalSpeaker>::Element pLLSyncWorld;
+	decTLinkedList<deoalSpeaker>::Element pLLSyncMic;
 	
 	
 	
@@ -80,10 +81,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create speaker peer. */
-	deoalSpeaker( deAudioOpenAL &oal, deSpeaker &speaker );
+	deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker);
 	
 	/** \brief Clean up speaker peer. */
-	virtual ~deoalSpeaker();
+	~deoalSpeaker() override;
 	/*@}*/
 	
 	
@@ -100,16 +101,16 @@ public:
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	/** \brief Parent microphone. */
 	inline deoalMicrophone *GetParentMicrophone() const{ return pParentMicrophone; }
 	
 	/** \brief Set parent microphone. */
-	void SetParentMicrophone( deoalMicrophone *microphone );
+	void SetParentMicrophone(deoalMicrophone *microphone);
 	
 	/** \brief Audio speaker. */
-	inline deoalASpeaker *GetASpeaker() const{ return pASpeaker; }
+	inline const deoalASpeaker::Ref &GetASpeaker() const{ return pASpeaker; }
 	
 	
 	
@@ -128,55 +129,55 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Sound source changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	
 	
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Velocity changed. */
-	virtual void VelocityChanged();
+	void VelocityChanged() override;
 	
 	
 	
 	/** \brief Muted changed. */
-	virtual void MutedChanged();
+	void MutedChanged() override;
 	
 	/** \brief Looping changed. */
-	virtual void LoopingChanged();
+	void LoopingChanged() override;
 	
 	/** \brief Play position changed. */
-	virtual void PlayPositionChanged();
+	void PlayPositionChanged() override;
 	
 	/** \brief Play speed changed. */
-	virtual void PlaySpeedChanged();
+	void PlaySpeedChanged() override;
 	
 	/** \brief Volume changed. */
-	virtual void VolumeChanged();
+	void VolumeChanged() override;
 	
 	/** \brief Range changed. */
-	virtual void RangeChanged();
+	void RangeChanged() override;
 	
 	/** \brief Roll off factor changed. */
-	virtual void RollOffChanged();
+	void RollOffChanged() override;
 	
 	/** \brief Distance offset changed. */
-	virtual void DistanceOffsetChanged();
+	void DistanceOffsetChanged() override;
 	
 	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	
 	
 	/** \brief Play state changed. */
-	virtual void PlayStateChanged();
+	void PlayStateChanged() override;
 	/*@}*/
 	
 	
@@ -184,12 +185,12 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoalSpeaker>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalSpeaker>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	
 	/** \brief Microphone syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncMic(){ return pLLSyncMic; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncMic() const{ return pLLSyncMic; }
+	inline decTLinkedList<deoalSpeaker>::Element &GetLLSyncMic(){ return pLLSyncMic; }
+	inline const decTLinkedList<deoalSpeaker>::Element &GetLLSyncMic() const{ return pLLSyncMic; }
 	/*@}*/
 	
 	

@@ -27,9 +27,9 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
 
 class meHTVRuleMath;
 
@@ -39,13 +39,16 @@ class meHTVRuleMath;
  * \brief Vegetation Editing Window Node Math.
  */
 class meWVNodeMath : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeMath>;
+	
 private:
 	meHTVRuleMath *pRuleMath;
 	
-	igdeContainerReference pFraParameters;
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditValueA;
-	igdeTextFieldReference pEditValueB;
+	igdeContainer::Ref pFraParameters;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditValueA;
+	igdeTextField::Ref pEditValueB;
 	
 	
 	
@@ -53,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMath( meWindowVegetation &windowVegetation, meHTVRuleMath *rule );
+	meWVNodeMath(meWindowVegetation &windowVegetation, meHTVRuleMath *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeMath();
+	~meWVNodeMath() override;
 	/*@}*/
 	
 	
@@ -69,7 +72,7 @@ public:
 	inline meHTVRuleMath *GetRuleMath() const{ return pRuleMath; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

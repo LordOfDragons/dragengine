@@ -36,6 +36,11 @@ class deoglRenderPlanMasked;
  * Parallel task build render tasks.
  */
 class deoglRPTBuildRTsDepth : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoglRPTBuildRTsDepth>;
+	
+	
 private:
 	deoglRenderPlanTasks &pPlan;
 	const deoglRenderPlanMasked *pMask;
@@ -48,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTBuildRTsDepth( deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask );
+	deoglRPTBuildRTsDepth(deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTBuildRTsDepth();
+	~deoglRPTBuildRTsDepth() override;
 	/*@}*/
 	
 	
@@ -59,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
@@ -77,8 +82,8 @@ public:
 	
 	
 private:
-	void pSolid( bool xray );
-	void pSolidOutline( bool xray );
+	void pSolid(bool xray);
+	void pSolidOutline(bool xray);
 };
 
 #endif

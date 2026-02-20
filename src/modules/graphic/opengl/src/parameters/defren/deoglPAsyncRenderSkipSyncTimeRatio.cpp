@@ -40,21 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPAsyncRenderSkipSyncTimeRatio::deoglPAsyncRenderSkipSyncTimeRatio( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPAsyncRenderSkipSyncTimeRatio::deoglPAsyncRenderSkipSyncTimeRatio(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "asyncRenderSkipSyncTimeRatio" );
-	SetDescription( "Ratio between game time and render time required to skip synchronization."
+	SetName("asyncRenderSkipSyncTimeRatio");
+	SetDescription("Ratio between game time and render time required to skip synchronization."
 		" Lower values favors doing more game frame updates per render frames."
 		" Can improve game responsiveness while reducing render frame rate."
-	);
-	SetType( deModuleParameter::eptRanged );
-	SetMinimumValue( 0.0f );
-	SetMaximumValue( 1.0f );
-	SetValueStepSize( 0.1f );
-	SetCategory( ecAdvanced );
-	SetDisplayName( "Render Sync Skip Time Ratio" );
-	SetDefaultValue( "0.5" );
+);
+	SetType(deModuleParameter::eptRanged);
+	SetMinimumValue(0.0f);
+	SetMaximumValue(1.0f);
+	SetValueStepSize(0.1f);
+	SetCategory(ecAdvanced);
+	SetDisplayName("Render Sync Skip Time Ratio");
+	SetDefaultValue("0.5");
 }
 
 deoglPAsyncRenderSkipSyncTimeRatio::~deoglPAsyncRenderSkipSyncTimeRatio(){
@@ -69,6 +69,6 @@ float deoglPAsyncRenderSkipSyncTimeRatio::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetAsyncRenderSkipSyncTimeRatio();
 }
 
-void deoglPAsyncRenderSkipSyncTimeRatio::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetAsyncRenderSkipSyncTimeRatio( value );
+void deoglPAsyncRenderSkipSyncTimeRatio::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetAsyncRenderSkipSyncTimeRatio(value);
 }

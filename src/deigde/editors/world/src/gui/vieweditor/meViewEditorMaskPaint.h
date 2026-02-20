@@ -36,6 +36,9 @@ class meCLMaskPaint;
  * View editor for mask painting terrain.
  */
 class meViewEditorMaskPaint : public meViewEditorNavigation{
+public:
+	using Ref = deTObjectReference<meViewEditorMaskPaint>;
+	
 private:
 	meCLMaskPaint *pMaskPainter;
 	
@@ -43,9 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
-	meViewEditorMaskPaint( meView3D &view );
+	meViewEditorMaskPaint(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
-	virtual ~meViewEditorMaskPaint();
+	~meViewEditorMaskPaint() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -55,11 +62,11 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	/** The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/*@}*/
 };
 

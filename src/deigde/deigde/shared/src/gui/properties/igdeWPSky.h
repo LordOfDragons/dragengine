@@ -26,15 +26,15 @@
 #define _IGDEWPSTATICSKY_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-#include "../igdeButtonReference.h"
-#include "../igdeContainerReference.h"
-#include "../igdeLabelReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../composed/igdeEditSliderTextReference.h"
+#include "../igdeButton.h"
+#include "../igdeContainer.h"
+#include "../igdeLabel.h"
+#include "../igdeTextField.h"
+#include "../composed/igdeEditSliderText.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 
 
@@ -56,17 +56,25 @@ class igdeWSky;
  * this widget.
  */
 class DE_DLL_EXPORT igdeWPSky : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWPSky>;
+	
+	
 private:
-	class DE_DLL_EXPORT Controller : public deObject{
+	class cController : public deObject{
 	public:
-		typedef deTObjectReference<Controller> Ref;
+		using Ref = deTObjectReference<cController>;
 		
 		int controller;
-		igdeLabelReference label;
-		igdeEditSliderTextReference slider;
+		igdeLabel::WeakRef label;
+		igdeEditSliderText::WeakRef slider;
 		decString name;
 		float minimum;
 		float maximum;
+		
+	protected:
+		~cController() override = default;
 	};
 	
 	
@@ -74,14 +82,14 @@ private:
 private:
 	igdeWSky *pSky;
 	
-	igdeTextFieldReference pEditSkyPath;
-	igdeButtonReference pBtnSkyPath;
-	igdeButtonReference pBtnFromGDSky;
+	igdeTextField::Ref pEditSkyPath;
+	igdeButton::Ref pBtnSkyPath;
+	igdeButton::Ref pBtnFromGDSky;
 	
-	igdeContainerReference pFraControllers;
-	decObjectList pControllers;
+	igdeContainer::Ref pFraControllers;
+	decTObjectOrderedSet<cController> pControllers;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	
@@ -89,16 +97,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPSky( igdeEnvironment &environment );
+	igdeWPSky(igdeEnvironment &environment);
 	
 	/** \brief Create panel. */
-	igdeWPSky( igdeEnvironment &environment, igdeAction *action );
+	igdeWPSky(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeWPSky();
+	~igdeWPSky() override;
 	/*@}*/
 	
 	
@@ -106,11 +114,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Sky wrapper or NULL if not set. */
+	/** \brief Sky wrapper or nullptr if not set. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	
-	/** \brief Set sky wrapper or NULL if not set. */
-	void SetSky( igdeWSky *sky );
+	/** \brief Set sky wrapper or nullptr if not set. */
+	void SetSky(igdeWSky *sky);
 	
 	/** \brief Update widget after sky changed outside. */
 	void UpdateSky();
@@ -119,18 +127,18 @@ public:
 	void RebuildControllers();
 	
 	/** \brief Update controller. */
-	void UpdateController( int controller );
+	void UpdateController(int controller);
 	
 	/** \brief Update controller value. */
-	void UpdateControllerValue( int controller );
+	void UpdateControllerValue(int controller);
 	
 	
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	/** \brief Set action or nullptr. */
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * \brief Sky parameters changed.
@@ -141,10 +149,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	

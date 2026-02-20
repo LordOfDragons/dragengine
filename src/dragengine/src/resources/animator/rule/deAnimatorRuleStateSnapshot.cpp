@@ -41,12 +41,12 @@
 ////////////////////////////
 
 deAnimatorRuleStateSnapshot::deAnimatorRuleStateSnapshot() :
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true ),
-pUseLastState( true ),
-pID( 0 ){
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true),
+pUseLastState(true),
+pID(0){
 }
 
 deAnimatorRuleStateSnapshot::~deAnimatorRuleStateSnapshot(){
@@ -57,27 +57,27 @@ deAnimatorRuleStateSnapshot::~deAnimatorRuleStateSnapshot(){
 // Management
 ///////////////
 
-void deAnimatorRuleStateSnapshot::SetEnablePosition( bool enabled ){
+void deAnimatorRuleStateSnapshot::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleStateSnapshot::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleStateSnapshot::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleStateSnapshot::SetEnableSize( bool enabled ){
+void deAnimatorRuleStateSnapshot::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleStateSnapshot::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleStateSnapshot::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
-void deAnimatorRuleStateSnapshot::SetUseLastState( bool useLastState ){
+void deAnimatorRuleStateSnapshot::SetUseLastState(bool useLastState){
 	pUseLastState = useLastState;
 }
 
-void deAnimatorRuleStateSnapshot::SetID( int id ){
+void deAnimatorRuleStateSnapshot::SetID(int id){
 	pID = id;
 }
 
@@ -86,6 +86,6 @@ void deAnimatorRuleStateSnapshot::SetID( int id ){
 // Visiting
 /////////////
 
-void deAnimatorRuleStateSnapshot::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitStateSnapshot( *this );
+void deAnimatorRuleStateSnapshot::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitStateSnapshot(*this);
 }

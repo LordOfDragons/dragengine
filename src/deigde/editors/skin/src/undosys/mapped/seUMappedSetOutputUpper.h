@@ -35,6 +35,10 @@
  * Undo action set mapped output upper.
  */
 class seUMappedSetOutputUpper : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedSetOutputUpper>;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetOutputUpper( seMapped *mapped, float newOutputUpper );
+	seUMappedSetOutputUpper(seMapped *mapped, float newOutputUpper);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetOutputUpper();
+	~seUMappedSetOutputUpper() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

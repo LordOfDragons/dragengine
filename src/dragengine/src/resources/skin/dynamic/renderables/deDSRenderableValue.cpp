@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderableValue::deDSRenderableValue( const char *name ) : deDSRenderable( name ){
+deDSRenderableValue::deDSRenderableValue(const char *name) : deDSRenderable(name){
 	pValue = 0.0f;
 }
 
@@ -51,7 +51,7 @@ deDSRenderableValue::~deDSRenderableValue(){
 // Management
 ///////////////
 
-void deDSRenderableValue::SetValue( float value ){
+void deDSRenderableValue::SetValue(float value){
 	pValue = value;
 }
 
@@ -60,6 +60,6 @@ void deDSRenderableValue::SetValue( float value ){
 // Visiting
 /////////////
 
-void deDSRenderableValue::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitValue( *this );
+void deDSRenderableValue::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitValue(*this);
 }

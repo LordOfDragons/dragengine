@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create updater. */
-	meUpdateHTVInstances( meHeightTerrainPropField &propField );
+	meUpdateHTVInstances(meHeightTerrainPropField &propField);
 	
 	/** \brief Clean up updater. */
 	~meUpdateHTVInstances();

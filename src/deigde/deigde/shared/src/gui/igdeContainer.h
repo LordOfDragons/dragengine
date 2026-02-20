@@ -27,7 +27,7 @@
 
 #include "igdeWidget.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -35,8 +35,15 @@
  * \brief IGDE UI Container Widget grouping widgets.
  */
 class DE_DLL_EXPORT igdeContainer : public igdeWidget{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeContainer>;
+	
+	using ChildrenList = decTObjectOrderedSet<igdeWidget>;
+	
+	
 private:
-	decObjectOrderedSet pChildren;
+	ChildrenList pChildren;
 	
 	
 	
@@ -44,7 +51,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget with layout elNone. */
-	igdeContainer( igdeEnvironment &environment );
+	explicit igdeContainer(igdeEnvironment &environment);
 	
 	/**
 	 * \brief Clean up widget.
@@ -52,7 +59,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainer();
+	~igdeContainer() override;
 	/*@}*/
 	
 	
@@ -60,23 +67,20 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of children. */
-	int GetChildCount() const;
-	
-	/** \brief Get child at index. */
-	igdeWidget *GetChildAt( int index ) const;
-	
-	/** \brief Index of child or -1 if absent. */
-	int IndexOfChild( igdeWidget *widget ) const;
+	/** \brief Children. */
+	const ChildrenList &GetChildren() const{ return pChildren; }
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	
@@ -90,7 +94,7 @@ public:
 	 * \brief Drop native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DropNativeWidget();
+	void DropNativeWidget() override;
 	
 	/**
 	 * \brief Get native container widget pointer.
@@ -108,7 +112,7 @@ protected:
 	virtual void CreateChildWidgetNativeWidgets();
 	
 	/** \brief GuiTheme changed. */
-	virtual void OnGuiThemeChanged();
+	void OnGuiThemeChanged() override;
 	
 	/**
 	 * \brief Notify children gui theme changed.

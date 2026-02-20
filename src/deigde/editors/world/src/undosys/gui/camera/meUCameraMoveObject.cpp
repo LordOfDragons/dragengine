@@ -40,16 +40,12 @@ meUCameraMoveObject::meUCameraMoveObject(meObject *object){
 	DEASSERT_NOTNULL(object)
 	
 	pNewPosition = pOldPosition = object->GetPosition();
-	SetShortInfo("Move Camera Object");
+	SetShortInfo("@World.UCameraMoveObject.MoveCameraObject");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUCameraMoveObject::~meUCameraMoveObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -62,7 +58,7 @@ void meUCameraMoveObject::SetNewPosition(const decDVector &position){
 }
 
 bool meUCameraMoveObject::HasChanged() const{
-	return ! pNewPosition.IsEqualTo(pOldPosition);
+	return !pNewPosition.IsEqualTo(pOldPosition);
 }
 
 void meUCameraMoveObject::Undo(){

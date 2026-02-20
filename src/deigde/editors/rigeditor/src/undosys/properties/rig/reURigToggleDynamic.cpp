@@ -39,17 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURigToggleDynamic::reURigToggleDynamic( reRig *rig ){
-	if( ! rig ) DETHROW( deeInvalidParam );
+reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
+	DEASSERT_NOTNULL(rig)
 	
-	SetShortInfo( "Toggle Rig Dynamic" );
+	SetShortInfo("@Rig.Undo.RigToggleDynamic");
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigToggleDynamic::~reURigToggleDynamic(){
-	if( pRig ) pRig->FreeReference();
 }
 
 
@@ -58,9 +56,9 @@ reURigToggleDynamic::~reURigToggleDynamic(){
 ///////////////
 
 void reURigToggleDynamic::Undo(){
-	pRig->SetDynamic( ! pRig->GetDynamic() );
+	pRig->SetDynamic(!pRig->GetDynamic());
 }
 
 void reURigToggleDynamic::Redo(){
-	pRig->SetDynamic( ! pRig->GetDynamic() );
+	pRig->SetDynamic(!pRig->GetDynamic());
 }

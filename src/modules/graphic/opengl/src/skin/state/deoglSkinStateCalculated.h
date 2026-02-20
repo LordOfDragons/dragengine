@@ -60,22 +60,22 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Set calculated color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** Temporary texture or nullptr if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set temporary texture or nullptr if not existing. */
-	void SetTexture( deoglTexture *texture );
+	void SetTexture(deoglTexture *texture);
 	
 	/** Skin calculated property. */
 	deoglSkinCalculatedProperty *GetProperty() const{ return pProperty; }
 	
 	/** Set skin calculated property. */
-	void SetProperty( deoglSkinCalculatedProperty *property );
+	void SetProperty(deoglSkinCalculatedProperty *property);
 	
 	/** Update. */
-	void Update( deoglSkinState &skinState );
+	void Update(deoglSkinState &skinState);
 	/*@}*/
 };
 

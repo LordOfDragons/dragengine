@@ -25,20 +25,20 @@
 #ifndef _REUROTATESHAPE_H_
 #define _REUROTATESHAPE_H_
 
+#include "reUndoDataShape.h"
 #include "../reBaseUndoRotate.h"
-
-class reUndoDataShape;
-class reRigShapeList;
-
+#include "../../../rig/shape/reRigShape.h"
 
 
 /**
  * Undo action for rotating a set of shapes.
  */
 class reURotateShape : public reBaseUndoRotate{
+public:
+	using Ref = deTObjectReference<reURotateShape>;
+	
 private:
-	reUndoDataShape **pShapes;
-	int pShapeCount;
+	reUndoDataShape::List pShapes;
 	
 	
 	
@@ -46,11 +46,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURotateShape( reRigShapeList &list );
+	explicit reURotateShape(igdeEnvironment &environment, const reRigShape::List &list);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reURotateShape();
+	~reURotateShape() override;
 	/*@}*/
 	
 	
@@ -59,19 +59,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

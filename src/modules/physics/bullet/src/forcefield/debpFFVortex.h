@@ -71,35 +71,35 @@ public:
 	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the view direction. */
 	inline const decVector &GetView() const{ return pView; }
 	/** Sets the view direction. */
-	void SetView( const decVector &view );
+	void SetView(const decVector &view);
 	/** Retrieves the size. */
 	inline float GetSize() const{ return pSize; }
 	/** Sets the size. */
-	void SetSize( float size );
+	void SetSize(float size);
 	
 	/** Retrieves the full velocity. */
 	inline float GetFullVelocity() const{ return pFullVelocity; }
 	/** Sets the full velocity. */
-	void SetFullVelocity( float velocity );
+	void SetFullVelocity(float velocity);
 	/** Retrieves the current velocity. */
 	inline float GetCurrentVelocity() const{ return pCurrentVelocity; }
 	/** Sets the current velocity. */
-	void SetCurrentVelocity( float velocity );
+	void SetCurrentVelocity(float velocity);
 	
 	/** Retrieves the time to live. */
 	inline float GetTimeToLive() const{ return pTimeToLive; }
 	/** Sets the time to live. */
-	void SetTimeToLive( float time );
+	void SetTimeToLive(float time);
 	/** Retrieves the lived time. */
 	inline float GetLivedTime() const{ return pLivedTime; }
 	/** Sets the lived time. */
-	void SetLivedTime( float time );
+	void SetLivedTime(float time);
 	/** Increases the lived time. */
-	void IncreaseLivedTime( float time );
+	void IncreaseLivedTime(float time);
 	/** Determines if the vortex is still living. */
 	inline bool IsLiving() const{ return pLivedTime < pTimeToLive; }
 	/** Determines if the vortex has died. */

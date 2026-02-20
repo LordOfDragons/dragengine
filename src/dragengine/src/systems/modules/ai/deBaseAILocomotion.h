@@ -48,13 +48,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Unit has been added. */
-	virtual void UnitAdded( int index );
+	virtual void UnitAdded(int index);
 	
 	/** \brief Unit has been removed. */
-	virtual void UnitRemoved( int index );
+	virtual void UnitRemoved(int index);
 	
 	/** \brief Unit has changed. */
-	virtual void UnitChanged( int index );
+	virtual void UnitChanged(int index);
 	
 	/** \brief All units have been removed. */
 	virtual void AllUnitsRemoved();

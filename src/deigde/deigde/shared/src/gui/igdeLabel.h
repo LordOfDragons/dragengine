@@ -26,7 +26,7 @@
 #define _IGDELABEL_H_
 
 #include "igdeWidget.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -36,6 +36,13 @@
  */
 class DE_DLL_EXPORT igdeLabel : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeLabel>;
+	
+	/** \brief Type holding weak reference. */
+	using WeakRef = deTWeakObjectReference<igdeLabel>;
+	
+	
 	/** \brief Alignment. */
 	enum eAlignment{
 		/** \brief Center alignment. */
@@ -57,33 +64,44 @@ public:
 		eaBottom = 0x8,
 	};
 	
+	class cNativeLabel{
+	public:
+		virtual ~cNativeLabel() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateAlignment() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateIcon() = 0;
+	};
 	
 	
 private:
 	decString pText;
 	int pAlignment;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	
+	
+protected:
+	cNativeLabel *pNativeLabel;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, int alignment = eaCenter | eaMiddle);
 	
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, const char *description,
-		int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, const char *description,
+		int alignment = eaCenter | eaMiddle);
 	
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		int alignment = eaCenter | eaMiddle);
 	
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, int alignment = eaCenter | eaMiddle);
 	
 	
 	
@@ -94,7 +112,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeLabel();
+	~igdeLabel() override;
 	/*@}*/
 	
 	
@@ -106,25 +124,25 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Alignment. */
 	inline int GetAlignment() const{ return pAlignment; }
 	
 	/** \brief Set alignment. */
-	void SetAlignment( int alignment );
+	void SetAlignment(int alignment);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -138,14 +156,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -160,6 +183,9 @@ protected:
 	
 	/** \brief Icon changed. */
 	virtual void OnIconChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

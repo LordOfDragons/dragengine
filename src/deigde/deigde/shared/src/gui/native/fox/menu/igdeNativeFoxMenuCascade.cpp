@@ -26,7 +26,7 @@
 
 #include "igdeNativeFoxMenuCascade.h"
 #include "../../../igdeContainer.h"
-#include "../../../igdeWidgetReference.h"
+#include "../../../igdeWidget.h"
 #include "../../../igdeWindow.h"
 #include "../../../menu/igdeMenuCascade.h"
 #include "../../../resources/igdeIcon.h"
@@ -38,7 +38,7 @@
 namespace {
 
 class igdeNativeFoxMenuCascadeCascade : public FXMenuCascade{
-	FXDECLARE( igdeNativeFoxMenuCascadeCascade )
+	FXDECLARE(igdeNativeFoxMenuCascadeCascade)
 	
 private:
 	igdeMenuCascade *pOwner;
@@ -52,35 +52,35 @@ public:
 	};
 	
 public:
-	igdeNativeFoxMenuCascadeCascade( igdeMenuCascade &powner, FXComposite *pparent, FXWindow *paneParent );
-	virtual ~igdeNativeFoxMenuCascadeCascade();
+	igdeNativeFoxMenuCascadeCascade(igdeMenuCascade &powner, FXComposite *pparent, FXWindow *paneParent);
+	~igdeNativeFoxMenuCascadeCascade() override;
 	
 	void DestroyMenuPane();
 	
-	long onMenuAction( FXObject*, FXSelector, void* );
-	long updateMenuAction( FXObject*, FXSelector, void* );
+	long onMenuAction(FXObject*, FXSelector, void*);
+	long updateMenuAction(FXObject*, FXSelector, void*);
 	
-	static FXString BuildConstrText( igdeMenuCascade &powner );
+	static FXString BuildConstrText(igdeMenuCascade &powner);
 };
 
 
-FXDEFMAP( igdeNativeFoxMenuCascadeCascade ) igdeNativeFoxMenuCascadeCascadeMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxMenuCascadeCascade::ID_SELF, igdeNativeFoxMenuCascadeCascade::onMenuAction ),
-	FXMAPFUNC( SEL_UPDATE, igdeNativeFoxMenuCascadeCascade::ID_SELF, igdeNativeFoxMenuCascadeCascade::updateMenuAction )
+FXDEFMAP(igdeNativeFoxMenuCascadeCascade) igdeNativeFoxMenuCascadeCascadeMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxMenuCascadeCascade::ID_SELF, igdeNativeFoxMenuCascadeCascade::onMenuAction),
+	FXMAPFUNC(SEL_UPDATE, igdeNativeFoxMenuCascadeCascade::ID_SELF, igdeNativeFoxMenuCascadeCascade::updateMenuAction)
 };
 
 
-FXIMPLEMENT( igdeNativeFoxMenuCascadeCascade, FXMenuCascade, igdeNativeFoxMenuCascadeCascadeMap, ARRAYNUMBER( igdeNativeFoxMenuCascadeCascadeMap ) )
+FXIMPLEMENT(igdeNativeFoxMenuCascadeCascade, FXMenuCascade, igdeNativeFoxMenuCascadeCascadeMap, ARRAYNUMBER(igdeNativeFoxMenuCascadeCascadeMap))
 
-igdeNativeFoxMenuCascadeCascade::igdeNativeFoxMenuCascadeCascade(){ }
+igdeNativeFoxMenuCascadeCascade::igdeNativeFoxMenuCascadeCascade(){}
 
-igdeNativeFoxMenuCascadeCascade::igdeNativeFoxMenuCascadeCascade( igdeMenuCascade &powner,
-	FXComposite *pparent, FXWindow *paneParent ) :
-FXMenuCascade( pparent, BuildConstrText( powner ), powner.GetIcon()
-	? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL, new FXMenuPane( paneParent ) ),
-pOwner( &powner )
+igdeNativeFoxMenuCascadeCascade::igdeNativeFoxMenuCascadeCascade(igdeMenuCascade &powner,
+	FXComposite *pparent, FXWindow *paneParent) :
+FXMenuCascade(pparent, BuildConstrText(powner), powner.GetIcon()
+	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr, new FXMenuPane(paneParent)),
+pOwner(&powner)
 {
-	if( ! powner.GetEnabled() ){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	//getMenu()->create(); // FXMenuCascade constructor calls create()
@@ -91,34 +91,36 @@ igdeNativeFoxMenuCascadeCascade::~igdeNativeFoxMenuCascadeCascade(){
 }
 
 void igdeNativeFoxMenuCascadeCascade::DestroyMenuPane(){
-	if( getMenu() ){
+	if(getMenu()){
 		delete getMenu();
-		setMenu( NULL );
+		setMenu(nullptr);
 	}
 }
 
-long igdeNativeFoxMenuCascadeCascade::onMenuAction( FXObject*, FXSelector, void* ){
-	if( pOwner->GetEnabled() ){
+long igdeNativeFoxMenuCascadeCascade::onMenuAction(FXObject*, FXSelector, void*){
+	if(pOwner->GetEnabled()){
 // 		pOwner->OnAction();
 	}
 	return 1;
 }
 
-long igdeNativeFoxMenuCascadeCascade::updateMenuAction( FXObject *sender, FXSelector, void* ){
-	return sender->handle( this, FXSEL( SEL_COMMAND, pOwner->GetEnabled()
-		? FXWindow::ID_ENABLE : FXWindow::ID_DISABLE ), NULL);
+long igdeNativeFoxMenuCascadeCascade::updateMenuAction(FXObject *sender, FXSelector, void*){
+	return sender->handle(this, FXSEL(SEL_COMMAND, pOwner->GetEnabled()
+		? FXWindow::ID_ENABLE : FXWindow::ID_DISABLE), nullptr);
 }
 
-FXString igdeNativeFoxMenuCascadeCascade::BuildConstrText( igdeMenuCascade &powner ){
-	return igdeUIFoxHelper::MnemonizeString( powner.GetText(), powner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( powner.GetHotKey() )
-		+ "\t" + powner.GetDescription().GetString();
+FXString igdeNativeFoxMenuCascadeCascade::BuildConstrText(igdeMenuCascade &powner){
+	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
+	
+	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
+			+ "\t" + igdeUIFoxHelper::AccelStringSystem(powner.GetHotKey())
+			+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription().GetString());
 }
 
 
 
 class igdeNativeFoxMenuCascadeTitle : public FXMenuTitle{
-	FXDECLARE( igdeNativeFoxMenuCascadeTitle )
+	FXDECLARE(igdeNativeFoxMenuCascadeTitle)
 	
 private:
 	igdeMenuCascade *pOwner;
@@ -132,33 +134,33 @@ public:
 	};
 	
 public:
-	igdeNativeFoxMenuCascadeTitle( igdeMenuCascade &powner, FXComposite *pparent, FXWindow *paneParent );
-	virtual ~igdeNativeFoxMenuCascadeTitle();
+	igdeNativeFoxMenuCascadeTitle(igdeMenuCascade &powner, FXComposite *pparent, FXWindow *paneParent);
+	~igdeNativeFoxMenuCascadeTitle() override;
 	
 	void DestroyMenuPane();
 	
-	long onMenuAction( FXObject*, FXSelector, void* );
-	long updateMenuAction( FXObject*, FXSelector, void* );
+	long onMenuAction(FXObject*, FXSelector, void*);
+	long updateMenuAction(FXObject*, FXSelector, void*);
 };
 
 
-FXDEFMAP( igdeNativeFoxMenuCascadeTitle ) igdeNativeFoxMenuCascadeTitleMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxMenuCascadeTitle::ID_SELF, igdeNativeFoxMenuCascadeTitle::onMenuAction ),
-	FXMAPFUNC( SEL_UPDATE, igdeNativeFoxMenuCascadeTitle::ID_SELF, igdeNativeFoxMenuCascadeTitle::updateMenuAction )
+FXDEFMAP(igdeNativeFoxMenuCascadeTitle) igdeNativeFoxMenuCascadeTitleMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxMenuCascadeTitle::ID_SELF, igdeNativeFoxMenuCascadeTitle::onMenuAction),
+	FXMAPFUNC(SEL_UPDATE, igdeNativeFoxMenuCascadeTitle::ID_SELF, igdeNativeFoxMenuCascadeTitle::updateMenuAction)
 };
 
 
-FXIMPLEMENT( igdeNativeFoxMenuCascadeTitle, FXMenuTitle, igdeNativeFoxMenuCascadeTitleMap, ARRAYNUMBER( igdeNativeFoxMenuCascadeTitleMap ) )
+FXIMPLEMENT(igdeNativeFoxMenuCascadeTitle, FXMenuTitle, igdeNativeFoxMenuCascadeTitleMap, ARRAYNUMBER(igdeNativeFoxMenuCascadeTitleMap))
 
-igdeNativeFoxMenuCascadeTitle::igdeNativeFoxMenuCascadeTitle(){ }
+igdeNativeFoxMenuCascadeTitle::igdeNativeFoxMenuCascadeTitle(){}
 
-igdeNativeFoxMenuCascadeTitle::igdeNativeFoxMenuCascadeTitle( igdeMenuCascade &powner,
-	FXComposite *pparent, FXWindow *paneParent ) :
-FXMenuTitle( pparent, igdeNativeFoxMenuCascadeCascade::BuildConstrText( powner ), powner.GetIcon()
-	? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL, new FXMenuPane( paneParent ) ),
-pOwner( &powner )
+igdeNativeFoxMenuCascadeTitle::igdeNativeFoxMenuCascadeTitle(igdeMenuCascade &powner,
+	FXComposite *pparent, FXWindow *paneParent) :
+FXMenuTitle(pparent, igdeNativeFoxMenuCascadeCascade::BuildConstrText(powner), powner.GetIcon()
+	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr, new FXMenuPane(paneParent)),
+pOwner(&powner)
 {
-	if( ! powner.GetEnabled() ){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	//getMenu()->create(); // FXMenuCascade constructor calls create()
@@ -169,54 +171,57 @@ igdeNativeFoxMenuCascadeTitle::~igdeNativeFoxMenuCascadeTitle(){
 }
 
 void igdeNativeFoxMenuCascadeTitle::DestroyMenuPane(){
-	if( getMenu() ){
+	if(getMenu()){
 		delete getMenu();
-		setMenu( NULL );
+		setMenu(nullptr);
 	}
 }
 
-long igdeNativeFoxMenuCascadeTitle::onMenuAction( FXObject*, FXSelector, void* ){
-	if( pOwner->GetEnabled() ){
+long igdeNativeFoxMenuCascadeTitle::onMenuAction(FXObject*, FXSelector, void*){
+	if(pOwner->GetEnabled()){
 // 		pOwner->OnAction();
 	}
 	return 0;
 }
 
-long igdeNativeFoxMenuCascadeTitle::updateMenuAction( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMenuCascadeTitle::updateMenuAction(FXObject*, FXSelector, void*){
 // 	return sender->handle( this, FXSEL( SEL_COMMAND, pOwner->GetEnabled()
-// 		? FXWindow::ID_ENABLE : FXWindow::ID_DISABLE ), NULL);
+// 		? FXWindow::ID_ENABLE : FXWindow::ID_DISABLE ), nullptr);
 	return 0;
 }
 
 
 class igdeNativeFoxMenuCascade_PopupWindow : public igdeWindow{
+public:
+	using Ref = deTObjectReference<igdeNativeFoxMenuCascade_PopupWindow>;
+	
 private:
 	igdeMenuCascade &pMenu;
 	
 public:
-	igdeNativeFoxMenuCascade_PopupWindow( igdeMenuCascade &menu );
+	igdeNativeFoxMenuCascade_PopupWindow(igdeMenuCascade &menu);
 	
 protected:
-	virtual ~igdeNativeFoxMenuCascade_PopupWindow();
+	~igdeNativeFoxMenuCascade_PopupWindow() override;
 	
 public:
-	virtual void Popup( const decPoint &position );
+	virtual void Popup(const decPoint &position);
 	
-	virtual void CreateNativeWidget();
-	virtual void DestroyNativeWidget();
+	void CreateNativeWidget() override;
+	void DestroyNativeWidget() override;
 	
 protected:
-	virtual void OnTitleChanged();
-	virtual void OnSizeChanged();
-	virtual void OnPositionChanged();
-	virtual void OnVisibleChanged();
-	virtual void OnEnabledChanged();
+	void OnTitleChanged() override;
+	void OnSizeChanged() override;
+	void OnPositionChanged() override;
+	void OnVisibleChanged() override;
+	void OnEnabledChanged() override;
 };
 
 
-igdeNativeFoxMenuCascade_PopupWindow::igdeNativeFoxMenuCascade_PopupWindow( igdeMenuCascade &menu ) :
-igdeWindow( menu.GetEnvironment(), "", NULL, false ),
-pMenu( menu ){
+igdeNativeFoxMenuCascade_PopupWindow::igdeNativeFoxMenuCascade_PopupWindow(igdeMenuCascade &menu) :
+igdeWindow(menu.GetEnvironment(), "", nullptr, false),
+pMenu(menu){
 }
 
 igdeNativeFoxMenuCascade_PopupWindow::~igdeNativeFoxMenuCascade_PopupWindow(){
@@ -225,21 +230,21 @@ igdeNativeFoxMenuCascade_PopupWindow::~igdeNativeFoxMenuCascade_PopupWindow(){
 }
 
 
-void igdeNativeFoxMenuCascade_PopupWindow::Popup( const decPoint &position ){
-	if( ! pMenu.GetNativeWidget() ){
-		DETHROW( deeInvalidParam );
+void igdeNativeFoxMenuCascade_PopupWindow::Popup(const decPoint &position){
+	if(!pMenu.GetNativeWidget()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXMenuPane * const native = ( FXMenuPane* )pMenu.GetNativeWidget();
-	SetNativeWidget( native );
-	native->popup( NULL, position.x, position.y );
+	FXMenuPane * const native = (FXMenuPane*)pMenu.GetNativeWidget();
+	SetNativeWidget(native);
+	native->popup(nullptr, position.x, position.y);
 	
-	GetEnvironment().RunModalWhileShown( *this );
+	GetEnvironment().RunModalWhileShown(*this);
 }
 
 
 void igdeNativeFoxMenuCascade_PopupWindow::CreateNativeWidget(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 void igdeNativeFoxMenuCascade_PopupWindow::DestroyNativeWidget(){
@@ -261,14 +266,14 @@ void igdeNativeFoxMenuCascade_PopupWindow::OnEnabledChanged(){}
 // Constructor, destructor
 ////////////////////////////
 
-void *igdeNativeFoxMenuCascade::CreateNativeWidget( igdeMenuCascade &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+void *igdeNativeFoxMenuCascade::CreateNativeWidget(igdeMenuCascade &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// according to FOX source code the situation looks like this:
@@ -289,68 +294,68 @@ void *igdeNativeFoxMenuCascade::CreateNativeWidget( igdeMenuCascade &powner ){
 	// the top level popup menu is destroyed by going out of scope. so all FXMenuPane
 	// have to be destroyed manually with fox dealing with the rest
 	FXWindow * const paneParent = pparent->getShell();
-	if( ! paneParent ){
-		DETHROW( deeInvalidParam );
+	if(!paneParent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pparent->isMemberOf( FXMetaClass::getMetaClassFromName( "FXMenuBar" ) ) ){
-		return new igdeNativeFoxMenuCascadeTitle( powner, pparent, paneParent );
+	if(pparent->isMemberOf(FXMetaClass::getMetaClassFromName("FXMenuBar"))){
+		return new igdeNativeFoxMenuCascadeTitle(powner, pparent, paneParent);
 		
 	}else{
-		return new igdeNativeFoxMenuCascadeCascade( powner, pparent, paneParent );
+		return new igdeNativeFoxMenuCascadeCascade(powner, pparent, paneParent);
 	}
 }
 
-void igdeNativeFoxMenuCascade::PostCreateNativeWidget( igdeMenuCascade &powner, void *native ){
-	FXComposite &pparent = *( ( FXComposite* ) powner.GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
-		( ( FXMenuCaption* )native )->create();
+void igdeNativeFoxMenuCascade::PostCreateNativeWidget(igdeMenuCascade &powner, void *native){
+	FXComposite &pparent = *((FXComposite*) powner.GetParent()->GetNativeContainer());
+	if(pparent.id()){
+		((FXMenuCaption*)native)->create();
 	}
 }
 
-void igdeNativeFoxMenuCascade::DestroyNativeWidget( igdeMenuCascade&, void *native ){
-	const FXchar * const className = ( ( FXMenuCaption* )native )->getClassName();
-	if( strcmp( className, "igdeNativeFoxMenuCascadeTitle" ) == 0 ){
-		delete ( igdeNativeFoxMenuCascadeTitle* )native;
+void igdeNativeFoxMenuCascade::DestroyNativeWidget(igdeMenuCascade&, void *native){
+	const FXchar * const className = ((FXMenuCaption*)native)->getClassName();
+	if(strcmp(className, "igdeNativeFoxMenuCascadeTitle") == 0){
+		delete (igdeNativeFoxMenuCascadeTitle*)native;
 		
-	}else if( strcmp( className, "igdeNativeFoxMenuCascadeCascade" ) == 0 ){
-		delete ( igdeNativeFoxMenuCascadeCascade* )native;
+	}else if(strcmp(className, "igdeNativeFoxMenuCascadeCascade") == 0){
+		delete (igdeNativeFoxMenuCascadeCascade*)native;
 		
-	}else if( strcmp( className, "FXMenuPane" ) == 0 ){
-		delete ( FXMenuPane* )native;
+	}else if(strcmp(className, "FXMenuPane") == 0){
+		delete (FXMenuPane*)native;
 		
 	}else{
-		delete ( FXMenuCaption* )native;
+		delete (FXMenuCaption*)native;
 	}
 }
 
-void *igdeNativeFoxMenuCascade::GetNativeContainer( const igdeMenuCascade&, void *native ){
+void *igdeNativeFoxMenuCascade::GetNativeContainer(const igdeMenuCascade&, void *native){
 	// yes I know, this is ugly, but FOX reacts very badly to multi-class sub-classing
 	// leaving no other solution than either compare the class name or use isMemberOf
-	const FXchar * const className = ( ( FXMenuCaption* )native )->getClassName();
-	if( strcmp( className, "igdeNativeFoxMenuCascadeTitle" ) == 0 ){
-		return ( ( igdeNativeFoxMenuCascadeTitle* )native )->getMenu();
+	const FXchar * const className = ((FXMenuCaption*)native)->getClassName();
+	if(strcmp(className, "igdeNativeFoxMenuCascadeTitle") == 0){
+		return ((igdeNativeFoxMenuCascadeTitle*)native)->getMenu();
 		
-	}else if( strcmp( className, "igdeNativeFoxMenuCascadeCascade" ) == 0 ){
-		return ( ( igdeNativeFoxMenuCascadeCascade* )native )->getMenu();
+	}else if(strcmp(className, "igdeNativeFoxMenuCascadeCascade") == 0){
+		return ((igdeNativeFoxMenuCascadeCascade*)native)->getMenu();
 		
-	}else if( strcmp( className, "FXMenuPane" ) == 0 ){
-		return ( FXMenuPane* )native;
+	}else if(strcmp(className, "FXMenuPane") == 0){
+		return (FXMenuPane*)native;
 		
 	}else{
-		return ( FXMenuPane* )native;
+		return (FXMenuPane*)native;
 	}
 }
 
-void igdeNativeFoxMenuCascade::UpdateTitle( const igdeMenuCascade &powner, void *native ){
-	( ( FXMenuCaption* )native )->setText( powner.GetText().GetString() );
+void igdeNativeFoxMenuCascade::UpdateTitle(const igdeMenuCascade &powner, void *native){
+	((FXMenuCaption*)native)->setText(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
 }
 
-void igdeNativeFoxMenuCascade::UpdateDescription( const igdeMenuCascade &powner, void *native ){
-	const char * const description = powner.GetDescription();
-	FXMenuCaption &widget = *( ( FXMenuCaption* )native );
-	widget.setTipText( description );
-	widget.setHelpText( description );
+void igdeNativeFoxMenuCascade::UpdateDescription(const igdeMenuCascade &powner, void *native){
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription().GetString()));
+	FXMenuCaption &widget = *((FXMenuCaption*)native);
+	widget.setTipText(description);
+	widget.setHelpText(description);
 }
 
 /*
@@ -361,20 +366,20 @@ UpdateMnemonic:
 	//( ( FXMenuCascade* )GetNativeWidget() )->setKey( igdeUIFoxHelper::MnemonicKey( pMnemonic ) );
 */
 
-void igdeNativeFoxMenuCascade::UpdateIcon( const igdeMenuCascade &powner, void *native ){
-	FXIcon *iicon = NULL;
-	if( powner.GetIcon() ){
-		iicon = ( FXIcon* ) powner.GetIcon()->GetNativeIcon();
+void igdeNativeFoxMenuCascade::UpdateIcon(const igdeMenuCascade &powner, void *native){
+	FXIcon *iicon = nullptr;
+	if(powner.GetIcon()){
+		iicon = (FXIcon*) powner.GetIcon()->GetNativeIcon();
 	}
 	
-	( ( FXMenuCaption* )native )->setIcon( iicon );
+	((FXMenuCaption*)native)->setIcon(iicon);
 }
 
-void igdeNativeFoxMenuCascade::UpdateEnabled( const igdeMenuCascade&, void *native ){
-	( ( FXMenuCaption* )native )->update();
+void igdeNativeFoxMenuCascade::UpdateEnabled(const igdeMenuCascade&, void *native){
+	((FXMenuCaption*)native)->update();
 }
 
-void *igdeNativeFoxMenuCascade::CreateNativePopup( igdeMenuCascade&, igdeWidget &widgetOwner ){
+void *igdeNativeFoxMenuCascade::CreateNativePopup(igdeMenuCascade&, igdeWidget &widgetOwner){
 	// this is ugly, I know. the problem is that we can not create a popup widget as a window
 	// out in the blue. we sort of use an "injection hack" to get this working. we create for
 	// the menu a native widget of just FXMenuPane type and assign it to the menu as if
@@ -383,30 +388,28 @@ void *igdeNativeFoxMenuCascade::CreateNativePopup( igdeMenuCascade&, igdeWidget 
 	// simply create igdeNativeFoxMenuCascadeCascade and use the getMenu() of it since
 	// fox then fails
 	
-	FXComposite * const nativeParent = ( FXComposite* )widgetOwner.GetNativeWidget();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const nativeParent = (FXComposite*)widgetOwner.GetNativeWidget();
+	if(!nativeParent){
+		DETHROW(deeInvalidParam);
 	}
-	if( nativeParent->isMemberOf( FXMetaClass::getMetaClassFromName( "FXMenuBar" ) ) ){
-		DETHROW( deeInvalidParam );
+	if(nativeParent->isMemberOf(FXMetaClass::getMetaClassFromName("FXMenuBar"))){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new FXMenuPane( nativeParent );
+	return new FXMenuPane(nativeParent);
 }
 
-void igdeNativeFoxMenuCascade::PostCreateNativePopup( igdeMenuCascade&, void *native ){
-	( ( FXMenuPane* )native )->create();
+void igdeNativeFoxMenuCascade::PostCreateNativePopup(igdeMenuCascade&, void *native){
+	((FXMenuPane*)native)->create();
 }
 
-void igdeNativeFoxMenuCascade::ShowPopupWindow( igdeMenuCascade &powner,
-igdeWidget &widgetOwner, const decPoint &position ){
-	igdeWidgetReference window;
-	window.TakeOver( new igdeNativeFoxMenuCascade_PopupWindow( powner ) );
-	( ( igdeNativeFoxMenuCascade_PopupWindow& )( igdeWidget& )window ).Popup( position );
+void igdeNativeFoxMenuCascade::ShowPopupWindow(igdeMenuCascade &powner,
+igdeWidget &widgetOwner, const decPoint &position){
+	igdeNativeFoxMenuCascade_PopupWindow::Ref::New(powner)->Popup(position);
 }
 
-void igdeNativeFoxMenuCascade::DestroyNativePopup( igdeMenuCascade&, void *native ){
-	delete ( FXMenuPane* )native;
+void igdeNativeFoxMenuCascade::DestroyNativePopup(igdeMenuCascade&, void *native){
+	delete (FXMenuPane*)native;
 }
 
 #endif

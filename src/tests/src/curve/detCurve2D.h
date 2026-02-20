@@ -18,11 +18,11 @@ private:
 	
 public:
 	detCurve2D();
-	~detCurve2D();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detCurve2D() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestInitial();

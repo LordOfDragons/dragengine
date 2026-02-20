@@ -25,9 +25,16 @@
 #ifndef _SEWINDOWPROPERTIES_H_
 #define _SEWINDOWPROPERTIES_H_
 
+#include "seWPMapped.h"
+#include "seWPTexture.h"
+#include "seWPNode.h"
+#include "dynamicskin/seWPDynamicSkin.h"
+#include "seWPView.h"
+#include "seWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class seSkin;
 class seWindowMain;
@@ -38,15 +45,18 @@ class seWindowMain;
  * \brief Properties panel.
  */
 class seWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<seWindowProperties>;
+	
 private:
 	seWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelMapped;
-	igdeWidgetReference pPanelTexture;
-	igdeWidgetReference pPanelNode;
-	igdeWidgetReference pPanelDynamicSkin;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	seWPMapped::Ref pPanelMapped;
+	seWPTexture::Ref pPanelTexture;
+	seWPNode::Ref pPanelNode;
+	seWPDynamicSkin::Ref pPanelDynamicSkin;
+	seWPView::Ref pPanelView;
+	seWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -54,11 +64,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWindowProperties( seWindowMain &windowMain );
+	seWindowProperties(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Cleanup window. */
-	virtual ~seWindowProperties();
+	~seWindowProperties() override;
 	/*@}*/
 	
 	
@@ -70,7 +80,7 @@ public:
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Skin path changed. */
 	void OnSkinPathChanged();

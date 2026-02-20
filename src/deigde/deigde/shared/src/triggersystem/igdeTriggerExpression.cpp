@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "igdeTriggerTarget.h"
 #include "igdeTriggerTargetList.h"
 #include "igdeTriggerExpression.h"
+#include "igdeTriggerListener.h"
 #include "igdeTriggerExpressionComponent.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,17 +42,12 @@
 ////////////////////////////
 
 igdeTriggerExpression::igdeTriggerExpression(){
-	pRootComponent = NULL;
 	pResult = false;
 	pEnabled = true;
 }
 
 igdeTriggerExpression::~igdeTriggerExpression(){
 	UnlinkTriggerTargets();
-	
-	if( pRootComponent ){
-		pRootComponent->FreeReference();
-	}
 }
 
 
@@ -60,58 +55,51 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 // Management
 ///////////////
 
-void igdeTriggerExpression::SetRootComponent( igdeTriggerExpressionComponent *component ){
-	if( component != pRootComponent ){
-		if( pRootComponent ){
-			pRootComponent->FreeReference();
-		}
-		
-		pRootComponent = component;
-		
-		if( component ){
-			component->AddReference();
-		}
+void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
+	if(component == pRootComponent){
+		return;
 	}
 	
+	pRootComponent = component;
 	pResult = false;
 }
 
 bool igdeTriggerExpression::IsEmpty() const{
-	return pRootComponent == NULL;
+	return pRootComponent.IsNull();
 }
 
 bool igdeTriggerExpression::IsNotEmpty() const{
-	return pRootComponent != NULL;
+	return pRootComponent.IsNotNull();
 }
 
-void igdeTriggerExpression::SetResult( bool result ){
+void igdeTriggerExpression::SetResult(bool result){
 	pResult = result;
 }
 
-void igdeTriggerExpression::SetEnabled( bool enabled ){
+void igdeTriggerExpression::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
 
 
-void igdeTriggerExpression::LinkTriggerTargets( igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener ){
-	if( pRootComponent ){
-		pRootComponent->LinkTargets( triggerTable, listener );
+void igdeTriggerExpression::LinkTriggerTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener){
+	if(pRootComponent){
+		pRootComponent->LinkTargets(triggerTable, listener);
 		Evaluate();
 	}
 }
 
 void igdeTriggerExpression::UnlinkTriggerTargets(){
-	if( pRootComponent ){
+	if(pRootComponent){
 		pRootComponent->UnlinkTargets();
 	}
 }
 
 bool igdeTriggerExpression::Evaluate(){
-	if( pEnabled && pRootComponent ){
+	if(pEnabled && pRootComponent){
 		const bool result = pRootComponent->Evaluate();
 		
-		if( result != pResult ){
+		if(result != pResult){
 			pResult = result;
 			return true;
 		}

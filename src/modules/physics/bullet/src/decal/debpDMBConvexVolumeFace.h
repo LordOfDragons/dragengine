@@ -27,8 +27,8 @@
 #define _DEBPDMBCONVEXVOLUMEFACE_H_
 
 // includes
-#include "dragengine/common/math/decConvexVolumeFace.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decConvexVolumeFace.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -39,6 +39,8 @@
  */
 class debpDMBConvexVolumeFace : public decConvexVolumeFace{
 public:
+	using Ref = deTUniqueReference<debpDMBConvexVolumeFace>;
+	
 	bool pDecalFace;
 	
 public:
@@ -46,8 +48,10 @@ public:
 	/*@{*/
 	/** Creates a new decal mesh builder convex volume face. */
 	debpDMBConvexVolumeFace();
+	explicit debpDMBConvexVolumeFace(bool decalFace);
+	
 	/** Cleans up the decal mesh builder convex volume face. */
-	virtual ~debpDMBConvexVolumeFace();
+	~debpDMBConvexVolumeFace() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -55,7 +59,7 @@ public:
 	/** Determines if this face is a decal face. */
 	inline bool GetDecalFace() const{ return pDecalFace; }
 	/** Sets if this face is a decal face. */
-	void SetDecalFace( bool decalFace );
+	void SetDecalFace(bool decalFace);
 	/*@}*/
 };
 

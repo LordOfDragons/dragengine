@@ -36,6 +36,11 @@ class deoglRComponent;
  * Parallel task update render task.
  */
 class deoglRPTSkyLightGIUpdateRT : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoglRPTSkyLightGIUpdateRT>;
+	
+	
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	float pElapsedTime;
@@ -46,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightGIUpdateRT(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTSkyLightGIUpdateRT();
+	~deoglRPTSkyLightGIUpdateRT() override;
 	/*@}*/
 	
 	
@@ -57,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Information for updating render task. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
@@ -77,7 +82,7 @@ public:
 private:
 	void pUpdateStaticRT();
 	void pUpdateDynamicRT();
-	bool pIsComponentStatic( const deoglRComponent &component ) const;
+	bool pIsComponentStatic(const deoglRComponent &component) const;
 };
 
 #endif

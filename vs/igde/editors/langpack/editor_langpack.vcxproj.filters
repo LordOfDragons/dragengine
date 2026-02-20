@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -37,9 +37,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMainListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,10 +49,10 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistoryListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntryList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntrySelection.cpp">
@@ -109,91 +106,88 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfiguration.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfigurationXML.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPack.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPackListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMain.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMainListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPack.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPackListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistory.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistoryListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntryList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntrySelection.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPack.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackBuilder.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpackditor.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveLangPack.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveSystem.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\lpeIGDEModule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryAdd.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryRemove.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetName.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetText.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetDescription.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetIdentifier.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetMissingText.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetName.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

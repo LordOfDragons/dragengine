@@ -47,9 +47,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	deoglLightGatherOcclusionMeshes( deoglRLight &light );
+	deoglLightGatherOcclusionMeshes(deoglRLight &light);
 	/** Cleans up the visitor. */
-	virtual ~deoglLightGatherOcclusionMeshes();
+	~deoglLightGatherOcclusionMeshes() override;
 	/*@}*/
 	
 	/** \name Visiting */
@@ -62,10 +62,10 @@ public:
 	void Reset();
 	
 	/** Visits an octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Add occlusion mesh to triangle sorter. */
-	void AddOcclusionMesh( deoglRComponent &component );
+	void AddOcclusionMesh(deoglRComponent &component);
 	/*@}*/
 };
 

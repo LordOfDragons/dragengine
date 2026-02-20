@@ -28,8 +28,8 @@
 #include "../ceWPTTIMAction.h"
 #include "../../../../../conversation/action/ceCAWait.h"
 
-class ceWPTTIMAWaitCondition;
-class ceWPTTIMAWaitActions;
+#include "ceWPTTIMAWaitCondition.h"
+#include "ceWPTTIMAWaitActions.h"
 
 
 /**
@@ -37,20 +37,21 @@ class ceWPTTIMAWaitActions;
  */
 class ceWPTTIMAWait : public ceWPTTIMAction{
 private:
-	ceWPTTIMAWaitCondition *pCondition;
-	ceWPTTIMAWaitActions *pActions;
+	ceWPTTIMAWaitCondition::Ref pCondition;
+	ceWPTTIMAWaitActions::Ref pActions;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPTTIMAWait>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAWait( ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action );
+	ceWPTTIMAWait(ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAWait();
+	~ceWPTTIMAWait() override;
 	/*@}*/
 	
 	
@@ -59,22 +60,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAWait *GetActionWait() const{ return ( ceCAWait* )GetAction(); }
+	inline ceCAWait *GetActionWait() const{ return GetAction().DynamicCast<ceCAWait>(); }
 	
 	/** \brief Model with condition. */
-	inline ceWPTTIMAWaitCondition *GetChildCondition() const{ return pCondition; }
+	inline const ceWPTTIMAWaitCondition::Ref &GetChildCondition() const{ return pCondition; }
 	
 	/** \brief Model with actions. */
-	inline ceWPTTIMAWaitActions *GetChildActions() const{ return pActions; }
+	inline const ceWPTTIMAWaitActions::Ref &GetChildActions() const{ return pActions; }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update action lists if present. */
-	virtual void UpdateActionLists();
+	void UpdateActionLists() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

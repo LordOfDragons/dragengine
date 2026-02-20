@@ -41,34 +41,25 @@
 ////////////////////////////
 
 gdeURemoveSkin::gdeURemoveSkin(
-gdeGameDefinition *gameDefinition, gdeSkin *skin ) :
-pGameDefinition( NULL ),
-pSkin( NULL )
+gdeGameDefinition *gameDefinition, gdeSkin *skin) :
+
+pSkin(nullptr)
 {
-	if( ! gameDefinition || ! skin ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition || !skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! gameDefinition->GetSkins().Has( skin ) ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition->GetSkins().Has(skin)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove skin" );
+	SetShortInfo("@GameDefinition.Undo.RemoveSkin");
 	
 	pSkin = skin;
-	skin->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveSkin::~gdeURemoveSkin(){
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -77,9 +68,9 @@ gdeURemoveSkin::~gdeURemoveSkin(){
 ///////////////
 
 void gdeURemoveSkin::Undo(){
-	pGameDefinition->AddSkin( pSkin );
+	pGameDefinition->AddSkin(pSkin);
 }
 
 void gdeURemoveSkin::Redo(){
-	pGameDefinition->RemoveSkin( pSkin );
+	pGameDefinition->RemoveSkin(pSkin);
 }

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationSpace;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class navspace set snap angle.
  */
 class gdeUOCNavSpaceSetSnapAngle : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetSnapAngle>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetSnapAngle( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, float newValue );
+	gdeUOCNavSpaceSetSnapAngle(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavSpaceSetSnapAngle();
+	~gdeUOCNavSpaceSetSnapAngle() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -34,15 +34,16 @@
  */
 class ceWPTTIMAStopConversation : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAStopConversation>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAStopConversation( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAStopConversation *action );
+	ceWPTTIMAStopConversation(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAStopConversation *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAStopConversation();
+	~ceWPTTIMAStopConversation() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAStopConversation *GetActionStopConversation() const{ return ( ceCAStopConversation* )GetAction(); }
+	inline ceCAStopConversation *GetActionStopConversation() const{ return (ceCAStopConversation*)GetAction().Pointer(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

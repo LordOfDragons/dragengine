@@ -22,12 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "meObject.h"
-#include "meObjectList.h"
 #include "meObjectSelection.h"
 #include "../meWorld.h"
 
@@ -42,7 +36,6 @@
 ////////////////////////////
 
 meObjectSelection::meObjectSelection(){
-	pActive = NULL;
 }
 
 meObjectSelection::~meObjectSelection(){
@@ -54,71 +47,72 @@ meObjectSelection::~meObjectSelection(){
 // Management
 ///////////////
 
-void meObjectSelection::Add( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+void meObjectSelection::Add(meObject *object){
+	DEASSERT_NOTNULL(object)
+	
+	if(!pSelection.Add(object)){
+		return;
 	}
 	
-	object->SetSelected( true );
-	pSelection.AddIfAbsent( object );
+	object->SetSelected(true);
+	
+	if(!pActive){
+		SetActive(object);
+	}
 }
 
-void meObjectSelection::Remove( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+void meObjectSelection::Remove(meObject *object){
+	const meObject::Ref guard(object);
+	if(!pSelection.Remove(object)){
+		return;
 	}
 	
-	object->SetSelected( false );
-	pSelection.RemoveIfPresent( object );
+	object->SetSelected(false);
+	
+	if(object == pActive){
+		ActivateNext();
+	}
 }
 
 void meObjectSelection::RemoveAll(){
-	const int count = pSelection.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
-	}
-	
+	pSelection.Visit([](meObject &o){
+		o.SetSelected(false);
+	});
 	pSelection.RemoveAll();
 }
 
 
 
 bool meObjectSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive.IsNotNull();
 }
 
-void meObjectSelection::SetActive( meObject *object ){
-	if( pActive ){
-		pActive->SetActive( false );
-		pActive->FreeReference();
+void meObjectSelection::SetActive(meObject *object){
+	if(pActive){
+		pActive->SetActive(false);
 	}
 	
 	pActive = object;
 	
-	if( object ){
-		object->AddReference();
-		object->SetActive( true );
+	if(object){
+		object->SetActive(true);
 	}
 }
 
 void meObjectSelection::ActivateNext(){
-	const int count = pSelection.GetCount();
-	meObject *next = NULL;
-	int i;
+	meObject *next = nullptr;
 	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
+	for(const auto &o : pSelection){
+		if(o != pActive){
+			next = o;
 			break;
 		}
 	}
 	
-	SetActive( next );
+	SetActive(next);
 }
 
 void meObjectSelection::Reset(){
 	RemoveAll();
-	SetActive( NULL );
+	SetActive(nullptr);
 }

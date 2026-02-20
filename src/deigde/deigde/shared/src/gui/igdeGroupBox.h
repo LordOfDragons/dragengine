@@ -35,6 +35,10 @@
  */
 class DE_DLL_EXPORT igdeGroupBox : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGroupBox>;
+	
+	
 	/** \brief Title alignment. */
 	enum eTitleAlignment{
 		/** \brief Left alignment. */
@@ -47,6 +51,14 @@ public:
 		etaCenter
 	};
 	
+	class cNativeGroupBox{
+	public:
+		virtual ~cNativeGroupBox() = default;
+		virtual void UpdateCollapsed() = 0;
+		virtual void UpdateTitle() = 0;
+		virtual void UpdateTitleAlignment() = 0;
+		virtual void UpdateStretchLast() = 0;
+	};
 	
 	
 private:
@@ -58,25 +70,28 @@ private:
 	bool pStretchLast;
 	
 	
+protected:
+	cNativeGroupBox *pNativeGroupBox;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create groupbox. */
-	igdeGroupBox( igdeEnvironment &environment, const char *title,
-		eTitleAlignment titleAlignment = etaLeft );
+	igdeGroupBox(igdeEnvironment &environment, const char *title,
+		eTitleAlignment titleAlignment = etaLeft);
 	
 	/** \brief Create groupbox. */
-	igdeGroupBox( igdeEnvironment &environment, const char *title, const char *description,
-		eTitleAlignment titleAlignment = etaLeft );
+	igdeGroupBox(igdeEnvironment &environment, const char *title, const char *description,
+		eTitleAlignment titleAlignment = etaLeft);
 	
 	/** \brief Create groupbox. */
-	igdeGroupBox( igdeEnvironment &environment, const char *title, bool collapsed,
-		eTitleAlignment titleAlignment = etaLeft );
+	igdeGroupBox(igdeEnvironment &environment, const char *title, bool collapsed,
+		eTitleAlignment titleAlignment = etaLeft);
 	
 	/** \brief Create groupbox. */
-	igdeGroupBox( igdeEnvironment &environment, const char *title, const char *description,
-		bool collapsed, eTitleAlignment titleAlignment = etaLeft );
+	igdeGroupBox(igdeEnvironment &environment, const char *title, const char *description,
+		bool collapsed, eTitleAlignment titleAlignment = etaLeft);
 	
 	
 	
@@ -87,7 +102,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGroupBox();
+	~igdeGroupBox() override;
 	/*@}*/
 	
 	
@@ -99,45 +114,45 @@ public:
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Title alignment. */
 	inline eTitleAlignment GetTitleAlignment() const{ return pTitleAlignment; }
 	
 	/** \brief Set title alignment. */
-	void SetTitleAlignment( eTitleAlignment alignment );
+	void SetTitleAlignment(eTitleAlignment alignment);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Group box can be collapsed by clicking on the title. */
 	inline bool GetCanCollapse() const{ return pCanCollapse; }
 	
 	/** \brief Set if group box can be collapsed by clicking on the title. */
-	void SetCanCollapse( bool canCollapse );
+	void SetCanCollapse(bool canCollapse);
 	
 	/** \brief Group box is collapsed. */
 	inline bool GetCollapsed() const{ return pCollapsed; }
 	
 	/** \brief Set if group box is collapsed. */
-	void SetCollapsed( bool collapsed );
+	void SetCollapsed(bool collapsed);
 	
 	/** \brief Stretch last widget. */
 	inline bool GetStretchLast() const{ return pStretchLast; }
 	
 	/** \brief Set stretch last widget. */
-	void SetStretchLast( bool stretchLast );
+	void SetStretchLast(bool stretchLast);
 	
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	void RemoveChild(igdeWidget *child) override;
 	/*@}*/
 	
 	
@@ -151,14 +166,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -179,6 +199,9 @@ protected:
 	
 	/** \brief Stretch last changed. */
 	virtual void OnStretchLastChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

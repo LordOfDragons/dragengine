@@ -25,16 +25,16 @@
 #ifndef _GDEWPTAGLIST_H_
 #define _GDEWPTAGLIST_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/string/decStringSet.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;
-class igdeUndo;
-
-class decStringSet;
 
 
 /**
@@ -43,16 +43,20 @@ class decStringSet;
  * Subclass to implement creating undo actions.
  */
 class gdeWPTagList : public igdeContainerFlow{
+public:
+	/** \brief Strong reference. */
+	using Ref = deTObjectReference<gdeWPTagList>;
+	
 private:
-	igdeComboBoxFilterReference pComboBox;
-	igdeListBoxReference pListBox;
+	igdeComboBoxFilter::Ref pComboBox;
+	igdeListBox::Ref pListBox;
 	
 	const decStringSet *pTagList;
 	igdeUndoSystem *pUndoSystem;
 	
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionClear;
 	
 	
 	
@@ -60,11 +64,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPTagList( igdeUIHelper &helper, int rows, const char *description );
+	gdeWPTagList(igdeUIHelper &helper, int rows, const char *description);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeWPTagList();
+	~gdeWPTagList() override;
 	/*@}*/
 	
 	
@@ -76,13 +80,13 @@ public:
 	inline const decStringSet *GetTagList() const{ return pTagList; }
 	
 	/** \brief Set tag list to edit. */
-	void SetTagList( const decStringSet *tagList );
+	void SetTagList(const decStringSet *tagList);
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -93,34 +97,34 @@ public:
 	void UpdateList();
 	
 	/** \brief Select tag. */
-	void SelectTag( const decString &tag );
+	void SelectTag(const decString &tag);
 	
 	/** \brief Update used tag list in the combo box. */
-	void UpdateUsedTagList( const decStringSet &usedTags );
+	void UpdateUsedTagList(const decStringSet &usedTags);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringSet &tags ) = 0;
+	virtual igdeUndo::Ref UndoSet(const decStringSet &tags) = 0;
 	/*@}*/
 	
 	
 	
 protected:
 	/** \brief Combo box. */
-	inline igdeComboBoxFilter *GetComboBox() const{ return pComboBox; }
+	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 };
 
 #endif

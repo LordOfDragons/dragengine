@@ -45,17 +45,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasImage::deoglCanvasImage( deGraphicOpenGl &ogl, deCanvasImage &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasImage( canvas ),
-pRCanvasImage( NULL ),
-pImage( NULL ),
-pDirty( true ){
+deoglCanvasImage::deoglCanvasImage(deGraphicOpenGl &ogl, deCanvasImage &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasImage(canvas),
+pImage(nullptr),
+pDirty(true){
 }
 
 deoglCanvasImage::~deoglCanvasImage(){
-	if( pImage ){
-		pImage->GetNotifyCanvas().Remove( this );
+	if(pImage){
+		pImage->GetNotifyCanvas().Remove(this);
 	}
 }
 
@@ -65,35 +64,35 @@ deoglCanvasImage::~deoglCanvasImage(){
 ///////////////
 
 void deoglCanvasImage::DropRCanvas(){
-	pRCanvasImage = NULL;
+	pRCanvasImage = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
 void deoglCanvasImage::SyncContentToRender(){
-	if( pImage ){
+	if(pImage){
 		pImage->SyncToRender();
 	}
 	
-	if( pDirty ){
+	if(pDirty){
 		pDirty = false;
 		
-		decVector2 halfPixel( 0.0f, 0.0f );
+		decVector2 halfPixel(0.0f, 0.0f);
 		
-		if( pImage ){
+		if(pImage){
 			deoglRImage * const rimage = pImage->GetRImage();
-			pRCanvasImage->SetImage( rimage );
-			halfPixel.x = 0.5f / ( float )rimage->GetWidth();
-			halfPixel.y = 0.5f / ( float )rimage->GetHeight();
+			pRCanvasImage->SetImage(rimage);
+			halfPixel.x = 0.5f / (float)rimage->GetWidth();
+			halfPixel.y = 0.5f / (float)rimage->GetHeight();
 			
 		}else{
-			pRCanvasImage->SetImage( NULL );
+			pRCanvasImage->SetImage(nullptr);
 		}
 		
-		const float repeatScaleU = ( float )pCanvasImage.GetRepeatX();
-		const float repeatScaleV = ( float )pCanvasImage.GetRepeatY();
-		pRCanvasImage->SetTCTransform( decTexMatrix2::CreateScale( repeatScaleU, repeatScaleV ) );
-		pRCanvasImage->SetTCClampMinimum( halfPixel );
-		pRCanvasImage->SetTCClampMaximum( decVector2( repeatScaleU, repeatScaleV ) - halfPixel );
+		const float repeatScaleU = (float)pCanvasImage.GetRepeatX();
+		const float repeatScaleV = (float)pCanvasImage.GetRepeatY();
+		pRCanvasImage->SetTCTransform(decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV));
+		pRCanvasImage->SetTCClampMinimum(halfPixel);
+		pRCanvasImage->SetTCClampMaximum(decVector2(repeatScaleU, repeatScaleV) - halfPixel);
 	}
 }
 
@@ -102,7 +101,7 @@ void deoglCanvasImage::ImageRequiresSync(){
 }
 
 void deoglCanvasImage::DropImage(){
-	pImage = NULL;
+	pImage = nullptr;
 }
 
 
@@ -110,18 +109,18 @@ void deoglCanvasImage::DropImage(){
 void deoglCanvasImage::ContentChanged(){
 	deoglCanvas::ContentChanged();
 	
-	if( pImage ){
-		pImage->GetNotifyCanvas().Remove( this );
+	if(pImage){
+		pImage->GetNotifyCanvas().Remove(this);
 	}
 	
-	if( pCanvasImage.GetImage() ){
-		pImage = ( deoglImage* )pCanvasImage.GetImage()->GetPeerGraphic();
-		if( pImage ){
-			pImage->GetNotifyCanvas().Add( this );
+	if(pCanvasImage.GetImage()){
+		pImage = (deoglImage*)pCanvasImage.GetImage()->GetPeerGraphic();
+		if(pImage){
+			pImage->GetNotifyCanvas().Add(this);
 		}
 		
 	}else{
-		pImage = NULL;
+		pImage = nullptr;
 	}
 	
 	pDirty = true;
@@ -133,6 +132,6 @@ void deoglCanvasImage::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasImage::CreateRCanvas(){
-	pRCanvasImage = new deoglRCanvasImage( GetOgl().GetRenderThread() );
+	pRCanvasImage = deoglRCanvasImage::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasImage;
 }

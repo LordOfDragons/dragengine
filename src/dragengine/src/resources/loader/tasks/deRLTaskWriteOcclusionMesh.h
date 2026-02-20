@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEOCCLUSIONMESH_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../occlusionmesh/deOcclusionMeshReference.h"
+#include "../../occlusionmesh/deOcclusionMesh.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteOcclusionMesh : public deResourceLoaderTask {
 private:
-	deOcclusionMeshReference pOcclusionMesh;
+	deOcclusionMesh::Ref pOcclusionMesh;
 	bool pSucceeded;
 	
 	
@@ -43,11 +43,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskWriteOcclusionMesh( deEngine &engine, deResourceLoader &resourceLoader,
-		deOcclusionMesh *occlusionMesh, deVirtualFileSystem *vfs, const char *path );
+	deRLTaskWriteOcclusionMesh(deEngine &engine, deResourceLoader &resourceLoader,
+		deOcclusionMesh *occlusionMesh, deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskWriteOcclusionMesh();
+	~deRLTaskWriteOcclusionMesh() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

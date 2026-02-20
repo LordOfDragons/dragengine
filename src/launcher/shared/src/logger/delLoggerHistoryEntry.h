@@ -63,7 +63,7 @@ public:
 	delLoggerHistoryEntry();
 	
 	/** \brief Create copy of logger history entry. */
-	delLoggerHistoryEntry( const delLoggerHistoryEntry &entry );
+	delLoggerHistoryEntry(const delLoggerHistoryEntry &entry);
 	
 	/** \brief Clean up logger history entry. */
 	virtual ~delLoggerHistoryEntry();
@@ -77,25 +77,25 @@ public:
 	inline const decDateTime &GetTimeStamp() const{ return pTimeStamp; }
 	
 	/** \brief Set time stamp. */
-	void SetTimeStamp( const decDateTime &timestamp );
+	void SetTimeStamp(const decDateTime &timestamp);
 	
 	/** \brief Type. */
 	inline eMessageTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( eMessageTypes type );
+	void SetType(eMessageTypes type);
 	
 	/** \brief Source. */
 	inline const decString &GetSource() const{ return pSource; }
 	
 	/** \brief Set source. */
-	void SetSource( const decString &source );
+	void SetSource(const decString &source);
 	
 	/** \brief Message. */
 	inline const decString &GetMessage() const{ return pMessage; }
 	
 	/** \brief Set message. */
-	void SetMessage( const decString &message );
+	void SetMessage(const decString &message);
 	
 	/** \brief Clear entry. */
 	void Clear();
@@ -109,7 +109,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy entry. */
-	delLoggerHistoryEntry &operator=( const delLoggerHistoryEntry &entry );
+	delLoggerHistoryEntry &operator=(const delLoggerHistoryEntry &entry);
 	/*@}*/
 };
 

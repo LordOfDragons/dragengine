@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglRenderableColorTexture.h"
 #include "deoglRenderableColorTextureManager.h"
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -40,21 +37,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableColorTextureManager::deoglRenderableColorTextureManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pTextures( NULL ),
-pTextureCount( 0 ),
-pTextureSize( 0 ){
+deoglRenderableColorTextureManager::deoglRenderableColorTextureManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglRenderableColorTextureManager::~deoglRenderableColorTextureManager(){
-	if( pTextures ){
-		while( pTextureCount > 0 ){
-			pTextureCount--;
-			delete pTextures[ pTextureCount ];
-		}
-		delete [] pTextures;
-	}
 }
 
 
@@ -62,48 +49,24 @@ deoglRenderableColorTextureManager::~deoglRenderableColorTextureManager(){
 // Management
 ///////////////
 
-const deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pTextures[ index ];
+const deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureAt(int index) const{
+	return pTextures.GetAt(index);
 }
 
-deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith( int width, int height, int componentCount, bool isFloat ){
-	deoglRenderableColorTexture *texture = NULL;
-	int i;
-	
+deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith(int width, int height, int componentCount, bool isFloat){
 	// find the texture with the matching format
-	for( i=0; i<pTextureCount; i++ ){
-		if( ! pTextures[ i ]->GetInUse() && pTextures[ i ]->Matches( width, height, componentCount, isFloat ) ){
-			texture = pTextures[ i ];
-			break;
-		}
+	auto found = pTextures.FindOrNull([&](const deoglRenderableColorTexture &t){
+		return !t.GetInUse() && t.Matches(width, height, componentCount, isFloat);
+	});
+	if(found){
+		found->SetInUse(true);
+		return found;
 	}
 	
 	// if not found create a new one
-	if( ! texture ){
-		if( pTextureCount == pTextureSize ){
-			int newSize = pTextureSize * 3 / 2 + 1;
-			deoglRenderableColorTexture **newArray = new deoglRenderableColorTexture*[ newSize ];
-			
-			if( pTextures ){
-				memcpy( newArray, pTextures, sizeof( deoglRenderableColorTexture* ) * pTextureSize );
-				delete [] pTextures;
-			}
-			
-			pTextures = newArray;
-			pTextureSize = newSize;
-		}
-		
-		texture = new deoglRenderableColorTexture( pRenderThread, width, height, componentCount, isFloat );
-		
-		pTextures[ pTextureCount ] = texture;
-		pTextureCount++;
-	}
-	
-	// mark the texture in use and return it
-	texture->SetInUse( true );
-	return texture;
+	auto texture = deTUniqueReference<deoglRenderableColorTexture>::New(
+		pRenderThread, width, height, componentCount, isFloat);
+	texture->SetInUse(true);
+	pTextures.Add(std::move(texture));
+	return pTextures.Last();
 }

@@ -25,10 +25,9 @@
 #ifndef _DECCONVEXVOLUME_H_
 #define _DECCONVEXVOLUME_H_
 
+#include "decConvexVolumeFace.h"
 #include "decMath.h"
-
-// definitions
-class decConvexVolumeFace;
+#include "../collection/decTUniqueList.h"
 
 
 /**
@@ -39,47 +38,56 @@ class decConvexVolumeFace;
  * up using planes.
  */
 class DE_DLL_EXPORT decConvexVolume{
-private:
-	decVector *pVertices;
-	int pVertexCount;
-	int pVertexSize;
-	decConvexVolumeFace **pFaces;
-	int pFaceCount;
-	int pFaceSize;
+public:
+	/** \brief Unique reference. */
+	using Ref = deTUniqueReference<decConvexVolume>;
 	
+	/** \brief List of vertices. */
+	using VertexList = decTList<decVector>;
+	
+	/** \brief List of faces. */
+	using FaceList = decTUniqueList<decConvexVolumeFace>;
+	
+	
+private:
+	VertexList pVertices;
+	FaceList pFaces;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates an empty convex volume. */
-	decConvexVolume();
+	decConvexVolume() = default;
 	
 	/** \brief Clean up convex volume. */
-	virtual ~decConvexVolume();
+	virtual ~decConvexVolume() = default;
 	/*@}*/
 	
 	
 	
 	/** \name Vertex Management */
 	/*@{*/
+	/** \brief Vertices. */
+	inline const VertexList &GetVertices() const{ return pVertices; }
+	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Vertex at the given position. */
-	const decVector &GetVertexAt( int position ) const;
+	const decVector &GetVertexAt(int position) const;
 	
 	/** \brief Given vertex exists. */
-	bool HasVertex( const decVector &vertex ) const;
+	bool HasVertex(const decVector &vertex) const;
 	
 	/** \brief Index of the given vertex or -1 if not found. */
-	int IndexOfVertex( const decVector &vertex ) const;
+	int IndexOfVertex(const decVector &vertex) const;
 	
 	/** \brief Adds a vertex. */
-	void AddVertex( const decVector &vertex );
+	void AddVertex(const decVector &vertex);
 	
 	/** \brief Removes the given vertex. */
-	void RemoveVertex( int index );
+	void RemoveVertex(int index);
 	
 	/** \brief Removes all vertices. */
 	void RemoveAllVertices();
@@ -89,23 +97,26 @@ public:
 	
 	/** \name Face Management */
 	/*@{*/
+	/** \brief Faces. */
+	inline const FaceList &GetFaces() const{ return pFaces; }
+	
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	
 	/** \brief Face at the given index. */
-	decConvexVolumeFace *GetFaceAt( int index ) const;
+	const decConvexVolumeFace::Ref &GetFaceAt(int index) const;
 	
 	/** \brief Given face exists. */
-	bool HasFace( decConvexVolumeFace *face ) const;
+	bool HasFace(decConvexVolumeFace *face) const;
 	
 	/** \brief Index of the given face or -1 if not found. */
-	int IndexOfFace( decConvexVolumeFace *face ) const;
+	int IndexOfFace(decConvexVolumeFace *face) const;
 	
 	/** \brief Adds a convex face. */
-	void AddFace( decConvexVolumeFace *face );
+	void AddFace(decConvexVolumeFace::Ref &&face);
 	
 	/** \brief Removes the given face. */
-	void RemoveFace( decConvexVolumeFace *face );
+	void RemoveFace(decConvexVolumeFace *face);
 	
 	/** \brief Removes all faces. */
 	void RemoveAllFaces();
@@ -119,10 +130,10 @@ public:
 	void SetEmpty();
 	
 	/** \brief Set volume to a cube with the given dimensions. */
-	void SetToCube( const decVector &halfSize );
+	void SetToCube(const decVector &halfSize);
 	
 	/** \brief Moves the volume by the given amount. */
-	void Move( const decVector &direction );
+	void Move(const decVector &direction);
 	/*@}*/
 };
 

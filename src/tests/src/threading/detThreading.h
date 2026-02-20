@@ -22,19 +22,19 @@ public:
 	bool testCondition;
 	deMutex *mutex1;
 	deSemaphore *semaphore1;
-	deThread *threads[ DETT_THREAD_COUNT ];
+	deThread *threads[DETT_THREAD_COUNT];
 	
 public:
 	detThreading();
-	~detThreading();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detThreading() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestThread();
-	void Sleep( float seconds );
+	void Sleep(float seconds);
 };
 
 // end of include only once

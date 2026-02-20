@@ -26,27 +26,30 @@
 #define _DESYNSYNTHESIZERSOURCE_H_
 
 #include "../desynSynthesizerTarget.h"
+#include "../effect/desynSynthesizerEffect.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
 
 class deDESynthesizer;
 class desynSynthesizer;
 class desynSynthesizerInstance;
-class desynSynthesizerEffect;
 
 
 
 /**
- * \brief Synthesizer source.
+ * Synthesizer source.
  */
 class desynSynthesizerSource{
 public:
-	/** \brief Generate buffer mono. */
+	using Ref = deTUniqueReference<desynSynthesizerSource>;
+	
+	/** Generate buffer mono. */
 	struct sGenerateBufferMono{
 		float value;
 	};
 	
-	/** \brief Generate buffer stereo. */
+	/** Generate buffer stereo. */
 	struct sGenerateBufferStereo{
 		float left;
 		float right;
@@ -74,8 +77,7 @@ private:
 	desynSynthesizerTarget pTargetVolume;
 	desynSynthesizerTarget pTargetPanning;
 	
-	desynSynthesizerEffect **pEffects;
-	int pEffectCount;
+	decTUniqueList<desynSynthesizerEffect> pEffects;
 	desynSynthesizerEffect *pApplyEffect;
 	
 	
@@ -83,114 +85,114 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create synthesizer source. */
-	desynSynthesizerSource( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSource &source );
+	/** Create synthesizer source. */
+	desynSynthesizerSource(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSource &source);
 	
-	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSource();
+	/** Clean up synthesizer source. */
+	virtual ~desynSynthesizerSource() = default;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenAL module. */
+	/** OpenAL module. */
 	deDESynthesizer &GetModule() const;
 	
-	/** \brief Parent synthesizer. */
+	/** Parent synthesizer. */
 	inline const desynSynthesizer &GetSynthesizer() const{ return pSynthesizer; }
 	
 	
 	
-	/** \brief Source is silent. */
+	/** Source is silent. */
 	inline bool GetSilent() const{ return pSilent; }
 	
-	/** \brief Set if source is silent. */
-	void SetSilent( bool silent );
+	/** Set if source is silent. */
+	void SetSilent(bool silent);
 	
-	/** \brief Offset in bytes to state data in synthesizer instances. */
+	/** Offset in bytes to state data in synthesizer instances. */
 	inline int GetStateDataOffset() const{ return pStateDataOffset; }
 	
-	/** \brief Set offset in bytes to state data in synthesizer instances. */
-	void SetStateDataOffset( int offset );
+	/** Set offset in bytes to state data in synthesizer instances. */
+	void SetStateDataOffset(int offset);
 	
 	
 	
-	/** \brief Mix mode. */
+	/** Mix mode. */
 	inline deSynthesizerSource::eMixModes GetMixMode() const{ return pMixMode; }
 	
 	
 	
-	/** \brief Blend factor target. */
+	/** Blend factor target. */
 	inline desynSynthesizerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
 	inline const desynSynthesizerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
-	/** \brief Volume target. */
+	/** Volume target. */
 	inline desynSynthesizerTarget &GetTargetVolume(){ return pTargetVolume; }
 	inline const desynSynthesizerTarget &GetTargetVolume() const{ return pTargetVolume; }
 	
-	/** \brief Panning target. */
+	/** Panning target. */
 	inline desynSynthesizerTarget &GetTargetPanning(){ return pTargetPanning; }
 	inline const desynSynthesizerTarget &GetTargetPanning() const{ return pTargetPanning; }
 	
 	
 	
-	/** \brief Nearest curve evaluate position. */
-	inline int NearestCurveEvalPosition( int indexSample, float curveOffset, float curveFactor ) const{
-		return ( int )( curveOffset + curveFactor * ( float )indexSample );
+	/** Nearest curve evaluate position. */
+	inline int NearestCurveEvalPosition(int indexSample, float curveOffset, float curveFactor) const{
+		return (int)(curveOffset + curveFactor * (float)indexSample);
 	}
 	
-	/** \brief Blend factor. */
-	float GetBlendFactor( const desynSynthesizerInstance &instance, int sample ) const;
+	/** Blend factor. */
+	float GetBlendFactor(const desynSynthesizerInstance &instance, int sample) const;
 	
-	/** \brief Current volume. */
-	float GetVolume( const desynSynthesizerInstance &instance, int sample ) const;
+	/** Current volume. */
+	float GetVolume(const desynSynthesizerInstance &instance, int sample) const;
 	
-	/** \brief Current panning. */
-	float GetPanning( const desynSynthesizerInstance &instance, int sample ) const;
+	/** Current panning. */
+	float GetPanning(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
 	/**
-	 * \brief State data size.
+	 * State data size.
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	int StateDataSize( int offset );
+	int StateDataSize(int offset);
 	
 	/**
-	 * \brief State data size of the source itself.
+	 * State data size of the source itself.
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	virtual int StateDataSizeSource(int offset);
 	
-	/** \brief Init state data. */
-	void InitStateData( char *stateData );
+	/** Init state data. */
+	void InitStateData(char *stateData);
 	
-	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	/** Init state data of source itself. */
+	virtual void InitStateDataSource(char *stateData);
 	
-	/** \brief Clean up state data. */
-	void CleanUpStateData( char *stateData );
+	/** Clean up state data. */
+	void CleanUpStateData(char *stateData);
 	
-	/** \brief Clean up state data of source itself. */
-	virtual void CleanUpStateDataSource( char *stateData );
+	/** Clean up state data of source itself. */
+	virtual void CleanUpStateDataSource(char *stateData);
 	
 	
 	
 	/**
-	 * \brief Generate sound, applies effects and applies the result to the existing sound.
+	 * Generate sound, applies effects and applies the result to the existing sound.
 	 * \param[in,out] stateData State at start of buffer. Update with state at start of next buffer.
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
-	 * \brief Generate sound using source.
+	 * Generate sound using source.
 	 * \details Actual sound generation implementation of the source. Used to split general sound
 	 *          processing of the source from the actual source specific sound generation and
 	 *          allow effect processing.
@@ -198,63 +200,62 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor ) = 0;
+	virtual void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) = 0;
 	
-	/** \brief Generate silence. */
-	void GenerateSilence( const desynSynthesizerInstance &instance, float *buffer, int samples );
+	/** Generate silence. */
+	void GenerateSilence(const desynSynthesizerInstance &instance, float *buffer, int samples);
 	
-	/** \brief Generate silence. */
-	void GenerateSilence( const desynSynthesizerInstance &instance, float *buffer, int offset, int samples );
+	/** Generate silence. */
+	void GenerateSilence(const desynSynthesizerInstance &instance, float *buffer, int offset, int samples);
 	
-	/** \brief Apply silence. */
-	void ApplySilence( const desynSynthesizerInstance &instance, float *buffer,
-		int samples, float curveOffset, float curveFactor );
+	/** Apply silence. */
+	void ApplySilence(const desynSynthesizerInstance &instance, float *buffer,
+		int samples, float curveOffset, float curveFactor);
 	
-	/** \brief Apply generated sound to the output buffer using mixing and volume. */
-	void ApplyGeneratedSound( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	/** Apply generated sound to the output buffer using mixing and volume. */
+	void ApplyGeneratedSound(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
-	/** \brief Apply generated mono sound to the output buffer using add mixing and volume. */
-	void ApplyGeneratedSoundMonoAdd( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	/** Apply generated mono sound to the output buffer using add mixing and volume. */
+	void ApplyGeneratedSoundMonoAdd(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
-	/** \brief Apply generated mono sound to the output buffer using blend mixing and volume. */
-	void ApplyGeneratedSoundMonoBlend( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	/** Apply generated mono sound to the output buffer using blend mixing and volume. */
+	void ApplyGeneratedSoundMonoBlend(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
-	/** \brief Apply generated stereo sound to the output buffer using add mixing and volume. */
-	void ApplyGeneratedSoundStereoAdd( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	/** Apply generated stereo sound to the output buffer using add mixing and volume. */
+	void ApplyGeneratedSoundStereoAdd(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
-	/** \brief Apply generated stereo sound to the output buffer using blend mixing and volume. */
-	void ApplyGeneratedSoundStereoBlend( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	/** Apply generated stereo sound to the output buffer using blend mixing and volume. */
+	void ApplyGeneratedSoundStereoBlend(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
-	 * \brief Skip sound.
+	 * Skip sound.
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	void SkipSound( const desynSynthesizerInstance &instance, char *stateData,
+	void SkipSound(const desynSynthesizerInstance &instance, char *stateData,
 		int samples, float curveOffset, float curveFactor);
 	
 	/**
-	 * \brief Skip sound.
+	 * Skip sound.
 	 * \details Actual skip implementation of the source. Used to split general skip processing of
 	 *          source from the actual source specific skip processing and allow effect processing.
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor ) = 0;
+	virtual void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) = 0;
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateEffects( desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSource &source );
-	void pFreeEffects();
+	void pCreateEffects(desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSource &source);
 };
 
 #endif

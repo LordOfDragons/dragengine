@@ -25,9 +25,14 @@
 #ifndef _PEEWINDOWPROPERTIES_H_
 #define _PEEWINDOWPROPERTIES_H_
 
+#include "peeWPType.h"
+#include "peeWPController.h"
+#include "peeWPView.h"
+#include "peeWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class peeWindowMain;
 class peeEmitter;
@@ -38,13 +43,17 @@ class peeEmitter;
  * \brief Properties Panel.
  */
 class peeWindowProperties : public igdeTabBook{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWindowProperties>;
+	
 private:
 	peeWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelType;
-	igdeWidgetReference pPanelController;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	peeWPType::Ref pPanelType;
+	peeWPController::Ref pPanelController;
+	peeWPView::Ref pPanelView;
+	peeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -52,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	peeWindowProperties( peeWindowMain &windowMain );
+	peeWindowProperties(peeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up the window. */
-	virtual ~peeWindowProperties();
+	~peeWindowProperties() override;
 	/*@}*/
 	
 	
@@ -68,7 +77,7 @@ public:
 	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Emitter path changed. */
 	void OnEmitterPathChanged();

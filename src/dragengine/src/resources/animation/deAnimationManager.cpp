@@ -47,9 +47,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimationManager::deAnimationManager( deEngine *engine ) :
-deFileResourceManager( engine, ertAnimation ){
-	SetLoggingName( "animation" );
+deAnimationManager::deAnimationManager(deEngine *engine) :
+deFileResourceManager(engine, ertAnimation){
+	SetLoggingName("animation");
 }
 
 deAnimationManager::~deAnimationManager(){
@@ -66,163 +66,146 @@ int deAnimationManager::GetAnimationCount() const{
 }
 
 deAnimation *deAnimationManager::GetRootAnimation() const{
-	return ( deAnimation* )pAnimations.GetRoot();
+	return (deAnimation*)pAnimations.GetRoot();
 }
 
-deAnimation * deAnimationManager::GetAnimationWith( const char *filename ) const{
-	return GetAnimationWith( GetEngine()->GetVirtualFileSystem(), filename );
+deAnimation * deAnimationManager::GetAnimationWith(const char *filename) const{
+	return GetAnimationWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-deAnimation *deAnimationManager::GetAnimationWith( deVirtualFileSystem *vfs, const char *filename ) const{
-	deAnimation * const animation = ( deAnimation* )pAnimations.GetWithFilename( vfs, filename );
-	return animation && ! animation->GetOutdated() ? animation : NULL;
+deAnimation *deAnimationManager::GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const{
+	deAnimation * const animation = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
+	return animation && !animation->GetOutdated() ? animation : nullptr;
 }
 
-deAnimation *deAnimationManager::CreateAnimation( const char *filename, deAnimationBuilder &builder ){
-	return CreateAnimation( GetEngine()->GetVirtualFileSystem(), filename, builder );
+deAnimation::Ref deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
+	return CreateAnimation(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deAnimation *deAnimationManager::CreateAnimation( deVirtualFileSystem *vfs,
-const char *filename, deAnimationBuilder &builder ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deAnimation::Ref deAnimationManager::CreateAnimation(deVirtualFileSystem *vfs,
+const char *filename, deAnimationBuilder &builder){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
-	deAnimation *anim=NULL, *findAnim;
+	deAnimation::Ref anim;
 	
 	try{
 		// check if animation with filename already exists. check is only done if
 		// filename is not empty in which case an unnamed animation is created
-		if( filename[ 0 ] != '\0' ){
-			findAnim = ( deAnimation* )pAnimations.GetWithFilename( vfs, filename );
-			if( findAnim && ! findAnim->GetOutdated() ){
-				DETHROW( deeInvalidParam );
+		if(filename[0] != '\0'){
+			deAnimation * const findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
+			if(findAnim && !findAnim->GetOutdated()){
+				DETHROW(deeInvalidParam);
 			}
 		}
 		
 		// create animation using the builder
-		anim = new deAnimation( this, vfs, filename, decDateTime::GetSystemTime() );
-		builder.BuildAnimation( anim );
+		anim = deAnimation::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
+		builder.BuildAnimation(anim);
 		
 		// load system peers
-		GetAnimatorSystem()->LoadAnimation( anim );
+		GetAnimatorSystem()->LoadAnimation(anim);
 		
 		// add animation
-		pAnimations.Add( anim );
+		pAnimations.Add(anim);
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Creating of animation '%s' failed", filename );
-		if( anim ){
-			anim->FreeReference();
-		}
+	}catch(const deException &){
+		LogErrorFormat("Creating of animation '%s' failed", filename);
 		throw;
 	}
 	
 	return anim;
 }
 
-deAnimation *deAnimationManager::LoadAnimation( const char *filename, const char *basePath ){
-	return LoadAnimation( GetEngine()->GetVirtualFileSystem(), filename, basePath );
+deAnimation::Ref deAnimationManager::LoadAnimation(const char *filename, const char *basePath){
+	return LoadAnimation(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deAnimation *deAnimationManager::LoadAnimation( deVirtualFileSystem *vfs,
-const char *filename, const char *basePath ){
-	decBaseFileReader *fileReader=NULL;
+deAnimation::Ref deAnimationManager::LoadAnimation(deVirtualFileSystem *vfs,
+const char *filename, const char *basePath){
 	deBaseAnimationModule *module;
-	deAnimation *anim=NULL, *findAnim;
+	deAnimation::Ref anim;
 	decPath path;
 	try{
 		// locate file
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the animation with this filename already exists and is not outdated
-		findAnim = ( deAnimation* )pAnimations.GetWithFilename( vfs, path.GetPathUnix() );
+		deAnimation *findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findAnim && findAnim->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Animation '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findAnim && findAnim->GetModificationTime() != modificationTime){
+			LogInfoFormat("Animation '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findAnim->MarkOutdated();
-			findAnim = NULL;
+			findAnim = nullptr;
 		}
 		
-		if( findAnim ){
-			findAnim->AddReference();
+		if(findAnim){
 			anim = findAnim;
 			
 		}else{
 			// find the module able to handle this animation file
-			module = ( deBaseAnimationModule* )GetModuleSystem()->GetModuleAbleToLoad(
-				deModuleSystem::emtAnimation, path.GetPathUnix() );
+			module = (deBaseAnimationModule*)GetModuleSystem()->GetModuleAbleToLoad(
+				deModuleSystem::emtAnimation, path.GetPathUnix());
 			// load the file with it
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix() );
-			anim = new deAnimation( this, vfs, path.GetPathUnix(), modificationTime );
-			anim->SetAsynchron( false );
-			module->LoadAnimation( *fileReader, *anim );
-			fileReader->FreeReference(); fileReader = NULL;
+			anim = deAnimation::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
+			anim->SetAsynchron(false);
+			module->LoadAnimation(OpenFileForReading(*vfs, path.GetPathUnix()), anim);
 			
 			// load system peers
-			GetAnimatorSystem()->LoadAnimation( anim );
+			GetAnimatorSystem()->LoadAnimation(anim);
 			
 			// add animation
-			pAnimations.Add( anim );
+			pAnimations.Add(anim);
 			//LogInfoFormat( "Loading '%s' succeeded", path->GetPathUnix() );
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Loading animation '%s' (base path '%s') failed", filename, basePath ? basePath : "" );
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		if( anim ){
-			anim->FreeReference();
-		}
+	}catch(const deException &){
+		LogErrorFormat("Loading animation '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		throw;
 	}
 	
-	if( anim ) anim->SetAsynchron( false );
+	if(anim) anim->SetAsynchron(false);
 	return anim;
 }
 
-void deAnimationManager::AddLoadedAnimation( deAnimation *animation ){
-	if( ! animation ){
-		DETHROW( deeInvalidParam );
+void deAnimationManager::AddLoadedAnimation(deAnimation *animation){
+	if(!animation){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pAnimations.Add( animation );
+	pAnimations.Add(animation);
 }
 
-void deAnimationManager::SaveAnimation( const deAnimation &animation, const char *filename ){
-	SaveAnimation( animation, *GetEngine()->GetVirtualFileSystem(), filename );
+void deAnimationManager::SaveAnimation(const deAnimation &animation, const char *filename){
+	SaveAnimation(animation, *GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-void deAnimationManager::SaveAnimation( const deAnimation &animation,
-deVirtualFileSystem &vfs, const char *filename ){
-	deBaseAnimationModule &module = *( ( deBaseAnimationModule* )
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtAnimation, filename ) );
+void deAnimationManager::SaveAnimation(const deAnimation &animation,
+deVirtualFileSystem &vfs, const char *filename){
+	deBaseAnimationModule &module = *((deBaseAnimationModule*)
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtAnimation, filename));
 	
-	module.SaveAnimation( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting(
-		decPath::CreatePathUnix( filename ) ) ), animation );
+	module.SaveAnimation(vfs.OpenFileForWriting(decPath::CreatePathUnix(filename)), animation);
 }
 
 
 
 void deAnimationManager::ReleaseLeakingResources(){
-	const int count = GetAnimationCount();
-	
-	if( count > 0 ){
-		deAnimation *animation = ( deAnimation* )pAnimations.GetRoot();
-		
-		LogWarnFormat( "%i leaking animations", count );
-		
-		while( animation ){
-			LogWarnFormat( "- %s", animation->GetFilename().GetString() );
-			animation = ( deAnimation* )animation->GetLLManagerNext();
-		}
-		
-		pAnimations.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+	if(pAnimations.GetResources().IsEmpty()){
+		return;
 	}
+	
+	LogWarnFormat("%i leaking animations", pAnimations.GetResources().GetCount());
+	pAnimations.GetResources().Visit([&](const deResource *r){
+		const deAnimation &animation = static_cast<const deAnimation&>(*r);
+		LogWarnFormat("- %s", animation.GetFilename().GetString());
+	});
+	
+	pAnimations.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 }
 
 
@@ -249,30 +232,24 @@ void deAnimationManager::SystemGraphicUnload(){
 	}
 	*/
 }
-
 void deAnimationManager::SystemAnimatorLoad(){
-	deAnimation *animation = ( deAnimation* )pAnimations.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
-	
-	while( animation ){
-		if( ! animation->GetPeerAnimator() ){
-			aniSys.LoadAnimation( animation );
+	pAnimations.GetResources().Visit([&](deResource *r){
+		deAnimation *animation = static_cast<deAnimation*>(r);
+		if(!animation->GetPeerAnimator()){
+			aniSys.LoadAnimation(animation);
 		}
-		animation = ( deAnimation* )animation->GetLLManagerNext();
-	}
+	});
 }
 
 void deAnimationManager::SystemAnimatorUnload(){
-	deAnimation *animation = ( deAnimation* )pAnimations.GetRoot();
-	
-	while( animation ){
-		animation->SetPeerAnimator( NULL );
-		animation = ( deAnimation* )animation->GetLLManagerNext();
-	}
+	pAnimations.GetResources().Visit([&](deResource *r){
+		static_cast<deAnimation*>(r)->SetPeerAnimator(nullptr);
+	});
 }
 
 
 
-void deAnimationManager::RemoveResource( deResource *resource ){
-	pAnimations.RemoveIfPresent( resource );
+void deAnimationManager::RemoveResource(deResource *resource){
+	pAnimations.Remove(resource);
 }

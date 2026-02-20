@@ -43,5 +43,5 @@ igdeEditPathListener::~igdeEditPathListener(){
 // Events
 ///////////
 
-void igdeEditPathListener::OnEditPathChanged( igdeEditPath *editPath ){
+void igdeEditPathListener::OnEditPathChanged(igdeEditPath *editPath){
 }

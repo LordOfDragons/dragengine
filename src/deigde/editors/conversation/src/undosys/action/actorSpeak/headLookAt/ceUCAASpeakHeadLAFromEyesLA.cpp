@@ -43,32 +43,22 @@
 ////////////////////////////
 
 ceUCAASpeakHeadLAFromEyesLA::ceUCAASpeakHeadLAFromEyesLA(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(nullptr)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak head look-at from eyes look-at" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakHeadLookAtFromEyesLookAt");
 	
-	pOldStrips = actorSpeak->GetHeadLookAtList();
+	pOldStrips = actorSpeak->GetHeadLookAts();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakHeadLAFromEyesLA::~ceUCAASpeakHeadLAFromEyesLA(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -77,12 +67,14 @@ ceUCAASpeakHeadLAFromEyesLA::~ceUCAASpeakHeadLAFromEyesLA(){
 ///////////////
 
 void ceUCAASpeakHeadLAFromEyesLA::Undo(){
-	pActorSpeak->GetHeadLookAtList() = pOldStrips;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetHeadLookAts() = pOldStrips;
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakHeadLAFromEyesLA::Redo(){
-	pActorSpeak->GetHeadLookAtList().RemoveAll();
-	pActorSpeak->GetHeadLookAtList().AddCopyFrom( pActorSpeak->GetEyesLookAtList() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetHeadLookAts().RemoveAll();
+	pActorSpeak->GetEyesLookAts().Visit([&](const ceStrip &s){
+		pActorSpeak->GetHeadLookAts().Add(ceStrip::Ref::New(s));
+	});
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

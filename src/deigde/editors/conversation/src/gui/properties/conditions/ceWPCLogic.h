@@ -25,7 +25,7 @@
 #ifndef _CEWPCLOGIC_H_
 #define _CEWPCLOGIC_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPCondition.h"
 
@@ -38,8 +38,11 @@ class ceWPTopic;
  * \brief Logic Conversation Condition property window.
  */
 class ceWPCLogic : public ceWPCondition{
+public:
+	using Ref = deTObjectReference<ceWPCLogic>;
+
 private:
-	igdeComboBoxReference pCBOperator;
+	igdeComboBox::Ref pCBOperator;
 	
 	
 	
@@ -47,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCLogic( ceWPTopic &parentPanel );
+	ceWPCLogic(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCLogic();
+	~ceWPCLogic() override;
 	/*@}*/
 	
 	

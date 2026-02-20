@@ -26,9 +26,9 @@
 #define _DEOGLRSKIN_H_
 #include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -51,6 +51,10 @@ class deSkin;
  */
 class deoglRSkin : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRSkin>;
+	
+	
 	enum ePropertyStates{
 		epsAll,
 		epsSome,
@@ -62,8 +66,7 @@ private:
 	deoglSkin *pOwnerSkin;
 	decString pFilename;
 	
-	deoglSkinTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglSkinTexture> pTextures;
 	
 	bool pIsSolid;
 	bool pHasHoles;
@@ -79,12 +82,12 @@ private:
 	bool pCastSolidShadow;
 	bool pCastTranspShadow;
 	
-	decObjectList pRenderables;
+	decTObjectList<deoglSkinRenderable> pRenderables;
 	int pVideoPlayerCount;
-	decObjectList pMapped;
-	decObjectList pCalculatedProperties;
-	decObjectList pConstructedProperties;
-	decObjectList pBones;
+	decTObjectList<deoglSkinMapped> pMapped;
+	decTObjectList<deoglSkinCalculatedProperty> pCalculatedProperties;
+	decTObjectList<deoglSkinConstructedProperty> pConstructedProperties;
+	decTObjectList<deoglSkinBone> pBones;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
 	bool pTexturePipelinesReady;
@@ -97,14 +100,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render skin. */
-	deoglRSkin( deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &Skin );
+	deoglRSkin(deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &Skin);
 	
+protected:
 	/** Clean up render skin. */
-	virtual ~deoglRSkin();
+	~deoglRSkin() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -168,11 +172,14 @@ public:
 	
 	
 	
+	/** Textures. */
+	inline const decTUniqueList<deoglSkinTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
-	deoglSkinTexture &GetTextureAt( int index ) const;
+	deoglSkinTexture &GetTextureAt(int index) const;
 	
 	
 	
@@ -180,13 +187,13 @@ public:
 	int GetRenderableCount() const;
 	
 	/** Renderable at index. */
-	deoglSkinRenderable &GetRenderableAt( int index );
+	deoglSkinRenderable &GetRenderableAt(int index);
 	
 	/** Add renderable if absent. */
-	int AddRenderable( const char *name );
+	int AddRenderable(const char *name);
 	
 	/** Index of named renderable or -1 if not found. */
-	int IndexOfRenderableNamed( const char *name ) const;
+	int IndexOfRenderableNamed(const char *name) const;
 	
 	
 	
@@ -205,7 +212,7 @@ public:
 	int GetMappedCount() const;
 	
 	/** Mapped. */
-	deoglSkinMapped *GetMappedAt( int index ) const;
+	deoglSkinMapped *GetMappedAt(int index) const;
 	
 	
 	
@@ -213,13 +220,13 @@ public:
 	int GetCalculatedPropertyCount() const;
 	
 	/** Calculated property. */
-	deoglSkinCalculatedProperty *GetCalculatedPropertyAt( int index ) const;
+	deoglSkinCalculatedProperty *GetCalculatedPropertyAt(int index) const;
 	
 	/**
 	 * Add calculated property.
 	 * \returns Index of calculated property.
 	 */
-	int AddCalculatedProperty( deoglSkinCalculatedProperty *calculated );
+	int AddCalculatedProperty(deoglSkinCalculatedProperty *calculated);
 	
 	
 	
@@ -227,10 +234,10 @@ public:
 	int GetConstructedPropertyCount() const;
 	
 	/** Constructed property. */
-	deoglSkinConstructedProperty *GetConstructedPropertyAt( int index ) const;
+	deoglSkinConstructedProperty *GetConstructedPropertyAt(int index) const;
 	
 	/** Add constructed property and returns index of property. */
-	int AddConstructedProperty( deoglSkinConstructedProperty *constructed );
+	int AddConstructedProperty(deoglSkinConstructedProperty *constructed);
 	
 	
 	
@@ -238,10 +245,10 @@ public:
 	int GetBoneCount() const;
 	
 	/** Bones. */
-	deoglSkinBone *GetBoneAt( int index ) const;
+	deoglSkinBone *GetBoneAt(int index) const;
 	
 	/** Add bone and returns index. */
-	int AddBone( const char *name );
+	int AddBone(const char *name);
 
 
 
@@ -254,7 +261,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pRetainImageData( const deSkin &skin );
+	void pRetainImageData(const deSkin &skin);
 };
 
 #endif

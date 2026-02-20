@@ -29,8 +29,8 @@
 // Class deBaseVRModule
 /////////////////////////
 
-deBaseVRModule::deBaseVRModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseVRModule::deBaseVRModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseVRModule::~deBaseVRModule(){
@@ -41,12 +41,12 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
-void deBaseVRModule::RequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
-	DEASSERT_TRUE( level != efslRequired )
+void deBaseVRModule::RequestFeatureEyeGazeTracking(eFeatureSupportLevel level){
+	DEASSERT_TRUE(level != efslRequired)
 }
 
-void deBaseVRModule::RequestFeatureFacialTracking( eFeatureSupportLevel level ){
-	DEASSERT_TRUE( level != efslRequired )
+void deBaseVRModule::RequestFeatureFacialTracking(eFeatureSupportLevel level){
+	DEASSERT_TRUE(level != efslRequired)
 }
 
 bool deBaseVRModule::IsRuntimeRunning(){
@@ -57,42 +57,42 @@ bool deBaseVRModule::SupportsPassthrough(){
 	return false;
 }
 
-void deBaseVRModule::SetEnablePassthrough( bool ){
+void deBaseVRModule::SetEnablePassthrough(bool){
 }
 
-void deBaseVRModule::SetPassthroughTransparency( float ){
+void deBaseVRModule::SetPassthroughTransparency(float){
 }
 
 void deBaseVRModule::CenterPlayspace(){
 }
 
-float deBaseVRModule::GetDeviceFaceExpression( int, int ){
+float deBaseVRModule::GetDeviceFaceExpression(int, int){
 	return 0.0f;
 }
 
 deBaseVRModule::eVRRenderFormat deBaseVRModule::GetRenderFormat(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-int deBaseVRModule::GetEyeViewImages( eEye, int count, void* ){
-	if( count == 0 ){
+int deBaseVRModule::GetEyeViewImages(eEye, int count, void*){
+	if(count == 0){
 		return 0;
 		
 	}else{
-		DETHROW_INFO( deeInvalidParam, "count > 0" );
+		DETHROW_INFO(deeInvalidParam, "count > 0");
 	}
 }
 
-void deBaseVRModule::GetEyeViewRenderTexCoords( eEye, decVector2& tcFrom, decVector2& tcTo){
-	tcFrom.Set( 0.0f, 0.0f );
-	tcTo.Set( 1.0f, 1.0f );
+void deBaseVRModule::GetEyeViewRenderTexCoords(eEye, decVector2& tcFrom, decVector2& tcTo){
+	tcFrom.Set(0.0f, 0.0f);
+	tcTo.Set(1.0f, 1.0f);
 }
 
-int deBaseVRModule::AcquireEyeViewImage( eEye ){
+int deBaseVRModule::AcquireEyeViewImage(eEye){
 	return -1;
 }
 
-void deBaseVRModule::ReleaseEyeViewImage( eEye ){
+void deBaseVRModule::ReleaseEyeViewImage(eEye){
 }
 
 bool deBaseVRModule::GetButtonNear(int device, int button){

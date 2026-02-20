@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetThickness::seUPropertyNodeShapeSetThickness(
-sePropertyNodeShape *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeShape *node, float newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node shape set thickness" );
+	SetShortInfo("@Skin.Undo.NodeShapeSetThickness");
 	
 	pOldValue = node->GetThickness();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeShapeSetThickness::~seUPropertyNodeShapeSetThickness(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeShapeSetThickness::~seUPropertyNodeShapeSetThickness(){
 ///////////////
 
 void seUPropertyNodeShapeSetThickness::Undo(){
-	pNode->SetThickness( pOldValue );
+	pNode->SetThickness(pOldValue);
 }
 
 void seUPropertyNodeShapeSetThickness::Redo(){
-	pNode->SetThickness( pNewValue );
+	pNode->SetThickness(pNewValue);
 }

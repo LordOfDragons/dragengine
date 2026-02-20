@@ -42,15 +42,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-dearMapAnimationVPS::dearMapAnimationVPS() :
-pIndices( nullptr ),
-pCount( 0 ){
+dearMapAnimationVPS::dearMapAnimationVPS(){
 }
 
 dearMapAnimationVPS::~dearMapAnimationVPS(){
-	if( pIndices ){
-		delete [] pIndices;
-	}
 }
 
 
@@ -59,50 +54,36 @@ dearMapAnimationVPS::~dearMapAnimationVPS(){
 ///////////////
 
 void dearMapAnimationVPS::Clear(){
-	if( pIndices ){
-		delete [] pIndices;
-		pIndices = nullptr;
-	}
-	pCount = 0;
+	pIndices.RemoveAll();
 }
 
-void dearMapAnimationVPS::Init( const dearRule &rule ){
+void dearMapAnimationVPS::Init(const dearRule &rule){
 	Clear();
 	
 	const int count = rule.GetVPSMappingCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pIndices = new int[ count ];
+	pIndices.AddRange(count, -1);
 	
 	const dearAnimation * const animation = rule.GetUseAnimation();
 	
-	if( animation ){
+	if(animation){
 		const dearVPSStateList &vpsStates = rule.GetInstance().GetVPSStateList();
 		const deAnimation &engAnimation = *animation->GetAnimation();
 		
-		for( pCount=0; pCount<count; pCount++ ){
-			const int ruleVPSIndex = rule.GetVPSMappingFor( pCount );
-			if( ruleVPSIndex != -1 ){
-				pIndices[ pCount ] = engAnimation.GetVertexPositionSets().IndexOf(
-					vpsStates.GetStateAt( ruleVPSIndex ).GetName() );
-				
-			}else{
-				pIndices[ pCount ] = -1;
+		int i;
+		for(i=0; i<count; i++){
+			const int ruleVPSIndex = rule.GetVPSMappingFor(i);
+			if(ruleVPSIndex != -1){
+				pIndices[i] = engAnimation.GetVertexPositionSets().IndexOf(
+					vpsStates.GetStateAt(ruleVPSIndex).GetName());
 			}
-		}
-		
-	}else{
-		for( pCount=0; pCount<count; pCount++ ){
-			pIndices[ pCount ] = -1;
 		}
 	}
 }
 
-int dearMapAnimationVPS::GetAt( int ruleVPSIndex ) const{
-	DEASSERT_TRUE( ruleVPSIndex >= 0 )
-	DEASSERT_TRUE( ruleVPSIndex < pCount )
-	
-	return pIndices[ ruleVPSIndex ];
+int dearMapAnimationVPS::GetAt(int ruleVPSIndex) const{
+	return pIndices[ruleVPSIndex];
 }

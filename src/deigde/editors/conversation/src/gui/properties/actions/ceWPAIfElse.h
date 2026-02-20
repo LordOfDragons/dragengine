@@ -37,14 +37,15 @@ class ceCAIfElse;
  */
 class ceWPAIfElse : public ceWPAction{
 public:
+	using Ref = deTObjectReference<ceWPAIfElse>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	ceWPAIfElse( ceWPTopic &parentPanel );
+	ceWPAIfElse(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~ceWPAIfElse();
+	~ceWPAIfElse() override;
 	/*@}*/
 	
 	
@@ -52,10 +53,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Active action or \em NULL if none is active. */
+	/** \brief Active action or \em nullptr if none is active. */
 	ceCAIfElse *GetAction() const;
 	
-	/** \brief Active case or \em NULL if none is active. */
+	/** \brief Active case or \em nullptr if none is active. */
 	ceCAIfElseCase *GetActiveCase() const;
 	
 	/** \brief Update active action. */

@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLDIALOG_H_
 #define _IGDENATIVENULLDIALOG_H_
 
+#include "../../../dialog/igdeDialog.h"
+
 #include "../igdeNativeNullWindow.h"
 
 class igdeDialog;
@@ -35,21 +37,22 @@ class igdeGuiTheme;
 /**
  * Null dialog.
  */
-class igdeNativeNullDialog : public igdeNativeNullWindow{
+class igdeNativeNullDialog : public igdeNativeNullWindowBase, public igdeDialog::cNativeDialog{
 private:
 	igdeDialog &pOwnerDialog;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeNullDialog( igdeDialog &owner );
+	igdeNativeNullDialog(igdeDialog &owner);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullDialog();
+	~igdeNativeNullDialog() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullDialog* CreateNativeWidget( igdeDialog &owner, igdeWidget *ownerOwner );
+	static igdeNativeNullDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -59,22 +62,22 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void ShowDialog();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
-	virtual void CloseDialog( bool accepted );
+	void ShowDialog() override;
+	void CloseDialog(bool accepted) override;
 	
-	virtual void OnFrameUpdate();
+	void OnFrameUpdate() override;
 	
-	static int DialogPadContent( const igdeGuiTheme &guitheme );
-	static int DialogPadButtons( const igdeGuiTheme &guitheme );
+	static int DialogPadContent(const igdeGuiTheme &guitheme);
+	static int DialogPadButtons(const igdeGuiTheme &guitheme);
 	/*@}*/
 };
 

@@ -49,14 +49,14 @@ projTRPParameter::~projTRPParameter(){
 // Management
 ///////////////
 
-void projTRPParameter::SetModule( const char *name ){
+void projTRPParameter::SetModule(const char *name){
 	pModule = name;
 }
 
-void projTRPParameter::SetName( const char *name ){
+void projTRPParameter::SetName(const char *name){
 	pName = name;
 }
 
-void projTRPParameter::SetValue( const char *value ){
+void projTRPParameter::SetValue(const char *value){
 	pValue = value;
 }

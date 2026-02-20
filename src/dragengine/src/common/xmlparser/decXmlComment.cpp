@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlComment::decXmlComment( const char *comment ) :
-pComment( comment ){
+decXmlComment::decXmlComment(const char *comment) :
+pComment(comment){
 }
 
 decXmlComment::~decXmlComment(){
@@ -51,14 +51,14 @@ decXmlComment::~decXmlComment(){
 // Management
 ///////////////
 
-void decXmlComment::SetComment( const char *comment ){
+void decXmlComment::SetComment(const char *comment){
 	pComment = comment;
 }
 
 
 
-void decXmlComment::Visit( decXmlVisitor &visitor ){
-	visitor.VisitComment( *this );
+void decXmlComment::Visit(decXmlVisitor &visitor){
+	visitor.VisitComment(*this);
 }
 
 bool decXmlComment::CanCastToComment() const{

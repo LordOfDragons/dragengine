@@ -1,6 +1,6 @@
 # general configuration
 #########################
-with_tests = 'no'
+with_tests = 'yes'
 with_warnerrors = 'no'
 with_debug = '{DebugBuild}'
 with_debug_symbols = 'yes'

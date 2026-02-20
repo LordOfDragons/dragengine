@@ -36,7 +36,6 @@
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -52,7 +51,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-feConfigurationXML::feConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+feConfigurationXML::feConfigurationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 feConfigurationXML::~feConfigurationXML(){
@@ -63,29 +62,28 @@ feConfigurationXML::~feConfigurationXML(){
 // Management
 ///////////////
 
-void feConfigurationXML::ReadFromFile( decBaseFileReader &reader, feConfiguration &config ){
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+void feConfigurationXML::ReadFromFile(decBaseFileReader &reader, feConfiguration &config){
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "fontEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "fontEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void feConfigurationXML::WriteToFile( decBaseFileWriter &writer, const feConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void feConfigurationXML::WriteToFile(decBaseFileWriter &writer, const feConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -93,31 +91,31 @@ void feConfigurationXML::WriteToFile( decBaseFileWriter &writer, const feConfigu
 // Private Functions
 //////////////////////
 
-void feConfigurationXML::pWriteConfig( decXmlWriter &writer, const feConfiguration &config ){
-	writer.WriteOpeningTag( "fontEditor", false, true );
+void feConfigurationXML::pWriteConfig(decXmlWriter &writer, const feConfiguration &config){
+	writer.WriteOpeningTag("fontEditor", false, true);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	writer.WriteClosingTag( "fontEditor", true );
+	writer.WriteClosingTag("fontEditor", true);
 }
 
 
 
-void feConfigurationXML::pReadConfig( const decXmlElementTag &root, feConfiguration &config ){
+void feConfigurationXML::pReadConfig(const decXmlElementTag &root, feConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

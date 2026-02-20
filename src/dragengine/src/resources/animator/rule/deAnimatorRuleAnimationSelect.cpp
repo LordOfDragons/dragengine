@@ -41,10 +41,10 @@
 ////////////////////////////
 
 deAnimatorRuleAnimationSelect::deAnimatorRuleAnimationSelect() :
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true ){
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true){
 }
 
 deAnimatorRuleAnimationSelect::~deAnimatorRuleAnimationSelect(){
@@ -55,19 +55,19 @@ deAnimatorRuleAnimationSelect::~deAnimatorRuleAnimationSelect(){
 // Management
 ///////////////
 
-void deAnimatorRuleAnimationSelect::SetEnablePosition( bool enabled ){
+void deAnimatorRuleAnimationSelect::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleAnimationSelect::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleAnimationSelect::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleAnimationSelect::SetEnableSize( bool enabled ){
+void deAnimatorRuleAnimationSelect::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleAnimationSelect::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleAnimationSelect::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
@@ -76,6 +76,6 @@ void deAnimatorRuleAnimationSelect::SetEnableVertexPositionSet( bool enabled ){
 // Visiting
 /////////////
 
-void deAnimatorRuleAnimationSelect::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitAnimationSelect( *this );
+void deAnimatorRuleAnimationSelect::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitAnimationSelect(*this);
 }

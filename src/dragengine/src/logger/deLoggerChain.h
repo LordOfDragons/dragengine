@@ -26,7 +26,7 @@
 #define _DELOGGERCHAIN_H_
 
 #include "deLogger.h"
-#include "../common/collection/decObjectOrderedSet.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../threading/deMutex.h"
 
 
@@ -42,12 +42,11 @@
 class DE_DLL_EXPORT deLoggerChain : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerChain> Ref;
-	
+	using Ref = deTObjectReference<deLoggerChain>;
 	
 	
 private:
-	decObjectOrderedSet pLoggerList;
+	deLogger::List pLoggers;
 	deMutex pMutex;
 	
 	
@@ -65,7 +64,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deLoggerChain();
+	~deLoggerChain() override;
 	/*@}*/
 	
 	
@@ -77,13 +76,13 @@ public:
 	int GetLoggerCount();
 	
 	/** \brief Logger at position. */
-	deLogger *GetLoggerAt( int index );
+	deLogger *GetLoggerAt(int index);
 	
 	/** \brief Add logger to chain. */
-	void AddLogger( deLogger *logger );
+	void AddLogger(deLogger *logger);
 	
 	/** \brief Remove logger from chain. */
-	void RemoveLogger( deLogger *logger );
+	void RemoveLogger(deLogger *logger);
 	
 	/** \brief Remove all logger from chain. */
 	void RemoveAllLoggers();
@@ -91,13 +90,13 @@ public:
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 	
 	

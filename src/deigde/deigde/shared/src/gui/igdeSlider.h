@@ -26,12 +26,10 @@
 #define _IGDESLIDER_H_
 
 #include "igdeWidget.h"
-#include "event/igdeActionReference.h"
+#include "event/igdeAction.h"
+#include "event/igdeSliderListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-
-class igdeSliderListener;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -39,6 +37,10 @@ class igdeSliderListener;
  */
 class DE_DLL_EXPORT igdeSlider : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeSlider>;
+	
+	
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */
@@ -48,6 +50,16 @@ public:
 		eoVertical
 	};
 	
+	class cNativeSlider{
+	public:
+		virtual ~cNativeSlider() = default;
+		virtual void Focus() = 0;
+		virtual void UpdateScale() = 0;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+	};
 	
 	
 private:
@@ -59,20 +71,23 @@ private:
 	int pPrecision;
 	bool pEnabled;
 	decString pDescription;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeSliderListener> pListeners;
 	
+	
+protected:
+	cNativeSlider *pNativeSlider;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create slider. */
-	igdeSlider( igdeEnvironment &environment, eOrientation orientation,
-		const char *description = "" );
+	igdeSlider(igdeEnvironment &environment, eOrientation orientation,
+		const char *description = "");
 	
 	/** \brief Create slider. */
-	igdeSlider( igdeEnvironment &environment, eOrientation orientation, float lower,
-		float upper, int precision, float tickSpacing, const char *description = "" );
+	igdeSlider(igdeEnvironment &environment, eOrientation orientation, float lower,
+		float upper, int precision, float tickSpacing, const char *description = "");
 	
 	
 	
@@ -83,7 +98,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeSlider();
+	~igdeSlider() override;
 	/*@}*/
 	
 	
@@ -101,37 +116,37 @@ public:
 	inline float GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
-	void SetRange( float lower, float upper );
+	void SetRange(float lower, float upper);
 	
 	/** \brief Tick spacing. */
 	inline float GetTickSpacing() const{ return pTickSpacing; }
 	
 	/** \brief Set tick spacing. */
-	void SetTickSpacing( float spacing );
+	void SetTickSpacing(float spacing);
 	
 	/** \brief Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Precision. */
 	inline int GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Slider is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -139,10 +154,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeSliderListener *listener );
+	void AddListener(igdeSliderListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeSliderListener *listener );
+	void RemoveListener(igdeSliderListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	void NotifyValueChanged();
@@ -162,14 +177,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -187,6 +207,9 @@ protected:
 	
 	/** \brief Description changed. */
 	virtual void OnDescriptionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

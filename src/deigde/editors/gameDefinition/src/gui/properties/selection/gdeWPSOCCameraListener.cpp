@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCCameraListener::gdeWPSOCCameraListener( gdeWPSOCCamera &panel ) :
-pPanel( panel ){
+gdeWPSOCCameraListener::gdeWPSOCCameraListener(gdeWPSOCCamera &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCCameraListener::~gdeWPSOCCameraListener(){
@@ -53,45 +53,45 @@ gdeWPSOCCameraListener::~gdeWPSOCCameraListener(){
 // Management
 ///////////////
 
-void gdeWPSOCCameraListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCCameraListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCCameraListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCCameraListener::OCPropertiesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCCameraListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCCameraListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCCameraListener::OCCamerasChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCCameraListener::OCCamerasChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateCamera();
 }
 
-void gdeWPSOCCameraListener::OCCameraChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCCamera *camera ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCCameraListener::OCCameraChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCCamera *camera){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetCamera() != camera ){
+	if(pPanel.GetCamera() != camera){
 		return;
 	}
 	pPanel.UpdateCamera();
 }
 
-void gdeWPSOCCameraListener::ActiveOCCameraChanged( gdeGameDefinition* ){
+void gdeWPSOCCameraListener::ActiveOCCameraChanged(gdeGameDefinition*){
 	pPanel.UpdateCamera();
 }

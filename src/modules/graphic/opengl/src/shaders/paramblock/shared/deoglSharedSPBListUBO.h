@@ -44,13 +44,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block list. */
-	deoglSharedSPBListUBO( deoglRenderThread &renderThread, deoglSPBlockUBO *layout );
+	deoglSharedSPBListUBO(deoglRenderThread &renderThread, deoglSPBlockUBO *layout);
 	/*@}*/
 	
 	
 	
 protected:
-	deoglShaderParameterBlock::Ref pCreateBlock() const;
+	deoglShaderParameterBlock::Ref pCreateBlock() const override;
 };
 
 #endif

@@ -26,11 +26,10 @@
 #define _CECAWAIT_H_
 
 #include "ceConversationAction.h"
-#include "ceConversationActionList.h"
+#include "../condition/ceConversationCondition.h"
 
 #include <dragengine/common/string/decString.h>
 
-class ceConversationCondition;
 
 
 
@@ -48,8 +47,8 @@ class ceConversationCondition;
  */
 class ceCAWait : public ceConversationAction{
 private:
-	ceConversationActionList pActions;
-	ceConversationCondition *pCondition;
+	ceConversationAction::List pActions;
+	ceConversationCondition::Ref pCondition;
 	float pInterval;
 	bool pTIMExpanded;
 	bool pTIMConditionExpanded;
@@ -58,32 +57,35 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<ceCAWait>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new wait conversation action. */
 	ceCAWait();
 	/** Creates a new wait conversation action. */
-	ceCAWait( const ceCAWait &action );
+	ceCAWait(const ceCAWait &action);
 	/** Cleans up the wait conversation action. */
-	virtual ~ceCAWait();
+protected:
+	~ceCAWait() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
-	/** Retrieves the condition or NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
-	/** Sets the condition or NULL if there is none. */
-	void SetCondition( ceConversationCondition *condition );
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
+	/** Retrieves the condition or nullptr if there is none. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
+	/** Sets the condition or nullptr if there is none. */
+	void SetCondition(ceConversationCondition *condition);
 	/** Retrieves the interval to check the condition. */
 	inline float GetInterval() const{ return pInterval; }
 	/** Sets the interval to check the condition. */
-	void SetInterval( float interval );
+	void SetInterval(float interval);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+	ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 	
 	
@@ -94,19 +96,19 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Condition tree list item expanded state. */
 	inline bool GetTIMConditionExpanded() const{ return pTIMConditionExpanded; }
 	
 	/** \brief Set condition tree list item expanded state. */
-	void SetTIMConditionExpanded( bool expanded );
+	void SetTIMConditionExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
 	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
-	void SetTIMActionsExpanded( bool expanded );
+	void SetTIMActionsExpanded(bool expanded);
 	/*@}*/
 };
 

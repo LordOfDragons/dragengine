@@ -35,6 +35,10 @@
  */
 class DE_DLL_EXPORT igdeToolBarDock : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeToolBarDock>;
+	
+	
 	/** \brief Dock side. */
 	enum eSide{
 		/** \brief Top. */
@@ -61,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeToolBarDock( igdeEnvironment &environment, eSide site );
+	igdeToolBarDock(igdeEnvironment &environment, eSide site);
 	
 	
 	
@@ -72,7 +76,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeToolBarDock();
+	~igdeToolBarDock() override;
 	/*@}*/
 	
 	
@@ -95,13 +99,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

@@ -25,27 +25,27 @@
 #ifndef _SEWPNODE_H_
 #define _SEWPNODE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditPointReference.h>
-#include <deigde/gui/composed/igdeEditPoint3Reference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
+#include "seWPNodeListener.h"
+#include "../../skin/property/node/sePropertyNode.h"
+#include "../../skin/seSkin.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
+#include <deigde/gui/composed/igdeEditPoint3.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-#include "../../skin/property/node/sePropertyNode.h"
-
-class seSkin;
 class seTexture;
 class seProperty;
 class seWindowProperties;
-class seWPNodeListener;
 class igdeTreeItem;
 
 
@@ -53,47 +53,50 @@ class igdeTreeItem;
  * Node panel.
  */
 class seWPNode : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<seWPNode>;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPNodeListener *pListener;
+	seWPNodeListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pPreventUpdate;
 	
-	igdeTreeListReference pTreeOutline;
-	igdeTextFieldReference pLabSelection;
+	igdeTreeList::Ref pTreeOutline;
+	igdeTextField::Ref pLabSelection;
 	
-	igdeEditPoint3Reference pEditPosition;
-	igdeEditPoint3Reference pEditSize;
-	igdeTextFieldReference pEditRotation;
-	igdeTextFieldReference pEditShear;
-	igdeTextFieldReference pEditBrightness;
-	igdeTextFieldReference pEditContrast;
-	igdeTextFieldReference pEditGamma;
-	igdeColorBoxReference pClrColorize;
-	igdeEditSliderTextReference pSldTransparency;
-	igdeTextFieldReference pLabMask;
-	igdeComboBoxReference pCBCombineMode;
+	igdeEditPoint3::Ref pEditPosition;
+	igdeEditPoint3::Ref pEditSize;
+	igdeTextField::Ref pEditRotation;
+	igdeTextField::Ref pEditShear;
+	igdeTextField::Ref pEditBrightness;
+	igdeTextField::Ref pEditContrast;
+	igdeTextField::Ref pEditGamma;
+	igdeColorBox::Ref pClrColorize;
+	igdeEditSliderText::Ref pSldTransparency;
+	igdeTextField::Ref pLabMask;
+	igdeComboBox::Ref pCBCombineMode;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	
-	igdeEditPathReference pImageEditImage;
-	igdeEditPointReference pImageEditRepeat;
-	igdeTextFieldReference pImageLabImageInfo;
+	igdeEditPath::Ref pImageEditImage;
+	igdeEditPoint::Ref pImageEditRepeat;
+	igdeTextField::Ref pImageLabImageInfo;
 	
-	igdeComboBoxReference pShapeCBType;
-	igdeColorBoxReference pShapeClrFill;
-	igdeColorBoxReference pShapeClrLine;
-	igdeTextFieldReference pShapeEditThickness;
+	igdeComboBox::Ref pShapeCBType;
+	igdeColorBox::Ref pShapeClrFill;
+	igdeColorBox::Ref pShapeClrLine;
+	igdeTextField::Ref pShapeEditThickness;
 	
-	igdeEditPathReference pTextEditFont;
-	igdeTextFieldReference pTextLabFontInfo;
-	igdeTextFieldReference pTextEditFontSize;
-	igdeTextFieldReference pTextEditText;
-	igdeColorBoxReference pTextClrColor;
+	igdeEditPath::Ref pTextEditFont;
+	igdeTextField::Ref pTextLabFontInfo;
+	igdeTextField::Ref pTextEditFontSize;
+	igdeTextField::Ref pTextEditText;
+	igdeColorBox::Ref pTextClrColor;
 	
-	igdeComboBoxReference pCBMappedType;
-	igdeComboBoxReference pCBMappedTarget;
+	igdeComboBox::Ref pCBMappedType;
+	igdeComboBox::Ref pCBMappedTarget;
 	
 	
 	
@@ -101,11 +104,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	seWPNode( seWindowProperties &windowProperties );
+	seWPNode(seWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~seWPNode();
+	~seWPNode() override;
 	/*@}*/
 	
 	
@@ -117,21 +120,21 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** Skin path changed. */
 	void OnSkinPathChanged();
 	
-	/** Active texture or \em NULL if none. */
+	/** Active texture or \em nullptr if none. */
 	seTexture *GetTexture() const;
 	
-	/** Active property or \em NULL if none. */
+	/** Active property or \em nullptr if none. */
 	seProperty *GetProperty() const;
 	
-	/** Active node or \em NULL if none. */
+	/** Active node or \em nullptr if none. */
 	sePropertyNode *GetNode() const;
 	
 	/** Selected mapped type. */
@@ -163,7 +166,7 @@ public:
 	
 private:
 	/** Update outline for tree item. */
-	void UpdateOutline( igdeTreeItem *item, sePropertyNode *node, const decString &prefix );
+	void UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const decString &prefix);
 };
 
 #endif

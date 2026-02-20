@@ -25,6 +25,7 @@
 #ifndef _DEOALENVPROBECONFIG_H_
 #define _DEOALENVPROBECONFIG_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoalIcoSphere;
@@ -37,8 +38,7 @@ class deoalIcoSphere;
  */
 class deoalRayTraceConfig{
 private:
-	int pRayCount;
-	decVector *pRayDirections;
+	decTList<decVector> pRayDirections;
 	
 	float pRayUnitVolume;
 	float pRayUnitSurface;
@@ -53,7 +53,7 @@ public:
 	deoalRayTraceConfig();
 	
 	/** \brief Create ray trace config. */
-	deoalRayTraceConfig( const deoalRayTraceConfig &config );
+	deoalRayTraceConfig(const deoalRayTraceConfig &config);
 	
 	/** \brief Clean up ray trace config. */
 	~deoalRayTraceConfig();
@@ -64,10 +64,10 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of rays. */
-	inline int GetRayCount() const{ return pRayCount; }
+	inline int GetRayCount() const{ return pRayDirections.GetCount(); }
 	
 	/** \brief Ray directions. */
-	inline const decVector *GetRayDirections() const{ return pRayDirections; }
+	inline const decVector *GetRayDirections() const{ return pRayDirections.GetArrayPointer(); }
 	
 	/**
 	 * \brief Ray unit volume.
@@ -91,19 +91,19 @@ public:
 	
 	
 	/** \brief Set from vertices (creates copy). */
-	void SetFromVertices( const decVector *vertices, int count, float openingAngle );
+	void SetFromVertices(const decVector *vertices, int count, float openingAngle);
 	
 	/**
 	 * \brief Rotate rays.
 	 * \param[in] rotation Rotation in degrees.
 	 */
-	void Rotate( float rx, float ry, float rz );
+	void Rotate(float rx, float ry, float rz);
 	
 	/** \brief Set ray directions approximatly equally spaces points on a sphere. */
-	void SetRaysEquallySpaced( int rayCount );
+	void SetRaysEquallySpaced(int rayCount);
 	
 	/** \brief Set from ico sphere vertices. */
-	void SetFromIcoSphere( const deoalIcoSphere &icoSphere );
+	void SetFromIcoSphere(const deoalIcoSphere &icoSphere);
 	/*@}*/
 };
 

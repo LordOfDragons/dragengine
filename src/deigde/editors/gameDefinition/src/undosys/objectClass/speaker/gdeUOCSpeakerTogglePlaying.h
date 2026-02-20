@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class speaker toggle playing.
  */
 class gdeUOCSpeakerTogglePlaying : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCSpeakerTogglePlaying>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerTogglePlaying( gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	gdeUOCSpeakerTogglePlaying(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSpeakerTogglePlaying();
+	~gdeUOCSpeakerTogglePlaying() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

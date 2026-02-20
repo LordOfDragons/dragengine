@@ -27,8 +27,8 @@
 #define _DETGAIMAGEINFO_H_
 
 // includes
-#include "dragengine/systems/modules/image/deBaseImageInfo.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/image/deBaseImageInfo.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 
@@ -60,13 +60,13 @@ public:
 public:
 	// constructor, destructor
 	deTgaImageInfo();
-	~deTgaImageInfo();
+	~deTgaImageInfo() override;
 	// management
-	int GetWidth();
-	int GetHeight();
-	int GetDepth();
-	int GetComponentCount();
-	int GetBitCount();
+	int GetWidth() override;
+	int GetHeight() override;
+	int GetDepth() override;
+	int GetComponentCount() override;
+	int GetBitCount() override;
 };
 
 // end of include only once

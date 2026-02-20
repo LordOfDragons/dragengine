@@ -27,10 +27,10 @@
 #define _GDEUOCNAVSPACESETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class navspace set property name.
  */
 class gdeUOCNavSpaceSetPropertyName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetPropertyName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	gdeOCNavigationSpace::eProperties pProperty;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetPropertyName( gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace,
-		gdeOCNavigationSpace::eProperties property, const char *newValue );
+	gdeUOCNavSpaceSetPropertyName(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace,
+		gdeOCNavigationSpace::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavSpaceSetPropertyName();
+	~gdeUOCNavSpaceSetPropertyName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

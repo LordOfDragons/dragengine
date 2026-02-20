@@ -32,7 +32,6 @@
 #include "../../world/pathfinding/types/mePathFindTestType.h"
 #include "../../world/meCamera.h"
 #include "../../world/idgroup/meIDGroup.h"
-#include "../../world/idgroup/meIDGroupList.h"
 #include "../../undosys/properties/world/meUWorldSetSize.h"
 #include "../../undosys/properties/world/meUWorldSetGravity.h"
 #include "../../undosys/properties/world/property/meUWorldAddProperty.h"
@@ -48,7 +47,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditDVector.h>
@@ -65,11 +64,10 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -90,22 +88,21 @@ protected:
 	meWPWorld &pPanel;
 	
 public:
-	cBaseTextFieldListener( meWPWorld &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, world ) );
-		if( undo ){
-			world->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, world));
+		if(undo){
+			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -113,24 +110,23 @@ protected:
 	meWPWorld &pPanel;
 	
 public:
-	cBaseAction( meWPWorld &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(meWPWorld &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( world ) );
-		if( undo ){
-			world->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(world));
+		if(undo){
+			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( meWorld *world ) = 0;
+	virtual igdeUndo::Ref OnAction(meWorld *world) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -138,22 +134,21 @@ protected:
 	meWPWorld &pPanel;
 	
 public:
-	cBaseComboBoxListener( meWPWorld &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( comboBox, world ) );
-		if( undo ){
-			world->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(comboBox, world));
+		if(undo){
+			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, meWorld *world ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld *world) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -161,22 +156,21 @@ protected:
 	meWPWorld &pPanel;
 	
 public:
-	cBaseEditVectorListener( meWPWorld &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), world ) );
-		if( undo ){
-			world->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editVector->GetVector(), world));
+		if(undo){
+			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meWorld *world ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, meWorld *world) = 0;
 };
 
 class cBaseEditDVectorListener : public igdeEditDVectorListener{
@@ -184,22 +178,21 @@ protected:
 	meWPWorld &pPanel;
 	
 public:
-	cBaseEditDVectorListener( meWPWorld &panel ) : pPanel( panel ){ }
+	cBaseEditDVectorListener(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
-		if( undo ){
-			world->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editDVector->GetDVector(), world));
+		if(undo){
+			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decDVector &vector, meWorld *world ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decDVector &vector, meWorld *world) = 0;
 };
 
 
@@ -207,246 +200,258 @@ class cEditWorldProperties : public meWPPropertyList {
 	meWPWorld &pPanel;
 	
 public:
-	cEditWorldProperties( meWPWorld &panel ) : meWPPropertyList( panel.GetEnvironment() ), pPanel( panel ){ }
+	typedef deTObjectReference<cEditWorldProperties> Ref;
+	cEditWorldProperties(meWPWorld &panel) : meWPPropertyList(panel.GetEnvironment()), pPanel(panel){}
 	
-	virtual decString GetGDDefaultValue( const char *key ) const{
-		const igdeGDProperty * const gdProperty = GetGDProperty( key );
+	virtual decString GetGDDefaultValue(const char *key) const{
+		const igdeGDProperty * const gdProperty = GetGDProperty(key);
 		return gdProperty ? gdProperty->GetDefaultValue() : vEmptyString;
 	}
 	
-	virtual const igdeGDProperty *GetGDProperty( const char *key ) const{
+	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		const meWorld * const world = pPanel.GetWorld();
-		return world ? world->GetGameDefinition()->GetListWorldProperties().GetNamed( key ) : NULL;
+		return world ? world->GetGameDefinition()->GetListWorldProperties().FindNamed(key) : nullptr;
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{
 		const meWorld * const world = pPanel.GetWorld();
 		decStringSet keys;
-		if( world ){
-			const igdeGDPropertyList &list = world->GetGameDefinition()->GetListWorldProperties();
-			const int count = list.GetCount();
-			int i;
-			for( i=0; i<count; i++ ){
-				keys.Add( list.GetAt( i )->GetName() );
-			}
+		if(world){
+			const igdeGDProperty::List &list = world->GetGameDefinition()->GetListWorldProperties();
+			list.Visit([&](igdeGDProperty::Ref &prop){
+				keys.Add(prop->GetName());
+			});
 		}
 		return keys;
 	}
 	
-	virtual void OnPropertySelected( const decString &key, const decString & ){
+	virtual void OnPropertySelected(const decString &key, const decString &){
 		meWorld * const world = pPanel.GetWorld();
-		if( world ){
-			world->SetActiveProperty( key );
+		if(world){
+			world->SetActiveProperty(key);
 		}
 	}
 	
-	virtual igdeUndo *UndoAddProperty( const decString &key, const decString &value ){
+	virtual igdeUndo::Ref UndoAddProperty(const decString &key, const decString &value){
 		meWorld * const world = pPanel.GetWorld();
-		return world ? new meUWorldAddProperty( world, key, value ) : NULL;
+		return world ? meUWorldAddProperty::Ref::New(world, key, value) : meUWorldAddProperty::Ref();
 	}
 	
-	virtual igdeUndo *UndoRemoveProperty( const decString &key ){
+	virtual igdeUndo::Ref UndoRemoveProperty(const decString &key){
 		meWorld * const world = pPanel.GetWorld();
-		return world ? new meUWorldRemoveProperty( world, key, world->GetProperties().GetAt( key ) ) : NULL;
+		return world ? meUWorldRemoveProperty::Ref::New(world, key, world->GetProperties().GetAt(key)) : meUWorldRemoveProperty::Ref();
 	}
 	
-	virtual igdeUndo *UndoSetProperty( const decString &key, const decString &oldValue, const decString &newValue ){
+	virtual igdeUndo::Ref UndoSetProperty(const decString &key, const decString &oldValue, const decString &newValue){
 		meWorld * const world = pPanel.GetWorld();
-		return world ? new meUWorldSetProperty( world, key, oldValue, newValue ) : NULL;
+		return world ? meUWorldSetProperty::Ref::New(world, key, oldValue, newValue) : meUWorldSetProperty::Ref();
 	}
 	
-	virtual igdeUndo *UndoSetProperties( const decStringDictionary &properties ){
+	virtual igdeUndo::Ref UndoSetProperties(const decStringDictionary &properties){
 		meWorld * const world = pPanel.GetWorld();
-		return world ? new meUWorldSetProperties( world, properties ) : NULL;
+		return world ? meUWorldSetProperties::Ref::New(world, properties) : meUWorldSetProperties::Ref();
 	}
 };
 
 
 class cEditSize : public cBaseEditDVectorListener{
 public:
-	cEditSize( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	typedef deTObjectReference<cEditSize> Ref;
+	cEditSize(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
-		return ! world->GetSize().IsEqualTo( vector ) ? new meUWorldSetSize( world, vector ) : NULL;
+	virtual igdeUndo::Ref  OnChanged(const decDVector &vector, meWorld *world){
+		return !world->GetSize().IsEqualTo(vector) ? meUWorldSetSize::Ref::New(world, vector) : meUWorldSetSize::Ref();
 	}
 };
 
 
 class cEditGravity : public cBaseEditVectorListener{
 public:
-	cEditGravity( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	typedef deTObjectReference<cEditGravity> Ref;
+	cEditGravity(meWPWorld &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
-		return ! world->GetGravity().IsEqualTo( vector ) ? new meUWorldSetGravity( world, vector ) : NULL;
+	virtual igdeUndo::Ref  OnChanged(const decVector &vector, meWorld *world){
+		return !world->GetGravity().IsEqualTo(vector) ? meUWorldSetGravity::Ref::New(world, vector) : meUWorldSetGravity::Ref();
 	}
 };
 
 class cEditPFTStartPosition : public cBaseEditDVectorListener{
 public:
-	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	typedef deTObjectReference<cEditPFTStartPosition> Ref;
+	cEditPFTStartPosition(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
-		world->GetPathFindTest()->SetStartPosition( vector );
-		return NULL;
+	virtual igdeUndo::Ref  OnChanged(const decDVector &vector, meWorld *world){
+		world->GetPathFindTest()->SetStartPosition(vector);
+		return {};
 	}
 };
 
 class cActionPFTStartPosFromCamera : public cBaseAction{
 public:
-	cActionPFTStartPosFromCamera( meWPWorld &panel ) : cBaseAction( panel,
-		"Set", NULL, "Set start position from camera position" ){}
+	typedef deTObjectReference<cActionPFTStartPosFromCamera> Ref;
+	cActionPFTStartPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.SetStartPosFromCamera", nullptr,
+		"@World.WPWorld.Action.SetStartPosFromCamera.ToolTip"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		world->GetPathFindTest()->SetStartPosition( world->GetActiveCamera()->GetPosition() );
-		return NULL;
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		world->GetPathFindTest()->SetStartPosition(world->GetActiveCamera()->GetPosition());
+		return {};
 	}
 };
 
 class cEditPFTGoalPosition : public cBaseEditDVectorListener{
 public:
-	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	typedef deTObjectReference<cEditPFTGoalPosition> Ref;
+	cEditPFTGoalPosition(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
-		world->GetPathFindTest()->SetGoalPosition( vector );
-		return NULL;
+	virtual igdeUndo::Ref  OnChanged(const decDVector &vector, meWorld *world){
+		world->GetPathFindTest()->SetGoalPosition(vector);
+		return {};
 	}
 };
 
 class cActionPFTGoalPosFromCamera : public cBaseAction{
 public:
-	cActionPFTGoalPosFromCamera( meWPWorld &panel ) : cBaseAction( panel,
-		"Set", NULL, "Set goal position from camera position" ){}
+	typedef deTObjectReference<cActionPFTGoalPosFromCamera> Ref;
+	cActionPFTGoalPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.SetGoalPosFromCamera", nullptr,
+		"@World.WPWorld.Action.SetGoalPosFromCamera.ToolTip"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		world->GetPathFindTest()->SetGoalPosition( world->GetActiveCamera()->GetPosition() );
-		return NULL;
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		world->GetPathFindTest()->SetGoalPosition(world->GetActiveCamera()->GetPosition());
+		return {};
 	}
 };
 
 class cEditPFTLayer : public cBaseTextFieldListener{
 public:
-	cEditPFTLayer( meWPWorld &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditPFTLayer> Ref;
+	cEditPFTLayer(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ){
-		world->GetPathFindTest()->SetLayer( textField->GetInteger() );
-		return NULL;
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
+		world->GetPathFindTest()->SetLayer(textField->GetInteger());
+		return {};
 	}
 };
 
 class cComboPFTSpaceType : public cBaseComboBoxListener{
 public:
-	cComboPFTSpaceType( meWPWorld &panel ) : cBaseComboBoxListener( panel ){}
+	typedef deTObjectReference<cComboPFTSpaceType> Ref;
+	cComboPFTSpaceType(meWPWorld &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, meWorld *world ){
-		if( comboBox->GetSelectedItem() ){
-			world->GetPathFindTest()->SetSpaceType( ( deNavigationSpace::eSpaceTypes )
-				( intptr_t )comboBox->GetSelectedItem()->GetData() );
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld *world) override{
+		if(comboBox->GetSelectedItem()){
+			world->GetPathFindTest()->SetSpaceType((deNavigationSpace::eSpaceTypes)
+				(intptr_t)comboBox->GetSelectedItem()->GetData());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cEditPFTBlockingCost : public cBaseTextFieldListener{
 public:
-	cEditPFTBlockingCost( meWPWorld &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditPFTBlockingCost> Ref;
+	cEditPFTBlockingCost(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ){
-		world->GetPathFindTest()->SetBlockingCost( textField->GetFloat() );
-		return NULL;
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
+		world->GetPathFindTest()->SetBlockingCost(textField->GetFloat());
+		return {};
 	}
 };
 
 class cActionPFTShowPath : public cBaseAction{
 public:
-	cActionPFTShowPath( meWPWorld &panel ) : cBaseAction( panel,
-		"Show Path", NULL, "Show path" ){}
+	typedef deTObjectReference<cActionPFTShowPath> Ref;
+	cActionPFTShowPath(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.ShowPath", nullptr, "@World.WPWorld.Action.ShowPath"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		world->GetPathFindTest()->SetShowPath( ! world->GetPathFindTest()->GetShowPath() );
-		return NULL;
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		world->GetPathFindTest()->SetShowPath(!world->GetPathFindTest()->GetShowPath());
+		return {};
 	}
 };
 
 
 class cComboPFTType : public cBaseComboBoxListener{
 public:
-	cComboPFTType( meWPWorld &panel ) : cBaseComboBoxListener( panel ){}
+	typedef deTObjectReference<cComboPFTType> Ref;
+	cComboPFTType(meWPWorld &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox*, meWorld* ){
+	igdeUndo::Ref OnChanged(igdeComboBox*, meWorld*) override{
 		pPanel.UpdatePathFindTestType();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPFTTypeAdd : public cBaseAction{
 public:
-	cActionPFTTypeAdd( meWPWorld &panel ) : cBaseAction( panel, "Add...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add type" ){}
+	typedef deTObjectReference<cActionPFTTypeAdd> Ref;
+	cActionPFTTypeAdd(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.PathFindTypeAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPWorld.Action.PFTTypeAdd"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		mePathFindTestTypeList &list = world->GetPathFindTest()->GetTypeList();
-		const int count = list.GetCount();
-		int i, newValue = 0;
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		mePathFindTestType::List &list = world->GetPathFindTest()->GetTypeList();
+		int newValue = list.Inject(0, [](int v, const mePathFindTestType &t){
+			return decMath::max(v, t.GetTypeNumber() + 1);
+		});
 		
-		for( i=0; i<count; i++ ){
-			newValue = decMath::max( newValue, list.GetAt( i )->GetTypeNumber() + 1 );
-		}
-		
-		while( igdeCommonDialogs::GetInteger( &pPanel, "Add Type", "Type Number:", newValue ) ){
-			if( list.HasWith( newValue ) ){
-				igdeCommonDialogs::Error( &pPanel, "Add Type", "A type with this type number exists already." );
+		while(igdeCommonDialogs::GetInteger(pPanel, "@World.WPWorld.Dialog.AddType", "@World.WPWorld.Dialog.AddTypeNumber", newValue)){
+			if(list.HasMatching([&](const mePathFindTestType &t){
+				return t.GetTypeNumber() == newValue;
+			})){
+				igdeCommonDialogs::Error(pPanel, "@World.WPWorld.Dialog.AddType", "@World.WPWorld.Dialog.CostTypeExists");
 				continue;
 			}
 			
-			deObjectReference type;
-			type.TakeOver( new mePathFindTestType( newValue ) );
-			list.Add( ( mePathFindTestType* )( deObject* )type );
+			const mePathFindTestType::Ref type(mePathFindTestType::Ref::New(newValue));
+			list.Add(type);
 			world->GetPathFindTest()->NotifyTypesChanged();
-			pPanel.SelectPFType( ( mePathFindTestType* )( deObject* )type );
+			pPanel.SelectPFType(type);
 			break;
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetWorld() );
+	void Update() override{
+		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 class cActionPFTTypeRemove : public cBaseAction{
 public:
-	cActionPFTTypeRemove( meWPWorld &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove type" ){}
+	typedef deTObjectReference<cActionPFTTypeRemove> Ref;
+	cActionPFTTypeRemove(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.PathFindTypeRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPWorld.Action.PFTTypeRemove"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
-		if( type ){
-			world->GetPathFindTest()->GetTypeList().Remove( type );
+		if(type && world->GetPathFindTest()->GetTypeList().Remove(type)){
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetActivePathFindTestType() );
+	void Update() override{
+		SetEnabled(pPanel.GetActivePathFindTestType());
 	}
 };
 
 class cActionPFTTypeClear : public cBaseAction{
 public:
-	cActionPFTTypeClear( meWPWorld &panel ) : cBaseAction( panel, "Clear",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all types" ){}
+	typedef deTObjectReference<cActionPFTTypeClear> Ref;
+	cActionPFTTypeClear(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.PathFindTypeClear",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPWorld.Action.PFTTypeClear"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		if( world->GetPathFindTest()->GetTypeList().GetCount() > 0 ){
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		if(world->GetPathFindTest()->GetTypeList().IsNotEmpty()){
 			world->GetPathFindTest()->GetTypeList().RemoveAll();
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetWorld() && pPanel.GetWorld()->GetPathFindTest()->GetTypeList().GetCount() > 0 );
+	void Update() override{
+		SetEnabled(pPanel.GetWorld() && pPanel.GetWorld()->GetPathFindTest()->GetTypeList().IsNotEmpty());
 	}
 };
 
@@ -454,86 +459,93 @@ class cActionPFTTypes : public igdeActionContextMenu{
 	meWPWorld &pPanel;
 	
 public:
-	cActionPFTTypes( meWPWorld &panel ) : igdeActionContextMenu( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Menu" ),
-	pPanel( panel ){}
+	typedef deTObjectReference<cActionPFTTypes> Ref;
+	cActionPFTTypes(meWPWorld &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPWorld.Action.Menu"),
+	pPanel(panel){}
 	
-	void AddContextMenuEntries( igdeMenuCascade &contextMenu ) override{
-		if( ! pPanel.GetWorld() ){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
+		if(!pPanel.GetWorld()){
 			return;
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( contextMenu, pPanel.GetActionPFTTypeAdd() );
-		helper.MenuCommand( contextMenu, pPanel.GetActionPFTTypeRemove() );
-		helper.MenuCommand( contextMenu, pPanel.GetActionPFTTypeClear() );
+		helper.MenuCommand(contextMenu, pPanel.GetActionPFTTypeAdd());
+		helper.MenuCommand(contextMenu, pPanel.GetActionPFTTypeRemove());
+		helper.MenuCommand(contextMenu, pPanel.GetActionPFTTypeClear());
 	}
 };
 
 class cEditPFTTypeNumber : public cBaseTextFieldListener{
 public:
-	cEditPFTTypeNumber( meWPWorld &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditPFTTypeNumber> Ref;
+	cEditPFTTypeNumber(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const int value = textField->GetInteger();
-		if( ! type || value == type->GetTypeNumber() ){
-			return NULL;
+		if(!type || value == type->GetTypeNumber()){
+			return {};
 		}
 		
-		if( pPanel.GetWorld()->GetPathFindTest()->GetTypeList().HasWith( value ) ){
-			igdeCommonDialogs::Error( &pPanel, "Change Type Number", "Type number already exists" );
-			textField->SetInteger( type->GetTypeNumber() );
+		if(pPanel.GetWorld()->GetPathFindTest()->GetTypeList().HasMatching([&](const mePathFindTestType &t){
+			return t.GetTypeNumber() == value;
+		})){
+			igdeCommonDialogs::Error(pPanel, "@World.WPWorld.ChangeTypeNumber", "@World.WPWorld.TypeNumberExists.ToolTip");
+			textField->SetInteger(type->GetTypeNumber());
 			
 		}else{
-			type->SetTypeNumber( value );
+			type->SetTypeNumber(value);
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cEditPFTTypeName : public cBaseTextFieldListener{
 public:
-	cEditPFTTypeName( meWPWorld &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditPFTTypeName> Ref;
+	cEditPFTTypeName(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
-		if( type && textField->GetText() != type->GetName() ){
-			type->SetName( textField->GetText() );
+		if(type && textField->GetText() != type->GetName()){
+			type->SetName(textField->GetText());
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cEditPFTTypeFixCost : public cBaseTextFieldListener{
 public:
-	cEditPFTTypeFixCost( meWPWorld &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditPFTTypeFixCost> Ref;
+	cEditPFTTypeFixCost(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const float value = textField->GetFloat();
-		if( type && fabsf( value - type->GetFixCost() ) > FLOAT_SAFE_EPSILON ){
-			type->SetFixCost( value );
+		if(type && fabsf(value - type->GetFixCost()) > FLOAT_SAFE_EPSILON){
+			type->SetFixCost(value);
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cEditPFTTypeCostPerMeter : public cBaseTextFieldListener{
 public:
-	cEditPFTTypeCostPerMeter( meWPWorld &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditPFTTypeCostPerMeter> Ref;
+	cEditPFTTypeCostPerMeter(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meWorld *world ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const float value = textField->GetFloat();
-		if( type && fabsf( value - type->GetCostPerMeter() ) > FLOAT_SAFE_EPSILON ){
-			type->SetCostPerMeter( value );
+		if(type && fabsf(value - type->GetCostPerMeter()) > FLOAT_SAFE_EPSILON){
+			type->SetCostPerMeter(value);
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -541,11 +553,12 @@ public:
 class cEditMusicPath : public igdeEditPathListener{
 	meWPWorld &pPanel;
 public:
-	cEditMusicPath( meWPWorld &panel ) : pPanel( panel ){}
+	typedef deTObjectReference<cEditMusicPath> Ref;
+	cEditMusicPath(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ) override{
-		if( pPanel.GetWorld() ){
-			pPanel.GetWorld()->GetMusic().SetPath( editPath->GetPath() );
+	void OnEditPathChanged(igdeEditPath *editPath) override{
+		if(pPanel.GetWorld()){
+			pPanel.GetWorld()->GetMusic().SetPath(editPath->GetPath());
 		}
 	}
 };
@@ -553,61 +566,62 @@ public:
 class cEditMusicVolume : public igdeEditSliderTextListener{
 	meWPWorld &pPanel;
 public:
-	cEditMusicVolume( meWPWorld &panel ) : pPanel( panel ){}
+	typedef deTObjectReference<cEditMusicVolume> Ref;
+	cEditMusicVolume(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ) override{
-		if( pPanel.GetWorld() ){
-			pPanel.GetWorld()->GetMusic().SetVolume( sliderText->GetValue() );
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
+		if(pPanel.GetWorld()){
+			pPanel.GetWorld()->GetMusic().SetVolume(sliderText->GetValue());
 		}
 	}
 };
 
 class cActionMusicPlay : public cBaseAction{
 public:
-	cActionMusicPlay( meWPWorld &panel ) : cBaseAction( panel, "Play", nullptr, "Play" ){}
+	typedef deTObjectReference<cActionMusicPlay> Ref;
+	cActionMusicPlay(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.MusicPlay", nullptr, "@World.WPWorld.Action.MusicPlay"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ) override{
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetMusic().Play();
-		return nullptr;
+		return {};
 	}
 	
-	virtual void Update() override{
-		SetEnabled( pPanel.GetWorld() );
+	void Update() override{
+		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 class cActionMusicPause : public cBaseAction{
 public:
-	cActionMusicPause( meWPWorld &panel ) : cBaseAction( panel, "Pause", nullptr, "Pause" ){}
+	typedef deTObjectReference<cActionMusicPause> Ref;
+	cActionMusicPause(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.MusicPause", nullptr, "@World.WPWorld.Action.MusicPause"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ) override{
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetMusic().Pause();
-		return nullptr;
+		return {};
 	}
 	
-	virtual void Update() override{
-		SetEnabled( pPanel.GetWorld() );
+	void Update() override{
+		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 class cActionMusicStop : public cBaseAction{
 public:
-	cActionMusicStop( meWPWorld &panel ) : cBaseAction( panel, "Stop", nullptr, "Stop" ){}
+	typedef deTObjectReference<cActionMusicStop> Ref;
+	cActionMusicStop(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.MusicStop", nullptr, "@World.WPWorld.Action.MusicStop"){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ) override{
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetMusic().Stop();
-		return nullptr;
+		return {};
 	}
 	
-	virtual void Update() override{
-		SetEnabled( pPanel.GetWorld() );
+	void Update() override{
+		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 }
-
-
-
 
 
 // Class meWPWorld
@@ -616,113 +630,109 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPWorld::meWPWorld( meWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pWorld( NULL )
+meWPWorld::meWPWorld(meWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPWorldListener( *this );
-	
-	
-	pActionPFTTypeAdd.TakeOver( new cActionPFTTypeAdd( *this ) );
-	pActionPFTTypeRemove.TakeOver( new cActionPFTTypeRemove( *this ) );
-	pActionPFTTypeClear.TakeOver( new cActionPFTTypeClear( *this ) );
-	pActionMusicPlay.TakeOver( new cActionMusicPlay( *this ) );
-	pActionMusicPause.TakeOver( new cActionMusicPause( *this ) );
-	pActionMusicStop.TakeOver( new cActionMusicStop( *this ) );
+	pListener = meWPWorldListener::Ref::New(*this);
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	pActionPFTTypeAdd = cActionPFTTypeAdd::Ref::New(*this);
+	pActionPFTTypeRemove = cActionPFTTypeRemove::Ref::New(*this);
+	pActionPFTTypeClear = cActionPFTTypeClear::Ref::New(*this);
+	pActionMusicPlay = cActionMusicPlay::Ref::New(*this);
+	pActionMusicPause = cActionMusicPause::Ref::New(*this);
+	pActionMusicStop = cActionMusicStop::Ref::New(*this);
+	
+	
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// parameters
-	helper.GroupBox( content, groupBox, "World Parameters:" );
+	helper.GroupBox(content, groupBox, "@World.WPWorld.WorldParameters");
 	
-	helper.EditDVector( groupBox, "Size", "Size of world in meters where modules can expect content",
-		8, 0, pEditSize, new cEditSize( *this ) );
+	helper.EditDVector(groupBox, "@World.WPWorld.Label.Size", "@World.WPWorld.WorldSize.ToolTip",
+		8, 0, pEditSize, cEditSize::Ref::New(*this));
 	
-	helper.EditVector( groupBox, "Gravity", "World gravity", pEditGravity, new cEditGravity( *this ) );
+	helper.EditVector(groupBox, "@World.WPWorld.Gravity", "@World.WPWorld.WorldGravity.ToolTip", pEditGravity, cEditGravity::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow( content, groupBox, "World Properties:", false, false );
+	helper.GroupBoxFlow(content, groupBox, "@World.WPWorld.WorldProperties", false, false);
 	
-	pEditProperties.TakeOver( new cEditWorldProperties( *this ) );
-	groupBox->AddChild( pEditProperties );
+	pEditProperties = cEditWorldProperties::Ref::New(*this);
+	groupBox->AddChild(pEditProperties);
 	
 	
 	// find path test
-	helper.GroupBox( content, groupBox, "Path Find Test:", true );
+	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTest", true);
 	
-	helper.FormLineStretchFirst( groupBox, "Start Position:", "Start position of the test path", formLine );
-	helper.EditDVector( formLine, "Start position of the test path",
-		pEditPFTStartPosition, new cEditPFTStartPosition( *this ) );
-	helper.Button( formLine, pBtnPFTStartPosFromCamera, new cActionPFTStartPosFromCamera( *this ), true );
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.StartPosition", "@World.WPWorld.StartPosition.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPWorld.StartPosition.ToolTip",
+		pEditPFTStartPosition, cEditPFTStartPosition::Ref::New(*this));
+	helper.Button(formLine, pBtnPFTStartPosFromCamera, cActionPFTStartPosFromCamera::Ref::New(*this));
 	
-	helper.FormLineStretchFirst( groupBox, "Goal Position:", "Goal position of the test path", formLine );
-	helper.EditDVector( formLine, "Goal position of the test path",
-		pEditPFTGoalPosition, new cEditPFTGoalPosition( *this ) );
-	helper.Button( formLine, pBtnPFTGoalPosFromCamera, new cActionPFTGoalPosFromCamera( *this ), true );
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.GoalPosition", "@World.WPWorld.GoalPosition.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPWorld.GoalPosition.ToolTip",
+		pEditPFTGoalPosition, cEditPFTGoalPosition::Ref::New(*this));
+	helper.Button(formLine, pBtnPFTGoalPosFromCamera, cActionPFTGoalPosFromCamera::Ref::New(*this));
 	
-	helper.EditInteger( groupBox, "Layer:", "Layer to navigate.",
-		pEditPFTLayer, new cEditPFTLayer( *this ) );
+	helper.EditInteger(groupBox, "@World.WPWorld.Layer", "@World.WPWorld.Layer.ToolTip",
+		pEditPFTLayer, cEditPFTLayer::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Space Type:", "Space type to navigate.",
-		pCBPFTSpaceType, new cComboPFTSpaceType( *this ) );
-	pCBPFTSpaceType->AddItem( "Grid", NULL, ( void* )( intptr_t )deNavigationSpace::estGrid );
-	pCBPFTSpaceType->AddItem( "Mesh", NULL, ( void* )( intptr_t )deNavigationSpace::estMesh );
-	pCBPFTSpaceType->AddItem( "Volume", NULL, ( void* )( intptr_t )deNavigationSpace::estVolume );
+	helper.ComboBox(groupBox, "@World.WPWorld.SpaceType", "@World.WPWorld.SpaceType.ToolTip",
+		pCBPFTSpaceType, cComboPFTSpaceType::Ref::New(*this));
+	pCBPFTSpaceType->SetAutoTranslateItems(true);
+	pCBPFTSpaceType->AddItem("@World.WPWorld.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
+	pCBPFTSpaceType->AddItem("@World.WPWorld.Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
+	pCBPFTSpaceType->AddItem("@World.WPWorld.Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
-	helper.EditFloat( groupBox, "Blocking Cost:", "Blocking cost.",
-		pEditPFTBlockingCost, new cEditPFTBlockingCost( *this ) );
-	helper.CheckBox( groupBox, pChkPFTShowPath, new cActionPFTShowPath( *this ), true );
+	helper.EditFloat(groupBox, "@World.WPWorld.BlockingCost", "@World.WPWorld.BlockingCost.ToolTip",
+		pEditPFTBlockingCost, cEditPFTBlockingCost::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkPFTShowPath, cActionPFTShowPath::Ref::New(*this));
 	
 	
 	// find path test types
-	helper.GroupBox( content, groupBox, "Path Find Test Types:", true );
+	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTestTypes", true);
 	
-	helper.FormLineStretchFirst( groupBox, "Type:", "Type to edit", formLine );
-	helper.ComboBox( formLine, "Type to edit", pCBPFTType, new cComboPFTType( *this ) );
-	pActionPFTTypes.TakeOver( new cActionPFTTypes( *this ) );
-	helper.Button( formLine, pBtnPFTTypes, pActionPFTTypes, true );
-	pActionPFTTypes->SetWidget( pBtnPFTTypes );
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Dialog.TypeNumber2", "@World.WPWorld.TypeToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPWorld.TypeToEdit.ToolTip", pCBPFTType, cComboPFTType::Ref::New(*this));
+	pActionPFTTypes = cActionPFTTypes::Ref::New(*this);
+	helper.Button(formLine, pBtnPFTTypes, pActionPFTTypes);
+	pActionPFTTypes->SetWidget(pBtnPFTTypes);
 	
-	helper.EditInteger( groupBox, "Type Number:", "Type number.",
-		pEditPFTTypeNumber, new cEditPFTTypeNumber( *this ) );
-	helper.EditString( groupBox, "Name:", "Name of the type.",
-		pEditPFTTypeName, new cEditPFTTypeName( *this ) );
-	helper.EditFloat( groupBox, "Fix Cost:", "Fix cost to move into type.",
-		pEditPFTTypeFixCost, new cEditPFTTypeFixCost( *this ) );
-	helper.EditFloat( groupBox, "Cost Per Meter:", "Cost per meter travelled inside type.",
-		pEditPFTTypeCPM, new cEditPFTTypeCostPerMeter( *this ) );
+	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber", "@World.WPWorld.TypeNumber.ToolTip",
+		pEditPFTTypeNumber, cEditPFTTypeNumber::Ref::New(*this));
+	helper.EditString(groupBox, "@World.WPWorld.Dialog.Name", "@World.WPWorld.NameOfType.ToolTip",
+		pEditPFTTypeName, cEditPFTTypeName::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPWorld.FixCost", "@World.WPWorld.FixCost.ToolTip",
+		pEditPFTTypeFixCost, cEditPFTTypeFixCost::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPWorld.CostPerMeter", "@World.WPWorld.CostPerMeter.ToolTip",
+		pEditPFTTypeCPM, cEditPFTTypeCostPerMeter::Ref::New(*this));
 	
 	
 	// music testing
-	helper.GroupBox( content, groupBox, "Music Testing:", true );
+	helper.GroupBox(content, groupBox, "@World.WPWorld.MusicTesting", true);
 	
-	helper.EditPath( groupBox, "Path:", "Path to sound file to play.",
-		igdeEnvironment::efpltSound, pEditMusicPath, new cEditMusicPath( *this ) );
+	helper.EditPath(groupBox, "@World.WPWorld.Path", "@World.WPWorld.PathSoundFile.ToolTip",
+		igdeEnvironment::efpltSound, pEditMusicPath, cEditMusicPath::Ref::New(*this));
 	
-	helper.EditSliderText( groupBox, "Volume:", "Volume to play music.",
-		0.0f, 1.0f, 4, 2, 0.1f, pEditMusicVolume, new cEditMusicVolume( *this ) );
+	helper.EditSliderText(groupBox, "@World.WPWorld.Volume", "@World.WPWorld.VolumeToPlayMusic.ToolTip",
+		0.0f, 1.0f, 4, 2, 0.1f, pEditMusicVolume, cEditMusicVolume::Ref::New(*this));
 	
-	helper.FormLine( groupBox, "", "", formLine );
-	helper.Button( formLine, pBtnMusicPlay, new cActionMusicPlay( *this ), true );
-	helper.Button( formLine, pBtnMusicPause, new cActionMusicPause( *this ), true );
-	helper.Button( formLine, pBtnMusicStop, new cActionMusicStop( *this ), true );
+	helper.FormLine(groupBox, "", "", formLine);
+	helper.Button(formLine, pBtnMusicPlay, cActionMusicPlay::Ref::New(*this));
+	helper.Button(formLine, pBtnMusicPause, cActionMusicPause::Ref::New(*this));
+	helper.Button(formLine, pBtnMusicStop, cActionMusicStop::Ref::New(*this));
 }
 
 meWPWorld::~meWPWorld(){
-	SetWorld( NULL );
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -730,32 +740,29 @@ meWPWorld::~meWPWorld(){
 // Management
 ///////////////
 
-void meWPWorld::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPWorld::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	meWPPropertyList &editProperties = ( meWPPropertyList& )( igdeWidget& )pEditProperties;
+	meWPPropertyList &editProperties = (meWPPropertyList&)(igdeWidget&)pEditProperties;
 	
-	if( pWorld ){
-		editProperties.SetClipboard( NULL );
-		editProperties.SetUndoSystem( NULL );
-		editProperties.SetTriggerTargetList( NULL );
-		editProperties.SetIdentifiers( decStringSet() );
+	if(pWorld){
+		editProperties.SetClipboard(nullptr);
+		editProperties.SetUndoSystem(nullptr);
+		editProperties.SetTriggerTargetList(nullptr);
+		editProperties.SetIdentifiers(decStringSet());
 		
-		pWorld->RemoveNotifier( pListener );
-		pWorld->FreeReference();
+		pWorld->RemoveNotifier(pListener);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
-		world->AddReference();
-		
-		editProperties.SetClipboard( &pWindowProperties.GetWindowMain().GetClipboard() );
-		editProperties.SetUndoSystem( world->GetUndoSystem() );
-		editProperties.SetTriggerTargetList( &world->GetTriggerTable() );
+	if(world){
+		world->AddNotifier(pListener);
+		editProperties.SetClipboard(&pWindowProperties.GetWindowMain().GetClipboard());
+		editProperties.SetUndoSystem(world->GetUndoSystem());
+		editProperties.SetTriggerTargetList(&world->GetTriggerTable());
 	}
 	
 	UpdateWorld();
@@ -774,78 +781,71 @@ void meWPWorld::UpdateWorld(){
 }
 
 void meWPWorld::UpdateWorldParameters(){
-	if( pWorld ){
-		pEditSize->SetDVector( pWorld->GetSize() );
-		pEditGravity->SetVector( pWorld->GetGravity() );
+	if(pWorld){
+		pEditSize->SetDVector(pWorld->GetSize());
+		pEditGravity->SetVector(pWorld->GetGravity());
 		
 	}else{
-		pEditSize->SetDVector( decDVector( 1000.0, 1000.0, 1000.0 ) );
-		pEditGravity->SetVector( decDVector( 0.0f, -9.81f, 0.0f ) );
+		pEditSize->SetDVector(decDVector(1000.0, 1000.0, 1000.0));
+		pEditGravity->SetVector(decDVector(0.0f, -9.81f, 0.0f));
 	}
 	
 	const bool enabled = pWorld;
-	pEditSize->SetEnabled( enabled );
-	pEditGravity->SetEnabled( enabled );
+	pEditSize->SetEnabled(enabled);
+	pEditGravity->SetEnabled(enabled);
 }
 
 void meWPWorld::UpdatePathFindTest(){
-	if( pWorld ){
+	if(pWorld){
 		const mePathFindTest &pft = *pWorld->GetPathFindTest();
-		pEditPFTStartPosition->SetDVector( pft.GetStartPosition() );
-		pEditPFTGoalPosition->SetDVector( pft.GetGoalPosition() );
-		pEditPFTLayer->SetInteger( pft.GetLayer() );
-		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )pft.GetSpaceType() );
-		pEditPFTBlockingCost->SetInteger( ( int )( pft.GetBlockingCost() + 0.1f ) );
-		pChkPFTShowPath->SetChecked( pft.GetShowPath() );
+		pEditPFTStartPosition->SetDVector(pft.GetStartPosition());
+		pEditPFTGoalPosition->SetDVector(pft.GetGoalPosition());
+		pEditPFTLayer->SetInteger(pft.GetLayer());
+		pCBPFTSpaceType->SetSelectionWithData((void*)(intptr_t)pft.GetSpaceType());
+		pEditPFTBlockingCost->SetInteger((int)(pft.GetBlockingCost() + 0.1f));
+		pChkPFTShowPath->SetChecked(pft.GetShowPath());
 		
 	}else{
-		pEditPFTStartPosition->SetDVector( decDVector() );
-		pEditPFTGoalPosition->SetDVector( decDVector() );
+		pEditPFTStartPosition->SetDVector(decDVector());
+		pEditPFTGoalPosition->SetDVector(decDVector());
 		pEditPFTLayer->ClearText();
-		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estMesh );
+		pCBPFTSpaceType->SetSelectionWithData((void*)(intptr_t)deNavigationSpace::estMesh);
 		pEditPFTBlockingCost->ClearText();
-		pChkPFTShowPath->SetChecked( false );
+		pChkPFTShowPath->SetChecked(false);
 	}
 	
 	const bool enabled = pWorld;
-	pEditPFTStartPosition->SetEnabled( enabled );
-	pEditPFTGoalPosition->SetEnabled( enabled );
-	pEditPFTLayer->SetEnabled( enabled );
-	pCBPFTSpaceType->SetEnabled( enabled );
-	pEditPFTBlockingCost->SetEnabled( enabled );
-	pChkPFTShowPath->SetEnabled( enabled );
+	pEditPFTStartPosition->SetEnabled(enabled);
+	pEditPFTGoalPosition->SetEnabled(enabled);
+	pEditPFTLayer->SetEnabled(enabled);
+	pCBPFTSpaceType->SetEnabled(enabled);
+	pEditPFTBlockingCost->SetEnabled(enabled);
+	pChkPFTShowPath->SetEnabled(enabled);
 	
 	UpdatePathFindTestTypeList();
 }
 
 mePathFindTestType *meWPWorld::GetActivePathFindTestType() const{
-	if( ! pWorld ){
-		return NULL;
+	if(!pWorld){
+		return nullptr;
 	}
 	
 	const igdeListItem * const selection = pCBPFTType->GetSelectedItem();
-	return selection ? ( mePathFindTestType* )selection->GetData() : NULL;
+	return selection ? (mePathFindTestType*)selection->GetData() : nullptr;
 }
 
 void meWPWorld::UpdatePathFindTestTypeList(){
-	mePathFindTestType * const selection = GetActivePathFindTestType();
-	
-	pCBPFTType->RemoveAllItems();
-	
-	if( pWorld ){
-		const mePathFindTestTypeList &list = pWorld->GetPathFindTest()->GetTypeList();
-		const int count = list.GetCount();
-		decString text;
-		int i;
+	pCBPFTType->UpdateRestoreSelection([&](){
+		pCBPFTType->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			mePathFindTestType * const type = list.GetAt( i );
-			text.Format( "%d: %s", type->GetTypeNumber(), type->GetName().GetString() );
-			pCBPFTType->AddItem( text, NULL, type );
+		if(pWorld){
+			pWorld->GetPathFindTest()->GetTypeList().Visit([&](mePathFindTestType *type){
+				decString text;
+				text.Format("%d: %s", type->GetTypeNumber(), type->GetName().GetString());
+				pCBPFTType->AddItem(text, nullptr, type);
+			});
 		}
-	}
-	
-	pCBPFTType->SetSelectionWithData( selection );
+	}, 0);
 	
 	UpdatePathFindTestType();
 }
@@ -853,11 +853,11 @@ void meWPWorld::UpdatePathFindTestTypeList(){
 void meWPWorld::UpdatePathFindTestType(){
 	mePathFindTestType * const activeType = GetActivePathFindTestType();
 	
-	if( activeType ){
-		pEditPFTTypeNumber->SetInteger( activeType->GetTypeNumber() );
-		pEditPFTTypeName->SetText( activeType->GetName() );
-		pEditPFTTypeFixCost->SetFloat( activeType->GetFixCost() );
-		pEditPFTTypeCPM->SetFloat( activeType->GetCostPerMeter() );
+	if(activeType){
+		pEditPFTTypeNumber->SetInteger(activeType->GetTypeNumber());
+		pEditPFTTypeName->SetText(activeType->GetName());
+		pEditPFTTypeFixCost->SetFloat(activeType->GetFixCost());
+		pEditPFTTypeCPM->SetFloat(activeType->GetCostPerMeter());
 		
 	}else{
 		pEditPFTTypeNumber->ClearText();
@@ -867,26 +867,26 @@ void meWPWorld::UpdatePathFindTestType(){
 	}
 	
 	const bool enabled = activeType;
-	pEditPFTTypeNumber->SetEnabled( enabled );
-	pEditPFTTypeName->SetEnabled( enabled );
-	pEditPFTTypeFixCost->SetEnabled( enabled );
-	pEditPFTTypeCPM->SetEnabled( enabled );
+	pEditPFTTypeNumber->SetEnabled(enabled);
+	pEditPFTTypeName->SetEnabled(enabled);
+	pEditPFTTypeFixCost->SetEnabled(enabled);
+	pEditPFTTypeCPM->SetEnabled(enabled);
 }
 
 
 void meWPWorld::UpdateMusic(){
-	if( pWorld ){
-		pEditMusicPath->SetPath( pWorld->GetMusic().GetPath() );
-		pEditMusicVolume->SetValue( pWorld->GetMusic().GetVolume() );
+	if(pWorld){
+		pEditMusicPath->SetPath(pWorld->GetMusic().GetPath());
+		pEditMusicVolume->SetValue(pWorld->GetMusic().GetVolume());
 		
 	}else{
 		pEditMusicPath->ClearPath();
-		pEditMusicVolume->SetValue( 1.0f );
+		pEditMusicVolume->SetValue(1.0f);
 	}
 	
 	const bool enabled = pWorld;
-	pEditMusicPath->SetEnabled( enabled );
-	pEditMusicVolume->SetEnabled( enabled );
+	pEditMusicPath->SetEnabled(enabled);
+	pEditMusicVolume->SetEnabled(enabled);
 	pActionMusicPlay->Update();
 	pActionMusicPause->Update();
 	pActionMusicStop->Update();
@@ -898,44 +898,40 @@ const decString &meWPWorld::GetActiveProperty() const{
 }
 
 void meWPWorld::SelectActiveProperty(){
-	( ( meWPPropertyList& )( igdeWidget& )pEditProperties ).SelectProperty( GetActiveProperty() );
+	pEditProperties.DynamicCast<meWPPropertyList>()->SelectProperty(GetActiveProperty());
 }
 
 void meWPWorld::UpdatePropertyKeys(){
-	( ( meWPPropertyList& )( igdeWidget& )pEditProperties ).UpdateKeys();
+	pEditProperties.DynamicCast<meWPPropertyList>()->UpdateKeys();
 }
 
 void meWPWorld::UpdateProperties(){
-	( ( meWPPropertyList& )( igdeWidget& )pEditProperties ).SetProperties(
-		pWorld ? pWorld->GetProperties() : decStringDictionary() );
+	pEditProperties.DynamicCast<meWPPropertyList>()->SetProperties(
+		pWorld ? pWorld->GetProperties() : decStringDictionary());
 	SelectActiveProperty();
 }
 
 void meWPWorld::UpdateIdentifierLists(){
-	meWPPropertyList &editProperties = ( meWPPropertyList& )( igdeWidget& )pEditProperties;
+	meWPPropertyList &editProperties = pEditProperties.DynamicCast<meWPPropertyList>();
 	const decString &property = GetActiveProperty();
 	decStringSet identifiers;
 	
-	if( pWorld && ! property.IsEmpty() ){
-		const igdeGDProperty * const gdProperty = editProperties.GetGDProperty( property );
-		if( gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier ){
-			const meIDGroup * const idgroup = pWorld->GetIDGroupList().GetNamed( gdProperty->GetIdentifierGroup() );
-			if( idgroup ){
-				const decStringList &list = idgroup->GetIDList();
-				const int count = list.GetCount();
-				int i;
-				
-				for( i=0; i<count; i++ ){
-					identifiers.Add( list.GetAt( i ) );
-				}
+	if(pWorld && !property.IsEmpty()){
+		const igdeGDProperty * const gdProperty = editProperties.GetGDProperty(property);
+		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
+			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindNamed(gdProperty->GetIdentifierGroup());
+			if(idgroup){
+				idgroup->GetIDList().Visit([&](const decString &id){
+					identifiers.Add(id);
+				});
 			}
 		}
 	}
-	editProperties.SetIdentifiers( identifiers );
+	editProperties.SetIdentifiers(identifiers);
 }
 
-void meWPWorld::SelectPFType( mePathFindTestType *type ){
-	pCBPFTType->SetSelectionWithData( type );
+void meWPWorld::SelectPFType(mePathFindTestType *type){
+	pCBPFTType->SetSelectionWithData(type);
 }
 
 

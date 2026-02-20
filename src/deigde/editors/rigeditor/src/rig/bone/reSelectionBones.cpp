@@ -40,158 +40,95 @@
 // Constructor, destructor
 ////////////////////////////
 
-reSelectionBones::reSelectionBones( reRig *rig ){
-	if( ! rig ) DETHROW( deeInvalidParam );
-	
+reSelectionBones::reSelectionBones(reRig *rig){
+	DEASSERT_NOTNULL(rig)
 	pRig = rig;
-	
-	pBones = NULL;
-	pBoneCount = 0;
-	pBoneSize = 0;
-	pActiveBone = NULL;
 }
 
 reSelectionBones::~reSelectionBones(){
 	Reset();
-	if( pBones ) delete [] pBones;
 }
 
 
 
 // Management
 ///////////////
-
-reRigBone *reSelectionBones::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pBoneCount ) DETHROW( deeOutOfBoundary );
-	
-	return pBones[ index ];
+int reSelectionBones::IndexOfBoneWith(deColliderVolume *collider) const{
+	DEASSERT_NOTNULL(collider)
+	return pBones.IndexOfMatching([&](const reRigBone &b){
+		return b.GetCollider() == collider;
+	});
 }
 
-bool reSelectionBones::HasBone( reRigBone *bone ) const{
-	if( ! bone ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pBoneCount; i++ ){
-		if( bone == pBones[ i ] ){
-			return true;
-		}
+void reSelectionBones::AddBone(reRigBone *bone){
+	if(!pBones.Add(bone)){
+		return;
 	}
 	
-	return false;
-}
+	bone->SetSelected(true);
 	
-int reSelectionBones::IndexOfBone( reRigBone *bone ) const{
-	if( ! bone ) DETHROW( deeInvalidParam );
-	int i;
+	pRig->NotifyBoneSelectedChanged(bone);
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( bone == pBones[ i ] ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-int reSelectionBones::IndexOfBoneWith( deColliderVolume *collider ) const{
-	if( ! collider ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pBoneCount; i++ ){
-		if( collider == pBones[ i ]->GetCollider() ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void reSelectionBones::AddBone( reRigBone *bone ){
-	if( HasBone( bone ) ) DETHROW( deeInvalidParam );
-	
-	if( pBoneCount == pBoneSize ){
-		int newSize = pBoneSize * 3 / 2 + 1;
-		reRigBone **newArray = new reRigBone*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pBones ){
-			memcpy( newArray, pBones, sizeof( reRigBone* ) * pBoneSize );
-			delete [] pBones;
-		}
-		pBones = newArray;
-		pBoneSize = newSize;
-	}
-	
-	pBones[ pBoneCount ] = bone;
-	pBoneCount++;
-	
-	bone->AddReference();
-	
-	bone->SetSelected( true );
-	
-	pRig->NotifyBoneSelectedChanged( bone );
-	
-	if( ! pActiveBone ){
-		SetActiveBone( bone );
+	if(!pActiveBone){
+		SetActiveBone(bone);
 	}
 }
 
-void reSelectionBones::RemoveBone( reRigBone *bone ){
-	int i, index = IndexOfBone( bone );
-	if( index == -1 ) DETHROW( deeInvalidParam );
-	
-	for( i=index+1; i<pBoneCount; i++ ){
-		pBones[ i - 1 ] = pBones[ i ];
+void reSelectionBones::RemoveBone(reRigBone *bone){
+	const reRigBone::Ref guard(bone);
+	if(!pBones.Remove(bone)){
+		return;
 	}
-	pBones[ pBoneCount - 1 ] = NULL;
-	pBoneCount--;
 	
-	bone->SetSelected( false );
+	bone->SetSelected(false);
 	
-	if( bone == pActiveBone ){
-		if( pBoneCount > 0 ){
-			SetActiveBone( pBones[ 0 ] );
+	if(bone == pActiveBone){
+		if(pBones.IsNotEmpty()){
+			SetActiveBone(pBones.First());
 			
 		}else{
-			SetActiveBone( NULL );
+			SetActiveBone(nullptr);
 		}
 	}
 	
-	pRig->NotifyBoneSelectedChanged( bone );
-	
-	bone->FreeReference();
+	pRig->NotifyBoneSelectedChanged(bone);
 }
 
 void reSelectionBones::RemoveAllBones(){
-	SetActiveBone( NULL );
+	if(pBones.IsEmpty()){
+		return;
+	}
+	
+	SetActiveBone(nullptr);
 	
 	pRig->NotifyAllBonesDeselected();
 	
-	while( pBoneCount > 0 ){
-		pBoneCount--;
-		
-		pBones[ pBoneCount ]->SetSelected( false );
-		pBones[ pBoneCount ]->FreeReference();
-	}
+	pBones.Visit([](reRigBone &b){
+		b.SetSelected(false);
+	});
+	pBones.RemoveAll();
 }
 
 
 
 bool reSelectionBones::HasActiveBone() const{
-	return pActiveBone != NULL;
+	return pActiveBone.IsNotNull();
 }
 
-void reSelectionBones::SetActiveBone( reRigBone *bone ){
-	if( bone != pActiveBone ){
-		if( bone && ! HasBone( bone ) ) DETHROW( deeInvalidParam );
+void reSelectionBones::SetActiveBone(reRigBone *bone){
+	if(bone != pActiveBone){
+		if(bone){
+			DEASSERT_TRUE(pBones.Has(bone))
+		}
 		
-		if( pActiveBone ){
-			pActiveBone->SetActive( false );
+		if(pActiveBone){
+			pActiveBone->SetActive(false);
 		}
 		
 		pActiveBone = bone;
 		
-		if( bone ){
-			bone->SetActive( true );
+		if(bone){
+			bone->SetActive(true);
 		}
 		
 		pRig->NotifyActiveBoneChanged();

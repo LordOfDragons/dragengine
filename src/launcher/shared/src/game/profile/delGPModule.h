@@ -25,9 +25,10 @@
 #ifndef _DELGPMODULE_H_
 #define _DELGPMODULE_H_
 
-#include "delGPMParameterList.h"
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringDictionary.h>
 
 class delEngineInstance;
 class delLauncher;
@@ -42,13 +43,21 @@ class delLauncher;
 class DE_DLL_EXPORT delGPModule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGPModule> Ref;
+	using Ref = deTObjectReference<delGPModule>;
 	
+	/** \brief List type. */
+	class DE_DLL_EXPORT List : public decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>::decTCollectionQueryByName;
+		
+		/** \brief Update using modules from another list. */
+		void Update(const List &list);
+	};
 	
 	
 private:
 	decString pName;
-	delGPMParameterList pParameters;
+	decStringDictionary pParameters;
 	
 	
 	
@@ -56,14 +65,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game profile module. */
-	delGPModule( const char *name = "" );
+	delGPModule(const char *name = "");
 	
 	/** \brief Create copy of game profile module. */
-	delGPModule( const delGPModule &module );
+	delGPModule(const delGPModule &module);
 	
 protected:
 	/** \brief Clean up game profile. */
-	virtual ~delGPModule();
+	~delGPModule() override;
 	/*@}*/
 	
 	
@@ -75,11 +84,11 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parameters. */
-	inline delGPMParameterList &GetParameters(){ return pParameters; }
-	inline const delGPMParameterList &GetParameters() const{ return pParameters; }
+	inline decStringDictionary &GetParameters(){ return pParameters; }
+	inline const decStringDictionary &GetParameters() const{ return pParameters; }
 	
 	/**
 	 * \brief Set parameters for a module version if possible.
@@ -87,8 +96,8 @@ public:
 	 * Invalid parameters are silently ignored and do not cause an exception.
 	 * Version has to be set to the module version to operate on.
 	 */
-	void ApplyParameters( const char *version, delLauncher &launcher,
-		delEngineInstance &engineInstance ) const;
+	void ApplyParameters(const char *version, delLauncher &launcher,
+		delEngineInstance &engineInstance) const;
 	/*@}*/
 	
 	
@@ -96,7 +105,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy module. */
-	delGPModule &operator=( const delGPModule &module );
+	delGPModule &operator=(const delGPModule &module);
 	/*@}*/
 };
 

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynSynthesizerController.h"
 
 #include <dragengine/common/exceptions.h>
@@ -39,63 +36,42 @@
 ////////////////////////////
 
 desynSynthesizerController::desynSynthesizerController() :
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pClamp( true ),
-pDirty( false ),
-pValues( NULL ),
-pValueSize( 0 ){
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pClamp(true),
+pDirty(false){
 }
 
-desynSynthesizerController::~desynSynthesizerController(){
-	if( pValues ){
-		delete [] pValues;
-	}
-}
+desynSynthesizerController::~desynSynthesizerController() = default;
 
 
 
 // Management
 ///////////////
 
-float desynSynthesizerController::GetValue( int sample ) const{
-	if( sample < 0 || sample >= pValueSize ){
-		DETHROW( deeInvalidParam );
-	}
-	return pValues[ sample ];
+float desynSynthesizerController::GetValue(int sample) const{
+	return pValues[sample];
 }
 
-void desynSynthesizerController::UpdateValues( int samples, float time, float range ){
-	if( samples < 1 ){
+void desynSynthesizerController::UpdateValues(int samples, float time, float range){
+	if(samples < 1){
 		return;
 	}
 	
-	if( samples > pValueSize ){
-		if( pValues ){
-			delete [] pValues;
-			pValues = NULL;
-		}
-		pValueSize = 0;
-		
-		pValues = new float[ samples ];
-		pValueSize = samples;
-	}
-	
-	int i;
-	
-	for( i=0; i<samples; i++ ){
-		pValues[ i ] = pCurve.Evaluate( time + range * ( float )i );
-	}
+	pValues.SetCountDiscard(samples);
+	pValues.VisitIndexed([&](int i, float &value){
+		value = pCurve.Evaluate(time + range * (float)i);
+	});
 }
 
-void desynSynthesizerController::SetDirty( bool dirty ){
+void desynSynthesizerController::SetDirty(bool dirty){
 	pDirty = dirty;
 }
 
-void desynSynthesizerController::Update( const deSynthesizerController &controller ){
+void desynSynthesizerController::Update(const deSynthesizerController &controller){
 	pMinValue = controller.GetMinimumValue();
 	pMaxValue = controller.GetMaximumValue();
 	pClamp = controller.GetClamp();
-	pCurve.SetCurve( controller.GetCurve(), controller.GetMinimumValue(), controller.GetMaximumValue() );
+	pCurve.SetCurve(controller.GetCurve(), controller.GetMinimumValue(), controller.GetMaximumValue());
 	pDirty = false;
 }

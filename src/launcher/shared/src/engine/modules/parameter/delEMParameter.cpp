@@ -38,15 +38,15 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delEMParameter::delEMParameter( int index, const deModuleParameter &info ) :
-pIndex( index ),
-pInfo( info ){
+delEMParameter::delEMParameter(int index, const deModuleParameter &info) :
+pIndex(index),
+pInfo(info){
 }
 
-delEMParameter::delEMParameter( int index, const deModuleParameter &info, const char *value ) :
-pIndex( index ),
-pInfo( info ),
-pValue( value ){
+delEMParameter::delEMParameter(int index, const deModuleParameter &info, const char *value) :
+pIndex(index),
+pInfo(info),
+pValue(value){
 }
 
 delEMParameter::~delEMParameter(){
@@ -57,6 +57,6 @@ delEMParameter::~delEMParameter(){
 // Management
 ///////////////
 
-void delEMParameter::SetValue( const char *value ){
+void delEMParameter::SetValue(const char *value){
 	pValue = value;
 }

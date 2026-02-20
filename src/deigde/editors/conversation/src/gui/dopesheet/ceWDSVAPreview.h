@@ -25,14 +25,14 @@
 #ifndef _CEWDSVAPREVIEW_H_
 #define _CEWDSVAPREVIEW_H_
 
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/sound/deSpeakerReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/sound/deSpeaker.h>
 
 class ceWindowDopeSheet;
 class deSound;
@@ -42,21 +42,24 @@ class deSpeaker;
 /**
  * \brief Dope sheet voice audio preview.
  */
-class ceWDSVAPreview{
+class ceWDSVAPreview : public deObject{
+public:
+	using Ref = deTObjectReference<ceWDSVAPreview>;
+	
 private:
 	ceWindowDopeSheet &pWindow;
 	
-	deCanvasViewReference pCanvas;
-	deCanvasImageReference pCanvasPreview;
+	deCanvasView::Ref pCanvas;
+	deCanvasImage::Ref pCanvasPreview;
 	
-	igdeMouseKeyListenerReference pMouseKeyListener;
+	igdeMouseKeyListener::Ref pMouseKeyListener;
 	
 	float pCurTime;
 	
-	deSpeakerReference pSpeaker;
-	deImageReference pImagePreview;
+	deSpeaker::Ref pSpeaker;
+	deImage::Ref pImagePreview;
 	bool pDirtyPreview;
-	char *pPreviewSamples;
+	decTList<char> pPreviewSamples;
 	
 	
 	
@@ -64,10 +67,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dope sheet lane. */
-	ceWDSVAPreview( ceWindowDopeSheet &dopeSheet );
+	ceWDSVAPreview(ceWindowDopeSheet &dopeSheet);
 	
 	/** \brief Clean up dope sheet lane. */
-	~ceWDSVAPreview();
+protected:
+	~ceWDSVAPreview() override;
+public:
 	/*@}*/
 	
 	
@@ -78,10 +83,10 @@ public:
 	inline ceWindowDopeSheet &GetWindow() const{ return pWindow; }
 	
 	/** \brief Canvas. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Mouse listener. */
-	inline igdeMouseKeyListener *GetMouseKeyListener() const{ return pMouseKeyListener; }
+	inline const igdeMouseKeyListener::Ref &GetMouseKeyListener() const{ return pMouseKeyListener; }
 	
 	
 	
@@ -89,10 +94,10 @@ public:
 	inline float GetCurTime() const{ return pCurTime; }
 	
 	/** \brief Set current time. */
-	void SetCurTime( float time );
+	void SetCurTime(float time);
 	
 	/** \brief Set preview speaker. */
-	void SetSpeaker( deSpeaker *speaker );
+	void SetSpeaker(deSpeaker *speaker);
 	
 	
 	

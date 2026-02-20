@@ -28,8 +28,8 @@
 // Class deBaseLanguagePackModule
 ///////////////////////////////////
 
-deBaseLanguagePackModule::deBaseLanguagePackModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseLanguagePackModule::deBaseLanguagePackModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseLanguagePackModule::~deBaseLanguagePackModule(){

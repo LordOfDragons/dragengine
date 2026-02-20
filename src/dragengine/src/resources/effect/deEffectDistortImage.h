@@ -26,7 +26,7 @@
 #define _DEEFFEDISTORTIMAGE_H_
 
 #include "deEffect.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 #include "../../common/math/decMath.h"
 
 class deEffectChain;
@@ -43,13 +43,12 @@ class deEffectChain;
 class DE_DLL_EXPORT deEffectDistortImage : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffectDistortImage> Ref;
-	
+	using Ref = deTObjectReference<deEffectDistortImage>;
 	
 	
 private:
-	deImageReference pImage;
-	decVector2 pTexCoords[ 4 ];
+	deImage::Ref pImage;
+	decVector2 pTexCoords[4];
 	float pStrengthU;
 	float pStrengthV;
 	
@@ -59,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new effect distort image. */
-	deEffectDistortImage( deEffectManager *manager );
+	deEffectDistortImage(deEffectManager *manager);
 	
 protected:
 	/**
@@ -68,35 +67,35 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deEffectDistortImage();
+	~deEffectDistortImage() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or null if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or null to remove it. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Texture coordinates of the given corner. */
-	const decVector2 &GetTextureCoordinatesFor( int corner ) const;
+	const decVector2 &GetTextureCoordinatesFor(int corner) const;
 	
 	/** \brief Set texture coordinates if the given corner. */
-	void SetTextureCoordinatesFor( int corner, const decVector2 &textureCoordinates );
+	void SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates);
 	
 	/** \brief Strength in u direction. */
 	inline float GetStrengthU() const{ return pStrengthU; }
 	
 	/** \brief Set strength in u direction. */
-	void SetStrengthU( float strength );
+	void SetStrengthU(float strength);
 	
 	/** \brief Strength in v direction. */
 	inline float GetStrengthV() const{ return pStrengthV; }
 	
 	/** \brief Set strength in v direction. */
-	void SetStrengthV( float strength );
+	void SetStrengthV(float strength);
 	/*@}*/
 	
 	
@@ -104,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	void Visit(deEffectVisitor &visitor) override;
 	/*@}*/
 };
 

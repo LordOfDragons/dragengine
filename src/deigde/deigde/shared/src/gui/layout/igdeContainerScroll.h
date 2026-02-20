@@ -32,6 +32,12 @@
  * \brief IGDE UI Container Widget scrolling one widget.
  */
 class DE_DLL_EXPORT igdeContainerScroll : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeContainerScroll>;
+	
+	
 private:
 	bool pCanScrollX;
 	bool pCanScrollY;
@@ -42,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create scrollbox. */
-	igdeContainerScroll( igdeEnvironment &environment, bool canScrollX = true, bool canScrollY = true );
+	igdeContainerScroll(igdeEnvironment &environment, bool canScrollX = true, bool canScrollY = true);
 	
 	
 	
@@ -53,7 +59,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainerScroll();
+	~igdeContainerScroll() override;
 	/*@}*/
 	
 	
@@ -70,7 +76,7 @@ public:
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	/*@}*/
 	
 	
@@ -84,13 +90,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

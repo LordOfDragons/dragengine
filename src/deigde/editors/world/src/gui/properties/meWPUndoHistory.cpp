@@ -40,18 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPUndoHistory::meWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pWorld( NULL ),
-pListener( new meWPUndoHistoryListener( *this ) ){
+meWPUndoHistory::meWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(meWPUndoHistoryListener::Ref::New(*this)){
 }
 
 meWPUndoHistory::~meWPUndoHistory(){
-	SetWorld( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -59,24 +54,21 @@ meWPUndoHistory::~meWPUndoHistory(){
 // Management
 ///////////////
 
-void meWPUndoHistory::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPUndoHistory::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(nullptr);
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
-		pWorld->FreeReference();
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
-		world->AddReference();
-		
-		SetUndoSystem( world->GetUndoSystem() );
+	if(world){
+		world->AddNotifier(pListener);
+		SetUndoSystem(world->GetUndoSystem());
 	}
 }

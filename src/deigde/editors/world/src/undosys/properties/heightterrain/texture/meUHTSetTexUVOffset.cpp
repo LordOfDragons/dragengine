@@ -42,8 +42,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVOffset::meUHTSetTexUVOffset( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newOffset ){
-	if( ! world || ! sector || ! texture ) DETHROW( deeInvalidParam );
+meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainTexture *texture, const decVector2 &newOffset)
+{
+	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -52,17 +54,11 @@ meUHTSetTexUVOffset::meUHTSetTexUVOffset( meWorld *world, meHeightTerrainSector 
 	pOldOffset.y = texture->GetProjectionOffsetV();
 	pNewOffset = newOffset;
 	
-	SetShortInfo( "Set Height Terrain Texture UV Offset" );
-	
-	world->AddReference();
-	
+	SetShortInfo("@World.UHTSetTexUVOffset.SetHeightTerrainTextureUvOffset");
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexUVOffset::~meUHTSetTexUVOffset(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
 }
 
 
@@ -71,11 +67,11 @@ meUHTSetTexUVOffset::~meUHTSetTexUVOffset(){
 ///////////////
 
 void meUHTSetTexUVOffset::Undo(){
-	pTexture->SetProjectionOffsetU( pOldOffset.x );
-	pTexture->SetProjectionOffsetV( pOldOffset.y );
+	pTexture->SetProjectionOffsetU(pOldOffset.x);
+	pTexture->SetProjectionOffsetV(pOldOffset.y);
 }
 
 void meUHTSetTexUVOffset::Redo(){
-	pTexture->SetProjectionOffsetU( pNewOffset.x );
-	pTexture->SetProjectionOffsetV( pNewOffset.y );
+	pTexture->SetProjectionOffsetU(pNewOffset.x);
+	pTexture->SetProjectionOffsetV(pNewOffset.y);
 }

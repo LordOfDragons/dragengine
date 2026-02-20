@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,12 +39,15 @@ class gdeObjectClass;
  * \brief Undo action object class particleEmitter set rotation.
  */
 class gdeUOCParticleEmitterSetRotation : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+public:
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetRotation>;
 	
-	decVector pOldValue;
-	decVector pNewValue;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
+	
+	decVector pOldValue, pNewValue;
 	
 	
 	
@@ -52,12 +55,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetRotation( gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, const decVector &newValue );
+	gdeUOCParticleEmitterSetRotation(gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCParticleEmitterSetRotation();
+	~gdeUOCParticleEmitterSetRotation() override;
 	/*@}*/
 	
 	
@@ -66,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

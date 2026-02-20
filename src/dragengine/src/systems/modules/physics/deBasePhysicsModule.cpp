@@ -27,8 +27,8 @@
 // Class deBasePhysicsModule
 //////////////////////////////
 
-deBasePhysicsModule::deBasePhysicsModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBasePhysicsModule::deBasePhysicsModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBasePhysicsModule::~deBasePhysicsModule(){

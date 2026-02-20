@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 #include "../../../../undosys/objectClass/snappoint/gdeUOCRemoveSnapPoint.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSnapPointCut::gdeMAOCSnapPointCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Snap Point",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class snap point" )
+gdeMAOCSnapPointCut::gdeMAOCSnapPointCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointCut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"@GameDefinition.Menu.OCSnapPointCut.ToolTip")
 {
 }
 
@@ -60,31 +60,27 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Snap Point",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint ){
-		return NULL;
+igdeUndo::Ref gdeMAOCSnapPointCut::OnActionSubObject(
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint){
+		return {};
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
-	if( ! snapPoint ){
-		return NULL;
+	if(!snapPoint){
+		return {};
 	}
 	
-	deObjectReference clipOCSnapPoint;
-	clipOCSnapPoint.TakeOver( new gdeOCSnapPoint( *snapPoint ) );
+	const gdeOCSnapPoint::Ref clipOCSnapPoint(gdeOCSnapPoint::Ref::New(*snapPoint));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCSnapPoint( ( gdeOCSnapPoint* )( deObject* )clipOCSnapPoint ) );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSnapPoint::Ref::New(clipOCSnapPoint));
 	
-	pWindowMain.GetClipboard().Set( clipData );
-	
-	return new gdeUOCRemoveSnapPoint( &objectClass, snapPoint );
+	return gdeUOCRemoveSnapPoint::Ref::New(&objectClass, snapPoint);
 }
 
 void gdeMAOCSnapPointCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
-		&& gameDefinition->GetActiveOCSnapPoint() != NULL );
+		&& gameDefinition->GetActiveOCSnapPoint() != nullptr);
 }

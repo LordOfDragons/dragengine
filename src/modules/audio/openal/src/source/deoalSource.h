@@ -27,6 +27,8 @@
 
 #include "../deoalBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoalEffectSlot;
 
 
@@ -62,8 +64,7 @@ private:
 	
 	ALuint pSource;
 	
-	ALuint *pBuffers;
-	int pBufferCount;
+	decTList<ALuint> pBuffers;
 	
 	void *pOwner;
 	float pImportance;
@@ -78,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal buffer. */
-	deoalSource( deoalAudioThread &audioThread );
+	explicit deoalSource(deoalAudioThread &audioThread);
 	
 	/** Clean up openal buffer. */
 	~deoalSource();
@@ -96,14 +97,11 @@ public:
 	
 	
 	
-	/** Number of streaming buffers. */
-	inline int GetBufferCount() const{ return pBufferCount; }
+	/** Streaming buffers. */
+	inline const decTList<ALuint> &GetBuffers() const{ return pBuffers; }
 	
 	/** Set number of streaming buffers. */
-	void SetBufferCount( int count );
-	
-	/** Buffer. */
-	ALuint GetBufferAt( int position ) const;
+	void SetBufferCount(int count);
 	
 	
 	
@@ -111,13 +109,13 @@ public:
 	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Set owner or \em NULL if not bound. */
-	void SetOwner( void *owner );
+	void SetOwner(void *owner);
 	
 	/** Importance. */
 	inline float GetImportance() const{ return pImportance; }
 	
 	/** Set importance. */
-	void SetImportance( float importance );
+	void SetImportance(float importance);
 	
 	
 	
@@ -177,6 +175,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pUnqueueAllBuffers();
 };
 
 #endif

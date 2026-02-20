@@ -37,6 +37,10 @@
  * \brief Undo action object class world set position.
  */
 class gdeUOCWorldSetPosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCWorldSetPosition>;
+	
+	
 private:
 	const gdeObjectClass::Ref pObjectClass;
 	const gdeOCWorld::Ref pWorld;

@@ -25,12 +25,12 @@
 #ifndef _DEPROPFIELDTYPE_H_
 #define _DEPROPFIELDTYPE_H_
 
-#include "../model/deModelReference.h"
-#include "../skin/deSkinReference.h"
+#include "dePropFieldInstance.h"
+#include "dePropFieldBendState.h"
+#include "../model/deModel.h"
+#include "../skin/deSkin.h"
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/utils/decCollisionFilter.h"
-
-class dePropFieldInstance;
-class dePropFieldBendState;
 
 
 /**
@@ -47,19 +47,23 @@ class dePropFieldBendState;
  * the list of types so this restriction is not a road blocking one.
  */
 class DE_DLL_EXPORT dePropFieldType{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<dePropFieldType>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<dePropFieldType>;
+	
 private:
-	deModelReference pModel;
-	deSkinReference pSkin;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
 	float pRotationPerForce;
 	float pRestitution;
 	
 	decCollisionFilter pCollisionFilter;
 	
-	dePropFieldInstance *pInstances;
-	int pInstanceCount;
-	
-	dePropFieldBendState *pBendStates;
-	int pBendStateCount;
+	decTList<dePropFieldInstance> pInstances;
+	decTList<dePropFieldBendState> pBendStates;
 	
 	
 	
@@ -80,75 +84,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Model or NULL if not set. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Set model or NULL it not set. */
-	void SetModel( deModel *model );
+	void SetModel(deModel *model);
 	
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	
 	/** \brief Set rotation per force. */
-	void SetRotationPerForce( float rotation );
+	void SetRotationPerForce(float rotation);
 	
 	/** \brief Restitution. */
 	inline float GetRestitution() const{ return pRestitution; }
 	
 	/** \brief Set restitution. */
-	void SetRestitution( float restitution );
+	void SetRestitution(float restitution);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &collisionFilter );
+	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
-	/** \brief Number of instances. */
-	inline int GetInstanceCount() const{ return pInstanceCount; }
+	/** \brief Instances. */
+	inline decTList<dePropFieldInstance> &GetInstances(){ return pInstances; }
+	inline const decTList<dePropFieldInstance> &GetInstances() const{ return pInstances; }
 	
-	/** \brief Set number of instances. */
-	void SetInstanceCount( int count );
-	
-	/** \brief Instance at the given index. */
-	dePropFieldInstance &GetInstanceAt( int index ) const;
-	
-	/**
-	 * Retrieves the list of instances. Be careful with this method call as it is
-	 * one intended only for performance usage. Make sure you to not read or write
-	 * more than GetInstanceCount elements. You can be sure that the returned array
-	 * is the same for the entire lifetime of this object and contains the instances
-	 * in a continuous list. If possible use the GetInstanceAt method call to obtain
-	 * the individual instances as there boundary checks are conducted.
-	 */
-	inline dePropFieldInstance *GetInstances() const{ return pInstances; }
-	
-	/** \brief Number of bend states. */
-	inline int GetBendStateCount() const{ return pBendStateCount; }
-	
-	/** \brief Set number of bend states. */
-	void SetBendStateCount( int count );
-	
-	/** \brief Bend state at the given index. */
-	dePropFieldBendState &GetBendStateAt( int index ) const;
-	
-	/**
-	 * \brief List of bend states.
-	 * 
-	 * Be careful with this method call as it is one intended only for performance usage.
-	 * Make sure you to not read or write more than GetBendStateCount elements. This array
-	 * is not guaranteed to be the same for the entire lifetime of this object but is a
-	 * continuous list. If possible use the GetBendStateAt method call to obtain the
-	 * individual bend states as there boundary checks are conducted. If you need direct
-	 * access due to performance reasons only keep to this pointer for the short time you
-	 * do some work.
-	 */
-	inline dePropFieldBendState *GetBendStates() const{ return pBendStates; }
+	/** \brief Bend states. */
+	inline decTList<dePropFieldBendState> &GetBendStates(){ return pBendStates; }
+	inline const decTList<dePropFieldBendState> &GetBendStates() const{ return pBendStates; }
 	/*@}*/
 };
 

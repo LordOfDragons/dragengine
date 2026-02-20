@@ -25,11 +25,18 @@
 #ifndef _DEMDLWEIGHTSET_H_
 #define _DEMDLWEIGHTSET_H_
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+
 
 /**
  * @brief Weight Set.
  */
 class demdlWeightSet{
+public:
+	using Ref = deTUniqueReference<demdlWeightSet>;
+	using List = decTUniqueList<demdlWeightSet>;
+	
 private:
 	struct sWeight{
 		int bone;
@@ -37,8 +44,7 @@ private:
 	};
 	
 private:
-	sWeight *pWeights;
-	int pCount;
+	decTList<sWeight> pWeights;
 	int pGroupedIndex;
 	
 public:
@@ -52,29 +58,30 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the number of of weights. */
-	inline int GetCount() const{ return pCount; }
-	/** Retrieves the bone index for the given weight. */
-	int GetBoneAt( int index ) const;
-	/** Retrieves the factor for the given weight. */
-	float GetWeightAt( int index ) const;
+	/** Weights. */
+	inline decTList<sWeight> &GetWeights(){ return pWeights; }
+	inline const decTList<sWeight> &GetWeights() const{ return pWeights; }
+	
 	/** Retrieves the factor for the given bone index or 0 if not found. */
-	float GetWeightFor( int bone ) const;
+	float GetWeightFor(int bone) const;
+	
 	/**
 	 * Sets the factor for a given bone. If the bone index
 	 * does not exist it is added otherwise the factor changed.
 	 */
-	void Set( int bone, float weight );
+	void Set(int bone, float weight);
+	
 	/** Retrieves the grouped index. */
 	inline int GetGroupedIndex() const{ return pGroupedIndex; }
+	
 	/** Sets the grouped index. */
-	void SetGroupedIndex( int index );
-	/** Removes all weights. */
-	void RemoveAll();
+	void SetGroupedIndex(int index);
+	
 	/** Normalizes the weights alike that all weight factors summed up equal 1.0 */
 	void Normalize();
+	
 	/** Determines if this weight set is equal to another one. */
-	bool Equals( const demdlWeightSet &weight ) const;
+	bool Equals(const demdlWeightSet &weight) const;
 	/*@}*/
 };
 

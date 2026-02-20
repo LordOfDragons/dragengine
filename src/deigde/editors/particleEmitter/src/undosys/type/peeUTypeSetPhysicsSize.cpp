@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize( peeType *type, float newSize ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Set Type Physics Size" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetPhysicsSize");
 	
 	pOldSize = type->GetPhysicsSize();
 	pNewSize = newSize;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPhysicsSize::~peeUTypeSetPhysicsSize(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ peeUTypeSetPhysicsSize::~peeUTypeSetPhysicsSize(){
 ///////////////
 
 void peeUTypeSetPhysicsSize::Undo(){
-	pType->SetPhysicsSize( pOldSize );
+	pType->SetPhysicsSize(pOldSize);
 }
 
 void peeUTypeSetPhysicsSize::Redo(){
-	pType->SetPhysicsSize( pNewSize );
+	pType->SetPhysicsSize(pNewSize);
 }

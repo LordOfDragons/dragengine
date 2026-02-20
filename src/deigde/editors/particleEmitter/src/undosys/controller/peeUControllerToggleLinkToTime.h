@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 
@@ -35,8 +35,12 @@ class peeController;
  * \brief Undo Action Toggle Controller Link To Time.
  */
 class peeUControllerToggleLinkToTime : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUControllerToggleLinkToTime>;
+	
+	
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerToggleLinkToTime( peeController *controller );
+	peeUControllerToggleLinkToTime(peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo action. */
-    virtual ~peeUControllerToggleLinkToTime();
+    ~peeUControllerToggleLinkToTime() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -26,12 +26,11 @@
 #define _DEOGLBILLBOARD_H_
 
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
+#include "deoglRBillboard.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
 
 class deGraphicOpenGl;
-class deoglRBillboard;
 class deoglDynamicSkin;
 class deoglSkinStateController;
 class deoglWorld;
@@ -48,7 +47,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deBillboard &pBillboard;
 	
-	deoglRBillboard *pRBillboard;
+	deoglRBillboard::Ref pRBillboard;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;
@@ -73,7 +72,7 @@ public:
 	bool pDynamicSkinRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoglBillboard>::Element pLLSyncWorld;
 	
 	
 	
@@ -81,10 +80,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglBillboard( deGraphicOpenGl &ogl, const deBillboard &billboard );
+	deoglBillboard(deGraphicOpenGl &ogl, const deBillboard &billboard);
 	
 	/** Clean up peer. */
-	virtual ~deoglBillboard();
+	~deoglBillboard() override;
 	/*@}*/
 	
 	
@@ -100,7 +99,7 @@ public:
 	
 	
 	/** Render billboard. */
-	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
+	inline const deoglRBillboard::Ref &GetRBillboard() const{ return pRBillboard; }
 	
 	
 	
@@ -111,7 +110,7 @@ public:
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
@@ -119,7 +118,7 @@ public:
 	void SyncToRender();
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -128,18 +127,18 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoglBillboard>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoglBillboard>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	
@@ -147,31 +146,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Axis changed. */
-	virtual void AxisChanged();
+	void AxisChanged() override;
 	
 	/** Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Offset changed. */
-	virtual void OffsetChanged();
+	void OffsetChanged() override;
 	
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	
 	/** Locked or spherical changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** Visibility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	/*@}*/
 	
 	

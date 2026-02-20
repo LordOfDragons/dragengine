@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 
-class sePropertyNodeShape;
+#include "../../../../skin/property/node/sePropertyNodeShape.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNodeShape;
  * \brief Undo action property node shape set path.
  */
 class seUPropertyNodeShapeSetType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeShapeSetType>;
+	
+	
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	deSkinPropertyNodeShape::eShapeTypes pOldValue;
 	deSkinPropertyNodeShape::eShapeTypes pNewValue;
@@ -49,12 +53,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetType( sePropertyNodeShape *node,
-		deSkinPropertyNodeShape::eShapeTypes newValue );
+	seUPropertyNodeShapeSetType(sePropertyNodeShape *node,
+		deSkinPropertyNodeShape::eShapeTypes newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeShapeSetType();
+	~seUPropertyNodeShapeSetType() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

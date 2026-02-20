@@ -70,27 +70,27 @@ private:
 public:
 	// constructor, destructor
 	deoglTransformVolume();
-	~deoglTransformVolume();
+	~deoglTransformVolume() override;
 	
 	// management
 	inline const decDVector &GetTranslation() const{ return pTranslation; }
-	void SetTranslation( const decDVector &translation );
+	void SetTranslation(const decDVector &translation);
 	inline const decQuaternion &GetRotation() const{ return pRotation; }
-	void SetRotation( const decQuaternion &rotation );
+	void SetRotation(const decQuaternion &rotation);
 	inline const decVector &GetScaling() const{ return pScaling; }
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	inline deoglDCollisionVolume *GetVolume() const{ return pVolume; }
 	
 	// convenience function
-	deoglDCollisionVolume *GetVolumeFor( deoglDCollisionVolume *volume );
+	deoglDCollisionVolume *GetVolumeFor(deoglDCollisionVolume *volume);
 	
 	// Visiting
-	virtual void VisitSphere( deoglDCollisionSphere *sphere );
-	virtual void VisitCylinder( deoglDCollisionCylinder *cylinder );
-	virtual void VisitCapsule( deoglDCollisionCapsule *capsule );
-	virtual void VisitBox( deoglDCollisionBox *box );
-	virtual void VisitTriangle( deoglDCollisionTriangle *triangle );
-	virtual void VisitFrustum( deoglDCollisionFrustum *frustum );
+	void VisitSphere(deoglDCollisionSphere *sphere) override;
+	void VisitCylinder(deoglDCollisionCylinder *cylinder) override;
+	void VisitCapsule(deoglDCollisionCapsule *capsule) override;
+	void VisitBox(deoglDCollisionBox *box) override;
+	void VisitTriangle(deoglDCollisionTriangle *triangle) override;
+	void VisitFrustum(deoglDCollisionFrustum *frustum) override;
 	
 private:
 	void pCleanUp();

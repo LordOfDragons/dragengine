@@ -43,20 +43,20 @@ igdeNVNodeListener::~igdeNVNodeListener(){
 // Events
 ///////////
 
-void igdeNVNodeListener::OnActivated( igdeNVNode* ){
+void igdeNVNodeListener::OnActivated(igdeNVNode*){
 }
 
-void igdeNVNodeListener::OnDeactivated( igdeNVNode* ){
+void igdeNVNodeListener::OnDeactivated(igdeNVNode*){
 }
 
-void igdeNVNodeListener::OnDragBegin( igdeNVNode* ){
+void igdeNVNodeListener::OnDragBegin(igdeNVNode*){
 }
 
-void igdeNVNodeListener::OnDraging( igdeNVNode* ){
+void igdeNVNodeListener::OnDraging(igdeNVNode*){
 }
 
-void igdeNVNodeListener::OnDragEnd( igdeNVNode* ){
+void igdeNVNodeListener::OnDragEnd(igdeNVNode*){
 }
 
-void igdeNVNodeListener::AddContextMenuEntries( igdeNVNode*, igdeMenuCascade& ){
+void igdeNVNodeListener::AddContextMenuEntries(igdeNVNode*, igdeMenuCascade&){
 }

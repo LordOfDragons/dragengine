@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "delGPModule.h"
-#include "delGPMParameter.h"
 #include "../../delLauncher.h"
 #include "../../engine/delEngine.h"
 #include "../../engine/delEngineInstance.h"
@@ -37,6 +36,21 @@
 #include <dragengine/common/exceptions.h>
 
 
+// class delGPModule::List
+////////////////////////////
+
+void delGPModule::List::Update(const List &list){
+	list.Visit([&](const delGPModule &moduleChanges){
+		delGPModule * const module = FindNamed(moduleChanges.GetName());
+		if(module){
+			module->GetParameters() += moduleChanges.GetParameters();
+			
+		}else{
+			Add(delGPModule::Ref::New(moduleChanges));
+		}
+	});
+}
+
 
 // Class delGPModule
 ///////////////////////
@@ -44,11 +58,11 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGPModule::delGPModule( const char *name ) :
-pName( name ){
+delGPModule::delGPModule(const char *name) :
+pName(name){
 }
 
-delGPModule::delGPModule( const delGPModule &module ){
+delGPModule::delGPModule(const delGPModule &module){
 	*this = module;
 }
 
@@ -60,27 +74,26 @@ delGPModule::~delGPModule(){
 // Management
 ///////////////
 
-void delGPModule::SetName( const char *name ){
+void delGPModule::SetName(const char *name){
 	pName = name;
 }
 
-void delGPModule::ApplyParameters( const char *version, delLauncher &launcher,
-delEngineInstance &engineInstance ) const{
-	delEngineModule * const module = launcher.GetEngine().GetModules().GetNamed( pName, version );
-	if( ! module ){
+void delGPModule::ApplyParameters(const char *version, delLauncher &launcher,
+delEngineInstance &engineInstance) const{
+	delEngineModule * const module = launcher.GetEngine().GetModules().GetNamed(pName, version);
+	if(!module){
 		return;
 	}
 	
-	const delEMParameterList &parameters = module->GetParameters();
-	const int count = pParameters.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const delGPMParameter &parameter = *pParameters.GetAt ( i );
-		if( parameters.HasNamed( parameter.GetName() ) ){
-			engineInstance.SetModuleParameter( pName, version, parameter.GetName(), parameter.GetValue() );
+	const delEMParameter::List &parameters = module->GetParameters();
+	pParameters.Visit([&](const decString &name, const decString &value){
+		for(const auto &parameter : parameters){
+			if(parameter->GetInfo().GetName() == name){
+				engineInstance.SetModuleParameter(pName, version, name, value);
+				break;
+			}
 		}
-	}
+	});
 }
 
 
@@ -88,18 +101,8 @@ delEngineInstance &engineInstance ) const{
 // Operators
 //////////////
 
-delGPModule &delGPModule::operator=( const delGPModule &module ){
-	const delGPMParameterList &parameters = module.GetParameters();
-	const int count = parameters.GetCount();
-	int i;
-	
+delGPModule &delGPModule::operator=(const delGPModule &module){
 	pName = module.pName;
-	
-	pParameters.RemoveAll();
-	
-	for( i=0; i<count; i++ ){
-		pParameters.Add ( delGPMParameter::Ref::New( new delGPMParameter( *parameters.GetAt ( i ) ) ) );
-	}
-	
+	pParameters = module.pParameters;
 	return *this;
 }

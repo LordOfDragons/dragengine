@@ -36,23 +36,19 @@
 
 aeURuleBTransSetInputBone::aeURuleBTransSetInputBone(
 aeRuleBoneTransformator *rule, const char *newBone) :
-pRule(nullptr),
+
 pNewBone(newBone)
 {
 	DEASSERT_NOTNULL(rule)
 	
 	pOldBone = rule->GetInputBone();
 	
-	SetShortInfo("Bone transformator set input bone");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetInputBone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetInputBone::~aeURuleBTransSetInputBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

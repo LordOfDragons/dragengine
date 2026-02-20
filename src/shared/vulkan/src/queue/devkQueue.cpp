@@ -43,7 +43,7 @@ pFamily(family),
 pIndex(index),
 pQueue(queue)
 {
-	DEASSERT_NOTNULL(queue )
+	DEASSERT_NOTNULL(queue)
 }
 
 devkQueue::~devkQueue(){
@@ -56,7 +56,7 @@ devkQueue::~devkQueue(){
 ///////////////
 
 devkCommandPool::Ref devkQueue::CreateCommandPool(){
-	return devkCommandPool::Ref::New(new devkCommandPool(Ref(this)));
+	return devkCommandPool::Ref::New(Ref(this));
 }
 
 void devkQueue::WaitIdle(){

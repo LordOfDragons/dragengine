@@ -25,7 +25,6 @@
 #ifndef _DEOALRTPTENVPROBEFIRSTFULL_H_
 #define _DEOALRTPTENVPROBEFIRSTFULL_H_
 
-#include "../deoalSoundRayInteractionList.h"
 #include "../deoalRayTraceResult.h"
 #include "../visitors/deoalWOVRayHitsElement.h"
 
@@ -108,11 +107,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTEnvProbeFull( deoalRTParallelEnvProbe &owner );
+	deoalRTPTEnvProbeFull(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
-	virtual ~deoalRTPTEnvProbeFull();
+	~deoalRTPTEnvProbeFull() override;
 	/*@}*/
 	
 	
@@ -121,33 +120,33 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	
 	
 	/** \brief Set world. */
-	void SetWorld( deoalAWorld *world );
+	void SetWorld(deoalAWorld *world);
 	
 	/** \brief Set environment probe. */
-	void SetEnvProbe( const deoalEnvProbe *envProbe );
+	void SetEnvProbe(const deoalEnvProbe *envProbe);
 	
 	/** \brief Set environment probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set index of first ray from configuration to process. */
-	void SetFirstRay( int firstRay );
+	void SetFirstRay(int firstRay);
 	
 	/** \brief Set number of rays from configuration to process. */
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	
 	/** \brief Listener position. */
-	void SetListenerPosition( const decDVector &position );
+	void SetListenerPosition(const decDVector &position);
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -175,17 +174,17 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	void pTraceRay( const sTraceRay &ray, const sTraceGain &gain );
-	void pUpdateExtends( const decDVector &position );
+	void pTraceRay(const sTraceRay &ray, const sTraceGain &gain);
+	void pUpdateExtends(const decDVector &position);
 };
 
 #endif

@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetPath::seUPropertyNodeTextSetPath(
-sePropertyNodeText *node, const char *newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeText *node, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node text set path" );
+	SetShortInfo("@Skin.Undo.NodeTextSetPath");
 	
 	pOldValue = node->GetPath();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetPath::~seUPropertyNodeTextSetPath(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeTextSetPath::~seUPropertyNodeTextSetPath(){
 ///////////////
 
 void seUPropertyNodeTextSetPath::Undo(){
-	pNode->SetPath( pOldValue );
+	pNode->SetPath(pOldValue);
 }
 
 void seUPropertyNodeTextSetPath::Redo(){
-	pNode->SetPath( pNewValue );
+	pNode->SetPath(pNewValue);
 }

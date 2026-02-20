@@ -26,7 +26,7 @@
 #define _IGDEDIALOGCURVEBEZIERCOORD_H_
 
 #include "../dialog/igdeDialog.h"
-#include "../composed/igdeEditVector2Reference.h"
+#include "../composed/igdeEditVector2.h"
 
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 
@@ -36,11 +36,16 @@
  * \brief Dialog bezier curve coordinates.
  */
 class DE_DLL_EXPORT igdeDialogCurveBezierCoord : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDialogCurveBezierCoord>;
+	
+	
 private:
 	decCurveBezierPoint pPoint;
-	igdeEditVector2Reference pEditPoint;
-	igdeEditVector2Reference pEditHandle1;
-	igdeEditVector2Reference pEditHandle2;
+	igdeEditVector2::Ref pEditPoint;
+	igdeEditVector2::Ref pEditHandle1;
+	igdeEditVector2::Ref pEditHandle2;
 	
 	
 	
@@ -48,16 +53,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierCoord( igdeEnvironment &environment );
+	igdeDialogCurveBezierCoord(igdeEnvironment &environment);
 	
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierCoord( igdeEnvironment &environment, const decCurveBezierPoint &point );
+	igdeDialogCurveBezierCoord(igdeEnvironment &environment, const decCurveBezierPoint &point);
 	
 	
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogCurveBezierCoord();
+	~igdeDialogCurveBezierCoord() override;
 	/*@}*/
 	
 	
@@ -69,13 +74,13 @@ public:
 	inline const decCurveBezierPoint &GetPoint() const{ return pPoint; }
 	
 	/** \brief Set point. */
-	void SetPoint( const decCurveBezierPoint &point );
+	void SetPoint(const decCurveBezierPoint &point);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeEnvironment &environment );
+	void pCreateContent(igdeEnvironment &environment);
 };
 
 #endif

@@ -41,22 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBOListList::deoglSharedVBOListList( deoglRenderThread &renderThread,
-int maxSize, int maxIndexSize ) :
-pRenderThread( renderThread ),
-pMaxSize( maxSize ),
-pMaxIndexSize( maxIndexSize )
+deoglSharedVBOListList::deoglSharedVBOListList(deoglRenderThread &renderThread,
+int maxSize, int maxIndexSize) :
+pRenderThread(renderThread),
+pMaxSize(maxSize),
+pMaxIndexSize(maxIndexSize)
 {
-	if( maxSize < 0 || maxIndexSize < 0 ){
-		DETHROW( deeInvalidParam );
+	if(maxSize < 0 || maxIndexSize < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deoglSharedVBOListList::~deoglSharedVBOListList(){
 	const int count = pLists.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		delete ( ( deoglSharedVBOList* )pLists.GetAt( i ) );
+	for(i=0; i<count; i++){
+		delete pLists.GetAt(i);
 	}
 	pLists.RemoveAll();
 }
@@ -70,16 +70,16 @@ int deoglSharedVBOListList::GetCount() const{
 	return pLists.GetCount();
 }
 
-deoglSharedVBOList *deoglSharedVBOListList::GetAt( int index ) const{
-	return ( deoglSharedVBOList* )pLists.GetAt( index );
+deoglSharedVBOList *deoglSharedVBOListList::GetAt(int index) const{
+	return pLists.GetAt(index);
 }
 
-bool deoglSharedVBOListList::HasWith( const deoglVBOLayout &layout, GLenum drawType ) const{
+bool deoglSharedVBOListList::HasWith(const deoglVBOLayout &layout, GLenum drawType) const{
 	const int count = pLists.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deoglSharedVBOList* )pLists.GetAt( i ) )->Matches( layout, drawType ) ){
+	for(i=0; i<count; i++){
+		if(pLists.GetAt(i)->Matches(layout, drawType)){
 			return true;
 		}
 	}
@@ -87,26 +87,26 @@ bool deoglSharedVBOListList::HasWith( const deoglVBOLayout &layout, GLenum drawT
 	return false;
 }
 
-deoglSharedVBOList *deoglSharedVBOListList::GetWith( const deoglVBOLayout &layout, GLenum drawType ){
+deoglSharedVBOList *deoglSharedVBOListList::GetWith(const deoglVBOLayout &layout, GLenum drawType){
 	const int count = pLists.GetCount();
 	deoglSharedVBOList *list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list = ( deoglSharedVBOList* )pLists.GetAt( i );
-		if( list->Matches( layout, drawType ) ){
+	for(i=0; i<count; i++){
+		list = pLists.GetAt(i);
+		if(list->Matches(layout, drawType)){
 			return list;
 		}
 	}
 	
-	list = NULL;
+	list = nullptr;
 	
 	try{
-		list = new deoglSharedVBOList( pRenderThread, layout, drawType, pMaxSize, pMaxIndexSize );
-		pLists.Add( list );
+		list = new deoglSharedVBOList(pRenderThread, layout, drawType, pMaxSize, pMaxIndexSize);
+		pLists.Add(list);
 		
-	}catch( const deException & ){
-		if( list ){
+	}catch(const deException &){
+		if(list){
 			delete list;
 		}
 		throw;
@@ -120,7 +120,7 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith( const deoglVBOLayout &layou
 void deoglSharedVBOListList::PrepareAllLists(){
 	const int count = pLists.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSharedVBOList* )pLists.GetAt( i ) )->PrepareVBOs();
+	for(i=0; i<count; i++){
+		pLists.GetAt(i)->PrepareVBOs();
 	}
 }

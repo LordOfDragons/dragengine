@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,16 +46,16 @@
 // Constructor
 ////////////////
 
-gdeMACategoryAdd::gdeMACategoryAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Child Category...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add category to active category" )
+gdeMACategoryAdd::gdeMACategoryAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.CategoryAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.CategoryAdd.ToolTip")
 {
 }
 
-gdeMACategoryAdd::gdeMACategoryAdd( gdeWindowMain &windowMain, const char *text,
-	igdeIcon *icon, const char *description ) :
-gdeBaseAction( windowMain, text, icon, description )
+gdeMACategoryAdd::gdeMACategoryAdd(gdeWindowMain &windowMain, const char *text,
+	igdeIcon *icon, const char *description) :
+gdeBaseAction(windowMain, text, icon, description)
 {
 }
 
@@ -65,10 +64,10 @@ gdeBaseAction( windowMain, text, icon, description )
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 	gdeUCategoryBase::eCategoryType categoryType;
 	
-	switch( gameDefinition.GetSelectedObjectType() ){
+	switch(gameDefinition.GetSelectedObjectType()){
 	case gdeGameDefinition::eotCategoryObjectClass:
 		categoryType = gdeUCategoryBase::ectObjectClass;
 		break;
@@ -86,34 +85,31 @@ igdeUndo *gdeMACategoryAdd::OnAction( gdeGameDefinition &gameDefinition ){
 		break;
 		
 	default:
-		return NULL;
+		return {};
 	}
 	
 	gdeCategory * const category = gameDefinition.GetActiveCategory();
-	if( ! category ){
-		return NULL;
+	if(!category){
+		return {};
 	}
 	
-	return AddCategory( gameDefinition, category, category->GetCategories(), categoryType );
+	return AddCategory(gameDefinition, category, category->GetCategories(), categoryType);
 }
 
 
 
-igdeUndo *gdeMACategoryAdd::AddCategory( gdeGameDefinition &gameDefinition,
-gdeCategory *parent, const gdeCategoryList &list, gdeUCategoryBase::eCategoryType categoryType ) const{
-	decString name( "Category" );
+igdeUndo::Ref gdeMACategoryAdd::AddCategory(gdeGameDefinition &gameDefinition,
+gdeCategory *parent, const gdeCategory::List &list, gdeUCategoryBase::eCategoryType categoryType) const{
+	decString name(pWindowMain.Translate("GameDefinition.Default.Category").ToUTF8());
 	
-	while( igdeCommonDialogs::GetString( &pWindowMain, "Add Category", "Name:", name ) ){
-		if( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindowMain, "Add Category", "Category exists already." );
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.CategoryAdd.Title", "@GameDefinition.Dialog.CategoryAdd.Name", name)){
+		if(list.FindNamed(name)){
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.CategoryAdd.Title", "@GameDefinition.Dialog.CategoryAdd.ErrorExists");
 			continue;
 		}
 		
-		deObjectReference category;
-		category.TakeOver( new gdeCategory( name ) );
-		return new gdeUCategoryAdd( &gameDefinition, parent,
-			( gdeCategory* )( deObject* )category, categoryType );
+		return gdeUCategoryAdd::Ref::New(&gameDefinition, parent, gdeCategory::Ref::New(name), categoryType);
 	}
 	
-	return NULL;
+	return {};
 }

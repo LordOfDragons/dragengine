@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 
@@ -48,16 +49,26 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDCCTexture>;
+	
+	/** \brief Type holding list. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCCTexture>,igdeGDCCTexture>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create texture definition. */
 	igdeGDCCTexture();
 	
 	/** \brief Create copy of texture definition. */
-	igdeGDCCTexture( const igdeGDCCTexture &texture );
+	igdeGDCCTexture(const igdeGDCCTexture &texture);
 	
+protected:
 	/** \brief Clean up texture definition. */
-	virtual ~igdeGDCCTexture();
+	~igdeGDCCTexture() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -68,43 +79,43 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of texture to replace. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Path of skin to use. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	
 	/** \brief Set path of skin to use. */
-	void SetPathSkin( const char *path );
+	void SetPathSkin(const char *path);
 	
 	/** \brief Texture coordinate offset. */
 	inline const decVector2 &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set texture coordinate offset. */
-	void SetOffset( const decVector2 &offset );
+	void SetOffset(const decVector2 &offset);
 	
 	/** \brief Texture coordinate scale. */
 	inline const decVector2 &GetScale() const{ return pScale; }
 	
 	/** \brief Set texture coordinate scale. */
-	void SetScale( const decVector2 &scale );
+	void SetScale(const decVector2 &scale);
 	
 	/** \brief Texture coordinate rotation. */
 	inline float GetRotation() const{ return pRotation; }
 	
 	/** \brief Set texture coordinate rotation. */
-	void SetRotation( float rotation );
+	void SetRotation(float rotation);
 	
 	/** \brief Color tint. */
 	inline const decColor &GetColorTint() const{ return pColorTint; }
 	
 	/** \brief Set color tint. */
-	void SetColorTint( const decColor &color );
+	void SetColorTint(const decColor &color);
 	
 	/** \brief Properties. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set properties. */
-	void SetProperties( const decStringDictionary &properties );
+	void SetProperties(const decStringDictionary &properties);
 	/*@}*/
 };
 

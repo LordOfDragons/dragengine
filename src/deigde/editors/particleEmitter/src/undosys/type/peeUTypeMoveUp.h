@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -35,8 +35,12 @@ class peeType;
  * \brief Undo Action Move Type Up.
  */
 class peeUTypeMoveUp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeMoveUp>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	int pIndex;
 	
 	
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeMoveUp( peeType *type );
+	peeUTypeMoveUp(peeType *type);
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUTypeMoveUp();
+	~peeUTypeMoveUp() override;
 	/*@}*/
 	
 	
@@ -58,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -36,8 +36,8 @@
 ////////////////////////////
 
 deoglMemoryConsumptionDeferredRendering::deoglMemoryConsumptionDeferredRendering() :
-target( "Deferred Rendering Target" ),
-texture( "Deferred Rendering Texture", target ){
+target("Deferred Rendering Target"),
+texture("Deferred Rendering Texture", target){
 }
 
 deoglMemoryConsumptionDeferredRendering::~deoglMemoryConsumptionDeferredRendering(){

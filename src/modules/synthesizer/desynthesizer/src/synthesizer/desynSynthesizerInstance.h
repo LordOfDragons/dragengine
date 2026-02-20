@@ -27,8 +27,8 @@
 
 #include "../desynBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerSynthesizerInstance.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -52,8 +52,7 @@ private:
 	desynSynthesizer *pSynthesizer;
 	unsigned int pSynthesizerUpdateTracker;
 	
-	desynSynthesizerController *pControllers;
-	int pControllerCount;
+	decTList<desynSynthesizerController> pControllers;
 	
 	int pChannelCount;
 	int pSampleRate;
@@ -70,8 +69,7 @@ private:
 	bool pDirtyControllers;
 	bool pDirtyFormat;
 	
-	char *pStateData;
-	int pStateDataSize;
+	decTList<char> pStateData;
 	deMutex pMutex;
 	
 	
@@ -80,10 +78,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer instance peer. */
-	desynSynthesizerInstance( deDESynthesizer &module, deSynthesizerInstance &instance );
+	desynSynthesizerInstance(deDESynthesizer &module, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up synthesizer instance peer. */
-	virtual ~desynSynthesizerInstance();
+	~desynSynthesizerInstance() override;
 	/*@}*/
 	
 	
@@ -102,7 +100,7 @@ public:
 	
 	
 	/** \brief Controller at index. */
-	desynSynthesizerController &GetControllerAt( int index ) const;
+	const desynSynthesizerController &GetControllerAt(int index) const;
 	
 	
 	
@@ -136,13 +134,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged();
+	void SynthesizerChanged() override;
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index );
+	void ControllerChanged(int index) override;
 	
 	/** \brief Play time changed. */
-	virtual void PlayTimeChanged();
+	void PlayTimeChanged() override;
 	/*@}*/
 	
 	
@@ -154,7 +152,7 @@ public:
 	 * 
 	 * \warning Audio module is allowed to call this asynchronously.
 	 */
-	virtual void Reset();
+	void Reset() override;
 	
 	/**
 	 * \brief Generate sound.
@@ -170,24 +168,21 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	virtual void GenerateSound( void *buffer, int bufferSize, int offset, int samples );
+	void GenerateSound(void *buffer, int bufferSize, int offset, int samples) override;
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
-	
 	void pPrepare();
 	void pUpdateFormat();
 	
-	void pClearControllers();
 	void pCreateControllers();
 	
-	void pGenerateSilence( void *buffer, int samples );
-	void pGenerateSound( desynSharedBuffer *sharedBuffer, void *buffer, int samples );
+	void pGenerateSilence(void *buffer, int samples);
+	void pGenerateSound(desynSharedBuffer *sharedBuffer, void *buffer, int samples);
 	
-	void pUpdateControllerValues( int samples, int offset );
+	void pUpdateControllerValues(int samples, int offset);
 	
 	void pCreateStateData();
 	void pFreeStateData();

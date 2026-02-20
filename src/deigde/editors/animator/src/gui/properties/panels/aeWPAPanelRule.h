@@ -25,12 +25,14 @@
 #ifndef _AEWPAPANELRULE_H_
 #define _AEWPAPANELRULE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include "../../../animator/controller/aeControllerTarget.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
@@ -41,7 +43,6 @@ class aeRule;
 class aeLink;
 class aeWPRule;
 class aeWindowMain;
-class aeControllerTarget;
 
 
 
@@ -49,31 +50,36 @@ class aeControllerTarget;
  * Base rule option panel.
  */
 class aeWPAPanelRule : public igdeContainerFlow{
+public:
+	/** \brief Strong reference. */
+	using Ref = deTObjectReference<aeWPAPanelRule>;
+	
+	
 private:
 	aeWPRule &pWPRule;
 	deAnimatorRuleVisitorIdentify::eRuleTypes pRequiredType;
-	aeControllerTarget *pTarget;
+	aeControllerTarget::Ref pTarget;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBBlendMode;
-	igdeTextFieldReference pEditBlendFactor;
-	igdeCheckBoxReference pChkInvertBlendFactor;
-	igdeCheckBoxReference pChkEnabled;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBBlendMode;
+	igdeTextField::Ref pEditBlendFactor;
+	igdeCheckBox::Ref pChkInvertBlendFactor;
+	igdeCheckBox::Ref pChkEnabled;
 	
-	igdeListBoxReference pListBones;
-	igdeComboBoxFilterReference pCBBones;
-	igdeButtonReference pBtnBoneAdd;
-	igdeButtonReference pBtnBoneDel;
+	igdeListBox::Ref pListBones;
+	igdeComboBoxFilter::Ref pCBBones;
+	igdeButton::Ref pBtnBoneAdd;
+	igdeButton::Ref pBtnBoneDel;
 	
-	igdeListBoxReference pListVertexPositionSets;
-	igdeComboBoxFilterReference pCBVertexPositionSets;
-	igdeButtonReference pBtnVertexPositionSetAdd;
-	igdeButtonReference pBtnVertexPositionSetDel;
+	igdeListBox::Ref pListVertexPositionSets;
+	igdeComboBoxFilter::Ref pCBVertexPositionSets;
+	igdeButton::Ref pBtnVertexPositionSetAdd;
+	igdeButton::Ref pBtnVertexPositionSetDel;
 	
-	igdeComboBoxReference pCBTarget;
-	igdeListBoxReference pListLinks;
-	igdeComboBoxFilterReference pCBLinks;
-	igdeButtonReference pBtnLinkAdd;
+	igdeComboBox::Ref pCBTarget;
+	igdeListBox::Ref pListLinks;
+	igdeComboBoxFilter::Ref pCBLinks;
+	igdeButton::Ref pBtnLinkAdd;
 	
 	
 	
@@ -81,11 +87,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRule( aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType );
+	aeWPAPanelRule(aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRule();
+	~aeWPAPanelRule() override;
 	/*@}*/
 	
 	
@@ -107,14 +113,14 @@ public:
 	/** Animator. */
 	aeAnimator *GetAnimator() const;
 	
-	/** Selected rule or \em NULL. */
+	/** Selected rule or \em nullptr. */
 	aeRule *GetRule() const;
 	
-	/** Target or \em NULL. */
-	inline aeControllerTarget *GetTarget() const{ return pTarget; }
+	/** Target or \em nullptr. */
+	inline const aeControllerTarget::Ref &GetTarget() const{ return pTarget; }
 	
-	/** Set target or \em NULL. */
-	void SetTarget( aeControllerTarget *target );
+	/** Set target or \em nullptr. */
+	void SetTarget(aeControllerTarget *target);
 	
 	
 	
@@ -155,31 +161,31 @@ public:
 	const decString &GetCBBoneText() const;
 	
 	/** Set bone combo box text. */
-	void SetCBBoneText( const char *text );
+	void SetCBBoneText(const char *text);
 	
-	/** Selected bone list or NULL. */
+	/** Selected bone list or nullptr. */
 	const char *GetListBoneSelection() const;
 	
 	/** Vertex position set combo box text. */
 	const decString &GetCBVertexPositionSetText() const;
 	
 	/** Set vertex position set combo box text. */
-	void SetCBVertexPositionSetText( const char *text );
+	void SetCBVertexPositionSetText(const char *text);
 	
-	/** Selected vertex position set list or NULL. */
+	/** Selected vertex position set list or nullptr. */
 	const char *GetListVertexPositionSetSelection() const;
 	
 	/** Link combo box selection. */
 	aeLink *GetCBLinkSelection() const;
 	
 	/** Set link combo box selection. */
-	void SetCBLinkSelection( aeLink *selection );
+	void SetCBLinkSelection(aeLink *selection);
 	
 	/** Link list selection. */
 	aeLink *GetListLinkSelection() const;
 	
 	/** Set link list selection. */
-	void SetListLinkSelection( aeLink *selection );
+	void SetListLinkSelection(aeLink *selection);
 	
 	
 	
@@ -187,7 +193,7 @@ public:
 	void RemoveAllTargets();
 	
 	/** Add target. */
-	void AddTarget( const char *name, aeControllerTarget *target );
+	void AddTarget(const char *name, aeControllerTarget *target);
 	/*@}*/
 };
 

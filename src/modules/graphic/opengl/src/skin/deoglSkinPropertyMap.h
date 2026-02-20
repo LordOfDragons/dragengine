@@ -147,7 +147,7 @@ namespace deoglSkinPropertyMap{
 	};
 	
 	/** Type for texture property number. */
-	ePropertyTypes GetTypeFor( const char *type );
+	ePropertyTypes GetTypeFor(const char *type);
 	/*@}*/
 };
 

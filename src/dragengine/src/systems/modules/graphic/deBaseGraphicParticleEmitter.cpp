@@ -49,11 +49,11 @@ void deBaseGraphicParticleEmitter::BurstChanged(){
 void deBaseGraphicParticleEmitter::ControllerCountChanged(){
 }
 
-void deBaseGraphicParticleEmitter::ControllerChanged( int ){
+void deBaseGraphicParticleEmitter::ControllerChanged(int){
 }
 
 void deBaseGraphicParticleEmitter::TypeCountChanged(){
 }
 
-void deBaseGraphicParticleEmitter::TypeChanged( int ){
+void deBaseGraphicParticleEmitter::TypeChanged(int){
 }

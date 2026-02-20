@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast( aeRuleStateSnapshot *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleSnapshotUseLast");
 		
-		SetShortInfo( "Set state snapshot rule use last" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeUSetRuleSnapUseLast::~aeUSetRuleSnapUseLast(){
 ///////////////
 
 void aeUSetRuleSnapUseLast::Undo(){
-	pRule->SetUseLastState( ! pRule->GetUseLastState() );
+	pRule->SetUseLastState(!pRule->GetUseLastState());
 }
 
 void aeUSetRuleSnapUseLast::Redo(){
-	pRule->SetUseLastState( ! pRule->GetUseLastState() );
+	pRule->SetUseLastState(!pRule->GetUseLastState());
 }
 
 
@@ -79,5 +77,4 @@ void aeUSetRuleSnapUseLast::Redo(){
 //////////////////////
 
 void aeUSetRuleSnapUseLast::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

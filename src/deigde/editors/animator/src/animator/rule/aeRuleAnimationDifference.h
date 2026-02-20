@@ -34,7 +34,8 @@
  */
 class aeRuleAnimationDifference : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleAnimationDifference> Ref;
+	using Ref = deTObjectReference<aeRuleAnimationDifference>;
+	
 	
 private:
 	decString pMove1Name;
@@ -48,18 +49,20 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetLeadMoveTime;
-	aeControllerTarget pTargetRefMoveTime;
+	aeControllerTarget::Ref pTargetLeadMoveTime;
+	aeControllerTarget::Ref pTargetRefMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator difference rule. */
-	aeRuleAnimationDifference();
+	explicit aeRuleAnimationDifference(const char *name);
 	/** Create a copy of an animator difference rule. */
-	aeRuleAnimationDifference( const aeRuleAnimationDifference &copy );
+	aeRuleAnimationDifference(const aeRuleAnimationDifference &copy);
 	/** Cleans up the animator difference rule. */
-	virtual ~aeRuleAnimationDifference();
+protected:
+	~aeRuleAnimationDifference() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -67,73 +70,71 @@ public:
 	/** Retrieve the name of the leading animation move. */
 	inline const decString &GetLeadingMoveName() const{ return pMove1Name; }
 	/** Set the leading animation move name. */
-	void SetLeadingMoveName( const char *moveName );
+	void SetLeadingMoveName(const char *moveName);
 	/** Retrieve the leading animation move time. */
 	inline float GetLeadingMoveTime() const{ return pMove1Time; }
 	/** Set the leading animation move time. */
-	void SetLeadingMoveTime( float moveTime );
+	void SetLeadingMoveTime(float moveTime);
 	/** Retrieve the name of the reference animation move. */
 	inline const decString &GetReferenceMoveName() const{ return pMove2Name; }
 	/** Set the reference animation move name. */
-	void SetReferenceMoveName( const char *moveName );
+	void SetReferenceMoveName(const char *moveName);
 	/** Retrieve the reference animation move time. */
 	inline float GetReferenceMoveTime() const{ return pMove2Time; }
 	/** Set the reference animation move time. */
-	void SetReferenceMoveTime( float moveTime );
+	void SetReferenceMoveTime(float moveTime);
 	/** Determine if the reference move is the same as the leading move. */
 	inline bool GetUseSameMove() const{ return pUseSameMove; }
 	/** Set if the reference move is the same as the leading move. */
-	void SetUseSameMove( bool useSameMove );
+	void SetUseSameMove(bool useSameMove);
 	
 	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	/** Determine if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** Determine if vertex position set manipulation is enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Retrieve the leading move time target. */
-	inline aeControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }
-	inline const aeControllerTarget &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }
+	inline const aeControllerTarget::Ref &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }
 	
 	/** Retrieve the reference move time target. */
-	inline aeControllerTarget &GetTargetReferenceMoveTime(){ return pTargetRefMoveTime; }
-	inline const aeControllerTarget &GetTargetReferenceMoveTime() const{ return pTargetRefMoveTime; }
+	inline const aeControllerTarget::Ref &GetTargetReferenceMoveTime() const{ return pTargetRefMoveTime; }
 	
 	/** Creates an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
-	virtual void UpdateTargets();
+	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	int CountLinkUsage(aeLink *link) const override;
 	/** Removes a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	void RemoveLinkFromTargets(aeLink *link) override;
 	/** Removes all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
+	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another animator difference rule to this animator difference rule. */
-	virtual aeRuleAnimationDifference &operator=( const aeRuleAnimationDifference &copy );
+	virtual aeRuleAnimationDifference &operator=(const aeRuleAnimationDifference &copy);
 	/*@}*/
 };
 

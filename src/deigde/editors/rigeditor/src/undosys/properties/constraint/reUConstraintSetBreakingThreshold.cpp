@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetBreakingThreshold::reUConstraintSetBreakingThreshold( reRigConstraint *constraint, float newBreakingThreshold ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetBreakingThreshold::reUConstraintSetBreakingThreshold(reRigConstraint *constraint, float newBreakingThreshold){
+	if(!constraint || !constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,15 +50,10 @@ reUConstraintSetBreakingThreshold::reUConstraintSetBreakingThreshold( reRigConst
 	pOldBreakingThreshold = constraint->GetBreakingThreshold();
 	pNewBreakingThreshold = newBreakingThreshold;
 	
-	SetShortInfo( "Constraint set breaking threshold" );
-	
-	pConstraint->AddReference();
+	SetShortInfo("@Rig.Undo.ConstraintSetBreakingThreshold");
 }
 
 reUConstraintSetBreakingThreshold::~reUConstraintSetBreakingThreshold(){
-	if( pConstraint ){
-		pConstraint->FreeReference();
-	}
 }
 
 
@@ -67,9 +62,9 @@ reUConstraintSetBreakingThreshold::~reUConstraintSetBreakingThreshold(){
 ///////////////
 
 void reUConstraintSetBreakingThreshold::Undo(){
-	pConstraint->SetBreakingThreshold( pOldBreakingThreshold );
+	pConstraint->SetBreakingThreshold(pOldBreakingThreshold);
 }
 
 void reUConstraintSetBreakingThreshold::Redo(){
-	pConstraint->SetBreakingThreshold( pNewBreakingThreshold );
+	pConstraint->SetBreakingThreshold(pNewBreakingThreshold);
 }

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCComponent;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class remove component.
  */
 class gdeUOCRemoveComponent : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCRemoveComponent> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveComponent( gdeObjectClass *objectClass, gdeOCComponent *component );
+	gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */

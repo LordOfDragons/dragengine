@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 
-#include "seIGDEModule.h"
+#include "skyeIGDEModule.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -34,7 +34,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
@@ -44,11 +44,11 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule( igdeEnvironment *e
 // entry point
 ////////////////
 
-igdeEditorModule *SkyEditorCreateModule( igdeEnvironment *environment ){
+igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
 	try{
-		return new seIGDEModule( *environment );
+		return new skyeIGDEModule(*environment);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 }

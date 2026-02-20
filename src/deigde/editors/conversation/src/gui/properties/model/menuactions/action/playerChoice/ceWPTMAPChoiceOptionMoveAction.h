@@ -54,13 +54,14 @@ protected:
 	ceWPTMAPChoiceOptionMoveAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionMoveAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */
-	ceWPTMAPChoiceOptionMoveAction( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionMoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice,
 		ceCAPlayerChoiceOption &option, ceConversationAction *action, int index,
-		const char *text, igdeIcon *icon );
+		const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -88,7 +89,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

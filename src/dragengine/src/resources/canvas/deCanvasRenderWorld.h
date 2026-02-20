@@ -26,7 +26,7 @@
 #define _DECANVASRENDERWORLD_H_
 
 #include "deCanvas.h"
-#include "../camera/deCameraReference.h"
+#include "../camera/deCamera.h"
 
 
 /**
@@ -35,12 +35,11 @@
 class DE_DLL_EXPORT deCanvasRenderWorld : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvasRenderWorld> Ref;
-	
+	using Ref = deTObjectReference<deCanvasRenderWorld>;
 	
 	
 private:
-	deCameraReference pCamera;
+	deCamera::Ref pCamera;
 	
 	
 	
@@ -48,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasRenderWorld( deCanvasManager *manager );
+	deCanvasRenderWorld(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -57,7 +56,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvasRenderWorld();
+	~deCanvasRenderWorld() override;
 	/*@}*/
 	
 	
@@ -66,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera or NULL if not set. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or NULL to unset. */
-	void SetCamera( deCamera *camera );
+	void SetCamera(deCamera *camera);
 	/*@}*/
 	
 	
@@ -77,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	void Visit(deCanvasVisitor &visitor) override;
 	/*@}*/
 };
 

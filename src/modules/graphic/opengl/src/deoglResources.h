@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create resources. */
-	deoglResources( deGraphicOpenGl &ogl );
+	deoglResources(deGraphicOpenGl &ogl);
 	
 	/** Clean up resources. */
 	~deoglResources();

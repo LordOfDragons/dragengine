@@ -36,7 +36,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -45,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMSkies::gdeWPSTIMSkies( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etSkies )
+gdeWPSTIMSkies::gdeWPSTIMSkies(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etSkies)
 {
-	SetText( "Skies" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Skies").ToUTF8());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMSkies::~gdeWPSTIMSkies(){
@@ -60,44 +60,44 @@ gdeWPSTIMSkies::~gdeWPSTIMSkies(){
 // Management
 ///////////////
 
-gdeWPSTIMSky *gdeWPSTIMSkies::GetChildWith( gdeSky *sky ) const{
-	gdeWPSTIMSky *child = ( gdeWPSTIMSky* )GetFirstChild();
+gdeWPSTIMSky *gdeWPSTIMSkies::GetChildWith(gdeSky *sky) const{
+	gdeWPSTIMSky *child = GetFirstChild().DynamicCast<gdeWPSTIMSky>();
 	
-	while( child ){
-		if( child->GetSky() == sky ){
+	while(child){
+		if(child->GetSky() == sky){
 			return child;
 		}
-		child = ( gdeWPSTIMSky* )child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMSky>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void gdeWPSTIMSkies::StructureChanged(){
-	const gdeSkyList &list = GetGameDefinition().GetSkies();
+	const gdeSky::List &list = GetGameDefinition().GetSkies();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeSky * const sky = list.GetAt( i );
-		gdeWPSTIMSky * const modelSky = GetChildWith( sky );
+	for(i=0; i<count; i++){
+		gdeSky * const sky = list.GetAt(i);
+		gdeWPSTIMSky * const modelSky = GetChildWith(sky);
 		
-		if( ! modelSky ){
-			item.TakeOver( new gdeWPSTIMSky( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+		if(!modelSky){
+			item = gdeWPSTIMSky::Ref::New(GetTree(), list.GetAt(i));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMSky * const modelSky = ( gdeWPSTIMSky* )child;
+	while(child){
+		gdeWPSTIMSky * const modelSky = (gdeWPSTIMSky*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelSky->GetSky() ) ){
-			RemoveModel( modelSky );
+		if(!list.Has(modelSky->GetSky())){
+			RemoveModel(modelSky);
 		}
 	}
 	
@@ -108,44 +108,44 @@ void gdeWPSTIMSkies::StructureChanged(){
 
 
 void gdeWPSTIMSkies::OnAddedToTree(){
-	const gdeSkyList &list = GetGameDefinition().GetSkies();
+	const gdeSky::List &list = GetGameDefinition().GetSkies();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMSky( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item = gdeWPSTIMSky::Ref::New(GetTree(), list.GetAt(i));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMSkies::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMSkies::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionSkyAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionSkyAdd());
 }
 
-void gdeWPSTIMSkies::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMSkies::SelectBestMatching(const char *string){
+	if(!string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeSky * const sky = ( ( gdeWPSTIMSky* )child )->GetSky();
+	while(child){
+		gdeSky * const sky = ((gdeWPSTIMSky*)child)->GetSky();
 		child = child->GetNext();
 		
-		if( sky->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(sky->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		GetGameDefinition().SetActiveSky( sky );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotSky );
+		GetGameDefinition().SetActiveSky(sky);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotSky);
 		return;
 	}
 }

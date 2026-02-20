@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetRotation::gdeUOCTextureSetRotation( gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, float newValue ) :
-pObjectClass( NULL ),
-pTexture( NULL )
+gdeUOCTextureSetRotation::gdeUOCTextureSetRotation(gdeObjectClass *objectClass,
+gdeOCComponentTexture *texture, float newValue) :
+
+pTexture(nullptr)
 {
-	if( ! objectClass || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Txture set rotation" );
+	SetShortInfo("@GameDefinition.Undo.OCTextureSetRotation");
 	
 	pOldValue = texture->GetRotation();
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetRotation::~gdeUOCTextureSetRotation(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCTextureSetRotation::~gdeUOCTextureSetRotation(){
 ///////////////
 
 void gdeUOCTextureSetRotation::Undo(){
-	pTexture->SetRotation( pOldValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetRotation(pOldValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }
 
 void gdeUOCTextureSetRotation::Redo(){
-	pTexture->SetRotation( pNewValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetRotation(pNewValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }

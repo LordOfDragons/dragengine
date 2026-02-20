@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seViewConstructedViewListener::seViewConstructedViewListener( seViewConstructedView &view ) :
-pView( view ){
+seViewConstructedViewListener::seViewConstructedViewListener(seViewConstructedView &view) :
+pView(view){
 }
 
 seViewConstructedViewListener::~seViewConstructedViewListener(){
@@ -51,8 +51,8 @@ seViewConstructedViewListener::~seViewConstructedViewListener(){
 // Management
 ///////////////
 
-void seViewConstructedViewListener::ActiveTextureChanged( seSkin *skin ){
-	if( pView.GetSkin() != skin ){
+void seViewConstructedViewListener::ActiveTextureChanged(seSkin *skin){
+	if(pView.GetSkin() != skin){
 		return;
 	}
 	
@@ -61,9 +61,9 @@ void seViewConstructedViewListener::ActiveTextureChanged( seSkin *skin ){
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive()
-	|| property->GetValueType() != seProperty::evtConstructed ){
+void seViewConstructedViewListener::PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()
+	|| property->GetValueType() != seProperty::evtConstructed){
 		return;
 	}
 	
@@ -71,8 +71,8 @@ void seViewConstructedViewListener::PropertyChanged( seSkin *skin, seTexture *te
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::ActivePropertyChanged( seSkin *skin, seTexture *texture ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() ){
+void seViewConstructedViewListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
+	if(pView.GetSkin() != skin || !texture->GetActive()){
 		return;
 	}
 	
@@ -81,9 +81,9 @@ void seViewConstructedViewListener::ActivePropertyChanged( seSkin *skin, seTextu
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyNodeStructureChanged( seSkin *skin,
-seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedViewListener::PropertyNodeStructureChanged(seSkin *skin,
+seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -92,13 +92,13 @@ seTexture *texture, seProperty *property ){
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyNodeChanged( seSkin *skin, seTexture *texture,
-seProperty *property, sePropertyNode *node ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedViewListener::PropertyNodeChanged(seSkin *skin, seTexture *texture,
+seProperty *property, sePropertyNode *node){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
-	if( node == property->GetNodeGroup() ){
+	if(node == property->GetNodeGroup()){
 		pView.UpdateConstructedCanvas();
 		
 	}else{
@@ -109,9 +109,9 @@ seProperty *property, sePropertyNode *node ){
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyActiveNodeChanged( seSkin *skin,
-seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedViewListener::PropertyActiveNodeChanged(seSkin *skin,
+seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -119,9 +119,9 @@ seTexture *texture, seProperty *property ){
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyNodeSelectionChanged( seSkin *skin,
-seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedViewListener::PropertyNodeSelectionChanged(seSkin *skin,
+seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -129,9 +129,9 @@ seTexture *texture, seProperty *property ){
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyActiveNodeGroupChanged( seSkin *skin,
-seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedViewListener::PropertyActiveNodeGroupChanged(seSkin *skin,
+seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -139,9 +139,9 @@ seTexture *texture, seProperty *property ){
 	pView.UpdateMarkers();
 }
 
-void seViewConstructedViewListener::PropertyActiveNodeLayerChanged( seSkin *skin,
-seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedViewListener::PropertyActiveNodeLayerChanged(seSkin *skin,
+seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	

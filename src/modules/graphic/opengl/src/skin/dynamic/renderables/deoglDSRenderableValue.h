@@ -26,9 +26,9 @@
 #define _DEOGLDSRENDERABLEVALUE_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableValue.h"
 
 class deDSRenderableValue;
-class deoglRDSRenderableValue;
 
 
 
@@ -38,7 +38,7 @@ class deoglRDSRenderableValue;
 class deoglDSRenderableValue : public deoglDSRenderable{
 public:
 	const deDSRenderableValue &pRenderableValue;
-	deoglRDSRenderableValue *pRRenderableValue;
+	deoglRDSRenderableValue::Ref pRRenderableValue;
 	float pValue;
 	bool pDirty;
 	
@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableValue( deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable );
+	deoglDSRenderableValue(deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableValue();
+	~deoglDSRenderableValue() override;
 	/*@}*/
 	
 	
@@ -60,13 +60,13 @@ public:
 	inline const deDSRenderableValue &GetRenderableValue() const{ return pRenderableValue; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 private:

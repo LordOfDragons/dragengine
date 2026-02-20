@@ -38,25 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects( gdeObjectClass *objectClass, int newValue ) :
-pObjectClass( nullptr ),
-pNewValue( newValue )
+gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects(gdeObjectClass *objectClass, int newValue) :
+
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( objectClass )
+	DEASSERT_NOTNULL(objectClass)
 	
-	SetShortInfo( "Object class set inherit sub objects" );
+	SetShortInfo("@GameDefinition.Undo.OCSetInheritSubObjects");
 	
 	pOldValue = objectClass->GetInheritSubObjects();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetInheritSubObjects::~gdeUOCSetInheritSubObjects(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ gdeUOCSetInheritSubObjects::~gdeUOCSetInheritSubObjects(){
 ///////////////
 
 void gdeUOCSetInheritSubObjects::Undo(){
-	pObjectClass->SetInheritSubObjects( pOldValue );
+	pObjectClass->SetInheritSubObjects(pOldValue);
 }
 
 void gdeUOCSetInheritSubObjects::Redo(){
-	pObjectClass->SetInheritSubObjects( pNewValue );
+	pObjectClass->SetInheritSubObjects(pNewValue);
 }

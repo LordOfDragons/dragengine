@@ -25,10 +25,10 @@
 #ifndef _DESYNTHESIZERINSTANCE_H_
 #define _DESYNTHESIZERINSTANCE_H_
 
-#include "deSynthesizerReference.h"
+#include "deSynthesizer.h"
 #include "source/deSynthesizerSource.h"
 #include "../deResource.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deSynthesizerInstanceManager;
 class deSynthesizerController;
@@ -71,14 +71,13 @@ class deBaseAudioSynthesizerInstance;
 class DE_DLL_EXPORT deSynthesizerInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerInstance> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerInstance>;
 	
 	
 private:
-	deSynthesizerReference pSynthesizer;
+	deSynthesizer::Ref pSynthesizer;
 	
-	decObjectOrderedSet pControllers;
+	decTObjectOrderedSet<deSynthesizerController> pControllers;
 	
 	int pSampleCount;
 	
@@ -91,8 +90,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer instance. */
-	deSynthesizerInstance( deSynthesizerInstanceManager *manager );
+	deSynthesizerInstance(deSynthesizerInstanceManager *manager);
 	
+	deSynthesizerInstance(const deSynthesizerInstance& synthesizerInstance) = delete;
+	deSynthesizerInstance& operator=(const deSynthesizerInstance& synthesizerInstance) = delete;
+
 protected:
 	/**
 	 * \brief Clean up the synthesizer instance.
@@ -100,7 +102,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerInstance();
+	~deSynthesizerInstance() override;
 	/*@}*/
 	
 	
@@ -109,10 +111,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if not set. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL to clear. */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	
 	
@@ -120,24 +122,18 @@ public:
 	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
-	void SetSampleCount( int sampleCount );
+	void SetSampleCount(int sampleCount);
 	
 	
 	
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0 or greater or equal than GetControllerCount().
-	 */
-	deSynthesizerController *GetControllerAt( int index ) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSynthesizerController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Notify peer controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	/*@}*/
 	
 	
@@ -165,7 +161,7 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	void GenerateSound( void *buffer, int bufferSize, int offset, int samples );
+	void GenerateSound(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	
@@ -176,13 +172,13 @@ public:
 	inline deBaseSynthesizerSynthesizerInstance *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer peer or NULL if not set. */
-	void SetPeerSynthesizer( deBaseSynthesizerSynthesizerInstance *peer );
+	void SetPeerSynthesizer(deBaseSynthesizerSynthesizerInstance *peer);
 	
 	/** \brief Audio peer or NULL if not set. */
 	inline deBaseAudioSynthesizerInstance *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio peer or NULL if not set. */
-	void SetPeerAudio( deBaseAudioSynthesizerInstance *peer );
+	void SetPeerAudio(deBaseAudioSynthesizerInstance *peer);
 	/*@}*/
 	
 	

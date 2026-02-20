@@ -25,7 +25,7 @@
 #ifndef _AECLIPBOARDDATACONTROLLER_H_
 #define _AECLIPBOARDDATACONTROLLER_H_
 
-#include "../animator/controller/aeControllerList.h"
+#include "../animator/controller/aeController.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class aeClipboardDataController : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeClipboardDataController>;
+	
 	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	aeControllerList pControllers;
+	aeController::List pControllers;
 	
 	
 	
@@ -50,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataController( aeController *controller );
+	aeClipboardDataController(aeController *controller);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataController( const aeControllerList &controllers );
+	aeClipboardDataController(const aeController::List &controllers);
 	
 protected:
 	/**
@@ -62,7 +65,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~aeClipboardDataController();
+	~aeClipboardDataController() override;
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Controllers. */
-	inline const aeControllerList &GetControllers() const{ return pControllers; }
+	inline const aeController::List &GetControllers() const{ return pControllers; }
 	/*@}*/
 };
 

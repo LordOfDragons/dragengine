@@ -25,13 +25,13 @@
 #ifndef _DEOGLRENDERERPLANTASKS_H_
 #define _DEOGLRENDERERPLANTASKS_H_
 
+#include "parallel/deoglRPTBuildRTsDepth.h"
+#include "parallel/deoglRPTBuildRTsGeometry.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglComputeRenderTask.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
-class deoglRPTBuildRTsDepth;
-class deoglRPTBuildRTsGeometry;
 
 
 /**
@@ -39,7 +39,8 @@ class deoglRPTBuildRTsGeometry;
  */
 class deoglRenderPlanTasks : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderPlanTasks> Ref;
+	using Ref = deTObjectReference<deoglRenderPlanTasks>;
+	
 	
 private:
 	deoglRenderPlan &pPlan;
@@ -60,8 +61,8 @@ private:
 	deoglRenderTask *pSolidGeometryOutlineXRayTask;
 	deoglRenderTask *pSolidDecalsXRayTask;
 	
-	deoglRPTBuildRTsDepth *pTaskDepth;
-	deoglRPTBuildRTsGeometry *pTaskGeometry;
+	deoglRPTBuildRTsDepth::Ref pTaskDepth;
+	deoglRPTBuildRTsGeometry::Ref pTaskGeometry;
 	
 	deoglComputeRenderTask::Ref pCRTSolidDepth;
 	deoglComputeRenderTask::Ref pCRTSolidGeometry;
@@ -75,14 +76,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan tasks. */
-	deoglRenderPlanTasks( deoglRenderPlan &plan );
+	deoglRenderPlanTasks(deoglRenderPlan &plan);
 	
+protected:
 	/** Clean up render plan tasks. */
-	~deoglRenderPlanTasks();
+	~deoglRenderPlanTasks() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Parent plan. */
@@ -129,13 +131,13 @@ public:
 	
 	
 	/** Build compute render tasks and begin reading back steps. */
-	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask, bool rebuild = false );
+	void BuildComputeRenderTasks(const deoglRenderPlanMasked *mask, bool rebuild = false);
 	
 	/** Finish read back compute render tasks. */
-	void FinishReadBackComputeRenderTasks( const deoglRenderPlanMasked *mask );
+	void FinishReadBackComputeRenderTasks(const deoglRenderPlanMasked *mask);
 	
 	/** Start building render tasks. */
-	void StartBuildTasks( const deoglRenderPlanMasked *mask );
+	void StartBuildTasks(const deoglRenderPlanMasked *mask);
 	
 	/** Wait for task building to finish. */
 	void WaitFinishBuildingTasksDepth();
@@ -148,11 +150,11 @@ public:
 	
 	
 private:
-	void pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
-		const deoglRenderPlanMasked *mask , bool xray );
+	void pBuildCRTSolidDepth(deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray);
 	
-	void pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
-		const deoglRenderPlanMasked *mask , bool xray );
+	void pBuildCRTSolidGeometry(deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray);
 };
 
 #endif

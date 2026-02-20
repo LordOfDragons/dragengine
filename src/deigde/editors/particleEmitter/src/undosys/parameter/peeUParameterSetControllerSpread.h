@@ -25,10 +25,12 @@
 #ifndef _PEEUPARAMETERSETCONTROLLERSPREAD_H_
 #define _PEEUPARAMETERSETCONTROLLERSPREAD_H_
 
+#include "../../emitter/peeType.h"
+#include "../../emitter/peeController.h"
+#include "../../emitter/peeParameter.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
-class peeController;
 class peeParameter;
 
 
@@ -37,12 +39,15 @@ class peeParameter;
  * \brief Undo Action Set Parameter Spread Curve Controller.
  */
 class peeUParameterSetControllerSpread : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUParameterSetControllerSpread>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	peeController *pOldController;
-	peeController *pNewController;
+	peeController::Ref pOldController, pNewController;
 	
 	
 	
@@ -50,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUParameterSetControllerSpread( peeType *type, peeParameter *parameter, peeController *newController );
+	peeUParameterSetControllerSpread(peeType *type, peeParameter *parameter, peeController *newController);
 	
 protected:
 	/** \brief Clean up the undo action. */
-    virtual ~peeUParameterSetControllerSpread();
+    ~peeUParameterSetControllerSpread() override;
 	/*@}*/
 	
 	
@@ -63,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

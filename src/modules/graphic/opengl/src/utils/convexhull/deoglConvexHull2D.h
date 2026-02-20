@@ -26,6 +26,7 @@
 #define _DEOGLCONVEXHULL2D_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -33,13 +34,8 @@
  */
 class deoglConvexHull2D{
 private:
-	decVector2 *pPoints;
-	int pPointCount;
-	int pPointSize;
-	
-	int *pHullPoints;
-	int pHullPointCount;
-	int pHullPointSize;
+	decTList<decVector2> pPoints;
+	decTList<int> pHullPoints;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -52,22 +48,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
-	/** Retrieves a point by index. */
-	const decVector2 &GetPointAt( int index ) const;
+	/** Points. */
+	inline const decTList<decVector2> &GetPoints() const{ return pPoints; }
+	
 	/** Adds a point. */
-	void AddPoint( const decVector2 &point );
-	void AddPoint( float x, float y );
+	void AddPoint(const decVector2 &point);
+	void AddPoint(float x, float y);
+	
 	/** Removes all points. */
 	void RemoveAllPoints();
 	
-	/** Retrieves the number of hull points. */
-	inline int GetHullPointCount() const{ return pHullPointCount; }
-	/** Retrieves a hull point by index. */
-	int GetHullPointAt( int index ) const;
+	/** Hull points. */
+	inline const decTList<int> &GetHullPoints() const{ return pHullPoints; }
+	
 	/** Retrieves the point using a hull point by index. */
-	const decVector2 &GetHullPointVectorAt( int index ) const;
+	const decVector2 &GetHullPointVectorAt(int index) const;
 	
 	/** Calculate convex hull. */
 	void CalculateHull();

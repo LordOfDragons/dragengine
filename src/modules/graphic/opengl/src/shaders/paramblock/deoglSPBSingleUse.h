@@ -29,7 +29,7 @@
 
 #include "deoglShaderParameterBlock.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -41,14 +41,13 @@
  */
 class deoglSPBSingleUse : public deObject{
 public:
-	typedef deTObjectReference<deoglSPBSingleUse> Ref;
-	
+	using Ref = deTObjectReference<deoglSPBSingleUse>;
 	
 	
 private:
 	const deoglRenderThread &pRenderThread;
 	deoglShaderParameterBlock *pInitialBlock;
-	decObjectList pBlocks;
+	decTObjectList<deoglShaderParameterBlock> pBlocks;
 	uint32_t pFrameCounter;
 	int pStartIndex;
 	int pNextIndex;
@@ -59,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Map block. */
-	deoglSPBSingleUse( const deoglRenderThread &renderThread, deoglShaderParameterBlock *block );
+	deoglSPBSingleUse(const deoglRenderThread &renderThread, deoglShaderParameterBlock *block);
 	
 protected:
 	/** Unmap block if mapped. */
-	virtual ~deoglSPBSingleUse();
+	~deoglSPBSingleUse() override;
 	/*@}*/
 	
 	

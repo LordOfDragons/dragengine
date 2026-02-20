@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -37,8 +37,12 @@ class aeRuleGroup;
  * Undo action group rule set rule application type.
  */
 class aeURuleGroupSetApplicationType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleGroupSetApplicationType>;
+	
+	
 private:
-	aeRuleGroup *pRule;
+	aeRuleGroup::Ref pRule;
 	
 	deAnimatorRuleGroup::eApplicationTypes pOldType;
 	deAnimatorRuleGroup::eApplicationTypes pNewType;
@@ -47,19 +51,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupSetApplicationType( aeRuleGroup *rule, deAnimatorRuleGroup::eApplicationTypes newType );
+	aeURuleGroupSetApplicationType(aeRuleGroup *rule, deAnimatorRuleGroup::eApplicationTypes newType);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleGroupSetApplicationType();
+	~aeURuleGroupSetApplicationType() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

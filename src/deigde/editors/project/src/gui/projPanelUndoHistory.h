@@ -25,10 +25,11 @@
 #ifndef _PROJPANELUNDOHISTORY_H_
 #define _PROJPANELUNDOHISTORY_H_
 
+#include "projPanelUndoHistoryListener.h"
+#include "../project/projProject.h"
+
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class projProject;
-class projPanelUndoHistoryListener;
 class projWindowMain;
 
 
@@ -37,9 +38,13 @@ class projWindowMain;
  * \brief Profiles panel.
  */
 class projPanelUndoHistory : public igdeWPUndoHistory{
+public:
+	using Ref = deTObjectReference<projPanelUndoHistory>;
+	
+	
 private:
-	projProject *pProject;
-	projPanelUndoHistoryListener *pListener;
+	projProject::Ref pProject;
+	projPanelUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -47,10 +52,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	projPanelUndoHistory( igdeEnvironment &environment );
+	projPanelUndoHistory(igdeEnvironment &environment);
 	
 	/** \brief Clean up view. */
-	virtual ~projPanelUndoHistory();
+protected:
+	~projPanelUndoHistory() override;
+public:
 	/*@}*/
 	
 	
@@ -58,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	/*@}*/
 };
 

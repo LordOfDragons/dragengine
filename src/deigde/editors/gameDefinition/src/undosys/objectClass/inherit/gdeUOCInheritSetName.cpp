@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCInheritSetName::gdeUOCInheritSetName( gdeObjectClass *objectClass,
-gdeOCInherit *inherit, const char *newValue ) :
-pObjectClass( NULL ),
-pInherit( NULL )
+gdeUOCInheritSetName::gdeUOCInheritSetName(gdeObjectClass *objectClass,
+gdeOCInherit *inherit, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! inherit ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !inherit){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object inherit set name" );
+	SetShortInfo("@GameDefinition.Undo.OCInheritSetName");
 	
 	pOldValue = inherit->GetName();
 	pNewValue = newValue;
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCInheritSetName::~gdeUOCInheritSetName(){
-	if( pInherit ){
-		pInherit->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCInheritSetName::~gdeUOCInheritSetName(){
 ///////////////
 
 void gdeUOCInheritSetName::Undo(){
-	pInherit->SetName( pOldValue );
-	pObjectClass->NotifyInheritChanged( pInherit );
+	pInherit->SetName(pOldValue);
+	pObjectClass->NotifyInheritChanged(pInherit);
 }
 
 void gdeUOCInheritSetName::Redo(){
-	pInherit->SetName( pNewValue );
-	pObjectClass->NotifyInheritChanged( pInherit );
+	pInherit->SetName(pNewValue);
+	pObjectClass->NotifyInheritChanged(pInherit);
 }

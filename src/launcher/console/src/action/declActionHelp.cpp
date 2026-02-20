@@ -54,8 +54,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-declActionHelp::declActionHelp( declLauncher &launcher ) :
-pLauncher( launcher ){
+declActionHelp::declActionHelp(declLauncher &launcher) :
+pLauncher(launcher){
 }
 
 declActionHelp::~declActionHelp(){
@@ -69,27 +69,27 @@ declActionHelp::~declActionHelp(){
 void declActionHelp::Run(){
 	const decUnicodeArgumentList &argumentList = pLauncher.GetArgumentList();
 	
-	if( argumentList.GetArgumentCount() < 2 ){
+	if(argumentList.GetArgumentCount() < 2){
 		pLauncher.PrintSyntax();
 		return;
 	}
 	
-	const decString actionName = argumentList.GetArgumentAt( 1 )->ToUTF8();
+	const decString actionName = argumentList.GetArgumentAt(1)->ToUTF8();
 	
-	if( actionName == "run" ){
-		declRunGame( pLauncher ).PrintSyntax();
+	if(actionName == "run"){
+		declRunGame(pLauncher).PrintSyntax();
 		
-	}else if( actionName == "delga" ){
-		declActionDelga( pLauncher ).PrintSyntax();
+	}else if(actionName == "delga"){
+		declActionDelga(pLauncher).PrintSyntax();
 		
-	}else if( actionName == "games" ){
-		declActionGames( pLauncher ).PrintSyntax();
+	}else if(actionName == "games"){
+		declActionGames(pLauncher).PrintSyntax();
 		
-	}else if( actionName == "patches" ){
-		declActionPatches( pLauncher ).PrintSyntax();
+	}else if(actionName == "patches"){
+		declActionPatches(pLauncher).PrintSyntax();
 		
-	}else if( actionName == "profiles" ){
-		declListProfiles( pLauncher ).PrintSyntax();
+	}else if(actionName == "profiles"){
+		declListProfiles(pLauncher).PrintSyntax();
 		
 	}else{
 		pLauncher.PrintSyntax();

@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCComponentCopy::gdeMAOCComponentCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Component",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class component" )
+gdeMAOCComponentCopy::gdeMAOCComponentCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@GameDefinition.Menu.OCComponentCopy.ToolTip")
 {
 }
 
@@ -59,29 +59,25 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent ){
-		return NULL;
+igdeUndo::Ref gdeMAOCComponentCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
+		return {};
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
-	if( ! component ){
-		return NULL;
+	if(!component){
+		return {};
 	}
 	
-	deObjectReference clipOCComponent;
-	clipOCComponent.TakeOver( new gdeOCComponent( *component ) );
+	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::New(*component));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCComponent( ( gdeOCComponent* )( deObject* )clipOCComponent ) );
-	
-	pWindowMain.GetClipboard().Set( clipData );
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::New(clipOCComponent));
+	return {};
 }
 
 void gdeMAOCComponentCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL );
+		&& gameDefinition->GetActiveOCComponent() != nullptr);
 }

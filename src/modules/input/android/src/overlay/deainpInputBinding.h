@@ -54,13 +54,13 @@ public:
 	deainpInputBinding();
 	
 	/** \brief Create button input binding. */
-	deainpInputBinding( const char *deviceID, const char *buttonID );
+	deainpInputBinding(const char *deviceID, const char *buttonID);
 	
 	/** \brief Create axis input binding. */
-	deainpInputBinding( const char *deviceID, const char *axisID, bool invertAxis );
+	deainpInputBinding(const char *deviceID, const char *axisID, bool invertAxis);
 	
 	/** \brief Create copy of input binding. */
-	deainpInputBinding( const deainpInputBinding &binding );
+	deainpInputBinding(const deainpInputBinding &binding);
 	
 	/** \brief Clean up overlay. */
 	~deainpInputBinding();
@@ -74,25 +74,25 @@ public:
 	inline const decString &GetDeviceID() const{ return pDeviceID; }
 	
 	/** \brief Set device identifier. */
-	void SetDeviceID( const char *id );
+	void SetDeviceID(const char *id);
 	
 	/** \brief Axis identifier or empty string. */
 	inline const decString &GetAxisID() const{ return pAxisID; }
 	
 	/** \brief Set axis identifier or empty string. */
-	void SetAxisID( const char *id );
+	void SetAxisID(const char *id);
 	
 	/** \brief Button identifier or empty string. */
 	inline const decString &GetButtonID() const{ return pButtonID; }
 	
 	/** \brief Set button identifier or empty string. */
-	void SetButtonID( const char *id );
+	void SetButtonID(const char *id);
 	
 	/** \brief Invert axis. */
 	inline bool GetInvertAxis() const{ return pInvertAxis; }
 	
 	/** \brief Set invert axis. */
-	void SetInvertAxis( bool invertAxis );
+	void SetInvertAxis(bool invertAxis);
 	
 	/** \brief Device index or -1 if not matching. */
 	inline int GetDeviceIndex() const{ return pDeviceIndex; }
@@ -106,10 +106,10 @@ public:
 	
 	
 	/** \brief Update indices. */
-	void UpdateIndices( const deainpDeviceManager &devices );
+	void UpdateIndices(const deainpDeviceManager &devices);
 	
 	/** \brief Change button state and send event if valid. */
-	void ChangeButtonState( deAndroidInput &androidInput, bool pressed ) const;
+	void ChangeButtonState(deAndroidInput &androidInput, bool pressed) const;
 	/*@}*/
 	
 	
@@ -117,10 +117,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Bindings are equal. */
-	bool operator==( const deainpInputBinding &binding ) const;
+	bool operator==(const deainpInputBinding &binding) const;
 	
 	/** \brief Assign binding. */
-	deainpInputBinding &operator=( const deainpInputBinding &binding );
+	deainpInputBinding &operator=(const deainpInputBinding &binding);
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigConstraint;
  * \brief Set constraint orientation undo action.
  */
 class reUConstraintSetOrientation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUConstraintSetOrientation>;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetOrientation( reRigConstraint *constraint, const decVector &newOrientation );
+	reUConstraintSetOrientation(reRigConstraint *constraint, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up the undo. */
-	virtual ~reUConstraintSetOrientation();
+	~reUConstraintSetOrientation() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -41,76 +41,6 @@
     <None Include="..\..\..\src\launcher\gui\SConscript" />
     <None Include="..\..\..\src\launcher\gui\src\.gitignore" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\deglLauncher.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\deglSignalHandler.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\engine\deglEngineProcessHelper.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\guilaunch.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\deglLauncher.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\deglSignalHandler.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\guilaunch.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\foxtoolkit.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.h" />
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc" />
@@ -315,4 +245,75 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\deglLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\deglSignalHandler.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\engine\deglEngineProcessHelper.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\guilaunch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\deglLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\deglSignalHandler.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\glconfig.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\foxtoolkit.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\guilaunch.h" />
+  </ItemGroup>
 </Project>

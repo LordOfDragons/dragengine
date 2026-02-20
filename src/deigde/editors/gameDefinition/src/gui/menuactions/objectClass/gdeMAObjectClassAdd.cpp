@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassAdd::gdeMAObjectClassAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Object Class...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class" )
+gdeMAObjectClassAdd::gdeMAObjectClassAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.ObjectClassAdd.ToolTip")
 {
 }
 
@@ -59,20 +58,19 @@ gdeBaseAction( windowMain, "Add Object Class...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassAdd::OnAction( gdeGameDefinition &gameDefinition ){
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
-	decString name( "Object Class" );
+igdeUndo::Ref gdeMAObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
+	decString name(pWindowMain.Translate("GameDefinition.Default.ObjectClass").ToUTF8());
 	
-	while( igdeCommonDialogs::GetString( &pWindowMain, "Add Object Class", "Name:", name ) ){
-		if( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindowMain, "Add Object Class", "Object Class exists already." );
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassAdd.Title", "@GameDefinition.Dialog.ObjectClassAdd.Name", name)){
+		if(list.HasNamed(name)){
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassAdd.Title", "@GameDefinition.Dialog.ObjectClassAdd.ErrorExists");
 			continue;
 		}
 		
-		deObjectReference objectClass;
-		objectClass.TakeOver( new gdeObjectClass( name ) );
-		return new gdeUAddObjectClass( &gameDefinition, ( gdeObjectClass* )( deObject* )objectClass );
+		const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::New(name));
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, objectClass);
 	}
 	
-	return NULL;
+	return {};
 }

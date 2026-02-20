@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 #include "../../../../undosys/objectClass/light/gdeUOCAddLight.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCLightPaste::gdeMAOCLightPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Light",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class light" )
+gdeMAOCLightPaste::gdeMAOCLightPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCLightPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCLight::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCLightPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCLight::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCLight &clipOCLight =
-		( const gdeClipboardDataOCLight & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddLight::Ref::New(&objectClass, 
+		gdeOCLight::Ref::New(*clip.DynamicCast<gdeClipboardDataOCLight>()->GetLight()));
 	
-	deObjectReference light;
-	light.TakeOver( new gdeOCLight( *clipOCLight.GetLight() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddLight( &objectClass,
-		( gdeOCLight* )( deObject* )light );
-	undo->SetShortInfo( "Paste object class light" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCLight");
 	return undo;
 }
 
 void gdeMAOCLightPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCLight::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCLight::TYPE_NAME));
 }

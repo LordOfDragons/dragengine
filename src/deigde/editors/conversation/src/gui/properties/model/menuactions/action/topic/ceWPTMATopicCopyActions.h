@@ -35,6 +35,9 @@ class ceConversationTopic;
  * \brief Menu action copy all topic actions.
  */
 class ceWPTMATopicCopyActions : public ceWPTMACopyActions{
+public:
+	using Ref = deTObjectReference<ceWPTMATopicCopyActions>;
+	
 protected:
 	/** \brief FOX constructor. */
 	ceWPTMATopicCopyActions();
@@ -43,8 +46,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMATopicCopyActions( ceWindowMain &windowMain,
-		ceConversationTopic &topic );
+	ceWPTMATopicCopyActions(ceWindowMain &windowMain,
+		ceConversationTopic &topic);
 	/*@}*/
 };
 

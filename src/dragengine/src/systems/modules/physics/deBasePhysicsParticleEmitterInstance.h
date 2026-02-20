@@ -71,10 +71,10 @@ public:
 	virtual void WarmUpTimeChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** \brief Type changed. */
-	virtual void TypeChanged( int type );
+	virtual void TypeChanged(int type);
 	
 	/** \brief Reset burst particles. */
 	virtual void ResetBurst();

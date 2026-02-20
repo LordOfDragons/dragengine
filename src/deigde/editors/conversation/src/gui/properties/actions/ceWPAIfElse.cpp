@@ -51,11 +51,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -69,8 +69,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAIfElse::ceWPAIfElse( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
-	CreateGUICommon( *this );
+ceWPAIfElse::ceWPAIfElse(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
+	CreateGUICommon(*this);
 }
 
 ceWPAIfElse::~ceWPAIfElse(){
@@ -83,75 +83,75 @@ ceWPAIfElse::~ceWPAIfElse(){
 
 ceCAIfElse *ceWPAIfElse::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if( ! selected ){
-		return NULL;
+	if(!selected){
+		return nullptr;
 	}
 	
-	ceWPTTIMAIfElse *modelIfElse = NULL;
+	ceWPTTIMAIfElse *modelIfElse = nullptr;
 	
-	switch( selected->GetType() ){
+	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionIfElse:
-		modelIfElse = ( ceWPTTIMAIfElse* )selected;
+		modelIfElse = (ceWPTTIMAIfElse*)selected;
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCase:
-		modelIfElse = ( ( ceWPTTIMAIfElseIfCase* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseIfCase*)selected)->GetModelIfElse();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseCondition:
-		modelIfElse = ( ( ceWPTTIMAIfElseIfCaseCondition* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseIfCaseCondition*)selected)->GetModelIfElse();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseActions:
-		modelIfElse = ( ( ceWPTTIMAIfElseIfCaseActions* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseIfCaseActions*)selected)->GetModelIfElse();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseElse:
-		modelIfElse = ( ( ceWPTTIMAIfElseElse* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseElse*)selected)->GetModelIfElse();
 		break;
 		
 	default:
 		break;
 	}
 	
-	if( modelIfElse ){
+	if(modelIfElse){
 		return modelIfElse->GetActionIfElse();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 ceCAIfElseCase *ceWPAIfElse::GetActiveCase() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if( ! selected ){
-		return NULL;
+	if(!selected){
+		return nullptr;
 	}
 	
-	ceWPTTIMAIfElseIfCase *modelIfCase = NULL;
+	ceWPTTIMAIfElseIfCase *modelIfCase = nullptr;
 	
-	switch( selected->GetType() ){
+	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionIfElseCase:
-		modelIfCase = ( ceWPTTIMAIfElseIfCase* )selected;
+		modelIfCase = (ceWPTTIMAIfElseIfCase*)selected;
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseCondition:
-		modelIfCase = ( ( ceWPTTIMAIfElseIfCaseCondition* )selected )->GetModelIfCase();
+		modelIfCase = ((ceWPTTIMAIfElseIfCaseCondition*)selected)->GetModelIfCase();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseActions:
-		modelIfCase = ( ( ceWPTTIMAIfElseIfCaseActions* )selected )->GetModelIfCase();
+		modelIfCase = ((ceWPTTIMAIfElseIfCaseActions*)selected)->GetModelIfCase();
 		break;
 		
 	default:
 		break;
 	}
 	
-	if( modelIfCase ){
+	if(modelIfCase){
 		return modelIfCase->GetIfCase();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

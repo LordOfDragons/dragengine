@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetColor::meUHTNavSpaceTypeSetColor( meHeightTerrainNavSpaceType *type, const decColor &newColor ) :
-pType( NULL ),
-pNewColor( newColor )
+meUHTNavSpaceTypeSetColor::meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType *type, const decColor &newColor) :
+
+pNewColor(newColor)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldColor = type->GetColor();
 	
-	SetShortInfo( "Height terrain nav-space type set color" );
+	SetShortInfo("@World.UHTNavSpaceTypeSetColor.HeightTerrainNavSpaceTypeSetColor");
 	
 	pType = type;
-	type->AddReference();
 }
 
 meUHTNavSpaceTypeSetColor::~meUHTNavSpaceTypeSetColor(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ meUHTNavSpaceTypeSetColor::~meUHTNavSpaceTypeSetColor(){
 ///////////////
 
 void meUHTNavSpaceTypeSetColor::Undo(){
-	pType->SetColor( pOldColor );
+	pType->SetColor(pOldColor);
 }
 
 void meUHTNavSpaceTypeSetColor::Redo(){
-	pType->SetColor( pNewColor );
+	pType->SetColor(pNewColor);
 }

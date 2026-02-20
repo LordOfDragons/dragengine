@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT decXmlAttValue : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlAttValue> Ref;
-	
+	using Ref = deTObjectReference<decXmlAttValue>;
 	
 	
 private:
@@ -51,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml attribute value. */
-	decXmlAttValue( const char *name );
+	decXmlAttValue(const char *name);
 	
 protected:
 	/** \brief Clean up xml attribute value. */
-	~decXmlAttValue();
+	~decXmlAttValue() override;
 	/*@}*/
 	
 	
@@ -67,13 +66,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Value. */
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Namespace part of name. */
 	inline const decString &GetNamespace() const{ return pNamespace; }
@@ -86,15 +85,15 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToAttValue() const;
-	virtual decXmlAttValue *CastToAttValue();
+	bool CanCastToAttValue() const override;
+	decXmlAttValue *CastToAttValue() override;
 	/*@}*/
 };
 

@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetSize::gdeUOCBillboardSetSize( gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const decVector2 &newValue ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCBillboardSetSize::gdeUOCBillboardSetSize(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const decVector2 &newValue) :
+
+pBillboard(nullptr)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard set size" );
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetSize");
 	
 	pOldValue = billboard->GetSize();
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetSize::~gdeUOCBillboardSetSize(){
-	if( pBillboard ){
-		pBillboard->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCBillboardSetSize::~gdeUOCBillboardSetSize(){
 ///////////////
 
 void gdeUOCBillboardSetSize::Undo(){
-	pBillboard->SetSize( pOldValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetSize(pOldValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardSetSize::Redo(){
-	pBillboard->SetSize( pNewValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetSize(pNewValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }

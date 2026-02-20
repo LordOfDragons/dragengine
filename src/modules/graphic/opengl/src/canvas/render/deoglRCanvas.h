@@ -26,6 +26,7 @@
 #define _DEOGLRCANVAS_H_
 
 #include "../../deoglGL.h"
+#include "../../target/deoglRenderTarget.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -33,7 +34,6 @@
 
 class deoglRenderCanvasContext;
 class deoglRenderThread;
-class deoglRenderTarget;
 class deoglRenderPlanMasked;
 
 
@@ -42,6 +42,10 @@ class deoglRenderPlanMasked;
  */
 class deoglRCanvas : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRCanvas>;
+	
+	
 	static const int BlendModeCount = deCanvas::ebmAdd + 1;
 	
 	
@@ -55,9 +59,9 @@ private:
 	float pOrder;
 	float pTransparency;
 	deCanvas::eBlendModes pBlendMode;
-	deoglRCanvas *pMask;
+	deoglRCanvas::Ref pMask;
 	bool pVisible;
-	deoglRenderTarget *pMaskRenderTarget;
+	deoglRenderTarget::Ref pMaskRenderTarget;
 	
 	
 	
@@ -65,14 +69,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvas( deoglRenderThread &renderThread );
+	deoglRCanvas(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up peer. */
-	virtual ~deoglRCanvas();
+	~deoglRCanvas() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -82,58 +87,58 @@ public:
 	inline const decVector2 &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
-	void SetPosition( const decVector2 &position );
+	void SetPosition(const decVector2 &position);
 	
 	/** Size. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** Set size. */
-	virtual void SetSize( const decVector2 &size );
+	virtual void SetSize(const decVector2 &size);
 	
 	/** Transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** Set transformation matrix. */
-	void SetTransform( const decTexMatrix2 &transform );
+	void SetTransform(const decTexMatrix2 &transform);
 	
 	/** Color transformation matrix. */
 	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
 	/** Set color transformation matrix. */
-	void SetColorTransform( const decColorMatrix &transform );
+	void SetColorTransform(const decColorMatrix &transform);
 	
 	/** Order used for sorting. */
 	inline float GetOrder() const{ return pOrder; }
 	
 	/** Set order. */
-	void SetOrder( float order );
+	void SetOrder(float order);
 	
 	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** Blend mode. */
 	inline deCanvas::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** Set blend mode. */
-	void SetBlendMode( deCanvas::eBlendModes mode );
+	void SetBlendMode(deCanvas::eBlendModes mode);
 	
 	/** Mask. */
-	inline deoglRCanvas *GetMask() const{ return pMask; }
+	inline const deoglRCanvas::Ref &GetMask() const{ return pMask; }
 	
 	/** Set mask. */
-	void SetMask( deoglRCanvas *mask );
+	void SetMask(deoglRCanvas *mask);
 	
 	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** Mask render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetMaskRenderTarget() const{ return pMaskRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetMaskRenderTarget() const{ return pMaskRenderTarget; }
 	
 	/** Dirty mask render target if present. */
 	void DirtyMaskRenderTarget();
@@ -141,13 +146,13 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Prepare for rendering render. */
-	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context ) = 0;
+	virtual void Render(const deoglRenderCanvasContext &context) = 0;
 	/*@}*/
 };
 

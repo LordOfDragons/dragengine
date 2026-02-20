@@ -36,7 +36,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -45,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategoriesSky::gdeWPSTIMCategoriesSky( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etCategoriesSky )
+gdeWPSTIMCategoriesSky::gdeWPSTIMCategoriesSky(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etCategoriesSky)
 {
-	SetText( "Skies" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Skies").ToUTF8());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMCategoriesSky::~gdeWPSTIMCategoriesSky(){
@@ -60,57 +60,57 @@ gdeWPSTIMCategoriesSky::~gdeWPSTIMCategoriesSky(){
 // Management
 ///////////////
 
-gdeWPSTIMCategorySky *gdeWPSTIMCategoriesSky::GetChildWith( gdeCategory* category, bool deep ) const{
-	gdeWPSTIMCategorySky *child = ( gdeWPSTIMCategorySky* )GetFirstChild();
+gdeWPSTIMCategorySky *gdeWPSTIMCategoriesSky::GetChildWith(gdeCategory* category, bool deep) const{
+	gdeWPSTIMCategorySky *child = GetFirstChild().DynamicCast<gdeWPSTIMCategorySky>();
 	
-	while( child ){
-		if( child->GetCategory() == category ){
+	while(child){
+		if(child->GetCategory() == category){
 			return child;
 		}
 		
-		if( deep ){
-			gdeWPSTIMCategorySky * const deepChild = child->GetChildWith( category, true );
-			if( deepChild ){
+		if(deep){
+			gdeWPSTIMCategorySky * const deepChild = child->GetChildWith(category, true);
+			if(deepChild){
 				return deepChild;
 			}
 		}
 		
-		child = ( gdeWPSTIMCategorySky* )child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMCategorySky>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
 
 void gdeWPSTIMCategoriesSky::CategoriesChanged(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesSky();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesSky();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeCategory * const category = list.GetAt( i );
-		gdeWPSTIMCategorySky * const modelCategory = GetChildWith( category, false );
+	for(i=0; i<count; i++){
+		gdeCategory * const category = list.GetAt(i);
+		gdeWPSTIMCategorySky * const modelCategory = GetChildWith(category, false);
 		
-		if( modelCategory ){
+		if(modelCategory){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver( new gdeWPSTIMCategorySky( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+			item = gdeWPSTIMCategorySky::Ref::New(GetTree(), list.GetAt(i));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMCategorySky * const modelCategory = ( gdeWPSTIMCategorySky* )child;
+	while(child){
+		gdeWPSTIMCategorySky * const modelCategory = (gdeWPSTIMCategorySky*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelCategory->GetCategory() ) ){
-			RemoveModel( modelCategory );
+		if(!list.Has(modelCategory->GetCategory())){
+			RemoveModel(modelCategory);
 		}
 	}
 	
@@ -121,45 +121,45 @@ void gdeWPSTIMCategoriesSky::CategoriesChanged(){
 
 
 void gdeWPSTIMCategoriesSky::OnAddedToTree(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesSky();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesSky();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMCategorySky( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item = gdeWPSTIMCategorySky::Ref::New(GetTree(), list.GetAt(i));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMCategoriesSky::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMCategoriesSky::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategorySkyAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategorySkyAdd());
 }
 
-void gdeWPSTIMCategoriesSky::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMCategoriesSky::SelectBestMatching(const char *string){
+	if(!string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	gdeGameDefinition &gameDefinition = GetGameDefinition();
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeCategory * const category = ( ( gdeWPSTIMCategorySky* )child )->GetCategory();
+	while(child){
+		gdeCategory * const category = ((gdeWPSTIMCategorySky*)child)->GetCategory();
 		child = child->GetNext();
 		
-		if( category->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(category->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		gameDefinition.SetActiveCategory( category );
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategorySky );
+		gameDefinition.SetActiveCategory(category);
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategorySky);
 		return;
 	}
 }

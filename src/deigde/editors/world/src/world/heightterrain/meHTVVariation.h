@@ -22,22 +22,19 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHTVVARIATION_H_
 #define _MEHTVVARIATION_H_
 
-// includes
-#include <dragengine/common/string/decString.h>
-
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
 
-// predefinitions
 class meHTVegetationLayer;
 
 class deEngine;
-class deSkin;
-class deModel;
 
 
 
@@ -55,9 +52,9 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotationPerForce;
 	float pRestitution;
 	
@@ -67,58 +64,66 @@ private:
 	float pRandomRotationMax;
 	
 public:
+	using Ref = deTObjectReference<meHTVVariation>;
+	using List = decTObjectOrderedSet<meHTVVariation>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	meHTVVariation( deEngine *engine );
+	meHTVVariation(deEngine *engine);
+	
+protected:
 	/** Cleans up the object. */
-	virtual ~meHTVVariation();
+	~meHTVVariation() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent height terrain vegetation layer or NULL. */
+	/** Retrieves the parent height terrain vegetation layer or nullptr. */
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
-	/** Sets the parent height terrain vegetation layer or NULL. */
-	void SetVLayer( meHTVegetationLayer *vlayer );
+	/** Sets the parent height terrain vegetation layer or nullptr. */
+	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** Retrieves the model path. */
 	inline const decString &GetPathModel() const{ return pPathModel; }
 	/** Sets the model path. */
-	void SetPathModel( const char *path );
-	/** Retrieves the engine model or NULL if not valid. */
-	inline deModel *GetModel() const{ return pModel; }
+	void SetPathModel(const char *path);
+	/** Retrieves the engine model or nullptr if not valid. */
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	/** Retrieves the skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
-	void SetPathSkin( const char *path );
-	/** Retrieves the engine skin or NULL if not valid. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	void SetPathSkin(const char *path);
+	/** Retrieves the engine skin or nullptr if not valid. */
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/** Retrieves the rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	/** Sets the rotation per force. */
-	void SetRotationPerForce( float rotationPerForce );
+	void SetRotationPerForce(float rotationPerForce);
 	/** Retrieves the restitution. */
 	inline float GetRestitution() const{ return pRestitution; }
 	/** Sets the restitution. */
-	void SetRestitution( float resitution );
+	void SetRestitution(float resitution);
 	
 	/** Retrieves the minimum random scaling. */
 	inline float GetMinimumRandomScaling() const{ return pRandomScaleMin; }
 	/** Sets the minimum random scaling. */
-	void SetMinimumRandomScaling( float scaling );
+	void SetMinimumRandomScaling(float scaling);
 	/** Retrieves the maximum random scaling. */
 	inline float GetMaximumRandomScaling() const{ return pRandomScaleMax; }
 	/** Sets the maximum random scaling. */
-	void SetMaximumRandomScaling( float scaling );
+	void SetMaximumRandomScaling(float scaling);
 	/** Retrieves the minimum random rotation. */
 	inline float GetMinimumRandomRotation() const{ return pRandomRotationMin; }
 	/** Sets the minimum random rotation. */
-	void SetMinimumRandomRotation( float rotation );
+	void SetMinimumRandomRotation(float rotation);
 	/** Retrieves the maximum random rotation. */
 	inline float GetMaximumRandomRotation() const{ return pRandomRotationMax; }
 	/** Sets the maximum random rotation. */
-	void SetMaximumRandomRotation( float rotation );
+	void SetMaximumRandomRotation(float rotation);
 	
 	/** Notifies that this variation changed. */
 	void NotifyChanged();

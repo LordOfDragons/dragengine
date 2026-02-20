@@ -25,15 +25,16 @@
 #ifndef _DEOGLCOMPONENT_H_
 #define _DEOGLCOMPONENT_H_
 
+#include "deoglRComponent.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicComponent.h>
 
 class deoglDynamicSkin;
 class deoglComponentLOD;
 class deoglComponentTexture;
-class deoglRComponent;
 class deoglSkinStateController;
 class deoglWorld;
 
@@ -48,18 +49,15 @@ class deoglComponent : public deBaseGraphicComponent, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	deComponent &pComponent;
-	deoglRComponent *pRComponent;
+	deoglRComponent::Ref pRComponent;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;
 	
 	deoglDynamicSkin *pDynamicSkin;
 	
-	deoglComponentLOD **pLODs;
-	int pLODCount;
-	
-	deoglComponentTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglComponentLOD> pLODs;
+	decTUniqueList<deoglComponentTexture> pTextures;
 	
 	float pAccumUpdate;
 	
@@ -99,7 +97,7 @@ public:
 	bool pDecalRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoglComponent>::Element pLLSyncWorld;
 	
 	
 	
@@ -107,10 +105,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component peer. */
-	deoglComponent( deGraphicOpenGl &ogl, deComponent &component );
+	deoglComponent(deGraphicOpenGl &ogl, deComponent &component);
 	
 	/** Clean up component peer. */
-	virtual ~deoglComponent();
+	~deoglComponent() override;
 	/*@}*/
 	
 	
@@ -126,13 +124,13 @@ public:
 	
 	
 	/** Render component. */
-	inline deoglRComponent *GetRComponent() const{ return pRComponent; }
+	inline const deoglRComponent::Ref &GetRComponent() const{ return pRComponent; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -143,23 +141,29 @@ public:
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
+	
+	/** LODs. */
+	inline const decTUniqueList<deoglComponentLOD> &GetLODs() const{ return pLODs; }
 	
 	/** Number of LODs. */
-	inline int GetLODCount() const{ return pLODCount; }
+	inline int GetLODCount() const{ return pLODs.GetCount(); }
 	
 	/** LOD at index. */
-	deoglComponentLOD &GetLODAt( int index ) const;
+	deoglComponentLOD &GetLODAt(int index) const;
 	
 	
+	
+	/** Textures. */
+	inline const decTUniqueList<deoglComponentTexture> &GetTextures() const{ return pTextures; }
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
-	deoglComponentTexture &GetTextureAt( int index );
+	deoglComponentTexture &GetTextureAt(int index);
 	
 	
 	
@@ -182,10 +186,10 @@ public:
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	
@@ -193,68 +197,68 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Model object changed. */
-	virtual void ModelChanged();
+	void ModelChanged() override;
 	
 	/** Skin object changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** Model and skin object changed. */
-	virtual void ModelAndSkinChanged();
+	void ModelAndSkinChanged() override;
 	
 	/** Rig object changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	
 	/** Visitility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** Extends changed. */
-	virtual void ExtendsChanged();
+	void ExtendsChanged() override;
 	
 	/**
 	 * Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
-	virtual void MeshDirty();
+	void MeshDirty() override;
 	
 	/** Occlusion mesh changed. */
-	virtual void OcclusionMeshChanged();
+	void OcclusionMeshChanged() override;
 	
 	/** Parameter or hint changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	
 	
 	/** Texture changed. */
-	virtual void TextureChanged(int index, deComponentTexture& texture);
+	void TextureChanged(int index, deComponentTexture& texture) override;
 	
 	/** Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	
 	
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	
 	
 	/** Decal has been added. */
-	virtual void DecalAdded( deDecal *decal );
+	void DecalAdded(deDecal *decal) override;
 	
 	/** Decal has been removed. */
-	virtual void DecalRemoved( deDecal *decal );
+	void DecalRemoved(deDecal *decal) override;
 	
 	/** All decals have been removed. */
-	virtual void AllDecalsRemoved();
+	void AllDecalsRemoved() override;
 	
 	
 	
@@ -262,7 +266,7 @@ public:
 	 * Retrieve index of the texture of the face closest to a position or -1 if not found.
 	 * \details Limits the search to the provided radius.
 	 */
-	virtual int IndexOfTextureClosestTo( const decVector &vector, float radius );
+	int IndexOfTextureClosestTo(const decVector &vector, float radius) override;
 	
 	/** Retrieve index of the face closest to a position or -1 if not found. */
 	//int IndexOfFaceClosestTo( const decVector &vector, float radius );
@@ -273,8 +277,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoglComponent>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoglComponent>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

@@ -25,10 +25,10 @@
 #ifndef _IGDEDEMODULESTATUS_H_
 #define _IGDEDEMODULESTATUS_H_
 
-#include "../igdeComboBoxReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../igdeTextAreaReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeComboBox.h"
+#include "../igdeCheckBox.h"
+#include "../igdeTextArea.h"
+#include "../igdeTextField.h"
 #include "../layout/igdeContainerFlow.h"
 
 
@@ -39,22 +39,27 @@ class igdeDialogEngine;
  * \brief Panel showing the status of a module in the game engine.
  */
 class DE_DLL_EXPORT igdeDEModuleStatus : public igdeContainerFlow{
+public:
+	using Ref = deTObjectReference<igdeDEModuleStatus>;
+	
+	
+private:
 	igdeDialogEngine &pDialogEngine;
 	
-	igdeComboBoxReference pCBModule;
-	igdeTextFieldReference pEditType;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditAuthor;
-	igdeTextFieldReference pEditVersion;
-	igdeTextFieldReference pEditPattern;
-	igdeTextFieldReference pEditDefaultExtension;
-	igdeTextFieldReference pEditDirName;
-	igdeCheckBoxReference pChkFallback;
-	igdeTextAreaReference pEditStatus;
+	igdeComboBox::Ref pCBModule;
+	igdeTextField::Ref pEditType;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditAuthor;
+	igdeTextField::Ref pEditVersion;
+	igdeTextField::Ref pEditPattern;
+	igdeTextField::Ref pEditDefaultExtension;
+	igdeTextField::Ref pEditDirName;
+	igdeCheckBox::Ref pChkFallback;
+	igdeTextArea::Ref pEditStatus;
 	
-	igdeTextFieldReference pEditLibName;
-	igdeTextFieldReference pEditLibSize;
-	igdeTextFieldReference pEditLibHash;
+	igdeTextField::Ref pEditLibName;
+	igdeTextField::Ref pEditLibSize;
+	igdeTextField::Ref pEditLibHash;
 	
 	
 	
@@ -62,13 +67,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEModuleStatus( igdeDialogEngine &dialogEngine );
+	igdeDEModuleStatus(igdeDialogEngine &dialogEngine);
 	
 	
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEModuleStatus();
+	~igdeDEModuleStatus() override;
 	
 	
 	

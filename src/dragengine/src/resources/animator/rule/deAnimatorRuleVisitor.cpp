@@ -62,57 +62,57 @@ deAnimatorRuleVisitor::~deAnimatorRuleVisitor(){
 // Visiting
 /////////////
 
-void deAnimatorRuleVisitor::VisitRule( deAnimatorRule& ){
+void deAnimatorRuleVisitor::VisitRule(deAnimatorRule&){
 }
 
-void deAnimatorRuleVisitor::VisitAnimation( deAnimatorRuleAnimation &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitAnimation(deAnimatorRuleAnimation &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitAnimationDifference( deAnimatorRuleAnimationDifference &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitAnimationDifference(deAnimatorRuleAnimationDifference &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitAnimationSelect( deAnimatorRuleAnimationSelect &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitAnimationSelect(deAnimatorRuleAnimationSelect &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitBoneTransformator( deAnimatorRuleBoneTransformator &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitBoneTransformator(deAnimatorRuleBoneTransformator &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitInverseKinematic( deAnimatorRuleInverseKinematic &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitInverseKinematic(deAnimatorRuleInverseKinematic &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitStateManipulator( deAnimatorRuleStateManipulator &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitStateManipulator(deAnimatorRuleStateManipulator &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitStateSnapshot( deAnimatorRuleStateSnapshot &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitStateSnapshot(deAnimatorRuleStateSnapshot &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitForeignState( deAnimatorRuleForeignState &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitForeignState(deAnimatorRuleForeignState &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitGroup( deAnimatorRuleGroup &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitGroup(deAnimatorRuleGroup &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitSubAnimator(deAnimatorRuleSubAnimator &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitTrackTo(deAnimatorRuleTrackTo &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitLimit( deAnimatorRuleLimit &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitLimit(deAnimatorRuleLimit &rule){
+	VisitRule(rule);
 }
 
-void deAnimatorRuleVisitor::VisitMirror( deAnimatorRuleMirror &rule ){
-	VisitRule( rule );
+void deAnimatorRuleVisitor::VisitMirror(deAnimatorRuleMirror &rule){
+	VisitRule(rule);
 }

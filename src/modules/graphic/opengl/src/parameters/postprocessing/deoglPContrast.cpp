@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPContrast::deoglPContrast( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "contrast" );
-	SetDescription( "Contrast correction." );
-	SetType( deModuleParameter::eptRanged );
-	SetMinimumValue( 0.5f );
-	SetMaximumValue( 1.5f );
-	SetValueStepSize( 0.05f );
-	SetDisplayName( "Contrast" );
-	SetCategory( ecAdvanced );
-	SetDefaultValue( "1" );
+deoglPContrast::deoglPContrast(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("contrast");
+	SetDescription("Contrast correction.");
+	SetType(deModuleParameter::eptRanged);
+	SetMinimumValue(0.5f);
+	SetMaximumValue(1.5f);
+	SetValueStepSize(0.05f);
+	SetDisplayName("Contrast");
+	SetCategory(ecAdvanced);
+	SetDefaultValue("1");
 }
 
 deoglPContrast::~deoglPContrast(){
@@ -63,6 +63,6 @@ float deoglPContrast::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetContrast();
 }
 
-void deoglPContrast::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetContrast( value );
+void deoglPContrast::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetContrast(value);
 }

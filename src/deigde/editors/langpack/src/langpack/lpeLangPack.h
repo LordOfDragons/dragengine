@@ -25,10 +25,11 @@
 #ifndef _LPELANGPACK_H_
 #define _LPELANGPACK_H_
 
+#include "lpeLangPackListener.h"
 #include "entry/lpeLangPackEntrySelection.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 class lpeLangPackListener;
@@ -40,8 +41,7 @@ class lpeLangPackListener;
  */
 class lpeLangPack : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<lpeLangPack> Ref;
-	
+	using Ref = deTObjectReference<lpeLangPack>;
 	
 	
 private:
@@ -50,10 +50,10 @@ private:
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
 	
-	lpeLangPackEntryList pEntryList;
+	lpeLangPackEntry::List pEntries;
 	lpeLangPackEntrySelection pEntrySelection;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<lpeLangPackListener> pListeners;
 	
 	
 	
@@ -61,10 +61,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin. */
-	lpeLangPack( igdeEnvironment *environment );
+	lpeLangPack(igdeEnvironment *environment);
 	
 	/** Cleans up the skin. */
-	virtual ~lpeLangPack() override;
+protected:
+	~lpeLangPack() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -73,33 +75,33 @@ public:
 	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	
 	/** Sets identifier. */
-	void SetIdentifier( const char *identifier );
+	void SetIdentifier(const char *identifier);
 	
 	/** Retrieves the name in the native language. */
 	inline const decUnicodeString &GetName() const{ return pName; }
 	/** Sets the name in the native language. */
-	void SetName( const decUnicodeString &name );
+	void SetName(const decUnicodeString &name);
 	/** Retrieves the description in the native language. */
 	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	/** Sets the description in the native language. */
-	void SetDescription( const decUnicodeString &description );
+	void SetDescription(const decUnicodeString &description);
 	/** Retrieves the missing text in the native language. */
 	inline const decUnicodeString &GetMissingText() const{ return pMissingText; }
 	/** Sets the description in the native language. */
-	void SetMissingText( const decUnicodeString &missingText );
+	void SetMissingText(const decUnicodeString &missingText);
 	/*@}*/
 	
 	/** \name Entries */
 	/*@{*/
 	/** Retrieves the entry list read-only. */
-	inline const lpeLangPackEntryList &GetEntryList() const{ return pEntryList; }
+	inline const lpeLangPackEntry::List &GetEntries() const{ return pEntries; }
 	/** Retrieves the entry selection. */
 	inline lpeLangPackEntrySelection &GetEntrySelection(){ return pEntrySelection; }
 	inline const lpeLangPackEntrySelection &GetEntrySelection() const{ return pEntrySelection; }
 	/** Adds a new entry. */
-	void AddEntry( lpeLangPackEntry *entry );
+	void AddEntry(lpeLangPackEntry *entry);
 	/** Removes a entry. */
-	void RemoveEntry( lpeLangPackEntry *entry );
+	void RemoveEntry(lpeLangPackEntry *entry);
 	/** Removes all entries. */
 	void RemoveAllEntries();
 	/*@}*/
@@ -107,14 +109,14 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Adds a listener. */
-	void AddListener( lpeLangPackListener *listener );
+	void AddListener(lpeLangPackListener *listener);
 	/** Removes a listener. */
-	void RemoveListener( lpeLangPackListener *listener );
+	void RemoveListener(lpeLangPackListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged() override;
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged() override;
+	void NotifyUndoChanged() override;
 	
 	/** Notifies all that a language pack parameter changed. */
 	void NotifyLangPackChanged();
@@ -122,9 +124,9 @@ public:
 	/** Notifies all that entries have been added or removed. */
 	void NotifyEntryStructureChanged();
 	/** Notifies all that an entry changed. */
-	void NotifyEntryChanged( lpeLangPackEntry *entry );
+	void NotifyEntryChanged(lpeLangPackEntry *entry);
 	/** Notifies all that an entry name changed. */
-	void NotifyEntryNameChanged( lpeLangPackEntry *entry );
+	void NotifyEntryNameChanged(lpeLangPackEntry *entry);
 	/** Notifies all that one or more entries changed selection. */
 	void NotifyEntrySelectionChanged();
 	/** Active entry changed. */

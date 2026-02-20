@@ -48,7 +48,7 @@ class deEffect;
  * Window to manage effects.
  */
 class meWindowEffects : public FXTopWindow{
-	FXDECLARE( meWindowEffects )
+	FXDECLARE(meWindowEffects)
 protected:
 	meWindowEffects();
 public:
@@ -71,7 +71,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meWindowEffects( FXApp *app, meWindowMain *wndMain );
+	meWindowEffects(FXApp *app, meWindowMain *wndMain);
 	virtual ~meWindowEffects();
 	//virtual void create();
 	
@@ -79,13 +79,13 @@ public:
 	inline meWindowMain *GetWindowMain() const{ return pWndMain; }
 	void UpdateWorld();
 	void UpdateEffectsList();
-	const char *GetEffectTypeNameFor( int type ) const;
-	void DisplayPanelFor( deEffect *effect );
+	const char *GetEffectTypeNameFor(int type) const;
+	void DisplayPanelFor(deEffect *effect);
 	
 	// events
-	long onClose( FXObject *sender, FXSelector selector, void *data );
-	long onBtnAddEffectCommand( FXObject *sender, FXSelector selector, void *data );
-	long onListEffectsChanged( FXObject *sender, FXSelector selector, void *data );
+	long onClose(FXObject *sender, FXSelector selector, void *data);
+	long onBtnAddEffectCommand(FXObject *sender, FXSelector selector, void *data);
+	long onListEffectsChanged(FXObject *sender, FXSelector selector, void *data);
 };
 
 // end of include only once

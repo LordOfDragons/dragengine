@@ -28,8 +28,8 @@
 #include "dearRule.h"
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
+#include "../animation/dearAnimationMove.h"
 
-class dearAnimationMove;
 class deAnimatorRuleAnimation;
 
 
@@ -40,7 +40,7 @@ class deAnimatorRuleAnimation;
 class dearRuleAnimation : public dearRule{
 private:
 	const deAnimatorRuleAnimation &pAnimation;
-	dearAnimationMove *pMove;
+	dearAnimationMove::Ref pMove;
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
@@ -55,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleAnimation( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleAnimation &rule );
+	dearRuleAnimation(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimation &rule);
 	
 	/** Clean up rule. */
-	virtual ~dearRuleAnimation();
+	~dearRuleAnimation() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/light/deLight.h>
 
-class gdeOCLight;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class light set type.
  */
 class gdeUOCLightSetType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCLightSetType>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	deLight::eLightTypes pOldValue;
 	deLight::eLightTypes pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetType( gdeObjectClass *objectClass,
-		gdeOCLight *light, deLight::eLightTypes newValue );
+	gdeUOCLightSetType(gdeObjectClass *objectClass,
+		gdeOCLight *light, deLight::eLightTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCLightSetType();
+	~gdeUOCLightSetType() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

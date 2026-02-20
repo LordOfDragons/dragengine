@@ -25,21 +25,28 @@
 #ifndef _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 
-class deoglRParticleEmitterInstanceType;
-class deParticleEmitterInstanceType;
+#include "deoglRParticleEmitterInstanceType.h"
+#include <dragengine/deTUniqueReference.h>
 
 class deoglParticleEmitterInstance;
 
+class deParticleEmitterInstanceType;
+
+
 
 /**
- * Particle emitter instance type.
+ * Particle Emitter Instance Peer Type.
  */
 class deoglParticleEmitterInstanceType{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglParticleEmitterInstanceType>;
+	
 private:
 	deoglParticleEmitterInstance &pEmitterInstance;
 	const int pIndex;
 	
-	deoglRParticleEmitterInstanceType *pRType;
+	deoglRParticleEmitterInstanceType::Ref pRType;
 	
 	bool pDirtyType;
 	bool pDirtyParamBlocks;
@@ -48,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new type. */
-	deoglParticleEmitterInstanceType( deoglParticleEmitterInstance &instance, int index );
+	deoglParticleEmitterInstanceType(deoglParticleEmitterInstance &instance, int index);
 	
 	/** Clean up type. */
 	~deoglParticleEmitterInstanceType();
@@ -62,7 +69,7 @@ public:
 	inline deoglParticleEmitterInstance &GetEmitterInstance(){ return pEmitterInstance; }
 	
 	/** Render type. */
-	inline deoglRParticleEmitterInstanceType *GetRType() const{ return pRType; }
+	inline const deoglRParticleEmitterInstanceType::Ref &GetRType() const{ return pRType; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

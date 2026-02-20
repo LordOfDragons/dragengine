@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationSpace;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class navspace set path.
  */
 class gdeUOCNavSpaceSetPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetPath>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetPath( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, const char *newValue );
+	gdeUOCNavSpaceSetPath(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavSpaceSetPath();
+	~gdeUOCNavSpaceSetPath() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

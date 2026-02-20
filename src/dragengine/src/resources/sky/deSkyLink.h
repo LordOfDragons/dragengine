@@ -25,6 +25,7 @@
 #ifndef _DESKYLINK_H_
 #define _DESKYLINK_H_
 
+#include "../../deObject.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
 
@@ -41,7 +42,12 @@
  * Links controller value to layer targets. Maps controller values using a bezier curve.
  * Using repeat values larger than 1 the curve is repeated along the Y axis.
  */
-class DE_DLL_EXPORT deSkyLink{
+class DE_DLL_EXPORT deSkyLink : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deSkyLink>;
+	
+	
 private:
 	int pController;
 	decCurveBezier pCurve;
@@ -56,10 +62,16 @@ public:
 	deSkyLink();
 	
 	/** \brief Create copy of link. */
-	deSkyLink( const deSkyLink &copy );
+	deSkyLink(const deSkyLink &copy);
 	
-	/** \brief Clean up link. */
-	~deSkyLink();
+protected:
+	/**
+	 * \brief Clean up link.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deSkyLink() override;
 	/*@}*/
 	
 	
@@ -77,7 +89,7 @@ public:
 	 * \brief Set controller or -1 to not set.
 	 * \throws deeInvalidParam \em controller is less than -1.
 	 */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Curve. */
 	inline decCurveBezier &GetCurve(){ return pCurve; }
@@ -90,7 +102,7 @@ public:
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	/*@}*/
 	
 	
@@ -98,7 +110,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	deSkyLink &operator=( const deSkyLink &copy );
+	deSkyLink &operator=(const deSkyLink &copy);
 	/*@}*/
 };
 

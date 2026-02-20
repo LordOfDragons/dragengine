@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 
@@ -35,8 +35,12 @@ class feFontGlyph;
  * \brief Glyph Set Advance Undo Action.
  */
 class feUGlyphSetAdvance : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUGlyphSetAdvance>;
+	
+	
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldAdvance;
 	int pNewAdvance;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetAdvance( feFontGlyph *glyph, int newAdvance );
+	feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUGlyphSetAdvance();
+	~feUGlyphSetAdvance() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

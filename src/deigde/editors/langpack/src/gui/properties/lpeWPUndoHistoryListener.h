@@ -35,6 +35,9 @@ class lpeWPUndoHistory;
  * \brief Undo history properties panel listener.
  */
 class lpeWPUndoHistoryListener : public lpeLangPackListener{
+public:
+	using Ref = deTObjectReference<lpeWPUndoHistoryListener>;
+	
 private:
 	lpeWPUndoHistory &pPanel;
 	
@@ -44,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	lpeWPUndoHistoryListener( lpeWPUndoHistory &panel );
+	lpeWPUndoHistoryListener(lpeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~lpeWPUndoHistoryListener();
+	~lpeWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( lpeLangPack *langpack );
+	void UndoChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

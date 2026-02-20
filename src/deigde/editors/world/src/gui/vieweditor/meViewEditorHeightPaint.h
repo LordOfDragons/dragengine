@@ -36,6 +36,9 @@ class meCLHeightPaint;
  * View editor for height painting terrain.
  */
 class meViewEditorHeightPaint : public meViewEditorNavigation{
+public:
+	using Ref = deTObjectReference<meViewEditorHeightPaint>;
+	
 private:
 	float pPainterElapsedTime;
 	bool pPainting;
@@ -47,25 +50,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
-	meViewEditorHeightPaint( meView3D &view );
+	meViewEditorHeightPaint(meView3D &view);
 	/** Cleans up the view editor. */
-	virtual ~meViewEditorHeightPaint();
+	~meViewEditorHeightPaint() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	/*@}*/
 	
 	/** \name Events */
 	/*@{*/
 	/** The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	/** The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/*@}*/
 };
 

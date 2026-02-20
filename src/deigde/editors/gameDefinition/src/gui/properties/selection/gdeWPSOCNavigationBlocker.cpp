@@ -50,7 +50,7 @@
 #include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -63,7 +63,7 @@
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -84,23 +84,24 @@ protected:
 	gdeWPSOCNavigationBlocker &pPanel;
 	
 public:
-	cBaseTextFieldListener( gdeWPSOCNavigationBlocker &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	cBaseTextFieldListener(gdeWPSOCNavigationBlocker &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if( ! navblocker ){
+		if(!navblocker){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), navblocker ) );
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), navblocker));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField,
-		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
+		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -108,23 +109,24 @@ protected:
 	gdeWPSOCNavigationBlocker &pPanel;
 	
 public:
-	cBaseEditVectorListener( gdeWPSOCNavigationBlocker &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	cBaseEditVectorListener(gdeWPSOCNavigationBlocker &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if( ! navblocker ){
+		if(!navblocker){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navblocker ) );
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), navblocker));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navblocker) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -132,23 +134,24 @@ protected:
 	gdeWPSOCNavigationBlocker &pPanel;
 	
 public:
-	cBaseComboBoxListener( gdeWPSOCNavigationBlocker &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	cBaseComboBoxListener(gdeWPSOCNavigationBlocker &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if( ! navblocker ){
+		if(!navblocker){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), navblocker ) );
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), navblocker));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox,
-		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
+		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -156,157 +159,169 @@ protected:
 	gdeWPSOCNavigationBlocker &pPanel;
 	
 public:
-	cBaseAction( gdeWPSOCNavigationBlocker &panel, const char *text, const char *description ) :
-		igdeAction( text, description ), pPanel( panel ){ }
+	typedef deTObjectReference<cBaseAction> Ref;
+	cBaseAction(gdeWPSOCNavigationBlocker &panel, const char *text, const char *description) :
+		igdeAction(text, description), pPanel(panel){}
 	
 	virtual void OnAction(){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if( ! navblocker ){
+		if(!navblocker){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnActionNavBlocker( pPanel.GetObjectClass(), navblocker ) );
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(
+			 OnActionNavBlocker(pPanel.GetObjectClass(), navblocker));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionNavBlocker( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) = 0;
+	virtual igdeUndo::Ref OnActionNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) = 0;
 };
 
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
-	cEditPosition( gdeWPSOCNavigationBlocker &panel ) : cBaseEditVectorListener( panel ){ }
+	typedef deTObjectReference<cEditPosition> Ref;
+	cEditPosition(gdeWPSOCNavigationBlocker &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
-		if( navblocker->GetPosition().IsEqualTo( vector ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker) override{
+		if(navblocker->GetPosition().IsEqualTo(vector)){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetPosition( objectClass, navblocker, vector );
+		return gdeUOCNavBlockerSetPosition::Ref::New(objectClass, navblocker, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
-	cEditRotation( gdeWPSOCNavigationBlocker &panel ) : cBaseEditVectorListener( panel ){ }
+	typedef deTObjectReference<cEditRotation> Ref;
+	cEditRotation(gdeWPSOCNavigationBlocker &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
-		if( navblocker->GetRotation().IsEqualTo( vector ) ){
-			return NULL;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker){
+		if(navblocker->GetRotation().IsEqualTo(vector)){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetRotation( objectClass, navblocker, vector );
+		return gdeUOCNavBlockerSetRotation::Ref::New(objectClass, navblocker, vector);
 	}
 };
 
-class cEditScaling : public cBaseEditVectorListener {
+class cEditScaling : public cBaseEditVectorListener{
 public:
-	cEditScaling( gdeWPSOCNavigationBlocker &panel ) : cBaseEditVectorListener( panel ){ }
+	typedef deTObjectReference<cEditScaling> Ref;
+	cEditScaling(gdeWPSOCNavigationBlocker &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
-		if( navblocker->GetScaling().IsEqualTo( vector ) ){
-			return NULL;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker){
+		if(navblocker->GetScaling().IsEqualTo(vector)){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetScaling( objectClass, navblocker, vector );
+		return gdeUOCNavBlockerSetScaling::Ref::New(objectClass, navblocker, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
-	cTextBoneName( gdeWPSOCNavigationBlocker &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextBoneName> Ref;
+	cTextBoneName(gdeWPSOCNavigationBlocker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navBlocker ){
-		if( navBlocker->GetBoneName() == textField.GetText() ){
-			return NULL;
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navBlocker){
+		if(navBlocker->GetBoneName() == textField.GetText()){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetBoneName( objectClass, navBlocker, textField.GetText() );
+		return gdeUOCNavBlockerSetBoneName::Ref::New(objectClass, navBlocker, textField.GetText());
 	}
 };
 
 class cActionEnabled : public cBaseAction{
 public:
-	cActionEnabled( gdeWPSOCNavigationBlocker &panel ) :
-	cBaseAction( panel, "Enabled", "Navigation blocker is enabled" ){ }
+	typedef deTObjectReference<cActionEnabled> Ref;
 	
-	virtual igdeUndo *OnActionNavBlocker( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ){
-		return new gdeUOCNavBlockerToggleEnabled( objectClass, navblocker );
+public:
+	cActionEnabled(gdeWPSOCNavigationBlocker &panel) :
+	cBaseAction(panel, "@GameDefinition.WPSOCNavigationBlocker.Enabled", "@GameDefinition.WPSOCNavigationBlocker.Enabled.ToolTip"){}
+	
+	virtual igdeUndo::Ref OnActionNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker){
+		return gdeUOCNavBlockerToggleEnabled::Ref::New(objectClass, navblocker);
 	}
 };
 
 class cTextLayer : public cBaseTextFieldListener{
 public:
-	cTextLayer( gdeWPSOCNavigationBlocker &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextLayer> Ref;
+	cTextLayer(gdeWPSOCNavigationBlocker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker){
 		const int value = textField.GetInteger();
-		if( navblocker->GetLayer() == value ){
-			return NULL;
+		if(navblocker->GetLayer() == value){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetLayer( objectClass, navblocker, value );
+		return gdeUOCNavBlockerSetLayer::Ref::New(objectClass, navblocker, value);
 	}
 };
 
 class cComboType : public cBaseComboBoxListener{
 public:
-	cComboType( gdeWPSOCNavigationBlocker &panel ) : cBaseComboBoxListener( panel ){ }
+	typedef deTObjectReference<cComboType> Ref;
+	cComboType(gdeWPSOCNavigationBlocker &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker){
 		const deNavigationSpace::eSpaceTypes value =
-			( deNavigationSpace::eSpaceTypes )( intptr_t )comboBox.GetSelectedItem()->GetData();
-		if( value == navblocker->GetType() ){
-			return NULL;
+			(deNavigationSpace::eSpaceTypes)(intptr_t)comboBox.GetSelectedItem()->GetData();
+		if(value == navblocker->GetType()){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetType( objectClass, navblocker, value );
+		return gdeUOCNavBlockerSetType::Ref::New(objectClass, navblocker, value);
 	}
 };
 
 class cTextBlockingPriority : public cBaseTextFieldListener{
 public:
-	cTextBlockingPriority( gdeWPSOCNavigationBlocker &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextBlockingPriority> Ref;
+	cTextBlockingPriority(gdeWPSOCNavigationBlocker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker){
 		const int value = textField.GetInteger();
-		if( navblocker->GetBlockingPriority() == value ){
-			return NULL;
+		if(navblocker->GetBlockingPriority() == value){
+			return {};
 		}
-		return new gdeUOCNavBlockerSetBlockingPriority( objectClass, navblocker, value );
+		return gdeUOCNavBlockerSetBlockingPriority::Ref::New(objectClass, navblocker, value);
 	}
 };
 
 class cTextShape : public cBaseTextFieldListener{
 public:
-	cTextShape( gdeWPSOCNavigationBlocker &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextShape> Ref;
+	cTextShape(gdeWPSOCNavigationBlocker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCNavigationBlocker *navblocker ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCNavigationBlocker *navblocker){
 		igdeCodecPropertyString codec;
 		decString oldEncoded;
-		codec.EncodeShapeList( navblocker->GetShapeList(), oldEncoded );
-		const decString encoded( textField.GetText() );
-		if( encoded == oldEncoded ){
-			return NULL;
+		codec.EncodeShapeList(navblocker->GetShapeList(), oldEncoded);
+		const decString encoded(textField.GetText());
+		if(encoded == oldEncoded){
+			return {};
 		}
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		try{
-			codec.DecodeShapeList( encoded, shapeList );
+			codec.DecodeShapeList(encoded, shapeList);
 			
-		}catch( const deException & ){
-			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list" );
+		}catch(const deException &){
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCNavigationBlocker.InvalidInput.Error",
+				"@GameDefinition.OCNavigationBlocker.ShapeDecodeInvalidValue.Error");
 			textField.Focus();
-			return NULL;
+			return {};
 		}
-		
-		return new gdeUOCNavBlockerSetShapeList( objectClass, navblocker, shapeList );
+	
+		return gdeUOCNavBlockerSetShapeList::Ref::New(objectClass, navblocker, shapeList);
 	}
 };
 
@@ -315,10 +330,11 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCNavigationBlocker &pPanel;
 	
 public:
-	cComboPropertyNames( gdeWPSOCNavigationBlocker &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cComboPropertyNames> Ref;
+	cComboPropertyNames(gdeWPSOCNavigationBlocker &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		if( pPanel.GetNavigationBlocker() ){
+	virtual void OnTextChanged(igdeComboBox*){
+		if(pPanel.GetNavigationBlocker()){
 			pPanel.UpdatePropertyName();
 		}
 	}
@@ -328,22 +344,22 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCNavigationBlocker &pPanel;
 	
 public:
-	cComboPropertyNameTarget( gdeWPSOCNavigationBlocker &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
+	cComboPropertyNameTarget(gdeWPSOCNavigationBlocker &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( ! pPanel.GetNavigationBlocker() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(!pPanel.GetNavigationBlocker()){
 			return;
 		}
 		
 		const gdeOCNavigationBlocker::eProperties propertyName = pPanel.GetPropertyName();
-		if( pPanel.GetNavigationBlocker()->GetPropertyName( propertyName ) == comboBox->GetText() ){
+		if(pPanel.GetNavigationBlocker()->GetPropertyName(propertyName) == comboBox->GetText()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new gdeUOCNavBlockerSetPropertyName(
-			pPanel.GetObjectClass(), pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCNavBlockerSetPropertyName::Ref::New(pPanel.GetObjectClass(),
+				pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText()));
 	}
 };
 
@@ -357,77 +373,73 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCNavigationBlocker::gdeWPSOCNavigationBlocker( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSOCNavigationBlocker::gdeWPSOCNavigationBlocker(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
-	pListener = new gdeWPSOCNavigationBlockerListener( *this );
+	pListener = gdeWPSOCNavigationBlockerListener::Ref::New(*this);
 	
-	helper.GroupBox( content, groupBox, "Object Class Navigation Blocker:" );
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCNavigationBlocker.GroupNavigationBlocker");
 	
-	helper.EditVector( groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation( *this ) );
-	helper.EditVector( groupBox, "Scaling:", "Scaling relative to object class",
-		pEditScaling, new cEditScaling( *this ) );
-	helper.EditString( groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName( *this ) );
-	helper.CheckBox( groupBox, pChkEnabled, new cActionEnabled( *this ), true );
-	helper.EditInteger( groupBox, "Layer:", "Navigation layer the blocker affects",
-		pEditLayer, new cTextLayer( *this ) );
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Position", "@GameDefinition.WPSOCNavigationBlocker.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Rotation", "@GameDefinition.WPSOCNavigationBlocker.Rotation.ToolTip", 4, 1,
+		pEditRotation, cEditRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Scaling", "@GameDefinition.WPSOCNavigationBlocker.Scaling.ToolTip",
+		pEditScaling, cEditScaling::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Bone", "@GameDefinition.WPSOCNavigationBlocker.Bone.ToolTip",
+		pEditBoneName, cTextBoneName::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnabled, cActionEnabled::Ref::New(*this));
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Layer", "@GameDefinition.WPSOCNavigationBlocker.Layer.ToolTip",
+		pEditLayer, cTextLayer::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Type:", "Navigation space type the blocker affects",
-		pCBType, new cComboType( *this ) );
-	pCBType->AddItem( "Grid", NULL, ( void* )( intptr_t )deNavigationSpace::estGrid );
-	pCBType->AddItem( "Mesh", NULL, ( void* )( intptr_t )deNavigationSpace::estMesh );
-	pCBType->AddItem( "Volume", NULL, ( void* )( intptr_t )deNavigationSpace::estVolume );
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Type", "@GameDefinition.WPSOCNavigationBlocker.Type.ToolTip",
+		pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@GameDefinition.NavSpaceType.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
+	pCBType->AddItem("@GameDefinition.NavSpaceType.Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
+	pCBType->AddItem("@GameDefinition.NavSpaceType.Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
-	helper.EditInteger( groupBox, "Blocking priority:",
-		"Blocks navigation spaces with the same or lower priority",
-		pEditBlockingPriority, new cTextBlockingPriority( *this ) );
-	helper.EditString( groupBox, "Shape:", "Shape of navigation blocker",
-		pEditShape, new cTextShape( *this ) );
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationBlocker.BlockingPriority",
+		"@GameDefinition.WPSOCNavigationBlocker.BlockingPriority.ToolTip",
+		pEditBlockingPriority, cTextBlockingPriority::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Shape", "@GameDefinition.WPSOCNavigationBlocker.Shape.ToolTip",
+		pEditShape, cTextShape::Ref::New(*this));
 	
 	// property targets
-	helper.GroupBox( content, groupBox, "Properties:" );
-	helper.ComboBox( groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames( *this ) );
-	pCBPropertyNames->AddItem( "Enabled", NULL,
-		( void* )( intptr_t )gdeOCNavigationBlocker::epEnabled );
-	pCBPropertyNames->AddItem( "Shape", NULL,
-		( void* )( intptr_t )gdeOCNavigationBlocker::epShape );
-	pCBPropertyNames->AddItem( "Layer", NULL,
-		( void* )( intptr_t )gdeOCNavigationBlocker::epLayer );
-	pCBPropertyNames->AddItem( "Blocking priority", NULL,
-		( void* )( intptr_t )gdeOCNavigationBlocker::epBlockingPriority );
-	pCBPropertyNames->AddItem( "Attach position", NULL,
-		( void* )( intptr_t )gdeOCNavigationBlocker::epAttachPosition );
-	pCBPropertyNames->AddItem( "Attach rotation", NULL,
-		( void* )( intptr_t )gdeOCNavigationBlocker::epAttachRotation );
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCNavigationBlocker.GroupProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Property", "@GameDefinition.WPSOCNavigationBlocker.Property.ToolTip",
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Enabled", nullptr,
+		(void*)(intptr_t)gdeOCNavigationBlocker::epEnabled);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Shape", nullptr,
+		(void*)(intptr_t)gdeOCNavigationBlocker::epShape);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Layer", nullptr,
+		(void*)(intptr_t)gdeOCNavigationBlocker::epLayer);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.BlockingPriority", nullptr,
+		(void*)(intptr_t)gdeOCNavigationBlocker::epBlockingPriority);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachPosition", nullptr,
+		(void*)(intptr_t)gdeOCNavigationBlocker::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr,
+		(void*)(intptr_t)gdeOCNavigationBlocker::epAttachRotation);
 	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget( *this ) );
-	pCBPropertyNameTarget->SetEditable( true );
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Target", true, "@GameDefinition.WPSOCNavigationBlocker.Target.ToolTip",
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
+	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
-	pCBPropertyNameTarget->SetFilterCaseInsentive( true );
+	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
-	SetGameDefinition( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -435,21 +447,19 @@ gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 // Management
 ///////////////
 
-void gdeWPSOCNavigationBlocker::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
-		pGameDefinition->FreeReference();
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
-		gameDefinition->AddReference();
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 	}
 	
 	UpdatePropertyList();
@@ -459,16 +469,16 @@ void gdeWPSOCNavigationBlocker::SetGameDefinition( gdeGameDefinition *gameDefini
 
 
 gdeObjectClass *gdeWPSOCNavigationBlocker::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCNavigationBlocker *gdeWPSOCNavigationBlocker::GetNavigationBlocker() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCNavigationBlocker() : NULL;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCNavigationBlocker().Pointer() : nullptr;
 }
 
-const gdeOCNavigationBlocker::eProperties gdeWPSOCNavigationBlocker::GetPropertyName() const{
-	return ( gdeOCNavigationBlocker::eProperties )( intptr_t )pCBPropertyNames->GetSelectedItem()->GetData();
+gdeOCNavigationBlocker::eProperties gdeWPSOCNavigationBlocker::GetPropertyName() const{
+	return (gdeOCNavigationBlocker::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
 
@@ -478,62 +488,62 @@ void gdeWPSOCNavigationBlocker::UpdatePropertyList(){
 	int i;
 	
 	decStringSet properties;
-	if( objectClass ){
-		objectClass->AddPropertyNamesTo( properties, true );
+	if(objectClass){
+		objectClass->AddPropertyNamesTo(properties, true);
 	}
 	
-	const decString selectionProperty( pCBPropertyNameTarget->GetText() );
+	const decString selectionProperty(pCBPropertyNameTarget->GetText());
 	pCBPropertyNameTarget->RemoveAllItems();
 	
 	const int count = properties.GetCount();
-	for( i=0; i<count; i++ ){
-		pCBPropertyNameTarget->AddItem( properties.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pCBPropertyNameTarget->AddItem(properties.GetAt(i));
 	}
 	
 	pCBPropertyNameTarget->SortItems();
-	pCBPropertyNameTarget->SetText( selectionProperty );
+	pCBPropertyNameTarget->SetText(selectionProperty);
 }
 
 void gdeWPSOCNavigationBlocker::UpdateNavigationBlocker(){
 	const gdeOCNavigationBlocker * const navblocker = GetNavigationBlocker();
 	
-	if( navblocker ){
-		pEditPosition->SetVector( navblocker->GetPosition() );
-		pEditRotation->SetVector( navblocker->GetRotation() );
-		pEditScaling->SetVector( navblocker->GetScaling() );
-		pEditBoneName->SetText( navblocker->GetBoneName() );
-		pChkEnabled->SetChecked( navblocker->GetEnabled() );
-		pEditLayer->SetInteger( navblocker->GetLayer() );
-		pCBType->SetSelectionWithData( ( void* )( intptr_t )navblocker->GetType() );
-		pEditBlockingPriority->SetInteger( navblocker->GetBlockingPriority() );
+	if(navblocker){
+		pEditPosition->SetVector(navblocker->GetPosition());
+		pEditRotation->SetVector(navblocker->GetRotation());
+		pEditScaling->SetVector(navblocker->GetScaling());
+		pEditBoneName->SetText(navblocker->GetBoneName());
+		pChkEnabled->SetChecked(navblocker->GetEnabled());
+		pEditLayer->SetInteger(navblocker->GetLayer());
+		pCBType->SetSelectionWithData((void*)(intptr_t)navblocker->GetType());
+		pEditBlockingPriority->SetInteger(navblocker->GetBlockingPriority());
 		
 		igdeCodecPropertyString codec;
 		decString encoded;
-		codec.EncodeShapeList( navblocker->GetShapeList(), encoded );
-		pEditShape->SetText( encoded );
+		codec.EncodeShapeList(navblocker->GetShapeList(), encoded);
+		pEditShape->SetText(encoded);
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
-		pEditScaling->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
+		pEditScaling->SetVector(decVector());
 		pEditBoneName->ClearText();
-		pChkEnabled->SetChecked( false );
+		pChkEnabled->SetChecked(false);
 		pEditLayer->ClearText();
-		pCBType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estGrid );
+		pCBType->SetSelectionWithData((void*)(intptr_t)deNavigationSpace::estGrid);
 		pEditBlockingPriority->ClearText();
 		pEditShape->ClearText();
 	}
 	
 	const bool enabled = navblocker;
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditScaling->SetEnabled( enabled );
-	pEditBoneName->SetEnabled( enabled );
-	pChkEnabled->SetEnabled( enabled );
-	pEditLayer->SetEnabled( enabled );
-	pCBType->SetEnabled( enabled );
-	pEditBlockingPriority->SetEnabled( enabled );
-	pEditShape->SetEnabled( enabled );
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditScaling->SetEnabled(enabled);
+	pEditBoneName->SetEnabled(enabled);
+	pChkEnabled->SetEnabled(enabled);
+	pEditLayer->SetEnabled(enabled);
+	pCBType->SetEnabled(enabled);
+	pEditBlockingPriority->SetEnabled(enabled);
+	pEditShape->SetEnabled(enabled);
 	
 	UpdatePropertyName();
 }
@@ -541,12 +551,12 @@ void gdeWPSOCNavigationBlocker::UpdateNavigationBlocker(){
 void gdeWPSOCNavigationBlocker::UpdatePropertyName(){
 	const gdeOCNavigationBlocker * const navblocker = GetNavigationBlocker();
 	
-	if( navblocker ){
-		pCBPropertyNameTarget->SetText( navblocker->GetPropertyName( GetPropertyName() ) );
+	if(navblocker){
+		pCBPropertyNameTarget->SetText(navblocker->GetPropertyName(GetPropertyName()));
 		
 	}else{
 		pCBPropertyNameTarget->ClearText();
 	}
 	
-	pCBPropertyNameTarget->SetEnabled( navblocker );
+	pCBPropertyNameTarget->SetEnabled(navblocker);
 }

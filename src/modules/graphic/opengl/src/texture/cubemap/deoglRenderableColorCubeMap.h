@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
-	deoglRenderableColorCubeMap( deoglRenderThread &renderThread, int size, int componentCount, bool isFloat );
+	deoglRenderableColorCubeMap(deoglRenderThread &renderThread, int size, int componentCount, bool isFloat);
 	/** Cleans up the renderable cubemap. */
 	~deoglRenderableColorCubeMap();
 	/*@}*/
@@ -67,12 +67,12 @@ public:
 	inline bool GetIsFloat() const{ return pIsFloat; }
 	
 	/** Determines if the format matches the given format. */
-	bool Matches( int size, int componentCount, bool isFloat ) const;
+	bool Matches(int size, int componentCount, bool isFloat) const;
 	
 	/** Determines if the shadow map is in use. */
 	inline bool GetInUse() const{ return pInUse; }
 	/** Sets if the shadow map is in use. */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	
 	/** Retrieves the cubemap. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }

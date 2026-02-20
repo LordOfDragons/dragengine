@@ -29,7 +29,7 @@
 #include "../../../../../conversation/action/ceCAPlayerChoice.h"
 
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceActions;
+#include "ceWPTTIMAPlayerChoiceActions.h"
 
 
 /**
@@ -37,20 +37,21 @@ class ceWPTTIMAPlayerChoiceActions;
  */
 class ceWPTTIMAPlayerChoice : public ceWPTTIMAction{
 private:
-	ceWPTTIMAPlayerChoiceActions *pActions;
+	ceWPTTIMAPlayerChoiceActions::Ref pActions;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoice>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoice( ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAPlayerChoice *action );
+	ceWPTTIMAPlayerChoice(ceWindowMain &windowMain,
+		ceConversation &conversation, ceCAPlayerChoice *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAPlayerChoice();
+	~ceWPTTIMAPlayerChoice() override;
 	/*@}*/
 	
 	
@@ -59,25 +60,25 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAPlayerChoice *GetActionPlayerChoice() const{ return ( ceCAPlayerChoice* )GetAction(); }
+	inline ceCAPlayerChoice *GetActionPlayerChoice() const{ return GetAction().DynamicCast<ceCAPlayerChoice>(); }
 	
-	/** \brief Model with option or \em NULL. */
-	ceWPTTIMAPlayerChoiceOption *GetOptionChild( ceCAPlayerChoiceOption *option ) const;
+	/** \brief Model with option or \em nullptr. */
+	ceWPTTIMAPlayerChoiceOption *GetOptionChild(ceCAPlayerChoiceOption *option) const;
 	
-	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{ return pActions; }
+	/** \brief Model with actions or \em nullptr. */
+	inline const ceWPTTIMAPlayerChoiceActions::Ref &GetActionsChild() const{ return pActions; }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update action lists if present. */
-	virtual void UpdateActionLists();
+	void UpdateActionLists() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 	
 	

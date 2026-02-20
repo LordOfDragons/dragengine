@@ -26,12 +26,12 @@
 #define _CEUCCVARSETOPERATOR_H_
 
 #include "../../../conversation/condition/ceCConditionVariable.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 class ceCConditionVariable;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -39,10 +39,14 @@ class ceConversationTopic;
  * \brief Undo Variable Conversation Condition Set Operator.
  */
 class ceUCCVarSetOperator : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCVarSetOperator>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionVariable *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionVariable::Ref pCondition;
 	ceCConditionVariable::eOperators pOldOperator;
 	ceCConditionVariable::eOperators pNewOperator;
 	
@@ -50,20 +54,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCVarSetOperator( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionVariable *condition, ceCConditionVariable::eOperators newOperator );
+	ceUCCVarSetOperator(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionVariable *condition, ceCConditionVariable::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCVarSetOperator();
+	~ceUCCVarSetOperator() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

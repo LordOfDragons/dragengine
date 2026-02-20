@@ -26,6 +26,7 @@
 #define _IGDEGDSKYCONTROLLER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -41,17 +42,24 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDSkyController>;
+	
+	/** \brief List of controllers. */
+	using List = decTObjectOrderedSet<igdeGDSkyController>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky controller. */
-	igdeGDSkyController( const char *name, float value );
+	igdeGDSkyController(const char *name, float value);
 	
 	/** \brief Create copy of sky controller. */
-	igdeGDSkyController( const igdeGDSkyController &controller );
+	igdeGDSkyController(const igdeGDSkyController &controller);
 	
 protected:
 	/** \brief Clean up sky controller. */
-	virtual ~igdeGDSkyController();
+	~igdeGDSkyController() override;
 	/*@}*/
 	
 	
@@ -63,13 +71,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 };
 

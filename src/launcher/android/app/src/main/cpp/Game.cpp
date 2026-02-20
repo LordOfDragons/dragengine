@@ -2,7 +2,7 @@
 #include <cstring>
 #include <delauncher/delLauncher.h>
 #include <delauncher/game/delGame.h>
-#include <delauncher/game/delGameList.h>
+#include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameXML.h>
 #include <delauncher/game/icon/delGameIcon.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
@@ -60,11 +60,11 @@ jobject GameInfo::Convert(const delGame &game) {
         objIcons.SetAt(j, objIcon);
     }
 
-    const delFileFormatList &formats = game.GetFileFormats();
+    const delFileFormat::List &formats = game.GetFileFormats();
     const int formatCount = formats.GetCount();
     const JniObjectArray objFormats(pEnv, pClsFormat, formatCount);
     for(j=0; j<formatCount; j++){
-        const delFileFormat &format = *formats.GetAt(j);
+        const delFileFormat &format = formats.GetAt(j);
         const JniObject objFormat(pClsFormat.New());
         pFldFormatType.Set(objFormat, (int)format.GetType());
         pFldFormatPattern.Set(objFormat, format.GetPattern());
@@ -268,14 +268,12 @@ JNIEnv *env, jobject thiz, jlong pgame, jstring pconfig, jlong plauncher){
         delGame &game = *((delGame*)pgame);
 
         {
-            const decMemoryFile::Ref fileGameConfig(decMemoryFile::Ref::New(
-                    new decMemoryFile("game.degame")));
+            const decMemoryFile::Ref fileGameConfig(decMemoryFile::Ref::New("game.degame"));
             fileGameConfig->Resize(config.GetLength());
             memcpy(fileGameConfig->GetPointer(), config.GetString(), config.GetLength());
 
             delGameXML gameXml(launcher.GetLogger(), "DELauncher");
-            gameXml.ReadFromFile(decMemoryFileReader::Ref::New(
-                new decMemoryFileReader(fileGameConfig)), game);
+            gameXml.ReadFromFile(decMemoryFileReader::Ref::New(fileGameConfig), game);
 
             game.SetDefaultLogFile();
         }

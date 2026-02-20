@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -36,8 +36,12 @@ class peeType;
  * \brief Undo action set type collision response.
  */
 class peeUTypeSetCollisionResponse : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeSetCollisionResponse>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eCollisionResponses pOldResponse;
 	deParticleEmitterType::eCollisionResponses pNewResponse;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetCollisionResponse( peeType *type, deParticleEmitterType::eCollisionResponses newResponse );
+	peeUTypeSetCollisionResponse(peeType *type, deParticleEmitterType::eCollisionResponses newResponse);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~peeUTypeSetCollisionResponse();
+	~peeUTypeSetCollisionResponse() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

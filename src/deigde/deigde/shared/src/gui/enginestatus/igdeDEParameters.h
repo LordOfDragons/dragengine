@@ -25,10 +25,10 @@
 #ifndef _IGDEDEPARAMETERS_H_
 #define _IGDEDEPARAMETERS_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeComboBoxReference.h"
-#include "../igdeTextAreaReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeButton.h"
+#include "../igdeComboBox.h"
+#include "../igdeTextArea.h"
+#include "../igdeTextField.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/systems/modules/deModuleParameter.h>
@@ -43,19 +43,23 @@ class deLoadableModule;
  * \brief Panel showing the parameters of modules allowing the user to also change them.
  */
 class DE_DLL_EXPORT igdeDEParameters : public igdeContainerFlow{
+public:
+	using Ref = deTObjectReference<igdeDEParameters>;
+	
+	
 private:
 	igdeDialogEngine &pDialogEngine;
 	deModuleParameter pParameterInfo;
 	
-	igdeComboBoxReference pCBModule;
-	igdeComboBoxReference pCBParameter;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditType;
-	igdeTextAreaReference pEditAllowedValues;
-	igdeTextFieldReference pEditValue;
+	igdeComboBox::Ref pCBModule;
+	igdeComboBox::Ref pCBParameter;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditType;
+	igdeTextArea::Ref pEditAllowedValues;
+	igdeTextField::Ref pEditValue;
 	
-	igdeButtonReference pBtnSet;
-	igdeButtonReference pBtnReset;
+	igdeButton::Ref pBtnSet;
+	igdeButton::Ref pBtnReset;
 	
 	
 	
@@ -63,13 +67,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEParameters( igdeDialogEngine &dialogEngine );
+	igdeDEParameters(igdeDialogEngine &dialogEngine);
 	
 	
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEParameters();
+	~igdeDEParameters() override;
 	/*@}*/
 	
 	

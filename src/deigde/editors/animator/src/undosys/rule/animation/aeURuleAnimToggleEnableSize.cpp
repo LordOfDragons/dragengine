@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleAnimToggleEnableSize::aeURuleAnimToggleEnableSize( aeRuleAnimation *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleAnimToggleEnableSize::aeURuleAnimToggleEnableSize(aeRuleAnimation *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleAnimationToggleEnableSize");
 		
-		SetShortInfo( "Rule animation toggle enable size" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleAnimToggleEnableSize::~aeURuleAnimToggleEnableSize(){
 ///////////////
 
 void aeURuleAnimToggleEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleAnimToggleEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleAnimToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnableSize::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

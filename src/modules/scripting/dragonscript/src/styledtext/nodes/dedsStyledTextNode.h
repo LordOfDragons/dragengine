@@ -44,6 +44,10 @@ private:
 	void *pStyle;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<dedsStyledTextNode>;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new styled text node. */
@@ -51,7 +55,7 @@ public:
 
 protected:
 	/** Cleans up the styled text node. */
-	virtual ~dedsStyledTextNode();
+	~dedsStyledTextNode() override;
 	/*@}*/
 	
 public:
@@ -60,7 +64,7 @@ public:
 	/** Retrieves the style or NULL to use the parent node style. */
 	inline void *GetStyle() const{ return pStyle; }
 	/** Sets the style or NULL to use the parent node style. */
-	void SetStyle( void *style );
+	void SetStyle(void *style);
 	/*@}*/
 };
 

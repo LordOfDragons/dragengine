@@ -39,7 +39,8 @@ igdeNativeNullFont::igdeNativeNullFont(){
 igdeNativeNullFont::~igdeNativeNullFont(){
 }
 
-igdeNativeNullFont *igdeNativeNullFont::CreateNativeFont( igdeFont& ){
+igdeNativeNullFont *igdeNativeNullFont::CreateNativeFont(igdeFont&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullFont;
 }
 
@@ -52,12 +53,12 @@ void igdeNativeNullFont::DestroyNativeFont(){
 // Management
 ///////////////
 
-deFont *igdeNativeNullFont::CreateEngineFont(){
-	return nullptr;
+deFont::Ref igdeNativeNullFont::CreateEngineFont(){
+	return {};
 }
 
-decPoint igdeNativeNullFont::TextSize( const char * ) const{
-	return decPoint( 32, 16 );
+decPoint igdeNativeNullFont::TextSize(const char *) const{
+	return decPoint(32, 16);
 }
 
 #endif

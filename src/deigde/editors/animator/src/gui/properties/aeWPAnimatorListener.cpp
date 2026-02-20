@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAnimatorListener::aeWPAnimatorListener( aeWPAnimator &panel ) :
-pPanel( panel ){
+aeWPAnimatorListener::aeWPAnimatorListener(aeWPAnimator &panel) :
+pPanel(panel){
 }
 
 aeWPAnimatorListener::~aeWPAnimatorListener(){
@@ -51,16 +51,16 @@ aeWPAnimatorListener::~aeWPAnimatorListener(){
 // Notifications
 //////////////////
 
-void aeWPAnimatorListener::ModelChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPAnimatorListener::ModelChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateModelVertexPositionSetList();
 }
 
-void aeWPAnimatorListener::RigChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPAnimatorListener::RigChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
@@ -68,16 +68,16 @@ void aeWPAnimatorListener::RigChanged( aeAnimator *animator ){
 	pPanel.UpdateRigBoneList();
 }
 
-void aeWPAnimatorListener::AnimatorChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPAnimatorListener::AnimatorChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateAnimator();
 }
 
-void aeWPAnimatorListener::AnimationChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPAnimatorListener::AnimationChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	

@@ -42,6 +42,10 @@
  */
 class meHTVRuleConstant : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleConstant>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Vector. */
@@ -64,10 +68,13 @@ public:
 	meHTVRuleConstant();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleConstant( const meHTVRuleConstant &rule );
+	meHTVRuleConstant(const meHTVRuleConstant &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleConstant();
+	~meHTVRuleConstant() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -75,15 +82,15 @@ public:
 	/** Retrieves the vector to output. */
 	inline const decVector &GetVector() const{ return pVector; }
 	/** Sets the vector to output. */
-	void SetVector( const decVector &vector );
+	void SetVector(const decVector &vector);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

@@ -28,6 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 class deoglImposterBillboard;
 class deoglModelLOD;
@@ -44,8 +45,7 @@ class deModel;
 class deoglRModel : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deoglRModel> Ref;
-	
+	using Ref = deTObjectReference<deoglRModel>;
 	
 	
 public:
@@ -63,15 +63,13 @@ private:
 	sExtends pExtends;
 	sExtends pWeightlessExtends;
 	bool pHasWeightlessExtends;
-	sExtends *pBoneExtends;
-	int pBoneCount;
+	decTList<sExtends> pBoneExtends;
 	
 	decStringList pBoneNames;
 	decStringList pTextureNames;
 	decStringList pVPSNames;
 	
-	deoglModelLOD **pLODs;
-	int pLODCount;
+	decTUniqueList<deoglModelLOD> pLODs;
 	
 	bool pDoubleSided;
 	bool pIsCached;
@@ -86,14 +84,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render model. */
-	deoglRModel( deoglRenderThread &renderThread, const deModel &model );
+	deoglRModel(deoglRenderThread &renderThread, const deModel &model);
 	
+protected:
 	/** Clean up render model. */
-	virtual ~deoglRModel();
+	~deoglRModel() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -112,10 +111,10 @@ public:
 	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
 	
 	/** Bone extends. */
-	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
+	inline const decTList<sExtends> &GetBoneExtends() const{ return pBoneExtends; }
 	
 	/** Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBoneExtends.GetCount(); }
 	
 	/** List of bone names. */
 	inline const decStringList &GetBoneNames() const{ return pBoneNames; }
@@ -128,11 +127,14 @@ public:
 	
 	
 	
+	/** LODs. */
+	inline const decTUniqueList<deoglModelLOD> &GetLODs() const{ return pLODs; }
+	
 	/** Number of lods. */
-	inline int GetLODCount() const{ return pLODCount; }
+	inline int GetLODCount() const{ return pLODs.GetCount(); }
 	
 	/** Lod at index. */
-	deoglModelLOD &GetLODAt( int index ) const;
+	deoglModelLOD &GetLODAt(int index) const;
 	
 	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
@@ -160,13 +162,13 @@ public:
 	
 private:
 	void pCleanUp();
-	void pInitTextureNames( const deModel &engModel );
-	void pInitBoneNames( const deModel &engModel );
-	void pInitVPSNames( const deModel &engModel );
-	void pInitLODs( const deModel &engModel );
-	void pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod );
+	void pInitTextureNames(const deModel &engModel);
+	void pInitBoneNames(const deModel &engModel);
+	void pInitVPSNames(const deModel &engModel);
+	void pInitLODs(const deModel &engModel);
+	void pInitExtends(const deModel &engModel, const deoglModelLOD &baseLod);
 	
-	void pLoadCached( int lodCount, int boneCount );
+	void pLoadCached(int lodCount, int boneCount);
 	void pSaveCached();
 	
 	void pCreateImposterBillboard();

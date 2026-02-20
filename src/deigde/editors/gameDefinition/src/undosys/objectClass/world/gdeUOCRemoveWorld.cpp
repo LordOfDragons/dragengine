@@ -46,7 +46,7 @@ pWorld(world)
 	DEASSERT_NOTNULL(world)
 	DEASSERT_TRUE(objectClass->GetWorlds().Has(world))
 	
-	SetShortInfo("Remove world");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveWorld");
 }
 
 

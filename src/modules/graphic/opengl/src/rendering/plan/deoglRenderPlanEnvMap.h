@@ -25,9 +25,9 @@
 #ifndef _DEOGLRENDERPLANENVMAP_H_
 #define _DEOGLRENDERPLANENVMAP_H_
 
-#include <dragengine/common/math/decMath.h>
+#include "../../envmap/deoglEnvironmentMap.h"
 
-class deoglEnvironmentMap;
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -42,7 +42,7 @@ class deoglEnvironmentMap;
  */
 class deoglRenderPlanEnvMap{
 private:
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	float pDistance;
 	float pFadeTime;
 	
@@ -58,19 +58,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the environment map or NULL if not set. */
-	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetEnvMap() const{ return pEnvMap; }
 	/** Sets the environment map or NULL if not set. */
-	void SetEnvMap( deoglEnvironmentMap *envmap );
+	void SetEnvMap(deoglEnvironmentMap *envmap);
 	/** Retrieves the distance of the environment map to the camera. */
 	inline float GetDistance() const{ return pDistance; }
 	/** Sets the distance of the environment map to the camera. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	/** Retrieves the fade time. */
 	inline float GetFadeTime() const{ return pFadeTime; }
 	/** Resets the fade time to 0. */
 	void ResetFadeTime();
 	/** Increments the fade time. */
-	void IncFadeTime( float timestep );
+	void IncFadeTime(float timestep);
 	/*@}*/
 };
 

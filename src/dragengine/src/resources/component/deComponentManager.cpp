@@ -46,8 +46,8 @@
 // constructor, destructor
 ////////////////////////////
 
-deComponentManager::deComponentManager( deEngine *engine ) : deResourceManager( engine, ertComponent ){
-	SetLoggingName( "component" );
+deComponentManager::deComponentManager(deEngine *engine) : deResourceManager(engine, ertComponent){
+	SetLoggingName("component");
 }
 
 deComponentManager::~deComponentManager(){
@@ -64,37 +64,24 @@ int deComponentManager::GetComponentCount() const{
 }
 
 deComponent *deComponentManager::GetRootComponent() const{
-	return ( deComponent* )pComponents.GetRoot();
+	return (deComponent*)pComponents.GetRoot();
 }
 
-deComponent *deComponentManager::CreateComponent( deModel *model, deSkin *skin ){
-	deComponent *component = NULL;
-	
-	try{
-		component = new deComponent(this, model, skin);
-		
-		GetGraphicSystem()->LoadComponent( component );
-		GetPhysicsSystem()->LoadComponent( component );
-		GetAudioSystem()->LoadComponent( component );
-		GetAnimatorSystem()->LoadComponent( component );
-		
-		pComponents.Add( component );
-		
-	}catch( const deException & ){
-		if( component ){
-			component->FreeReference();
-		}
-		throw;
-	}
-	
+deComponent::Ref deComponentManager::CreateComponent(deModel *model, deSkin *skin){
+	const deComponent::Ref component(deComponent::Ref::New(this, model, skin));
+	GetGraphicSystem()->LoadComponent(component);
+	GetPhysicsSystem()->LoadComponent(component);
+	GetAudioSystem()->LoadComponent(component);
+	GetAnimatorSystem()->LoadComponent(component);
+	pComponents.Add(component);
 	return component;
 }
 
 
 
 void deComponentManager::ReleaseLeakingResources(){
-	if( GetComponentCount() > 0 ){
-		LogWarnFormat( "%i leaking components", GetComponentCount() );
+	if(GetComponentCount() > 0){
+		LogWarnFormat("%i leaking components", GetComponentCount());
 		pComponents.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -103,94 +90,72 @@ void deComponentManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deComponentManager::SystemGraphicLoad(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		if( ! component->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadComponent( component );
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pComponents.GetResources().Visit([&](deResource *res){
+		deComponent *component = static_cast<deComponent*>(res);
+		if(!component->GetPeerGraphic()){
+			graSys.LoadComponent(component);
 		}
-		
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	});
 }
 
 void deComponentManager::SystemGraphicUnload(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		component->SetPeerGraphic( NULL );
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	pComponents.GetResources().Visit([&](deResource *res){
+		static_cast<deComponent*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deComponentManager::SystemPhysicsLoad(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		if( ! component->GetPeerPhysics() ){
-			GetPhysicsSystem()->LoadComponent( component );
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pComponents.GetResources().Visit([&](deResource *res){
+		deComponent *component = static_cast<deComponent*>(res);
+		if(!component->GetPeerPhysics()){
+			phySys.LoadComponent(component);
 		}
-		
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	});
 }
 
 void deComponentManager::SystemPhysicsUnload(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		component->SetPeerPhysics( NULL );
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	pComponents.GetResources().Visit([&](deResource *res){
+		static_cast<deComponent*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deComponentManager::SystemAudioLoad(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		if( ! component->GetPeerAudio() ){
-			GetAudioSystem()->LoadComponent( component );
+	deAudioSystem &audSys = *GetAudioSystem();
+	pComponents.GetResources().Visit([&](deResource *res){
+		deComponent *component = static_cast<deComponent*>(res);
+		if(!component->GetPeerAudio()){
+			audSys.LoadComponent(component);
 		}
-		
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	});
 }
 
 void deComponentManager::SystemAudioUnload(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		component->SetPeerAudio( NULL );
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	pComponents.GetResources().Visit([&](deResource *res){
+		static_cast<deComponent*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deComponentManager::SystemAnimatorLoad(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	deAnimatorSystem &manager = *GetAnimatorSystem();
-	
-	while( component ){
-		if( ! component->GetPeerAnimator() ){
-			manager.LoadComponent( component );
+	deAnimatorSystem &aniSys = *GetAnimatorSystem();
+	pComponents.GetResources().Visit([&](deResource *res){
+		deComponent *component = static_cast<deComponent*>(res);
+		if(!component->GetPeerAnimator()){
+			aniSys.LoadComponent(component);
 		}
-		
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	});
 }
 
 void deComponentManager::SystemAnimatorUnload(){
-	deComponent *component = ( deComponent* )pComponents.GetRoot();
-	
-	while( component ){
-		component->SetPeerAnimator( NULL );
-		component = ( deComponent* )component->GetLLManagerNext();
-	}
+	pComponents.GetResources().Visit([&](deResource *res){
+		static_cast<deComponent*>(res)->SetPeerAnimator(nullptr);
+	});
 }
 
 
 
-void deComponentManager::RemoveResource( deResource *resource ){
-	pComponents.RemoveIfPresent( resource );
+void deComponentManager::RemoveResource(deResource *resource){
+	pComponents.RemoveIfPresent(resource);
 }

@@ -25,22 +25,23 @@
 #ifndef _PEEWPTYPE_H_
 #define _PEEWPTYPE_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include "peeWPTypeListener.h"
+#include "../../emitter/peeEmitter.h"
 
-class peeEmitter;
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/resources/igdeIcon.h>
+
 class peeType;
 class peeParameter;
 class peeWindowProperties;
-class peeWPTypeListener;
 
 
 
@@ -48,49 +49,53 @@ class peeWPTypeListener;
  * \brief Type Panel.
  */
 class peeWPType : public igdeContainerScroll{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWPType>;
+	
 private:
 	peeWindowProperties &pWindowProperties;
-	peeWPTypeListener *pListener;
+	peeWPTypeListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
-	igdeIconReference pIconUnused;
-	igdeIconReference pIconUsed;
+	igdeIcon::Ref pIconUnused;
+	igdeIcon::Ref pIconUsed;
 	
-	igdeActionReference pActionType;
-	igdeActionReference pActionTypeAdd;
-	igdeActionReference pActionTypeRemove;
-	igdeActionReference pActionTypeRename;
+	igdeAction::Ref pActionType;
+	igdeAction::Ref pActionTypeAdd;
+	igdeAction::Ref pActionTypeRemove;
+	igdeAction::Ref pActionTypeRename;
 	
-	igdeComboBoxReference pCBType;
-	igdeButtonReference pBtnType;
+	igdeComboBox::Ref pCBType;
+	igdeButton::Ref pBtnType;
 	
-	igdeTextFieldReference pEditBurstLifetime;
-	igdeCheckBoxReference pChkEmitBurst;
+	igdeTextField::Ref pEditBurstLifetime;
+	igdeCheckBox::Ref pChkEmitBurst;
 	
-	igdeEditPathReference pEditSkin;
-	igdeEditPathReference pEditModel;
-	igdeEditPathReference pEditModelSkin;
-	igdeComboBoxReference pCBCastFrom;
-	igdeComboBoxReference pCBSimType;
-	igdeCheckBoxReference pChkIntervalAsDistance;
-	igdeEditPathReference pEditPathTrailEmitter;
-	igdeComboBoxReference pCBTrailController;
-	igdeTextFieldReference pEditTrailTargetController;
+	igdeEditPath::Ref pEditSkin;
+	igdeEditPath::Ref pEditModel;
+	igdeEditPath::Ref pEditModelSkin;
+	igdeComboBox::Ref pCBCastFrom;
+	igdeComboBox::Ref pCBSimType;
+	igdeCheckBox::Ref pChkIntervalAsDistance;
+	igdeEditPath::Ref pEditPathTrailEmitter;
+	igdeComboBox::Ref pCBTrailController;
+	igdeTextField::Ref pEditTrailTargetController;
 	
-	igdeTextFieldReference pEditPhysicsSize;
-	igdeComboBoxReference pCBCollisionResponse;
-	igdeEditPathReference pEditPathCollisionEmitter;
-	igdeTextFieldReference pEditEmitMinImpulse;
-	igdeComboBoxReference pCBEmitController;
-	igdeTextFieldReference pEditEmitTargetController;
+	igdeTextField::Ref pEditPhysicsSize;
+	igdeComboBox::Ref pCBCollisionResponse;
+	igdeEditPath::Ref pEditPathCollisionEmitter;
+	igdeTextField::Ref pEditEmitMinImpulse;
+	igdeComboBox::Ref pCBEmitController;
+	igdeTextField::Ref pEditEmitTargetController;
 	
-	igdeListBoxReference pListParams;
+	igdeListBox::Ref pListParams;
 	
-	igdeTextFieldReference pEditParamValue;
-	igdeTextFieldReference pEditParamSpread;
-	igdeComboBoxReference pCBParamCtrlValue;
-	igdeComboBoxReference pCBParamCtrlSpread;
+	igdeTextField::Ref pEditParamValue;
+	igdeTextField::Ref pEditParamSpread;
+	igdeComboBox::Ref pCBParamCtrlValue;
+	igdeComboBox::Ref pCBParamCtrlSpread;
 	
 	bool pPreventUpdate;
 	
@@ -100,11 +105,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPType( peeWindowProperties &windowProperties );
+	peeWPType(peeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~peeWPType();
+	~peeWPType() override;
 	/*@}*/
 	
 	
@@ -116,10 +121,10 @@ public:
 	inline peeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Emitter path changed. */
 	void OnEmitterPathChanged();
@@ -158,14 +163,14 @@ public:
 	void UpdateParameter();
 	
 	/** \brief Update parameter usage icon. */
-	void UpdateParameterUsage( const peeParameter &parameter );
+	void UpdateParameterUsage(const peeParameter &parameter);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction* GetActionTypeAdd() const{ return pActionTypeAdd; }
-	inline igdeAction* GetActionTypeRemove() const{ return pActionTypeRemove; }
-	inline igdeAction* GetActionTypeRename() const{ return pActionTypeRename; }
+	inline const igdeAction::Ref &GetActionTypeAdd() const{ return pActionTypeAdd; }
+	inline const igdeAction::Ref &GetActionTypeRemove() const{ return pActionTypeRemove; }
+	inline const igdeAction::Ref &GetActionTypeRename() const{ return pActionTypeRename; }
 	/*@}*/
 };
 

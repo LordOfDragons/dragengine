@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationFile;
-class ceConversationTopic;
+#include "../../conversation/file/ceConversationFile.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo action duplicate conversation topic.
  */
 class ceUCTopicDuplicate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCTopicDuplicate>;
+	
+	
 private:
-	ceConversationFile *pFile;
-	ceConversationTopic *pTopic;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::Ref pTopic;
 	
 	
 	
@@ -46,10 +50,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicDuplicate( ceConversationFile *file, const ceConversationTopic &topic, const char *newID );
+	ceUCTopicDuplicate(ceConversationFile *file, const ceConversationTopic &topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
-	virtual ~ceUCTopicDuplicate();
+protected:
+	~ceUCTopicDuplicate() override;
+public:
 	/*@}*/
 	
 	
@@ -58,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate topic. */
-	inline ceConversationTopic *GetDuplicateTopic() const{ return pTopic; }
+	inline const ceConversationTopic::Ref &GetDuplicateTopic() const{ return pTopic; }
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

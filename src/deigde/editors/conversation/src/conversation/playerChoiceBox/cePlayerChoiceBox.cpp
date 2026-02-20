@@ -31,6 +31,8 @@
 #include "cePlayerChoiceBox.h"
 #include "../ceConversation.h"
 #include "../playback/cePlayback.h"
+#include "../playback/cePlaybackActionStack.h"
+#include "../action/ceConversationAction.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -39,8 +41,6 @@
 #include <dragengine/resources/font/deFontManager.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
-#include "../playback/cePlaybackActionStack.h"
-#include "../action/ceConversationAction.h"
 
 
 
@@ -57,27 +57,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-cePlayerChoiceBox::cePlayerChoiceBox( ceConversation &conversation ) :
-pConversation( conversation ),
-pBackgroundColor( 0.0f, 0.0f, 0.0f, 0.5f ),
-pTextColor( 1.0f, 1.0f, 1.0f, 1.0f ),
-pSelectedBackgroundColor( 0.0f, 0.0f, 0.5f, 0.5f ),
-pSelectedTextColor( 1.0f, 0.5f, 0.5f, 1.0f ),
-pTextSize( 18 ),
-pPadding( 10 ),
-pPlaybackStackDepth( -1 ),
+cePlayerChoiceBox::cePlayerChoiceBox(ceConversation &conversation) :
+pConversation(conversation),
+pBackgroundColor(0.0f, 0.0f, 0.0f, 0.5f),
+pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
+pSelectedBackgroundColor(0.0f, 0.0f, 0.5f, 0.5f),
+pSelectedTextColor(1.0f, 0.5f, 0.5f, 1.0f),
+pTextSize(18),
+pPadding(10),
+pPlaybackStackDepth(-1),
 
-pSelectedOption( -1 ),
-
-pCanvasView( NULL )
+pSelectedOption(-1)
 {
 	try{
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
-		pCanvasView->SetOrder( 11.0f );
+		pCanvasView->SetOrder(11.0f);
 		
-		SetPathFont( "/igde/fonts/sans_9_border.defont" );
+		SetPathFont("/igde/fonts/sans_9_border.defont");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -92,7 +90,7 @@ cePlayerChoiceBox::~cePlayerChoiceBox(){
 // Management
 ///////////////
 
-void cePlayerChoiceBox::SetPathFont( const char *path ){
+void cePlayerChoiceBox::SetPathFont(const char *path){
 	if(pPathFont == path){
 		return;
 	}
@@ -103,12 +101,12 @@ void cePlayerChoiceBox::SetPathFont( const char *path ){
 	UpdateCanvas();
 }
 
-void cePlayerChoiceBox::SetBackgroundColor( const decColor &color ){
+void cePlayerChoiceBox::SetBackgroundColor(const decColor &color){
 	pBackgroundColor = color;
 }
 
-void cePlayerChoiceBox::SetTextColor( const decColor &color ){
-	if( color.IsEqualTo( pTextColor ) ){
+void cePlayerChoiceBox::SetTextColor(const decColor &color){
+	if(color.IsEqualTo(pTextColor)){
 		return;
 	}
 	
@@ -116,7 +114,7 @@ void cePlayerChoiceBox::SetTextColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void cePlayerChoiceBox::SetTextSize( int size ){
+void cePlayerChoiceBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
 	if(size == pTextSize){
@@ -128,8 +126,8 @@ void cePlayerChoiceBox::SetTextSize( int size ){
 	UpdateCanvas();
 }
 
-void cePlayerChoiceBox::SetSelectedBackgroundColor( const decColor &color ){
-	if( color.IsEqualTo( pSelectedBackgroundColor ) ){
+void cePlayerChoiceBox::SetSelectedBackgroundColor(const decColor &color){
+	if(color.IsEqualTo(pSelectedBackgroundColor)){
 		return;
 	}
 	
@@ -137,8 +135,8 @@ void cePlayerChoiceBox::SetSelectedBackgroundColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void cePlayerChoiceBox::SetSelectedTextColor( const decColor &color ){
-	if( color.IsEqualTo( pSelectedTextColor ) ){
+void cePlayerChoiceBox::SetSelectedTextColor(const decColor &color){
+	if(color.IsEqualTo(pSelectedTextColor)){
 		return;
 	}
 	
@@ -146,12 +144,12 @@ void cePlayerChoiceBox::SetSelectedTextColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void cePlayerChoiceBox::SetPadding( int padding ){
-	if( padding < 0 ){
+void cePlayerChoiceBox::SetPadding(int padding){
+	if(padding < 0){
 		padding = 0;
 	}
 	
-	if( padding == pPadding ){
+	if(padding == pPadding){
 		return;
 	}
 	
@@ -159,16 +157,16 @@ void cePlayerChoiceBox::SetPadding( int padding ){
 	UpdateCanvas();
 }
 
-void cePlayerChoiceBox::SetPlaybackStackDepth( int depth ){
+void cePlayerChoiceBox::SetPlaybackStackDepth(int depth){
 	pPlaybackStackDepth = depth;
 }
 
-void cePlayerChoiceBox::SetSelectedOption( int index ){
-	if( index < -1 || index >= pOptions.GetCount() ){
-		DETHROW( deeInvalidParam );
+void cePlayerChoiceBox::SetSelectedOption(int index){
+	if(index < -1 || index >= pOptions.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index == pSelectedOption ){
+	if(index == pSelectedOption){
 		return;
 	}
 	
@@ -182,46 +180,38 @@ void cePlayerChoiceBox::Clear(){
 	UpdateCanvas();
 }
 
-int cePlayerChoiceBox::IndexOfOptionAt( int x, int y ) const{
+int cePlayerChoiceBox::IndexOfOptionAt(int x, int y) const{
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if( ! parentView ){
+	if(!parentView){
 		return -1;
 	}
 	
 	const decPoint &boxPosition = pCanvasView->GetPosition();
-	const int count = pOptions.GetCount();
-	const decPoint point( x, y );
-	int i;
+	const decPoint point(x, y);
 	
-	for( i=0; i<count; i++ ){
-		const deCanvasView * const canvasOption = pOptions.GetAt( i )->GetCanvasView();
-		if( ! canvasOption ){
-			continue;
+	return pOptions.IndexOfMatching([&](const cePCBOption &o){
+		const deCanvasView * const canvasOption = o.GetCanvasView();
+		if(!canvasOption){
+			return false;
 		}
 		
-		const decPoint position( boxPosition + canvasOption->GetPosition() );
-		const decPoint &size = canvasOption->GetSize();
-		
-		if( point >= position && point < position + size ){
-			return i;
-		}
-	}
-	
-	return -1;
+		const decPoint position(boxPosition + canvasOption->GetPosition());
+		return point >= position && point < position + canvasOption->GetSize();
+	});
 }
 
-void cePlayerChoiceBox::SelectOptionAt( int x, int y ){
-	const int index = IndexOfOptionAt( x, y );
+void cePlayerChoiceBox::SelectOptionAt(int x, int y){
+	const int index = IndexOfOptionAt(x, y);
 	
-	if( index != -1 ){
-		SetSelectedOption( index );
+	if(index != -1){
+		SetSelectedOption(index);
 	}
 }
 
 void cePlayerChoiceBox::UpdateCanvas(){
 	// if there is no parent canvas there is no use in updating anything
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if( ! parentView ){
+	if(!parentView){
 		return;
 	}
 	
@@ -231,8 +221,8 @@ void cePlayerChoiceBox::UpdateCanvas(){
 	// make sure the selected option is in valid range
 	const int count = pOptions.GetCount();
 	
-	if( count > 0 ){
-		pSelectedOption = decMath::clamp( pSelectedOption, 0, count - 1 );
+	if(count > 0){
+		pSelectedOption = decMath::clamp(pSelectedOption, 0, count - 1);
 		
 	}else{
 		pSelectedOption = -1;
@@ -242,31 +232,31 @@ void cePlayerChoiceBox::UpdateCanvas(){
 	int boxHeight = pPadding * 2;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		cePCBOption &option = *pOptions.GetAt( i );
+	for(i=0; i<count; i++){
+		cePCBOption &option = pOptions.GetAt(i);
 		
-		option.Layout( *this, i == pSelectedOption );
+		option.Layout(*this, i == pSelectedOption);
 		boxHeight += option.GetCanvasView()->GetSize().y;
 	}
 	
-	boxHeight = decMath::max( boxHeight, pPadding * 2 );
+	boxHeight = decMath::max(boxHeight, pPadding * 2);
 	
 	// resize canvas
 	const decPoint &parentSize = parentView->GetSize();
 	
-	pCanvasView->SetPosition( decPoint( 0, ( parentSize.y - boxHeight ) / 2 ) );
-	pCanvasView->SetSize( decPoint( parentSize.x, boxHeight ) );
+	pCanvasView->SetPosition(decPoint(0, (parentSize.y - boxHeight) / 2));
+	pCanvasView->SetSize(decPoint(parentSize.x, boxHeight));
 	
 	// add option canvas
 	int y = pPadding;
 	
-	for( i=0; i<count; i++ ){
-		deCanvasView * const textCanvas = pOptions.GetAt( i )->GetCanvasView();
+	for(i=0; i<count; i++){
+		deCanvasView * const textCanvas = pOptions.GetAt(i)->GetCanvasView();
 		const int height = textCanvas->GetSize().y;
 		
-		textCanvas->SetPosition( decPoint( 0, y ) );
-		textCanvas->SetOrder( ( float )( 1 + i ) );
-		pCanvasView->AddCanvas( textCanvas );
+		textCanvas->SetPosition(decPoint(0, y));
+		textCanvas->SetOrder((float)(1 + i));
+		pCanvasView->AddCanvas(textCanvas);
 		
 		y += height;
 	}
@@ -279,10 +269,6 @@ void cePlayerChoiceBox::UpdateCanvas(){
 
 void cePlayerChoiceBox::pCleanUp(){
 	pOptions.RemoveAll();
-	
-	if( pCanvasView ){
-		pCanvasView->FreeReference();
-	}
 }
 
 
@@ -292,7 +278,7 @@ void cePlayerChoiceBox::pUpdateFont(){
 	
 	try{
 		if(!pPathFont.IsEmpty()){
-			pEngFont.TakeOver(pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/"));
+			pEngFont = pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/");
 			
 		}else{
 			pEngFont = nullptr;

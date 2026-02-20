@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASnippetSetFile::ceUCASnippetSetFile( ceConversationTopic *topic, ceCASnippet *snippet, const char *newFile ){
-	if( ! topic || ! newFile ) DETHROW( deeInvalidParam );
+ceUCASnippetSetFile::ceUCASnippetSetFile(ceConversationTopic *topic, ceCASnippet *snippet, const char *newFile){
+	if(!topic || !newFile) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pSnippet = NULL;
+	pTopic = nullptr;
+	pSnippet = nullptr;
 	pOldFile = snippet->GetFile();
 	pNewFile = newFile;
 	
-	SetShortInfo( "Snippet Set File" );
+	SetShortInfo("@Conversation.Undo.SnippetSetFile");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pSnippet = snippet;
-	snippet->AddReference();
 }
 
 ceUCASnippetSetFile::~ceUCASnippetSetFile(){
-	if( pSnippet ){
-		pSnippet->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCASnippetSetFile::~ceUCASnippetSetFile(){
 ///////////////
 
 void ceUCASnippetSetFile::Undo(){
-	pSnippet->SetFile( pOldFile.GetString() );
-	pTopic->NotifyActionChanged( pSnippet );
+	pSnippet->SetFile(pOldFile.GetString());
+	pTopic->NotifyActionChanged(pSnippet);
 }
 
 void ceUCASnippetSetFile::Redo(){
-	pSnippet->SetFile( pNewFile.GetString() );
-	pTopic->NotifyActionChanged( pSnippet );
+	pSnippet->SetFile(pNewFile.GetString());
+	pTopic->NotifyActionChanged(pSnippet);
 }

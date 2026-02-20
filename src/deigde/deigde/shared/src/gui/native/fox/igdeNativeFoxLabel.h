@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXLABEL_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeLabel.h"
+#include "../../resources/igdeFont.h"
 
 class igdeLabel;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native label.
  */
-class igdeNativeFoxLabel : public FXLabel{
-	FXDECLARE( igdeNativeFoxLabel )
+class igdeNativeFoxLabel : public FXLabel, public igdeLabel::cNativeLabel{
+	FXDECLARE(igdeNativeFoxLabel)
 	
 protected:
 	igdeNativeFoxLabel();
@@ -50,20 +51,20 @@ public:
 	
 private:
 	igdeLabel *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxLabel( igdeLabel &owner, FXComposite *parent, int layoutFlags,
-		const igdeGuiTheme &guitheme );
+	igdeNativeFoxLabel(igdeLabel &owner, FXComposite *parent, int layoutFlags,
+		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxLabel();
+	~igdeNativeFoxLabel() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxLabel* CreateNativeWidget( igdeLabel &owner );
+	static igdeNativeFoxLabel* CreateNativeWidget(igdeLabel &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -76,17 +77,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
-	virtual void UpdateAlignment();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
+	void UpdateText() override;
+	void UpdateAlignment() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
 	
-	static FXIcon *LabelIcon( const igdeLabel &owner );
-	static int LabelFlags( const igdeLabel &owner );
-	static igdeFont *LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme );
+	static FXIcon *LabelIcon(const igdeLabel &owner);
+	static int LabelFlags(const igdeLabel &owner);
+	static igdeFont *LabelFont(const igdeLabel &owner, const igdeGuiTheme &guitheme);
 	/*@}*/
 };
 
-typedef igdeNativeFoxLabel igdeNativeLabel;
+using igdeNativeLabel = igdeNativeFoxLabel;
 
 #endif

@@ -36,22 +36,22 @@ deoxrUtils::~deoxrUtils(){}
 // Utils
 //////////
 
-decVector deoxrUtils::Convert( const XrVector3f &vector ){
-	return decVector( vector.x, vector.y, -vector.z );
+decVector deoxrUtils::Convert(const XrVector3f &vector){
+	return decVector(vector.x, vector.y, -vector.z);
 }
 
-decVector deoxrUtils::ConvertEuler( const XrVector3f &vector ){
-	return decVector( vector.x, vector.y, -vector.z );
+decVector deoxrUtils::ConvertEuler(const XrVector3f &vector){
+	return decVector(vector.x, vector.y, -vector.z);
 }
 
-decQuaternion deoxrUtils::Convert( const XrQuaternionf &quaternion ){
+decQuaternion deoxrUtils::Convert(const XrQuaternionf &quaternion){
 	//return decQuaternion( quaternion.x, quaternion.y, -quaternion.z, -quaternion.w );
 	// axis axis' = (axis.x, axis.y, -axis.z)
 	// handedness switch: axis'' = -axis' = (-axis.x, -axis.y, axis.z)  
-	return decQuaternion( -quaternion.x, -quaternion.y, quaternion.z, quaternion.w );
+	return decQuaternion(-quaternion.x, -quaternion.y, quaternion.z, quaternion.w);
 }
 
-void deoxrUtils::Convert( const decQuaternion &quaternion, XrQuaternionf &xrquat ){
+void deoxrUtils::Convert(const decQuaternion &quaternion, XrQuaternionf &xrquat){
 	/*
 	xrquat.x = quaternion.x;
 	xrquat.y = quaternion.y;
@@ -64,8 +64,8 @@ void deoxrUtils::Convert( const decQuaternion &quaternion, XrQuaternionf &xrquat
 	xrquat.w = quaternion.w;
 }
 
-void deoxrUtils::Convert( const decVector &rotation, XrQuaternionf &xrquat ){
-	Convert( decQuaternion::CreateFromEuler( rotation ), xrquat );
+void deoxrUtils::Convert(const decVector &rotation, XrQuaternionf &xrquat){
+	Convert(decQuaternion::CreateFromEuler(rotation), xrquat);
 }
 
 void deoxrUtils::Convert(const decVector &position, XrVector3f &xrpos){
@@ -74,8 +74,8 @@ void deoxrUtils::Convert(const decVector &position, XrVector3f &xrpos){
 	xrpos.z = -position.z;
 }
 
-decMatrix deoxrUtils::Convert( const XrPosef &pose ){
-	return decMatrix::CreateWorld( Convert( pose.position ), Convert( pose.orientation ) );
+decMatrix deoxrUtils::Convert(const XrPosef &pose){
+	return decMatrix::CreateWorld(Convert(pose.position), Convert(pose.orientation));
 }
 
 void deoxrUtils::Convert(const decMatrix &matrix, XrPosef &pose){

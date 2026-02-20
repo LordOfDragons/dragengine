@@ -39,7 +39,8 @@ igdeNativeNullTextField::igdeNativeNullTextField(){
 igdeNativeNullTextField::~igdeNativeNullTextField(){
 }
 
-igdeNativeNullTextField *igdeNativeNullTextField::CreateNativeWidget( igdeTextField& ){
+igdeNativeNullTextField *igdeNativeNullTextField::CreateNativeWidget(igdeTextField&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTextField;
 }
 
@@ -77,7 +78,7 @@ int igdeNativeNullTextField::GetCursorPosition() const{
 	return 0;
 }
 
-void igdeNativeNullTextField::SetCursorPosition( int ){
+void igdeNativeNullTextField::SetCursorPosition(int){
 }
 
 #endif

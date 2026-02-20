@@ -42,51 +42,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceActionPaste::ceUCAPChoiceActionPaste( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-ceCAPlayerChoiceOption *option, const ceConversationActionList &actions, int index ) :
-ceUCActionPaste( topic, actions, index )
+ceUCAPChoiceActionPaste::ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+ceCAPlayerChoiceOption *option, const ceConversationAction::List &actions, int index) :
+ceUCActionPaste(topic, actions, index)
 {
-	if( ! playerChoice || actions.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(!playerChoice || actions.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( option ){
-		if( index < 0 || index > option->GetActions().GetCount() ){
-			DETHROW( deeInvalidParam );
+	if(option){
+		if(index < 0 || index > option->GetActions().GetCount()){
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		if( index < 0 || index > playerChoice->GetActions().GetCount() ){
-			DETHROW( deeInvalidParam );
+		if(index < 0 || index > playerChoice->GetActions().GetCount()){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	pPlayerChoice = NULL;
-	pOption = NULL;
+	pPlayerChoice = nullptr;
+	pOption = nullptr;
 	
-	if( actions.GetCount() == 1 ){
-		SetShortInfo( "Player Choice Paste Action" );
+	if(actions.GetCount() == 1){
+		SetShortInfo("@Conversation.Undo.PlayerChoicePasteAction");
 		
 	}else{
-		SetShortInfo( "Player Choice Paste Actions" );
+		SetShortInfo("@Conversation.Undo.PlayerChoicePasteActions");
 	}
 	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
-	if( option ){
+	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 }
 
 ceUCAPChoiceActionPaste::~ceUCAPChoiceActionPaste(){
-	if( pOption ){
-		pOption->FreeReference();
-	}
-	if( pPlayerChoice ){
-		pPlayerChoice->FreeReference();
-	}
 }
 
 
@@ -95,28 +86,28 @@ ceUCAPChoiceActionPaste::~ceUCAPChoiceActionPaste(){
 ///////////////
 
 void ceUCAPChoiceActionPaste::Undo(){
-	ceConversationAction *activateAction = NULL;
+	ceConversationAction *activateAction = nullptr;
 	
-	if( pOption ){
-		activateAction = ActivateActionAfterRemove( pOption->GetActions() );
-		pRemoveActions( pOption->GetActions() );
+	if(pOption){
+		activateAction = ActivateActionAfterRemove(pOption->GetActions());
+		pRemoveActions(pOption->GetActions());
 		
 	}else{
-		activateAction = ActivateActionAfterRemove( pPlayerChoice->GetActions() );
-		pRemoveActions( pPlayerChoice->GetActions() );
+		activateAction = ActivateActionAfterRemove(pPlayerChoice->GetActions());
+		pRemoveActions(pPlayerChoice->GetActions());
 	}
-	GetTopic().NotifyActionStructureChanged( pPlayerChoice );
+	GetTopic().NotifyActionStructureChanged(pPlayerChoice);
 	
-	GetTopic().SetActive( activateAction ? activateAction : pPlayerChoice, NULL );
+	GetTopic().SetActive(activateAction ? activateAction : pPlayerChoice, nullptr);
 }
 
 void ceUCAPChoiceActionPaste::Redo(){
-	if( pOption ){
-		pInsertActions( pOption->GetActions() );
+	if(pOption){
+		pInsertActions(pOption->GetActions());
 		
 	}else{
-		pInsertActions( pPlayerChoice->GetActions() );
+		pInsertActions(pPlayerChoice->GetActions());
 	}
-	GetTopic().NotifyActionStructureChanged( pPlayerChoice );
+	GetTopic().NotifyActionStructureChanged(pPlayerChoice);
 	pSelectInserted();
 }

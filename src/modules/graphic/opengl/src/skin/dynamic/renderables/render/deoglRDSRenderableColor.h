@@ -35,6 +35,11 @@
  * Render dynamic skin color renderable.
  */
 class deoglRDSRenderableColor : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDSRenderableColor>;
+	
+	
 private:
 	deoglTexture *pTexture;
 	decColor pColor;
@@ -44,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin value renderable. */
-	deoglRDSRenderableColor( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableColor(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin value renderable. */
-	virtual ~deoglRDSRenderableColor();
+	~deoglRDSRenderableColor() override;
 	/*@}*/
 	
 	
@@ -55,22 +60,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set value. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
-	virtual decColor GetRenderColor( const decColor &defaultColor );
+	decColor GetRenderColor(const decColor &defaultColor) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

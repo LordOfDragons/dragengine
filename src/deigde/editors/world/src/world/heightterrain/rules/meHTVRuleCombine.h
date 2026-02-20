@@ -41,6 +41,10 @@
  */
 class meHTVRuleCombine : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleCombine>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Vector. */
@@ -65,10 +69,13 @@ public:
 	meHTVRuleCombine();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleCombine( const meHTVRuleCombine &rule );
+	meHTVRuleCombine(const meHTVRuleCombine &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleCombine();
+	~meHTVRuleCombine() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -76,23 +83,23 @@ public:
 	/** Retrieves the x value to use if there is no x input. */
 	inline float GetX() const{ return pX; }
 	/** Sets the x value to use if there is no x input. */
-	void SetX( float x );
+	void SetX(float x);
 	/** Retrieves the y value to use if there is no y input. */
 	inline float GetY() const{ return pY; }
 	/** Sets the y value to use if there is no y input. */
-	void SetY( float y );
+	void SetY(float y);
 	/** Retrieves the z value to use if there is no z input. */
 	inline float GetZ() const{ return pZ; }
 	/** Sets the z value to use if there is no z input. */
-	void SetZ( float z );
+	void SetZ(float z);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

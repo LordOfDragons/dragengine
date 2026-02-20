@@ -53,13 +53,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit loadable module. */
-	virtual void VisitLoadableModule( deLoadableModule &module );
+	virtual void VisitLoadableModule(deLoadableModule &module);
 	
 	/** \brief Visit internal module. */
-	virtual void VisitInternalModule( deInternalModule &module );
+	virtual void VisitInternalModule(deInternalModule &module);
 	
 	/** \brief Visit library module. */
-	virtual void VisitLibraryModule( deLibraryModule &module );
+	virtual void VisitLibraryModule(deLibraryModule &module);
 	/*@}*/
 };
 

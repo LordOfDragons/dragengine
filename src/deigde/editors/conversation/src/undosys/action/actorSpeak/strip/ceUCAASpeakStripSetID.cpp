@@ -42,40 +42,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetID::ceUCAASpeakStripSetID( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *strip, const char *newID ){
-	if( ! topic || ! actorSpeak || ! strip || ! newID ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakStripSetID::ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *strip, const char *newID){
+	if(!topic || !actorSpeak || !strip || !newID){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pStrip = nullptr;
 	pOldID = strip->GetID();
 	pNewID = newID;
 	
-	SetShortInfo( "Strip set ID" );
+	SetShortInfo("@Conversation.Undo.StripSetID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = strip;
-	strip->AddReference();
 }
 
 ceUCAASpeakStripSetID::~ceUCAASpeakStripSetID(){
-	if( pStrip ){
-		pStrip->FreeReference();
-	}
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -84,11 +70,11 @@ ceUCAASpeakStripSetID::~ceUCAASpeakStripSetID(){
 ///////////////
 
 void ceUCAASpeakStripSetID::Undo(){
-	pStrip->SetID( pOldID.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pStrip->SetID(pOldID.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakStripSetID::Redo(){
-	pStrip->SetID( pNewID.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pStrip->SetID(pNewID.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

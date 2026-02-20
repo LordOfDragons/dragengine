@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCComponentToggleAttachTarget::gdeUOCComponentToggleAttachTarget(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle attach target" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleAttachTarget");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleAttachTarget::~gdeUOCComponentToggleAttachTarget(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCComponentToggleAttachTarget::~gdeUOCComponentToggleAttachTarget(){
 ///////////////
 
 void gdeUOCComponentToggleAttachTarget::Undo(){
-	pComponent->SetAttachTarget( ! pComponent->GetAttachTarget() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAttachTarget(!pComponent->GetAttachTarget());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleAttachTarget::Redo(){

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
-class aeRuleTrackTo;
+#include "../../../animator/rule/aeRuleTrackTo.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleTrackTo;
  * Undo Action Rule Track To Set Up Target.
  */
 class aeURuleTrackToSetUpTarget : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleTrackToSetUpTarget>;
+	
+	
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	deAnimatorRuleTrackTo::eUpTarget pOldTarget;
 	deAnimatorRuleTrackTo::eUpTarget pNewTarget;
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTrackToSetUpTarget( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget );
+	aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTrackToSetUpTarget();
+	~aeURuleTrackToSetUpTarget() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

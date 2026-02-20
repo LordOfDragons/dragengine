@@ -26,18 +26,18 @@
 #define _IGDEVIEWRENDERWINDOW_H_
 
 #include "igdeWidget.h"
+#include "event/igdeMouseKeyListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/input/deInputEvent.h>
-#include <dragengine/resources/canvas/deCanvasReference.h>
-#include <dragengine/resources/rendering/deRenderWindowReference.h>
+#include <dragengine/resources/canvas/deCanvas.h>
+#include <dragengine/resources/rendering/deRenderWindow.h>
 
 class deCanvas;
 class deCamera;
 class deCanvasView;
 class deCanvasPaint;
 class deCanvasRenderWorld;
-class igdeMouseKeyListener;
 
 
 
@@ -47,26 +47,43 @@ class igdeMouseKeyListener;
 class DE_DLL_EXPORT igdeViewRenderWindow : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeViewRenderWindow> Ref;
+	using Ref = deTObjectReference<igdeViewRenderWindow>;
 	
+	class cNativeViewRenderWindow{
+	public:
+		virtual ~cNativeViewRenderWindow() = default;
+		virtual void DropNativeWindow() = 0;
+		virtual bool IsReallyVisible() const = 0;
+		virtual bool IsShown() const = 0;
+		virtual bool GetCanRender() const = 0;
+		virtual decPoint GetSize() const = 0;
+		virtual void OnFrameUpdate() = 0;
+		virtual void AttachRenderWindow() = 0;
+		virtual void DetachRenderWindow() = 0;
+		virtual void GrabInput() = 0;
+		virtual void ReleaseInput() = 0;
+	};
 	
 	
 private:
-	deRenderWindowReference pRenderWindow;
-	deCanvasReference pCanvasRenderWorld;
-	deCanvasReference pCanvasBackground;
+	deRenderWindow::Ref pRenderWindow;
+	deCanvas::Ref pCanvasRenderWorld;
+	deCanvas::Ref pCanvasBackground;
 	bool pEnableRendering;
 	bool pEngineRunning;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeMouseKeyListener> pListeners;
 	
+	
+protected:
+	cNativeViewRenderWindow *pNativeViewRenderWindow;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render window. */
-	igdeViewRenderWindow( igdeEnvironment &environment );
+	explicit igdeViewRenderWindow(igdeEnvironment &environment);
 	
 	
 	
@@ -77,7 +94,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeViewRenderWindow();
+	~igdeViewRenderWindow() override;
 	/*@}*/
 	
 	
@@ -85,14 +102,14 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Render window or NULL if absent. */
-	inline deRenderWindow *GetRenderWindow() const{ return pRenderWindow; }
+	/** \brief Render window or nullptr if absent. */
+	inline const deRenderWindow::Ref &GetRenderWindow() const{ return pRenderWindow; }
 	
 	/** \brief Rendering is enabled. */
 	inline bool GetEnableRendering() const{ return pEnableRendering; }
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	
 	/** \brief Rendering is possible. */
 	virtual bool GetCanRender() const;
@@ -114,7 +131,7 @@ public:
 	virtual void OnBeforeEngineStop();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	
 	
@@ -123,19 +140,19 @@ public:
 	 * 
 	 * Convenience call to not deal with deCanvasRenderWorld.
 	 */
-	void SetRenderWorld( deCamera *camera );
+	void SetRenderWorld(deCamera *camera);
 	
 	/**
 	 * \brief Add canvas.
 	 * \details Convenience call to not deal with deRenderWindow, deRenderTarget and deCanvasView.
 	 */
-	void AddCanvas( deCanvas *canvas );
+	void AddCanvas(deCanvas *canvas);
 	
 	/**
 	 * \brief Remove canvas.
 	 * \details Convenience call to not deal with deRenderWindow, deRenderTarget and deCanvasView.
 	 */
-	void RemoveCanvas( deCanvas *canvas );
+	void RemoveCanvas(deCanvas *canvas);
 	
 	/** \brief Render window canvas. */
 	deCanvasView *GetRenderWindowCanvas() const;
@@ -164,31 +181,31 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeMouseKeyListener *listener );
+	void AddListener(igdeMouseKeyListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeMouseKeyListener *listener );
+	void RemoveListener(igdeMouseKeyListener *listener);
 	
 	/** \brief Notify listeners user pressed down key while view is focused. */
-	virtual void NotifyKeyPress( deInputEvent::eKeyCodes keyCode, int key );
+	virtual void NotifyKeyPress(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/** \brief Notify listeners user released down key while view is focused. */
-	virtual void NotifyKeyRelease( deInputEvent::eKeyCodes keyCode, int key );
+	virtual void NotifyKeyRelease(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/** \brief Notify listener user pressed down mouse button. */
-	virtual void NotifyButtonPress( int button, const decPoint &position, int modifiers );
+	virtual void NotifyButtonPress(int button, const decPoint &position, int modifiers);
 	
 	/** \brief Notify listeners user released down mouse button. */
-	virtual void NotifyButtonRelease( int button, const decPoint &position, int modifiers );
+	virtual void NotifyButtonRelease(int button, const decPoint &position, int modifiers);
 	
 	/** \brief Notify listener user double clicked mouse button. */
-	virtual void NotifyDoubleClicked( int button, const decPoint &position, int modifiers );
+	virtual void NotifyDoubleClicked(int button, const decPoint &position, int modifiers);
 	
 	/** \brief Notify listeners user moved mouse. */
-	virtual void NotifyMouseMoved( const decPoint &position, int modifiers );
+	virtual void NotifyMouseMoved(const decPoint &position, int modifiers);
 	
 	/** \brief Notify listeners user wheeled mouse. */
-	virtual void NotifyMouseWheeled( const decPoint &position, const decPoint &change, int modifiers );
+	virtual void NotifyMouseWheeled(const decPoint &position, const decPoint &change, int modifiers);
 	
 	/** \brief Notify listeners mouse entered widget. */
 	virtual void NotifyMouseEnter();
@@ -208,19 +225,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Drop native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DropNativeWidget();
+	void DropNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	/**
 	 * \brief Create and attach render window.

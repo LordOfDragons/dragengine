@@ -34,15 +34,18 @@
  */
 class ceWPTTIMCGameCommand : public ceWPTTIMCondition{
 public:
+	using Ref = deTObjectReference<ceWPTTIMCGameCommand>;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCGameCommand( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionGameCommand *condition );
+	ceWPTTIMCGameCommand(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionGameCommand *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCGameCommand();
+	~ceWPTTIMCGameCommand() override;
 	/*@}*/
 	
 	
@@ -52,11 +55,11 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionGameCommand *GetConditionGameCommand() const{
-		return ( ceCConditionGameCommand* )GetCondition();
+		return (ceCConditionGameCommand*)GetCondition().Pointer();
 	}
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

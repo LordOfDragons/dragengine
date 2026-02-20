@@ -25,53 +25,58 @@
 #ifndef _MEUDECALSKIN_H_
 #define _MEUDECALSKIN_H_
 
+#include "../../../world/decal/meDecal.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class meDecal;
-class meDecalList;
-
 
 
 /**
  * \brief Undo Action Set Decal Skin.
  */
 class meUDecalSkin : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalSkin>;
+	
+	
 private:
-	struct sDecal{
-		meDecal *decal;
-		decString oldskin;
-		decString newskin;
+	class cDecal : public deObject{
+	public:
+		using Ref = deTObjectReference<cDecal>;
+		using List = decTObjectOrderedSet<cDecal>;
+		
+		meDecal::Ref decal;
+		decString oldskin, newskin;
+		
+		cDecal() = default;
+	protected:
+		~cDecal() override = default;
 	};
 	
 private:
-	sDecal *pDecals;
-	int pDecalCount;
+	cDecal::List pDecals;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalSkin( meDecal *decal, const char *newskin );
-	meUDecalSkin( meDecalList &decals, const char *newskin );
+	meUDecalSkin(meDecal *decal, const char *newskin);
+	meUDecalSkin(meDecal::List &decals, const char *newskin);
 	
 protected:
 	/** \brief Clean up undo object. */
-	~meUDecalSkin();
+	~meUDecalSkin() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

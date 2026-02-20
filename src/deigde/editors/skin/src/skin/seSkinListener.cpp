@@ -43,96 +43,96 @@ seSkinListener::~seSkinListener(){
 // Notifications
 //////////////////
 
-void seSkinListener::StateChanged( seSkin* ){
+void seSkinListener::StateChanged(seSkin*){
 }
 
-void seSkinListener::UndoChanged( seSkin* ){
+void seSkinListener::UndoChanged(seSkin*){
 }
 
-void seSkinListener::SkinChanged( seSkin* ){
+void seSkinListener::SkinChanged(seSkin*){
 }
 
-void seSkinListener::SkyChanged( seSkin* ){
+void seSkinListener::SkyChanged(seSkin*){
 }
 
-void seSkinListener::EnvObjectChanged( seSkin* ){
+void seSkinListener::EnvObjectChanged(seSkin*){
 }
 
-void seSkinListener::ViewChanged( seSkin* ){
+void seSkinListener::ViewChanged(seSkin*){
 }
 
-void seSkinListener::CameraChanged( seSkin* ){
-}
-
-
-
-void seSkinListener::MappedStructureChanged( seSkin* ){
-}
-
-void seSkinListener::MappedChanged( seSkin*, seMapped* ){
-}
-
-void seSkinListener::MappedNameChanged( seSkin *skin, seMapped *mapped ){
-	MappedChanged( skin, mapped );
-}
-
-void seSkinListener::ActiveMappedChanged( seSkin* ){
+void seSkinListener::CameraChanged(seSkin*){
 }
 
 
 
-void seSkinListener::TextureStructureChanged( seSkin* ){
+void seSkinListener::MappedStructureChanged(seSkin*){
 }
 
-void seSkinListener::TextureChanged( seSkin*, seTexture* ){
+void seSkinListener::MappedChanged(seSkin*, seMapped*){
 }
 
-void seSkinListener::TextureNameChanged( seSkin *skin, seTexture *texture ){
-	TextureChanged( skin, texture );
+void seSkinListener::MappedNameChanged(seSkin *skin, seMapped *mapped){
+	MappedChanged(skin, mapped);
 }
 
-void seSkinListener::ActiveTextureChanged( seSkin* ){
-}
-
-
-
-void seSkinListener::PropertyStructureChanged( seSkin*, seTexture* ){
-}
-
-void seSkinListener::PropertyChanged( seSkin*, seTexture*, seProperty* ){
-}
-
-void seSkinListener::ActivePropertyChanged( seSkin*, seTexture* ){
-}
-
-void seSkinListener::PropertyNodeStructureChanged( seSkin*, seTexture*, seProperty* ){
-}
-
-void seSkinListener::PropertyNodeChanged( seSkin*, seTexture*, seProperty*, sePropertyNode* ){
-}
-
-void seSkinListener::PropertyActiveNodeChanged( seSkin*, seTexture*, seProperty* ){
-}
-
-void seSkinListener::PropertyNodeSelectionChanged( seSkin*, seTexture*, seProperty* ){
-}
-
-void seSkinListener::PropertyActiveNodeGroupChanged( seSkin*, seTexture*, seProperty* ){
-}
-
-void seSkinListener::PropertyActiveNodeLayerChanged( seSkin*, seTexture*, seProperty* ){
+void seSkinListener::ActiveMappedChanged(seSkin*){
 }
 
 
 
-void seSkinListener::DynamicSkinRenderableStructureChanged( seSkin* ){
+void seSkinListener::TextureStructureChanged(seSkin*){
 }
 
-void seSkinListener::DynamicSkinRenderableChanged( seSkin*, seDynamicSkinRenderable* ){
+void seSkinListener::TextureChanged(seSkin*, seTexture*){
 }
 
-void seSkinListener::DynamicSkinRenderableNameChanged( seSkin*, seDynamicSkinRenderable* ){
+void seSkinListener::TextureNameChanged(seSkin *skin, seTexture *texture){
+	TextureChanged(skin, texture);
 }
 
-void seSkinListener::DynamicSkinActiveRenderableChanged( seSkin* ){
+void seSkinListener::ActiveTextureChanged(seSkin*){
+}
+
+
+
+void seSkinListener::PropertyStructureChanged(seSkin*, seTexture*){
+}
+
+void seSkinListener::PropertyChanged(seSkin*, seTexture*, seProperty*){
+}
+
+void seSkinListener::ActivePropertyChanged(seSkin*, seTexture*){
+}
+
+void seSkinListener::PropertyNodeStructureChanged(seSkin*, seTexture*, seProperty*){
+}
+
+void seSkinListener::PropertyNodeChanged(seSkin*, seTexture*, seProperty*, sePropertyNode*){
+}
+
+void seSkinListener::PropertyActiveNodeChanged(seSkin*, seTexture*, seProperty*){
+}
+
+void seSkinListener::PropertyNodeSelectionChanged(seSkin*, seTexture*, seProperty*){
+}
+
+void seSkinListener::PropertyActiveNodeGroupChanged(seSkin*, seTexture*, seProperty*){
+}
+
+void seSkinListener::PropertyActiveNodeLayerChanged(seSkin*, seTexture*, seProperty*){
+}
+
+
+
+void seSkinListener::DynamicSkinRenderableStructureChanged(seSkin*){
+}
+
+void seSkinListener::DynamicSkinRenderableChanged(seSkin*, seDynamicSkinRenderable*){
+}
+
+void seSkinListener::DynamicSkinRenderableNameChanged(seSkin*, seDynamicSkinRenderable*){
+}
+
+void seSkinListener::DynamicSkinActiveRenderableChanged(seSkin*){
 }

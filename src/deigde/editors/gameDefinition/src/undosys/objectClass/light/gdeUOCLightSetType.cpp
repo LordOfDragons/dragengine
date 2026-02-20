@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetType::gdeUOCLightSetType( gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eLightTypes newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetType::gdeUOCLightSetType(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eLightTypes newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set type" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetType");
 	
 	pOldValue = light->GetType();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetType::~gdeUOCLightSetType(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetType::~gdeUOCLightSetType(){
 ///////////////
 
 void gdeUOCLightSetType::Undo(){
-	pLight->SetType( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetType(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetType::Redo(){
-	pLight->SetType( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetType(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

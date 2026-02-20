@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class particleEmitter set bone name.
  */
 class gdeUOCParticleEmitterSetBoneName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetBoneName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetBoneName( gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter, const char *newValue );
+	gdeUOCParticleEmitterSetBoneName(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCParticleEmitterSetBoneName();
+	~gdeUOCParticleEmitterSetBoneName() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

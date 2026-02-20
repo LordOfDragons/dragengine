@@ -42,27 +42,27 @@
 ////////////////
 
 gdeMAOCWorldRemove::gdeMAOCWorldRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class World",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class world"){
+	"@GameDefinition.Menu.OCWorldRemove.ToolTip"){
 }
 
 
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCWorldRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
-		return nullptr;
+		return {};
 	}
 	
 	gdeOCWorld * const world = gameDefinition.GetActiveOCWorld();
 	if(!world){
-		return nullptr;
+		return {};
 	}
 	
-	return new gdeUOCRemoveWorld(&objectClass, world);
+	return gdeUOCRemoveWorld::Ref::New(&objectClass, world);
 }
 
 void gdeMAOCWorldRemove::Update(){

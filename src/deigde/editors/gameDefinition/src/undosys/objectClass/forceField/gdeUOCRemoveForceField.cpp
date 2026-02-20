@@ -41,34 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveForceField::gdeUOCRemoveForceField( gdeObjectClass *objectClass, gdeOCForceField *forceField ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCRemoveForceField::gdeUOCRemoveForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetForceFields().Has( forceField ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetForceFields().Has(forceField)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove force field" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveForceField");
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveForceField::~gdeUOCRemoveForceField(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ gdeUOCRemoveForceField::~gdeUOCRemoveForceField(){
 ///////////////
 
 void gdeUOCRemoveForceField::Undo(){
-	pObjectClass->GetForceFields().Add( pForceField );
+	pObjectClass->GetForceFields().Add(pForceField);
 	pObjectClass->NotifyForceFieldsChanged();
 }
 
 void gdeUOCRemoveForceField::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCForceField() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCForceField()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCForceField( NULL );
+		gameDefinition->SetActiveOCForceField(nullptr);
 	}
 	
-	pObjectClass->GetForceFields().Remove( pForceField );
+	pObjectClass->GetForceFields().Remove(pForceField);
 	pObjectClass->NotifyForceFieldsChanged();
 }

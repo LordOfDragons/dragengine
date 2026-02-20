@@ -42,7 +42,7 @@
 #include "../../../../../conversation/condition/ceCConditionGameCommand.h"
 #include "../../../../../conversation/condition/ceCConditionTrigger.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -52,14 +52,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACreateCondition::ceWPTMACreateCondition( ceWindowMain &windowMain,
+ceWPTMACreateCondition::ceWPTMACreateCondition(ceWindowMain &windowMain,
 ceConversation &conversation,
-ceConversationCondition::eConditionTypes conditionType ) :
-ceWPTMenuAction( windowMain,
-	ConditionTypeText( windowMain, conditionType ),
-	ConditionTypeIcon( windowMain, conditionType ) ),
-pConversation( &conversation ),
-pConditionType( conditionType ){
+ceConversationCondition::eConditionTypes conditionType) :
+ceWPTMenuAction(windowMain,
+	ConditionTypeText(windowMain, conditionType),
+	ConditionTypeIcon(windowMain, conditionType)),
+pConversation(&conversation),
+pConditionType(conditionType){
 }
 
 
@@ -68,88 +68,83 @@ pConditionType( conditionType ){
 ///////////////
 
 void ceWPTMACreateCondition::OnAction(){
-	ceConversationConditionReference condition;
-	condition.TakeOver( CreateCondition() );
-	
-	igdeUndoReference undo;
-	undo.TakeOver( CreateUndo( condition ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(CreateUndo(CreateCondition()));
 }
 
-igdeUndo *ceWPTMACreateCondition::CreateUndo( ceConversationCondition *condition ){
+igdeUndo::Ref ceWPTMACreateCondition::CreateUndo(ceConversationCondition *condition){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 
 
-ceConversationCondition *ceWPTMACreateCondition::CreateCondition(){
-	switch( pConditionType ){
+ceConversationCondition::Ref ceWPTMACreateCondition::CreateCondition(){
+	switch(pConditionType){
 	case ceConversationCondition::ectLogic:
-		return new ceCConditionLogic;
+		return ceCConditionLogic::Ref::New();
 		
 	case ceConversationCondition::ectHasActor:
-		return new ceCConditionHasActor;
+		return ceCConditionHasActor::Ref::New();
 		
 	case ceConversationCondition::ectActorInConversation:
-		return new ceCConditionActorInConversation;
+		return ceCConditionActorInConversation::Ref::New();
 		
 	case ceConversationCondition::ectVariable:
-		return new ceCConditionVariable;
+		return ceCConditionVariable::Ref::New();
 		
 	case ceConversationCondition::ectActorParameter:
-		return new ceCConditionActorParameter;
+		return ceCConditionActorParameter::Ref::New();
 		
 	case ceConversationCondition::ectActorCommand:
-		return new ceCConditionActorCommand;
+		return ceCConditionActorCommand::Ref::New();
 		
 	case ceConversationCondition::ectGameCommand:
-		return new ceCConditionGameCommand;
+		return ceCConditionGameCommand::Ref::New();
 		
 	case ceConversationCondition::ectTrigger:
-		return new ceCConditionTrigger;
+		return ceCConditionTrigger::Ref::New();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-const char *ceWPTMACreateCondition::ConditionTypeText( ceWindowMain &windowMain,
-ceConversationCondition::eConditionTypes conditionType ){
-	switch( conditionType ){
+decString ceWPTMACreateCondition::ConditionTypeText(ceWindowMain &windowMain,
+ceConversationCondition::eConditionTypes conditionType){
+	switch(conditionType){
 	case ceConversationCondition::ectLogic:
-		return "Logic";
+		return windowMain.Translate("Conversation.ConditionType.Logic").ToUTF8();
 		
 	case ceConversationCondition::ectHasActor:
-		return "Has Actor";
+		return windowMain.Translate("Conversation.ConditionType.HasActor").ToUTF8();
 		
 	case ceConversationCondition::ectActorInConversation:
-		return "Actor In Conversation";
+		return windowMain.Translate("Conversation.ConditionType.ActorInConversation").ToUTF8();
 		
 	case ceConversationCondition::ectVariable:
-		return "Variable";
+		return windowMain.Translate("Conversation.ConditionType.Variable").ToUTF8();
 		
 	case ceConversationCondition::ectActorParameter:
-		return "Actor Parameter";
+		return windowMain.Translate("Conversation.ConditionType.ActorParameter").ToUTF8();
 		
 	case ceConversationCondition::ectActorCommand:
-		return "Actor Command";
+		return windowMain.Translate("Conversation.ConditionType.ActorCommand").ToUTF8();
 		
 	case ceConversationCondition::ectGameCommand:
-		return "Game Command";
+		return windowMain.Translate("Conversation.ConditionType.GameCommand").ToUTF8();
 		
 	case ceConversationCondition::ectTrigger:
-		return "Trigger";
+		return windowMain.Translate("Conversation.ConditionType.Trigger").ToUTF8();
 		
 	default:
 		return "??";
 	}
 }
 
-igdeIcon *ceWPTMACreateCondition::ConditionTypeIcon( ceWindowMain &windowMain,
-ceConversationCondition::eConditionTypes conditionType ){
-	switch( conditionType ){
+igdeIcon *ceWPTMACreateCondition::ConditionTypeIcon(ceWindowMain &windowMain,
+ceConversationCondition::eConditionTypes conditionType){
+	switch(conditionType){
 	case ceConversationCondition::ectLogic:
 		return windowMain.GetIconConditionLogic();
 		
@@ -175,6 +170,6 @@ ceConversationCondition::eConditionTypes conditionType ){
 		return windowMain.GetIconConditionTrigger();
 		
 	default:
-		return NULL;
+		return nullptr;
 	}
 }

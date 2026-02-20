@@ -26,8 +26,8 @@
 #define _DERLTASKREADFONT_H_
 
 #include "deResourceLoaderTask.h"
+#include "deRLTaskReadFontInternal.h"
 
-class deRLTaskReadFontInternal;
 class deFont;
 
 
@@ -35,8 +35,13 @@ class deFont;
  * \brief Read font resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadFont : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadFont>;
+	
+	
 private:
-	deRLTaskReadFontInternal *pInternalTask;
+	deRLTaskReadFontInternal::Ref pInternalTask;
 	bool pSucceeded;
 	
 	
@@ -45,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadFont( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deFont *font );
+	deRLTaskReadFont(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deFont *font);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadFont();
+	~deRLTaskReadFont() override;
 	/*@}*/
 	
 	
@@ -57,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -68,7 +73,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

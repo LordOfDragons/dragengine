@@ -41,41 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPCFPRemove::gdeUOCTPCFPRemove( gdeObjectClass *objectClass,
-gdeProperty *property, gdeFilePattern *filePattern ) :
-pObjectClass( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUOCTPCFPRemove::gdeUOCTPCFPRemove(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern) :
+
+pProperty(nullptr)
 {
-	if( ! objectClass || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property || !filePattern){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! property->GetCustomPathPattern().Has( filePattern ) ){
-		DETHROW( deeInvalidParam );
+	if(!property->GetCustomPathPattern().Has(filePattern)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property remove custom file pattern" );
+	SetShortInfo("@GameDefinition.Undo.OCTPCFPRemove");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUOCTPCFPRemove::~gdeUOCTPCFPRemove(){
-	if( pFilePattern ){
-		pFilePattern->FreeReference();
-	}
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -84,11 +69,11 @@ gdeUOCTPCFPRemove::~gdeUOCTPCFPRemove(){
 ///////////////
 
 void gdeUOCTPCFPRemove::Undo(){
-	pProperty->GetCustomPathPattern().Add( pFilePattern );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->GetCustomPathPattern().Add(pFilePattern);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPCFPRemove::Redo(){
-	pProperty->GetCustomPathPattern().Remove( pFilePattern );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->GetCustomPathPattern().Remove(pFilePattern);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

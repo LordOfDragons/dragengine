@@ -36,7 +36,6 @@
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -52,7 +51,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-meConfigurationXML::meConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+meConfigurationXML::meConfigurationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 meConfigurationXML::~meConfigurationXML(){
@@ -63,29 +62,28 @@ meConfigurationXML::~meConfigurationXML(){
 // Management
 ///////////////
 
-void meConfigurationXML::ReadFromFile( decBaseFileReader &reader, meConfiguration &config ){
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+void meConfigurationXML::ReadFromFile(decBaseFileReader &reader, meConfiguration &config){
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "worldEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "worldEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void meConfigurationXML::WriteToFile( decBaseFileWriter &writer, const meConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void meConfigurationXML::WriteToFile(decBaseFileWriter &writer, const meConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -93,69 +91,69 @@ void meConfigurationXML::WriteToFile( decBaseFileWriter &writer, const meConfigu
 // Private Functions
 //////////////////////
 
-void meConfigurationXML::pWriteConfig( decXmlWriter &writer, const meConfiguration &config ){
-	writer.WriteOpeningTag( "worldEditor", false, true );
+void meConfigurationXML::pWriteConfig(decXmlWriter &writer, const meConfiguration &config){
+	writer.WriteOpeningTag("worldEditor", false, true);
 	
-	writer.WriteDataTagFloat( "moveStep", config.GetMoveStep() );
-	writer.WriteDataTagInt( "moveSnap", config.GetMoveSnap() ? 1 : 0 );
-	writer.WriteDataTagFloat( "rotateStep", config.GetRotateStep() );
-	writer.WriteDataTagInt( "rotateSnap", config.GetRotateSnap() ? 1 : 0 );
-	writer.WriteDataTagFloat( "scaleStep", config.GetScaleStep() );
-	writer.WriteDataTagInt( "scaleSnap", config.GetScaleSnap() ? 1 : 0 );
-	writer.WriteDataTagFloat( "sensitivity", config.GetSensitivity() );
-	writer.WriteDataTagBool( "enableGI", config.GetEnableGI() );
-	writer.WriteDataTagBool( "enableAuralization", config.GetEnableAuralization() );
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	writer.WriteDataTagFloat("moveStep", config.GetMoveStep());
+	writer.WriteDataTagInt("moveSnap", config.GetMoveSnap() ? 1 : 0);
+	writer.WriteDataTagFloat("rotateStep", config.GetRotateStep());
+	writer.WriteDataTagInt("rotateSnap", config.GetRotateSnap() ? 1 : 0);
+	writer.WriteDataTagFloat("scaleStep", config.GetScaleStep());
+	writer.WriteDataTagInt("scaleSnap", config.GetScaleSnap() ? 1 : 0);
+	writer.WriteDataTagFloat("sensitivity", config.GetSensitivity());
+	writer.WriteDataTagBool("enableGI", config.GetEnableGI());
+	writer.WriteDataTagBool("enableAuralization", config.GetEnableAuralization());
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	writer.WriteClosingTag( "worldEditor", true );
+	writer.WriteClosingTag("worldEditor", true);
 }
 
 
 
-void meConfigurationXML::pReadConfig( const decXmlElementTag &root, meConfiguration &config ){
+void meConfigurationXML::pReadConfig(const decXmlElementTag &root, meConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
 	config.GetWindowMain().GetRecentFiles().RemoveAllFiles();
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "moveStep" ){
-			config.SetMoveStep( GetCDataFloat( *tag ) );
+		if(tag->GetName() == "moveStep"){
+			config.SetMoveStep(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "moveSnap" ){
-			config.SetMoveSnap( GetCDataInt( *tag ) != 0 );
+		}else if(tag->GetName() == "moveSnap"){
+			config.SetMoveSnap(GetCDataInt(*tag) != 0);
 			
-		}else if( tag->GetName() == "rotateStep" ){
-			config.SetRotateStep( GetCDataFloat( *tag ) );
+		}else if(tag->GetName() == "rotateStep"){
+			config.SetRotateStep(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "rotateSnap" ){
-			config.SetRotateSnap( GetCDataInt( *tag ) != 0 );
+		}else if(tag->GetName() == "rotateSnap"){
+			config.SetRotateSnap(GetCDataInt(*tag) != 0);
 			
-		}else if( tag->GetName() == "scaleStep" ){
-			config.SetScaleStep( GetCDataFloat( *tag ) );
+		}else if(tag->GetName() == "scaleStep"){
+			config.SetScaleStep(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "scaleSnap" ){
-			config.SetScaleSnap( GetCDataInt( *tag ) != 0 );
+		}else if(tag->GetName() == "scaleSnap"){
+			config.SetScaleSnap(GetCDataInt(*tag) != 0);
 			
-		}else if( tag->GetName() == "sensitivity" ){
-			config.SetSensitivity( GetCDataFloat( *tag ) );
+		}else if(tag->GetName() == "sensitivity"){
+			config.SetSensitivity(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "enableGI" ){
-			config.SetEnableGI( GetCDataBool( *tag ) );
+		}else if(tag->GetName() == "enableGI"){
+			config.SetEnableGI(GetCDataBool(*tag));
 			
-		}else if( tag->GetName() == "enableAuralization" ){
-			config.SetEnableAuralization( GetCDataBool( *tag ) );
+		}else if(tag->GetName() == "enableAuralization"){
+			config.SetEnableAuralization(GetCDataBool(*tag));
 			
-		}else if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		}else if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

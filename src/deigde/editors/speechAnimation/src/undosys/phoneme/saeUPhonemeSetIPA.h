@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 
@@ -35,8 +35,12 @@ class saePhoneme;
  * Undo Action Phoneme Set IPA.
  */
 class saeUPhonemeSetIPA : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUPhonemeSetIPA>;
+	
+	
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	int pOldIPA;
 	int pNewIPA;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetIPA( saePhoneme *phoneme, int newIPA );
+	saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUPhonemeSetIPA();
+	~saeUPhonemeSetIPA() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

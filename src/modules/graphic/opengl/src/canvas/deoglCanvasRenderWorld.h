@@ -26,8 +26,8 @@
 #define _DEOGLCANVASRENDERWORLD_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasRenderWorld.h"
 
-class deoglRCanvasRenderWorld;
 class deoglCamera;
 
 class deCanvasRenderWorld;
@@ -39,7 +39,7 @@ class deCanvasRenderWorld;
 class deoglCanvasRenderWorld : public deoglCanvas{
 private:
 	deCanvasRenderWorld &pCanvasRenderWorld;
-	deoglRCanvasRenderWorld *pRCanvasRenderWorld;
+	deoglRCanvasRenderWorld::Ref pRCanvasRenderWorld;
 	deoglCamera *pCamera;
 	
 	
@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasRenderWorld( deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas );
+	deoglCanvasRenderWorld(deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasRenderWorld();
+	~deoglCanvasRenderWorld() override;
 	/*@}*/
 	
 	
@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	
 	/** Camera requires sync. */
 	void CameraRequiresSync();
@@ -79,14 +79,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 };
 
 #endif

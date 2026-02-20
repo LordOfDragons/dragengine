@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse( peeType *type, float newImpulse ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImpulse){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Set Type Emit Min Impulse" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetEmitMinImpulse");
 	
 	pOldImpulse = type->GetEmitMinImpulse();
 	pNewImpulse = newImpulse;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetEmitMinImpulse::~peeUTypeSetEmitMinImpulse(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ peeUTypeSetEmitMinImpulse::~peeUTypeSetEmitMinImpulse(){
 ///////////////
 
 void peeUTypeSetEmitMinImpulse::Undo(){
-	pType->SetEmitMinImpulse( pOldImpulse );
+	pType->SetEmitMinImpulse(pOldImpulse);
 }
 
 void peeUTypeSetEmitMinImpulse::Redo(){
-	pType->SetEmitMinImpulse( pNewImpulse );
+	pType->SetEmitMinImpulse(pNewImpulse);
 }

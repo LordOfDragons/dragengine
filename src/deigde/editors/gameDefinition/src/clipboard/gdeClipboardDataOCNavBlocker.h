@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCNavigationBlocker;
+#include "../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCNavigationBlocker;
  */
 class gdeClipboardDataOCNavBlocker : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCNavBlocker>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCNavBlocker( gdeOCNavigationBlocker *navBlocker );
+	gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker *navBlocker);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCNavBlocker();
+	~gdeClipboardDataOCNavBlocker() override;
 	/*@}*/
 	
 	

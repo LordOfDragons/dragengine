@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRule;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRule.h"
 
 
 
@@ -43,9 +43,13 @@ class meHTVRule;
  * Undo action for moving a height terrain vegetation rule.
  */
 class meUHTVRuleMove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleMove>;
+	
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRule *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRule::Ref pRule;
 	
 	decVector2 pOldPosition;
 	decVector2 pNewPosition;
@@ -54,9 +58,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMove( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleMove();
+
+protected:
+	~meUHTVRuleMove() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -64,12 +72,12 @@ public:
 	/** Retrieves the new position. */
 	inline const decVector2 &GetNewPosition() const{ return pNewPosition; }
 	/** Sets the new position triggering. */
-	void SetNewPosition( const decVector2 &position );
+	void SetNewPosition(const decVector2 &position);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

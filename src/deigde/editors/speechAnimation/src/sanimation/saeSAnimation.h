@@ -25,22 +25,22 @@
 #ifndef _SAESANIMATION_H_
 #define _SAESANIMATION_H_
 
-#include "phoneme/saePhonemeList.h"
-#include "dictionary/saeWordList.h"
+#include "saeSAnimationListener.h"
+#include "phoneme/saePhoneme.h"
+#include "dictionary/saeWord.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/resources/animator/deAnimatorReference.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeWSky;
 class igdeCamera;
-class saeSAnimationListener;
 
 
 
@@ -50,8 +50,7 @@ class saeSAnimationListener;
 class saeSAnimation : public igdeEditableEntity{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<saeSAnimation> Ref;
-	
+	using Ref = deTObjectReference<saeSAnimation>;
 	
 	
 public:
@@ -64,11 +63,11 @@ public:
 	};
 	
 private:
-	deWorldReference pEngWorld;
+	deWorld::Ref pEngWorld;
 	igdeWSky *pSky;
-	deComponentReference pEngComponent;
-	deAnimatorReference pEngAnimator;
-	deAnimatorInstanceReference pEngAnimatorInstance;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	igdeCamera *pCamera;
 	
@@ -82,38 +81,40 @@ private:
 	decString pNeutralMoveName;
 	decStringSet pNeutralVertexPositionSets;
 	
-	saePhonemeList pPhonemeList;
-	saePhoneme *pActivePhoneme;
+	saePhoneme::List pPhonemes;
+	saePhoneme::Ref pActivePhoneme;
 	
-	saeWordList pWordList;
-	saeWord *pActiveWord;
+	saeWord::List pWords;
+	saeWord::Ref pActiveWord;
 	
 	eDisplayModes pDisplayMode;
 	int pDispWordPos;
 	float pDispWordElapsed;
 	bool pDirtyAnimator;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<saeSAnimationListener> pListeners;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new speech animation. */
-	saeSAnimation( igdeEnvironment *environment );
+	saeSAnimation(igdeEnvironment *environment);
 	/** Cleans up the speech animation. */
-	virtual ~saeSAnimation();
+protected:
+	~saeSAnimation() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** Retrieves the animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Component. */
-	inline const deComponentReference &GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	
 	/** Retrieves the sky. */
 	inline igdeWSky *GetSky() const{ return pSky; }
@@ -123,41 +124,41 @@ public:
 	/** Retrieves the display model path. */
 	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }
 	/** Sets the display model path. */
-	void SetDisplayModelPath( const char *path );
+	void SetDisplayModelPath(const char *path);
 	/** Retrieves the display skin path. */
 	inline const decString &GetDisplaySkinPath() const{ return pDisplaySkinPath; }
 	/** Sets the display skin path. */
-	void SetDisplaySkinPath( const char *path );
+	void SetDisplaySkinPath(const char *path);
 	/** Retrieves the display rig path. */
 	inline const decString &GetDisplayRigPath() const{ return pDisplayRigPath; }
 	/** Sets the display rig path. */
-	void SetDisplayRigPath( const char *path );
+	void SetDisplayRigPath(const char *path);
 	
 	/** Retrieves the rig path. */
 	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
-	void SetRigPath( const char *path );
+	void SetRigPath(const char *path);
 	/** Retrieves the rig path. */
 	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the rig path. */
-	void SetAnimationPath( const char *path );
+	void SetAnimationPath(const char *path);
 	
 	/** Neutral move name. */
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
 	
 	/** Set neutral move name. */
-	void SetNeutralMoveName( const char *name );
+	void SetNeutralMoveName(const char *name);
 	
 	/** Neutral vertex position sets. */
 	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
 	
 	/** Set neutral vertex position sets. */
-	void SetNeutralVertexPositionSets( const decStringSet &sets );
+	void SetNeutralVertexPositionSets(const decStringSet &sets);
 	
 	/** Retrieves the display mode. */
 	inline eDisplayModes GetDisplayMode() const{ return pDisplayMode; }
 	/** Sets the display mode. */
-	void SetDisplayMode( eDisplayModes displayMode );
+	void SetDisplayMode(eDisplayModes displayMode);
 	
 	/** Rebuild animator if required. */
 	void RebuildAnimator();
@@ -165,7 +166,7 @@ public:
 	/** Dispose of all resources. */
 	void Dispose();
 	/** Updates the sky. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Resets the sky. */
 	void Reset();
 	/*@}*/
@@ -173,49 +174,49 @@ public:
 	/** \name Phonemes */
 	/*@{*/
 	/** Retrieves the phoneme list read-only. */
-	inline const saePhonemeList &GetPhonemeList() const{ return pPhonemeList; }
+	inline const saePhoneme::List &GetPhonemes() const{ return pPhonemes; }
 	/** Adds a new phoneme. */
-	void AddPhoneme( saePhoneme *phoneme );
+	void AddPhoneme(saePhoneme *phoneme);
 	/** Removes a phoneme. */
-	void RemovePhoneme( saePhoneme *phoneme );
+	void RemovePhoneme(saePhoneme *phoneme);
 	/** Removes all phonemes. */
 	void RemoveAllPhonemes();
-	/** Retrieves the active texture or NULL if none is active. */
-	inline saePhoneme *GetActivePhoneme() const{ return pActivePhoneme; }
+	/** Retrieves the active texture or nullptr if none is active. */
+	inline const saePhoneme::Ref &GetActivePhoneme() const{ return pActivePhoneme; }
 	/** Determines if there is an active phoneme or not. */
 	bool HasActivePhoneme() const;
-	/** Sets the active phoneme or NULL if none is active. */
-	void SetActivePhoneme( saePhoneme *phoneme );
+	/** Sets the active phoneme or nullptr if none is active. */
+	void SetActivePhoneme(saePhoneme *phoneme);
 	/*@}*/
 	
 	/** \name Words */
 	/*@{*/
 	/** Retrieves the word list read-only. */
-	inline const saeWordList &GetWordList() const{ return pWordList; }
+	inline const saeWord::List &GetWords() const{ return pWords; }
 	/** Adds a new word. */
-	void AddWord( saeWord *word );
+	void AddWord(saeWord *word);
 	/** Removes a word. */
-	void RemoveWord( saeWord *word );
+	void RemoveWord(saeWord *word);
 	/** Removes all words. */
 	void RemoveAllWords();
-	/** Retrieves the active texture or NULL if none is active. */
-	inline saeWord *GetActiveWord() const{ return pActiveWord; }
+	/** Retrieves the active texture or nullptr if none is active. */
+	inline const saeWord::Ref &GetActiveWord() const{ return pActiveWord; }
 	/** Determines if there is an active word or not. */
 	bool HasActiveWord() const;
-	/** Sets the active word or NULL if none is active. */
-	void SetActiveWord( saeWord *word );
+	/** Sets the active word or nullptr if none is active. */
+	void SetActiveWord(saeWord *word);
 	/*@}*/
 	
 	/** \name Notifiers */
 	/*@{*/
-	void AddListener( saeSAnimationListener *listener );
+	void AddListener(saeSAnimationListener *listener);
 	/** Removes a listener. */
-	void RemoveListener( saeSAnimationListener *listener );
+	void RemoveListener(saeSAnimationListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	/** Notifies all that view properties changed. */
 	void NotifyViewChanged();
 	/** Notifies all that the speech animation changed. */
@@ -230,16 +231,16 @@ public:
 	/** Notifies all that the phoneme count or order changed. */
 	void NotifyPhonemeStructureChanged();
 	/** Notifies all that a phoneme changed. */
-	void NotifyPhonemeChanged( saePhoneme *phoneme );
+	void NotifyPhonemeChanged(saePhoneme *phoneme);
 	/** Notifies all that the active phoneme changed. */
 	void NotifyActivePhonemeChanged();
 	
 	/** Notifies all that the word count or order changed. */
 	void NotifyWordStructureChanged();
 	/** Notifies all that a word changed. */
-	void NotifyWordNameChanged( saeWord *word );
+	void NotifyWordNameChanged(saeWord *word);
 	/** Notifies all that a word changed. */
-	void NotifyWordChanged( saeWord *word );
+	void NotifyWordChanged(saeWord *word);
 	/** Notifies all that the active word changed. */
 	void NotifyActiveWordChanged();
 	/*@}*/

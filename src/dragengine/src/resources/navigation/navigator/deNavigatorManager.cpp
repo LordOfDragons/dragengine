@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigatorManager::deNavigatorManager( deEngine *engine ) : deResourceManager( engine, ertNavigator ){
-	SetLoggingName( "navigator" );
+deNavigatorManager::deNavigatorManager(deEngine *engine) : deResourceManager(engine, ertNavigator){
+	SetLoggingName("navigator");
 }
 
 deNavigatorManager::~deNavigatorManager(){
@@ -62,29 +62,13 @@ int deNavigatorManager::GetNavigatorCount() const{
 }
 
 deNavigator *deNavigatorManager::GetRootNavigator() const{
-	return ( deNavigator* )pNavigators.GetRoot();
+	return (deNavigator*)pNavigators.GetRoot();
 }
 
-deNavigator *deNavigatorManager::CreateNavigator(){
-	deNavigator *navigator = NULL;
-	
-	try{
-		navigator = new deNavigator( this );
-		if( ! navigator ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		GetAISystem()->LoadNavigator( navigator );
-		
-		pNavigators.Add( navigator );
-		
-	}catch( const deException & ){
-		if( navigator ){
-			navigator->FreeReference();
-		}
-		throw;
-	}
-	
+deNavigator::Ref deNavigatorManager::CreateNavigator(){
+	const deNavigator::Ref navigator(deNavigator::Ref::New(this));
+	GetAISystem()->LoadNavigator(navigator);
+	pNavigators.Add(navigator);
 	return navigator;
 }
 
@@ -93,8 +77,8 @@ deNavigator *deNavigatorManager::CreateNavigator(){
 void deNavigatorManager::ReleaseLeakingResources(){
 	const int count = GetNavigatorCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking navigators", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking navigators", count);
 		pNavigators.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -105,27 +89,21 @@ void deNavigatorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigatorManager::SystemAILoad(){
-	deNavigator *navigator = ( deNavigator* )pNavigators.GetRoot();
 	deAISystem &aisys = *GetAISystem();
-	
-	while( navigator ){
-		if( ! navigator->GetPeerAI() ){
-			aisys.LoadNavigator( navigator );
+	pNavigators.GetResources().Visit([&](deResource *res){
+		deNavigator *navigator = static_cast<deNavigator*>(res);
+		if(!navigator->GetPeerAI()){
+			aisys.LoadNavigator(navigator);
 		}
-		
-		navigator = ( deNavigator* )navigator->GetLLManagerNext();
-	}
+	});
 }
 
 void deNavigatorManager::SystemAIUnload(){
-	deNavigator *navigator = ( deNavigator* )pNavigators.GetRoot();
-	
-	while( navigator ){
-		navigator->SetPeerAI( NULL );
-		navigator = ( deNavigator* )navigator->GetLLManagerNext();
-	}
+	pNavigators.GetResources().Visit([&](deResource *res){
+		static_cast<deNavigator*>(res)->SetPeerAI(nullptr);
+	});
 }
 
-void deNavigatorManager::RemoveResource( deResource *resource ){
-	pNavigators.RemoveIfPresent( resource );
+void deNavigatorManager::RemoveResource(deResource *resource){
+	pNavigators.RemoveIfPresent(resource);
 }

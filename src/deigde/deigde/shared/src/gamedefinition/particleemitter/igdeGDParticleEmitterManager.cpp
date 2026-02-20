@@ -42,9 +42,9 @@
 ////////////////////////////
 
 igdeGDParticleEmitterManager::igdeGDParticleEmitterManager() :
-pDefaultPath( "default" )
+pDefaultPath("default")
 {
-	pCategories.TakeOver( new igdeGDCategory( "Particle Emitters" ) );
+	pCategories = igdeGDCategory::Ref::New("Particle Emitters");
 }
 
 igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
@@ -55,52 +55,36 @@ igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
 // Management
 ///////////////
 
-void igdeGDParticleEmitterManager::AddEmitter( igdeGDParticleEmitter *emitter ){
-	if( ! emitter ){
-		DETHROW( deeInvalidParam );
-	}
-	pEmitterList.Add( emitter );
+void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter *emitter){
+	DEASSERT_NOTNULL(emitter)
+	pEmitters.AddOrThrow(emitter);
 }
 
-void igdeGDParticleEmitterManager::RemoveEmitter( igdeGDParticleEmitter *emitter ){
-	pEmitterList.Remove( emitter );
+void igdeGDParticleEmitterManager::RemoveEmitter(igdeGDParticleEmitter *emitter){
+	pEmitters.RemoveOrThrow(emitter);
 }
 
 void igdeGDParticleEmitterManager::RemoveAllEmitters(){
-	pEmitterList.RemoveAll();
+	pEmitters.RemoveAll();
 }
 
-void igdeGDParticleEmitterManager::SetDefaultPath( const char *path ){
+void igdeGDParticleEmitterManager::SetDefaultPath(const char *path){
 	pDefaultPath = path;
 }
 
 
 
-void igdeGDParticleEmitterManager::UpdateWith( const igdeGDParticleEmitterManager &particleEmitterManager ){
-	const int count = particleEmitterManager.GetEmitterList().GetCount();
-	igdeGDParticleEmitter *emitter = NULL;
-	igdeGDParticleEmitter *emitterCheck;
-	int i;
-	
-	try{
-		for( i=0; i<count; i++ ){
-			emitter = new igdeGDParticleEmitter( *particleEmitterManager.GetEmitterList().GetAt( i ) );
-			emitterCheck = pEmitterList.GetWithPath( emitter->GetPath().GetString() );
-			if( emitterCheck ){
-				RemoveEmitter( emitterCheck );
-			}
-			AddEmitter( emitter );
-			emitter = NULL;
+void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager &particleEmitterManager){
+	particleEmitterManager.GetEmitters().Visit([&](const igdeGDParticleEmitter &emitter){
+		const igdeGDParticleEmitter::Ref emitterCopy(igdeGDParticleEmitter::Ref::New(emitter));
+		igdeGDParticleEmitter * const check = pEmitters.FindWithPath(emitterCopy->GetPath());
+		if(check){
+			RemoveEmitter(check);
 		}
-		
-	}catch( const deException & ){
-		if( emitter ){
-			emitter->FreeReference();
-		}
-		throw;
-	}
+		AddEmitter(emitterCopy);
+	});
 	
-	pCategories->UpdateWith( particleEmitterManager.pCategories );
+	pCategories->UpdateWith(particleEmitterManager.pCategories);
 	
 	pDefaultPath = particleEmitterManager.pDefaultPath;
 }

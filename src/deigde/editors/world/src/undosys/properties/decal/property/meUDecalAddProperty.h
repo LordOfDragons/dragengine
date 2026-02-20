@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../../world/decal/meDecal.h"
 
 
 
@@ -37,8 +37,12 @@ class meDecal;
  * \brief Undo action decal add property.
  */
 class meUDecalAddProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalAddProperty>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decString pKey;
 	decString pValue;
@@ -49,11 +53,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDecalAddProperty( meDecal *decal, const char *key, const char *value );
+	meUDecalAddProperty(meDecal *decal, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUDecalAddProperty();
+
+protected:
+	~meUDecalAddProperty() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();

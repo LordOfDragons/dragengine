@@ -25,6 +25,7 @@
 #ifndef _DEMODELTEXTURE_H_
 #define _DEMODELTEXTURE_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/string/decString.h"
 
 
@@ -46,6 +47,13 @@
  * 
  */
 class DE_DLL_EXPORT deModelTexture{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelTexture>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deModelTexture>;
+	
 private:
 	decString pName;
 	int pWidth;
@@ -60,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model texture. */
-	deModelTexture( const char *name, int width, int height );
+	deModelTexture(const char *name, int width, int height);
 	
 	/** \brief Clean up model texture. */
 	~deModelTexture();
@@ -83,19 +91,19 @@ public:
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
 	/** \brief Set if faces of this texture are double sided. */
-	void SetDoubleSided( bool doubleSided );
+	void SetDoubleSided(bool doubleSided);
 	
 	/** \brief Faces of this texture are rendered as decals. */
 	inline bool GetDecal() const{ return pDecal; }
 	
 	/** \brief Set if faces of this texture are rendered as decals. */
-	void SetDecal( bool decal );
+	void SetDecal(bool decal);
 	
 	/** \brief Decal offset. */
 	inline int GetDecalOffset() const{ return pDecalOffset; }
 	
 	/** \brief Set decal offset. */
-	void SetDecalOffset( int offset );
+	void SetDecalOffset(int offset);
 	/*@}*/
 };
 

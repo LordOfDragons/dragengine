@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetDescription::projUProfileSetDescription( projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetDescription::projUProfileSetDescription(projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set description" );
+	SetShortInfo("@Project.Undo.ProfileSetDescription");
 	
 	pOldValue = profile->GetDescription();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetDescription::~projUProfileSetDescription(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ projUProfileSetDescription::~projUProfileSetDescription(){
 ///////////////
 
 void projUProfileSetDescription::Undo(){
-	pProfile->SetDescription( pOldValue );
+	pProfile->SetDescription(pOldValue);
 }
 
 void projUProfileSetDescription::Redo(){
-	pProfile->SetDescription( pNewValue );
+	pProfile->SetDescription(pNewValue);
 }

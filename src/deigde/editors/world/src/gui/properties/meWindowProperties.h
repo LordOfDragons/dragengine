@@ -25,19 +25,19 @@
 #ifndef _MEWINDOWPROPERTIES_H_
 #define _MEWINDOWPROPERTIES_H_
 
+#include "selection/meWPSelection.h"
+#include "meWPView.h"
+#include "meWPWorld.h"
+#include "meWPSensors.h"
+#include "meWPHeightTerrain.h"
+#include "meWPBrowser.h"
+#include "meWPAdd.h"
+#include "meWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
 
 class meWorld;
 class meWindowMain;
-class meWPSelection;
-class meWPView;
-class meWPSensors;
-class meWPWorld;
-class meWPHeightTerrain;
-class meWPHeightTerrain;
-class meWPBrowser;
-class meWPAdd;
 
 
 
@@ -45,17 +45,20 @@ class meWPAdd;
  * \brief Shows Properties.
  */
 class meWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<meWindowProperties>;
+	
 private:
 	meWindowMain &pWindowMain;
 	
-	meWPSelection *pPropSelection;
-	meWPView *pPropView;
-	meWPWorld *pPropWorld;
-	meWPSensors *pPropSensors;
-	meWPHeightTerrain *pPropHT;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
-	meWPBrowser *pPropBrowser;
-	meWPAdd *pPropAdd;
+	meWPSelection::Ref pPropSelection;
+	meWPView::Ref pPropView;
+	meWPWorld::Ref pPropWorld;
+	meWPSensors::Ref pPropSensors;
+	meWPHeightTerrain::Ref pPropHT;
+	meWPUndoHistory::Ref pPanelUndoHistory;
+	meWPBrowser::Ref pPropBrowser;
+	meWPAdd::Ref pPropAdd;
 	
 	
 	
@@ -63,11 +66,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	meWindowProperties( meWindowMain &windowMain );
+	meWindowProperties(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~meWindowProperties();
+	~meWindowProperties() override;
 	
 	
 	
@@ -78,7 +81,7 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief World path changed. */
 	void OnWorldPathChanged();

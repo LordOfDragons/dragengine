@@ -30,9 +30,9 @@
 
 #include "dexsiXInclude.h"
 #include "dexsiDeviceManager.h"
+#include "parameters/dexsiParameter.h"
 
 class deOSUnix;
-
 
 
 /**
@@ -41,11 +41,19 @@ class deOSUnix;
 #define XINP_DEVID_PREFIX "XSys_"
 
 
-
 /**
  * X-System input module.
  */
 class deXSystemInput : public deBaseInputModule{
+public:
+	enum class LogLevel{
+		error,
+		warning,
+		info,
+		debug
+	};
+	
+	
 private:
 	struct sKey{
 		int button;
@@ -70,18 +78,24 @@ private:
 	
 	dexsiDeviceManager::Ref pDevices;
 	
-	bool *pKeyStates;
+	decTList<bool> pKeyStates;
 	
+	LogLevel pLogLevel;
+	bool pEnableRawMouseInput, pRawMouseInputActive;
+	double pAccumRawMouseInputX, pAccumRawMouseInputY;
+	double pRawMouseInputSensitivity;
+	
+	dexsiParameter::List pParameters;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deXSystemInput( deLoadableModule &loadableModule );
+	deXSystemInput(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
-	virtual ~deXSystemInput();
+	~deXSystemInput() override;
 	/*@}*/
 	
 	
@@ -94,6 +108,17 @@ public:
 	/** Device manager. */
 	inline const dexsiDeviceManager::Ref &GetDevices() const{ return pDevices; }
 	
+	/** Log level. */
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
+	void SetLogLevel(LogLevel level){pLogLevel = level;}
+	
+	/** Raw mouse input. */
+	inline bool GetEnableRawMouseInput() const{ return pEnableRawMouseInput; }
+	void SetEnableRawMouseInput(bool enable);
+	
+	/** Raw mouse input sensitivity. */
+	inline double GetRawMouseInputSensitivity() const{ return pRawMouseInputSensitivity; }
+	void SetRawMouseInputSensitivity(double sensitivity);
 	
 	
 	/**
@@ -101,10 +126,10 @@ public:
 	 * \returns \em true on success.
 	 * \note To access the os object of the engine use the GetOS function.
 	 */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -112,34 +137,34 @@ public:
 	/** \name Devices */
 	/*@{*/
 	/** Number of input devices. */
-	virtual int GetDeviceCount();
+	int GetDeviceCount() override;
 	
 	/** Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	float GetAxisValue(int device, int axis) override;
 	
 	/** Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/**
 	 * Index of button best matching key code or -1 if not found.
@@ -152,7 +177,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode );
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode) override;
 	
 	/**
 	 * Index of button best matching character or -1 if not found.
@@ -171,7 +196,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character );
+	int ButtonMatchingKeyChar(int device, int character) override;
 	
 	/**
 	 * Index of button best matching key code or -1 if not found.
@@ -179,8 +204,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
-		deInputEvent::eKeyLocation location );
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode,
+		deInputEvent::eKeyLocation location) override;
 	
 	/**
 	 * Index of button best matching character or -1 if not found.
@@ -188,8 +213,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character,
-		deInputEvent::eKeyLocation location );
+	int ButtonMatchingKeyChar(int device, int character,
+		deInputEvent::eKeyLocation location) override;
 	/*@}*/
 	
 	
@@ -205,37 +230,61 @@ public:
 	 * queues to deliver system notification (like quitting the game) to the game
 	 * engine.
 	 */
-	virtual void ProcessEvents();
+	void ProcessEvents() override;
 	
 	/** Clear event queues in case any are used. */
-	virtual void ClearEvents();
+	void ClearEvents() override;
 	
 	/** Capture input devices changed. */
-	virtual void CaptureInputDevicesChanged();
+	void CaptureInputDevicesChanged() override;
 	
 	/** Application activated or deactivated. */
-	virtual void AppActivationChanged();
+	void AppActivationChanged() override;
 	
 	/** An event processed by the application event loop. */
-	virtual void EventLoop( XEvent &event );
+	void EventLoop(XEvent &event) override;
 	
 	
 	
 	/** Add axis changed event. */
-	void AddAxisChanged( int device, int axis, float value, const timeval &eventTime );
+	void AddAxisChanged(int device, int axis, float value, const timeval &eventTime);
 	
 	/** Add button pressed. */
-	void AddButtonPressed( int device, int button, const timeval &eventTime );
+	void AddButtonPressed(int device, int button, const timeval &eventTime);
 	
 	/** Add button released. */
-	void AddButtonReleased( int device, int button, const timeval &eventTime );
+	void AddButtonReleased(int device, int button, const timeval &eventTime);
 	
 	/** Add mouse wheel changed event. */
-	void AddMouseWheelChanged( int device, int axis, int x, int y, int state,
-		const timeval &eventTime );
+	void AddMouseWheelChanged(int device, int axis, int x, int y, int state,
+		const timeval &eventTime);
 	
 	/** Add device attached/detached event. */
-	void AddDeviceAttachedDetached( const timeval &eventTime );
+	void AddDeviceAttachedDetached(const timeval &eventTime);
+	/*@}*/
+	
+	
+	
+	/** \name Parameters */
+	/*@{*/
+	/** Number of parameters. */
+	int GetParameterCount() const override;
+	
+	/**
+	 * Get information about parameter.
+	 * \param[in] index Index of the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
+	 */
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
+	
+	/** Index of named parameter or -1 if not found. */
+	int IndexOfParameterNamed(const char *name) const override;
+	
+	/** Value of named parameter. */
+	decString GetParameterValue(const char *name) const override;
+	
+	/** Set value of named parameter. */
+	void SetParameterValue(const char *name, const char *value) override;
 	/*@}*/
 	
 	
@@ -243,21 +292,23 @@ public:
 private:
 	void pCenterPointer();
 	
-	void pAddKeyPress( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime );
+	void pAddKeyPress(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime);
 	
-	void pAddKeyRelease( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime );
+	void pAddKeyRelease(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime);
 	
-	void pAddMousePress( int device, int button, int state, const timeval &eventTime );
-	void pAddMouseRelease( int device, int button, int state, const timeval &eventTime );
-	void pAddMouseMove( int device, int state, int x, int y, const timeval &eventTime );
-	void pQueryMousePosition( bool sendEvents );
-	int pModifiersFromXState( int xstate ) const;
-	bool pLookUpKey( XKeyEvent &event, sKey &key );
+	void pAddMousePress(int device, int button, int state, const timeval &eventTime);
+	void pAddMouseRelease(int device, int button, int state, const timeval &eventTime);
+	void pAddMouseMove(int device, int state, int x, int y, const timeval &eventTime);
+	void pQueryMousePosition(bool sendEvents);
+	int pModifiersFromXState(int xstate) const;
+	bool pLookUpKey(XKeyEvent &event, sKey &key);
 	//int pModifiersFromKeyState() const;
 	void pUpdateAutoRepeat();
-	void pSetAutoRepeatEnabled( bool enabled );
+	void pSetAutoRepeatEnabled(bool enabled);
+	void pUpdateRawMouseInput();
+	void pCreateParameters();
 };
 
 #endif

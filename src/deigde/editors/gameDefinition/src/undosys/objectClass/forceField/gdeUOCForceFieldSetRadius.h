@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class force field set radius.
  */
 class gdeUOCForceFieldSetRadius : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCForceFieldSetRadius>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetRadius( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, float newValue );
+	gdeUOCForceFieldSetRadius(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCForceFieldSetRadius();
+	~gdeUOCForceFieldSetRadius() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

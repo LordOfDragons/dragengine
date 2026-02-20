@@ -15,6 +15,9 @@ pathBin = envTests.subst( envTests[ 'path_de_bin' ] )
 if envTests[ 'OSWindows' ]:
 	envTests.Append( CXXFLAGS = '-DDEBUG_RELOCATE_STDOUT' )
 
+envTests.Append(CPPFLAGS = envTests['SANITIZE_FLAGS'])
+envTests.Append(LINKFLAGS = envTests['SANITIZE_FLAGS'])
+
 # determine the source files
 sources = []
 globFiles( envTests, 'src', '*.cpp', sources )

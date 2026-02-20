@@ -38,6 +38,10 @@
  */
 class DE_DLL_EXPORT igdeContainerFlow : public igdeContainer{
 public:
+	/** \brief Strong reference. */
+	using Ref = deTObjectReference<igdeContainerFlow>;
+	
+	
 	/** \brief Layout axis for subclasses. */
 	enum eAxis{
 		/** \brief Layout along the X axis. */
@@ -84,8 +88,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerFlow( igdeEnvironment &environment, eAxis axis,
-		eStretching stretching = esNone, int spacing = 0 );
+	igdeContainerFlow(igdeEnvironment &environment, eAxis axis,
+		eStretching stretching = esNone, int spacing = 0);
 	
 	
 	
@@ -96,7 +100,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainerFlow();
+	~igdeContainerFlow() override;
 	/*@}*/
 	
 	
@@ -116,7 +120,7 @@ public:
 	
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	void RemoveChild(igdeWidget *child) override;
 	/*@}*/
 	
 	
@@ -130,19 +134,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	/**
 	 * \brief Get native container widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void *GetNativeContainer() const;
+	void *GetNativeContainer() const override;
 };
 
 #endif

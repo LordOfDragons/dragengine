@@ -35,8 +35,12 @@
  * Undo action view set limit box extends.
  */
 class meUViewSetLimitBoxExtends : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUViewSetLimitBoxExtends>;
+	
+	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	decVector pOldMin, pNewMin, pOldMax, pNewMax;
 	
 	

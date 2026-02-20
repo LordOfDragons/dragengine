@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerRemove::peeUControllerRemove( peeController *controller ){
-	if( ! controller ) DETHROW( deeInvalidParam );
+peeUControllerRemove::peeUControllerRemove(peeController *controller){
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	peeEmitter *emitter = controller->GetEmitter();
-	if( ! emitter ) DETHROW( deeInvalidParam );
+	if(!emitter) DETHROW(deeInvalidParam);
 	
-	pEmitter = NULL;
-	pController = NULL;
+	pEmitter = nullptr;
+	pController = nullptr;
 	
-	SetShortInfo( "Remove Controller" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.Remove");
 	
-	pIndex = emitter->GetControllers().IndexOf( controller );
-	if( pIndex == -1 ) DETHROW( deeInvalidParam );
+	pIndex = emitter->GetControllers().IndexOf(controller);
+	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerRemove::~peeUControllerRemove(){
-	if( pController ){
-		pController->FreeReference();
-	}
-	if( pEmitter ){
-		pEmitter->FreeReference();
-	}
 }
 
 
@@ -76,9 +67,9 @@ peeUControllerRemove::~peeUControllerRemove(){
 ///////////////
 
 void peeUControllerRemove::Undo(){
-	pEmitter->InsertControllerAt( pController, pIndex );
+	pEmitter->InsertControllerAt(pController, pIndex);
 }
 
 void peeUControllerRemove::Redo(){
-	pEmitter->RemoveController( pController );
+	pEmitter->RemoveController(pController);
 }

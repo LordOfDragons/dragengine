@@ -41,7 +41,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../logger/deLogger.h"
@@ -63,48 +62,42 @@
 //////////////////////////////////////////////////
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyImage *propertyImage, deResourceLoaderTask *task ) :
-pPropertyImage( propertyImage ),
-pNodeImage( NULL ),
-pNodeText( NULL ),
-pTask( task )
+deSkinPropertyImage *propertyImage, deResourceLoaderTask *task) :
+pPropertyImage(propertyImage),
+pNodeImage(nullptr),
+pNodeText(nullptr),
+pTask(task)
 {
-	if( ! task || ! propertyImage ){
-		DETHROW( deeInvalidParam );
+	if(!task || !propertyImage){
+		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task ) :
-pPropertyImage( NULL ),
-pNodeImage( nodeImage ),
-pNodeText( NULL ),
-pTask( task )
+deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task) :
+pPropertyImage(nullptr),
+pNodeImage(nodeImage),
+pNodeText(nullptr),
+pTask(task)
 {
-	if( ! task || ! nodeImage ){
-		DETHROW( deeInvalidParam );
+	if(!task || !nodeImage){
+		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task ) :
-pPropertyImage( NULL ),
-pNodeImage( NULL ),
-pNodeText( nodeText ),
-pTask( task )
+deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task) :
+pPropertyImage(nullptr),
+pNodeImage(nullptr),
+pNodeText(nodeText),
+pTask(task)
 {
-	if( ! task || ! nodeText ){
-		DETHROW( deeInvalidParam );
+	if(!task || !nodeText){
+		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::~cInternalTask(){
-	if( pTask ){
-		pTask->FreeReference();
-	}
 }
 
 
@@ -115,13 +108,13 @@ deRLTaskReadSkinInternal::cInternalTask::~cInternalTask(){
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadSkinInternal::deRLTaskReadSkinInternal( deEngine &engine,
-deResourceLoader &resourceLoader, deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertSkin )
+deRLTaskReadSkinInternal::deRLTaskReadSkinInternal(deEngine &engine,
+deResourceLoader &resourceLoader, deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertSkin)
 {
 	LogCreateEnter();
 	
-	SetEmptyRun( true );
+	SetEmptyRun(true);
 	
 	// skins have to be loaded always synchronously. this is because the texture property map is accessed
 	// for each loaded texture property. doing this asynchronously has very ill effects up to crashing.
@@ -130,7 +123,7 @@ deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertSk
 	try{
 		pPrepare();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		// WARNING this here is vital for exceptions thrown inside the constructor.
 		// 
 		// the problem is subtle but the result desastrous. if an exception is thrown in the
@@ -157,8 +150,8 @@ deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertSk
 		//pCleanUp();
 		//throw;
 		
-		SetState( esFailed );
-		Cancel();
+		SetState(esFailed);
+		Cancel(engine.GetParallelProcessing());
 	}
 	LogCreateExit();
 }
@@ -177,15 +170,15 @@ void deRLTaskReadSkinInternal::Run(){
 
 void deRLTaskReadSkinInternal::Finished(){
 	LogFinishedEnter();
-	if( IsCancelled() || ! pApplyInternal() ){
-		SetState( esFailed );
-		pSkin = NULL;
+	if(IsCancelled() || !pApplyInternal()){
+		SetState(esFailed);
+		pSkin = nullptr;
 		LogFinishedExit();
 		return;
 	}
 	
-	SetResource( pSkin );
-	SetState( esSucceeded );
+	SetResource(pSkin);
+	SetState(esSucceeded);
 	LogFinishedExit();
 }
 
@@ -194,34 +187,34 @@ void deRLTaskReadSkinInternal::Finished(){
 // Internal use only
 //////////////////////
 
-void deRLTaskReadSkinInternal::AddInternalTask( cInternalTask *task ){
-	if( ! task ){
-		DETHROW( deeInvalidParam );
+void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
+	if(!task){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( GetResourceLoader().GetOutputDebugMessages() ){
-		const decString debugName( GetDebugName() );
-		const decString debugNameInternal( task->GetTask()->GetDebugName() );
-		GetEngine().GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] AddInternalTask(%s, %s)",
+	if(GetResourceLoader().GetOutputDebugMessages()){
+		const decString debugName(GetDebugName());
+		const decString debugNameInternal(task->GetTask()->GetDebugName());
+		GetEngine().GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] AddInternalTask(%s, %s)",
 			debugName.GetString(), GetPath().GetString(), debugNameInternal.GetString(),
-			task->GetTask()->GetPath().GetString() );
+			task->GetTask()->GetPath().GetString());
 	}
 	
-	pInternalTasks.Add( task );
+	pInternalTasks.Add(task);
 	
-	switch( task->GetTask()->GetState() ){
+	switch(task->GetTask()->GetState()){
 	case esPending:
-		if( ! DoesDependOn( task->GetTask() ) ){
-			AddDependsOn( task->GetTask() );
-		}
+		GetEngine().GetParallelProcessing().RunWithTaskDependencyMutex([&](){
+			AddDependsOn(task->GetTask());
+		});
 		break;
 		
 	case esSucceeded:
 		break;
 		
 	case esFailed:
-		SetState( esFailed );
-		Cancel();
+		SetState(esFailed);
+		Cancel(GetEngine().GetParallelProcessing());
 		break;
 	}
 }
@@ -242,32 +235,29 @@ decString deRLTaskReadSkinInternal::GetDebugName() const{
 
 void deRLTaskReadSkinInternal::pCleanUp(){
 	pInternalTasks.RemoveAll();
-	pSkin = NULL;
+	pSkin = nullptr;
 }
 
 void deRLTaskReadSkinInternal::pPrepare(){
-	deBaseSkinModule * const module = ( deBaseSkinModule* )GetEngine().GetModuleSystem()->
-		GetModuleAbleToLoad( deModuleSystem::emtSkin, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseSkinModule * const module = (deBaseSkinModule*)GetEngine().GetModuleSystem()->
+		GetModuleAbleToLoad(deModuleSystem::emtSkin, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath path( decPath::CreatePathUnix( GetPath() ) );
+	const decPath path(decPath::CreatePathUnix(GetPath()));
 	
 	try{
-		decBaseFileReaderReference reader;
-		reader.TakeOver( GetVFS()->OpenFileForReading( path ) );
+		pSkin = deSkin::Ref::New(GetEngine().GetSkinManager(), GetVFS(), GetPath(),
+			GetVFS()->GetFileModificationTime(path));
+		pSkin->SetAsynchron(true);
 		
-		pSkin.TakeOver( new deSkin( GetEngine().GetSkinManager(), GetVFS(), GetPath(),
-			GetVFS()->GetFileModificationTime( path ) ) );
-		pSkin->SetAsynchron( true );
+		module->LoadSkin(GetVFS()->OpenFileForReading(path), pSkin);
 		
-		module->LoadSkin( reader, pSkin );
-		
-	}catch( const deException & ){
-		SetState( esFailed );
-		pSkin = NULL;
-		Cancel();
+	}catch(const deException &){
+		SetState(esFailed);
+		pSkin = nullptr;
+		Cancel(GetEngine().GetParallelProcessing());
 		return;
 	}
 	
@@ -275,88 +265,72 @@ void deRLTaskReadSkinInternal::pPrepare(){
 }
 
 void deRLTaskReadSkinInternal::pLoadInternal(){
-	const int textureCount = pSkin->GetTextureCount();
-	int i, j;
-	
 	decPath basePath;
-	basePath.SetFromUnix( GetPath() );
+	basePath.SetFromUnix(GetPath());
 	basePath.RemoveLastComponent();
-	basePath.SetPrefix( "/" );
+	basePath.SetPrefix("/");
 	
-	const decString strBasePath( basePath.GetPathUnix() );
-	deRLTaskReadSkinProperty visitor( GetResourceLoader(), *this, GetEngine(), GetVFS(), strBasePath );
+	const decString strBasePath(basePath.GetPathUnix());
+	deRLTaskReadSkinProperty visitor(GetResourceLoader(), *this, GetEngine(), GetVFS(), strBasePath);
 	
-	for( i=0; i<textureCount; i++ ){
-		const deSkinTexture &texture = *pSkin->GetTextureAt( i );
-		const int propertyCount = texture.GetPropertyCount();
-		
-		for( j=0; j<propertyCount; j++ ){
-			texture.GetPropertyAt( j )->Visit( visitor );
-		}
-	}
+	pSkin->GetTextures().Visit([&](deSkinTexture &texture){
+		texture.GetProperties().Visit([&](deSkinProperty &property){
+			property.Visit(visitor);
+		});
+	});
 }
 
 bool deRLTaskReadSkinInternal::pApplyInternal(){
 	const int count = pInternalTasks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const cInternalTask &internalTask = *( ( cInternalTask* )pInternalTasks.GetAt( i ) );
-		const deResourceLoaderTask &task = *internalTask.GetTask();
+	for(i=0; i<count; i++){
+		const cInternalTask &internalTask = pInternalTasks.GetAt(i);
+		const deResourceLoaderTask &task = internalTask.GetTask();
 		
-		if( task.GetState() != esSucceeded ){
+		if(task.GetState() != esSucceeded){
 			return false;
 		}
 		
-		if( internalTask.GetPropertyImage() ){
+		if(internalTask.GetPropertyImage()){
 			deSkinPropertyImage &property = *internalTask.GetPropertyImage();
 			
-			if( task.GetResource() ){
-				property.SetImage( ( deImage* )task.GetResource() );
+			if(task.GetResource()){
+				property.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
-					property.SetImage( fallbackImage );
-					fallbackImage->FreeReference();
-					
-				}catch( const deException & ){
-					if( fallbackImage ){
-						fallbackImage->FreeReference();
-					}
+					property.SetImage(fallbackImage);
+				}catch(const deException &){
 					return false;
 				}
 			}
 			
-		}else if( internalTask.GetNodeImage() ){
+		}else if(internalTask.GetNodeImage()){
 			deSkinPropertyNodeImage &node = *internalTask.GetNodeImage();
 			
-			if( task.GetResource() ){
-				node.SetImage( ( deImage* )task.GetResource() );
+			if(task.GetResource()){
+				node.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
-					node.SetImage( fallbackImage );
-					fallbackImage->FreeReference();
-					
-				}catch( const deException & ){
-					if( fallbackImage ){
-						fallbackImage->FreeReference();
-					}
+					node.SetImage(fallbackImage);
+				}catch(const deException &){
 					return false;
 				}
 			}
 			
-		}else if( internalTask.GetNodeText() ){
+		}else if(internalTask.GetNodeText()){
 			deSkinPropertyNodeText &node = *internalTask.GetNodeText();
 			
-			if( task.GetResource() ){
-				node.SetFont( ( deFont* )task.GetResource() );
+			if(task.GetResource()){
+				node.SetFont((deFont*)task.GetResource().Pointer());
 				
 			}else{
 				return false;

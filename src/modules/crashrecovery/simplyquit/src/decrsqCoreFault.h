@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create core fault. */
-	decrsqCoreFault( deCRSimplyQuit &module );
+	decrsqCoreFault(deCRSimplyQuit &module);
 	
 	/** \brief Clean up core fault. */
 	~decrsqCoreFault();
@@ -85,13 +85,13 @@ public:
 	inline deCRSimplyQuit &GetModule() const{ return pModule; }
 	
 	/** \brief Handle segmentation fault. */
-	void HandleSegFault( int error, void *memoryLocation, void *ptrContext );
+	void HandleSegFault(int error, void *memoryLocation, void *ptrContext);
 	
 	/** \brief Handle bus error fault. */
-	void HandleBusError( int error, void *memoryLocation, void *ptrContext );
+	void HandleBusError(int error, void *memoryLocation, void *ptrContext);
 	
 	/** \brief Handle unhandled exception. */
-	void HandleAbort( void *ptrContext );
+	void HandleAbort(void *ptrContext);
 	/*@}*/
 	
 	

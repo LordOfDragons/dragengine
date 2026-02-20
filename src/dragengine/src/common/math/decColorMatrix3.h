@@ -48,7 +48,7 @@ public:
 	decColorMatrix3();
 	
 	/** \brief Create copy of a color matrix. */
-	decColorMatrix3( const decColorMatrix3 &m );
+	decColorMatrix3(const decColorMatrix3 &m);
 	/*@}*/
 	
 	
@@ -59,16 +59,16 @@ public:
 	static decColorMatrix3 CreateIdentity();
 	
 	/** \brief Create new color translation matrix. */
-	static decColorMatrix3 CreateTranslation( float red, float green, float blue );
+	static decColorMatrix3 CreateTranslation(float red, float green, float blue);
 	
 	/** \brief Create new color translation matrix. */
-	static decColorMatrix3 CreateTranslation( const decColor &color );
+	static decColorMatrix3 CreateTranslation(const decColor &color);
 	
 	/** \brief Create new color scaling matrix. */
-	static decColorMatrix3 CreateScaling( float sred, float sgreen, float sblue );
+	static decColorMatrix3 CreateScaling(float sred, float sgreen, float sblue);
 	
 	/** \brief Create new color scaling matrix. */
-	static decColorMatrix3 CreateScaling( const decColor &color );
+	static decColorMatrix3 CreateScaling(const decColor &color);
 	
 	/**
 	 * \brief Create color matrix with the given colors as transformation base.
@@ -76,8 +76,8 @@ public:
 	 * the second, the blue of the third, the alpha of the fourth and the
 	 * translation the fifth.
 	 */
-	static decColorMatrix3 CreateFrom( const decColor &red, const decColor &green,
-		const decColor &blue, const decColor &translation );
+	static decColorMatrix3 CreateFrom(const decColor &red, const decColor &green,
+		const decColor &blue, const decColor &translation);
 	/*@}*/
 	
 	
@@ -88,16 +88,16 @@ public:
 	void SetIdentity();
 	
 	/** \brief Sets color translation matrix. */
-	void SetTranslation( float red, float green, float blue );
+	void SetTranslation(float red, float green, float blue);
 	
 	/** \brief Sets color translation matrix. */
-	void SetTranslation( const decColor &color );
+	void SetTranslation(const decColor &color);
 	
 	/** \brief Sets color scaling matrix. */
-	void SetScaling( float sred, float sgreen, float sblue );
+	void SetScaling(float sred, float sgreen, float sblue);
 	
 	/** \brief Sets color scaling matrix. */
-	void SetScaling( const decColor &color );
+	void SetScaling(const decColor &color);
 	
 	/**
 	 * \brief Set color matrix with the given colors as transformation base.
@@ -106,8 +106,8 @@ public:
 	 * the second, the blue of the third, the alpha of the fourth and the
 	 * translation the fifth.
 	 */
-	void SetFrom( const decColor &red, const decColor &green, const decColor &blue,
-		const decColor &translation );
+	void SetFrom(const decColor &red, const decColor &green, const decColor &blue,
+		const decColor &translation);
 	
 	/**
 	 * \brief Calculates the determinant of the color matrix.
@@ -140,22 +140,22 @@ public:
 	decColor GetTranslationBase() const;
 	
 	/** \brief Set red color base. */
-	void SetRedBase( const decColor &color );
+	void SetRedBase(const decColor &color);
 	
 	/** \brief Set green color base. */
-	void SetGreenBase( const decColor &color );
+	void SetGreenBase(const decColor &color);
 	
 	/** \brief Set blue color base. */
-	void SetBlueBase( const decColor &color );
+	void SetBlueBase(const decColor &color);
 	
 	/** \brief Set translation color base. */
-	void SetTranslationBase( const decColor &color );
+	void SetTranslationBase(const decColor &color);
 	
 	/** \brief Transforms color by this matrix. */
-	decColor Transform( const decColor &color ) const;
+	decColor Transform(const decColor &color) const;
 	
 	/** \brief Matrix is cell wise equal to another one in respect to a threshold. */
-	bool IsEqualTo( const decColorMatrix3 &matrix, float threshold = VECTOR_THRESHOLD ) const;
+	bool IsEqualTo(const decColorMatrix3 &matrix, float threshold = VECTOR_THRESHOLD) const;
 	/*@}*/
 	
 	
@@ -163,23 +163,23 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set cells of this matrix to the values of another one. */
-	decColorMatrix3 &operator=( const decColorMatrix3 &matrix );
+	decColorMatrix3 &operator=(const decColorMatrix3 &matrix);
 	
 	/** \brief Adds the cells of another matrix to this one. */
-	decColorMatrix3 &operator+=( const decColorMatrix3 &matrix );
+	decColorMatrix3 &operator+=(const decColorMatrix3 &matrix);
 	
 	/** \brief Subtracts the cells of another matrix from this vector. */
-	decColorMatrix3 &operator-=( const decColorMatrix3 &matrix );
+	decColorMatrix3 &operator-=(const decColorMatrix3 &matrix);
 	
 	/** \brief Multiplies the cells of this matrix with a value k. */
-	decColorMatrix3 &operator*=( float scalar );
+	decColorMatrix3 &operator*=(float scalar);
 	
 	/**
 	 * \brief Divide cells of this matrix by a value k.
 	 * 
 	 * If the value k is 0 an exception is thrown.
 	 */
-	decColorMatrix3 &operator/=( float scalar );
+	decColorMatrix3 &operator/=(float scalar);
 	
 	/**
 	 * \brief Multiply matrix with another one.
@@ -187,23 +187,23 @@ public:
 	 * Mathematically this would yield a 5x5 matrix but as a color matrix has no use for
 	 * the last line only the  5x4 part is returned.
 	 */
-	decColorMatrix3 &operator*=( const decColorMatrix3 &matrix );
+	decColorMatrix3 &operator*=(const decColorMatrix3 &matrix);
 	
 	/** \brief Retrieves a new matrix with the sum of this matrix with another one. */
-	decColorMatrix3 operator+( const decColorMatrix3 &matrix ) const;
+	decColorMatrix3 operator+(const decColorMatrix3 &matrix) const;
 	
 	/** \brief Retrieves a new matrix with the difference of this matrix to another one. */
-	decColorMatrix3 operator-( const decColorMatrix3 &matrix ) const;
+	decColorMatrix3 operator-(const decColorMatrix3 &matrix) const;
 	
 	/** \brief Retrieves a new matrix with this matrix scaled by k. */
-	decColorMatrix3 operator*( float scalar ) const;
+	decColorMatrix3 operator*(float scalar) const;
 	
 	/**
 	 * \brief Matrix with this matrix divided by k.
 	 * 
 	 * If k is 0 an exception is thrown.
 	 */
-	decColorMatrix3 operator/( float scalar ) const;
+	decColorMatrix3 operator/(float scalar) const;
 	
 	/**
 	 * \brief Matrix with this matrix multiplied with another one.
@@ -211,9 +211,9 @@ public:
 	 * Mathematically this would yield a 5x5 matrix but as a color matrix has no
 	 * use for the last line only the 5x4 part is returned.
 	 */
-	decColorMatrix3 operator*( const decColorMatrix3 &matrix ) const;
+	decColorMatrix3 operator*(const decColorMatrix3 &matrix) const;
 	
 	/** \brief Transforms color by this matrix. */
-	decColor operator*( const decColor &color ) const;
+	decColor operator*(const decColor &color) const;
 	/*@}*/
 };

@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,21 +50,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseMove::ceWPTMAIfElseCaseMove( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseMove::ceWPTMAIfElseCaseMove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-ceCAIfElseCase *ifCase, int index, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( ifCase ),
-pIndex( index )
+ceCAIfElseCase *ifCase, int index, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(ifCase),
+pIndex(index)
 {
-	if( ! ifCase ){
-		DETHROW( deeInvalidParam );
+	if(!ifCase){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled( index >= 0 && index < ifElse.GetCases().GetCount() );
+	SetEnabled(index >= 0 && index < ifElse.GetCases().GetCount());
 }
 
 
@@ -73,7 +73,6 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAIfElseCaseMove::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAIfElseCaseMove( pTopic, pIfElse, pIfCase, pIndex ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseCaseMove::Ref::New(
+		pTopic, pIfElse, pIfCase, pIndex));
 }

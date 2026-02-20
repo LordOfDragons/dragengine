@@ -38,23 +38,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime( seProperty *property ){
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *property){
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
-	SetShortInfo( "Property toggle video shared time" );
+	SetShortInfo("@Skin.Undo.PropertyToggleVideoSharedTime");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyToggleVideoSharedTime::~seUPropertyToggleVideoSharedTime(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -63,7 +59,7 @@ seUPropertyToggleVideoSharedTime::~seUPropertyToggleVideoSharedTime(){
 ///////////////
 
 void seUPropertyToggleVideoSharedTime::Undo(){
-	pProperty->SetVideoSharedTime( ! pProperty->GetVideoSharedTime() );
+	pProperty->SetVideoSharedTime(!pProperty->GetVideoSharedTime());
 }
 
 void seUPropertyToggleVideoSharedTime::Redo(){

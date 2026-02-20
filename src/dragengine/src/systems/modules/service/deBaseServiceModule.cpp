@@ -28,8 +28,8 @@
 // Class deBaseServiceModule
 //////////////////////////////
 
-deBaseServiceModule::deBaseServiceModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseServiceModule::deBaseServiceModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseServiceModule::~deBaseServiceModule(){
@@ -40,5 +40,5 @@ deBaseServiceModule::~deBaseServiceModule(){
 // Management
 ///////////////
 
-void deBaseServiceModule::AddVFSContainers( deVirtualFileSystem&, const char* ){
+void deBaseServiceModule::AddVFSContainers(deVirtualFileSystem&, const char*){
 }

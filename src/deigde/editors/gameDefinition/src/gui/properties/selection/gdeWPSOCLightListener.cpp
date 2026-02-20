@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCLightListener::gdeWPSOCLightListener( gdeWPSOCLight &panel ) :
-pPanel( panel ){
+gdeWPSOCLightListener::gdeWPSOCLightListener(gdeWPSOCLight &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCLightListener::~gdeWPSOCLightListener(){
@@ -53,45 +53,45 @@ gdeWPSOCLightListener::~gdeWPSOCLightListener(){
 // Management
 ///////////////
 
-void gdeWPSOCLightListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCLightListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCLightListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCLightListener::OCPropertiesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCLightListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCLightListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCLightListener::OCLightsChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCLightListener::OCLightsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateLight();
 }
 
-void gdeWPSOCLightListener::OCLightChanged( gdeGameDefinition*, gdeObjectClass *objectClass,
-gdeOCLight *light ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCLightListener::OCLightChanged(gdeGameDefinition*, gdeObjectClass *objectClass,
+gdeOCLight *light){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetLight() != light ){
+	if(pPanel.GetLight() != light){
 		return;
 	}
 	pPanel.UpdateLight();
 }
 
-void gdeWPSOCLightListener::ActiveOCLightChanged( gdeGameDefinition* ){
+void gdeWPSOCLightListener::ActiveOCLightChanged(gdeGameDefinition*){
 	pPanel.UpdateLight();
 }

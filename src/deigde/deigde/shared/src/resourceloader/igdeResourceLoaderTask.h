@@ -25,12 +25,13 @@
 #ifndef _IGDERESOURCELOADERTASK_H_
 #define _IGDERESOURCELOADERTASK_H_
 
+#include "igdeResourceLoaderListener.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 
-class igdeResourceLoaderListener;
 class deFileResource;
 class deLogger;
 
@@ -46,19 +47,23 @@ class DE_DLL_EXPORT igdeResourceLoaderTask : public deObject{
 private:
 	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeResourceLoaderListener> pListeners;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeResourceLoaderTask>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	igdeResourceLoaderTask( const char *filename, deResourceLoader::eResourceType resourceType );
+	igdeResourceLoaderTask(const char *filename, deResourceLoader::eResourceType resourceType);
 	
 protected:
 	/** \brief Clean up file fialog. */
-	virtual ~igdeResourceLoaderTask();
+	~igdeResourceLoaderTask() override;
 	/*@}*/
 	
 	
@@ -78,24 +83,24 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** \brief Add listener. */
-	void AddListener( igdeResourceLoaderListener *listener );
+	void AddListener(igdeResourceLoaderListener *listener);
 	
 	/** \brief Remove listener if present. */
-	void RemoveListener( igdeResourceLoaderListener *listener );
+	void RemoveListener(igdeResourceLoaderListener *listener);
 	
 	/**
 	 * \brief Notify all that the loading finished successfully.
 	 * 
 	 * Processed listeners are removed after the call returns.
 	 */
-	void NotifyLoadingFinished( deLogger &logger, deFileResource *resource );
+	void NotifyLoadingFinished(deLogger &logger, deFileResource *resource);
 	
 	/**
 	 * \brief Notify all that the loading failed.
 	 * 
 	 * Processed listeners are removed after the call returns.
 	 */
-	void NotifyLoadingFailed( deLogger &logger );
+	void NotifyLoadingFailed(deLogger &logger);
 	/*@}*/
 };
 

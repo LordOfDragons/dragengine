@@ -42,8 +42,7 @@ class deGraphicOpenGl;
  */
 class deoglShaderCompilingInfo : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderCompilingInfo> Ref;
-	
+	using Ref = deTObjectReference<deoglShaderCompilingInfo>;
 	
 	
 private:
@@ -98,11 +97,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader compiling info. */
-	deoglShaderCompilingInfo( deGraphicOpenGl &ogl );
+	deoglShaderCompilingInfo(deGraphicOpenGl &ogl);
 	
 protected:
 	/** Clean up shader compiling info. */
-	virtual ~deoglShaderCompilingInfo();
+	~deoglShaderCompilingInfo() override;
 	/*@}*/
 	
 	
@@ -126,10 +125,10 @@ public:
 	inline bool GetHasCompilingShader() const{ return pHasCompilingShader; }
 	
 	/** Update. Called from main thread. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Prepare for render. Called from render thread. */
-	void PrepareForRender( float elapsed );
+	void PrepareForRender(float elapsed);
 	/*@}*/
 	
 	
@@ -138,9 +137,9 @@ private:
 	void pCreateCanvas();
 	void pUpdateChecks();
 	bool pShouldBeVisible() const;
-	void pUpdateState( float elapsed );
+	void pUpdateState(float elapsed);
 	void pUpdateTransparency();
-	void pUpdateCanvas( float elapsed );
+	void pUpdateCanvas(float elapsed);
 	void pUpdateText();
 };
 

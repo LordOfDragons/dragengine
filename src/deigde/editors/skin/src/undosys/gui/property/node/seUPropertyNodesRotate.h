@@ -25,12 +25,12 @@
 #ifndef _SEUPROPERTYNODESROTATE_H_
 #define _SEUPROPERTYNODESROTATE_H_
 
+#include "../../../../skin/property/node/sePropertyNode.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
-
-class sePropertyNode;
-class sePropertyNodeList;
 
 
 
@@ -38,15 +38,26 @@ class sePropertyNodeList;
  * \brief Undo action property rotate nodes.
  */
 class seUPropertyNodesRotate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodesRotate>;
+	
+	
 private:
-	struct sNode{
-		sePropertyNode *node;
+	class cNode : public deObject{
+	public:
+		using Ref = deTObjectReference<cNode>;
+		using List = decTObjectOrderedSet<cNode>;
+		
+		sePropertyNode::Ref node;
 		decPoint3 position;
-		float rotation;
+		float rotation = 0.0f;
+		
+		cNode() = default;
+	protected:
+		~cNode() override = default;
 	};
 	
-	sNode *pNodes;
-	int pCount;
+	cNode::List pNodes;
 	
 	decVector2 pPivot;
 	decVector2 pOrigin;
@@ -60,12 +71,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesRotate( const sePropertyNodeList &nodes,
-		const decVector2 &pivot, const decVector2 &origin );
+	seUPropertyNodesRotate(const sePropertyNode::List &nodes, const decVector2 &pivot, const decVector2 &origin);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodesRotate();
+	~seUPropertyNodesRotate() override;
 	/*@}*/
 	
 	
@@ -74,19 +84,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set target. */
-	void SetTarget( const decVector2 &target );
+	void SetTarget(const decVector2 &target);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

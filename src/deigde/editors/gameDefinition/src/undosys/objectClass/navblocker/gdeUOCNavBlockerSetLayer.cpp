@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetLayer::gdeUOCNavBlockerSetLayer( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, int newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetLayer::gdeUOCNavBlockerSetLayer(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, int newValue) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker set layer" );
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetLayer");
 	
 	pOldValue = navblocker->GetLayer();
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetLayer::~gdeUOCNavBlockerSetLayer(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCNavBlockerSetLayer::~gdeUOCNavBlockerSetLayer(){
 ///////////////
 
 void gdeUOCNavBlockerSetLayer::Undo(){
-	pNavBlocker->SetLayer( pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetLayer(pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetLayer::Redo(){
-	pNavBlocker->SetLayer( pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetLayer(pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

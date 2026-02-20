@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPFrameRateLimit::deoglPFrameRateLimit( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "frameRateLimit" );
-	SetDescription( "Set frame rate limit of render thread. Effects only asynchronous rendering. "
+deoglPFrameRateLimit::deoglPFrameRateLimit(deGraphicOpenGl &ogl) : deoglParameterInt(ogl){
+	SetName("frameRateLimit");
+	SetDescription("Set frame rate limit of render thread. Effects only asynchronous rendering. "
 		"The game frame rate is not affected.\n"
 		"\n"
 		"By default the parameter is set to 0 indicating to use the refresh rate of the display as "
@@ -52,10 +52,10 @@ deoglPFrameRateLimit::deoglPFrameRateLimit( deGraphicOpenGl &ogl ) : deoglParame
 		"Smaller values (like 30) reduce GPU load allowing the graphic module to do optimizations "
 		"in the spare time. Higher values rarely improve visual perception. Values beyond the "
 		"display refresh rate are pointless since they are not displayed anymore swandering only "
-		"valuable GPU time and heating it up for no gain." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Frame Rate Limit" );
-	SetDefaultValue( "0" );
+		"valuable GPU time and heating it up for no gain.");
+	SetCategory(ecExpert);
+	SetDisplayName("Frame Rate Limit");
+	SetDefaultValue("0");
 }
 
 deoglPFrameRateLimit::~deoglPFrameRateLimit(){
@@ -70,6 +70,6 @@ int deoglPFrameRateLimit::GetParameterInt(){
 	return pOgl.GetConfiguration().GetFrameRateLimit();
 }
 
-void deoglPFrameRateLimit::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetFrameRateLimit( value );
+void deoglPFrameRateLimit::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetFrameRateLimit(value);
 }

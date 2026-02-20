@@ -43,22 +43,22 @@ private:
 	deGraphicOpenGl &pOgl;
 public:
 	// constructor, destructor
-	deoglCommandExecuter( deGraphicOpenGl &ogl );
+	deoglCommandExecuter(deGraphicOpenGl &ogl);
 	~deoglCommandExecuter();
 	// management
-	void ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 private:
-	void pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pExtensions( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pRenderWindow( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pVisual( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pFBOInfos( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pFixNaN( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pExtensions(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pRenderWindow(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pVisual(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pFBOInfos(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pFixNaN(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pAnswerBoolValue( decUnicodeString &answer, const char *name, bool value );
-	void pAnswerIntValue( decUnicodeString &answer, const char *name, int value );
-	void pAnswerStringValue( decUnicodeString &answer, const char *name, const char *value );
-	void pAnswerPointerValue( decUnicodeString &answer, const char *name, void *value );
+	void pAnswerBoolValue(decUnicodeString &answer, const char *name, bool value);
+	void pAnswerIntValue(decUnicodeString &answer, const char *name, int value);
+	void pAnswerStringValue(decUnicodeString &answer, const char *name, const char *value);
+	void pAnswerPointerValue(decUnicodeString &answer, const char *name, void *value);
 };
 
 // end of include only once

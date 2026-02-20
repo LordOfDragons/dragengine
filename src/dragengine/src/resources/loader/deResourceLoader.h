@@ -25,7 +25,8 @@
 #ifndef _DERESOURCELOADER_H_
 #define _DERESOURCELOADER_H_
 
-#include "../../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../threading/deTThreadSafeObjectReference.h"
 
 class deResourceLoaderTask;
 class deResourceLoaderInfo;
@@ -103,10 +104,11 @@ public:
 	
 	
 private:
+	using TaskList = decTOrderedSet<deTThreadSafeObjectReference<deResourceLoaderTask>, deResourceLoaderTask*>;
+	
 	deEngine &pEngine;
 	
-	decThreadSafeObjectOrderedSet pPendingTasks;
-	decThreadSafeObjectOrderedSet pFinishedTasks;
+	TaskList pPendingTasks, pFinishedTasks;
 	
 	bool pLoadAsynchron;
 	bool pOutputDebugMessages;
@@ -117,8 +119,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource loader. */
-	deResourceLoader( deEngine &engine );
+	deResourceLoader(deEngine &engine);
 	
+	deResourceLoader(const deResourceLoader&) = delete;
+	deResourceLoader& operator=(const deResourceLoader&) = delete;
+
 	/** \brief Clean up resource loader. */
 	~deResourceLoader();
 	/*@}*/
@@ -131,7 +136,7 @@ public:
 	inline bool GetOutputDebugMessages() const{ return pOutputDebugMessages; }
 	
 	/** \brief Set if debug messages are logged. */
-	void SetOutputDebugMessages( bool outputDebugMessages );
+	void SetOutputDebugMessages(bool outputDebugMessages);
 	
 	/**
 	 * \brief Add request for loading a resource.
@@ -152,8 +157,8 @@ public:
 	 * \throws deeInvalidParam \em vfs is NULL.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	deResourceLoaderTask *AddLoadRequest( deVirtualFileSystem *vfs, const char *path,
-		eResourceType resourceType );
+	deResourceLoaderTask *AddLoadRequest(deVirtualFileSystem *vfs, const char *path,
+		eResourceType resourceType);
 	
 	/**
 	 * \brief Add request for saving a resource.
@@ -167,8 +172,8 @@ public:
 	 * loader holds no references anymore. If you need to work with the task any
 	 * time later you have to add a reference yourself.
 	 */
-	deResourceLoaderTask *AddSaveRequest( deVirtualFileSystem *vfs, const char *path,
-		deFileResource *resource );
+	deResourceLoaderTask *AddSaveRequest(deVirtualFileSystem *vfs, const char *path,
+		deFileResource *resource);
 	
 	/**
 	 * \brief Information about next finished request
@@ -176,7 +181,7 @@ public:
 	 * \retval true A request finished. Information have been written to \em info.
 	 * \retval false No request finished. \em info is unchanged.
 	 */
-	bool NextFinishedRequest( deResourceLoaderInfo &info );
+	bool NextFinishedRequest(deResourceLoaderInfo &info);
 	
 	/**
 	 * \brief Stop loading and remove all tasks.
@@ -193,7 +198,7 @@ public:
 	 * \warning Do not call directly.
 	 */
 	/*@{*/
-	void FinishTask( deResourceLoaderTask *task );
+	void FinishTask(deResourceLoaderTask *task);
 	/*@}*/
 	
 	
@@ -201,11 +206,11 @@ public:
 private:
 	void pCleanUp();
 	
-	bool pHasTaskWith( deVirtualFileSystem *vfs, const char *path,
-		eResourceType resourceType ) const;
+	bool pHasTaskWith(deVirtualFileSystem *vfs, const char *path,
+		eResourceType resourceType) const;
 	
-	deResourceLoaderTask *pGetTaskWith( deVirtualFileSystem *vfs, const char *path,
-		eResourceType resourceType ) const;
+	deResourceLoaderTask *pGetTaskWith(deVirtualFileSystem *vfs, const char *path,
+		eResourceType resourceType) const;
 };
 
 #endif

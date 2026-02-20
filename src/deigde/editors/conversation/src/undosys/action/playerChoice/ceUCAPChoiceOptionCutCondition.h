@@ -37,8 +37,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAPChoiceOptionCutCondition( ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
-		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition );
+	ceUCAPChoiceOptionCutCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
+		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition);
 	/*@}*/
 };
 

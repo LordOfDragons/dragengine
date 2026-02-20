@@ -35,6 +35,10 @@
  * \brief FBX property long.
  */
 class fbxPropertyLong : public fbxProperty{
+public:
+	using Ref = deTObjectReference<fbxPropertyLong>;
+	
+	
 private:
 	int64_t pValue;
 	
@@ -47,11 +51,11 @@ public:
 	fbxPropertyLong();
 	
 	/** \brief Load property. */
-	fbxPropertyLong( decBaseFileReader &reader );
+	explicit fbxPropertyLong(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyLong();
+	~fbxPropertyLong() override;
 	/*@}*/
 	
 	
@@ -63,25 +67,25 @@ public:
 	inline int64_t GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int64_t value );
+	void SetValue(int64_t value);
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyLong &CastLong();
+	fbxPropertyLong &CastLong() override;
 	
 	/** \brief Get values as specific type if possible. */
-	virtual bool GetValueAsBool() const;
-	virtual int GetValueAsInt() const;
-	virtual int64_t GetValueAsLong() const;
-	virtual float GetValueAsFloat() const;
-	virtual double GetValueAsDouble() const;
+	bool GetValueAsBool() const override;
+	int GetValueAsInt() const override;
+	int64_t GetValueAsLong() const override;
+	float GetValueAsFloat() const override;
+	double GetValueAsDouble() const override;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const override;
 	/*@}*/
 };
 

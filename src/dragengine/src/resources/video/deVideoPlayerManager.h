@@ -25,11 +25,11 @@
 #ifndef _DEVIDEOPLAYERMANAGER_H_
 #define _DEVIDEOPLAYERMANAGER_H_
 
+#include "deVideoPlayer.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deVideoPlayer;
 
 
 /**
@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new video player resource manager linked to the given engine. */
-	deVideoPlayerManager( deEngine *engine );
+	deVideoPlayerManager(deEngine *engine);
 	
 	/** \brief Clean up video player resource manager and reports leaking resources. */
-	~deVideoPlayerManager();
+	~deVideoPlayerManager() override;
 	/*@}*/
 	
 	
@@ -62,20 +62,20 @@ public:
 	deVideoPlayer *GetRootVideoPlayer() const;
 	
 	/** \brief Create new video player. */
-	deVideoPlayer *CreateVideoPlayer();
+	deVideoPlayer::Ref CreateVideoPlayer();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemAudioLoad();
-	void SystemAudioUnload();
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

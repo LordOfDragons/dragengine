@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEBASEUNDOSCALE_H_
 #define _MEBASEUNDOSCALE_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+
+class igdeEnvironment;
 
 
 
@@ -36,7 +37,13 @@
  * Base class for undo actions scaling things.
  */
 class meBaseUndoScale : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meBaseUndoScale>;
+	using List = decTObjectOrderedSet<meBaseUndoScale>;
+	
+	
 private:
+	igdeEnvironment &pEnvironment;
 	bool pModifyPosition;
 	bool pModifySize;
 	decVector pFactors;
@@ -46,35 +53,38 @@ private:
 	
 public:
 	// constructor, destructor
-	meBaseUndoScale();
-	~meBaseUndoScale();
+	meBaseUndoScale(igdeEnvironment &environment);
 	
+protected:
+	~meBaseUndoScale() override;
+	
+public:
 	// management
 	/** Determines if the position has to be modified. */
 	inline bool GetModifyPosition() const{ return pModifyPosition; }
 	/** Sets if the position has to be modified. */
-	void SetModifyPosition( bool modifyPosition );
+	void SetModifyPosition(bool modifyPosition);
 	/** Determines if the size has to be modified. */
 	inline bool GetModifySize() const{ return pModifySize; }
 	/** Sets if the size has to be modified. */
-	void SetModifySize( bool modifySize );
+	void SetModifySize(bool modifySize);
 	/** Retrieves the scaling factors. */
 	inline const decVector &GetFactors() const{ return pFactors; }
 	/** Sets the scaling factors. */
-	void SetFactors( const decVector &factors );
+	void SetFactors(const decVector &factors);
 	/** Retrieves the pivot point. */
 	inline const decDVector &GetPivot() const{ return pPivot; }
 	/** Sets the pivot point. */
-	void SetPivot( const decDVector &pivot );
+	void SetPivot(const decDVector &pivot);
 	
 	/** Retrieves the uniform scaling factor. */
 	inline float GetUniformFactor() const{ return pUniformFactor; }
 	/** Sets the uniform scaling factor. */
-	void SetUniformFactor( float factor );
+	void SetUniformFactor(float factor);
 	/** Determines if the scaling has to be done uniformly. */
 	inline bool GetScaleUniform() const{ return pScaleUniform; }
 	/** Sets if the scaling has to be done uniformly. */
-	void SetScaleUniform( bool scaleUniform );
+	void SetScaleUniform(bool scaleUniform);
 	
 	void Update();
 	
@@ -82,7 +92,7 @@ public:
 	 * Convenience method to scale one undo element. The position and
 	 * scaling are modified in place.
 	 */
-	void TransformElement( decDVector &position, decVector &scaling );
+	void TransformElement(decDVector &position, decVector &scaling);
 	
 	// undo and redo actions
 	virtual void ProgressiveRedo();

@@ -42,29 +42,20 @@
 ////////////////////////////
 
 ceUCActionToggleWaitForActor::ceUCActionToggleWaitForActor(
-ceConversationTopic *topic, ceConversationAction *action )
+ceConversationTopic *topic, ceConversationAction *action)
 {
-	if( ! topic ) DETHROW( deeInvalidParam );
+	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	
-	SetShortInfo( "Action Toggle Wait For Actor" );
+	SetShortInfo("@Conversation.Undo.ActionToggleWaitForActor");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionToggleWaitForActor::~ceUCActionToggleWaitForActor(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -77,6 +68,6 @@ void ceUCActionToggleWaitForActor::Undo(){
 }
 
 void ceUCActionToggleWaitForActor::Redo(){
-	pAction->SetWaitForActor( ! pAction->GetWaitForActor() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetWaitForActor(!pAction->GetWaitForActor());
+	pTopic->NotifyActionChanged(pAction);
 }

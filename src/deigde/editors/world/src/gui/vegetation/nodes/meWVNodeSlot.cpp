@@ -35,12 +35,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeSlot::meWVNodeSlot( igdeEnvironment &environment, const char *text,
-	const char *description, bool isInput, meWVNode &node, eSlotTypes type, int ruleSlot ) :
-igdeNVSlot( environment, text, description, isInput ),
-pParentNode( node ),
-pType( type ),
-pRuleSlot( ruleSlot ){
+meWVNodeSlot::meWVNodeSlot(igdeEnvironment &environment, const char *text,
+	const char *description, bool isInput, meWVNode &node, eSlotTypes type, int ruleSlot) :
+igdeNVSlot(environment, text, description, isInput),
+pParentNode(node),
+pType(type),
+pRuleSlot(ruleSlot){
 }
 
 meWVNodeSlot::~meWVNodeSlot(){

@@ -37,40 +37,40 @@
 // Class deoglSharedBlockSPBElement::Ref
 //////////////////////////////////////////
 
-deoglSharedBlockSPBElement::Ref::Ref() :
-pElement( nullptr ){
+deoglSharedBlockSPBElement::Lease::Lease() :
+pElement(nullptr){
 }
 
-deoglSharedBlockSPBElement::Ref::Ref( const Ref & ){
-	DETHROW( deeInvalidAction );
+deoglSharedBlockSPBElement::Lease::Lease(const Lease &){
+	DETHROW(deeInvalidAction);
 }
 
-deoglSharedBlockSPBElement::Ref::~Ref(){
-	if( pElement ){
+deoglSharedBlockSPBElement::Lease::~Lease(){
+	if(pElement){
 		pElement->Return();
 	}
 }
 
-deoglSharedBlockSPBElement::Ref::operator deoglSharedBlockSPBElement *() const{
+deoglSharedBlockSPBElement::Lease::operator deoglSharedBlockSPBElement *() const{
 	return pElement;
 }
 
-deoglSharedBlockSPBElement::Ref::operator deoglSharedBlockSPBElement &() const{
-	DEASSERT_NOTNULL( pElement );
+deoglSharedBlockSPBElement::Lease::operator deoglSharedBlockSPBElement &() const{
+	DEASSERT_NOTNULL(pElement);
 	return *pElement;
 }
 
-deoglSharedBlockSPBElement *deoglSharedBlockSPBElement::Ref::operator->() const{
-	DEASSERT_NOTNULL( pElement );
+deoglSharedBlockSPBElement *deoglSharedBlockSPBElement::Lease::operator->() const{
+	DEASSERT_NOTNULL(pElement);
 	return pElement;
 }
 
-deoglSharedBlockSPBElement::Ref &deoglSharedBlockSPBElement::Ref::operator=( deoglSharedBlockSPBElement *element ){
-	if( element == pElement ){
+deoglSharedBlockSPBElement::Lease &deoglSharedBlockSPBElement::Lease::operator=(deoglSharedBlockSPBElement *element){
+	if(element == pElement){
 		return *this;
 	}
 	
-	if( pElement ){
+	if(pElement){
 		pElement->Return();
 	}
 	
@@ -78,11 +78,11 @@ deoglSharedBlockSPBElement::Ref &deoglSharedBlockSPBElement::Ref::operator=( deo
 	return *this;
 }
 
-bool deoglSharedBlockSPBElement::Ref::operator!() const{
+bool deoglSharedBlockSPBElement::Lease::operator!() const{
 	return pElement == nullptr;
 }
 
-deoglSharedBlockSPBElement::Ref::operator bool() const{
+deoglSharedBlockSPBElement::Lease::operator bool() const{
 	return pElement != nullptr;
 }
 
@@ -94,13 +94,13 @@ deoglSharedBlockSPBElement::Ref::operator bool() const{
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedBlockSPBElement::deoglSharedBlockSPBElement( deoglSharedBlockSPB &spb, int index, int count ) :
-pSPB( spb ),
-pIndex( index ),
-pCount( count ),
-pEmpty( true )
+deoglSharedBlockSPBElement::deoglSharedBlockSPBElement(deoglSharedBlockSPB &spb, int index, int count) :
+pSPB(spb),
+pIndex(index),
+pCount(count),
+pEmpty(true)
 {
-	DEASSERT_TRUE( count > 0 )
+	DEASSERT_TRUE(count > 0)
 }
 
 deoglSharedBlockSPBElement::~deoglSharedBlockSPBElement(){
@@ -111,20 +111,20 @@ deoglSharedBlockSPBElement::~deoglSharedBlockSPBElement(){
 // Management
 ///////////////
 
-void deoglSharedBlockSPBElement::SetCount( int count ){
-	DEASSERT_TRUE( count > 0 )
+void deoglSharedBlockSPBElement::SetCount(int count){
+	DEASSERT_TRUE(count > 0)
 	pCount = count;
 }
 
-void deoglSharedBlockSPBElement::SetEmpty( bool empty ){
+void deoglSharedBlockSPBElement::SetEmpty(bool empty){
 	pEmpty = empty;
 }
 
 deoglShaderParameterBlock &deoglSharedBlockSPBElement::MapBuffer() const{
-	pSPB.GetParameterBlock()->MapBuffer( pIndex, pCount );
+	pSPB.GetParameterBlock()->MapBuffer(pIndex, pCount);
 	return *pSPB.GetParameterBlock();
 }
 
 void deoglSharedBlockSPBElement::Return() {
-	pSPB.ReturnElement( this );
+	pSPB.ReturnElement(this);
 }

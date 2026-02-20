@@ -26,10 +26,10 @@
 #ifndef _RESELECTIONPUSHES_H_
 #define _RESELECTIONPUSHES_H_
 
+#include "reRigPush.h"
+
 // predefinitions
 class reRig;
-class reRigPush;
-class reRigPushList;
 class deColliderVolume;
 
 
@@ -42,15 +42,14 @@ class reSelectionPushes{
 private:
 	reRig *pRig;
 	
-	reRigPush **pPushes;
-	int pPushCount, pPushSize;
-	reRigPush *pActivePush;
+	reRigPush::List pPushes;
+	reRigPush::Ref pActivePush;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig push selection. */
-	reSelectionPushes( reRig *rig );
+	reSelectionPushes(reRig *rig);
 	/** Cleans up the rig push selection. */
 	~reSelectionPushes();
 	/*@}*/
@@ -60,37 +59,32 @@ public:
 	/** Retrieves the parent rig. */
 	inline reRig *GetParentRig() const{ return pRig; }
 	
-	/** Retrieves the number of selected pushs. */
-	inline int GetPushCount() const{ return pPushCount; }
-	/** Retrieves the push at the given index. */
-	reRigPush *GetPushAt( int index ) const;
-	/** Determines if the given push exists. */
-	bool HasPush( reRigPush *push ) const;
-	/** Retrieves the index of the given push or -1 if not found. */
-	int IndexOfPush( reRigPush *push ) const;
+	/** List of selected pushes. */
+	inline const reRigPush::List &GetPushes() const{ return pPushes; }
+	
 	/** Retrieves the index of the push with the given collider or -1 if not found. */
-	int IndexOfPushWith( deColliderVolume *collider ) const;
+	int IndexOfPushWith(deColliderVolume *collider) const;
 	/** Adds a push if not existing already. */
-	void AddPush( reRigPush *push );
+	void AddPush(reRigPush *push);
 	/** Removes a push if existing. */
-	void RemovePush( reRigPush *push );
+	void RemovePush(reRigPush *push);
 	/** Removes all pushs. */
 	void RemoveAllPushes();
 	
-	/** Retrieves the active push or NULL. */
-	inline reRigPush *GetActivePush() const{ return pActivePush; }
+	/** Retrieves the active push or nullptr. */
+	inline const reRigPush::Ref &GetActivePush() const{ return pActivePush; }
 	/** Determines if an active push exists. */
 	bool HasActivePush() const;
-	/** Sets the acitve push or NULL. */
-	void SetActivePush( reRigPush *push );
+	/** Sets the acitve push or nullptr. */
+	void SetActivePush(reRigPush *push);
 	/** Activates the next push in the list. */
 	//void ActivateNextPush();
 	
-	/** Removes all pushs and sets the active push to NULL. */
+	/** Removes all pushs and sets the active push to nullptr. */
 	void Reset();
 	
 	/** Adds all selected and visible pushs to the given list. */
-	void AddVisiblePushesTo( reRigPushList &list ) const;
+	void AddVisiblePushesTo(reRigPush::List &list) const;
 	/*@}*/
 };
 

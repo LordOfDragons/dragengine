@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAniDRefMoveName::aeUSetRuleAniDRefMoveName( aeRuleAnimationDifference *rule, const char *newName ){
-	if( ! rule || ! newName ) DETHROW( deeInvalidParam );
+aeUSetRuleAniDRefMoveName::aeUSetRuleAniDRefMoveName(aeRuleAnimationDifference *rule, const char *newName){
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldName = rule->GetReferenceMoveName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set animation difference rule reference move name" );
+	SetShortInfo("@Animator.Undo.SetRuleAnimationDifferenceReferenceMoveName");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAniDRefMoveName::~aeUSetRuleAniDRefMoveName(){
-	if( pRule ) pRule->FreeReference();
 }
 
 
@@ -62,9 +60,9 @@ aeUSetRuleAniDRefMoveName::~aeUSetRuleAniDRefMoveName(){
 ///////////////
 
 void aeUSetRuleAniDRefMoveName::Undo(){
-	pRule->SetReferenceMoveName( pOldName );
+	pRule->SetReferenceMoveName(pOldName);
 }
 
 void aeUSetRuleAniDRefMoveName::Redo(){
-	pRule->SetReferenceMoveName( pNewName );
+	pRule->SetReferenceMoveName(pNewName);
 }

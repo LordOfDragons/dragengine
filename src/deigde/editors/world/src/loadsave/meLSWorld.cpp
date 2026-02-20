@@ -29,7 +29,7 @@
 #include <string.h>
 #include "meLSWorld.h"
 #include "../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -50,10 +50,10 @@ meLSWorld::~meLSWorld(){
 // Management
 ///////////////
 
-void meLSWorld::SetName( const char *name ){
+void meLSWorld::SetName(const char *name){
 	pName = name;
 }
 
-void meLSWorld::SetPattern( const char *pattern ){
+void meLSWorld::SetPattern(const char *pattern){
 	pPattern = pattern;
 }

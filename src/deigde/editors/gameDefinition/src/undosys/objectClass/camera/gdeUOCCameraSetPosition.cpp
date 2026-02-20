@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPosition::gdeUOCCameraSetPosition( gdeObjectClass *objectClass,
-gdeOCCamera *camera, const decVector &newValue ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCCameraSetPosition::gdeUOCCameraSetPosition(gdeObjectClass *objectClass,
+gdeOCCamera *camera, const decVector &newValue) :
+
+pCamera(nullptr)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Camera set position" );
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPosition");
 	
 	pOldValue = camera->GetPosition();
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetPosition::~gdeUOCCameraSetPosition(){
-	if( pCamera ){
-		pCamera->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCCameraSetPosition::~gdeUOCCameraSetPosition(){
 ///////////////
 
 void gdeUOCCameraSetPosition::Undo(){
-	pCamera->SetPosition( pOldValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetPosition(pOldValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }
 
 void gdeUOCCameraSetPosition::Redo(){
-	pCamera->SetPosition( pNewValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetPosition(pNewValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }

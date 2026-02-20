@@ -39,7 +39,8 @@ igdeNativeNullMenuCommand::igdeNativeNullMenuCommand(){
 igdeNativeNullMenuCommand::~igdeNativeNullMenuCommand(){
 }
 
-igdeNativeNullMenuCommand *igdeNativeNullMenuCommand::CreateNativeWidget( igdeMenuCommand& ){
+igdeNativeNullMenuCommand *igdeNativeNullMenuCommand::CreateNativeWidget(igdeMenuCommand&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullMenuCommand;
 }
 

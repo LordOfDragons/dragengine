@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleAnimationDifference;
  * Undo to set the leading move name of a animation difference rule.
  */
 class aeUSetRuleAniDLeadMoveName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleAniDLeadMoveName>;
+	
+	
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;
@@ -51,19 +55,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAniDLeadMoveName( aeRuleAnimationDifference *rule, const char *newName );
+	aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleAniDLeadMoveName();
+	~aeUSetRuleAniDLeadMoveName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -25,10 +25,11 @@
 #ifndef _DEPROPFIELD_H_
 #define _DEPROPFIELD_H_
 
+#include "dePropFieldType.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class dePropFieldType;
 class dePropFieldManager;
 class dePropFieldGround;
 
@@ -51,24 +52,20 @@ class deWorld;
 class DE_DLL_EXPORT dePropField : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dePropField> Ref;
-	
+	using Ref = deTObjectReference<dePropField>;
 	
 	
 private:
 	decDVector pPosition;
 	
-	dePropFieldType **pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	dePropFieldType::List pTypes;
 	
 	deBaseGraphicPropField *pPeerGraphic;
 	deBasePhysicsPropField *pPeerPhysics;
 	deBaseScriptingPropField *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	dePropField *pLLWorldPrev;
-	dePropField *pLLWorldNext;
+	decTObjectLinkedList<dePropField>::Element pLLWorld;
 	
 	
 	
@@ -76,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new prop field. */
-	dePropField( dePropFieldManager *manager );
+	dePropField(dePropFieldManager *manager);
 	
 protected:
 	/**
@@ -85,7 +82,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~dePropField();
+	~dePropField() override;
 	/*@}*/
 	
 	
@@ -97,46 +94,49 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
+	
+	/** \brief Types. */
+	inline const dePropFieldType::List &GetTypes() const{ return pTypes; }
 	
 	/** \brief Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** \brief Type at the given index. */
-	dePropFieldType *GetTypeAt( int index ) const;
+	inline const dePropFieldType::Ref &GetTypeAt(int index) const{ return pTypes.GetAt(index); }
 	
 	/** \brief Index of the given type of -1 if not found. */
-	int IndexOfType( dePropFieldType *type ) const;
+	int IndexOfType(dePropFieldType *type) const;
 	
 	/** \brief Adds a type. */
-	void AddType( dePropFieldType *type );
+	void AddType(dePropFieldType::Ref &&type);
 	
 	/** \brief Removes the given type. */
-	void RemoveType( dePropFieldType *type );
+	void RemoveType(dePropFieldType *type);
 	
 	/** \brief Removes all types. */
 	void RemoveAllTypes();
 	
 	/** \brief Notifies the peers that the given type changed. */
-	void NotifyTypeChanged( int type );
+	void NotifyTypeChanged(int type);
 	
 	/** \brief Notifies the peers that the given type instances changed. */
-	void NotifyInstancesChanged( int type );
+	void NotifyInstancesChanged(int type);
 	
 	/** \brief Notifies the peers that the given type instances to bend states assignments changed. */
-	void NotifyAssignmentsChanged( int type );
+	void NotifyAssignmentsChanged(int type);
 	
 	/** \brief Notifies the peers that the given type bend states changed. */
-	void NotifyBendStatesChanged( int type );
+	void NotifyBendStatesChanged(int type);
 	
 	/** \brief Notifies the graphic module that the ground changed. */
 	void NotifyGroundChanged();
 	
 	/** \brief Requests the scripting module to create instances using the given density. */
-	void NotifyCreateInstances( float density );
+	void NotifyCreateInstances(float density);
 	
 	/** \brief Requests the physics module to project all instances to the given ground. */
-	void NotifyProjectInstances( const dePropFieldGround &ground, const decVector &direction );
+	void NotifyProjectInstances(const dePropFieldGround &ground, const decVector &direction);
 	/*@}*/
 	
 	
@@ -147,19 +147,19 @@ public:
 	inline deBaseGraphicPropField *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicPropField *peer );
+	void SetPeerGraphic(deBaseGraphicPropField *peer);
 	
 	/** \brief Physics system peer object. */
 	inline deBasePhysicsPropField *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
-	void SetPeerPhysics( deBasePhysicsPropField *peer );
+	void SetPeerPhysics(deBasePhysicsPropField *peer);
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingPropField *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingPropField *peer );
+	void SetPeerScripting(deBaseScriptingPropField *peer);
 	/*@}*/
 	
 	
@@ -172,17 +172,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous prop field in the parent world linked list. */
-	inline dePropField *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next prop field in the parent world linked list. */
-	void SetLLWorldPrev( dePropField *propField );
-	
-	/** \brief Next prop field in the parent world linked list. */
-	inline dePropField *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next prop field in the parent world linked list. */
-	void SetLLWorldNext( dePropField *propField );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<dePropField>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

@@ -25,20 +25,22 @@
 #ifndef _SAEWINDOWMAIN_H_
 #define _SAEWINDOWMAIN_H_
 
+#include "saeWindowMainListener.h"
+#include "saeViewSAnimation.h"
+#include "properties/saeWindowProperties.h"
+#include "../sanimation/saeSAnimation.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
-class decStringList;
-class saeWindowMainListener;
-class saeViewSAnimation;
+#include <dragengine/common/string/decStringList.h>
+
 class saeConfiguration;
-class saeSAnimation;
-class saeWindowProperties;
 class saeLoadSaveSystem;
 class saeIGDEModule;
 class igdeStepableTask;
@@ -49,45 +51,49 @@ class igdeStepableTask;
  * Main Editor Window.
  */
 class saeWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<saeWindowMain>;
+	
+	
 private:
-	saeWindowMainListener *pListener;
+	saeWindowMainListener::Ref pListener;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionViewDispModeViseme;
-	igdeActionReference pActionViewDispModePhoneme;
-	igdeActionReference pActionViewDispModeWord;
+	igdeAction::Ref pActionViewDispModeViseme;
+	igdeAction::Ref pActionViewDispModePhoneme;
+	igdeAction::Ref pActionViewDispModeWord;
 	
-	igdeActionReference pActionVisemeAdd;
-	igdeActionReference pActionVisemeRemove;
+	igdeAction::Ref pActionVisemeAdd;
+	igdeAction::Ref pActionVisemeRemove;
 	
-	igdeActionReference pActionPhonemeAdd;
-	igdeActionReference pActionPhonemeRemove;
+	igdeAction::Ref pActionPhonemeAdd;
+	igdeAction::Ref pActionPhonemeRemove;
 	
-	igdeActionReference pActionWordAdd;
-	igdeActionReference pActionWordRemove;
-	igdeActionReference pActionWordAddList;
+	igdeAction::Ref pActionWordAdd;
+	igdeAction::Ref pActionWordRemove;
+	igdeAction::Ref pActionWordAddList;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	saeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
 	saeLoadSaveSystem *pLoadSaveSystem;
 	
-	saeViewSAnimation *pViewSAnimation;
-	saeWindowProperties *pWindowProperties;
+	saeViewSAnimation::Ref pViewSAnimation;
+	saeWindowProperties::Ref pWindowProperties;
 	
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	
 	
@@ -95,11 +101,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create window. */
-	saeWindowMain( saeIGDEModule &module );
+	saeWindowMain(saeIGDEModule &module);
 	
 protected:
 	/** Cleanup window. */
-	virtual ~saeWindowMain();
+	~saeWindowMain() override;
 	/*@}*/
 	
 	
@@ -130,39 +136,39 @@ public:
 	
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Create new speech animation. */
 	void CreateNewSAnimation();
 	
 	/** Save speech animation to file. */
-	void SaveSAnimation( const char *filename );
+	void SaveSAnimation(const char *filename);
 	
 	
 	
 	/** Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -173,12 +179,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * Requests a document to be saved.
@@ -188,12 +194,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * The game project has changed.
@@ -203,7 +209,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * Project game definition changed.
@@ -212,12 +218,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	
@@ -228,11 +234,11 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
-	void pCreateMenuPhoneme( igdeMenuCascade &menu );
-	void pCreateMenuWord( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
+	void pCreateMenuPhoneme(igdeMenuCascade &menu);
+	void pCreateMenuWord(igdeMenuCascade &menu);
 };
 
 #endif

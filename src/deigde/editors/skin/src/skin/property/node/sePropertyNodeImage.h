@@ -27,7 +27,7 @@
 
 #include "sePropertyNode.h"
 
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 /**
@@ -35,12 +35,12 @@ class deImage;
  */
 class sePropertyNodeImage : public sePropertyNode{
 public:
-	typedef deTObjectReference<sePropertyNodeImage> Ref;
+	using Ref = deTObjectReference<sePropertyNodeImage>;
 	
 	
 private:
 	decString pPath;
-	deImage *pImage;
+	deImage::Ref pImage;
 	decPoint pRepeat;
 	
 	
@@ -49,13 +49,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeImage( deEngine &engine );
+	sePropertyNodeImage(const deEngine &engine);
 	
 	/** \brief Create copy of node. */
-	sePropertyNodeImage( const sePropertyNodeImage &node );
+	sePropertyNodeImage(const sePropertyNodeImage &node);
 	
 	/** \brief Clean up node. */
-	virtual ~sePropertyNodeImage();
+protected:
+	~sePropertyNodeImage() override;
+public:
 	/*@}*/
 	
 	
@@ -66,10 +68,10 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path or empty path if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
-	/** \brief Image or \em NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or \em nullptr if not set. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Update image. */
 	void UpdateImage();
@@ -81,15 +83,15 @@ public:
 	 * \brief Set repeat count.
 	 * \throws deeInvalidParam One or more components of \em count are less than 1.
 	 */
-	void SetRepeat( const decPoint &repeat );
+	void SetRepeat(const decPoint &repeat);
 	
 	
 	
 	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	sePropertyNode::Ref Copy() const override;
 	
 	/** \brief Update resources. */
-	virtual void UpdateResources();
+	void UpdateResources() override;
 	/*@}*/
 };
 

@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTFILTERKERNEL_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectFilterKernel.h"
 
-class deoglREffectFilterKernel;
 class deEffectFilterKernel;
 
 
@@ -39,7 +39,7 @@ class deoglEffectFilterKernel : public deoglEffect{
 private:
 	const deEffectFilterKernel &pEffectFilterKernel;
 	
-	deoglREffectFilterKernel *pREffectFilterKernel;
+	deoglREffectFilterKernel::Ref pREffectFilterKernel;
 	
 	bool pDirtyKernel;
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectFilterKernel( deGraphicOpenGl &ogl, const deEffectFilterKernel &effect );
+	deoglEffectFilterKernel(deGraphicOpenGl &ogl, const deEffectFilterKernel &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectFilterKernel();
+	~deoglEffectFilterKernel() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Filter kernel changed. */
-	virtual void FilterKernelChanged();
+	void FilterKernelChanged() override;
 	/*@}*/
 };
 

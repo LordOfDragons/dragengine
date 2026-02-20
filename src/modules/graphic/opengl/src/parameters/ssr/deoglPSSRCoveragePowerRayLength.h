@@ -36,17 +36,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSRCoveragePowerRayLength( deGraphicOpenGl &ogl );
+	deoglPSSRCoveragePowerRayLength(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPSSRCoveragePowerRayLength();
+	~deoglPSSRCoveragePowerRayLength() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual float GetParameterFloat();
+	float GetParameterFloat() override;
 	/** Sets the current value. */
-	virtual void SetParameterFloat( float value );
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

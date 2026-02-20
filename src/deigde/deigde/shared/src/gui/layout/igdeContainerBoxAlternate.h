@@ -51,8 +51,8 @@ public:
 	 * If \em stretchOdd is \em true widgets with odd indices are stretched.
 	 * Otherwise widgets with even indices are stretched.
 	 */
-	igdeContainerBoxAlternate( igdeEnvironment &environment, eAxis axis,
-		bool stretchOdd, int spacing = 0 );
+	igdeContainerBoxAlternate(igdeEnvironment &environment, eAxis axis,
+		bool stretchOdd, int spacing = 0);
 	
 	
 	
@@ -63,7 +63,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainerBoxAlternate();
+	~igdeContainerBoxAlternate() override;
 	/*@}*/
 	
 	
@@ -86,13 +86,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

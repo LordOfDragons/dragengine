@@ -39,18 +39,18 @@
 #include "../values/debnValueVector2.h"
 #include "../values/debnValueVector3.h"
 #include "../values/debnValueQuaternion.h"
-#include "dragengine/resources/network/value/deNetworkValue.h"
-#include "dragengine/resources/network/value/deNetworkValueInteger.h"
-#include "dragengine/resources/network/value/deNetworkValueFloat.h"
-#include "dragengine/resources/network/value/deNetworkValueString.h"
-#include "dragengine/resources/network/value/deNetworkValueData.h"
-#include "dragengine/resources/network/value/deNetworkValuePoint2.h"
-#include "dragengine/resources/network/value/deNetworkValuePoint3.h"
-#include "dragengine/resources/network/value/deNetworkValueVector2.h"
-#include "dragengine/resources/network/value/deNetworkValueVector3.h"
-#include "dragengine/resources/network/value/deNetworkValueQuaternion.h"
-#include "dragengine/common/math/decMath.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/network/value/deNetworkValue.h>
+#include <dragengine/resources/network/value/deNetworkValueInteger.h>
+#include <dragengine/resources/network/value/deNetworkValueFloat.h>
+#include <dragengine/resources/network/value/deNetworkValueString.h>
+#include <dragengine/resources/network/value/deNetworkValueData.h>
+#include <dragengine/resources/network/value/deNetworkValuePoint2.h>
+#include <dragengine/resources/network/value/deNetworkValuePoint3.h>
+#include <dragengine/resources/network/value/deNetworkValueVector2.h>
+#include <dragengine/resources/network/value/deNetworkValueVector3.h>
+#include <dragengine/resources/network/value/deNetworkValueQuaternion.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -61,7 +61,6 @@
 ////////////////////////////
 
 debnVisitorValueCreate::debnVisitorValueCreate(){
-	pValue = NULL;
 }
 
 debnVisitorValueCreate::~debnVisitorValueCreate(){
@@ -73,7 +72,7 @@ debnVisitorValueCreate::~debnVisitorValueCreate(){
 ///////////////
 
 void debnVisitorValueCreate::Reset(){
-	pValue = NULL;
+	pValue.Clear();
 }
 
 
@@ -81,42 +80,42 @@ void debnVisitorValueCreate::Reset(){
 // Visiting
 /////////////
 
-void debnVisitorValueCreate::VisitValue( deNetworkValue* ){
-	DETHROW( deeInvalidParam );
+void debnVisitorValueCreate::VisitValue(deNetworkValue*){
+	DETHROW(deeInvalidParam);
 }
 
-void debnVisitorValueCreate::VisitInteger( deNetworkValueInteger *value ){
-	pValue = new debnValueInteger( *value );
+void debnVisitorValueCreate::VisitInteger(deNetworkValueInteger *value){
+	pValue = deTUniqueReference<debnValueInteger>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitFloat( deNetworkValueFloat *value ){
-	pValue = new debnValueFloat( *value );
+void debnVisitorValueCreate::VisitFloat(deNetworkValueFloat *value){
+	pValue = deTUniqueReference<debnValueFloat>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitString( deNetworkValueString *value ){
-	pValue = new debnValueString( *value );
+void debnVisitorValueCreate::VisitString(deNetworkValueString *value){
+	pValue = deTUniqueReference<debnValueString>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitData( deNetworkValueData *value ){
-	pValue = new debnValueData( *value );
+void debnVisitorValueCreate::VisitData(deNetworkValueData *value){
+	pValue = deTUniqueReference<debnValueData>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitPoint2( deNetworkValuePoint2 *value ){
-	pValue = new debnValuePoint2( *value );
+void debnVisitorValueCreate::VisitPoint2(deNetworkValuePoint2 *value){
+	pValue = deTUniqueReference<debnValuePoint2>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitPoint3( deNetworkValuePoint3 *value ){
-	pValue = new debnValuePoint3( *value );
+void debnVisitorValueCreate::VisitPoint3(deNetworkValuePoint3 *value){
+	pValue = deTUniqueReference<debnValuePoint3>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitVector2( deNetworkValueVector2 *value ){
-	pValue = new debnValueVector2( *value );
+void debnVisitorValueCreate::VisitVector2(deNetworkValueVector2 *value){
+	pValue = deTUniqueReference<debnValueVector2>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitVector3( deNetworkValueVector3 *value ){
-	pValue = new debnValueVector3( *value );
+void debnVisitorValueCreate::VisitVector3(deNetworkValueVector3 *value){
+	pValue = deTUniqueReference<debnValueVector3>::New(*value);
 }
 
-void debnVisitorValueCreate::VisitQuaternion( deNetworkValueQuaternion *value ){
-	pValue = new debnValueQuaternion( *value );
+void debnVisitorValueCreate::VisitQuaternion(deNetworkValueQuaternion *value){
+	pValue = deTUniqueReference<debnValueQuaternion>::New(*value);
 }

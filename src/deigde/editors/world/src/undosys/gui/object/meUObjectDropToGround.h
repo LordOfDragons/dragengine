@@ -22,19 +22,16 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUOBJECTDROPTOGROUND_H_
 #define _MEUOBJECTDROPTOGROUND_H_
 
-// includes
+#include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
+#include "../../../world/object/meObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-// predefinitions
-class meWorld;
-class meObject;
-class meObjectList;
 
 
 
@@ -44,18 +41,13 @@ class meObjectList;
  * Undo action dropping a list of objects individually onto the ground.
  */
 class meUObjectDropToGround : public igdeUndo{
-private:
-	struct sObject{
-		meObject *object;
-		decDVector oldpos;
-		decVector oldrot;
-	};
+public:
+	using Ref = deTObjectReference<meUObjectDropToGround>;
 	
 private:
 	meWorld *pWorld;
 	
-	sObject *pObjects;
-	int pObjectCount;
+	meUndoDataObject::List pObjects;
 	
 	bool pDropOnObjects;
 	bool pAlign;
@@ -64,27 +56,27 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUObjectDropToGround( meWorld *world, const meObjectList &objects );
+	meUObjectDropToGround(meWorld *world, const meObject::List &objects);
 	/** \brief Clean up object. */
-	virtual ~meUObjectDropToGround();
+
+protected:
+	~meUObjectDropToGround() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Sets if the objects can be dropped on other objects. */
-	void SetDropOnObjects( bool dropOnObjects );
+	void SetDropOnObjects(bool dropOnObjects);
 	/** Sets if the objects are aligned with the ground or just dropped down. */
-	void SetAlign( bool align );
+	void SetAlign(bool align);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

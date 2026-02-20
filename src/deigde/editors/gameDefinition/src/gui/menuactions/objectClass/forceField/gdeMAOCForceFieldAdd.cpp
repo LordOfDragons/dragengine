@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCForceFieldAdd::gdeMAOCForceFieldAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Force Field...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class force field" )
+gdeMAOCForceFieldAdd::gdeMAOCForceFieldAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCForceFieldAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Force Field...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference forceField;
-	forceField.TakeOver( new gdeOCForceField );
-	return new gdeUOCAddForceField( &objectClass, ( gdeOCForceField* )( deObject* )forceField );
+igdeUndo::Ref gdeMAOCForceFieldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddForceField::Ref::New(&objectClass, gdeOCForceField::Ref::New());
 }
 
 void gdeMAOCForceFieldAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

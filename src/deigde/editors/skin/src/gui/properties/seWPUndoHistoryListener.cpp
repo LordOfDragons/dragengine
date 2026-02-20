@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPUndoHistoryListener::seWPUndoHistoryListener( seWPUndoHistory &panel ) :
-pPanel( panel ){
+seWPUndoHistoryListener::seWPUndoHistoryListener(seWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 seWPUndoHistoryListener::~seWPUndoHistoryListener(){
@@ -51,8 +51,8 @@ seWPUndoHistoryListener::~seWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void seWPUndoHistoryListener::UndoChanged( seSkin *skin ){
-	if( pPanel.GetSkin() != skin ){
+void seWPUndoHistoryListener::UndoChanged(seSkin *skin){
+	if(pPanel.GetSkin() != skin){
 		return;
 	}
 	

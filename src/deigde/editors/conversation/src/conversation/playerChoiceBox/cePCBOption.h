@@ -25,15 +25,17 @@
 #ifndef _CEPCBOPTION_H_
 #define _CEPCBOPTION_H_
 
+#include "../action/ceCAPlayerChoice.h"
+#include "../action/ceCAPlayerChoiceOption.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class cePlayerChoiceBox;
 class deGraphicContext;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
 
 
 
@@ -43,19 +45,25 @@ class ceCAPlayerChoiceOption;
 class cePCBOption : public deObject{
 private:
 	decUnicodeString pText;
-	ceCAPlayerChoice *pAction;
-	ceCAPlayerChoiceOption *pActionOption;
+	ceCAPlayerChoice::Ref pAction;
+	ceCAPlayerChoiceOption::Ref pActionOption;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
+	using Ref = deTObjectReference<cePCBOption>;
+	using List = decTObjectOrderedSet<cePCBOption>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create player choice box option. */
 	cePCBOption();
 	
 	/** \brief Clean up player choice box option. */
-	virtual ~cePCBOption();
+protected:
+	~cePCBOption() override;
+public:
 	/*@}*/
 	
 	
@@ -66,22 +74,22 @@ public:
 	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	
 	/** \brief Action. */
-	inline ceCAPlayerChoice *GetAction() const{ return pAction; }
+	inline const ceCAPlayerChoice::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Action option. */
-	inline ceCAPlayerChoiceOption *GetActionOption() const{ return pActionOption; }
+	inline const ceCAPlayerChoiceOption::Ref &GetActionOption() const{ return pActionOption; }
 	
 	/** \brief Set action option. */
-	void SetActionOption( ceCAPlayerChoice *action, ceCAPlayerChoiceOption *actionOption );
+	void SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *actionOption);
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Layout text. Create canvas if not existing. */
-	void Layout( const cePlayerChoiceBox &pcbox, bool selected );
+	void Layout(const cePlayerChoiceBox &pcbox, bool selected);
 	/*@}*/
 };
 

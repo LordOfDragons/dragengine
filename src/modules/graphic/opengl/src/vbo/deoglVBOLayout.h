@@ -25,6 +25,8 @@
 #ifndef _DEOGLVBOLAYOUT_H_
 #define _DEOGLVBOLAYOUT_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglVBOAttribute;
 class deoglRenderThread;
 
@@ -55,8 +57,7 @@ public:
 private:
 	int pSize;
 	int pStride;
-	deoglVBOAttribute *pAttributes;
-	int pAttributeCount;
+	decTList<deoglVBOAttribute> pAttributes;
 	eIndexTypes pIndexType;
 	int pIndexSize;
 	int pIndexGLType;
@@ -70,7 +71,7 @@ public:
 	deoglVBOLayout();
 	
 	/** Create vbo layout. */
-	deoglVBOLayout( const deoglVBOLayout &layout );
+	deoglVBOLayout(const deoglVBOLayout &layout);
 	
 	/** Clean up vbo layout. */
 	~deoglVBOLayout();
@@ -84,19 +85,19 @@ public:
 	inline int GetSize() const{ return pSize; }
 	
 	/** Set VBO size. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** Stride. */
 	inline int GetStride() const{ return pStride; }
 	
 	/** Set stride. */
-	void SetStride( int stride );
+	void SetStride(int stride);
 	
 	/** Index type. */
 	inline eIndexTypes GetIndexType() const{ return pIndexType; }
 	
 	/** Set index type. */
-	void SetIndexType( eIndexTypes indexType );
+	void SetIndexType(eIndexTypes indexType);
 	
 	/** Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }
@@ -109,28 +110,23 @@ public:
 	
 	/** \name Attributes */
 	/*@{*/
-	/** Number of attributes. */
-	inline int GetAttributeCount() const{ return pAttributeCount; }
-	
-	/** Set number of attributes. */
-	void SetAttributeCount( int count );
-	
-	/** Attribute by index. */
-	deoglVBOAttribute &GetAttributeAt( int index ) const;
+	/** Attributes. */
+	inline decTList<deoglVBOAttribute> &GetAttributes(){ return pAttributes; }
+	inline const decTList<deoglVBOAttribute> &GetAttributes() const{ return pAttributes; }
 	
 	/**
 	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
-	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target ) const;
+	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target);
 	
 	/**
 	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
-	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target, int offset ) const;
+	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target, int offset);
 	/*@}*/
 	
 	
@@ -138,13 +134,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Set layout. */
-	deoglVBOLayout &operator=( const deoglVBOLayout &layout );
+	deoglVBOLayout &operator=(const deoglVBOLayout &layout);
 	
 	/** Layout matches another one. */
-	bool operator==( const deoglVBOLayout &layout ) const;
-	
-	/** Layout does not match another one. */
-	bool operator!=( const deoglVBOLayout &layout ) const;
+	bool operator==(const deoglVBOLayout &layout) const;
 	/*@}*/
 	
 	
@@ -152,7 +145,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Print layout to the console. */
-	void PrintToConsole( deoglRenderThread &renderThread, const char *name );
+	void PrintToConsole(deoglRenderThread &renderThread, const char *name);
 	/*@}*/
 };
 

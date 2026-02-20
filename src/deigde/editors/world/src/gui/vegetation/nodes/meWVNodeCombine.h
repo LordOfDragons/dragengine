@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECOMBINE_H_
 #define _MEWVNODECOMBINE_H_
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "meWVNode.h"
 
@@ -38,13 +38,16 @@ class meHTVRuleCombine;
  * \brief Vegetation Editing Window Node Combine.
  */
 class meWVNodeCombine : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeCombine>;
+	
 private:
 	meHTVRuleCombine *pRuleCombine;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditX;
-	igdeTextFieldReference pEditY;
-	igdeTextFieldReference pEditZ;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditX;
+	igdeTextField::Ref pEditY;
+	igdeTextField::Ref pEditZ;
 	
 	
 	
@@ -52,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeCombine( meWindowVegetation &windowVegetation, meHTVRuleCombine *rule );
+	meWVNodeCombine(meWindowVegetation &windowVegetation, meHTVRuleCombine *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeCombine();
+	~meWVNodeCombine() override;
 	/*@}*/
 	
 	
@@ -68,7 +71,7 @@ public:
 	inline meHTVRuleCombine *GetRuleCombine() const{ return pRuleCombine; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -37,6 +37,12 @@ class igdeMenuCascade;
  * \brief IGDE UI NVNode Listener.
  */
 class DE_DLL_EXPORT igdeNVNodeListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeNVNodeListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -52,7 +58,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeNVNodeListener();
+	~igdeNVNodeListener() override;
 	/*@}*/
 	
 	
@@ -61,19 +67,19 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief Node has been activated. */
-	virtual void OnActivated( igdeNVNode *node );
+	virtual void OnActivated(igdeNVNode *node);
 	
 	/** \brief Node has been deactivated. */
-	virtual void OnDeactivated( igdeNVNode *node );
+	virtual void OnDeactivated(igdeNVNode *node);
 	
 	/** \brief Node draged by user. */
-	virtual void OnDragBegin( igdeNVNode *node );
+	virtual void OnDragBegin(igdeNVNode *node);
 	
 	/** \brief Node draged by user. */
-	virtual void OnDraging( igdeNVNode *node );
+	virtual void OnDraging(igdeNVNode *node);
 	
 	/** \brief Node draged by user. */
-	virtual void OnDragEnd( igdeNVNode *node );
+	virtual void OnDragEnd(igdeNVNode *node);
 	
 	/**
 	 * \brief Create context menu for selected item.
@@ -82,7 +88,7 @@ public:
 	 * to add entries to the context menu without affecting others. If entries are already
 	 * present the listener should also add a separator first.
 	 */
-	virtual void AddContextMenuEntries( igdeNVNode *node, igdeMenuCascade &menu );
+	virtual void AddContextMenuEntries(igdeNVNode *node, igdeMenuCascade &menu);
 	/*@}*/
 };
 

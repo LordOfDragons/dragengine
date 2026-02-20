@@ -25,11 +25,11 @@
 #ifndef _CEUCACTIONREMOVEALL_H_
 #define _CEUCACTIONREMOVEALL_H_
 
-#include "../../conversation/action/ceConversationActionList.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
 
 
 
@@ -37,27 +37,31 @@ class ceConversationTopic;
  * \brief Undo Action Remove All Conversation Actions.
  */
 class ceUCActionRemoveAll : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCActionRemoveAll>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationActionList pActionList;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::List pActionList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionRemoveAll( ceConversationTopic *topic );
+	ceUCActionRemoveAll(ceConversationTopic *topic);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCActionRemoveAll();
+	~ceUCActionRemoveAll() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

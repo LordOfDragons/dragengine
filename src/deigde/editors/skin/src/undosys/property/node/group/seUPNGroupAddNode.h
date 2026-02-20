@@ -25,10 +25,11 @@
 #ifndef _SEUPNGROUPADDNODE_H_
 #define _SEUPNGROUPADDNODE_H_
 
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class sePropertyNode;
-class sePropertyNodeGroup;
 
 
 
@@ -36,9 +37,13 @@ class sePropertyNodeGroup;
  * \brief Undo action property node group add node.
  */
 class seUPNGroupAddNode : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPNGroupAddNode>;
+	
+	
 private:
-	sePropertyNodeGroup *pNode;
-	sePropertyNode *pChild;
+	sePropertyNodeGroup::Ref pNode;
+	sePropertyNode::Ref pChild;
 	
 	
 	
@@ -46,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupAddNode( sePropertyNodeGroup *node, sePropertyNode *child );
+	seUPNGroupAddNode(sePropertyNodeGroup *node, sePropertyNode *child);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNGroupAddNode();
+	~seUPNGroupAddNode() override;
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 
@@ -48,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMASkyAdd::gdeMASkyAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Sky...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add sky" )
+gdeMASkyAdd::gdeMASkyAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkyAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.SkyAdd.ToolTip")
 {
 }
 
@@ -60,29 +59,28 @@ gdeBaseAction( windowMain, "Add Sky...",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkyAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last sky? what directory? );
 	
-	if( ! igdeCommonDialogs::GetFileOpen( &pWindowMain,
-	"Select sky", *gameDefinition.GetPreviewVFS(),
+	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
+	"@GameDefinition.Dialog.SkySelect.Title", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
-		return NULL;
+		return {};
 	}
 	
-	if( gameDefinition.GetSkies().HasWithPath( filename ) ){
-		igdeCommonDialogs::Information( &pWindowMain, "Add Sky", "Sky with path exists already." );
-		return NULL;
+	if(gameDefinition.GetSkies().HasWithPath(filename)){
+		igdeCommonDialogs::Information(pWindowMain, "@GameDefinition.Dialog.SkyAdd.Title", "@GameDefinition.Dialog.SkyAdd.ErrorExists");
+		return {};
 	}
 	
-	decString filetitle( decPath::CreatePathUnix( filename ).GetLastComponent() );
-	const int delimiter = filetitle.FindReverse( '.' );
-	if( delimiter != -1 ){
-		filetitle = filetitle.GetLeft( delimiter );
+	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
+	const int delimiter = filetitle.FindReverse('.');
+	if(delimiter != -1){
+		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
-	deObjectReference sky;
-	sky.TakeOver( new gdeSky( filename, filetitle ) );
-	return new gdeUAddSky( &gameDefinition, ( gdeSky* )( deObject* )sky );
+	const gdeSky::Ref sky(gdeSky::Ref::New(filename, filetitle));
+	return gdeUAddSky::Ref::New(&gameDefinition, sky);
 }

@@ -39,14 +39,14 @@
 ////////////////////////////
 
 deoglMemoryConsumptionBufferObject::deoglMemoryConsumptionBufferObject() :
-all( "BufferObject" ),
-vbo( "VBO", all ),
-vboShared( "VBO Shared", vbo ),
-ibo( "IBO", all ),
-iboShared( "IBO Shared", ibo ),
-tbo( "TBO", all ),
-ubo( "UBO", all ),
-ssbo( "SSBO", all ){
+all("BufferObject"),
+vbo("VBO", all),
+vboShared("VBO Shared", vbo),
+ibo("IBO", all),
+iboShared("IBO Shared", ibo),
+tbo("TBO", all),
+ubo("UBO", all),
+ssbo("SSBO", all){
 }
 
 deoglMemoryConsumptionBufferObject::~deoglMemoryConsumptionBufferObject(){

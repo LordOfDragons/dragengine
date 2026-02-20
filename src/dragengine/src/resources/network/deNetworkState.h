@@ -25,13 +25,13 @@
 #ifndef _DENETWORKSTATE_H_
 #define _DENETWORKSTATE_H_
 
+#include "value/deNetworkValue.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 
 class deNetworkStateManager;
-class deNetworkValue;
 class deBaseNetworkState;
 class deBaseScriptingNetworkState;
 class deWorld;
@@ -47,20 +47,18 @@ class deWorld;
 class DE_DLL_EXPORT deNetworkState : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkState> Ref;
-	
+	using Ref = deTObjectReference<deNetworkState>;
 	
 	
 private:
-	decObjectOrderedSet pValues;
+	deNetworkValue::List pValues;
 	bool pReadOnly;
 	
 	deBaseNetworkState *pPeerNetwork;
 	deBaseScriptingNetworkState *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deNetworkState *pLLWorldPrev;
-	deNetworkState *pLLWorldNext;
+	decTObjectLinkedList<deNetworkState>::Element pLLWorld;
 	
 	
 	
@@ -68,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network state object. */
-	deNetworkState( deNetworkStateManager *manager, bool readOnly );
+	deNetworkState(deNetworkStateManager *manager, bool readOnly);
 	
 protected:
 	/**
@@ -77,7 +75,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deNetworkState();
+	~deNetworkState() override;
 	/*@}*/
 	
 	
@@ -86,7 +84,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resource is a valid parent. */
-	bool IsValidParent( deResource *parent ) const;
+	bool IsValidParent(deResource *parent) const;
 	
 	/** \brief Network state is read only. */
 	inline bool GetReadOnly() const{ return pReadOnly; }
@@ -100,19 +98,19 @@ public:
 	int GetValueCount() const;
 	
 	/** \brief Index of value. */
-	int IndexOfValue( deNetworkValue *value ) const;
+	int IndexOfValue(deNetworkValue *value) const;
 	
 	/** \brief Value at index. */
-	deNetworkValue *GetValueAt( int index ) const;
+	deNetworkValue *GetValueAt(int index) const;
 	
 	/** \brief Add value. */
-	void AddValue( deNetworkValue *value );
+	void AddValue(deNetworkValue *value);
 	
 	/** \brief Notify network peer value changed. */
-	void NotifyValueChanged( int index ) const;
+	void NotifyValueChanged(int index) const;
 	
 	/** \brief Notify network peer precision changed. */
-	void NotifyPrecisionChanged( int index ) const;
+	void NotifyPrecisionChanged(int index) const;
 	/*@}*/
 	
 	
@@ -123,13 +121,13 @@ public:
 	inline deBaseNetworkState *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
-	void SetPeerNetwork ( deBaseNetworkState *peer );
+	void SetPeerNetwork (deBaseNetworkState *peer);
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingNetworkState *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingNetworkState *peer );
+	void SetPeerScripting(deBaseScriptingNetworkState *peer);
 	/*@}*/
 	
 	
@@ -142,17 +140,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous networkState in the parent world linked list. */
-	inline deNetworkState *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next networkState in the parent world linked list. */
-	void SetLLWorldPrev( deNetworkState *networkState );
-	
-	/** \brief Next networkState in the parent world linked list. */
-	inline deNetworkState *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next networkState in the parent world linked list. */
-	void SetLLWorldNext( deNetworkState *networkState );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deNetworkState>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

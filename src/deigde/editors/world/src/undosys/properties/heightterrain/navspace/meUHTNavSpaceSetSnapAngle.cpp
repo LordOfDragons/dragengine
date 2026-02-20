@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceSetSnapAngle::meUHTNavSpaceSetSnapAngle( meHeightTerrainNavSpace *navspace, float newSnapAngle ) :
-pNavSpace( NULL ),
-pNewSnapAngle( newSnapAngle )
+meUHTNavSpaceSetSnapAngle::meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace *navspace, float newSnapAngle) :
+
+pNewSnapAngle(newSnapAngle)
 {
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldSnapAngle = navspace->GetSnapAngle();
 	
-	SetShortInfo( "Height terrain nav-space set snap angle" );
+	SetShortInfo("@World.UHTNavSpaceSetSnapAngle.HeightTerrainNavSpaceSetSnapAngle");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceSetSnapAngle::~meUHTNavSpaceSetSnapAngle(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ meUHTNavSpaceSetSnapAngle::~meUHTNavSpaceSetSnapAngle(){
 ///////////////
 
 void meUHTNavSpaceSetSnapAngle::Undo(){
-	pNavSpace->SetSnapAngle( pOldSnapAngle );
+	pNavSpace->SetSnapAngle(pOldSnapAngle);
 }
 
 void meUHTNavSpaceSetSnapAngle::Redo(){
-	pNavSpace->SetSnapAngle( pNewSnapAngle );
+	pNavSpace->SetSnapAngle(pNewSnapAngle);
 }

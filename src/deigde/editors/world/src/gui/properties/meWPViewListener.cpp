@@ -31,8 +31,6 @@
 #include "../../world/meCamera.h"
 #include "../../world/object/meObject.h"
 
-#include "dragengine/common/exceptions.h"
-
 
 // Class meWPViewListener
 ///////////////////////////

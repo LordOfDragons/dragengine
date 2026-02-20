@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetActorCount::ceUCCShotSetActorCount( ceCameraShot *cameraShot, int newCount ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int newCount){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set Actor Count" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetActorCount");
 	
 	pOldCount = cameraShot->GetActorCount();
 	pNewCount = newCount;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetActorCount::~ceUCCShotSetActorCount(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetActorCount::~ceUCCShotSetActorCount(){
 ///////////////
 
 void ceUCCShotSetActorCount::Undo(){
-	pCameraShot->SetActorCount( pOldCount );
+	pCameraShot->SetActorCount(pOldCount);
 }
 
 void ceUCCShotSetActorCount::Redo(){
-	pCameraShot->SetActorCount( pNewCount );
+	pCameraShot->SetActorCount(pNewCount);
 }

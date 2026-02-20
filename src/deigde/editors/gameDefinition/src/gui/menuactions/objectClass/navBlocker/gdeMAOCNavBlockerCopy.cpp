@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerCopy::gdeMAOCNavBlockerCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Navigation Blocker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class navigation blocker" )
+gdeMAOCNavBlockerCopy::gdeMAOCNavBlockerCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@GameDefinition.Menu.OCNavBlockerCopy.ToolTip")
 {
 }
 
@@ -59,29 +59,25 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Navigation Blocker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker ){
-		return NULL;
+igdeUndo::Ref gdeMAOCNavBlockerCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker){
+		return {};
 	}
 	
 	gdeOCNavigationBlocker * const navBlocker = gameDefinition.GetActiveOCNavigationBlocker();
-	if( ! navBlocker ){
-		return NULL;
+	if(!navBlocker){
+		return {};
 	}
 	
-	deObjectReference clipOCNavigationBlocker;
-	clipOCNavigationBlocker.TakeOver( new gdeOCNavigationBlocker( *navBlocker ) );
+	const gdeOCNavigationBlocker::Ref clipOCNavigationBlocker(gdeOCNavigationBlocker::Ref::New(*navBlocker));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCNavBlocker( ( gdeOCNavigationBlocker* )( deObject* )clipOCNavigationBlocker ) );
-	
-	pWindowMain.GetClipboard().Set( clipData );
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCNavBlocker::Ref::New(clipOCNavigationBlocker));
+	return {};
 }
 
 void gdeMAOCNavBlockerCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL );
+		&& gameDefinition->GetActiveOCNavigationBlocker() != nullptr);
 }

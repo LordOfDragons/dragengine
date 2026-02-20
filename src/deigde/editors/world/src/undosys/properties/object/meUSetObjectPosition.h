@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 
@@ -39,23 +39,27 @@ class meObject;
  * Undo action for setting object position.
  */
 class meUSetObjectPosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUSetObjectPosition>;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;
 	
 public:
 	// constructor, destructor
-	meUSetObjectPosition( meObject *object, const decDVector &newPosition );
+	meUSetObjectPosition(meObject *object, const decDVector &newPosition);
 	
 protected:
-	~meUSetObjectPosition();
+	~meUSetObjectPosition() override;
 	
 public:
 	// management
-	void Undo();
-	void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 // end of include only once

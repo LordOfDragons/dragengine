@@ -33,14 +33,16 @@
  */
 class deoxrDPHTCVivePro : public deoxrDeviceProfile{
 public:
+	using Ref = deTObjectReference<deoxrDPHTCVivePro>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHTCVivePro( deoxrInstance &instance );
+	deoxrDPHTCVivePro(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHTCVivePro();
+	~deoxrDPHTCVivePro() override;
 	/*@}*/
 	
 	
@@ -49,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Suggest bindings. */
-	virtual void SuggestBindings();
+	void SuggestBindings() override;
 	/*@}*/
 };
 

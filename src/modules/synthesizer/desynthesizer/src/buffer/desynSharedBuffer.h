@@ -25,15 +25,16 @@
 #ifndef _DESYNSHAREDBUFFER_H_
 #define _DESYNSHAREDBUFFER_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
  * \brief Shared buffer.
  */
-class desynSharedBuffer{
+class desynSharedBuffer : public deObject{
 private:
-	float *pBuffer;
-	int pSize;
+	decTList<float> pBuffer;
 	bool pInUse;
 	
 	
@@ -44,25 +45,26 @@ public:
 	/** \brief Create shared buffer. */
 	desynSharedBuffer();
 	
+protected:
 	/** \brief Clean up buffer. */
-	~desynSharedBuffer();
+	~desynSharedBuffer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline float *GetBuffer() const{ return pBuffer; }
+	inline float *GetBuffer(){ return pBuffer.GetArrayPointer(); }
 	
 	/** \brief Number of floats in the buffer. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{ return pBuffer.GetCount(); }
 	
 	/**
 	 * \brief Set buffer size.
 	 * \details Resizes buffer to fit new size.
 	 */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** \brief Buffer is in use. */
 	inline bool GetInUse() const{ return pInUse; }
@@ -72,7 +74,7 @@ public:
 	 * \details For use by desynSharedBufferList only. Use desynSharedBuffer::ReleaseBuffer
 	 *          to return the buffer to the list of available shared buffers.
 	 */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	/*@}*/
 };
 

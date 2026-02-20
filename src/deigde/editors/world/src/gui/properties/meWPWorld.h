@@ -25,22 +25,23 @@
 #ifndef _MEWNDPROPWORLD_H_
 #define _MEWNDPROPWORLD_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include "meWPWorldListener.h"
+#include "../../world/meWorld.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWindowProperties;
-class meWPWorldListener;
-class meWorld;
 class mePathFindTestType;
 
 
@@ -49,57 +50,60 @@ class mePathFindTestType;
  * Property window displaying the properties of the world.
  */
 class meWPWorld : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPWorld>;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPWorldListener *pListener;
-	meWorld *pWorld;
+	meWPWorldListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
-	igdeActionContextMenuReference pActionPFTTypes;
-	igdeActionReference pActionPFTTypeAdd;
-	igdeActionReference pActionPFTTypeRemove;
-	igdeActionReference pActionPFTTypeClear;
-	igdeActionReference pActionMusicPlay;
-	igdeActionReference pActionMusicPause;
-	igdeActionReference pActionMusicStop;
-	
-	
-	igdeWidgetReference pEditProperties;
-	
-	igdeEditDVectorReference pEditSize;
-	igdeEditVectorReference pEditGravity;
-	
-	igdeEditDVectorReference pEditPFTStartPosition;
-	igdeButtonReference pBtnPFTStartPosFromCamera;
-	igdeEditDVectorReference pEditPFTGoalPosition;
-	igdeButtonReference pBtnPFTGoalPosFromCamera;
-	igdeTextFieldReference pEditPFTLayer;
-	igdeComboBoxReference pCBPFTSpaceType;
-	igdeTextFieldReference pEditPFTBlockingCost;
-	igdeCheckBoxReference pChkPFTShowPath;
-	igdeComboBoxReference pCBPFTType;
-	igdeButtonReference pBtnPFTTypes;
-	igdeTextFieldReference pEditPFTTypeNumber;
-	igdeTextFieldReference pEditPFTTypeName;
-	igdeTextFieldReference pEditPFTTypeFixCost;
-	igdeTextFieldReference pEditPFTTypeCPM;
+	igdeActionContextMenu::Ref pActionPFTTypes;
+	igdeAction::Ref pActionPFTTypeAdd;
+	igdeAction::Ref pActionPFTTypeRemove;
+	igdeAction::Ref pActionPFTTypeClear;
+	igdeAction::Ref pActionMusicPlay;
+	igdeAction::Ref pActionMusicPause;
+	igdeAction::Ref pActionMusicStop;
 	
 	
-	igdeEditPathReference pEditMusicPath;
-	igdeEditSliderTextReference pEditMusicVolume;
-	igdeButtonReference pBtnMusicPlay;
-	igdeButtonReference pBtnMusicPause;
-	igdeButtonReference pBtnMusicStop;
+	igdeWidget::Ref pEditProperties;
+	
+	igdeEditDVector::Ref pEditSize;
+	igdeEditVector::Ref pEditGravity;
+	
+	igdeEditDVector::Ref pEditPFTStartPosition;
+	igdeButton::Ref pBtnPFTStartPosFromCamera;
+	igdeEditDVector::Ref pEditPFTGoalPosition;
+	igdeButton::Ref pBtnPFTGoalPosFromCamera;
+	igdeTextField::Ref pEditPFTLayer;
+	igdeComboBox::Ref pCBPFTSpaceType;
+	igdeTextField::Ref pEditPFTBlockingCost;
+	igdeCheckBox::Ref pChkPFTShowPath;
+	igdeComboBox::Ref pCBPFTType;
+	igdeButton::Ref pBtnPFTTypes;
+	igdeTextField::Ref pEditPFTTypeNumber;
+	igdeTextField::Ref pEditPFTTypeName;
+	igdeTextField::Ref pEditPFTTypeFixCost;
+	igdeTextField::Ref pEditPFTTypeCPM;
+	
+	
+	igdeEditPath::Ref pEditMusicPath;
+	igdeEditSliderText::Ref pEditMusicVolume;
+	igdeButton::Ref pBtnMusicPlay;
+	igdeButton::Ref pBtnMusicPause;
+	igdeButton::Ref pBtnMusicStop;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPWorld( meWindowProperties &windowProperties );
+	meWPWorld(meWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up . */
-	virtual ~meWPWorld();
+	~meWPWorld() override;
 	
 	
 	
@@ -110,10 +114,10 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Update world. */
 	void UpdateWorld();
@@ -124,7 +128,7 @@ public:
 	/** Update path find test. */
 	void UpdatePathFindTest();
 	
-	/** Active path find test type or NULL if there is none. */
+	/** Active path find test type or nullptr if there is none. */
 	mePathFindTestType *GetActivePathFindTestType() const;
 	
 	/** Update path find test type list. */
@@ -156,7 +160,7 @@ public:
 	void UpdateIdentifierLists();
 	
 	/** Select PFType. */
-	void SelectPFType( mePathFindTestType *type );
+	void SelectPFType(mePathFindTestType *type);
 	
 	
 	
@@ -165,9 +169,9 @@ public:
 	
 	
 	
-	inline igdeAction* GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
-	inline igdeAction* GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
-	inline igdeAction* GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
+	inline const igdeAction::Ref &GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
+	inline const igdeAction::Ref &GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
+	inline const igdeAction::Ref &GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
 };
 
 #endif

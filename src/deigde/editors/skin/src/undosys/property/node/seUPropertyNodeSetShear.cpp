@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetShear::seUPropertyNodeSetShear( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetShear::seUPropertyNodeSetShear(sePropertyNode *node, float newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set shear" );
+	SetShortInfo("@Skin.Undo.NodeSetShear");
 	
 	pOldValue = node->GetShearing();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetShear::~seUPropertyNodeSetShear(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ seUPropertyNodeSetShear::~seUPropertyNodeSetShear(){
 ///////////////
 
 void seUPropertyNodeSetShear::Undo(){
-	pNode->SetShearing( pOldValue );
+	pNode->SetShearing(pOldValue);
 }
 
 void seUPropertyNodeSetShear::Redo(){
-	pNode->SetShearing( pNewValue );
+	pNode->SetShearing(pNewValue);
 }

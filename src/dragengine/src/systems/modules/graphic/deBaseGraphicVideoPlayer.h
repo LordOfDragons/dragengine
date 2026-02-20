@@ -62,7 +62,7 @@ public:
 	 * \brief Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged( bool seeking );
+	virtual void PlayPositionChanged(bool seeking);
 	
 	/** \brief Play state changed. */
 	virtual void PlayStateChanged();

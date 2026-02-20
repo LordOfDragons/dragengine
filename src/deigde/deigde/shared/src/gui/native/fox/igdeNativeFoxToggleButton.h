@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXTOGGLEBUTTON_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeToggleButton.h"
+#include "../../resources/igdeFont.h"
 
 class igdeToggleButton;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native toggleButton.
  */
-class igdeNativeFoxToggleButton : public FXToggleButton{
-	FXDECLARE( igdeNativeFoxToggleButton )
+class igdeNativeFoxToggleButton : public FXToggleButton, public igdeToggleButton::cNativeToggleButton{
+	FXDECLARE(igdeNativeFoxToggleButton)
 	
 protected:
 	igdeNativeFoxToggleButton();
@@ -50,21 +51,21 @@ public:
 	
 private:
 	igdeToggleButton *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	bool *pDeleted;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxToggleButton( igdeToggleButton &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxToggleButton(igdeToggleButton &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxToggleButton();
+	~igdeNativeFoxToggleButton() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxToggleButton* CreateNativeWidget( igdeToggleButton &owner );
+	static igdeNativeFoxToggleButton* CreateNativeWidget(igdeToggleButton &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -77,34 +78,35 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcons();
-	virtual void UpdateEnabled();
-	virtual void UpdateToggled();
+	FXbool canFocus() const override;
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	void UpdateToggled() override;
 	
-	static const char *ButtonText( const igdeToggleButton &owner );
-	static FXIcon *ButtonIconOn( const igdeToggleButton &owner );
-	static FXIcon *ButtonIconOff( const igdeToggleButton &owner );
-	static int ButtonFlags( const igdeToggleButton &owner );
-	static igdeFont *ButtonFont( const igdeToggleButton &owner, const igdeGuiTheme &guitheme );
-	static int ButtonPadLeft( const igdeGuiTheme &guitheme );
-	static int ButtonPadRight( const igdeGuiTheme &guitheme );
-	static int ButtonPadTop( const igdeGuiTheme &guitheme );
-	static int ButtonPadBottom( const igdeGuiTheme &guitheme );
+	static FXString ButtonText(const igdeToggleButton &owner);
+	static FXIcon *ButtonIconOn(const igdeToggleButton &owner);
+	static FXIcon *ButtonIconOff(const igdeToggleButton &owner);
+	static int ButtonFlags(const igdeToggleButton &owner);
+	static igdeFont *ButtonFont(const igdeToggleButton &owner, const igdeGuiTheme &guitheme);
+	static int ButtonPadLeft(const igdeGuiTheme &guitheme);
+	static int ButtonPadRight(const igdeGuiTheme &guitheme);
+	static int ButtonPadTop(const igdeGuiTheme &guitheme);
+	static int ButtonPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxToggleButton igdeNativeToggleButton;
+using igdeNativeToggleButton = igdeNativeFoxToggleButton;
 
 #endif

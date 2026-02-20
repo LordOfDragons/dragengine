@@ -25,15 +25,16 @@
 #ifndef _MEWPADD_H_
 #define _MEWPADD_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include "../../world/meWorld.h"
+#include "meWPAddListener.h"
 
-class meWorld;
-class meWPAddListener;
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
+#include <deigde/gui/event/igdeAction.h>
+
 class meWindowProperties;
 
 
@@ -42,33 +43,36 @@ class meWindowProperties;
  * \brief Add panel.
  */
 class meWPAdd : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPAdd>;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPAddListener *pListener;
+	meWPAddListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	igdeActionReference pActionClassAdd;
-	igdeActionReference pActionClassRemove;
-	igdeActionReference pActionClassClear;
+	igdeAction::Ref pActionClassAdd;
+	igdeAction::Ref pActionClassRemove;
+	igdeAction::Ref pActionClassClear;
 	
-	igdeCheckBoxReference pChkFilterObjects;
-	igdeComboBoxFilterReference pComboObjClass;
-	igdeListBoxReference pListObjClasses;
-	igdeCheckBoxReference pChkObjInclusive;
+	igdeCheckBox::Ref pChkFilterObjects;
+	igdeComboBoxFilter::Ref pComboObjClass;
+	igdeListBox::Ref pListObjClasses;
+	igdeCheckBox::Ref pChkObjInclusive;
 	
-	igdeCheckBoxReference pChkRandomizeYAxis;
+	igdeCheckBox::Ref pChkRandomizeYAxis;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPAdd( meWindowProperties &windowProperties );
+	meWPAdd(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPAdd();
+	~meWPAdd() override;
 	/*@}*/
 	
 	
@@ -77,10 +81,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get world. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update parameters. */
 	void UpdateParameters();
@@ -92,9 +96,9 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionClassAdd() const{ return pActionClassAdd; }
-	inline igdeAction *GetActionClassRemove() const{ return pActionClassRemove; }
-	inline igdeAction *GetActionClassClear() const{ return pActionClassClear; }
+	inline const igdeAction::Ref &GetActionClassAdd() const{ return pActionClassAdd; }
+	inline const igdeAction::Ref &GetActionClassRemove() const{ return pActionClassRemove; }
+	inline const igdeAction::Ref &GetActionClassClear() const{ return pActionClassClear; }
 	/*@}*/
 };
 

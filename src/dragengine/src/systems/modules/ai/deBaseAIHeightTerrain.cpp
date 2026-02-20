@@ -46,41 +46,41 @@ deBaseAIHeightTerrain::~deBaseAIHeightTerrain(){
 void deBaseAIHeightTerrain::ParametersChanged(){
 }
 
-void deBaseAIHeightTerrain::SectorAdded( deHeightTerrainSector* ){
+void deBaseAIHeightTerrain::SectorAdded(deHeightTerrainSector*){
 }
 
-void deBaseAIHeightTerrain::SectorRemoved( int ){
+void deBaseAIHeightTerrain::SectorRemoved(int){
 }
 
 void deBaseAIHeightTerrain::AllSectorsRemoved(){
 }
 
-void deBaseAIHeightTerrain::SectorChanged( int ){
+void deBaseAIHeightTerrain::SectorChanged(int){
 }
 
-void deBaseAIHeightTerrain::HeightChanged( const decPoint &, const decPoint &,
-const decPoint &, const decPoint & ){
+void deBaseAIHeightTerrain::HeightChanged(const decPoint &, const decPoint &,
+const decPoint &, const decPoint &){
 }
 
 
 
-void deBaseAIHeightTerrain::NavSpaceAdded( int, deHeightTerrainNavSpace* ){
+void deBaseAIHeightTerrain::NavSpaceAdded(int, deHeightTerrainNavSpace*){
 }
 
-void deBaseAIHeightTerrain::NavSpaceRemoved( int, int ){
+void deBaseAIHeightTerrain::NavSpaceRemoved(int, int){
 }
 
-void deBaseAIHeightTerrain::AllNavSpacesRemoved( int ){
+void deBaseAIHeightTerrain::AllNavSpacesRemoved(int){
 }
 
-void deBaseAIHeightTerrain::NavSpaceLayerChanged( int, int ){
+void deBaseAIHeightTerrain::NavSpaceLayerChanged(int, int){
 }
 
-void deBaseAIHeightTerrain::NavSpaceTypeChanged( int, int ){
+void deBaseAIHeightTerrain::NavSpaceTypeChanged(int, int){
 }
 
-void deBaseAIHeightTerrain::NavSpaceSnappingChanged( int, int ){
+void deBaseAIHeightTerrain::NavSpaceSnappingChanged(int, int){
 }
 
-void deBaseAIHeightTerrain::NavSpaceLayoutChanged( int, int ){
+void deBaseAIHeightTerrain::NavSpaceLayoutChanged(int, int){
 }

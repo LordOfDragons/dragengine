@@ -28,10 +28,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,12 +39,16 @@ class gdeObjectClass;
  * \brief Undo action object class environment map probe set shape influence.
  */
 class gdeUOCEnvMapProbeSetShapeInfluence : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+public:
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetShapeInfluence>;
 	
-	decShapeList pOldValue;
-	decShapeList pNewValue;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
+	
+	decShape::List pOldValue;
+	decShape::List pNewValue;
 	
 	
 	
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetShapeInfluence( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, const decShapeList &newValue );
+	gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, const decShape::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCEnvMapProbeSetShapeInfluence();
+	~gdeUOCEnvMapProbeSetShapeInfluence() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

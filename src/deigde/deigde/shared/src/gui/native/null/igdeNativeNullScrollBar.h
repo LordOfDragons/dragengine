@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLSCROLLBAR_H_
 #define _IGDENATIVENULLSCROLLBAR_H_
 
+#include "../../igdeScrollBar.h"
+
 class igdeScrollBar;
 
 
 /**
  * Null scroll bar.
  */
-class igdeNativeNullScrollBar{
+class igdeNativeNullScrollBar : public igdeScrollBar::cNativeScrollBar{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullScrollBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullScrollBar* CreateNativeWidget( igdeScrollBar &owner );
+	static igdeNativeNullScrollBar* CreateNativeWidget(igdeScrollBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,9 +57,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
 	/*@}*/
 };
 

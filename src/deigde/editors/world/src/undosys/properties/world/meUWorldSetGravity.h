@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -36,6 +36,10 @@ class meWorld;
  * Undo action world set gravity.
  */
 class meUWorldSetGravity : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUWorldSetGravity>;
+	
+	
 private:
 	meWorld *pWorld;
 	
@@ -48,11 +52,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	meUWorldSetGravity( meWorld *world, const decVector &newValue );
+	meUWorldSetGravity(meWorld *world, const decVector &newValue);
 	
 protected:
 	/** Clean up undo object. */
-	virtual ~meUWorldSetGravity();
+
+protected:
+	~meUWorldSetGravity() override;
+
+public:
 	/*@}*/
 	
 	
@@ -61,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

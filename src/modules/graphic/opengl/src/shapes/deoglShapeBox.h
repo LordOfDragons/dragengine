@@ -39,20 +39,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	deoglShapeBox( deoglRenderThread &renderThread );
+	deoglShapeBox(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
-	virtual ~deoglShapeBox();
+	~deoglShapeBox() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Calculate matrix for box parameters. */
-	void CalcMatrix( decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector  &halfExtends );
+	void CalcMatrix(decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector  &halfExtends);
 	
 	/** Add lines data. */
-	virtual void AddVBOLines( sVBOData *data );
+	void AddVBOLines(sVBOData *data) override;
 	/** Add faces data. */
-	virtual void AddVBOFaces( sVBOData *data );
+	void AddVBOFaces(sVBOData *data) override;
 	/*@}*/
 };
 

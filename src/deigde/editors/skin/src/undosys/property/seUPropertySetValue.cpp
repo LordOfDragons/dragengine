@@ -38,24 +38,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValue::seUPropertySetValue( seProperty *property, float newValue ){
-	if( ! property ) DETHROW( deeInvalidParam );
+seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
+	if(!property) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
-	SetShortInfo( "Property Set Value" );
+	SetShortInfo("@Skin.Undo.PropertySetValue");
 	
 	pOldValue = property->GetValue();
 	pNewValue = newValue;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetValue::~seUPropertySetValue(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -64,9 +60,9 @@ seUPropertySetValue::~seUPropertySetValue(){
 ///////////////
 
 void seUPropertySetValue::Undo(){
-	pProperty->SetValue( pOldValue );
+	pProperty->SetValue(pOldValue);
 }
 
 void seUPropertySetValue::Redo(){
-	pProperty->SetValue( pNewValue );
+	pProperty->SetValue(pNewValue);
 }

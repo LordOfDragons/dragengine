@@ -41,41 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetOffset::gdeUOCCTextureSetOffset( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, const decVector2 &newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pTexture( NULL )
+gdeUOCCTextureSetOffset::gdeUOCCTextureSetOffset(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decVector2 &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! component || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component texture set offset" );
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetOffset");
 	
 	pOldValue = texture->GetOffset();
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCTextureSetOffset::~gdeUOCCTextureSetOffset(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -84,11 +68,11 @@ gdeUOCCTextureSetOffset::~gdeUOCCTextureSetOffset(){
 ///////////////
 
 void gdeUOCCTextureSetOffset::Undo(){
-	pTexture->SetOffset( pOldValue );
-	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
+	pTexture->SetOffset(pOldValue);
+	pObjectClass->NotifyComponentTextureChanged(pComponent, pTexture);
 }
 
 void gdeUOCCTextureSetOffset::Redo(){
-	pTexture->SetOffset( pNewValue );
-	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
+	pTexture->SetOffset(pNewValue);
+	pObjectClass->NotifyComponentTextureChanged(pComponent, pTexture);
 }

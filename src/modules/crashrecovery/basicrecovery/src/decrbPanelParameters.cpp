@@ -24,25 +24,27 @@
 
 // includes
 #include <stdint.h>
+
 #include "decrbPanelParameters.h"
 #include "decrbWindowMain.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/systems/modules/deLoadableModule.h"
-#include "dragengine/systems/modules/deModuleParameter.h"
-#include "dragengine/systems/modules/deLoadableModule.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/systems/modules/deModuleParameter.h>
 
 
 
 // Events
 ///////////
-FXDEFMAP( decrbPanelParameters ) decrbPanelParametersMap[] = {
-	FXMAPFUNC( SEL_COMMAND, decrbPanelParameters::ID_CBMODULE, decrbPanelParameters::onCBModuleChanged ),
-	FXMAPFUNC( SEL_COMMAND, decrbPanelParameters::ID_CBPARAMETER, decrbPanelParameters::onCBParameterChanged ),
-	FXMAPFUNC( SEL_COMMAND, decrbPanelParameters::ID_BTNSET, decrbPanelParameters::onBtnSetCommand ),
-	FXMAPFUNC( SEL_COMMAND, decrbPanelParameters::ID_BTNRESET, decrbPanelParameters::onBtnResetCommand ),
+FXDEFMAP(decrbPanelParameters) decrbPanelParametersMap[] = {
+	FXMAPFUNC(SEL_COMMAND, decrbPanelParameters::ID_CBMODULE, decrbPanelParameters::onCBModuleChanged),
+	FXMAPFUNC(SEL_COMMAND, decrbPanelParameters::ID_CBPARAMETER, decrbPanelParameters::onCBParameterChanged),
+	FXMAPFUNC(SEL_COMMAND, decrbPanelParameters::ID_BTNSET, decrbPanelParameters::onBtnSetCommand),
+	FXMAPFUNC(SEL_COMMAND, decrbPanelParameters::ID_BTNRESET, decrbPanelParameters::onBtnResetCommand),
 };
 
 
@@ -50,8 +52,8 @@ FXDEFMAP( decrbPanelParameters ) decrbPanelParametersMap[] = {
 // Sorting
 ////////////
 
-static FXint fSortClasses( const FXListItem *item1, const FXListItem *item2 ){
-	return strcmp( item1->getText().text(), item2->getText().text() );
+static FXint fSortClasses(const FXListItem *item1, const FXListItem *item2){
+	return strcmp(item1->getText().text(), item2->getText().text());
 }
 
 
@@ -59,76 +61,75 @@ static FXint fSortClasses( const FXListItem *item1, const FXListItem *item2 ){
 // Class decrbPanelParameters
 ////////////////////////////
 	
-FXIMPLEMENT( decrbPanelParameters, FXVerticalFrame, decrbPanelParametersMap, ARRAYNUMBER( decrbPanelParametersMap ) )
+FXIMPLEMENT(decrbPanelParameters, FXVerticalFrame, decrbPanelParametersMap, ARRAYNUMBER(decrbPanelParametersMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-decrbPanelParameters::decrbPanelParameters(){ }
+decrbPanelParameters::decrbPanelParameters(){}
 
-decrbPanelParameters::decrbPanelParameters( decrbWindowMain *windowMain, FXComposite *container ) :
-FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5 ){
-	if( ! windowMain ) DETHROW( deeInvalidParam );
+decrbPanelParameters::decrbPanelParameters(decrbWindowMain *windowMain, FXComposite *container) :
+FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
+	if(!windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
 	// prepare
 	pWndMain = windowMain;
 	pParameterInfo = new deModuleParameter;
-	if( ! pParameterInfo ) DETHROW( deeOutOfMemory );
 	
 	// module selection
-	FXHorizontalFrame *frameLine = new FXHorizontalFrame( this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Module:" );
-	pCBModule = new FXComboBox( frameLine, 10, this, ID_CBMODULE, FRAME_SUNKEN | LAYOUT_FILL_X );
-	pCBModule->setEditable( false );
-	pCBModule->setNumVisible( 10 );
-	pCBModule->setSortFunc( fSortClasses );
+	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Module:");
+	pCBModule = new FXComboBox(frameLine, 10, this, ID_CBMODULE, FRAME_SUNKEN | LAYOUT_FILL_X);
+	pCBModule->setEditable(false);
+	pCBModule->setNumVisible(10);
+	pCBModule->setSortFunc(fSortClasses);
 	
 	// parameter selection
-	frameLine = new FXHorizontalFrame( this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Parameter:" );
-	pCBParameter = new FXComboBox( frameLine, 10, this, ID_CBPARAMETER, FRAME_SUNKEN | LAYOUT_FILL_X );
-	pCBParameter->setEditable( false );
-	pCBParameter->setNumVisible( 10 );
-	pCBParameter->setSortFunc( fSortClasses );
+	frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Parameter:");
+	pCBParameter = new FXComboBox(frameLine, 10, this, ID_CBPARAMETER, FRAME_SUNKEN | LAYOUT_FILL_X);
+	pCBParameter->setEditable(false);
+	pCBParameter->setNumVisible(10);
+	pCBParameter->setSortFunc(fSortClasses);
 	
 	// parameter information
-	FXGroupBox *groupBox = new FXGroupBox( this, "Parameter:",
+	FXGroupBox *groupBox = new FXGroupBox(this, "Parameter:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	FXVerticalFrame *frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Description:" );
-	pEditDescription = new FXText( frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
-		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Description:");
+	pEditDescription = new FXText(frameLine, nullptr, 0, FRAME_SUNKEN | TEXT_READONLY
+		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Type:" );
-	pEditType = new FXTextField( frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
-		| LAYOUT_FILL_X );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Type:");
+	pEditType = new FXTextField(frameLine, 10, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
+		| LAYOUT_FILL_X);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Allowed Values:" );
-	pEditAllowedValues = new FXText( frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
-		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Allowed Values:");
+	pEditAllowedValues = new FXText(frameLine, nullptr, 0, FRAME_SUNKEN | TEXT_READONLY
+		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Current Value:" );
-	pEditValue = new FXTextField( frameLine, 10, NULL, 0, FRAME_SUNKEN );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Current Value:");
+	pEditValue = new FXTextField(frameLine, 10, nullptr, 0, FRAME_SUNKEN);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	pBtnSet = new FXButton( frameLine, "Set Parameter", NULL, this, ID_BTNSET, BUTTON_NORMAL );
-	pBtnReset = new FXButton( frameLine, "Reset Parameter", NULL, this, ID_BTNRESET, BUTTON_NORMAL );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	pBtnSet = new FXButton(frameLine, "Set Parameter", nullptr, this, ID_BTNSET, BUTTON_NORMAL);
+	pBtnReset = new FXButton(frameLine, "Reset Parameter", nullptr, this, ID_BTNRESET, BUTTON_NORMAL);
 	
 	// load the lists
 	UpdateModulesList();
@@ -137,7 +138,7 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 }
 
 decrbPanelParameters::~decrbPanelParameters(){
-	if( pParameterInfo ) delete pParameterInfo;
+	if(pParameterInfo) delete pParameterInfo;
 }
 
 
@@ -147,73 +148,70 @@ decrbPanelParameters::~decrbPanelParameters(){
 
 void decrbPanelParameters::UpdateParameter(){
 	int selection = pCBModule->getCurrentItem();
-	deBaseModule *module = NULL;
-	int i, count;
+	deBaseModule *module = nullptr;
 	FXString text;
 	
-	if( selection != -1 ){
+	if(selection != -1){
 		module = pWndMain->GetEngine()->GetModuleSystem()->
-			GetModuleNamed( pCBModule->getItemText( selection ).text() )->GetModule();
+			GetModuleNamed(pCBModule->getItemText(selection).text())->GetModule();
 		selection = pCBParameter->getCurrentItem();
 	}
 	
-	if( selection == -1 ){
-		pEditDescription->setText( "?" );
-		pEditType->setText( "?" );
-		pEditAllowedValues->setText( "?" );
-		pEditValue->setText( "?" );
+	if(selection == -1){
+		pEditDescription->setText("?");
+		pEditType->setText("?");
+		pEditAllowedValues->setText("?");
+		pEditValue->setText("?");
 		
 		pBtnSet->disable();
 		pBtnReset->disable();
 		
 	}else{
-		const decString name( pCBParameter->getText().text() );
-		module->GetParameterInfo( module->IndexOfParameterNamed( name ), *pParameterInfo );
+		const decString name(pCBParameter->getText().text());
+		module->GetParameterInfo(module->IndexOfParameterNamed(name), *pParameterInfo);
 		
-		pEditDescription->setText( pParameterInfo->GetDescription().GetString() );
+		pEditDescription->setText(pParameterInfo->GetDescription().GetString());
 		
-		switch( pParameterInfo->GetType() ){
+		switch(pParameterInfo->GetType()){
 		case deModuleParameter::eptBoolean:
-			pEditType->setText( "Boolean" );
-			pEditAllowedValues->setText( "Boolean value: 1 or 0" );
+			pEditType->setText("Boolean");
+			pEditAllowedValues->setText("Boolean value: 1 or 0");
 			break;
 			
 		case deModuleParameter::eptNumeric:
-			pEditType->setText( "Numeric" );
-			pEditAllowedValues->setText( "Numeric value." );
+			pEditType->setText("Numeric");
+			pEditAllowedValues->setText("Numeric value.");
 			break;
 			
 		case deModuleParameter::eptRanged:
-			pEditType->setText( "Ranged" );
-			text.format( "Ranged value from %g to %g step size %g",
+			pEditType->setText("Ranged");
+			text.format("Ranged value from %g to %g step size %g",
 				pParameterInfo->GetMinimumValue(), pParameterInfo->GetMaximumValue(),
-				pParameterInfo->GetValueStepSize() );
-			pEditAllowedValues->setText( text );
+				pParameterInfo->GetValueStepSize());
+			pEditAllowedValues->setText(text);
 			break;
 			
 		case deModuleParameter::eptSelection:{
-			pEditType->setText( "Selection" );
+			pEditType->setText("Selection");
 			text = "A value from this list:\n";
-			count = pParameterInfo->GetSelectionEntryCount();
-			for( i=0; i<count; i++ ){
-				const deModuleParameter::SelectionEntry &entry = pParameterInfo->GetSelectionEntryAt( i );
-				text.append( entry.value );
-				if( i < count - 1 ) text.append( ", " );
-			}
-			pEditAllowedValues->setText( text );
+			pParameterInfo->GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
+				text.append(entry.value);
+				if(&pParameterInfo->GetSelectionEntries().Last() != &entry) text.append(", ");
+			});
+			pEditAllowedValues->setText(text);
 			}break;
 			
 		case deModuleParameter::eptString:
-			pEditType->setText( "String" );
-			pEditAllowedValues->setText( "String value." );
+			pEditType->setText("String");
+			pEditAllowedValues->setText("String value.");
 			break;
 			
 		default:
-			pEditType->setText( "Unknown Type" );
-			pEditAllowedValues->setText( "Unknown" );
+			pEditType->setText("Unknown Type");
+			pEditAllowedValues->setText("Unknown");
 		}
 		
-		pEditValue->setText( module->GetParameterValue( name ).GetString() );
+		pEditValue->setText(module->GetParameterValue(name).GetString());
 		
 		pBtnSet->enable();
 		pBtnReset->enable();
@@ -223,21 +221,21 @@ void decrbPanelParameters::UpdateParameter(){
 void decrbPanelParameters::UpdateParametersList(){
 	int selection = pCBModule->getCurrentItem();
 	deLoadableModule *loadableModule;
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	int i, count;
 	
-	if( selection != -1 ){
+	if(selection != -1){
 		loadableModule = pWndMain->GetEngine()->GetModuleSystem()->
-			GetModuleNamed( pCBModule->getItemText( selection ).text() );
+			GetModuleNamed(pCBModule->getItemText(selection).text());
 		module = loadableModule->GetModule();
 	}
 	
 	pCBParameter->clearItems();
-	if( module ){
+	if(module){
 		count = module->GetParameterCount();
-		for( i=0; i<count; i++ ){
-			module->GetParameterInfo( i, *pParameterInfo );
-			pCBParameter->appendItem( pParameterInfo->GetName().GetString() );
+		for(i=0; i<count; i++){
+			module->GetParameterInfo(i, *pParameterInfo);
+			pCBParameter->appendItem(pParameterInfo->GetName().GetString());
 		}
 		pCBParameter->sortItems();
 	}
@@ -246,14 +244,14 @@ void decrbPanelParameters::UpdateParametersList(){
 void decrbPanelParameters::UpdateModulesList(){
 	deEngine *engine = pWndMain->GetEngine();
 	deModuleSystem *modSys = engine->GetModuleSystem();
-	int i, count = modSys->GetModuleCount();
+	int i, count = modSys->GetModules().GetCount();
 	deLoadableModule *loadableModule;
 	
 	pCBModule->clearItems();
-	for( i=0; i<count; i++ ){
-		loadableModule = modSys->GetModuleAt( i );
-		if( pCBModule->findItem( loadableModule->GetName().GetString() ) == -1 ){
-			pCBModule->appendItem( loadableModule->GetName().GetString() );
+	for(i=0; i<count; i++){
+		loadableModule = modSys->GetModules().GetAt(i);
+		if(pCBModule->findItem(loadableModule->GetName().GetString()) == -1){
+			pCBModule->appendItem(loadableModule->GetName().GetString());
 		}
 	}
 	pCBModule->sortItems();
@@ -264,57 +262,57 @@ void decrbPanelParameters::UpdateModulesList(){
 // Events
 ///////////
 
-long decrbPanelParameters::onCBModuleChanged( FXObject* , FXSelector, void* ){
+long decrbPanelParameters::onCBModuleChanged(FXObject* , FXSelector, void*){
 	UpdateParametersList();
 	UpdateParameter();
 	return 1;
 }
 
-long decrbPanelParameters::onCBParameterChanged( FXObject* , FXSelector, void* ){
+long decrbPanelParameters::onCBParameterChanged(FXObject* , FXSelector, void*){
 	UpdateParameter();
 	return 1;
 }
 
-long decrbPanelParameters::onBtnSetCommand( FXObject* , FXSelector, void* ){
+long decrbPanelParameters::onBtnSetCommand(FXObject* , FXSelector, void*){
 	int selection = pCBModule->getCurrentItem();
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	FXString text;
 	
-	if( selection != -1 ){
+	if(selection != -1){
 		module = pWndMain->GetEngine()->GetModuleSystem()->
-			GetModuleNamed( pCBModule->getItemText( selection ).text() )->GetModule();
+			GetModuleNamed(pCBModule->getItemText(selection).text())->GetModule();
 		selection = pCBParameter->getCurrentItem();
 	}
 	
-	if( selection != -1 ){
-		const decString name( pCBParameter->getText().text() );
+	if(selection != -1){
+		const decString name(pCBParameter->getText().text());
 		
 		try{
-			module->SetParameterValue( name, pEditValue->getText().text() );
-		}catch( const deException &e ){
-			FXMessageBox::error( this, FX::MBOX_OK, "Set Parameter failed", "%s",
-				e.FormatOutput().Join( "\n" ).GetString() );
+			module->SetParameterValue(name, pEditValue->getText().text());
+		}catch(const deException &e){
+			FXMessageBox::error(this, FX::MBOX_OK, "Set Parameter failed", "%s",
+				DEJoin(e.FormatOutput(), "\n").GetString());
 		}
 		
-		pEditValue->setText( module->GetParameterValue( name ).GetString() );
+		pEditValue->setText(module->GetParameterValue(name).GetString());
 	}
 	
 	return 1;
 }
 
-long decrbPanelParameters::onBtnResetCommand( FXObject* , FXSelector, void* ){
+long decrbPanelParameters::onBtnResetCommand(FXObject* , FXSelector, void*){
 	int selection = pCBModule->getCurrentItem();
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
-	if( selection != -1 ){
+	if(selection != -1){
 		module = pWndMain->GetEngine()->GetModuleSystem()->
-			GetModuleNamed( pCBModule->getItemText( selection ).text() )->GetModule();
+			GetModuleNamed(pCBModule->getItemText(selection).text())->GetModule();
 		selection = pCBParameter->getCurrentItem();
 	}
 	
-	if( selection != -1 ){
-		const decString name( pCBParameter->getText().text() );
-		pEditValue->setText( module->GetParameterValue( name ).GetString() );
+	if(selection != -1){
+		const decString name(pCBParameter->getText().text());
+		pEditValue->setText(module->GetParameterValue(name).GetString());
 	}
 	
 	return 1;

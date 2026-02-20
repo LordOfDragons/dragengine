@@ -63,24 +63,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHeightTerrainPFLayer::meHeightTerrainPFLayer( deEngine *engine ) :
-pHTSector( NULL ),
-pEngine( engine ),
-pMask( NULL ),
-pMaskChanged( false ),
-pMaskSaved( false ),
-pTypes( NULL ),
-pTypeCount( 0 ),
-pTypeSize( 0 )
+meHeightTerrainPFLayer::meHeightTerrainPFLayer(deEngine *engine) :
+pHTSector(nullptr),
+pEngine(engine),
+pMask(nullptr),
+pMaskChanged(false),
+pMaskSaved(false)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
 		pResizeMask();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -95,14 +92,14 @@ meHeightTerrainPFLayer::~meHeightTerrainPFLayer(){
 // Management
 ///////////////
 
-void meHeightTerrainPFLayer::SetHTSector( meHeightTerrainSector *htsector ){
-	if( htsector == pHTSector ){
+void meHeightTerrainPFLayer::SetHTSector(meHeightTerrainSector *htsector){
+	if(htsector == pHTSector){
 		return;
 	}
 	
 	pHTSector = htsector;
 	
-	if( htsector ){
+	if(htsector){
 		pResizeMask();
 		RebuildInstances();
 	}
@@ -110,132 +107,127 @@ void meHeightTerrainPFLayer::SetHTSector( meHeightTerrainSector *htsector ){
 
 
 
-void meHeightTerrainPFLayer::SetPathMask( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void meHeightTerrainPFLayer::SetPathMask(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPathMask.Equals( path ) ){
+	if(pPathMask.Equals(path)){
 		return;
 	}
 	
 	pPathMask = path;
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetChanged( true );
-		pHTSector->GetHeightTerrain()->SetDepChanged( true );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetChanged(true);
+		pHTSector->GetHeightTerrain()->SetDepChanged(true);
 	}
 }
 
-void meHeightTerrainPFLayer::SetMaskChanged( bool changed ){
-	if( changed == pMaskChanged ){
+void meHeightTerrainPFLayer::SetMaskChanged(bool changed){
+	if(changed == pMaskChanged){
 		return;
 	}
 	
 	pMaskChanged = changed;
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetDepChanged( true );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetDepChanged(true);
 	}
 }
 
-void meHeightTerrainPFLayer::SetMaskSaved( bool saved ){
+void meHeightTerrainPFLayer::SetMaskSaved(bool saved){
 	pMaskSaved = saved;
 }
 
 void meHeightTerrainPFLayer::NotifyMaskChanged(){
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
-	pHTSector->GetHeightTerrain()->SetDepChanged( true );
+	pHTSector->GetHeightTerrain()->SetDepChanged(true);
 	//pHTSector->GetHeightTerrain()->GetWorld().NotifyHTSPropFieldMaskChanged( pHTSector, this );
 }
 
 void meHeightTerrainPFLayer::LoadMaskFromImage(){
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
 	const int resolution = pHTSector->GetHeightTerrain()->GetSectorResolution();
-	deImage *image = NULL;
+	deImage::Ref image;
 	decPath path;
 	int x, y, i;
 	
-	if( ! pPathMask.IsEmpty() ){
-		path.SetFromUnix( pPathMask.GetString() );
+	if(!pPathMask.IsEmpty()){
+		path.SetFromUnix(pPathMask.GetString());
 		
-		if( pEngine->GetVirtualFileSystem()->ExistsFile( path ) ){
+		if(pEngine->GetVirtualFileSystem()->ExistsFile(path)){
 			try{
-				image = pEngine->GetImageManager()->LoadImage( pPathMask.GetString(), "/" );
+				image = pEngine->GetImageManager()->LoadImage(pPathMask.GetString(), "/");
 				
-				if( image ){
-					if( image->GetComponentCount() != 1 || image->GetWidth() != resolution || image->GetHeight() != resolution ){
-						DETHROW( deeInvalidParam );
+				if(image){
+					if(image->GetComponentCount() != 1 || image->GetWidth() != resolution || image->GetHeight() != resolution){
+						DETHROW(deeInvalidParam);
 						// TODO tell the user this is not going to work
 					}
 					
-					if( image->GetBitCount() == 8 ){
+					if(image->GetBitCount() == 8){
 						sGrayscale8 *data = image->GetDataGrayscale8();
 						i = 0;
-						for( y=0; y<resolution; y++ ){
-							for( x=0; x<resolution; x++ ){
-								pMask->SetValueAt( x, y, data[ i++ ].value );
+						for(y=0; y<resolution; y++){
+							for(x=0; x<resolution; x++){
+								pMask->SetValueAt(x, y, data[i++].value);
 							}
 						}
 						
-					}else if( image->GetBitCount() == 16 ){
+					}else if(image->GetBitCount() == 16){
 						sGrayscale16 *data = image->GetDataGrayscale16();
 						
 						i = 0;
-						for( y=0; y<resolution; y++ ){
-							for( x=0; x<resolution; x++ ){
-								pMask->SetValueAt( x, y, data[ i++ ].value >> 8 );
+						for(y=0; y<resolution; y++){
+							for(x=0; x<resolution; x++){
+								pMask->SetValueAt(x, y, data[i++].value >> 8);
 							}
 						}
 						
-					}else if( image->GetBitCount() == 32 ){
+					}else if(image->GetBitCount() == 32){
 						sGrayscale32 *data = image->GetDataGrayscale32();
 						float value;
 						
 						i = 0;
-						for( y=0; y<resolution; y++ ){
-							for( x=0; x<resolution; x++ ){
-								value = data[ i++ ].value;
+						for(y=0; y<resolution; y++){
+							for(x=0; x<resolution; x++){
+								value = data[i++].value;
 								
-								if( value < 0.0f ){
-									pMask->SetValueAt( x, y, 0 );
+								if(value < 0.0f){
+									pMask->SetValueAt(x, y, 0);
 									
-								}else if( value > 1.0f ){
-									pMask->SetValueAt( x, y, 255 );
+								}else if(value > 1.0f){
+									pMask->SetValueAt(x, y, 255);
 									
 								}else{
-									pMask->SetValueAt( x, y, ( int )( value * 255.0f ) );
+									pMask->SetValueAt(x, y, (int)(value * 255.0f));
 								}
 							}
 						}
 					}
-					
-					image->FreeReference();
 				}
 				
-			}catch( const deException &e ){
-				if( image ){
-					image->FreeReference();
-					image = NULL;
-				}
-				if( pHTSector && pHTSector->GetHeightTerrain() ){
-					pHTSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				image = nullptr;
+				if(pHTSector && pHTSector->GetHeightTerrain()){
+					pHTSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
 				}
 			}
 		}
 	}
 	
-	SetMaskSaved( image != NULL );
-	SetMaskChanged( true );
+	SetMaskSaved(image.IsNotNull());
+	SetMaskChanged(true);
 	
-	if( pHTSector ){
-		pHTSector->InvalidatePropFields( decPoint(), decPoint( resolution, resolution ) );
+	if(pHTSector){
+		pHTSector->InvalidatePropFields(decPoint(), decPoint(resolution, resolution));
 	}
 	
 	NotifyMaskChanged();
@@ -256,103 +248,42 @@ void meHeightTerrainPFLayer::RebuildInstances(){
 // Types
 //////////
 
-meHeightTerrainPFType *meHeightTerrainPFLayer::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pTypes[ index ];
-}
-
-int meHeightTerrainPFLayer::IndexOfType( meHeightTerrainPFType *type ) const{
-	if( ! type ){
-		DETHROW( deeInvalidParam );
-	}
+void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
+	DEASSERT_NOTNULL(type)
+	pTypes.AddOrThrow(type);
+	type->SetPFLayer(this);
 	
-	int i;
-	for( i=0; i<pTypeCount; i++ ){
-		if( type == pTypes[ i ] ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool meHeightTerrainPFLayer::HasType( meHeightTerrainPFType *type ) const{
-	if( ! type ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int i;
-	for( i=0; i<pTypeCount; i++ ){
-		if( type == pTypes[ i ] ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-void meHeightTerrainPFLayer::AddType( meHeightTerrainPFType *type ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pTypeCount == pTypeSize ){
-		const int newSize = pTypeCount * 3 / 2 + 1;
-		meHeightTerrainPFType ** const newArray = new meHeightTerrainPFType*[ newSize ];
-		if( pTypes ){
-			memcpy( newArray, pTypes, sizeof( meHeightTerrainPFType* ) * pTypeSize );
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeSize = newSize;
-	}
-	
-	pTypes[ pTypeCount ] = type;
-	pTypeCount++;
-	
-	type->AddReference();
-	type->SetPFLayer( this );
-	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetChanged( true );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetChanged(true);
 		pHTSector->GetHeightTerrain()->RebuildVegetationPropFieldTypes();
 		//pHTSector->GetHeightTerrain()->GetWorld().NotifyHTSPFTypeCountChanged( pHTSector, this );
 	}
 }
 
-void meHeightTerrainPFLayer::RemoveType( meHeightTerrainPFType *type ){
-	const int index = IndexOfType( type );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
-	}
+void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
+	const meHeightTerrainPFType::Ref guard(type);
+	pTypes.RemoveOrThrow(type);
 	
-	int i;
-	for( i=index+1; i<pTypeCount; i++ ){
-		pTypes[ i - 1 ] = pTypes[ i ];
-	}
-	pTypeCount--;
+	type->SetPFLayer(nullptr);
 	
-	type->SetPFLayer( NULL );
-	type->FreeReference();
-	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetChanged( true );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetChanged(true);
 		pHTSector->GetHeightTerrain()->RebuildVegetationPropFieldTypes();
 		//pHTSector->GetHeightTerrain()->GetWorld().NotifyHTSPFTypeCountChanged( pHTSector, this );
 	}
 }
 
 void meHeightTerrainPFLayer::RemoveAllTypes(){
-	while( pTypeCount > 0 ){
-		pTypeCount--;
-		pTypes[ pTypeCount ]->SetPFLayer( NULL );
-		pTypes[ pTypeCount ]->FreeReference();
+	if(pTypes.IsEmpty()){
+		return;
 	}
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetChanged( true );
+	pTypes.Visit([](meHeightTerrainPFType &type){
+		type.SetPFLayer(nullptr);
+	});
+	
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetChanged(true);
 		pHTSector->GetHeightTerrain()->RebuildVegetationPropFieldTypes();
 		//pHTSector->GetHeightTerrain()->GetWorld().NotifyHTSPFTypeCountChanged( pHTSector, this );
 	}
@@ -366,34 +297,31 @@ void meHeightTerrainPFLayer::RemoveAllTypes(){
 
 void meHeightTerrainPFLayer::pCleanUp(){
 	RemoveAllTypes();
-	if( pTypes ){
-		delete [] pTypes;
-	}
 	
-	if( pMask ){
+	if(pMask){
 		delete pMask;
 	}
 }
 
 void meHeightTerrainPFLayer::pResizeMask(){
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
 	const int resolution = pHTSector->GetHeightTerrain()->GetSectorResolution();
-	meByteArray *newMask = NULL;
+	meByteArray *newMask = nullptr;
 	try{
-		newMask = new meByteArray( resolution, resolution );
-		newMask->SetAll( 255 );
+		newMask = new meByteArray(resolution, resolution);
+		newMask->SetAll(255);
 		
-		if( pMask ){
+		if(pMask){
 			delete pMask;
 		}
 		
 		pMask = newMask;
 		
-	}catch( const deException & ){
-		if( newMask ){
+	}catch(const deException &){
+		if(newMask){
 			delete newMask;
 		}
 		throw;

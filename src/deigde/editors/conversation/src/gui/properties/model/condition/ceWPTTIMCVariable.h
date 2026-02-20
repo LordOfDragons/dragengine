@@ -34,15 +34,18 @@
  */
 class ceWPTTIMCVariable : public ceWPTTIMCondition{
 public:
+	using Ref = deTObjectReference<ceWPTTIMCVariable>;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCVariable( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionVariable *condition );
+	ceWPTTIMCVariable(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionVariable *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCVariable();
+	~ceWPTTIMCVariable() override;
 	/*@}*/
 	
 	
@@ -52,14 +55,14 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionVariable *GetConditionVariable() const{
-		return ( ceCConditionVariable* )GetCondition();
+		return (ceCConditionVariable*)GetCondition().Pointer();
 	}
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText( ceCConditionVariable::eOperators anOperator );
+	static const char *GetOperatorText(ceCConditionVariable::eOperators anOperator);
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -36,6 +36,12 @@ class igdeEditPath;
  * \brief IGDE UI EditPath Listener.
  */
 class DE_DLL_EXPORT igdeEditPathListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditPathListener>;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditPathListener();
+	~igdeEditPathListener() override;
 	/*@}*/
 	
 	
@@ -62,7 +68,7 @@ public:
 	/**
 	 * \brief EditPath path changed.
 	 */
-	virtual void OnEditPathChanged( igdeEditPath *editPath );
+	virtual void OnEditPathChanged(igdeEditPath *editPath);
 	/*@}*/
 };
 

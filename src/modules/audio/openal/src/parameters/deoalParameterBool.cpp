@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalParameterBool::deoalParameterBool( deAudioOpenAL &oal ) : deoalParameter( oal )
+deoalParameterBool::deoalParameterBool(deAudioOpenAL &oal) : deoalParameter(oal)
 {
-	SetType( deModuleParameter::eptBoolean );
+	SetType(deModuleParameter::eptBoolean);
 }
 
 deoalParameterBool::~deoalParameterBool(){
@@ -55,7 +55,7 @@ decString deoalParameterBool::GetParameterValue(){
 	return GetParameterBool() ? "1" : "0";
 }
 
-void deoalParameterBool::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
-	SetParameterBool( checkValue == "1" || checkValue == "true" || checkValue == "yes" );
+void deoalParameterBool::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	SetParameterBool(checkValue == "1" || checkValue == "true" || checkValue == "yes");
 }

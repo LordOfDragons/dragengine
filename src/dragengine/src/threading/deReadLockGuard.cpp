@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deReadLockGuard::deReadLockGuard( deReadWriteLock &rwlock ) :
-pRWLock( rwlock ),
-pLocked( false )
+deReadLockGuard::deReadLockGuard(deReadWriteLock &rwlock) :
+pRWLock(rwlock),
+pLocked(false)
 {
 	   ReadLock();
 }
 
 deReadLockGuard::~deReadLockGuard(){
-	if( pLocked ){
+	if(pLocked){
 		      ReadUnlock();
 	}
 }
@@ -53,8 +53,8 @@ deReadLockGuard::~deReadLockGuard(){
 ///////////////
 
 void deReadLockGuard::ReadLock(){
-	if( pLocked ){
-		DETHROW( deeInvalidAction );
+	if(pLocked){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pRWLock.ReadLock();
@@ -62,8 +62,8 @@ void deReadLockGuard::ReadLock(){
 }
 
 bool deReadLockGuard::TryReadLock(){
-	if( pLocked ){
-		DETHROW( deeInvalidAction );
+	if(pLocked){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pLocked = pRWLock.TryReadLock();
@@ -71,8 +71,8 @@ bool deReadLockGuard::TryReadLock(){
 }
 
 void deReadLockGuard::ReadUnlock(){
-	if( ! pLocked ){
-		DETHROW( deeInvalidAction );
+	if(!pLocked){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pRWLock.ReadUnlock();

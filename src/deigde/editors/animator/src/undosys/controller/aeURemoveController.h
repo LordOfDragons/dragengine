@@ -26,12 +26,12 @@
 #ifndef _AEUREMOVECONTROLLER_H_
 #define _AEUREMOVECONTROLLER_H_
 
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/link/aeLink.h"
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeController;
-class aeAnimator;
 
 
 
@@ -39,12 +39,16 @@ class aeAnimator;
  * Undo action remove controller.
  */
 class aeURemoveController : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURemoveController>;
+	
+	
 private:
 	aeAnimator *pAnimator;
-	aeController *pController;
+	aeController::Ref pController;
 	int pIndex;
 	
-	aeLinkList pLinksUsingController;
+	aeLink::List pLinksUsingController;
 	
 	
 	
@@ -52,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURemoveController( aeAnimator *animator, aeController *controller );
+	aeURemoveController(aeAnimator *animator, aeController *controller);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURemoveController();
+	~aeURemoveController() override;
 	/*@}*/
 	
 	
@@ -65,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

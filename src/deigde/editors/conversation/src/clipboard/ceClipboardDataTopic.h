@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATATOPIC_H_
 #define _CECLIPBOARDDATATOPIC_H_
 
-#include "../conversation/topic/ceConversationTopicList.h"
+#include "../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class ceClipboardDataTopic : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceClipboardDataTopic>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	ceConversationTopicList pTopics;
+	ceConversationTopic::List pTopics;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	ceClipboardDataTopic( const ceConversationTopicList &topics );
+	ceClipboardDataTopic(const ceConversationTopic::List &topics);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~ceClipboardDataTopic();
+	~ceClipboardDataTopic() override;
 	/*@}*/
 	
 	
@@ -68,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopics() const{ return pTopics; }
+	inline const ceConversationTopic::List &GetTopics() const{ return pTopics; }
 	/*@}*/
 };
 

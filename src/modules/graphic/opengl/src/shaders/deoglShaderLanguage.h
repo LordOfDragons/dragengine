@@ -29,13 +29,15 @@
 #include "compiler/deoglShaderCompileUnitTask.h"
 #include "compiler/deoglShaderLoadTask.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
 
 class deoglShaderDefines;
-class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;
@@ -52,6 +54,16 @@ class deoglShaderCompilerThread;
  */
 class deoglShaderLanguage{
 private:
+	struct sCompileTotals{
+		int units = 0;
+		int stage[6] = {0};
+		int shaders = 0;
+		
+		bool operator==(const sCompileTotals &other) const;
+		sCompileTotals &operator=(const sCompileTotals &other);
+	};
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	decString pGLSLVersion;
@@ -69,15 +81,16 @@ private:
 	
 	deoglShaderCompiler *pCompiler;
 	
-	deoglShaderCompilerThread **pCompilerThreads;
-	int pCompilerThreadCount;
+	decTUniqueList<deoglShaderCompilerThread> pCompilerThreads;
 	
-	decObjectList pTasksPending, pUnitTasksPending, pLoadTasksPending;
+	decTObjectList<deoglShaderCompileTask> pTasksPending;
+	decTObjectList<deoglShaderCompileUnitTask> pUnitTasksPending;
+	decTObjectList<deoglShaderLoadTask> pLoadTasksPending;
 	int pCompilingTaskCount;
 	deMutex pMutexTasks;
 	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;
 	
-	int pTotalCompiledUnits, pTotalCompiledStage[6], pTotalCompiledShaders;
+	sCompileTotals pCompileTotals, pLastCompileTotals;
 	
 	
 public:
@@ -99,7 +112,7 @@ public:
 	inline const decStringList &GetGLSLExtensions() const{ return pGLSLExtensions; }
 	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
 	
-	inline bool HasCompileThreads() const{ return pCompilerThreadCount > 0; }
+	inline bool HasCompileThreads() const{ return pCompilerThreads.IsNotEmpty(); }
 	
 	/** Compile shader. */
 	void CompileShader(deoglShaderProgram &program);

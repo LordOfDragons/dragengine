@@ -58,28 +58,24 @@
 ////////////////////////////
 
 deoglParticleEmitterInstance::deoglParticleEmitterInstance(
-deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance ) :
-pOgl( ogl ),
-pInstance( instance ),
-pRInstance( NULL ),
+deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance) :
+pOgl(ogl),
+pInstance(instance),
 
-pEmitter( NULL ),
+pEmitter(nullptr),
 
-pTypes( NULL ),
-pTypeCount( 0 ),
-
-pDirtyEmitter( true ),
-pDirtyExtends( true ),
-pDirtyOctreeNode( true ),
-pDirtyParticles( true ),
-pDirtyInstance( true ),
-pDirtyTypes( true )
+pDirtyEmitter(true),
+pDirtyExtends(true),
+pDirtyOctreeNode(true),
+pDirtyParticles(true),
+pDirtyInstance(true),
+pDirtyTypes(true)
 {
 	try{
-		pRInstance = new deoglRParticleEmitterInstance( ogl.GetRenderThread() );
+		pRInstance = deoglRParticleEmitterInstance::Ref::New(ogl.GetRenderThread());
 		EmitterChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -95,70 +91,65 @@ deoglParticleEmitterInstance::~deoglParticleEmitterInstance(){
 ///////////////
 
 void deoglParticleEmitterInstance::SyncToRender(){
-	if( pDirtyInstance ){
-		pRInstance->SetBurstTime( pInstance.GetBurstTime() );
-		pRInstance->SetPosition( pInstance.GetPosition() );
-		pRInstance->SetReferencePosition( pInstance.GetReferencePosition() );
-		pRInstance->SetLayerMask( pInstance.GetLayerMask() );
+	if(pDirtyInstance){
+		pRInstance->SetBurstTime(pInstance.GetBurstTime());
+		pRInstance->SetPosition(pInstance.GetPosition());
+		pRInstance->SetReferencePosition(pInstance.GetReferencePosition());
+		pRInstance->SetLayerMask(pInstance.GetLayerMask());
 		pDirtyInstance = false;
 	}
 	
 	// emitter
-	if( pEmitter ){
+	if(pEmitter){
 		pEmitter->SyncToRender();
 	}
 	
-	if( pDirtyEmitter ){
-		if( pEmitter ){
-			pRInstance->SetEmitter( pEmitter->GetREmitter() );
+	if(pDirtyEmitter){
+		if(pEmitter){
+			pRInstance->SetEmitter(pEmitter->GetREmitter());
 			
 		}else{
-			pRInstance->SetEmitter( NULL );
+			pRInstance->SetEmitter(nullptr);
 		}
 		
 		pDirtyEmitter = false;
 	}
 	
 	// types
-	if( pDirtyTypes ){
+	if(pDirtyTypes){
 		pRInstance->RemoveAllTypes();
-		int i;
-		for( i=0; i<pTypeCount; i++ ){
-			pRInstance->AddType( pTypes[ i ]->GetRType() );
-		}
+		pTypes.Visit([&](deoglParticleEmitterInstanceType &t){
+			pRInstance->AddType(t.GetRType());
+		});
 		pDirtyTypes = false;
 	}
 	
-	int i;
-	for( i=0; i<pTypeCount; i++ ){
-		pTypes[ i ]->SyncToRender();
-	}
+	pTypes.Visit([&](deoglParticleEmitterInstanceType &t){
+		t.SyncToRender();
+	});
 	
 	// extends and octree
-	if( pDirtyExtends ){
-		pRInstance->UpdateExtends( pInstance ); // depends on types to be correct
+	if(pDirtyExtends){
+		pRInstance->UpdateExtends(pInstance); // depends on types to be correct
 		pDirtyExtends = false;
 	}
 	
-	if( pDirtyOctreeNode ){
+	if(pDirtyOctreeNode){
 		pRInstance->UpdateOctreeNode();
 		pDirtyOctreeNode = false;
 	}
 	
 	// particles
-	if( pDirtyParticles ){
-		pRInstance->UpdateParticles( pInstance );
+	if(pDirtyParticles){
+		pRInstance->UpdateParticles(pInstance);
 		pDirtyParticles = false;
 	}
 }
 
 
 
-deoglParticleEmitterInstanceType &deoglParticleEmitterInstance::GetTypeAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return *pTypes[ index ];
+deoglParticleEmitterInstanceType &deoglParticleEmitterInstance::GetTypeAt(int index){
+	return pTypes.GetAt(index);
 }
 
 
@@ -167,11 +158,11 @@ deoglParticleEmitterInstanceType &deoglParticleEmitterInstance::GetTypeAt( int i
 //////////////////
 
 void deoglParticleEmitterInstance::EmitterChanged(){
-	if( pInstance.GetEmitter() ){
-		pEmitter = ( deoglParticleEmitter* )pInstance.GetEmitter()->GetPeerGraphic();
+	if(pInstance.GetEmitter()){
+		pEmitter = (deoglParticleEmitter*)pInstance.GetEmitter()->GetPeerGraphic();
 		
 	}else{
-		pEmitter = NULL;
+		pEmitter = nullptr;
 	}
 	
 	pUpdateTypes();
@@ -214,18 +205,18 @@ void deoglParticleEmitterInstance::LayerMaskChanged(){
 	pDirtyInstance = true;
 }
 
-void deoglParticleEmitterInstance::ControllerChanged( int ){
+void deoglParticleEmitterInstance::ControllerChanged(int){
 }
 
-void deoglParticleEmitterInstance::TypeChanged( int type ){
-	pTypes[ type ]->TypeChanged();
+void deoglParticleEmitterInstance::TypeChanged(int type){
+	pTypes.GetAt(type)->TypeChanged();
 	
 	pDirtyOctreeNode = true;
 	pDirtyExtends = true;
 	pDirtyParticles = true;
 }
 
-void deoglParticleEmitterInstance::TypeParticlesChanged( int ){
+void deoglParticleEmitterInstance::TypeParticlesChanged(int){
 	pDirtyOctreeNode = true;
 	pDirtyExtends = true;
 	pDirtyParticles = true;
@@ -244,40 +235,22 @@ void deoglParticleEmitterInstance::KillAllParticles(){
 //////////////////////
 
 void deoglParticleEmitterInstance::pCleanUp(){
-	if( pTypes ){
-		int i;
-		for( i=0; i<pTypeCount; i++ ){
-			delete pTypes[ i ];
-		}
-		delete [] pTypes;
-	}
+	pTypes.RemoveAll();
 	
 	// types holds a reference to pRInstance. do not remove it earlier
-	if( pRInstance ){
-		pRInstance->FreeReference();
-		pRInstance = NULL;
+	if(pRInstance){
+		pRInstance = nullptr;
 	}
 }
 
 void deoglParticleEmitterInstance::pUpdateTypes(){
-	const int typeCount = pInstance.GetTypeCount();
+	const int typeCount = pInstance.GetTypes().GetCount();
 	
-	if( pTypes ){
-		int i;
-		for( i=0; i<pTypeCount; i++ ){
-			delete pTypes[ i ];
-		}
-		delete [] pTypes;
-		pTypes = NULL;
-	}
-	pTypeCount = 0;
+	pTypes.RemoveAll();
 	
-	if( typeCount > 0 ){
-		pTypes = new deoglParticleEmitterInstanceType*[ typeCount ];
-		
-		for( pTypeCount=0; pTypeCount<typeCount; pTypeCount++ ){
-			pTypes[ pTypeCount ] = new deoglParticleEmitterInstanceType( *this, pTypeCount );
-		}
+	int i;
+	for(i=0; i<typeCount; i++){
+		pTypes.Add(deoglParticleEmitterInstanceType::Ref::New(*this, i));
 	}
 	
 	pDirtyTypes = true;

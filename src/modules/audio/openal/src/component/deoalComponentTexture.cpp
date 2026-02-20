@@ -47,18 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalComponentTexture::deoalComponentTexture( deoalComponent &component, int index ) :
-pComponent( component ),
-pIndex( index ),
-pATexture( NULL ),
-pSkin( NULL ),
-pDirtyTexture( true )
+deoalComponentTexture::deoalComponentTexture(deoalComponent &component, int index) :
+pComponent(component),
+pIndex(index),
+pSkin(nullptr),
+pDirtyTexture(true)
 {
 	try{
-		pATexture = new deoalAComponentTexture( *component.GetAComponent(), index );
-		TextureChanged( component.GetComponent().GetTextureAt( index ) );
+		pATexture = deoalAComponentTexture::Ref::New(*component.GetAComponent(), index);
+		TextureChanged(component.GetComponent().GetTextureAt(index));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -74,15 +73,15 @@ deoalComponentTexture::~deoalComponentTexture(){
 ///////////////
 
 void deoalComponentTexture::Synchronize(){
-	if( ! pDirtyTexture ){
+	if(!pDirtyTexture){
 		return;
 	}
 	
-	if( pSkin ){
-		pATexture->SetSkin( pSkin->GetASkin() );
+	if(pSkin){
+		pATexture->SetSkin(pSkin->GetASkin());
 		
 	}else{
-		pATexture->SetSkin( NULL );
+		pATexture->SetSkin(nullptr);
 	}
 	
 	// update dynamic skin
@@ -105,13 +104,13 @@ void deoalComponentTexture::Synchronize(){
 
 
 
-void deoalComponentTexture::TextureChanged( const deComponentTexture &texture ){
+void deoalComponentTexture::TextureChanged(const deComponentTexture &texture){
 	// skin
-	if( texture.GetSkin() ){
-		pSkin = ( deoalSkin* )texture.GetSkin()->GetPeerAudio();
+	if(texture.GetSkin()){
+		pSkin = (deoalSkin*)texture.GetSkin()->GetPeerAudio();
 		
 	}else{
-		pSkin = NULL;
+		pSkin = nullptr;
 	}
 	
 	// dynamic skin
@@ -140,7 +139,4 @@ void deoalComponentTexture::MarkDirty(){
 //////////////////////
 
 void deoalComponentTexture::pCleanUp(){
-	if( pATexture ){
-		pATexture->FreeReference();
-	}
 }

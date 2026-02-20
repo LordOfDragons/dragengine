@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projPanelProfilesListener::projPanelProfilesListener( projPanelProfiles &panel ) :
-pPanel( panel ){
+projPanelProfilesListener::projPanelProfilesListener(projPanelProfiles &panel) :
+pPanel(panel){
 }
 
 projPanelProfilesListener::~projPanelProfilesListener(){
@@ -53,8 +53,8 @@ projPanelProfilesListener::~projPanelProfilesListener(){
 // Notifications
 //////////////////
 
-void projPanelProfilesListener::ProjectChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
+void projPanelProfilesListener::ProjectChanged(projProject *project){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	
@@ -63,8 +63,8 @@ void projPanelProfilesListener::ProjectChanged( projProject *project ){
 
 
 
-void projPanelProfilesListener::ProfileStructureChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
+void projPanelProfilesListener::ProfileStructureChanged(projProject *project){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	
@@ -72,8 +72,8 @@ void projPanelProfilesListener::ProfileStructureChanged( projProject *project ){
 }
 
 void projPanelProfilesListener::ProfileChanged(
-projProject *project, projProfile *profile ){
-	if( pPanel.GetActiveProfile() != profile ){
+projProject *project, projProfile *profile){
+	if(pPanel.GetActiveProfile() != profile){
 		return;
 	}
 	
@@ -81,16 +81,16 @@ projProject *project, projProfile *profile ){
 }
 
 void projPanelProfilesListener::ProfileNameChanged(
-projProject *project, projProfile *profile ){
-	if( pPanel.GetProject() != project ){
+projProject *project, projProfile *profile){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	
 	pPanel.UpdateProfiles();
 }
 
-void projPanelProfilesListener::ActiveProfileChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
+void projPanelProfilesListener::ActiveProfileChanged(projProject *project){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCSnapPoint;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class snap point toggle snap to rotation.
  */
 class gdeUOCSnapPointToggleSnapToRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCSnapPointToggleSnapToRotation>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSnapPoint *pSnapPoint;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSnapPointToggleSnapToRotation( gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint );
+	gdeUOCSnapPointToggleSnapToRotation(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSnapPointToggleSnapToRotation();
+	~gdeUOCSnapPointToggleSnapToRotation() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

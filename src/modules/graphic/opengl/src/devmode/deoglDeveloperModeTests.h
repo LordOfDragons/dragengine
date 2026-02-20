@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new developer mode object. */
-	deoglDeveloperModeTests( deoglRenderThread &renderThread );
+	deoglDeveloperModeTests(deoglRenderThread &renderThread);
 	/** Cleans up the developer mode object. */
 	~deoglDeveloperModeTests();
 	/*@}*/
@@ -54,17 +54,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Print stats syntax. */
-	void Help( decUnicodeString &answer );
+	void Help(decUnicodeString &answer);
 	/** Tests command. */
-	void Tests( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void Tests(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** Test 2d convex hull class. */
-	void TestConvexHull2D( decUnicodeString &answer );
+	void TestConvexHull2D(decUnicodeString &answer);
 	
 	/** Answer test passed. */
-	void AnswerTestPassed( decUnicodeString &answer );
+	void AnswerTestPassed(decUnicodeString &answer);
 	/** Answer test failed with exception. */
-	void AnswerTestFailedWithException( decUnicodeString &answer, const deException &exception );
+	void AnswerTestFailedWithException(decUnicodeString &answer, const deException &exception);
 	/*@}*/
 };
 

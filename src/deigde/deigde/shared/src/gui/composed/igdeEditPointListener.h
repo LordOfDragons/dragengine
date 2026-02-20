@@ -36,6 +36,12 @@ class igdeEditPoint;
  * \brief IGDE UI EditPoint Listener.
  */
 class DE_DLL_EXPORT igdeEditPointListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditPointListener>;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditPointListener();
+	~igdeEditPointListener() override;
 	/*@}*/
 	
 	
@@ -64,7 +70,7 @@ public:
 	 * 
 	 * User entered point and accepted it.
 	 */
-	virtual void OnPointChanged( igdeEditPoint *editPoint );
+	virtual void OnPointChanged(igdeEditPoint *editPoint);
 	/*@}*/
 };
 

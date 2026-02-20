@@ -25,12 +25,14 @@
 #ifndef _CEUCCSHOTSETNAME_H_
 #define _CEUCCSHOTSETNAME_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
-class ceConversationActionList;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationTopic;
 
 
@@ -39,36 +41,40 @@ class ceConversationTopic;
  * \brief Undo Action Camera Shot Set Name.
  */
 class ceUCCShotSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotSetName>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldName;
 	decString pNewName;
 	
-	ceUndoCActionList pActionList;
+	decTObjectOrderedSet<ceUndoCAction> pActions;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetName( ceCameraShot *cameraShot, const char *newName );
+	ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetName();
+	~ceUCCShotSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:
-	void pSetName( const char *name );
-	void pAddActions( ceConversationTopic *topic, const ceConversationActionList &list );
+	void pSetName(const char *name);
+	void pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list);
 };
 
 #endif

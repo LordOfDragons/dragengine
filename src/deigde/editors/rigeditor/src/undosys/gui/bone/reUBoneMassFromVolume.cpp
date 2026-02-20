@@ -27,7 +27,6 @@
 
 #include "reUBoneMassFromVolume.h"
 #include "../../../rig/reRig.h"
-#include "../../../rig/bone/reRigBone.h"
 #include "../../../rig/bone/reSelectionBones.h"
 #include "../../../rig/shape/reRigShape.h"
 #include "../../../rig/shape/reRigShapeSphere.h"
@@ -37,7 +36,6 @@
 #include "../../../rig/shape/reRigShapeHull.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 
 
 
@@ -47,48 +45,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneMassFromVolume::reUBoneMassFromVolume( reRig *rig, const decObjectOrderedSet &bones, float density ){
-	if( ! rig || bones.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
-	}
+reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const reRigBone::List &bones, float density){
+	DEASSERT_NOTNULL(rig);
+	DEASSERT_TRUE(bones.IsNotEmpty());
 	
-	if( density < 0.0f ){
+	if(density < 0.0f){
 		density = 0.0f;
 	}
 	
-	const int boneCount = bones.GetCount();
-	int i;
+	SetShortInfo("@Rig.Undo.BoneMassFromVolume");
 	
-	pRig = NULL;
-	
-	pBones = NULL;
-	pBoneCount = 0;
-	
-	SetShortInfo( "Bone mass from volume" );
-	
-	try{
-		pBones = new sBone[ boneCount ];
-		
-		for( i=0; i<boneCount; i++ ){
-			pBones[ i ].bone = ( reRigBone* )bones.GetAt( i );
-			pBones[ i ].bone->AddReference();
-			pBones[ i ].oldMass = pBones[ i ].bone->GetMass();
-			pBones[ i ].newMass = pCalcVolume( *pBones[ i ].bone ) * density;
-		}
-		
-		pBoneCount = boneCount;
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	bones.Visit([&](reRigBone *bone){
+		const cBone::Ref ubone(cBone::Ref::New());
+		ubone->bone = bone;
+		ubone->oldMass = bone->GetMass();
+		ubone->newMass = pCalcVolume(*bone) * density;
+		pBones.Add(ubone);
+	});
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneMassFromVolume::~reUBoneMassFromVolume(){
-	pCleanUp();
 }
 
 
@@ -97,23 +75,15 @@ reUBoneMassFromVolume::~reUBoneMassFromVolume(){
 /////////////////////////////
 
 void reUBoneMassFromVolume::Undo(){
-	int i;
-	
-	for( i=0; i<pBoneCount; i++ ){
-		if( pBones[ i ].bone ){
-			pBones[ i ].bone->SetMass( pBones[ i ].oldMass );
-		}
-	}
+	pBones.Visit([&](cBone &bone){
+		bone.bone->SetMass(bone.oldMass);
+	});
 }
 
 void reUBoneMassFromVolume::Redo(){
-	int i;
-	
-	for( i=0; i<pBoneCount; i++ ){
-		if( pBones[ i ].bone ){
-			pBones[ i ].bone->SetMass( pBones[ i ].newMass );
-		}
-	}
+	pBones.Visit([&](cBone &bone){
+		bone.bone->SetMass(bone.newMass);
+	});
 }
 
 
@@ -121,51 +91,31 @@ void reUBoneMassFromVolume::Redo(){
 // Private Functions
 //////////////////////
 
-void reUBoneMassFromVolume::pCleanUp(){
-	if( pBones ){
-		while( pBoneCount > 0 ){
-			pBoneCount--;
-			if( pBones[ pBoneCount ].bone ){
-				pBones[ pBoneCount ].bone->FreeReference();
-			}
-		}
-		
-		delete [] pBones;
-	}
-	
-	if( pRig ){
-		pRig->FreeReference();
-	}
-}
-
-float reUBoneMassFromVolume::pCalcVolume( const reRigBone &bone ) const{
-	const int count = bone.GetShapeCount();
+float reUBoneMassFromVolume::pCalcVolume(const reRigBone &bone) const{
 	float volume = 0.0f;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		const reRigShape &shape = *bone.GetShapeAt( i );
+	bone.GetShapes().Visit([&](const reRigShape &shape){
 		const reRigShape::eShapeTypes type = shape.GetShapeType();
 		
-		switch( type ){
+		switch(type){
 		case reRigShape::estSphere:{
-			const reRigShapeSphere &sphere = ( reRigShapeSphere& )shape;
+			const reRigShapeSphere &sphere = (reRigShapeSphere&)shape;
 			const float radius = sphere.GetRadius();
 			volume += PI * radius * radius * radius * 4.0f / 3.0f;
 			}break;
 			
 		case reRigShape::estBox:{
-			const reRigShapeBox &box = *( ( reRigShapeBox* )&shape );
+			const reRigShapeBox &box = *((reRigShapeBox*)&shape);
 			const decVector extends = box.GetHalfExtends() * 2.0f;
 			volume += extends.x * extends.y * extends.z;
 			}break;
 			
 		case reRigShape::estCylinder:{
-			const reRigShapeCylinder &cylinder = ( reRigShapeCylinder& )shape;
+			const reRigShapeCylinder &cylinder = (reRigShapeCylinder&)shape;
 			const float height = cylinder.GetHalfHeight() * 2.0f;
 			const float radiusBottom = cylinder.GetBottomRadius();
 			const float radiusTop = cylinder.GetTopRadius();
-			const float radius = ( radiusTop + radiusBottom ) * 0.5f;
+			const float radius = (radiusTop + radiusBottom) * 0.5f;
 			volume += PI * radius * radius * height;
 			}break;
 			
@@ -175,11 +125,11 @@ float reUBoneMassFromVolume::pCalcVolume( const reRigBone &bone ) const{
 			//      to the different radi the spheres are slightly moved in or out of the
 			//      cylinder. this can be achieved by calculating the tilt angle of the base
 			//      cylinder and using this as the angle where the sphere is truely cut.
-			const reRigShapeCapsule &capsule = ( reRigShapeCapsule& )shape;
+			const reRigShapeCapsule &capsule = (reRigShapeCapsule&)shape;
 			const float height = capsule.GetHalfHeight() * 2.0f;
 			const float radiusBottom = capsule.GetBottomRadius();
 			const float radiusTop = capsule.GetTopRadius();
-			const float radius = ( radiusTop + radiusBottom ) * 0.5f;
+			const float radius = (radiusTop + radiusBottom) * 0.5f;
 			volume += PI * radius * radius * height; // base cylinder
 			volume += PI * radiusTop * radiusTop * radiusTop * 2.0f / 3.0f; // top half-sphere
 			volume += PI * radiusBottom * radiusBottom * radiusBottom * 2.0f / 3.0f; // bottom half-sphere
@@ -187,29 +137,30 @@ float reUBoneMassFromVolume::pCalcVolume( const reRigBone &bone ) const{
 			
 		case reRigShape::estHull:{
 			// this calculation is a crude approximation for the time being
-			const reRigShapeHull &hull = ( reRigShapeHull& )shape;
-			const int pointCount = hull.GetPointCount();
+			const reRigShapeHull::PointList &points = ((reRigShapeHull&)shape).GetPoints();
+			const int pointCount = points.GetCount();
 			decVector minExtend, maxExtend;
+			int i;
 			
-			for( i=0; i<pointCount; i++ ){
-				const decVector &point = hull.GetPointAt( i );
-				if( i == 0 ){
+			for(i=0; i<pointCount; i++){
+				const decVector &point = points.GetAt(i);
+				if(i == 0){
 					minExtend = maxExtend = point;
 					
 				}else{
-					minExtend.SetSmallest( point );
-					maxExtend.SetLargest( point );
+					minExtend.SetSmallest(point);
+					maxExtend.SetLargest(point);
 				}
 			}
 			
-			const decVector extends( maxExtend - minExtend );
+			const decVector extends(maxExtend - minExtend);
 			volume += extends.x * extends.y * extends.z;
 			}break;
 			
 		default:
 			break;
 		}
-	}
+	});
 	
 	return volume;
 }

@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 #include "../../../../undosys/objectClass/particleemitter/gdeUOCAddParticleEmitter.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCParticleEmitterPaste::gdeMAOCParticleEmitterPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Particle Emitter",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class particle emitter" )
+gdeMAOCParticleEmitterPaste::gdeMAOCParticleEmitterPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCParticleEmitterPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCParticleEmitter::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCParticleEmitter &clipOCParticleEmitter =
-		( const gdeClipboardDataOCParticleEmitter & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddParticleEmitter::Ref::New(&objectClass, 
+		gdeOCParticleEmitter::Ref::New(*clip.DynamicCast<gdeClipboardDataOCParticleEmitter>()->GetParticleEmitter()));
 	
-	deObjectReference particleEmitter;
-	particleEmitter.TakeOver( new gdeOCParticleEmitter( *clipOCParticleEmitter.GetParticleEmitter() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddParticleEmitter( &objectClass,
-		( gdeOCParticleEmitter* )( deObject* )particleEmitter );
-	undo->SetShortInfo( "Paste object class particle emitter" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCParticleEmitter");
 	return undo;
 }
 
 void gdeMAOCParticleEmitterPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCParticleEmitter::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
 }

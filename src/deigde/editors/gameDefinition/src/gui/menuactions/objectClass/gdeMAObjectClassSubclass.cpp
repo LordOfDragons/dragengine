@@ -37,7 +37,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -48,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassSubclass::gdeMAObjectClassSubclass( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Subclass Object Class",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongDown ),
-	"Create new Object Class as Subclass of the selected Object Class" )
+gdeMAObjectClassSubclass::gdeMAObjectClassSubclass(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassSubclass",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown),
+	"@GameDefinition.Menu.ObjectClassSubclass.ToolTip")
 {
 }
 
@@ -60,56 +59,52 @@ gdeBaseAction( windowMain, "Subclass Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassSubclass::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
-		return NULL;
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
+		return {};
 	}
 	
 	const gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
-		return NULL;
+	if(!objectClass){
+		return {};
 	}
 	
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
-	decString name( objectClass->GetName() );
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
+	decString name(objectClass->GetName());
 	
-	while( igdeCommonDialogs::GetString( &pWindowMain, "Subclass Object Class", "Name:", name ) ){
-		if( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindowMain, "Subclass Object Class", "Object Class exists already." );
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassSubclass.Title", "@GameDefinition.Dialog.ObjectClassSubclass.Name", name)){
+		if(list.HasNamed(name)){
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassSubclass.Title", "@GameDefinition.Dialog.ObjectClassSubclass.ErrorExists");
 			continue;
 		}
 		
-		deObjectReference subclass;
-		subclass.TakeOver( new gdeObjectClass( name ) );
-		gdeObjectClass &soc = ( gdeObjectClass& )( deObject& )subclass;
+		auto subclass(gdeObjectClass::Ref::New(name));
 		
-		soc.SetCategory( objectClass->GetCategory() );
-		soc.SetHideTags( objectClass->GetHideTags() );
-		soc.SetIsGhost( objectClass->GetIsGhost() );
-		soc.SetIsAttachableBehavior(objectClass->GetIsAttachableBehavior());
-		soc.SetCanInstantiate( objectClass->GetCanInstantiate() );
-		soc.SetPartialHideTags( objectClass->GetPartialHideTags() );
-		soc.SetScaleMode( objectClass->GetScaleMode() );
+		subclass->SetCategory(objectClass->GetCategory());
+		subclass->SetHideTags(objectClass->GetHideTags());
+		subclass->SetIsGhost(objectClass->GetIsGhost());
+		subclass->SetIsAttachableBehavior(objectClass->GetIsAttachableBehavior());
+		subclass->SetCanInstantiate(objectClass->GetCanInstantiate());
+		subclass->SetPartialHideTags(objectClass->GetPartialHideTags());
+		subclass->SetScaleMode(objectClass->GetScaleMode());
 		
-		deObjectReference objRefInherit;
-		objRefInherit.TakeOver( new gdeOCInherit( objectClass->GetName() ) );
-		gdeOCInherit& inherit = ( gdeOCInherit& )( deObject& )objRefInherit;
-		inherit.SetPropertyPrefix( objectClass->GetDefaultInheritPropertyPrefix() );
-		soc.GetInherits().Add( &inherit );
+		const gdeOCInherit::Ref inherit(gdeOCInherit::Ref::New(objectClass->GetName()));
+		inherit->SetPropertyPrefix(objectClass->GetDefaultInheritPropertyPrefix());
+		subclass->GetInherits().Add(inherit);
 		
-		return new gdeUAddObjectClass( &gameDefinition, &soc );
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, subclass);
 	}
-	return NULL;
+	return {};
 }
 
 void gdeMAObjectClassSubclass::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != nullptr);
 }

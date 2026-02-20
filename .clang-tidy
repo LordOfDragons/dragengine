@@ -1,0 +1,19 @@
+---
+#Checks: '-*,modernize-use-override'
+#Checks: '-*,modernize-use-using'
+Checks: '-*,modernize-use-nullptr'
+HeaderFilterRegex: '.*/src/.*'
+CheckOptions:
+  modernize-use-override.IgnoreDestructors: 'false'
+
+# potentially checks to use:
+# - modernize-use-nullptr: Replaces NULL and 0 with nullptr to improve type safety.
+# - modernize-use-auto: Replaces complex type declarations with auto when the type is obvious (e.g., in iterator loops or new expressions).
+# - modernize-loop-convert: Converts standard for loops to more readable range-based for loops.
+# - modernize-use-using: Replaces older typedef declarations with the modern using syntax.
+# - performance-for-range-copy: Automatically changes range-based for-loop variables to const references if they are being unnecessarily copied.
+# - performance-unnecessary-value-param: Changes function parameters that are passed by value (and thus copied) to const references when the copy is not needed.
+# - bugprone-macro-parentheses: Automatically adds missing parentheses around macro arguments to prevent operator precedence issues.
+# - bugprone-suspicious-memset-usage: Fixes common memset errors, such as swapped arguments (e.g., filling a buffer with the size value instead of the character value).
+# - bugprone-copy-constructor-init: Ensures that base classes are correctly initialized in copy constructors. 
+# see https://clang.llvm.org/extra/clang-tidy/checks/list.html

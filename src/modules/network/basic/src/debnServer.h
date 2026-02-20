@@ -25,12 +25,13 @@
 #ifndef _DEBNSERVER_H_
 #define _DEBNSERVER_H_
 
+#include "debnSocket.h"
+
 #include <dragengine/systems/modules/network/deBaseNetworkServer.h>
 
 class deServer;
 class debnAddress;
 class deNetworkBasic;
-class debnSocket;
 class decBaseFileReader;
 
 
@@ -43,7 +44,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deServer *pServer;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	bool pListening;
 	
 	debnServer *pPreviousServer;
@@ -56,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create server. */
-	debnServer( deNetworkBasic *netBasic, deServer *server );
+	debnServer(deNetworkBasic *netBasic, deServer *server);
 	
 	/** \brief Clean up server object. */
-	virtual ~debnServer();
+	~debnServer() override;
 	/*@}*/
 	
 	
@@ -67,18 +68,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
-	void ProcessConnectionRequest( debnAddress &address, decBaseFileReader &reader );
+	void ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader);
 	
 	/**
 	 * \brief Start listening on address for incoming connections.
 	 */
-	virtual bool ListenOn( const char *address );
+	bool ListenOn(const char *address) override;
 	
 	/** \brief Stop listening. */
-	virtual void StopListening();
+	void StopListening() override;
 	/*@}*/
 	
 	
@@ -89,19 +90,19 @@ public:
 	inline debnServer *GetPreviousServer() const{ return pPreviousServer; }
 	
 	/** \brief Set previous server. */
-	void SetPreviousServer( debnServer *server );
+	void SetPreviousServer(debnServer *server);
 	
 	/** \brief Next server. */
 	inline debnServer *GetNextServer() const{ return pNextServer; }
 	
 	/** \brief Set next server. */
-	void SetNextServer( debnServer *server );
+	void SetNextServer(debnServer *server);
 	
 	/** \brief Server is registered. */
 	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
 	/** \brief Set if server is registered. */
-	void SetIsRegistered( bool isRegistered );
+	void SetIsRegistered(bool isRegistered);
 	/*@}*/
 	
 	

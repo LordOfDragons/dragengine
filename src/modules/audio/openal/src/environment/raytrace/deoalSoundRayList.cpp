@@ -22,12 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "deoalSoundRay.h"
-#include "deoalSoundRaySegment.h"
 #include "deoalSoundRayList.h"
 
 #include <dragengine/common/exceptions.h>
@@ -37,173 +31,58 @@
 // Class deoalSoundRayList
 ////////////////////////////
 
-// Constructors and Destructors
-/////////////////////////////////
-
-deoalSoundRayList::deoalSoundRayList() :
-pRays( NULL ),
-pRayCount( 0 ),
-pRaySize( 0 ),
-
-pSegments( NULL ),
-pSegmentCount( 0 ),
-pSegmentSize( 0 ),
-
-pTransmittedRays( NULL ),
-pTransmittedRayCount( 0 ),
-pTransmittedRaySize( 0 ){
-}
-
-deoalSoundRayList::~deoalSoundRayList(){
-	if( pTransmittedRays ){
-		delete [] pTransmittedRays;
-	}
-	if( pSegments ){
-		delete [] pSegments;
-	}
-	if( pRays ){
-		delete [] pRays;
-	}
-}
-
-
-
 // Manegement
 ///////////////
 
-deoalSoundRay &deoalSoundRayList::GetRayAt( int index ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pRayCount )
-	return pRays[ index ];
+deoalSoundRay &deoalSoundRayList::GetRayAt(int index){
+	return pRays.GetAt(index);
 }
 
-const deoalSoundRay &deoalSoundRayList::GetRayAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pRayCount )
-	return pRays[ index ];
+const deoalSoundRay &deoalSoundRayList::GetRayAt(int index) const{
+	return pRays.GetAt(index);
 }
 
 int deoalSoundRayList::AddRay(){
-	if( pRayCount == pRaySize ){
-		const int newSize = pRaySize + 10;
-		deoalSoundRay * const newArray = new deoalSoundRay[ newSize ];
-		if( pRays ){
-			memcpy( newArray, pRays, sizeof( deoalSoundRay ) * pRaySize );
-			delete [] pRays;
-		}
-		pRays = newArray;
-		pRaySize = newSize;
-	}
-	
-	deoalSoundRay &ray = pRays[ pRayCount ];
-	ray.SetFirstSegment( pSegmentCount );
-	ray.SetSegmentCount( 0 );
-	ray.SetFirstTransmittedRay( pTransmittedRayCount );
-	ray.SetTransmittedRayCount( 0 );
-	ray.SetOutside( false );
-	return pRayCount++;
+	pRays.Add(deoalSoundRay(pSegments.GetCount(), pTransmittedRays.GetCount()));
+	return pRays.GetCount() - 1;
 }
 
 void deoalSoundRayList::RemoveAllRays(){
-	pRayCount = 0;
-	pSegmentCount = 0;
-	pTransmittedRayCount = 0;
+	pRays.RemoveAll();
+	pSegments.RemoveAll();
+	pTransmittedRays.RemoveAll();
 }
 
-deoalSoundRaySegment &deoalSoundRayList::GetSegmentAt( int index ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pSegmentCount )
-	return pSegments[ index ];
+deoalSoundRaySegment &deoalSoundRayList::GetSegmentAt(int index){
+	return pSegments.GetAt(index);
 }
 
-const deoalSoundRaySegment &deoalSoundRayList::GetSegmentAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pSegmentCount )
-	return pSegments[ index ];
+const deoalSoundRaySegment &deoalSoundRayList::GetSegmentAt(int index) const{
+	return pSegments.GetAt(index);
 }
 
 int deoalSoundRayList::AddSegment(){
-	if( pSegmentCount == pSegmentSize ){
-		const int newSize = pSegmentSize + 10;
-		deoalSoundRaySegment * const newArray = new deoalSoundRaySegment[ newSize ];
-		if( pSegments ){
-			memcpy( newArray, pSegments, sizeof( deoalSoundRaySegment ) * pSegmentSize );
-			delete [] pSegments;
-		}
-		pSegments = newArray;
-		pSegmentSize = newSize;
-	}
-	
-	return pSegmentCount++;
+	pSegments.Add({});
+	return pSegments.GetCount() - 1;
 }
 
-deoalSoundRay &deoalSoundRayList::GetTransmittedRayAt( int index ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pTransmittedRayCount )
-	return pTransmittedRays[ index ];
+deoalSoundRay &deoalSoundRayList::GetTransmittedRayAt(int index){
+	return pTransmittedRays.GetAt(index);
 }
 
-const deoalSoundRay &deoalSoundRayList::GetTransmittedRayAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pTransmittedRayCount )
-	return pTransmittedRays[ index ];
+const deoalSoundRay &deoalSoundRayList::GetTransmittedRayAt(int index) const{
+	return pTransmittedRays.GetAt(index);
 }
 
 int deoalSoundRayList::AddTransmittedRay(){
-	if( pTransmittedRayCount == pTransmittedRaySize ){
-		const int newSize = pTransmittedRaySize + 10;
-		deoalSoundRay * const newArray = new deoalSoundRay[ newSize ];
-		if( pTransmittedRays ){
-			memcpy( newArray, pTransmittedRays, sizeof( deoalSoundRay ) * pTransmittedRaySize );
-			delete [] pTransmittedRays;
-		}
-		pTransmittedRays = newArray;
-		pTransmittedRaySize = newSize;
-	}
-	
-	deoalSoundRay &ray = pTransmittedRays[ pTransmittedRayCount ];
-	ray.SetFirstSegment( pSegmentCount );
-	ray.SetSegmentCount( 0 );
-	ray.SetFirstTransmittedRay( pTransmittedRayCount );
-	ray.SetTransmittedRayCount( 0 );
-	ray.SetOutside( false );
-	return pTransmittedRayCount++;
+	pTransmittedRays.Add(deoalSoundRay(pSegments.GetCount(), pTransmittedRays.GetCount()));
+	return pTransmittedRays.GetCount() - 1;
 }
 
-void deoalSoundRayList::ReserveSize( int rays, int segments, int transmittedRays ){
-	DEASSERT_TRUE( rays >= 0 )
-	DEASSERT_TRUE( segments >= 0 )
-	DEASSERT_TRUE( transmittedRays >= 0 )
-	
-	if( rays > pRaySize ){
-		deoalSoundRay * const newArray = new deoalSoundRay[ rays ];
-		if( pRays ){
-			memcpy( newArray, pRays, sizeof( deoalSoundRay ) * pRaySize );
-			delete [] pRays;
-		}
-		pRays = newArray;
-		pRaySize = rays;
-	}
-	
-	if( segments > pSegmentSize ){
-		deoalSoundRaySegment * const newArray = new deoalSoundRaySegment[ segments ];
-		if( pSegments ){
-			memcpy( newArray, pSegments, sizeof( deoalSoundRaySegment ) * pSegmentSize );
-			delete [] pSegments;
-		}
-		pSegments = newArray;
-		pSegmentSize = segments;
-	}
-	
-	if( transmittedRays > pTransmittedRaySize ){
-		deoalSoundRay * const newArray = new deoalSoundRay[ transmittedRays ];
-		if( pTransmittedRays ){
-			memcpy( newArray, pTransmittedRays, sizeof( deoalSoundRay ) * pTransmittedRaySize );
-			delete [] pTransmittedRays;
-		}
-		pTransmittedRays = newArray;
-		pTransmittedRaySize = transmittedRays;
-	}
+void deoalSoundRayList::ReserveSize(int rays, int segments, int transmittedRays){
+	pRays.EnlargeCapacity(rays);
+	pSegments.EnlargeCapacity(segments);
+	pTransmittedRays.EnlargeCapacity(transmittedRays);
 }
 
 
@@ -211,49 +90,38 @@ void deoalSoundRayList::ReserveSize( int rays, int segments, int transmittedRays
 // Operators
 //////////////
 
-deoalSoundRayList &deoalSoundRayList::operator=(
-const deoalSoundRayList &list ){
-	pRayCount = 0;
-	pSegmentCount = 0;
-	pTransmittedRayCount = 0;
-	return operator+=( list );
+deoalSoundRayList &deoalSoundRayList::operator=(const deoalSoundRayList &list){
+	RemoveAllRays();
+	return operator+=(list);
 }
 
-deoalSoundRayList &deoalSoundRayList::operator+=(
-const deoalSoundRayList &list ){
-	ReserveSize( pRayCount + list.pRayCount, pSegmentCount + list.pSegmentCount,
-		pTransmittedRayCount + list.pTransmittedRayCount );
-	const int segmentOffset = pSegmentCount;
-	const int rayOffset = pRayCount;
-	const int transmittedRayOffset = pTransmittedRayCount;
-	int i;
+deoalSoundRayList &deoalSoundRayList::operator+=(const deoalSoundRayList &list){
+	ReserveSize(pRays.GetCount() + list.pRays.GetCount(),
+		pSegments.GetCount() + list.pSegments.GetCount(),
+		pTransmittedRays.GetCount() + list.pTransmittedRays.GetCount());
 	
-	for( i=0; i<list.pTransmittedRayCount; i++ ){
-		const deoalSoundRay &raySrc = list.pTransmittedRays[ i ];
-		deoalSoundRay &ray = pTransmittedRays[ transmittedRayOffset + i ];
-		ray.SetFirstSegment( raySrc.GetFirstSegment() + segmentOffset );
-		ray.SetSegmentCount( raySrc.GetSegmentCount() );
-		ray.SetFirstTransmittedRay( raySrc.GetFirstTransmittedRay() + transmittedRayOffset );
-		ray.SetTransmittedRayCount( raySrc.GetTransmittedRayCount() );
-		ray.SetOutside( raySrc.GetOutside() );
-	}
-	pTransmittedRayCount += list.pTransmittedRayCount;
+	const int segmentOffset = pSegments.GetCount();
+	const int transmittedRayOffset = pTransmittedRays.GetCount();
 	
-	for( i=0; i<list.pSegmentCount; i++ ){
-		pSegments[ segmentOffset + i ] = list.pSegments[ i ];
-	}
-	pSegmentCount += list.pSegmentCount;
+	list.pTransmittedRays.Visit([&](const deoalSoundRay &raySrc){
+		pTransmittedRays.Add(deoalSoundRay(
+			raySrc.GetFirstSegment() + segmentOffset,
+			raySrc.GetSegmentCount(),
+			raySrc.GetFirstTransmittedRay() + transmittedRayOffset,
+			raySrc.GetTransmittedRayCount(),
+			raySrc.GetOutside()));
+	});
 	
-	for( i=0; i<list.pRayCount; i++ ){
-		const deoalSoundRay &raySrc = list.pRays[ i ];
-		deoalSoundRay &ray = pRays[ rayOffset + i ];
-		ray.SetFirstSegment( raySrc.GetFirstSegment() + segmentOffset );
-		ray.SetSegmentCount( raySrc.GetSegmentCount() );
-		ray.SetFirstTransmittedRay( raySrc.GetFirstTransmittedRay() + transmittedRayOffset );
-		ray.SetTransmittedRayCount( raySrc.GetTransmittedRayCount() );
-		ray.SetOutside( raySrc.GetOutside() );
-	}
-	pRayCount += list.pRayCount;
+	pSegments += list.pSegments;
+	
+	list.pRays.Visit([&](const deoalSoundRay &raySrc){
+		pRays.Add(deoalSoundRay(
+			raySrc.GetFirstSegment() + segmentOffset,
+			raySrc.GetSegmentCount(),
+			raySrc.GetFirstTransmittedRay() + transmittedRayOffset,
+			raySrc.GetTransmittedRayCount(),
+			raySrc.GetOutside()));
+	});
 	
 	return *this;
 }

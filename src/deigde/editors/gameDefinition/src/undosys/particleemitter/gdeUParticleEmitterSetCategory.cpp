@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetCategory::gdeUParticleEmitterSetCategory(
-gdeParticleEmitter *particleEmitter, const char *newValue ) :
-pParticleEmitter( NULL )
+gdeParticleEmitter *particleEmitter, const char *newValue) :
+pParticleEmitter(nullptr)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set category" );
+	SetShortInfo("@GameDefinition.Undo.ParticleEmitterSetCategory");
 	
 	pOldValue = particleEmitter->GetCategory();
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeUParticleEmitterSetCategory::~gdeUParticleEmitterSetCategory(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUParticleEmitterSetCategory::~gdeUParticleEmitterSetCategory(){
 ///////////////
 
 void gdeUParticleEmitterSetCategory::Undo(){
-	pParticleEmitter->SetCategory( pOldValue );
+	pParticleEmitter->SetCategory(pOldValue);
 }
 
 void gdeUParticleEmitterSetCategory::Redo(){
-	pParticleEmitter->SetCategory( pNewValue );
+	pParticleEmitter->SetCategory(pNewValue);
 }

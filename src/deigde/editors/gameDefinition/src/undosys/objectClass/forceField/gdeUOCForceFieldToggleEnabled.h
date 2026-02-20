@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class force field toggle enabled.
  */
 class gdeUOCForceFieldToggleEnabled : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCForceFieldToggleEnabled>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldToggleEnabled( gdeObjectClass *objectClass, gdeOCForceField *forceField );
+	gdeUOCForceFieldToggleEnabled(gdeObjectClass *objectClass, gdeOCForceField *forceField);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCForceFieldToggleEnabled();
+	~gdeUOCForceFieldToggleEnabled() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

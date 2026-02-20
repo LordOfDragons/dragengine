@@ -25,8 +25,8 @@
 #ifndef _MECLCLOSESTELEMENT_H_
 #define _MECLCLOSESTELEMENT_H_
 
-#include "meCLHitList.h"
-#include "../world/object/meObjectList.h"
+#include "meCLHitListEntry.h"
+#include "../world/object/meObject.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
@@ -66,7 +66,7 @@ private:
 	
 	const meFilterObjects *pFilterObjects;
 	
-	meObjectList pIgnoreObjects;
+	meObject::List pIgnoreObjects;
 	meDecal *pIgnoreDecal;
 	
 	
@@ -75,10 +75,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**  Create visitor. */
-	meCLClosestElement( meWorld &world );
+	meCLClosestElement(meWorld &world);
 	
 	/**  Clean up visitor. */
-	virtual ~meCLClosestElement();
+	~meCLClosestElement() override;
 	/*@}*/
 	
 	
@@ -86,31 +86,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set if height terrain are tested. */
-	void SetTestHeightTerrain( bool test );
+	void SetTestHeightTerrain(bool test);
 	
 	/** Set if objects are tested. */
-	void SetTestObjects( bool test );
+	void SetTestObjects(bool test);
 	
 	/** Set if decals are tested. */
-	void SetTestDecals( bool test );
+	void SetTestDecals(bool test);
 	
 	/** Set if object snap points are tested. */
-	void SetTestSnapPoints( bool test );
+	void SetTestSnapPoints(bool test);
 	
 	
 	
 	/**  Set decal to ignore or nullptr. */
-	void SetIgnoreDecal( meDecal *decal );
+	void SetIgnoreDecal(meDecal *decal);
 	
 	/** \breif Object filter or nullptr to not use filtering. */
 	inline const meFilterObjects *GetFilterObjects() const{ return pFilterObjects; }
 	
 	/**  Set object filter or nullptr to not use filtering. */
-	void SetFilterObjects( const meFilterObjects *filter );
+	void SetFilterObjects(const meFilterObjects *filter);
 	
 	/**  List of objects to ignore. */
-	inline meObjectList &GetIgnoreObjects(){ return pIgnoreObjects; }
-	inline const meObjectList &GetIgnoreObjects() const{ return pIgnoreObjects; }
+	inline meObject::List &GetIgnoreObjects(){ return pIgnoreObjects; }
+	inline const meObject::List &GetIgnoreObjects() const{ return pIgnoreObjects; }
 	
 	
 	
@@ -146,13 +146,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/**  Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/**  Collider can hit another collider. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/**  Collider changed. */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

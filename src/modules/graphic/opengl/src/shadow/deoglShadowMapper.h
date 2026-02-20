@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shadow mapper. */
-	deoglShadowMapper( deoglRenderThread &renderThread );
+	deoglShadowMapper(deoglRenderThread &renderThread);
 	
 	/** Clean up shadow mapper. */
 	~deoglShadowMapper();
@@ -120,19 +120,19 @@ public:
 	deoglTexture *GetSolidDepthTexture() const;
 	
 	/** Set foreign solid depth texture. */
-	void SetForeignSolidDepthTexture( deoglTexture *texture );
+	void SetForeignSolidDepthTexture(deoglTexture *texture);
 	
 	/** Transparent depth texture. */
 	deoglTexture *GetTransparentDepthTexture() const;
 	
 	/** Set foreign transparent depth texture. */
-	void SetForeignTransparentDepthTexture( deoglTexture *texture );
+	void SetForeignTransparentDepthTexture(deoglTexture *texture);
 	
 	/** Transparent color texture. */
 	deoglTexture *GetTransparentColorTexture() const;
 	
 	/** Set foreign transparent color texture. */
-	void SetForeignTransparentColorTexture( deoglTexture *texture );
+	void SetForeignTransparentColorTexture(deoglTexture *texture);
 	
 	/** Drop shadow textures. */
 	void DropTextures();
@@ -147,10 +147,10 @@ public:
 	void DropForeignTextures();
 	
 	/** Activate shadow texture (depth only) with the given size for solid shadow casting. */
-	void ActivateSolidTexture( int size, bool useFloatDepth, bool withStencil = false );
+	void ActivateSolidTexture(int size, bool useFloatDepth, bool withStencil = false);
 	
 	/** Activate shadow texture (depth and color) with the given size for transparent shadow casting. */
-	void ActivateTransparentTexture( int size, bool useFloatDepth );
+	void ActivateTransparentTexture(int size, bool useFloatDepth);
 	
 	
 	
@@ -158,19 +158,19 @@ public:
 	deoglCubeMap *GetSolidDepthCubeMap() const;
 	
 	/** Set foreign solid depth cubemap. */
-	void SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap );
+	void SetForeignSolidDepthCubeMap(deoglCubeMap *cubemap);
 	
 	/** Transparent depth cubemap. */
 	deoglCubeMap *GetTransparentDepthCubeMap() const;
 	
 	/** Set foreign transparent depth cubemap. */
-	void SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap );
+	void SetForeignTransparentDepthCubeMap(deoglCubeMap *cubemap);
 	
 	/** Transparent color cubemap. */
 	deoglCubeMap *GetTransparentColorCubeMap() const;
 	
 	/** Set foreign transparent color cubemap. */
-	void SetForeignTransparentColorCubeMap( deoglCubeMap *cubemap );
+	void SetForeignTransparentColorCubeMap(deoglCubeMap *cubemap);
 	
 	/** Drop shadow cubemaps. */
 	void DropCubeMaps();
@@ -185,16 +185,16 @@ public:
 	void DropForeignCubeMaps();
 	
 	/** Activate shadow cubemap (depth only) with the given size for solid shadow casting. */
-	void ActivateSolidCubeMap( int size, bool useFloatDepth );
+	void ActivateSolidCubeMap(int size, bool useFloatDepth);
 	
 	/** Activate shadow cubemap face (depth only) with the given size for solid shadow casting. */
-	void ActivateSolidCubeMapFace( int size, bool useFloatDepth, int face );
+	void ActivateSolidCubeMapFace(int size, bool useFloatDepth, int face);
 	
 	/** Activate shadow cubemap (depth and color) with the given size for transparent shadow casting. */
-	void ActivateTransparentCubeMap( int size, bool useFloatDepth );
+	void ActivateTransparentCubeMap(int size, bool useFloatDepth);
 	
 	/** Activate shadow cubemap face (depth and color) with the given size for transparent shadow casting. */
-	void ActivateTransparentCubeMapFace( int size, bool useFloatDepth, int face );
+	void ActivateTransparentCubeMapFace(int size, bool useFloatDepth, int face);
 	
 	
 	
@@ -202,19 +202,19 @@ public:
 	deoglArrayTexture *GetSolidDepthArrayTexture() const;
 	
 	/** Set foreign solid depth array texture. */
-	void SetForeignSolidDepthArrayTexture( deoglArrayTexture *texture );
+	void SetForeignSolidDepthArrayTexture(deoglArrayTexture *texture);
 	
 	/** Transparent depth array texture. */
 	deoglArrayTexture *GetTransparentDepthArrayTexture() const;
 	
 	/** Set foreign transparent depth array texture. */
-	void SetForeignTransparentDepthArrayTexture( deoglArrayTexture *texture );
+	void SetForeignTransparentDepthArrayTexture(deoglArrayTexture *texture);
 	
 	/** Transparent color array texture. */
 	deoglArrayTexture *GetTransparentColorArrayTexture() const;
 	
 	/** Set foreign transparent color array texture. */
-	void SetForeignTransparentColorArrayTexture( deoglArrayTexture *texture );
+	void SetForeignTransparentColorArrayTexture(deoglArrayTexture *texture);
 	
 	/** Drop array textures. */
 	void DropArrayTextures();
@@ -223,13 +223,13 @@ public:
 	void DropForeignArrayTextures();
 	
 	/** Activate shadow array texture (depth) with the given size for solid shadow casting. */
-	void ActivateSolidArrayTexture( int size, int layerCount, bool withStencil = false );
+	void ActivateSolidArrayTexture(int size, int layerCount, bool withStencil = false);
 	
 	/** Activate layer of a shadow array texture (depth) with the given size for solid shadow casting. */
-	void ActivateSolidArrayTextureLayer( int size, int layerCount, int layer, bool withStencil = false );
+	void ActivateSolidArrayTextureLayer(int size, int layerCount, int layer, bool withStencil = false);
 	
 	/** Activate shadow array texture (depth) with the given size for transparent shadow casting. */
-	void ActivateTransparentArrayTexture( int size, int layerCount );
+	void ActivateTransparentArrayTexture(int size, int layerCount);
 	
 	
 	
@@ -237,7 +237,7 @@ public:
 	deoglTexture *GetOcclusionTexture() const;
 	
 	/** Activate occlusion texture with the given size. */
-	void ActivateOcclusionTexture( int width, int height );
+	void ActivateOcclusionTexture(int width, int height);
 	
 	/** Drop occlusion textures. */
 	void DropOcclusionTextures();
@@ -248,7 +248,7 @@ public:
 	deoglTexture *GetAmbientTexture() const;
 	
 	/** Set foreign ambient texture. */
-	void SetForeignAmbientTexture( deoglTexture *texture );
+	void SetForeignAmbientTexture(deoglTexture *texture);
 	
 	/** Drop ambient textures. */
 	void DropAmbientTextures();
@@ -257,7 +257,7 @@ public:
 	void DropForeignAmbientTextures();
 	
 	/** Activate ambient texture with the given size. */
-	void ActivateAmbientTexture( int size, bool useFloatDepth );
+	void ActivateAmbientTexture(int size, bool useFloatDepth);
 	
 	
 	
@@ -266,7 +266,7 @@ public:
 	deoglCubeMap *GetAmbientCubeMap() const;
 	
 	/** Set foreign ambient cubemap. */
-	void SetForeignAmbientCubeMap( deoglCubeMap *cubemap );
+	void SetForeignAmbientCubeMap(deoglCubeMap *cubemap);
 	
 	/** Drop ambient cubemaps. */
 	void DropAmbientCubeMaps();
@@ -275,18 +275,18 @@ public:
 	void DropForeignAmbientCubeMaps();
 	
 	/** Activate ambient cubemap with size. */
-	void ActivateAmbientCubeMap( int size, bool useFloatDepth );
+	void ActivateAmbientCubeMap(int size, bool useFloatDepth);
 	
 	/** Activate ambient cubemap face with size. */
-	void ActivateAmbientCubeMapFace( int size, bool useFloatDepth, int face );
+	void ActivateAmbientCubeMapFace(int size, bool useFloatDepth, int face);
 	
 	
 	
 	/** Shadow map size from configuration shadow quality. */
-	static int ShadowMapSize( const deoglConfiguration &config );
+	static int ShadowMapSize(const deoglConfiguration &config);
 	
 	/** Shadow cube size from configuration shadow quality. */
-	static int ShadowCubeSize( const deoglConfiguration &config );
+	static int ShadowCubeSize(const deoglConfiguration &config);
 	/*@}*/
 	
 	

@@ -26,7 +26,8 @@
 #define _INPUTDEVICE_H_
 
 #include "../deObject.h"
-#include "../common/collection/decObjectOrderedSet.h"
+#include "../common/collection/decTList.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"
 #include "../resources/image/deImage.h"
@@ -67,8 +68,7 @@ class deInputDeviceComponent;
 class DE_DLL_EXPORT deInputDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deInputDevice> Ref;
-	
+	using Ref = deTObjectReference<deInputDevice>;
 	
 	
 public:
@@ -260,7 +260,7 @@ public:
 		
 		efeCheekPuffRight,
 		efeCheekPuffLeft,
-		efeCheekSuck, //<! Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
+		efeCheekSuck, //!< Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
 		
 		efeMouthApeShape,
 		efeMouthUpperRight,
@@ -276,7 +276,7 @@ public:
 		efeMouthLowerOverturn,
 		efeMouthLowerInside,
 		efeMouthLowerOverlay,
-		efeMouthPout, //<! Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
+		efeMouthPout, //!< Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
 		efeMouthSmileRight,
 		efeMouthSmileLeft,
 		efeMouthSadRight,
@@ -312,8 +312,8 @@ public:
 		
 		efeCheekUpRight,
 		efeCheekUpLeft,
-		efeCheekSuckRight, //<! Detail expression of efeCheekSuck
-		efeCheekSuckLeft, //<! Detail expression of efeCheekSuck
+		efeCheekSuckRight, //!< Detail expression of efeCheekSuck
+		efeCheekSuckLeft, //!< Detail expression of efeCheekSuck
 		
 		efeChinUpperUp,
 		efeChinLowerUp,
@@ -322,8 +322,8 @@ public:
 		efeMouthDimpleLeft,
 		efeMouthPressRight,
 		efeMouthPressLeft,
-		efeMouthPoutRight, //<! Detail expression of efeCMouthPout
-		efeMouthPoutLeft, //<! Detail expression of efeCMouthPout
+		efeMouthPoutRight, //!< Detail expression of efeCMouthPout
+		efeMouthPoutLeft, //!< Detail expression of efeCMouthPout
 		efeMouthStretchRight,
 		efeMouthStretchLeft,
 		efeMouthRight,
@@ -378,34 +378,22 @@ private:
 	deImage::Ref pDisplayImage;
 	
 	/** \brief List of small icons of different size for use in binding displays. */
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	
 	/** \brief Text to display centered across display image or icon. */
 	decString pDisplayText;
 	
 	/** \brief Buttons. */
-	deInputDeviceButton *pButtons;
-	
-	/** \brief Number of buttons. */
-	int pButtonCount;
+	decTList<deInputDeviceButton> pButtons;
 	
 	/** \brief Axes. */
-	deInputDeviceAxis *pAxes;
-	
-	/** \brief Number of axes. */
-	int pAxisCount;
+	decTList<deInputDeviceAxis> pAxes;
 	
 	/** \brief Feedbacks. */
-	deInputDeviceFeedback *pFeedbacks;
-	
-	/** \brief Number of feedbacks. */
-	int pFeedbackCount;
+	decTList<deInputDeviceFeedback> pFeedbacks;
 	
 	/** \brief Components. */
-	deInputDeviceComponent *pComponents;
-	
-	/** \brief Number of components. */
-	int pComponentCount;
+	decTList<deInputDeviceComponent> pComponents;
 	
 	/** \brief Bone configuration. */
 	eBoneConfigurations pBoneConfiguration;
@@ -417,7 +405,7 @@ private:
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	decVector pFingerTipOffset[ 5 ];
+	decVector pFingerTipOffset[5];
 	
 	/** \brief Hand rig if ebcHand is used. */
 	deRig::Ref pHandRig;
@@ -445,9 +433,13 @@ public:
 	/** \brief Create input device. */
 	deInputDevice();
 	
+	deInputDevice(const deInputDevice&) = delete;
+	deInputDevice& operator=(const deInputDevice&) = delete;
+	
+	
 protected:
 	/** \brief Clean up input device. */
-	virtual ~deInputDevice();
+	~deInputDevice() override;
 	/*@}*/
 	
 	
@@ -466,7 +458,7 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/**
 	 * \brief Display name.
@@ -478,25 +470,25 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set Display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Device type. */
 	inline eDeviceTypes GetType() const{ return pType; }
 	
 	/** \brief Device type. */
-	void SetType( eDeviceTypes type );
+	void SetType(eDeviceTypes type);
 	
 	/** \brief Model to represent the device in 3D user interfaces or NULL if not set. */
 	inline const deModel::Ref &GetDisplayModel() const{ return pDisplayModel; }
 	
 	/** \brief Set model to represent the device in 3D user interfaces or NULL if not set. */
-	void SetDisplayModel(const deModel::Ref &model);
+	void SetDisplayModel(deModel *model);
 	
 	/** \brief Skin for display model or NULL if not set. */
 	inline const deSkin::Ref &GetDisplaySkin() const{ return pDisplaySkin; }
 	
 	/** \brief Set skin for display model or NULL if not set. */
-	void SetDisplaySkin(const deSkin::Ref &skin);
+	void SetDisplaySkin(deSkin *skin);
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
@@ -510,30 +502,23 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	void SetDisplayImage(const deImage::Ref &image);
-	
-	/** \brief Count of icons representing the device in bindings. */
-	int GetDisplayIconCount() const;
-	
-	/**
-	 * \brief Icon at index representing the device in bindings.
-	 * 
-	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
-	 */
-	deImage::Ref GetDisplayIconAt(int index) const;
+	void SetDisplayImage(deImage *image);
 	
 	/**
 	 * \brief Add icon representing the device in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	void AddDisplayIcon(const deImage::Ref &image);
+	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set text to display centered across display image or icon. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
+	
+	/** Display icons list. */
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/**
 	 * \brief Bone configuration.
@@ -545,7 +530,7 @@ public:
 	 * \brief Set bone configuration.
 	 * \version 1.6
 	 */
-	void SetBoneConfiguration( eBoneConfigurations configuration );
+	void SetBoneConfiguration(eBoneConfigurations configuration);
 	
 	/**
 	 * \brief Finger tip offsets.
@@ -555,7 +540,7 @@ public:
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	const decVector &GetFingerTipOffset( int index ) const;
+	const decVector &GetFingerTipOffset(int index) const;
 	
 	/**
 	 * \brief Finger tip offsets.
@@ -565,7 +550,7 @@ public:
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	void SetFingerTipOffset( int index, const decVector &offset );
+	void SetFingerTipOffset(int index, const decVector &offset);
 	
 	/**
 	 * \brief Hand rig if ebcHand is used.
@@ -577,7 +562,7 @@ public:
 	 * \brief Set hand rig if ebcHand is used.
 	 * \version 1.6
 	 */
-	void SetHandRig(const deRig::Ref &rig);
+	void SetHandRig(deRig *rig);
 	
 	/**
 	 * \brief Device supports face eye expressions.
@@ -589,7 +574,7 @@ public:
 	 * \brief Set if device supports face eye expressions.
 	 * \version 1.12
 	 */
-	void SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions );
+	void SetSupportsFaceEyeExpressions(bool supportsFaceEyeExpressions);
 	
 	/**
 	 * \brief Device supports face mouth expressions.
@@ -601,7 +586,7 @@ public:
 	 * \brief Set if device supports face mouth expressions.
 	 * \version 1.12
 	 */
-	void SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions );
+	void SetSupportsFaceMouthExpressions(bool supportsFaceMouthExpressions);
 	
 	/**
 	 * \brief Device is using hand interaction.
@@ -625,7 +610,7 @@ public:
 	 * \brief Set model to represent the device in VR environments or NULL if not set.
 	 * \version 1.6
 	 */
-	void SetVRModel(const deModel::Ref &model);
+	void SetVRModel(deModel *model);
 	
 	/**
 	 * \brief Skin for VR model or NULL if not set.
@@ -637,70 +622,64 @@ public:
 	 * \brief Skin for VR model or NULL if not set.
 	 * \version 1.6
 	 */
-	void SetVRSkin(const deSkin::Ref &skin);
+	void SetVRSkin(deSkin *skin);
 	/*@}*/
 	
 	
 	
 	/** \name Buttons */
 	/*@{*/
-	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
+	/** \brief Buttons. */
+	inline decTList<deInputDeviceButton> &GetButtons(){ return pButtons; }
+	inline const decTList<deInputDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/**
 	 * \brief Set number of buttons.
 	 * 
 	 * Resets all buttons to default values.
 	 */
-	void SetButtonCount( int count );
-	
-	/** \brief Button at index. */
-	deInputDeviceButton &GetButtonAt( int index ) const;
+	void SetButtonCount(int count);
 	
 	/** \brief Index of button with identifier or -1 if not found. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	/*@}*/
 	
 	
 	
 	/** \name Axes */
 	/*@{*/
-	/** \brief Number of axes. */
-	inline int GetAxisCount() const{ return pAxisCount; }
+	/** \brief Axes. */
+	inline decTList<deInputDeviceAxis> &GetAxes(){ return pAxes; }
+	inline const decTList<deInputDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/**
 	 * \brief Set number of axes.
 	 * 
 	 * Resets all axes to default values.
 	 */
-	void SetAxisCount( int count );
-	
-	/** \brief Axis at index. */
-	deInputDeviceAxis &GetAxisAt( int index ) const;
+	void SetAxisCount(int count);
 	
 	/** \brief Index of axis with identifier or -1 if not found. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	/*@}*/
 	
 	
 	
 	/** \name Feedbacks */
 	/*@{*/
-	/** \brief Number of feedbacks. */
-	inline int GetFeedbackCount() const{ return pFeedbackCount; }
+	/** \brief Feedbacks. */
+	inline decTList<deInputDeviceFeedback> &GetFeedbacks(){ return pFeedbacks; }
+	inline const decTList<deInputDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/**
 	 * \brief Set number of feedbacks.
 	 * 
 	 * Resets all feedbacks to default values.
 	 */
-	void SetFeedbackCount( int count );
-	
-	/** \brief Feedback at index. */
-	deInputDeviceFeedback &GetFeedbackAt( int index ) const;
+	void SetFeedbackCount(int count);
 	
 	/** \brief Index of feedback with identifier or -1 if not found. */
-	int IndexOfFeedbackWithID( const char *id ) const;
+	int IndexOfFeedbackWithID(const char *id) const;
 	/*@}*/
 	
 	
@@ -708,10 +687,11 @@ public:
 	/** \name Components */
 	/*@{*/
 	/**
-	 * \brief Number of components.
+	 * \brief Components.
 	 * \version 1.6
 	 */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline decTList<deInputDeviceComponent> &GetComponents(){ return pComponents; }
+	inline const decTList<deInputDeviceComponent> &GetComponents() const{ return pComponents; }
 	
 	/**
 	 * \brief Set number of components.
@@ -719,19 +699,13 @@ public:
 	 * 
 	 * Resets all components to default values.
 	 */
-	void SetComponentCount( int count );
-	
-	/**
-	 * \brief Component at index.
-	 * \version 1.6
-	 */
-	deInputDeviceComponent &GetComponentAt( int index ) const;
+	void SetComponentCount(int count);
 	
 	/**
 	 * \brief Index of component with identifier or -1 if not found.
 	 * \version 1.6
 	 */
-	int IndexOfComponentWithID( const char *id ) const;
+	int IndexOfComponentWithID(const char *id) const;
 	/*@}*/
 	
 	

@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _DERESOURCELOADERTASK_X_H_
-#define _DERESOURCELOADERTASK_X_H_
+#ifndef _DERESOURCELOADERTASK_H_
+#define _DERESOURCELOADERTASK_H_
 
 #include "../deResourceLoader.h"
-#include "../../deResourceReference.h"
-#include "../../../filesystem/deVirtualFileSystemReference.h"
+#include "../../deFileResource.h"
+#include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../parallel/deParallelTask.h"
 #include "../../../common/utils/decTimer.h"
 #include "../../../common/string/decString.h"
@@ -41,6 +41,10 @@ class deFileResource;
  */
 class DE_DLL_EXPORT deResourceLoaderTask : public deParallelTask{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deResourceLoaderTask>;
+	
+	
 	/** \brief States. */
 	enum eStates{
 		/** \brief Pending. */
@@ -69,11 +73,11 @@ private:
 	deEngine &pEngine;
 	deResourceLoader &pResourceLoader;
 	
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decString pPath;
 	deResourceLoader::eResourceType pResourceType;
 	
-	deResourceReference pResource;
+	deFileResource::Ref pResource;
 	eStates pState;
 	eTypes pType;
 	
@@ -85,12 +89,12 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deResourceLoaderTask( deEngine &engine, deResourceLoader &resourceLoader,
+	deResourceLoaderTask(deEngine &engine, deResourceLoader &resourceLoader,
 		deVirtualFileSystem *vfs, const char *path,
-		deResourceLoader::eResourceType resourceType );
+		deResourceLoader::eResourceType resourceType);
 	
 	/** \brief Clean up task. */
-	virtual ~deResourceLoaderTask();
+	~deResourceLoaderTask() override;
 	/*@}*/
 	
 	
@@ -100,7 +104,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem *GetVFS() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
 	/** \brief Path. */
 	inline const decString &GetPath() const{ return pPath; }
@@ -109,13 +113,13 @@ public:
 	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
 	
 	/** \brief Task matches the given path/resourceType. */
-	bool Matches( deVirtualFileSystem *vfs, const char *path,
-		deResourceLoader::eResourceType resourceType ) const;
+	bool Matches(deVirtualFileSystem *vfs, const char *path,
+		deResourceLoader::eResourceType resourceType) const;
 	
 	
 	
 	/** \brief Resource or NULL. */
-	inline deFileResource *GetResource() const{ return ( deFileResource* )( deResource* )pResource; }
+	inline const deFileResource::Ref &GetResource() const{ return pResource; }
 	
 	/** \brief State. */
 	inline eStates GetState() const{ return pState; }
@@ -129,10 +133,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	
@@ -141,9 +145,9 @@ public:
 protected:
 	inline deEngine &GetEngine(){ return pEngine; }
 	inline deResourceLoader &GetResourceLoader(){ return pResourceLoader; }
-	void SetResource( deFileResource *resource );
-	void SetState( eStates state );
-	void SetType( eTypes type );
+	void SetResource(deFileResource *resource);
+	void SetState(eStates state);
+	void SetType(eTypes type);
 	void LogCreateEnter();
 	void LogCreateExit();
 	void LogRunEnter();

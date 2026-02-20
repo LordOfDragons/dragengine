@@ -35,6 +35,9 @@
  * \brief Joystick input device using BJoystick API.
  */
 class debiDeviceJoystick : public debiDevice{
+public:
+	using Ref = deTObjectReference<debiDeviceJoystick>;
+	
 private:
 	decString pDevName;
 	BJoystick *pJoystick;
@@ -50,13 +53,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceJoystick( deBeOSInput &module, const char *name );
+	debiDeviceJoystick(deBeOSInput &module, const char *name);
 	
 	
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~debiDeviceJoystick();
+	~debiDeviceJoystick() override;
 	/*@}*/
 	
 	
@@ -73,7 +76,7 @@ public:
 	
 	
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 	
 	

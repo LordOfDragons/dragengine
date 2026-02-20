@@ -38,6 +38,9 @@ class ceConversationAction;
  * \brief Menu action cut action to topic.
  */
 class ceWPTMACLogicCutCondition : public ceWPTMACopyCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMACLogicCutCondition>;
+	
 private:
 	ceConversation *pConversation;
 	ceConversationTopic *pTopic;
@@ -54,10 +57,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicCutCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicCutCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceConversationAction &action, ceCConditionLogic &logic,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	/*@}*/
 	
 	
@@ -79,7 +82,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

@@ -25,19 +25,19 @@
 #ifndef _GDEWPSPARTICLEEMITTER_H_
 #define _GDEWPSPARTICLEEMITTER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include "gdeWPSParticleEmitterListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeParticleEmitter;
-class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSParticleEmitterListener;
 
 
 
@@ -45,18 +45,21 @@ class gdeWPSParticleEmitterListener;
  * \brief Particle emitter property panel.
  */
 class gdeWPSParticleEmitter : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSParticleEmitter> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSParticleEmitterListener *pListener;
+	gdeWPSParticleEmitterListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPath;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
+	igdeEditPath::Ref pEditPath;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
 	
-	igdeComboBoxFilterReference pCBCategory;
-	igdeButtonReference pBtnJumpToCategory;
+	igdeComboBoxFilter::Ref pCBCategory;
+	igdeButton::Ref pBtnJumpToCategory;
 	
 	
 	
@@ -64,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSParticleEmitter( gdeWindowProperties &windowMain );
+	gdeWPSParticleEmitter(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -76,15 +79,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active particle emitter or \em NULL if absent. */
+	/** \brief Active particle emitter or \em nullptr if absent. */
 	gdeParticleEmitter *GetParticleEmitter() const;
 	
 	
@@ -93,7 +96,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void UpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 	
 	
 	

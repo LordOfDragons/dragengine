@@ -33,7 +33,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 #include <deigde/codec/igdeCodecPropertyString.h>
 
@@ -45,52 +45,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeReplace::meUObjectShapeReplace( meObject *object, const char *property, int shapeIndex, const decShape &shape ){
-	if( ! object || ! property ){
-		DETHROW( deeInvalidParam );
-	}
-	if( ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
-	}
+meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *property, int shapeIndex, const decShape &shape){
+	DEASSERT_NOTNULL(object)
+	DEASSERT_NOTNULL(property)
+	DEASSERT_NOTNULL(object->GetWorld())
 	
 	igdeCodecPropertyString codec;
-	decShape *copyShape = NULL;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
-	SetShortInfo( "Object-Shape replace" );
-	SetLongInfo( "Object-Shape replace" );
+	SetShortInfo("@World.UObjectShapeReplace.ObjectShapeReplace");
+	SetLongInfo("@World.UObjectShapeReplace.ObjectShapeReplace");
 	
-	pPropertyExists = object->GetProperties().Has( property );
-	if( pPropertyExists ){
-		pOldValue = object->GetProperties().GetAt( property );
+	pPropertyExists = object->GetProperties().Has(property);
+	if(pPropertyExists){
+		pOldValue = object->GetProperties().GetAt(property);
 	}
 	
-	codec.DecodeShapeList( pOldValue.GetString(), shapeList );
+	codec.DecodeShapeList(pOldValue, shapeList);
 	
-	try{
-		copyShape = shape.Copy();
-		shapeList.SetAt( shapeIndex, copyShape );
-		
-	}catch( const deException & ){
-		if( copyShape ){
-			delete copyShape;
-		}
-		throw;
-	}
+	shapeList.SetAt(shapeIndex, shape.Copy());
 	
-	codec.EncodeShapeList( shapeList, pNewValue );
+	codec.EncodeShapeList(shapeList, pNewValue);
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeReplace::~meUObjectShapeReplace(){
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -99,14 +82,14 @@ meUObjectShapeReplace::~meUObjectShapeReplace(){
 ///////////////
 
 void meUObjectShapeReplace::Undo(){
-	if( pPropertyExists ){
-		pObject->SetProperty( pProperty.GetString(), pOldValue.GetString() );
+	if(pPropertyExists){
+		pObject->SetProperty(pProperty, pOldValue);
 		
 	}else{
-		pObject->RemoveProperty( pProperty.GetString() );
+		pObject->RemoveProperty(pProperty);
 	}
 }
 
 void meUObjectShapeReplace::Redo(){
-	pObject->SetProperty( pProperty.GetString(), pNewValue.GetString() );
+	pObject->SetProperty(pProperty, pNewValue);
 }

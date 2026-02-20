@@ -25,25 +25,34 @@
 #ifndef _GDECATEGORY_H_
 #define _GDECATEGORY_H_
 
-#include "gdeCategoryList.h"
-
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringSet.h>
-
 
 
 /**
  * \brief Category.
  */
 class gdeCategory : public deObject{
+public:
+	using Ref = deTObjectReference<gdeCategory>;
+	
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<gdeCategory>,gdeCategory>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<gdeCategory>,gdeCategory>::decTCollectionQueryByName;
+		
+		/** \brief Category with path or \em NULL if absent. */
+		gdeCategory *FindWithPath(const char *path) const;
+	};
+	
+	
 private:
 	decString pName;
 	decString pDescription;
-	gdeCategoryList pCategories;
+	List pCategories;
 	gdeCategory *pParent;
 	decStringSet pAutoCategorizePattern;
 	bool pHidden;
-	
 	
 	
 public:
@@ -53,13 +62,15 @@ public:
 	gdeCategory();
 	
 	/** \brief Create category. */
-	gdeCategory( const char *name );
+	explicit gdeCategory(const char *name);
 	
 	/** \brief Create copy of category. */
-	gdeCategory( const gdeCategory &category );
+	gdeCategory(const gdeCategory &category);
 	
 	/** \brief Clean up category. */
-	virtual ~gdeCategory();
+protected:
+	~gdeCategory() override;
+public:
 	/*@}*/
 	
 	
@@ -70,19 +81,19 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
-	/** \brief Parent category or \em NULL if top level. */
+	/** \brief Parent category or \em nullptr if top level. */
 	inline gdeCategory *GetParent() const{ return pParent; }
 	
-	/** \brief Set parent category or \em NULL if top level. */
-	void SetParent( gdeCategory *parent );
+	/** \brief Set parent category or \em nullptr if top level. */
+	void SetParent(gdeCategory *parent);
 	
 	/** \brief Get path. */
 	decString GetPath() const;
@@ -91,24 +102,24 @@ public:
 	inline const decStringSet &GetAutoCategorizePattern() const{ return pAutoCategorizePattern; }
 	
 	/** \brief Set list of patterns to match to add. */
-	void SetAutoCategorizePattern( const decStringSet &patternList );
+	void SetAutoCategorizePattern(const decStringSet &patternList);
 	
 	/** \brief Hidden in browser. */
 	inline bool GetHidden() const{ return pHidden; }
 	
 	/** \brief Set if hidden in browser. */
-	void SetHidden( bool hidden );
+	void SetHidden(bool hidden);
 	
 	
 	
 	/** \brief Sub categories. */
-	inline const gdeCategoryList &GetCategories() const{ return pCategories; }
+	inline const List &GetCategories() const{ return pCategories; }
 	
 	/** \brief Add category. */
-	void AddCategory( gdeCategory *category );
+	void AddCategory(gdeCategory *category);
 	
 	/** \brief Remove category. */
-	void RemoveCategory( gdeCategory *category );
+	void RemoveCategory(gdeCategory *category);
 	
 	/** \brief Remove all categories. */
 	void RemoveAllCategories();
@@ -116,7 +127,7 @@ public:
 	
 	
 	/** \brief Set from another property. */
-	gdeCategory &operator=( const gdeCategory &category );
+	gdeCategory &operator=(const gdeCategory &category);
 	/*@}*/
 };
 

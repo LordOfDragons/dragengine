@@ -39,9 +39,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
@@ -60,14 +58,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSONavigationBlocker::igdeWOSONavigationBlocker( igdeWObject &wrapper,
-	const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDNavigationBlocker( gdNavigationBlocker ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSONavigationBlocker::igdeWOSONavigationBlocker(igdeWObject &wrapper,
+	const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDNavigationBlocker(gdNavigationBlocker),
+pAddedToWorld(false),
+pAttachment(nullptr)
 {
-	wrapper.SubObjectFinishedLoading( *this, true );
+	wrapper.SubObjectFinishedLoading(*this, true);
 }
 
 igdeWOSONavigationBlocker::~igdeWOSONavigationBlocker(){
@@ -80,15 +78,15 @@ igdeWOSONavigationBlocker::~igdeWOSONavigationBlocker(){
 ///////////////
 
 void igdeWOSONavigationBlocker::UpdateParameters(){
-	GetWrapper().SubObjectFinishedLoading( *this, true );
+	GetWrapper().SubObjectFinishedLoading(*this, true);
 }
 
 void igdeWOSONavigationBlocker::OnAllSubObjectsFinishedLoading(){
 	pUpdateNavigationBlocker();
 }
 
-void igdeWOSONavigationBlocker::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitNavigationBlocker( *this );
+void igdeWOSONavigationBlocker::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitNavigationBlocker(*this);
 }
 
 
@@ -97,108 +95,99 @@ void igdeWOSONavigationBlocker::Visit( igdeWOSOVisitor &visitor ){
 //////////////////////
 
 void igdeWOSONavigationBlocker::pUpdateNavigationBlocker(){
-	if( ! pNavigationBlocker ){
-		pNavigationBlocker.TakeOver( GetEngine().GetNavigationBlockerManager()->CreateNavigationBlocker() );
-		pNavigationBlocker->SetSpaceType( pGDNavigationBlocker.GetType() );
+	if(!pNavigationBlocker){
+		pNavigationBlocker = GetEngine().GetNavigationBlockerManager()->CreateNavigationBlocker();
+		pNavigationBlocker->SetSpaceType(pGDNavigationBlocker.GetType());
 	}
 	
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
 	decString value;
 	
-	pNavigationBlocker->SetLayer( GetIntProperty(
-		pGDNavigationBlocker.GetPropertyName( igdeGDCNavigationBlocker::epLayer ),
-		pGDNavigationBlocker.GetLayer() ) );
-	pNavigationBlocker->SetBlockingPriority( GetIntProperty(
-		pGDNavigationBlocker.GetPropertyName( igdeGDCNavigationBlocker::epBlockingPriority ),
-		pGDNavigationBlocker.GetBlockingPriority() ) );
-	pNavigationBlocker->SetEnabled( GetBoolProperty(
-		pGDNavigationBlocker.GetPropertyName( igdeGDCNavigationBlocker::epEnabled ),
-		pGDNavigationBlocker.GetEnabled() ) );
+	pNavigationBlocker->SetLayer(GetIntProperty(
+		pGDNavigationBlocker.GetPropertyName(igdeGDCNavigationBlocker::epLayer),
+		pGDNavigationBlocker.GetLayer()));
+	pNavigationBlocker->SetBlockingPriority(GetIntProperty(
+		pGDNavigationBlocker.GetPropertyName(igdeGDCNavigationBlocker::epBlockingPriority),
+		pGDNavigationBlocker.GetBlockingPriority()));
+	pNavigationBlocker->SetEnabled(GetBoolProperty(
+		pGDNavigationBlocker.GetPropertyName(igdeGDCNavigationBlocker::epEnabled),
+		pGDNavigationBlocker.GetEnabled()));
 	
 	// shape
-	if( GetPropertyValue( pGDNavigationBlocker.GetPropertyName( igdeGDCNavigationBlocker::epShape ), value ) ){
-		codec.DecodeShapeList( value, pNavigationBlocker->GetShapeList() );
+	if(GetPropertyValue(pGDNavigationBlocker.GetPropertyName(igdeGDCNavigationBlocker::epShape), value)){
+		codec.DecodeShapeList(value, pNavigationBlocker->GetShapeList());
 		
 	}else{
 		pNavigationBlocker->GetShapeList() = pGDNavigationBlocker.GetShapeList();
 	}
 	pNavigationBlocker->NotifyShapeListChanged();
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddNavigationBlocker( pNavigationBlocker );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddNavigationBlocker(pNavigationBlocker);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSONavigationBlocker::pDestroyNavigationBlocker(){
-	if( ! pNavigationBlocker ){
+	if(!pNavigationBlocker){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveNavigationBlocker( pNavigationBlocker );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveNavigationBlocker(pNavigationBlocker);
 	}
 	
-	pNavigationBlocker = NULL;
+	pNavigationBlocker = nullptr;
 	pAddedToWorld = false;
 }
 
 void igdeWOSONavigationBlocker::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pNavigationBlocker ){
+	if(!pNavigationBlocker){
 		return;
 	}
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
 	
-	try{
-		attachment = new deColliderAttachment( pNavigationBlocker );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDNavigationBlocker.GetPropertyName( igdeGDCNavigationBlocker::epAttachPosition ),
-			pGDNavigationBlocker.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDNavigationBlocker.GetPropertyName( igdeGDCNavigationBlocker::epAttachRotation ),
-			pGDNavigationBlocker.GetOrientation() ) );
-		
-		if( colliderComponent ){
-			if( ! pGDNavigationBlocker.GetBoneName().IsEmpty() ){
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( pGDNavigationBlocker.GetBoneName() );
-			}
-			colliderComponent->AddAttachment( attachment );
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment( attachment );
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pNavigationBlocker);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDNavigationBlocker.GetPropertyName(igdeGDCNavigationBlocker::epAttachPosition),
+		pGDNavigationBlocker.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDNavigationBlocker.GetPropertyName(igdeGDCNavigationBlocker::epAttachRotation),
+		pGDNavigationBlocker.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDNavigationBlocker.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDNavigationBlocker.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch( const deException & ){
-		if( attachment ){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSONavigationBlocker::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachedToCollider->RemoveAttachment(pAttachment);
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

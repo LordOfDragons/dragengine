@@ -69,7 +69,7 @@ public:
 	deoglShaderCompilerThread(deoglShaderLanguage &language, int contextIndex, Type type);
 	
 	/** Clean up shader compiler thread. */
-	~deoglShaderCompilerThread();
+	~deoglShaderCompilerThread() override;
 	/*@}*/
 	
 	

@@ -41,7 +41,8 @@ class deoglRenderCanvasContext;
  */
 class deoglSkinStateConstructedNode : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinStateConstructedNode> Ref;
+	using Ref = deTObjectReference<deoglSkinStateConstructedNode>;
+	
 	
 	enum eType{
 		etGroup,
@@ -66,7 +67,7 @@ protected:
 	float pTransparency;
 	const deSkinPropertyNode::eCombineModes pCombineMode;
 	Ref pMask;
-	int pMapped[ deSkinPropertyNode::MappedCount ];
+	int pMapped[deSkinPropertyNode::MappedCount];
 	
 	decTexMatrix2 pTransform;
 	bool pDirtyTransform;
@@ -82,13 +83,13 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateConstructedNode( deSkinPropertyNode &node, eType type );
+	deoglSkinStateConstructedNode(deSkinPropertyNode &node, eType type);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateConstructedNode( const deoglSkinStateConstructedNode &node );
+	deoglSkinStateConstructedNode(const deoglSkinStateConstructedNode &node);
 	
 	/** Clean up skin state mapped. */
-	virtual ~deoglSkinStateConstructedNode() override;
+	~deoglSkinStateConstructedNode() override;
 	/*@}*/
 	
 	
@@ -133,7 +134,7 @@ public:
 	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{ return pCombineMode; }
 	
 	/** Mapped for type. */
-	int GetMappedFor( deSkinPropertyNode::eMapped type ) const;
+	int GetMappedFor(deSkinPropertyNode::eMapped type) const;
 	
 	
 	
@@ -154,13 +155,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state );
+	virtual void Update(deoglSkinState &state);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state );
+	virtual void PrepareForRender(deoglSkinState &state);
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context );
+	virtual void Render(deoglSkinState &state, const deoglRenderCanvasContext &context);
 	
 	/** Create copy. */
 	virtual Ref Copy() const = 0;
@@ -168,7 +169,7 @@ public:
 	
 	
 	/** Create node. */
-	static Ref CreateNode( deSkinPropertyNode &node );
+	static Ref CreateNode(deSkinPropertyNode &node);
 	/*@}*/
 	
 	

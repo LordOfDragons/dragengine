@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCSnapPointListener::gdeWPSOCSnapPointListener( gdeWPSOCSnapPoint &panel ) :
-pPanel( panel ){
+gdeWPSOCSnapPointListener::gdeWPSOCSnapPointListener(gdeWPSOCSnapPoint &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCSnapPointListener::~gdeWPSOCSnapPointListener(){
@@ -53,24 +53,24 @@ gdeWPSOCSnapPointListener::~gdeWPSOCSnapPointListener(){
 // Management
 ///////////////
 
-void gdeWPSOCSnapPointListener::OCSnapPointsChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCSnapPointListener::OCSnapPointsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateSnapPoint();
 }
 
-void gdeWPSOCSnapPointListener::OCSnapPointChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCSnapPointListener::OCSnapPointChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetSnapPoint() != snappoint ){
+	if(pPanel.GetSnapPoint() != snappoint){
 		return;
 	}
 	pPanel.UpdateSnapPoint();
 }
 
-void gdeWPSOCSnapPointListener::ActiveOCSnapPointChanged( gdeGameDefinition* ){
+void gdeWPSOCSnapPointListener::ActiveOCSnapPointChanged(gdeGameDefinition*){
 	pPanel.UpdateSnapPoint();
 }

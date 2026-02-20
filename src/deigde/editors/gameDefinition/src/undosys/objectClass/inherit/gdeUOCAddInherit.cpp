@@ -40,30 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddInherit::gdeUOCAddInherit( gdeObjectClass *objectClass, gdeOCInherit *inherit ) :
-pObjectClass( NULL ),
-pInherit( NULL )
+gdeUOCAddInherit::gdeUOCAddInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! inherit ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !inherit){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add inherit" );
+	SetShortInfo("@GameDefinition.Undo.OCAddInherit");
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddInherit::~gdeUOCAddInherit(){
-	if( pInherit ){
-		pInherit->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -72,11 +62,11 @@ gdeUOCAddInherit::~gdeUOCAddInherit(){
 ///////////////
 
 void gdeUOCAddInherit::Undo(){
-	pObjectClass->GetInherits().Remove( pInherit );
+	pObjectClass->GetInherits().Remove(pInherit);
 	pObjectClass->NotifyInheritsChanged();
 }
 
 void gdeUOCAddInherit::Redo(){
-	pObjectClass->GetInherits().Add( pInherit );
+	pObjectClass->GetInherits().Add(pInherit);
 	pObjectClass->NotifyInheritsChanged();
 }

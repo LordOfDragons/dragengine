@@ -25,12 +25,13 @@
 #ifndef _DEBIDEVICEMANAGER_H_
 #define _DEBIDEVICEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "debiDeviceMouse.h"
+#include "debiDeviceKeyboard.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deBeOSInput;
 class debiDevice;
-class debiDeviceMouse;
-class debiDeviceKeyboard;
 
 
 
@@ -41,10 +42,10 @@ class debiDeviceManager{
 private:
 	deBeOSInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<debiDevice> pDevices;
 	
-	debiDeviceMouse *pMouse;
-	debiDeviceKeyboard *pKeyboard;
+	debiDeviceMouse::Ref pMouse;
+	debiDeviceKeyboard::Ref pKeyboard;
 	
 	
 	
@@ -52,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device list. */
-	debiDeviceManager( deBeOSInput &module );
+	debiDeviceManager(deBeOSInput &module);
 	
 	/** \brief Clean up device list. */
 	~debiDeviceManager();
@@ -67,25 +68,22 @@ public:
 	
 	
 	
-	/** \brief Number of devices. */
-	int GetCount() const;
-	
-	/** \brief Device at index. */
-	debiDevice *GetAt( int index ) const;
+	/** \brief Devices. */
+	inline const decTObjectOrderedSet<debiDevice> &GetDevices() const{ return pDevices; }
 	
 	/** \brief Device with identifier or \em NULL if absent. */
-	debiDevice *GetWithID( const char *id );
+	debiDevice *GetWithID(const char *id);
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id );
+	int IndexOfWithID(const char *id);
 	
 	
 	
 	/** \brief Mouse device. */
-	inline debiDeviceMouse *GetMouse() const{ return pMouse; }
+	inline const debiDeviceMouse::Ref &GetMouse() const{ return pMouse; }
 	
 	/** \brief Keyboard device. */
-	inline debiDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	inline const debiDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
 	
 	
 	
@@ -95,7 +93,7 @@ public:
 	
 	
 	/** \brief Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	

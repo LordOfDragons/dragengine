@@ -26,17 +26,22 @@
 #define _DEOGLRCANVASRENDERWORLD_H_
 
 #include "deoglRCanvas.h"
+#include "../../world/deoglRCamera.h"
 
 class deoglRWorld;
-class deoglRCamera;
 
 
 /**
  * Render canvas render world.
  */
 class deoglRCanvasRenderWorld : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRCanvasRenderWorld>;
+	
+	
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	bool pForceToneMapAdaption;
 	
 	
@@ -45,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasRenderWorld( deoglRenderThread &renderThread );
+	deoglRCanvasRenderWorld(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasRenderWorld();
+	~deoglRCanvasRenderWorld() override;
 	/*@}*/
 	
 	
@@ -56,18 +61,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera or \em NULL if not set. */
-	inline deoglRCamera *GetCamera() const{ return pCamera; }
+	inline const deoglRCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Set camera or \em NULL if not set. */
-	void SetCamera( deoglRCamera *camera );
+	void SetCamera(deoglRCamera *camera);
 	
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 };
 

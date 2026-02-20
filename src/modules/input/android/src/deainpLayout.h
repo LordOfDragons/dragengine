@@ -49,10 +49,10 @@ public:
 	deainpLayout();
 	
 	/** \brief Create layout. */
-	deainpLayout( const decPoint &position, const decPoint &size );
+	deainpLayout(const decPoint &position, const decPoint &size);
 	
 	/** \brief Create copy of layout. */
-	deainpLayout( const deainpLayout &copy );
+	deainpLayout(const deainpLayout &copy);
 	
 	/** \brief Clean up layout. */
 	~deainpLayout();
@@ -66,13 +66,13 @@ public:
 	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Size. */
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Layouts are equal. */
-	bool operator==( const deainpLayout &layout ) const;
+	bool operator==(const deainpLayout &layout) const;
 	
 	/** \brief Set from another layout. */
-	deainpLayout &operator=( const deainpLayout &layout );
+	deainpLayout &operator=(const deainpLayout &layout);
 	/*@}*/
 };
 

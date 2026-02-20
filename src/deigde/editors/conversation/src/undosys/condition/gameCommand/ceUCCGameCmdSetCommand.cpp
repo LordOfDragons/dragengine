@@ -42,40 +42,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionGameCommand *condition, const char *newCommand ){
-	if( ! topic || ! action || ! condition || ! newCommand ){
-		DETHROW( deeInvalidParam );
+ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionGameCommand *condition, const char *newCommand){
+	if(!topic || !action || !condition || !newCommand){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldCommand = condition->GetCommand();
 	pNewCommand = newCommand;
 	
-	SetShortInfo( "Condition game command set command" );
+	SetShortInfo("@Conversation.Undo.ConditionGameCommandSetCommand");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCGameCmdSetCommand::~ceUCCGameCmdSetCommand(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -84,11 +70,11 @@ ceUCCGameCmdSetCommand::~ceUCCGameCmdSetCommand(){
 ///////////////
 
 void ceUCCGameCmdSetCommand::Undo(){
-	pCondition->SetCommand( pOldCommand );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetCommand(pOldCommand);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCGameCmdSetCommand::Redo(){
-	pCondition->SetCommand( pNewCommand );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetCommand(pNewCommand);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

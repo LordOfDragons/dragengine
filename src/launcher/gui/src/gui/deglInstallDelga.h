@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create installer. */
-	deglInstallDelga( deglWindowMain &window );
+	deglInstallDelga(deglWindowMain &window);
 	
 	/** Clean up installer. */
 	~deglInstallDelga();
@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run. */
-	bool Run( const char *forceFilename = nullptr );
+	bool Run(const char *forceFilename = nullptr);
 	/*@}*/
 };
 

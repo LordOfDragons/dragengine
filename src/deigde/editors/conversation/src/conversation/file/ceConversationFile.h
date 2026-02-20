@@ -25,10 +25,11 @@
 #ifndef _CECONVERSATIONFILE_H_
 #define _CECONVERSATIONFILE_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/string/decString.h>
+#include "../topic/ceConversationTopic.h"
 
-#include "../topic/ceConversationTopicList.h"
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 class ceConversation;
 
@@ -43,39 +44,45 @@ private:
 	
 	decString pID;
 	
-	ceConversationTopicList pTopics;
-	ceConversationTopic *pActiveTopic;
+	ceConversationTopic::List pTopics;
+	ceConversationTopic::Ref pActiveTopic;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceConversationFile>;
+	using List = decTObjectOrderedSet<ceConversationFile>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation file. */
-	ceConversationFile( const char *id = "Group" );
+	ceConversationFile(const char *id = "Group");
 	
 	/** \brief Create copy of conversation file. */
-	ceConversationFile( const ceConversationFile &file );
+	ceConversationFile(const ceConversationFile &file);
 	
 	/** \brief Clean up conversation file. */
-	virtual ~ceConversationFile();
+protected:
+	~ceConversationFile() override;
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent conversation or \em NULL if not set. */
+	/** \brief Parent conversation or \em nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set parent conversation or \em NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	/** \brief Set parent conversation or \em nullptr if not set. */
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	/*@}*/
 	
 	
@@ -83,22 +90,22 @@ public:
 	/** \name Topics */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopicList() const{ return pTopics; }
+	inline const ceConversationTopic::List &GetTopics() const{ return pTopics; }
 	
 	/** \brief Add topic. */
-	void AddTopic( ceConversationTopic *topic );
+	void AddTopic(ceConversationTopic *topic);
 	
 	/** \brief Remove topic. */
-	void RemoveTopic( ceConversationTopic *topic );
+	void RemoveTopic(ceConversationTopic *topic);
 	
 	/** \brief Remove all topics. */
 	void RemoveAllTopics();
 	
-	/** \brief Active topic or \em NULL if none is active. */
-	inline ceConversationTopic *GetActiveTopic() const{ return pActiveTopic; }
+	/** \brief Active topic or \em nullptr if none is active. */
+	inline const ceConversationTopic::Ref &GetActiveTopic() const{ return pActiveTopic; }
 	
-	/** \brief Set active topic or \em NULL if none is active. */
-	void SetActiveTopic( ceConversationTopic *topic );
+	/** \brief Set active topic or \em nullptr if none is active. */
+	void SetActiveTopic(ceConversationTopic *topic);
 	/*@}*/
 };
 

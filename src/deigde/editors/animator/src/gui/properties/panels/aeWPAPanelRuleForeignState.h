@@ -33,19 +33,23 @@
  * Foreign State Rule Panel.
  */
 class aeWPAPanelRuleForeignState : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleForeignState>;
+	
+	
 private:
-	igdeComboBoxFilterReference pCBBone;
-	igdeComboBoxFilterReference pCBVertexPositionSet;
-	igdeComboBoxReference pCBSrcCFrame;
-	igdeComboBoxReference pCBDestCFrame;
-	igdeTextFieldReference pEditPosition;
-	igdeTextFieldReference pEditRotation;
-	igdeTextFieldReference pEditSize;
-	igdeTextFieldReference pEditVertexPositionSet;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBoxFilter::Ref pCBBone;
+	igdeComboBoxFilter::Ref pCBVertexPositionSet;
+	igdeComboBox::Ref pCBSrcCFrame;
+	igdeComboBox::Ref pCBDestCFrame;
+	igdeTextField::Ref pEditPosition;
+	igdeTextField::Ref pEditRotation;
+	igdeTextField::Ref pEditSize;
+	igdeTextField::Ref pEditVertexPositionSet;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleForeignState( aeWPRule &wpRule );
+	aeWPAPanelRuleForeignState(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleForeignState();
+	~aeWPAPanelRuleForeignState() override;
 	/*@}*/
 	
 	
@@ -66,16 +70,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update model vertex position set list. */
-	virtual void UpdateModelVertexPositionSetList();
+	void UpdateModelVertexPositionSetList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

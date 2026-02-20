@@ -37,7 +37,8 @@ class igdeWidget;
  */
 class meInfoBubble : public deObject{
 public:
-	typedef deTObjectReference<meInfoBubble> Ref;
+	using Ref = deTObjectReference<meInfoBubble>;
+	
 	
 	enum ePlacement{
 		epTopLeft,
@@ -61,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create information bubble. */
-	meInfoBubble( meView3D &view );
+	meInfoBubble(meView3D &view);
 	
 protected:
 	/** \brief Clean up information bubble. */
-	virtual ~meInfoBubble();
+	~meInfoBubble() override;
 	/*@}*/
 	
 	
@@ -77,7 +78,7 @@ public:
 	inline const deCanvasView::Ref &GetCanvasContent() const{ return pCanvasContent; }
 	
 	/** \brief Show bubble at mouse position. */
-	void ShowAt( const decPoint &position, ePlacement placement );
+	void ShowAt(const decPoint &position, ePlacement placement);
 	
 	/** \brief Hide bubble. */
 	void Hide();
@@ -87,7 +88,7 @@ public:
 	
 private:
 	void pResize();
-	decPoint pPlace( const decPoint &position, ePlacement placement );
+	decPoint pPlace(const decPoint &position, ePlacement placement);
 };
 
 #endif

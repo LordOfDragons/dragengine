@@ -26,15 +26,20 @@
 #define _DERLTASKREADIMAGE_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 
 
 /**
  * \brief Read animation resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadImage : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadImage>;
+	
+	
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	bool pSucceeded;
 	
 	
@@ -43,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadImage( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deImage *image );
+	deRLTaskReadImage(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deImage *image);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadImage();
+	~deRLTaskReadImage() override;
 	/*@}*/
 	
 	
@@ -55,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -66,7 +71,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

@@ -35,6 +35,10 @@ class projPanelUndoHistory;
  * \brief Panel undo history listener.
  */
 class projPanelUndoHistoryListener : public projProjectListener{
+public:
+	using Ref = deTObjectReference<projPanelUndoHistoryListener>;
+	
+	
 private:
 	projPanelUndoHistory &pPanel;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	projPanelUndoHistoryListener( projPanelUndoHistory &panel );
+	projPanelUndoHistoryListener(projPanelUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~projPanelUndoHistoryListener();
+protected:
+	~projPanelUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,7 +61,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( projProject *project );
+	void UndoChanged(projProject *project) override;
 	/*@}*/
 };
 

@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleMapping;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleMapping.h"
 
 
 
@@ -41,25 +41,35 @@ class meHTVRuleMapping;
  * Undo action to toggle inversed of a height terrain vegetation rule mapping.
  */
 class meUHTVRuleMapToggleInversed : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleMapToggleInversed>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMapping *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMapping::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMapToggleInversed( meHTVegetationLayer *vlayer, meHTVRuleMapping *rule );
+	meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleMapToggleInversed();
+
+protected:
+	~meUHTVRuleMapToggleInversed() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -26,16 +26,15 @@
 #define _DEOGLGIBVHLOCAL_H_
 
 #include "../utils/bvh/deoglBVH.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglModelFace;
 class deoglRenderThread;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt16;
-class deoglDynamicTBOFloat16;
-class deoglDynamicTBOBlock;
 
 struct oglModelPosition;
 struct oglModelVertex;
@@ -50,15 +49,15 @@ protected:
 	deoglRenderThread &pRenderThread;
 	deoglBVH pBVH;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
-	deoglDynamicTBOUInt16 *pTBOFace;
-	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pTBOIndex;
+	deoglDynamicTBOUInt16::Ref pTBOFace;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
+	deoglDynamicTBOFloat16::Ref pTBOTexCoord;
 	
-	deObjectReference pBlockNode;
-	deObjectReference pBlockFace;
-	deObjectReference pBlockVertex;
+	deoglDynamicTBOBlock::Ref pBlockNode;
+	deoglDynamicTBOBlock::Ref pBlockFace;
+	deoglDynamicTBOBlock::Ref pBlockVertex;
 	
 	int pBlockUsageCount;
 	
@@ -68,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination local BVH. */
-	deoglGIBVHLocal( deoglRenderThread &renderThread );
+	deoglGIBVHLocal(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination local BVH. */
 	~deoglGIBVHLocal();
@@ -83,19 +82,19 @@ public:
 	inline const deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
+	inline const deoglDynamicTBOFloat16::Ref &GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** BVH. */
 	inline deoglBVH &GetBVH(){ return pBVH; }
@@ -109,7 +108,7 @@ public:
 	 * primitive in the same order the primitives are indexed. The array can be deleted after
 	 * build. BVH has to be present before faces can be added.
 	 */
-	void BuildBVH( const deoglBVH::sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12 );
+	void BuildBVH(const decTList<deoglBVH::sBuildPrimitive> &primitives, int primitiveCount, int maxDepth = 12);
 	
 	/**
 	 * Recalculate BVH node extends. Keeps the BVH structure but adjusts to changing vertex
@@ -123,19 +122,19 @@ public:
 	void UpdateBVHExtends();
 	
 	/** Add vertex to TBO. */
-	void TBOAddVertex( const decVector &position );
+	void TBOAddVertex(const decVector &position);
 	
 	/** Add vertices to TBO. */
-	void TBOAddVertices( const oglModelPosition *positions, int count );
+	void TBOAddVertices(const oglModelPosition *positions, int count);
 	
 	/** Add face to TBO. */
-	void TBOAddFace( int vertex1, int vertex2, int vertex3, int material,
+	void TBOAddFace(int vertex1, int vertex2, int vertex3, int material,
 		const decVector2 &texCoord1, const decVector2 &texCoord2,
-		const decVector2 &texCoord3 );
+		const decVector2 &texCoord3);
 	
 	/** Add faces to TBO. Requires BVH to be build first because it uses primitives as faces. */
-	void TBOAddFaces( const deoglModelFace *faces, const oglModelVertex *vertices,
-		const decVector2 *texCoords );
+	void TBOAddFaces(const deoglModelFace *faces, const oglModelVertex *vertices,
+		const decVector2 *texCoords);
 	
 	/** Add BVH to TBO. */
 	void TBOAddBVH();
@@ -146,9 +145,9 @@ public:
 	
 	
 	/** Get block allocating it if absent. */
-	deoglDynamicTBOBlock *GetBlockNode();
-	deoglDynamicTBOBlock *GetBlockFace();
-	deoglDynamicTBOBlock *GetBlockVertex();
+	const deoglDynamicTBOBlock::Ref &GetBlockNode();
+	const deoglDynamicTBOBlock::Ref &GetBlockFace();
+	const deoglDynamicTBOBlock::Ref &GetBlockVertex();
 	
 	/** Drop blocks. */
 	void DropBlocks();
@@ -168,7 +167,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pUpdateBVHExtends( deoglBVHNode &node );
+	void pUpdateBVHExtends(deoglBVHNode &node);
 };
 
 #endif

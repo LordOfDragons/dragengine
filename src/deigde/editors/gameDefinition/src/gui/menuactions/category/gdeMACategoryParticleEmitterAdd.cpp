@@ -43,10 +43,10 @@
 // Constructor
 ////////////////
 
-gdeMACategoryParticleEmitterAdd::gdeMACategoryParticleEmitterAdd( gdeWindowMain &windowMain ) :
-gdeMACategoryAdd( windowMain, "Add Particle Emitter Category...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add particle emitter category" )
+gdeMACategoryParticleEmitterAdd::gdeMACategoryParticleEmitterAdd(gdeWindowMain &windowMain) :
+gdeMACategoryAdd(windowMain, "@GameDefinition.Menu.CategoryParticleEmitterAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.CategoryParticleEmitterAdd.ToolTip")
 {
 }
 
@@ -55,7 +55,7 @@ gdeMACategoryAdd( windowMain, "Add Particle Emitter Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryParticleEmitterAdd::OnAction( gdeGameDefinition &gameDefinition ){
-	return AddCategory( gameDefinition, NULL,
-		gameDefinition.GetCategoriesParticleEmitter(), gdeUCategoryBase::ectParticleEmitter );
+igdeUndo::Ref gdeMACategoryParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, nullptr,
+		gameDefinition.GetCategoriesParticleEmitter(), gdeUCategoryBase::ectParticleEmitter);
 }

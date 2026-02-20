@@ -41,24 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionRemoveAll::ceUCActionRemoveAll( ceConversationTopic *topic ){
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
+ceUCActionRemoveAll::ceUCActionRemoveAll(ceConversationTopic *topic){
+	if(!topic){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActionList = topic->GetActionList();
+	pTopic = nullptr;
+	pActionList = topic->GetActions();
 	
-	SetShortInfo( "Remove All Actions" );
+	SetShortInfo("@Conversation.Undo.RemoveAllActions");
 	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUCActionRemoveAll::~ceUCActionRemoveAll(){
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -67,15 +63,15 @@ ceUCActionRemoveAll::~ceUCActionRemoveAll(){
 ///////////////
 
 void ceUCActionRemoveAll::Undo(){
-	pTopic->GetActionList() = pActionList;
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->GetActions() = pActionList;
+	pTopic->NotifyActionStructureChanged(nullptr);
 	
-	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
+	if(pActionList.GetCount() > 0){
+		pTopic->SetActive(pActionList.GetAt(0), nullptr);
 	}
 }
 
 void ceUCActionRemoveAll::Redo(){
-	pTopic->GetActionList().RemoveAll();
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->GetActions().RemoveAll();
+	pTopic->NotifyActionStructureChanged(nullptr);
 }

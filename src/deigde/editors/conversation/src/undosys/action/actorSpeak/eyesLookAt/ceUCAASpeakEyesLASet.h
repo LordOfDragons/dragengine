@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,31 +37,35 @@ class ceStrip;
  * \brief Undo Action Set Actor Speak Conversation Action Eyes LookAt.
  */
 class ceUCAASpeakEyesLASet : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pEyesLA;
+public:
+	using Ref = deTObjectReference<ceUCAASpeakEyesLASet>;
 	
-	ceStrip *pOldStrip;
-	ceStrip *pNewStrip;
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pEyesLA;
+	
+	ceStrip::Ref pOldStrip;
+	ceStrip::Ref pNewStrip;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakEyesLASet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip );
+	ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakEyesLASet();
+	~ceUCAASpeakEyesLASet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

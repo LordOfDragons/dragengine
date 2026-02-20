@@ -53,7 +53,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *AndroidInpCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *AndroidInpCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -65,13 +65,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *AndroidInpCreateModule( deLoadableModule *loa
 // Entry point
 ////////////////
 
-deBaseModule *AndroidInpCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *AndroidInpCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deAndroidInput( *loadableModule );
+		module = new deAndroidInput(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -86,23 +86,20 @@ deBaseModule *AndroidInpCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deAndroidInput::deAndroidInput( deLoadableModule &loadableModule ) :
-deBaseInputModule( loadableModule ),
+deAndroidInput::deAndroidInput(deLoadableModule &loadableModule) :
+deBaseInputModule(loadableModule),
 
-pOSAndroid( NULL ),
+pOSAndroid(NULL),
 
-pMouseButtons( 0 ),
-pIsListening( false ),
-pKeyStates( NULL ),
-pPointerMouse( -1 ),
+pMouseButtons(0),
+pIsListening(false),
+pPointerMouse(-1),
 
-pOverlaySystem( NULL ),
+pOverlaySystem(NULL),
 
-pFontDefault( NULL ),
+pElapsedTime(0.0f),
 
-pElapsedTime( 0.0f ),
-
-pDevices( NULL ){
+pDevices(NULL){
 }
 
 deAndroidInput::~deAndroidInput(){
@@ -118,28 +115,28 @@ bool deAndroidInput::Init(){
 		pOSAndroid = GetGameEngine()->GetOS()->CastToOSAndroid();
 		
 		pFontDefault = GetGameEngine()->GetFontManager()->LoadFont(
-			&GetVFS(), "/share/fonts/nimbus_sans_30.defont", "/" );
+			&GetVFS(), "/share/fonts/nimbus_sans_30.defont", "/");
 		//	"/share/fonts/nimbus_sans_30_bold.defont", "/" );
 		
-		pKeyStates = new bool[ 256 ];
+		pKeyStates.AddRange(256, false);
 		
-		pDevices = new deainpDeviceManager( *this );
+		pDevices = new deainpDeviceManager(*this);
 		pDevices->UpdateDeviceList();
 		pDevices->LogDevices();
 		
 		pCenterPointer();
 		pIsListening = true;
 		
-		pOverlaySystem = new deainpOverlaySystem( *this );
-		GetGameEngine()->GetGraphicSystem()->SetInputOverlayCanvas( pOverlaySystem->GetCanvas() );
+		pOverlaySystem = new deainpOverlaySystem(*this);
+		GetGameEngine()->GetGraphicSystem()->SetInputOverlayCanvas(pOverlaySystem->GetCanvas());
 		
 		pInputTimer.Reset();
 		pElapsedTime = 0.0f;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		LogException(e);
 		CleanUp();
-		if( pDevices ){
+		if(pDevices){
 			delete pDevices;
 			pDevices = NULL;
 		}
@@ -150,25 +147,15 @@ bool deAndroidInput::Init(){
 }
 
 void deAndroidInput::CleanUp(){
-	if( pOverlaySystem ){
-		GetGameEngine()->GetGraphicSystem()->SetInputOverlayCanvas( NULL );
+	if(pOverlaySystem){
+		GetGameEngine()->GetGraphicSystem()->SetInputOverlayCanvas(NULL);
 		delete pOverlaySystem;
 		pOverlaySystem = NULL;
 	}
 	
-	if( pFontDefault ){
-		pFontDefault->FreeReference();
-		pFontDefault = NULL;
-	}
-	
-	if( pDevices ){
+	if(pDevices){
 		delete pDevices;
 		pDevices = NULL;
-	}
-	
-	if( pKeyStates ){
-		delete [] pKeyStates;
-		pKeyStates = NULL;
 	}
 	
 	pOSAndroid = NULL;
@@ -195,73 +182,64 @@ decPoint deAndroidInput::GetScreenSize() const{
 ////////////
 
 int deAndroidInput::GetDeviceCount(){
-	return pDevices->GetCount();
+	return pDevices->GetDevices().GetCount();
 }
 
-deInputDevice *deAndroidInput::GetDeviceAt( int index ){
-	deInputDevice *device = NULL;
-	
-	try{
-		device = new deInputDevice;
-		pDevices->GetAt( index )->GetInfo( *device );
-		
-	}catch( const deException & ){
-		if( device ){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deAndroidInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
+	pDevices->GetDevices().GetAt(index)->GetInfo(device);
 	return device;
 }
 
-int deAndroidInput::IndexOfDeviceWithID( const char *id ){
-	return pDevices->IndexOfWithID( id );
+int deAndroidInput::IndexOfDeviceWithID(const char *id){
+	return pDevices->GetDevices().IndexOfMatching([&](const deainpDevice &device){
+		return device.GetID() == id;
+	});
 }
 
-int deAndroidInput::IndexOfButtonWithID( int device, const char *id ){
-	return pDevices->GetAt( device )->IndexOfButtonWithID( id );
+int deAndroidInput::IndexOfButtonWithID(int device, const char *id){
+	return pDevices->GetDevices().GetAt(device)->IndexOfButtonWithID(id);
 }
 
-int deAndroidInput::IndexOfAxisWithID( int device, const char *id ){
-	return pDevices->GetAt( device )->IndexOfAxisWithID( id );
+int deAndroidInput::IndexOfAxisWithID(int device, const char *id){
+	return pDevices->GetDevices().GetAt(device)->IndexOfAxisWithID(id);
 }
 
-int deAndroidInput::IndexOfFeedbackWithID( int device, const char *id ){
+int deAndroidInput::IndexOfFeedbackWithID(int device, const char *id){
 	return -1;
 }
 
-bool deAndroidInput::GetButtonPressed( int device, int button ){
-	return pDevices->GetAt( device )->GetButtonAt( button ).GetPressed();
+bool deAndroidInput::GetButtonPressed(int device, int button){
+	return pDevices->GetDevices().GetAt(device)->GetButtons()[button].GetPressed();
 }
 
-float deAndroidInput::GetAxisValue( int device, int axis ){
-	return pDevices->GetAt( device )->GetAxisAt( axis ).GetValue();
+float deAndroidInput::GetAxisValue(int device, int axis){
+	return pDevices->GetDevices().GetAt(device)->GetAxes()[axis].GetValue();
 }
 
-float deAndroidInput::GetFeedbackValue( int device, int feedback ){
-	DETHROW( deeInvalidParam );
+float deAndroidInput::GetFeedbackValue(int device, int feedback){
+	DETHROW(deeInvalidParam);
 }
 
-void deAndroidInput::SetFeedbackValue( int device, int feedback, float value ){
-	DETHROW( deeInvalidParam );
+void deAndroidInput::SetFeedbackValue(int device, int feedback, float value){
+	DETHROW(deeInvalidParam);
 }
 
-int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ){
+int deAndroidInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode){
 	const deainpDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
-	if( device != rdevice.GetIndex() ){
+	if(device != rdevice.GetIndex()){
 		return -1;
 	}
 	
-	const int count = rdevice.GetButtonCount();
+	const int count = rdevice.GetButtons().GetCount();
 	int bestPriority = 10;
 	int bestButton = -1;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deainpDeviceButton &button = rdevice.GetButtonAt( i );
+	for(i=0; i<count; i++){
+		const deainpDeviceButton &button = rdevice.GetButtons()[i];
 		
-		if( button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority ){
+		if(button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority){
 			bestButton = i;
 			bestPriority = button.GetMatchPriority();
 		}
@@ -270,13 +248,13 @@ int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes k
 	return bestButton;
 }
 
-int deAndroidInput::ButtonMatchingKeyChar( int device, int character ){
+int deAndroidInput::ButtonMatchingKeyChar(int device, int character){
 	const deainpDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
-	if( device != rdevice.GetIndex() ){
+	if(device != rdevice.GetIndex()){
 		return -1;
 	}
 	
-	return rdevice.ButtonMatchingKeyChar( character );
+	return rdevice.ButtonMatchingKeyChar(character);
 }
 
 
@@ -288,7 +266,7 @@ void deAndroidInput::ProcessEvents(){
 	// update elapsed time. we do this independently of the game engine to ensure
 	// our own timing in all situations. the elapsed time is clamped in case a
 	// stuttering to avoid exploding input
-	pElapsedTime = decMath::min( pInputTimer.GetElapsedTime(), 0.1f );
+	pElapsedTime = decMath::min(pInputTimer.GetElapsedTime(), 0.1f);
 	
 	// update content. this can produce input events for the game engine
 	if(pOverlaySystem){
@@ -324,74 +302,74 @@ void deAndroidInput::EventLoop(const android_input_buffer &inputBuffer){
 
 timeval deAndroidInput::TimeValNow() const{
 	timeval eventTime;
-	eventTime.tv_sec = 0; //( time_t )( event.xkey.time / 1000 );
-	eventTime.tv_usec = 0; //( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
+	eventTime.tv_sec = 0; //(time_t)(event.xkey.time / 1000);
+	eventTime.tv_usec = 0; //(suseconds_t)((event.xkey.time % 1000) * 1000);
 	
 	return eventTime;
 }
 
-void deAndroidInput::AddKeyPress( int device, int button, int keyChar,
-deInputEvent::eKeyCodes keyCode, const timeval &eventTime ){
+void deAndroidInput::AddKeyPress(int device, int button, int keyChar,
+deInputEvent::eKeyCodes keyCode, const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeKeyPress );
-	event.SetDevice( device );
-	event.SetCode( button );
-	event.SetKeyCode( keyCode );
-	event.SetKeyChar( keyChar );
-	event.SetState( 0 );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeKeyPress);
+	event.SetDevice(device);
+	event.SetCode(button);
+	event.SetKeyCode(keyCode);
+	event.SetKeyChar(keyChar);
+	event.SetState(0);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 }
 
-void deAndroidInput::AddKeyRelease( int device, int button, int keyChar,
-deInputEvent::eKeyCodes keyCode, const timeval &eventTime ){
+void deAndroidInput::AddKeyRelease(int device, int button, int keyChar,
+deInputEvent::eKeyCodes keyCode, const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeKeyRelease );
-	event.SetDevice( device );
-	event.SetCode( button );
-	event.SetKeyCode( keyCode );
-	event.SetKeyChar( keyChar );
-	event.SetState( 0 );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeKeyRelease);
+	event.SetDevice(device);
+	event.SetCode(button);
+	event.SetKeyCode(keyCode);
+	event.SetKeyChar(keyChar);
+	event.SetState(0);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 }
 
-void deAndroidInput::AddMousePress( int device, int button, int state,
-const timeval &eventTime ){
+void deAndroidInput::AddMousePress(int device, int button, int state,
+const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeMousePress );
-	event.SetDevice( device );
-	event.SetCode( button );
-	event.SetState( state );
-	event.SetX( 0 );
-	event.SetY( 0 );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeMousePress);
+	event.SetDevice(device);
+	event.SetCode(button);
+	event.SetState(state);
+	event.SetX(0);
+	event.SetY(0);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 	
-	pMouseButtons |= ( 1 << button );
+	pMouseButtons |= (1 << button);
 }
 
-void deAndroidInput::AddMouseRelease( int device, int button, int state,
-const timeval &eventTime ){
+void deAndroidInput::AddMouseRelease(int device, int button, int state,
+const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeMouseRelease );
-	event.SetDevice( device );
-	event.SetCode( button );
-	event.SetState( state );
-	event.SetX( 0 );
-	event.SetY( 0 );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeMouseRelease);
+	event.SetDevice(device);
+	event.SetCode(button);
+	event.SetState(state);
+	event.SetX(0);
+	event.SetY(0);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 	
-	pMouseButtons &= ~( 1 << button );
+	pMouseButtons &= ~(1 << button);
 }
 
 void deAndroidInput::AddMouseMove(int device, int state, const decPoint &distance,
@@ -421,38 +399,38 @@ const timeval &eventTime){
 	queue.AddEvent(event);
 }
 
-void deAndroidInput::AddAxisChanged( int device, int axis, float value, const timeval &eventTime ){
+void deAndroidInput::AddAxisChanged(int device, int axis, float value, const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeAxisMove );
-	event.SetDevice( device );
-	event.SetCode( axis );
-	event.SetValue( value );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeAxisMove);
+	event.SetDevice(device);
+	event.SetCode(axis);
+	event.SetValue(value);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 }
 
-void deAndroidInput::AddButtonPressed( int device, int button, const timeval &eventTime ){
+void deAndroidInput::AddButtonPressed(int device, int button, const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeButtonPress );
-	event.SetDevice( device );
-	event.SetCode( button );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeButtonPress);
+	event.SetDevice(device);
+	event.SetCode(button);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 }
 
-void deAndroidInput::AddButtonReleased( int device, int button, const timeval &eventTime ){
+void deAndroidInput::AddButtonReleased(int device, int button, const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeButtonRelease );
-	event.SetDevice( device );
-	event.SetCode( button );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	event.SetType(deInputEvent::eeButtonRelease);
+	event.SetDevice(device);
+	event.SetCode(button);
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 }
 
 
@@ -494,7 +472,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtons()[button];
 		ab.SetPressed(true);
 		
 		AddKeyPress(pDevices->GetKeyboard()->GetIndex(), button,
@@ -515,7 +493,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtons()[button];
 		ab.SetPressed(false);
 		
 		AddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button,
@@ -573,7 +551,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtons()[button];
 		ab.SetPressed(true);
 		
 		AddMousePress(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -603,7 +581,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtons()[button];
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -719,7 +697,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtons()[button];
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -760,7 +738,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 
 void deAndroidInput::pCenterPointer(){
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if( ! renderWindow ){
+	if(!renderWindow){
 		return;
 	}
 	
@@ -795,6 +773,8 @@ int deAndroidInput::pModifiersFromMetaState(int32_t metaState) const{
 
 class deainpModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deainpModuleInternal> Ref;
+	
 	deainpModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("AndroidInput");
 		SetDescription("Processes input of Android Operating systems.");
@@ -814,7 +794,7 @@ public:
 	}
 };
 
-deInternalModule *deainpRegisterInternalModule(deModuleSystem *system){
-	return new deainpModuleInternal(system);
+deTObjectReference<deInternalModule> deainpRegisterInternalModule(deModuleSystem *system){
+	return deainpModuleInternal::Ref::New(system);
 }
 #endif

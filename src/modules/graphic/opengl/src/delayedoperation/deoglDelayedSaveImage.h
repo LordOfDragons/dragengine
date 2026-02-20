@@ -25,6 +25,7 @@
 #ifndef _DEOGLDELAYEDSAVEIMAGE_H_
 #define _DEOGLDELAYEDSAVEIMAGE_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decPath.h>
 
 class deVirtualFileSystem;
@@ -43,14 +44,14 @@ private:
 	int pDepth;
 	int pComponentCount;
 	int pBitCount;
-	char *pData;
+	decTList<char> pData;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create delayed save image object. */
-	deoglDelayedSaveImage( const decPath &path, int width, int height, int depth,
-		int componentCount, int bitCount, char *data );
+	deoglDelayedSaveImage(const decPath &path, int width, int height, int depth,
+		int componentCount, int bitCount, decTList<char> &&data);
 	
 	/** Clean up delayed save image object. */
 	~deoglDelayedSaveImage();
@@ -64,7 +65,7 @@ public:
 	 * Save image to virtual file system.
 	 * \details This has to be called during main thread.
 	 */
-	void SaveImage( deGraphicOpenGl &ogl, deVirtualFileSystem &vfs );
+	void SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem &vfs);
 	/*@}*/
 };
 

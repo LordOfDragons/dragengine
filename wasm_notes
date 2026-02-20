@@ -21,3 +21,5 @@ will not work under WASM due to socket restrictions
 lib_sndio
 shared_vulkan
 vr_openxr
+
+

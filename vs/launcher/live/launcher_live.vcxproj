@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -36,15 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\live\src\dellLauncher.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\live\src\dellRunGame.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\live\src\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\live\src\dellLauncher.h" />
-    <ClInclude Include="..\..\..\src\launcher\live\src\dellRunGame.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -246,4 +237,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\live\src\dellLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\live\src\dellRunGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\live\src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\live\src\dellLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\live\src\dellRunGame.h" />
+  </ItemGroup>
 </Project>

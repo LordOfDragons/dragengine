@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleBlendMode::aeUSetRuleBlendMode( aeRule *rule, deAnimatorRule::eBlendModes newMode ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeUSetRuleBlendMode::aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendModes newMode){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pOldMode = rule->GetBlendMode();
 	pNewMode = newMode;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleBlendMode");
 		
-		SetShortInfo( "Rule set blend mode" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeUSetRuleBlendMode::~aeUSetRuleBlendMode(){
 ///////////////
 
 void aeUSetRuleBlendMode::Undo(){
-	pRule->SetBlendMode( pOldMode );
+	pRule->SetBlendMode(pOldMode);
 }
 
 void aeUSetRuleBlendMode::Redo(){
-	pRule->SetBlendMode( pNewMode );
+	pRule->SetBlendMode(pNewMode);
 }
 
 
@@ -84,7 +82,4 @@ void aeUSetRuleBlendMode::Redo(){
 //////////////////////
 
 void aeUSetRuleBlendMode::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

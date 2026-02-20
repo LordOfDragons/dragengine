@@ -38,13 +38,19 @@ class projProfile;
  */
 class projProjectListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projProjectListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project listener. */
 	projProjectListener();
 	
 	/** \brief Clean up project listener. */
+protected:
 	~projProjectListener() override;
+public:
 	/*@}*/
 	
 	

@@ -68,7 +68,7 @@ public:
 	deoglSkinConstructedProperty *GetProperty() const{ return pProperty; }
 	
 	/** Set skin constructed property. */
-	void SetProperty( deoglSkinConstructedProperty *property );
+	void SetProperty(deoglSkinConstructedProperty *property);
 	
 	/** Content. */
 	inline deoglSkinStateCNGroup &GetContent(){ return pContent; }
@@ -78,16 +78,16 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	void Update( deoglSkinState &skinState );
+	void Update(deoglSkinState &skinState);
 	
 	/** Prepare for render. */
-	void PrepareForRender( deoglSkinState &skinState );
+	void PrepareForRender(deoglSkinState &skinState);
 	/*@}*/
 	
 	
 	
 private:
-	void pPrepareRenderTarget( deoglSkinState &skinState );
+	void pPrepareRenderTarget(deoglSkinState &skinState);
 };
 
 #endif

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyVideo::deSkinPropertyVideo( const char *type ) :
-deSkinProperty( type ),
-pSharedTime( true ){
+deSkinPropertyVideo::deSkinPropertyVideo(const char *type) :
+deSkinProperty(type),
+pSharedTime(true){
 }
 
 deSkinPropertyVideo::~deSkinPropertyVideo(){
@@ -52,15 +52,15 @@ deSkinPropertyVideo::~deSkinPropertyVideo(){
 // Management
 ///////////////
 
-void deSkinPropertyVideo::SetPath( const char *path ){
+void deSkinPropertyVideo::SetPath(const char *path){
 	pPath = path;
 }
 
-void deSkinPropertyVideo::SetVideo( deVideo *video ){
+void deSkinPropertyVideo::SetVideo(deVideo *video){
 	pVideo = video;
 }
 
-void deSkinPropertyVideo::SetSharedTime( bool shareTime ){
+void deSkinPropertyVideo::SetSharedTime(bool shareTime){
 	pSharedTime = shareTime;
 }
 
@@ -69,6 +69,6 @@ void deSkinPropertyVideo::SetSharedTime( bool shareTime ){
 // Visiting
 /////////////
 
-void deSkinPropertyVideo::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitVideo( *this );
+void deSkinPropertyVideo::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitVideo(*this);
 }

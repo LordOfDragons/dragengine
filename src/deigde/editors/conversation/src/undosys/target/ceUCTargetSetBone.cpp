@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetBone::ceUCTargetSetBone( ceTarget *target, const char *newBone ){
-	if( ! target || ! newBone ){
-		DETHROW( deeInvalidParam );
+ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
+	if(!target || !newBone){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTarget = NULL;
+	pTarget = nullptr;
 	
-	SetShortInfo( "Target set bone" );
+	SetShortInfo("@Conversation.Undo.TargetSetBone");
 	
 	pOldBone = target->GetBone();
 	pNewBone = newBone;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetBone::~ceUCTargetSetBone(){
-	if( pTarget ){
-		pTarget->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ ceUCTargetSetBone::~ceUCTargetSetBone(){
 ///////////////
 
 void ceUCTargetSetBone::Undo(){
-	pTarget->SetBone( pOldBone );
+	pTarget->SetBone(pOldBone);
 }
 
 void ceUCTargetSetBone::Redo(){
-	pTarget->SetBone( pNewBone );
+	pTarget->SetBone(pNewBone);
 }

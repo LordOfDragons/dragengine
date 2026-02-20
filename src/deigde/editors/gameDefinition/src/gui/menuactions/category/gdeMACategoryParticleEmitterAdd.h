@@ -33,18 +33,20 @@
  */
 class gdeMACategoryParticleEmitterAdd : public gdeMACategoryAdd{
 public:
+	using Ref = deTObjectReference<gdeMACategoryParticleEmitterAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMACategoryParticleEmitterAdd( gdeWindowMain &windowMain );
+	gdeMACategoryParticleEmitterAdd(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	/*@}*/
 };
 

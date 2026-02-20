@@ -52,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer effect. */
-	desynSynthesizerEffectStretch( const desynSynthesizer &synthesizer, int firstLink,
-		desynSynthesizerSource &source, const deSynthesizerEffectStretch &effect );
+	desynSynthesizerEffectStretch(const desynSynthesizer &synthesizer, int firstLink,
+		desynSynthesizerSource &source, const deSynthesizerEffectStretch &effect);
 	
 	/** \brief Clean up synthesizer effect. */
-	virtual ~desynSynthesizerEffectStretch();
+	~desynSynthesizerEffectStretch() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	
 	
 	/** \brief Time stretch. */
-	float GetTimeStretch( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetTimeStretch(const desynSynthesizerInstance &instance, int sample) const;
 	
 	/** \brief Pitch shift. */
-	float GetPitchShift( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetPitchShift(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -84,13 +84,13 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSize( int offset );
+	int StateDataSize(int offset) override;
 	
 	/** \brief Init state data. */
-	virtual void InitStateData( char *stateData );
+	void InitStateData(char *stateData) override;
 	
 	/** \brief Clean up state data. */
-	virtual void CleanUpStateData( char *stateData );
+	void CleanUpStateData(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound.
@@ -98,16 +98,16 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) override;
 	
 	/**
 	 * \brief Skip sound.
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	void SkipSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) override;
 	/*@}*/
 };
 

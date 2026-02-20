@@ -34,9 +34,7 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -58,25 +56,24 @@ namespace {
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeRandom::meWVNodeRandom( meWindowVegetation &windowVegetation, meHTVRuleRandom *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleRandom( rule )
+meWVNodeRandom::meWVNodeRandom(meWindowVegetation &windowVegetation, meHTVRuleRandom *rule) :
+meWVNode(windowVegetation, rule),
+pRuleRandom(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Random" );
+	SetTitle("@World.WVNodeRandom.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Random", "Random value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeRandom.Output.Value", "@World.WVNodeRandom.Output.Value.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 }
 
 meWVNodeRandom::~meWVNodeRandom(){

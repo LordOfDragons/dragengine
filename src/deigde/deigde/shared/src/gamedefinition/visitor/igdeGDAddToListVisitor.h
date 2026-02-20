@@ -26,14 +26,11 @@
 #define _IGDEGDADDTOLISTVISITOR_H_
 
 #include "igdeGDVisitor.h"
-#include "../../gui/igdeIconListBoxReference.h"
-
+#include "../../gui/igdeIconListBox.h"
+#include "../../gui/model/igdeListItem.h"
 
 class deImage;
 class igdeEnvironment;
-class igdeListItemReference;
-
-
 
 /**
  * \brief Visitor adding the visited game definition elements to a list.
@@ -41,7 +38,7 @@ class igdeListItemReference;
 class DE_DLL_EXPORT igdeGDAddToListVisitor : public igdeGDVisitor{
 private:
 	igdeEnvironment &pEnvironment;
-	igdeIconListBoxReference pIconListBox;
+	igdeIconListBox::Ref pIconListBox;
 	int pSize;
 	
 	
@@ -50,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	igdeGDAddToListVisitor( igdeEnvironment &environment, igdeIconListBox *iconListBox, int size );
+	igdeGDAddToListVisitor(igdeEnvironment &environment, igdeIconListBox *iconListBox, int size);
 	
 	/** \brief Clean up visitor. */
-	virtual ~igdeGDAddToListVisitor();
+	~igdeGDAddToListVisitor() override;
 	/*@}*/
 	
 	
@@ -61,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Add item to list. */
-	void AddItemToList( const char *caption, deImage &image, void *userPointer );
+	void AddItemToList(const char *caption, deImage &image, void *userPointer);
 	
 	/** \brief Add item to list. */
-	void AddItemToList( igdeListItemReference &item, const char *caption, deImage &image, void *userPointer );
+	void AddItemToList(igdeListItem::Ref &item, const char *caption, deImage &image, void *userPointer);
 	/*@}*/
 	
 	
@@ -72,13 +69,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit object class. */
-	virtual void VisitObjectClass( igdeGDClass *gdclass );
+	void VisitObjectClass(igdeGDClass *gdclass) override;
 	
 	/** \brief Visit skin. */
-	virtual void VisitSkin( igdeGDSkin *gdskin );
+	void VisitSkin(igdeGDSkin *gdskin) override;
 	
 	/** \brief Visits sky. */
-	virtual void VisitSky( igdeGDSky *gdsky );
+	void VisitSky(igdeGDSky *gdsky) override;
 	/*@}*/
 };
 

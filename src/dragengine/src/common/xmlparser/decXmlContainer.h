@@ -26,7 +26,7 @@
 #define _DECXMLCONTAINER_H_
 
 #include "decXmlElement.h"
-#include "../collection/decObjectOrderedSet.h"
+#include "../collection/decTOrderedSet.h"
 
 
 /**
@@ -37,12 +37,11 @@
 class DE_DLL_EXPORT decXmlContainer : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlContainer> Ref;
-	
+	using Ref = deTObjectReference<decXmlContainer>;
 	
 	
 private:
-	decObjectOrderedSet pElements;
+	decTObjectOrderedSet<decXmlElement> pElements;
 	
 	
 	
@@ -54,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml container. */
-	virtual ~decXmlContainer();
+	~decXmlContainer() override;
 	/*@}*/
 	
 	
@@ -69,43 +68,43 @@ public:
 	virtual bool IsEmpty() const;
 	
 	/** \brief Element at index. */
-	virtual decXmlElement *GetElementAt( int index ) const;
+	virtual decXmlElement *GetElementAt(int index) const;
 	
 	/** \brief Add element. */
-	virtual void AddElement( decXmlElement *element );
+	virtual void AddElement(decXmlElement *element);
 	
 	/** \brief Add element. */
 	virtual void InsertElement(decXmlElement *element, int beforeIndex);
 	
 	/** \brief Remove element. */
-	virtual void RemoveElement( decXmlElement *element );
+	virtual void RemoveElement(decXmlElement *element);
 	
 	/** \brief Remove all elements. */
 	virtual void RemoveAllElements();
 	
 	/** \brief Index of element or -1 if absent. */
-	virtual int IndexOfElement( decXmlElement *element );
+	virtual int IndexOfElement(decXmlElement *element);
 	
 	/** \brief Element is present. */
-	virtual bool HasElement( decXmlElement *element );
+	virtual bool HasElement(decXmlElement *element);
 	
 	/** \brief Visit all elements. */
-	virtual void VisitElements( decXmlVisitor &visitor );
+	virtual void VisitElements(decXmlVisitor &visitor);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToContainer() const;
-	virtual decXmlContainer *CastToContainer();
+	bool CanCastToContainer() const override;
+	decXmlContainer *CastToContainer() override;
 	/*@}*/
 };
 

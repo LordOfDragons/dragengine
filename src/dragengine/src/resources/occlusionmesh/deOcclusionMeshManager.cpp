@@ -49,9 +49,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deOcclusionMeshManager::deOcclusionMeshManager( deEngine *engine ) :
-deFileResourceManager( engine, ertOcclusionMesh ){
-	SetLoggingName( "occlusion mesh" );
+deOcclusionMeshManager::deOcclusionMeshManager(deEngine *engine) :
+deFileResourceManager(engine, ertOcclusionMesh){
+	SetLoggingName("occlusion mesh");
 }
 
 deOcclusionMeshManager::~deOcclusionMeshManager(){
@@ -68,151 +68,132 @@ int deOcclusionMeshManager::GetOcclusionMeshCount() const{
 }
 
 deOcclusionMesh *deOcclusionMeshManager::GetRootOcclusionMesh() const{
-	return ( deOcclusionMesh* )pMeshes.GetRoot();
+	return (deOcclusionMesh*)pMeshes.GetRoot();
 }
 
-deOcclusionMesh *deOcclusionMeshManager::GetOcclusionMeshWith( const char *filename ) const{
-	return GetOcclusionMeshWith( GetEngine()->GetVirtualFileSystem(), filename );
+deOcclusionMesh *deOcclusionMeshManager::GetOcclusionMeshWith(const char *filename) const{
+	return GetOcclusionMeshWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
 deOcclusionMesh *deOcclusionMeshManager::GetOcclusionMeshWith(
-deVirtualFileSystem *vfs, const char *filename ) const{
-	deOcclusionMesh * const occmesh = ( deOcclusionMesh* )pMeshes.GetWithFilename( vfs, filename );
-	return occmesh && ! occmesh->GetOutdated() ? occmesh : NULL;
+deVirtualFileSystem *vfs, const char *filename) const{
+	deOcclusionMesh * const occmesh = (deOcclusionMesh*)pMeshes.GetWithFilename(vfs, filename);
+	return occmesh && !occmesh->GetOutdated() ? occmesh : nullptr;
 }
 
-deOcclusionMesh *deOcclusionMeshManager::CreateOcclusionMesh(
-const char *filename, deOcclusionMeshBuilder &builder ){
-	return CreateOcclusionMesh( GetEngine()->GetVirtualFileSystem(), filename, builder );
+deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(
+const char *filename, deOcclusionMeshBuilder &builder){
+	return CreateOcclusionMesh(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deOcclusionMesh *deOcclusionMeshManager::CreateOcclusionMesh( deVirtualFileSystem *vfs,
-const char *filename, deOcclusionMeshBuilder &builder ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(deVirtualFileSystem *vfs,
+const char *filename, deOcclusionMeshBuilder &builder){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
-	deOcclusionMesh *occmesh = NULL;
-	deOcclusionMesh *findOccMesh;
+	deOcclusionMesh::Ref occmesh;
 	
 	try{
 		// check if an occlusion mesh with this filename already exists. this check is only done if
 		// the filename is not empty in which case an unnamed occlusion mesh is created
-		if( filename[ 0 ] != '\0' ){
-			findOccMesh = ( deOcclusionMesh* )pMeshes.GetWithFilename( vfs, filename );
-			if( findOccMesh && ! findOccMesh->GetOutdated() ){
-				DETHROW( deeInvalidParam );
+		if(filename[0] != '\0'){
+			deOcclusionMesh * const findOccMesh = (deOcclusionMesh*)pMeshes.GetWithFilename(vfs, filename);
+			if(findOccMesh && !findOccMesh->GetOutdated()){
+				DETHROW(deeInvalidParam);
 			}
 		}
 		
 		// create occlusion mesh using the builder
-		occmesh = new deOcclusionMesh( this, vfs, filename, decDateTime::GetSystemTime() );
-		builder.BuildOcclusionMesh( occmesh );
+		occmesh = deOcclusionMesh::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
+		builder.BuildOcclusionMesh(occmesh);
 		
 		// prepare and check occlusion mesh
-		if( ! occmesh->Verify() ){
-			DETHROW( deeInvalidParam );
+		if(!occmesh->Verify()){
+			DETHROW(deeInvalidParam);
 		}
 		occmesh->Prepare();
 		
 		// load system peers
-		GetGraphicSystem()->LoadOcclusionMesh( occmesh );
+		GetGraphicSystem()->LoadOcclusionMesh(occmesh);
 		
 		// add occlusion mesh
-		pMeshes.Add( occmesh );
+		pMeshes.Add(occmesh);
 		
-	}catch( const deException &e ){
-		if( occmesh ){
-			occmesh->FreeReference();
-		}
-		LogErrorFormat( "Creating occlusion mesh '%s' failed", filename );
-		LogException( e );
+	}catch(const deException &e){
+		LogErrorFormat("Creating occlusion mesh '%s' failed", filename);
+		LogException(e);
 		throw;
 	}
 	
 	return occmesh;
 }
 
-deOcclusionMesh *deOcclusionMeshManager::LoadOcclusionMesh( const char *filename, const char *basePath ){
-	return LoadOcclusionMesh( GetEngine()->GetVirtualFileSystem(), filename, basePath );
+deOcclusionMesh::Ref deOcclusionMeshManager::LoadOcclusionMesh(const char *filename, const char *basePath){
+	return LoadOcclusionMesh(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deOcclusionMesh *deOcclusionMeshManager::LoadOcclusionMesh( deVirtualFileSystem *vfs,
-const char *filename, const char *basePath ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deOcclusionMesh::Ref deOcclusionMeshManager::LoadOcclusionMesh(deVirtualFileSystem *vfs,
+const char *filename, const char *basePath){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
-	deOcclusionMesh *occmesh = NULL;
-	deOcclusionMesh *findOccMesh;
+	deOcclusionMesh::Ref occmesh;
 	deBaseOcclusionMeshModule *module;
 	decPath path;
 	
 	try{
 		// locate file
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the model with this filename already exists
-		findOccMesh = ( deOcclusionMesh* )pMeshes.GetWithFilename( vfs, path.GetPathUnix() );
+		deOcclusionMesh *findOccMesh = (deOcclusionMesh*)
+			pMeshes.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findOccMesh && findOccMesh->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Occlusion Mesh '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findOccMesh && findOccMesh->GetModificationTime() != modificationTime){
+			LogInfoFormat("Occlusion Mesh '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findOccMesh->MarkOutdated();
-			findOccMesh = NULL;
+			findOccMesh = nullptr;
 		}
 		
-		if( findOccMesh ){
-			findOccMesh->AddReference();
+		if(findOccMesh){
 			occmesh = findOccMesh;
 			
 		}else{
 			// find the module able to handle this model file
-			module = ( deBaseOcclusionMeshModule* )GetModuleSystem()->GetModuleAbleToLoad(
-				deModuleSystem::emtOcclusionMesh, path.GetPathUnix() );
+			module = (deBaseOcclusionMeshModule*)GetModuleSystem()->GetModuleAbleToLoad(
+				deModuleSystem::emtOcclusionMesh, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix() );
-			occmesh = new deOcclusionMesh( this, vfs, path.GetPathUnix(), modificationTime );
-			if( ! occmesh ){
-				DETHROW( deeOutOfMemory );
-			}
+			occmesh = deOcclusionMesh::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			
-			occmesh->SetAsynchron( false );
-			module->LoadOcclusionMesh( *fileReader, *occmesh );
-			
-			fileReader->FreeReference();
-			fileReader = NULL;
+			occmesh->SetAsynchron(false);
+			module->LoadOcclusionMesh(OpenFileForReading(*vfs, path.GetPathUnix()), *occmesh);
 			
 			// prepare and check model
-			if( ! occmesh->Verify() ){
-				DETHROW( deeInvalidParam );
+			if(!occmesh->Verify()){
+				DETHROW(deeInvalidParam);
 			}
 			occmesh->Prepare();
 			
 			// load system peers
-			GetGraphicSystem()->LoadOcclusionMesh( occmesh );
+			GetGraphicSystem()->LoadOcclusionMesh(occmesh);
 			
 			// add model
-			pMeshes.Add( occmesh );
+			pMeshes.Add(occmesh);
 		}
 		
-	}catch( const deException &e ){
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		if( occmesh ){
-			occmesh->FreeReference();
-		}
-		LogErrorFormat( "Loading occlusion mesh '%s' (base path '%s') failed", filename, basePath ? basePath : "" );
-		LogException( e );
+	}catch(const deException &e){
+		LogErrorFormat("Loading occlusion mesh '%s' (base path '%s') failed", filename, basePath ? basePath : "");
+		LogException(e);
 		throw;
 	}
 	
-	if( occmesh ){
-		occmesh->SetAsynchron( false );
+	if(occmesh){
+		occmesh->SetAsynchron(false);
 	}
 	
 	return occmesh;
@@ -220,12 +201,12 @@ const char *filename, const char *basePath ){
 
 
 
-void deOcclusionMeshManager::AddLoadedOcclusionMesh( deOcclusionMesh *occmesh ){
-	if( ! occmesh ){
-		DETHROW( deeInvalidParam );
+void deOcclusionMeshManager::AddLoadedOcclusionMesh(deOcclusionMesh *occmesh){
+	if(!occmesh){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pMeshes.Add( occmesh );
+	pMeshes.Add(occmesh);
 }
 
 
@@ -233,28 +214,26 @@ void deOcclusionMeshManager::AddLoadedOcclusionMesh( deOcclusionMesh *occmesh ){
 void deOcclusionMeshManager::ReleaseLeakingResources(){
 	const int count = GetOcclusionMeshCount();
 	
-	if( count > 0 ){
-		deOcclusionMesh *occlusionMesh = ( deOcclusionMesh* )pMeshes.GetRoot();
+	if(count > 0){
 		int unnamedCount = 0;
 		
-		LogWarnFormat( "%i leaking occlusion meshes", count );
+		LogWarnFormat("%i leaking occlusion meshes", count);
 		
-		while( occlusionMesh ){
-			if( occlusionMesh->GetFilename().IsEmpty() ){
-				unnamedCount++;
-				
-			}else{
-				LogWarnFormat( "- %s", occlusionMesh->GetFilename().GetString() );
-			}
+		pMeshes.GetResources().Visit([&](deResource *res){
+			deOcclusionMesh *occlusionMesh = static_cast<deOcclusionMesh*>(res);
 			
-			occlusionMesh = ( deOcclusionMesh* )occlusionMesh->GetLLManagerNext();
+			if(occlusionMesh->GetFilename().IsEmpty()){
+				unnamedCount++;
+			}else{
+				LogWarnFormat("- %s", occlusionMesh->GetFilename().GetString());
+			}
+		});
+		
+		if(unnamedCount > 0){
+			LogWarnFormat("%i unnamed occlusion meshes", unnamedCount);
 		}
 		
-		if( unnamedCount > 0 ){
-			LogWarnFormat( "%i unnamed occlusion meshes", unnamedCount );
-		}
-		
-		pMeshes.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pMeshes.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -264,29 +243,24 @@ void deOcclusionMeshManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deOcclusionMeshManager::SystemGraphicLoad(){
-	deOcclusionMesh *occmesh = ( deOcclusionMesh* )pMeshes.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
-	while( occmesh ){
-		if( ! occmesh->GetPeerGraphic() ){
-			grasys.LoadOcclusionMesh( occmesh );
+	pMeshes.GetResources().Visit([&](deResource *res){
+		deOcclusionMesh *occmesh = static_cast<deOcclusionMesh*>(res);
+		if(!occmesh->GetPeerGraphic()){
+			grasys.LoadOcclusionMesh(occmesh);
 		}
-		
-		occmesh = ( deOcclusionMesh* )occmesh->GetLLManagerNext();
-	}
+	});
 }
 
 void deOcclusionMeshManager::SystemGraphicUnload(){
-	deOcclusionMesh *occmesh = ( deOcclusionMesh* )pMeshes.GetRoot();
-	
-	while( occmesh ){
-		occmesh->SetPeerGraphic( NULL );
-		occmesh = ( deOcclusionMesh* )occmesh->GetLLManagerNext();
-	}
+	pMeshes.GetResources().Visit([](deResource *res){
+		static_cast<deOcclusionMesh*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 
 
-void deOcclusionMeshManager::RemoveResource( deResource *resource ){
-	pMeshes.RemoveIfPresent( resource );
+void deOcclusionMeshManager::RemoveResource(deResource *resource){
+	pMeshes.RemoveIfPresent(resource);
 }

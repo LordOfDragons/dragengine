@@ -39,11 +39,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	meIGDEModule( igdeEnvironment &environment );
+	meIGDEModule(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up editor module. */
-	virtual ~meIGDEModule();
+	~meIGDEModule() override;
 	/*@}*/
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

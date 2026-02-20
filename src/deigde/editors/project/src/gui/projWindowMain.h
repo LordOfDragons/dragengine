@@ -26,28 +26,28 @@
 #define _PROJWINDOWMAIN_H_
 
 #include "../loadsave/projLoadSaveSystem.h"
+#include "../project/projProject.h"
+#include "projPanelProfiles.h"
+#include "projPanelTestRun.h"
+#include "projPanelUndoHistory.h"
+#include "projWindowMainListener.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
+
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 class projIGDEModule;
-class projProject;
-class projPanelProfiles;
-class projPanelTestRun;
-class projPanelUndoHistory;
-class projWindowMainListener;
-class decUnicodeStringList;
 class projConfiguration;
-
-class decStringList;
 
 
 
@@ -55,22 +55,26 @@ class decStringList;
  * \brief Editor window.
  */
 class projWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<projWindowMain>;
+	
+	
 private:
-	projWindowMainListener *pListener;
+	projWindowMainListener::Ref pListener;
 	
-	igdeActionReference pActionDistSave;
+	igdeAction::Ref pActionDistSave;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionProfileAdd;
-	igdeActionReference pActionProfileRemove;
-	igdeActionReference pActionProfileDuplicate;
-	igdeActionReference pActionProfileDistribute;
-	igdeActionReference pActionProfileTestRun;
+	igdeAction::Ref pActionProfileAdd;
+	igdeAction::Ref pActionProfileRemove;
+	igdeAction::Ref pActionProfileDuplicate;
+	igdeAction::Ref pActionProfileDistribute;
+	igdeAction::Ref pActionProfileTestRun;
 	
 	igdeActionExternOpen::Ref pActionShowDelga;
 	igdeActionExternOpen::Ref pActionShowContent;
@@ -79,25 +83,25 @@ private:
 	igdeActionExternOpen::Ref pActionShowCapture;
 	igdeActionExternOpen::Ref pActionShowLogs;
 	
-	igdeIconReference pIconStart;
-	igdeIconReference pIconStop;
-	igdeIconReference pIconKill;
-	igdeIconReference pIconDelga;
+	igdeIcon::Ref pIconStart;
+	igdeIcon::Ref pIconStop;
+	igdeIcon::Ref pIconKill;
+	igdeIcon::Ref pIconDelga;
 	
-	igdeToolBarReference pTBDistribute;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBDistribute;
+	igdeToolBar::Ref pTBEdit;
 	
 	projConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
 	projLoadSaveSystem pLoadSaveSystem;
 	
-	projProject *pProject;
+	projProject::Ref pProject;
 	
-	projPanelProfiles *pPanelProfiles;
-	projPanelTestRun *pPanelTestRun;
-	projPanelUndoHistory *pPanelUndoHistory;
+	projPanelProfiles::Ref pPanelProfiles;
+	projPanelTestRun::Ref pPanelTestRun;
+	projPanelUndoHistory::Ref pPanelUndoHistory;
 	
-	igdeTabBookReference pTabPanels;
+	igdeTabBook::Ref pTabPanels;
 	
 	
 	
@@ -105,10 +109,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	projWindowMain( igdeEditorModule &module );
+	projWindowMain(igdeEditorModule &module);
 	
 	/** \brief Clean up window. */
-	virtual ~projWindowMain();
+protected:
+	~projWindowMain() override;
+public:
 	/*@}*/
 	
 	
@@ -116,19 +122,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actions. */
-	inline igdeAction *GetActionDistSave() const{ return pActionDistSave; }
+	inline const igdeAction::Ref &GetActionDistSave() const{ return pActionDistSave; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
-	inline igdeAction *GetActionProfileAdd() const{ return pActionProfileAdd; }
-	inline igdeAction *GetActionProfileRemove() const{ return pActionProfileRemove; }
-	inline igdeAction *GetActionProfileDuplicate() const{ return pActionProfileDuplicate; }
-	inline igdeAction *GetActionProfileDistribute() const{ return pActionProfileDistribute; }
-	inline igdeAction *GetActionProfileTestRun() const{ return pActionProfileTestRun; }
+	inline const igdeAction::Ref &GetActionProfileAdd() const{ return pActionProfileAdd; }
+	inline const igdeAction::Ref &GetActionProfileRemove() const{ return pActionProfileRemove; }
+	inline const igdeAction::Ref &GetActionProfileDuplicate() const{ return pActionProfileDuplicate; }
+	inline const igdeAction::Ref &GetActionProfileDistribute() const{ return pActionProfileDistribute; }
+	inline const igdeAction::Ref &GetActionProfileTestRun() const{ return pActionProfileTestRun; }
 	
 	inline const igdeActionExternOpen::Ref &GetActionShowDistribute() const{ return pActionShowDelga; }
 	inline const igdeActionExternOpen::Ref &GetActionShowContent() const{ return pActionShowContent; }
@@ -137,10 +143,10 @@ public:
 	inline const igdeActionExternOpen::Ref &GetActionShowCapture() const{ return pActionShowCapture; }
 	inline const igdeActionExternOpen::Ref &GetActionShowLogs() const{ return pActionShowLogs; }
 	
-	inline igdeIcon *GetIconStart() const{ return pIconStart; }
-	inline igdeIcon *GetIconStop() const{ return pIconStop; }
-	inline igdeIcon *GetIconKill() const{ return pIconKill; }
-	inline igdeIcon *GetIconDelga() const{ return pIconDelga; }
+	inline const igdeIcon::Ref &GetIconStart() const{ return pIconStart; }
+	inline const igdeIcon::Ref &GetIconStop() const{ return pIconStop; }
+	inline const igdeIcon::Ref &GetIconKill() const{ return pIconKill; }
+	inline const igdeIcon::Ref &GetIconDelga() const{ return pIconDelga; }
 	
 	
 	
@@ -169,10 +175,10 @@ public:
 	
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	
 	
 	
@@ -180,7 +186,7 @@ public:
 	void LoadProject();
 	
 	/** \brief Load project local. */
-	void LoadProjectLocal( projProject &project );
+	void LoadProjectLocal(projProject &project);
 	
 	/** \brief Save project. */
 	void SaveProject();
@@ -191,16 +197,16 @@ public:
 	
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Retrieve a list of unsaved open documents. */
-	void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/** \brief Requests a document to be saved. */
-	bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/** \brief The game project has changed. */
-	void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/** \brief Update show action path. */
 	void UpdateShowActionPath();
@@ -214,7 +220,7 @@ public:
 	 * wishes to close the application it has to return false. Return true to continue
 	 * processing command line arguments.
 	 */
-	bool ProcessCommandLine( decUnicodeStringList &arguments );
+	bool ProcessCommandLine(decUnicodeStringList &arguments);
 	/*@}*/
 	
 	
@@ -225,12 +231,12 @@ private:
 	void pCreateToolBarDistribute();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuDistribute( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuProfile( igdeMenuCascade &menu );
-	bool pCmdLineProfileDistribute( decUnicodeStringList &arguments );
-	bool pCmdLineProfileDistributeFile( decUnicodeStringList &arguments );
-	bool pCmdLineProfileList( decUnicodeStringList &arguments );
+	void pCreateMenuDistribute(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuProfile(igdeMenuCascade &menu);
+	bool pCmdLineProfileDistribute(decUnicodeStringList &arguments);
+	bool pCmdLineProfileDistributeFile(decUnicodeStringList &arguments);
+	bool pCmdLineProfileList(decUnicodeStringList &arguments);
 	void pCmdLineHelp();
 };
 

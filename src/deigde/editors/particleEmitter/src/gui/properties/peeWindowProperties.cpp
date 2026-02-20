@@ -27,14 +27,10 @@
 #include <string.h>
 
 #include "peeWindowProperties.h"
-#include "peeWPType.h"
-#include "peeWPController.h"
-#include "peeWPView.h"
-#include "peeWPUndoHistory.h"
 #include "../peeWindowMain.h"
 #include "../../emitter/peeEmitter.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -48,25 +44,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWindowProperties::peeWindowProperties( peeWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+peeWindowProperties::peeWindowProperties(peeWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelType.TakeOver( new peeWPType( *this ) );
-	AddChild( pPanelType, "Type" );
+	pPanelType = peeWPType::Ref::New(*this);
+	AddChild(pPanelType, "@ParticleEmitter.WindowProperties.Tab.Type");
 	
-	pPanelController.TakeOver( new peeWPController( *this ) );
-	AddChild( pPanelController, "Controller" );
+	pPanelController = peeWPController::Ref::New(*this);
+	AddChild(pPanelController, "@ParticleEmitter.WindowProperties.Tab.Controller");
 	
-	pPanelView.TakeOver( new peeWPView( *this ) );
-	AddChild( pPanelView, "View" );
+	pPanelView = peeWPView::Ref::New(*this);
+	AddChild(pPanelView, "@ParticleEmitter.WindowProperties.Tab.View");
 	
-	pPanelUndoHistory.TakeOver( new peeWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory = peeWPUndoHistory::Ref::New(GetEnvironment());
+	AddChild(pPanelUndoHistory, "@ParticleEmitter.WindowProperties.Tab.Undo");
 	
-	SetActivePanel( 0 ); // type
+	SetActivePanel(0); // type
 }
 
 peeWindowProperties::~peeWindowProperties(){
@@ -77,13 +73,13 @@ peeWindowProperties::~peeWindowProperties(){
 // Management
 ///////////////
 
-void peeWindowProperties::SetEmitter( peeEmitter *emitter ){
-	( ( peeWPType& )( igdeWidget& )pPanelType ).SetEmitter( emitter );
-	( ( peeWPController& )( igdeWidget& )pPanelController ).SetEmitter( emitter );
-	( ( peeWPView& )( igdeWidget& )pPanelView ).SetEmitter( emitter );
-	( ( peeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetEmitter( emitter );
+void peeWindowProperties::SetEmitter(peeEmitter *emitter){
+	pPanelType->SetEmitter(emitter);
+	pPanelController->SetEmitter(emitter);
+	pPanelView->SetEmitter(emitter);
+	pPanelUndoHistory->SetEmitter(emitter);
 }
 
 void peeWindowProperties::OnEmitterPathChanged(){
-	( ( peeWPType& )( igdeWidget& )pPanelType ).OnEmitterPathChanged();
+	pPanelType->OnEmitterPathChanged();
 }

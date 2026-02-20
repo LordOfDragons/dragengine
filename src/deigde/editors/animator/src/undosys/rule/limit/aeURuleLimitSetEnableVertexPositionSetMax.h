@@ -27,33 +27,37 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 /**
  * Undo action rule limit toggle enable vertex position set.
  */
 class aeURuleLimitSetEnableVertexPositionSetMax : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleLimitSetEnableVertexPositionSetMax>;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetEnableVertexPositionSetMax( aeRuleLimit *rule );
+	aeURuleLimitSetEnableVertexPositionSetMax(aeRuleLimit *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetEnableVertexPositionSetMax();
+	~aeURuleLimitSetEnableVertexPositionSetMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

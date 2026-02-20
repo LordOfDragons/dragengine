@@ -43,8 +43,7 @@ class decXmlVisitorStripComments;
 class DE_DLL_EXPORT decXmlDocument : public decXmlContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlDocument> Ref;
-	
+	using Ref = deTObjectReference<decXmlDocument>;
 	
 	
 private:
@@ -64,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml document. */
-	virtual ~decXmlDocument();
+	~decXmlDocument() override;
 	/*@}*/
 	
 	
@@ -76,31 +75,31 @@ public:
 	inline const decString &GetEncoding() const{ return pEncoding; }
 	
 	/** \brief Set encoding. */
-	void SetEncoding( const char *encoding );
+	void SetEncoding(const char *encoding);
 	
 	/** \brief Doc type. */
 	inline const decString &GetDocType() const{ return pDocType; }
 	
 	/** \brief Set doc type. */
-	void SetDocType( const char *docType );
+	void SetDocType(const char *docType);
 	
 	/** \brief System literal. */
 	inline const decString &GetSystemLiteral() const{ return pSysLit; }
 	
 	/** \brief Set system literal. */
-	void SetSystemLiteral( const char *sysLit );
+	void SetSystemLiteral(const char *sysLit);
 	
 	/** \brief Public literal. */
 	inline const decString &GetPublicLiteral() const{ return pPubLit; }
 	
 	/** \brief Set public literal. */
-	void SetPublicLiteral( const char *sysLit );
+	void SetPublicLiteral(const char *sysLit);
 	
 	/** \brief Standalone. */
 	inline bool GetStandalone() const{ return pStandalone; }
 	
 	/** \brief Set standalone. */
-	void SetStandalone( bool standalone );
+	void SetStandalone(bool standalone);
 	
 	/** \brief Root element. */
 	decXmlElementTag *GetRoot() const;
@@ -110,7 +109,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
@@ -128,8 +127,8 @@ public:
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToDocument() const;
-	virtual decXmlDocument *CastToDocument();
+	bool CanCastToDocument() const override;
+	decXmlDocument *CastToDocument() override;
 	/*@}*/
 };
 

@@ -25,7 +25,7 @@
 #ifndef _DEVKPIPELINEMANAGER_H_
 #define _DEVKPIPELINEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDevice;
 class devkPipeline;
@@ -40,7 +40,7 @@ class devkPipelineManager{
 private:
 	devkDevice &pDevice;
 	
-	decObjectList pLayouts;
+	decTObjectList<devkPipeline> pLayouts;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline manager. */
-	devkPipelineManager( devkDevice &device );
+	devkPipelineManager(devkDevice &device);
 	
 	/** Clean up pipelines manager. */
 	~devkPipelineManager();
@@ -65,13 +65,13 @@ public:
 	int GetCount() const;
 	
 	/** Pipeline at index. Caller does not hold reference. */
-	devkPipeline *GetAt( int index ) const;
+	devkPipeline *GetAt(int index) const;
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
-	devkPipeline *GetWith( const devkPipelineConfiguration &configuration );
+	devkPipeline *GetWith(const devkPipelineConfiguration &configuration);
 	
 	/** Pipeline with configuration is present. */
-	bool HasWith( const devkPipelineConfiguration &configuration ) const;
+	bool HasWith(const devkPipelineConfiguration &configuration) const;
 	
 	/** Remove all pipelines. */
 	void Clear();

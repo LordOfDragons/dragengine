@@ -25,19 +25,20 @@
 #ifndef _AEUCONTROLLERSETMINIMUMVALUE_H_
 #define _AEUCONTROLLERSETMINIMUMVALUE_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
  * Undo action controller set minimum value.
  */
 class aeUControllerSetMinimumValue : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerSetMinimumValue>;
+	
+	
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	
@@ -47,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetMinimumValue( aeController *controller, float newValue );
+	aeUControllerSetMinimumValue(aeController *controller, float newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerSetMinimumValue();
+	~aeUControllerSetMinimumValue() override;
 	/*@}*/
 	
 	
@@ -60,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class add force field.
  */
 class gdeUOCAddForceField : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCAddForceField> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddForceField( gdeObjectClass *objectClass, gdeOCForceField *forceField );
+	gdeUOCAddForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -35,6 +35,10 @@ class aeWPAnimator;
  * Animator panel listener
  */
 class aeWPAnimatorListener : public aeAnimatorNotifier{
+public:
+	using Ref = deTObjectReference<aeWPAnimatorListener>;
+	
+	
 private:
 	aeWPAnimator &pPanel;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPAnimatorListener( aeWPAnimator &panel );
+	aeWPAnimatorListener(aeWPAnimator &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPAnimatorListener();
+protected:
+	~aeWPAnimatorListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,16 +61,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Animator changed. */
-	virtual void AnimatorChanged( aeAnimator *animator );
+	void AnimatorChanged(aeAnimator *animator) override;
 	
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	void ModelChanged(aeAnimator *animator) override;
 	
 	/** Rig changed. */
-	virtual void RigChanged( aeAnimator *animator );
+	void RigChanged(aeAnimator *animator) override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	void AnimationChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

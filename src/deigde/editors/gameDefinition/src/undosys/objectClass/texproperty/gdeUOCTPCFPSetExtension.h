@@ -30,9 +30,9 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
-class gdeProperty;
-class gdeFilePattern;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
+#include "../../../gamedef/property/gdeProperty.h"
+#include "../../../gamedef/filepattern/gdeFilePattern.h"
 
 
 
@@ -40,10 +40,14 @@ class gdeFilePattern;
  * \brief Undo action object class texture property custom file pattern set pattern.
  */
 class gdeUOCTPCFPSetExtension : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCTPCFPSetExtension>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
-	gdeFilePattern *pFilePattern;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
+	gdeFilePattern::Ref pFilePattern;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -54,12 +58,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPCFPSetExtension( gdeObjectClass *objectClass, gdeProperty *property,
-		gdeFilePattern *filePattern, const char *newValue );
+	gdeUOCTPCFPSetExtension(gdeObjectClass *objectClass, gdeProperty *property,
+		gdeFilePattern *filePattern, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCTPCFPSetExtension();
+	~gdeUOCTPCFPSetExtension() override;
 	/*@}*/
 	
 	
@@ -68,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

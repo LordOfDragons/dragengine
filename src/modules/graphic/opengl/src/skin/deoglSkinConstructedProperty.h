@@ -37,7 +37,8 @@ class deSkinPropertyConstructed;
  */
 class deoglSkinConstructedProperty : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinConstructedProperty> Ref;
+	using Ref = deTObjectReference<deoglSkinConstructedProperty>;
+	
 	
 private:
 	const deoglSkinStateCNGroup::Ref pContent;
@@ -49,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin constructed property. */
-	deoglSkinConstructedProperty( const deSkinPropertyConstructed &constructed );
+	deoglSkinConstructedProperty(const deSkinPropertyConstructed &constructed);
 	
 protected:
 	/** Cleans up the skin constructed property. */
-	virtual ~deoglSkinConstructedProperty();
+	~deoglSkinConstructedProperty() override;
 	/*@}*/
 	
 	

@@ -25,19 +25,19 @@
 #ifndef _IGDETRIGGEREXPRESSIONEDITOR_H_
 #define _IGDETRIGGEREXPRESSIONEDITOR_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeToggleButtonReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeListBoxReference.h"
-#include "../igdeTreeListReference.h"
+#include "../igdeButton.h"
+#include "../igdeToggleButton.h"
+#include "../igdeTextField.h"
+#include "../igdeListBox.h"
+#include "../igdeTreeList.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
+#include "../../triggersystem/igdeTriggerExpression.h"
 
 #include <dragengine/common/string/decString.h>
 
 
-class igdeTriggerExpression;
 class igdeTriggerExpressionComponent;
 class igdeTriggerExpressionParser;
 class igdeTriggerTargetList;
@@ -48,26 +48,31 @@ class igdeTreeItem;
  * \brief Trigger Expression Editor.
  */
 class DE_DLL_EXPORT igdeTriggerExpressionEditor : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor>;
+	
+	
 private:
 	igdeTriggerExpressionParser *pParser;
 	const igdeTriggerTargetList *pTargetList;
-	igdeTriggerExpression *pWorkExpression;
+	igdeTriggerExpression::Ref pWorkExpression;
 	decString pExpression;
 	
-	igdeToggleButtonReference pBtnNegate;
-	igdeToggleButtonReference pBtnCurState;
-	igdeToggleButtonReference pBtnAnd;
-	igdeToggleButtonReference pBtnOr;
-	igdeToggleButtonReference pBtnTarget;
-	igdeButtonReference pBtnAddChild;
-	igdeButtonReference pBtnRemoveChild;
-	igdeTextFieldReference pEditFilterTargetName;
-	igdeTextFieldReference pEditTargetName;
-	igdeListBoxReference pListTargetName;
-	igdeTextFieldReference pEditExpression;
-	igdeTreeListReference pTreeExpression;
+	igdeToggleButton::Ref pBtnNegate;
+	igdeToggleButton::Ref pBtnCurState;
+	igdeToggleButton::Ref pBtnAnd;
+	igdeToggleButton::Ref pBtnOr;
+	igdeToggleButton::Ref pBtnTarget;
+	igdeButton::Ref pBtnAddChild;
+	igdeButton::Ref pBtnRemoveChild;
+	igdeTextField::Ref pEditFilterTargetName;
+	igdeTextField::Ref pEditTargetName;
+	igdeListBox::Ref pListTargetName;
+	igdeTextField::Ref pEditExpression;
+	igdeTreeList::Ref pTreeExpression;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	
@@ -75,10 +80,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor. */
-	igdeTriggerExpressionEditor( igdeEnvironment &environment );
+	igdeTriggerExpressionEditor(igdeEnvironment &environment);
 	
 	/** \brief Create editor. */
-	igdeTriggerExpressionEditor( igdeEnvironment &environment, igdeAction *action );
+	igdeTriggerExpressionEditor(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -89,7 +94,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTriggerExpressionEditor();
+	~igdeTriggerExpressionEditor() override;
 	/*@}*/
 	
 	
@@ -101,25 +106,25 @@ public:
 	inline igdeTriggerExpressionParser *GetParser() const{ return pParser; }
 	
 	/** \brief Set parser. */
-	void SetParser( igdeTriggerExpressionParser *parser );
+	void SetParser(igdeTriggerExpressionParser *parser);
 	
 	/** \brief Target list. */
 	inline const igdeTriggerTargetList *GetTargetList() const{ return pTargetList; }
 	
 	/** \brief Set target list. */
-	void SetTargetList( const igdeTriggerTargetList *targetList );
+	void SetTargetList(const igdeTriggerTargetList *targetList);
 	
 	/** \brief Expression. */
 	inline const decString &GetExpression() const{ return pExpression; }
 	
 	/** \brief Set expression. */
-	void SetExpression( const char *expression );
+	void SetExpression(const char *expression);
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	/** \brief Set action or nullptr. */
+	void SetAction(igdeAction *action);
 	
 	
 	
@@ -133,10 +138,10 @@ public:
 	void UpdateTree();
 	
 	/** \brief Add expression component to tree. */
-	void AddComponentToTree( igdeTreeItem *parent, igdeTriggerExpressionComponent *component );
+	void AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent *component);
 	
 	/** \brief Update expresion component in the tree. */
-	void UpdateComponentInTree( igdeTreeItem *item, igdeTriggerExpressionComponent *component );
+	void UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent *component);
 	
 	/** \brief Update expression component currently selected in the tree. */
 	void UpdateExpressionComponent();
@@ -147,17 +152,17 @@ public:
 	/** \brief Selected tree item. */
 	igdeTreeItem *GetSelectedTreeItem() const;
 	
-	/** \brief Selected component in the tree or NULL if there is no valid selection. */
+	/** \brief Selected component in the tree or nullptr if there is no valid selection. */
 	igdeTriggerExpressionComponent *GetSelectedComponent() const;
 	
 	/** \brief Update from target list. */
 	void UpdateFromTargetList();
 	
 	/** \brief Set index of selected item in the target list or -1 if there is no selection. */
-	void SetSelectedItemInTargetList( int selection );
+	void SetSelectedItemInTargetList(int selection);
 	
 	/** \brief Select target in list. */
-	void SetSelectedItemInTargetList( const char *name );
+	void SetSelectedItemInTargetList(const char *name);
 	
 	
 	
@@ -170,10 +175,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	

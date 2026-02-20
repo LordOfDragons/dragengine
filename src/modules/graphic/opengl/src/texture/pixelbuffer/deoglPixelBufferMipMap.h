@@ -27,6 +27,7 @@
 
 #include "deoglPixelBuffer.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -36,13 +37,11 @@
 class deoglPixelBufferMipMap : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglPixelBufferMipMap> Ref;
-	
+	using Ref = deTObjectReference<deoglPixelBufferMipMap>;
 	
 	
 private:
-	deoglPixelBuffer::Ref *pPixelBuffers;
-	int pPixelBufferCount;
+	decTList<deoglPixelBuffer::Ref> pPixelBuffers;
 	
 	
 	
@@ -50,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer mip map. */
-	deoglPixelBufferMipMap( deoglPixelBuffer::ePixelFormats format, int width, int height, int depth, int maxLevel );
+	deoglPixelBufferMipMap(deoglPixelBuffer::ePixelFormats format, int width, int height, int depth, int maxLevel);
 	
 protected:
 	/** Cleans up the opengl array texture. */
-	virtual ~deoglPixelBufferMipMap();
+	~deoglPixelBufferMipMap() override;
 	/*@}*/
 	
 	
@@ -62,13 +61,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of pixel buffers which is the mip map level count. */
-	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
-	/** Retrieves the pixel buffer for a mip map level. */
-	const deoglPixelBuffer::Ref &GetPixelBuffer( int level ) const;
+	/** Pixel buffers. */
+	inline const decTList<deoglPixelBuffer::Ref> &GetPixelBuffers() const{ return pPixelBuffers; }
 	
 	/** Reduce maximum mip map level count. */
-	void ReducePixelBufferCount( int reduceByCount );
+	void ReducePixelBufferCount(int reduceByCount);
 	
 	/** Create mip maps from the base level using simple box filtering. */
 	void CreateMipMaps();
@@ -77,7 +74,7 @@ public:
 	 * Create mip maps from the base level using simple box filtering.
 	 * Only components with their mask set to true are processed.
 	 */
-	void CreateMipMaps( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
+	void CreateMipMaps(bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha);
 	
 	/** Create mip maps from the base level using maximum filtering. */
 	void CreateMipMapsMax();
@@ -86,7 +83,7 @@ public:
 	 * Create mip maps from the base level using maximum filtering.
 	 * Only components with their mask set to true are processed.
 	 */
-	void CreateMipMapsMax( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
+	void CreateMipMapsMax(bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha);
 	
 	/** Create mip maps from the base level using minimum filtering. */
 	void CreateMipMapsMin();
@@ -95,7 +92,7 @@ public:
 	 * Create mip maps from the base level using minimum filtering.
 	 * Only components with their mask set to true are processed.
 	 */
-	void CreateMipMapsMin( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
+	void CreateMipMapsMin(bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha);
 	
 	/**
 	 * Create normal mip maps from the base level using simple box filtering. In addition
@@ -108,14 +105,13 @@ public:
 	 * values using the normal values to adjust the roughness at distance. Processes only
 	 * the alpha value (for the time being).
 	 */
-	void CreateRoughnessMipMaps( deoglPixelBufferMipMap &normalPixeBufferMipMap );
+	void CreateRoughnessMipMaps(deoglPixelBufferMipMap &normalPixeBufferMipMap);
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
-	void pGetTypeParams( int pixelBufferType, int &componentCount, bool &floatData ) const;
+	void pGetTypeParams(int pixelBufferType, int &componentCount, bool &floatData) const;
 };
 
 #endif

@@ -25,11 +25,10 @@
 #ifndef _IGDENVLINK_H_
 #define _IGDENVLINK_H_
 
-#include "igdeNVSlotReference.h"
-
 #include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
 
-
+class igdeNVSlot;
 class igdeNVBoard;
 
 
@@ -37,9 +36,15 @@ class igdeNVBoard;
  * \brief IGDE UI NodeView Link.
  */
 class DE_DLL_EXPORT igdeNVLink : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeNVLink>;
+	
+	
 private:
-	igdeNVSlotReference pSource;
-	igdeNVSlotReference pTarget;
+	deTObjectReference<igdeNVSlot> pSource;
+	deTObjectReference<igdeNVSlot> pTarget;
 	
 	igdeNVBoard *pOwnerBoard;
 	
@@ -49,9 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create link. */
-	igdeNVLink( igdeNVSlot *source, igdeNVSlot *target );
+	igdeNVLink(igdeNVSlot *source, igdeNVSlot *target);
 	
-	
+	igdeNVLink(const igdeNVLink&) = delete;
+	igdeNVLink& operator=(const igdeNVLink&) = delete;
 	
 protected:
 	/**
@@ -60,7 +66,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeNVLink();
+	~igdeNVLink() override;
 	/*@}*/
 	
 	
@@ -69,21 +75,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source. */
-	inline igdeNVSlot *GetSource() const{ return pSource; }
+	inline const deTObjectReference<igdeNVSlot> &GetSource() const{ return pSource; }
 	
 	/** \brief Target. */
-	inline igdeNVSlot *GetTarget() const{ return pTarget; }
+	inline const deTObjectReference<igdeNVSlot> &GetTarget() const{ return pTarget; }
 	
 	
 	
-	/** \brief Owner board or NULL. */
+	/** \brief Owner board or nullptr. */
 	inline igdeNVBoard *GetOwnerBoard() const{ return pOwnerBoard; }
 	
 	/**
-	 * \brief Set owner board or NULL.
+	 * \brief Set owner board or nullptr.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
-	void SetOwnerBoard( igdeNVBoard *board );
+	void SetOwnerBoard(igdeNVBoard *board);
 	/*@}*/
 };
 

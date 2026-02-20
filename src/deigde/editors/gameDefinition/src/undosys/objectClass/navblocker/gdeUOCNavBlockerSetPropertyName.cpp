@@ -39,35 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetPropertyName::gdeUOCNavBlockerSetPropertyName( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, gdeOCNavigationBlocker::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL ),
-pProperty( property )
+gdeUOCNavBlockerSetPropertyName::gdeUOCNavBlockerSetPropertyName(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, gdeOCNavigationBlocker::eProperties property, const char *newValue) :
+
+
+pProperty(property)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "NavBlocker set property name" );
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetPropertyName");
 	
-	pOldValue = navblocker->GetPropertyName( property );
+	pOldValue = navblocker->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetPropertyName::~gdeUOCNavBlockerSetPropertyName(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCNavBlockerSetPropertyName::~gdeUOCNavBlockerSetPropertyName(){
 ///////////////
 
 void gdeUOCNavBlockerSetPropertyName::Undo(){
-	pNavBlocker->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetPropertyName::Redo(){
-	pNavBlocker->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

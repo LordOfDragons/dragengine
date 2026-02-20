@@ -26,12 +26,9 @@
 #define _IGDEDIALOGTEXTUREPROPERTYLIST_H
 
 #include "igdeDialog.h"
-#include "../igdeListBoxReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeTextAreaReference.h"
-
-
-class igdeTexturePropertyList;
+#include "../igdeListBox.h"
+#include "../igdeTextField.h"
+#include "../igdeTextArea.h"
 
 
 /**
@@ -40,14 +37,19 @@ class igdeTexturePropertyList;
  * Dialog showing content of texture property list.
  */
 class DE_DLL_EXPORT igdeDialogTexturePropertyList : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDialogTexturePropertyList>;
+	
+	
 private:
-	igdeListBoxReference pListProperties;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditType;
-	igdeTextFieldReference pEditComponentCount;
-	igdeTextFieldReference pEditDefault;
-	igdeTextFieldReference pEditAffectedModules;
+	igdeListBox::Ref pListProperties;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditType;
+	igdeTextField::Ref pEditComponentCount;
+	igdeTextField::Ref pEditDefault;
+	igdeTextField::Ref pEditAffectedModules;
 	
 	
 	
@@ -55,13 +57,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogTexturePropertyList( igdeEnvironment &environment );
+	explicit igdeDialogTexturePropertyList(igdeEnvironment &environment);
 	
 	
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogTexturePropertyList();
+	~igdeDialogTexturePropertyList() override;
 	/*@}*/
 	
 	

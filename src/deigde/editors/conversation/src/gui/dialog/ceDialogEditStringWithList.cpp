@@ -25,8 +25,9 @@
 #include "ceDialogEditStringWithList.h"
 
 #include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 
 #include <dragengine/common/exceptions.h>
@@ -39,32 +40,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceDialogEditStringWithList::ceDialogEditStringWithList( igdeEnvironment &environment,
-const char *windowTitle, const char *textLabel, const char *value, const decStringList &choices ) :
-igdeDialog( environment, windowTitle )
+ceDialogEditStringWithList::ceDialogEditStringWithList(igdeEnvironment &environment,
+const char *windowTitle, const char *textLabel, const char *value, const decStringList &choices) :
+igdeDialog(environment, windowTitle)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
-	helper.ComboBoxFilter( content, textLabel, true, "", pCBString, NULL );
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
+	helper.ComboBoxFilter(content, textLabel, true, "", pCBString, {});
 	pCBString->SetDefaultSorter();
 	
-	igdeContainerReference buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Cancel" );
+	igdeContainer::Ref buttonBar;
+	CreateButtonBar(buttonBar, "@Conversation.Dialog.Accept", "@Conversation.Dialog.Cancel");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 150)));
 	
 	// init list
 	const int count = choices.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pCBString->AddItem( choices.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pCBString->AddItem(choices.GetAt(i));
 	}
 	pCBString->SortItems();
 	pCBString->StoreFilterItems();
 	
-	pCBString->SetText( value );
+	pCBString->SetText(value);
 }
 
 ceDialogEditStringWithList::~ceDialogEditStringWithList(){

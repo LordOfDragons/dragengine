@@ -37,6 +37,10 @@ class deoglShaderParameterBlock;
  */
 class deoglSharedSPBElement : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglSharedSPBElement>;
+	
+	
 	deoglSharedSPB &pSPB;
 	int pIndex;
 	
@@ -46,14 +50,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block element. */
-	deoglSharedSPBElement( deoglSharedSPB &spb, int index );
+	deoglSharedSPBElement(deoglSharedSPB &spb, int index);
 	
+protected:
 	/** Clean up shared shader parameter block element. */
-	virtual ~deoglSharedSPBElement();
+	~deoglSharedSPBElement() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Shader parameter block this element belongs to. */

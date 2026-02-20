@@ -32,7 +32,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
 
 
@@ -43,44 +43,43 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeMove::meUObjectShapeMove( meObject *object, const char *property, const meObjectShapeList &list ){
-	if( list.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property,
+const meObjectShape::List &list) :
+meBaseUndoMove(*object->GetEnvironment())
+{
+	if(list.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!object || !property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(!object->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectShapeList &shapeList = object->GetWorld()->GetObjectShapes();
+	const meObjectShape::List &shapeList = object->GetWorld()->GetObjectShapes();
 	const int count = list.GetCount();
 	int i;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
-	SetShortInfo( "Move object shapes" );
-	SetLongInfo( "Move object shapes" );
+	SetShortInfo("@World.UObjectShapeMove.MoveObjectShapes");
+	SetLongInfo("@World.UObjectShapeMove.MoveObjectShapes");
 	
-	pPropertyExists = object->GetProperties().Has( property );
-	if( pPropertyExists ){
-		pOldValue = object->GetProperties().GetAt( property );
+	pPropertyExists = object->GetProperties().Has(property);
+	if(pPropertyExists){
+		pOldValue = object->GetProperties().GetAt(property);
 	}
 	
-	for( i=0; i<count; i++ ){
-		pList.Add( shapeList.IndexOf( list.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		pList.Add(shapeList.IndexOf(list.GetAt(i)));
 	}
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeMove::~meUObjectShapeMove(){
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -91,11 +90,11 @@ meUObjectShapeMove::~meUObjectShapeMove(){
 void meUObjectShapeMove::Undo(){
 	meWorld &world = *pObject->GetWorld();
 	
-	if( pPropertyExists ){
-		pObject->SetProperty( pProperty.GetString(), pOldValue.GetString() );
+	if(pPropertyExists){
+		pObject->SetProperty(pProperty.GetString(), pOldValue.GetString());
 		
 	}else{
-		pObject->RemoveProperty( pProperty.GetString() );
+		pObject->RemoveProperty(pProperty.GetString());
 	}
 	
 	world.NotifyObjectShapeSelectionChanged();
@@ -106,25 +105,25 @@ void meUObjectShapeMove::Redo(){
 	const int count = pList.GetCount();
 	decDMatrix matrixParentInverse;
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	decVector distance;
 	decString newValue;
 	int i;
 	
-	matrixParentInverse = decDMatrix::CreateRotation( decDVector( pObject->GetRotation() * DEG2RAD ) ).Invert();
-	distance = ( matrixParentInverse * GetDistance() ).ToVector();
+	matrixParentInverse = decDMatrix::CreateRotation(decDVector(pObject->GetRotation() * DEG2RAD)).Invert();
+	distance = (matrixParentInverse * GetDistance()).ToVector();
 	
-	codec.DecodeShapeList( pOldValue.GetString(), shapeList );
+	codec.DecodeShapeList(pOldValue.GetString(), shapeList);
 	
-	for( i=0; i<count; i++ ){
-		decShape &shape = *shapeList.GetAt( pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		decShape &shape = *shapeList.GetAt(pList.GetAt(i));
 		
-		shape.SetPosition( shape.GetPosition() + distance );
+		shape.SetPosition(shape.GetPosition() + distance);
 	}
 	
-	codec.EncodeShapeList( shapeList, newValue );
+	codec.EncodeShapeList(shapeList, newValue);
 	
-	pObject->SetProperty( pProperty.GetString(), newValue.GetString() );
+	pObject->SetProperty(pProperty.GetString(), newValue.GetString());
 	
 	world.NotifyObjectShapeSelectionChanged();
 }

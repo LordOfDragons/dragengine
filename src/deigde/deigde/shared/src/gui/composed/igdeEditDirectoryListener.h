@@ -36,6 +36,12 @@ class igdeEditDirectory;
  * \brief IGDE UI EditDirectory Listener.
  */
 class DE_DLL_EXPORT igdeEditDirectoryListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditDirectoryListener>;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditDirectoryListener();
+	~igdeEditDirectoryListener() override;
 	/*@}*/
 	
 	
@@ -62,7 +68,7 @@ public:
 	/**
 	 * \brief EditDirectory directory changed.
 	 */
-	virtual void OnEditDirectoryChanged( igdeEditDirectory *editDirectory );
+	virtual void OnEditDirectoryChanged(igdeEditDirectory *editDirectory);
 	/*@}*/
 };
 

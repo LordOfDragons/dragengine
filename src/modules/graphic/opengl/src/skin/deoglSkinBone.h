@@ -36,7 +36,8 @@ class deoglSkinState;
  */
 class deoglSkinBone : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinBone> Ref;
+	using Ref = deTObjectReference<deoglSkinBone>;
+	
 	
 private:
 	const decString pName;
@@ -48,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin bone. */
-	deoglSkinBone( const decString &name );
+	deoglSkinBone(const decString &name);
 	
 protected:
 	/** Clean up skin bone. */
-	virtual ~deoglSkinBone();
+	~deoglSkinBone() override;
 	/*@}*/
 	
 	
@@ -64,7 +65,7 @@ public:
 	const decString &GetName() const{ return pName; }
 	
 	/** Set bone index. */
-	void SetBone( int bone );
+	void SetBone(int bone);
 	/*@}*/
 };
 

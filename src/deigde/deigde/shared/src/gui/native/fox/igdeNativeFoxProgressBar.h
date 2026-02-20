@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXPROGRESSBAR_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeProgressBar.h"
 
 
 class igdeProgressBar;
@@ -36,8 +37,8 @@ class igdeFont;
 /**
  * \brief FOX toolkit Native Text Area.
  */
-class igdeNativeFoxProgressBar : public FXProgressBar{
-	FXDECLARE( igdeNativeFoxProgressBar )
+class igdeNativeFoxProgressBar : public FXProgressBar, public igdeProgressBar::cNativeProgressBar{
+	FXDECLARE(igdeNativeFoxProgressBar)
 protected:
 	   igdeNativeFoxProgressBar();
 	
@@ -57,14 +58,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text widget. */
-	igdeNativeFoxProgressBar( igdeProgressBar &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxProgressBar(igdeProgressBar &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
-	virtual ~igdeNativeFoxProgressBar();
+	~igdeNativeFoxProgressBar() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxProgressBar* CreateNativeWidget( igdeProgressBar &owner );
+	static igdeNativeFoxProgressBar* CreateNativeWidget(igdeProgressBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -77,20 +78,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
 	
-	static int ProgressBarFlags( const igdeProgressBar &owner );
-	static igdeFont *ProgressBarFont( const igdeProgressBar &owner, const igdeGuiTheme &guitheme );
-	static int ProgressBarPadLeft( const igdeGuiTheme &guitheme );
-	static int ProgressBarPadRight( const igdeGuiTheme &guitheme );
-	static int ProgressBarPadTop( const igdeGuiTheme &guitheme );
-	static int ProgressBarPadBottom( const igdeGuiTheme &guitheme );
+	static int ProgressBarFlags(const igdeProgressBar &owner);
+	static igdeFont *ProgressBarFont(const igdeProgressBar &owner, const igdeGuiTheme &guitheme);
+	static int ProgressBarPadLeft(const igdeGuiTheme &guitheme);
+	static int ProgressBarPadRight(const igdeGuiTheme &guitheme);
+	static int ProgressBarPadTop(const igdeGuiTheme &guitheme);
+	static int ProgressBarPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 };
 
-typedef igdeNativeFoxProgressBar igdeNativeProgressBar;
+using igdeNativeProgressBar = igdeNativeFoxProgressBar;
 
 #endif

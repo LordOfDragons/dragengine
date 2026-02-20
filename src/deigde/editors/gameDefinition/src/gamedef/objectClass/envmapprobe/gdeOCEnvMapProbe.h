@@ -26,8 +26,9 @@
 #define _GDEOCENVMAPPROBE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -36,7 +37,14 @@
  * \brief Object class environment map probe.
  */
 class gdeOCEnvMapProbe : public deObject{
-public:
+	public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeOCEnvMapProbe>;
+
+	/** \brief Type holding list. */
+	using List = decTObjectOrderedSet<gdeOCEnvMapProbe>;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Influence area. */
@@ -68,13 +76,13 @@ private:
 	decVector pRotation;
 	decVector pScaling;
 	
-	decShapeList pShapeListInfluence;
-	decShape *pShapeReflection;
-	decShapeList pShapeListReflectionMask;
+	decShape::List pShapeListInfluence;
+	decShape::Ref pShapeReflection;
+	decShape::List pShapeListReflectionMask;
 	float pInfluenceBorderSize;
 	int pInfluencePriority;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
+	decString pPropertyNames[epAttachRotation + 1];
 	
 	
 	
@@ -85,10 +93,12 @@ public:
 	gdeOCEnvMapProbe();
 	
 	/** \brief Create copy of environment map probe. */
-	gdeOCEnvMapProbe( const gdeOCEnvMapProbe &probe );
+	gdeOCEnvMapProbe(const gdeOCEnvMapProbe &probe);
 	
 	/** \brief Clean up environment map probe. */
-	virtual ~gdeOCEnvMapProbe();
+protected:
+	~gdeOCEnvMapProbe() override;
+public:
 	/*@}*/
 	
 	
@@ -99,61 +109,61 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	/** \brief Scaling. */
 	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	
 	
 	/** \brief Influence shape list. */
-	inline decShapeList &GetShapeListInfluence(){ return pShapeListInfluence; }
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline decShape::List &GetShapeListInfluence(){ return pShapeListInfluence; }
+	inline const decShape::List &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
-	/** \brief Reflection shape or \em NULL if probe is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	/** \brief Reflection shape or \em nullptr if probe is global. */
+	inline const decShape::Ref &GetShapeReflection() const{ return pShapeReflection; }
 	
-	/** \brief Set reflection shape or \em NULL if probe is global. */
-	void SetShapeReflection( decShape *shape );
+	/** \brief Set reflection shape or \em nullptr if probe is global. */
+	void SetShapeReflection(const decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline decShapeList &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline decShape::List &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
+	inline const decShape::List &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
 	
 	/** \brief Influence border size. */
 	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
 	
 	/** \brief Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	/** \brief Influence priority. */
 	inline int GetInfluencePriority() const{ return pInfluencePriority; }
 	
 	/** \brief Set influence priority. */
-	void SetInfluencePriority( int priority );
+	void SetInfluencePriority(int priority);
 	
 	
 	
 	/** \brief Property name is set. */
-	bool IsPropertySet( int property ) const;
+	bool IsPropertySet(int property) const;
 	
 	/** \brief Name of property. */
-	const decString &GetPropertyName( int property ) const;
+	const decString &GetPropertyName(int property) const;
 	
 	/** \brief Set name of property. */
-	void SetPropertyName( int property, const char *name );
+	void SetPropertyName(int property, const char *name);
 	
 	/** \brief One or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	/*@}*/
 	
 	

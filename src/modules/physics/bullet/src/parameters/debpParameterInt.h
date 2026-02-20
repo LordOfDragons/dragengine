@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	debpParameterInt( dePhysicsBullet &bullet );
+	debpParameterInt(dePhysicsBullet &bullet);
 	
 	/** \brief Clean up parameter. */
-	virtual ~debpParameterInt();
+	~debpParameterInt() override;
 	/*@}*/
 	
 	
@@ -47,16 +47,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	
 	/** \brief Current value. */
 	virtual int GetParameterInt() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
+	virtual void SetParameterInt(int value) = 0;
 	/*@}*/
 };
 

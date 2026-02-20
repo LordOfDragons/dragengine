@@ -26,9 +26,9 @@
 #define _REUSETSHAPECYLINDERHALHEIGHT_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShapeCylinder;
+#include "../../../rig/shape/reRigShapeCylinder.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeCylinder;
  * \brief Undo Set Shape HalfHeight.
  */
 class reUSetShapeCylinderHalfHeight : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUSetShapeCylinderHalfHeight>;
+	
+	
 private:
-	reRigShapeCylinder *pShape;
+	reRigShapeCylinder::Ref pShape;
 	
 	float pOldHalfHeight;
 	float pNewHalfHeight;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeCylinderHalfHeight( reRigShapeCylinder *shape, float halfHeight );
+	reUSetShapeCylinderHalfHeight(reRigShapeCylinder *shape, float halfHeight);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetShapeCylinderHalfHeight();
+	~reUSetShapeCylinderHalfHeight() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

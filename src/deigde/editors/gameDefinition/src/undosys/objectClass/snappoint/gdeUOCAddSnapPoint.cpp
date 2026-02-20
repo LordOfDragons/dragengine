@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSnapPoint::gdeUOCAddSnapPoint( gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeUOCAddSnapPoint::gdeUOCAddSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
+
+pSnapPoint(nullptr)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add snap point" );
+	SetShortInfo("@GameDefinition.Undo.OCAddSnapPoint");
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddSnapPoint::~gdeUOCAddSnapPoint(){
-	if( pSnapPoint ){
-		pSnapPoint->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -74,18 +65,23 @@ gdeUOCAddSnapPoint::~gdeUOCAddSnapPoint(){
 
 void gdeUOCAddSnapPoint::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCSnapPoint() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCSnapPoint()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSnapPoint( NULL );
+		gameDefinition->SetActiveOCSnapPoint(nullptr);
 	}
 	
-	pObjectClass->GetSnapPoints().Remove( pSnapPoint );
+	pObjectClass->GetSnapPoints().Remove(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
 }
 
 void gdeUOCAddSnapPoint::Redo(){
-	pObjectClass->GetSnapPoints().Add( pSnapPoint );
+	pObjectClass->GetSnapPoints().Add(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCSnapPoint(pSnapPoint);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCSnapPoint);
 }

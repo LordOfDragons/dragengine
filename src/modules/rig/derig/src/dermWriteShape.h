@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	dermWriteShape( decXmlWriter &writer );
+	dermWriteShape(decXmlWriter &writer);
 	
 	/** \brief Clean up visitor. */
-	virtual ~dermWriteShape();
+	~dermWriteShape() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set property for string. */
-	void SetProperty( const char *property );
+	void SetProperty(const char *property);
 	/*@}*/
 	
 	
@@ -67,22 +67,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

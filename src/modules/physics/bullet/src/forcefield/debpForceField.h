@@ -25,6 +25,7 @@
 #ifndef _DEBPFORCEFIELD_H_
 #define _DEBPFORCEFIELD_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsForceField.h>
 
@@ -44,9 +45,8 @@ private:
 	dePhysicsBullet &pBullet;
 	const deForceField &pForceField;
 	
-	debpFFVortex **pVortices;
+	decTUniqueList<debpFFVortex> pVortices;
 	int pVortexCount;
-	int pVortexSize;
 	float pTimeUntilNextVortex;
 	
 	decVector pDirection;
@@ -59,10 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	debpForceField( dePhysicsBullet &bullet, const deForceField &forceField );
-	
-	/** \brief Clean up peer. */
-	virtual ~debpForceField();
+	debpForceField(dePhysicsBullet &bullet, const deForceField &forceField);
 	/*@}*/
 	
 	
@@ -86,7 +83,7 @@ public:
 	
 	
 	/** \brief Update force field. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -104,7 +101,7 @@ public:
 	inline int GetVortexCount() const{ return pVortexCount; }
 	
 	/** \brief Vortex at the given index. */
-	debpFFVortex *GetVortexAt( int index ) const;
+	debpFFVortex *GetVortexAt(int index) const;
 	/*@}*/
 	
 	
@@ -112,43 +109,42 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Influence area changed. */
-	virtual void InfluenceAreaChanged();
+	void InfluenceAreaChanged() override;
 	
 	/** \brief Radius changed. */
-	virtual void RadiusChanged();
+	void RadiusChanged() override;
 	
 	/** \brief Exponent changed. */
-	virtual void ExponentChanged();
+	void ExponentChanged() override;
 	
 	/** \brief Field or application type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Direction changed. */
-	virtual void DirectionChanged();
+	void DirectionChanged() override;
 	
 	/** \brief Force changed. */
-	virtual void ForceChanged();
+	void ForceChanged() override;
 	
 	/** \brief Direction or force fluctuation changed. */
-	virtual void FluctuationChanged();
+	void FluctuationChanged() override;
 	
 	/** \brief Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
 	void pUpdateGeometry();
 };
 

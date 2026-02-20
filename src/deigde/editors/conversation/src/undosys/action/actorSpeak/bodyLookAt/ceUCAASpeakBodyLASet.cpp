@@ -42,50 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, ceStrip *newStrip ){
-	if( ! topic || ! actorSpeak || ! bodyLookAt || ! newStrip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, ceStrip *newStrip){
+	if(!topic || !actorSpeak || !bodyLookAt || !newStrip){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pBodyLA = NULL;
-	pOldStrip = NULL;
-	pNewStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pBodyLA = nullptr;
+	pOldStrip = nullptr;
+	pNewStrip = nullptr;
 	
-	SetShortInfo( "Set body look-at" );
+	SetShortInfo("@Conversation.Undo.SetBodyLookAt");
 	
-	pOldStrip = new ceStrip( *bodyLookAt );
+	pOldStrip = ceStrip::Ref::New(*bodyLookAt);
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pBodyLA = bodyLookAt;
-	bodyLookAt->AddReference();
 }
 
 ceUCAASpeakBodyLASet::~ceUCAASpeakBodyLASet(){
-	if( pNewStrip ){
-		pNewStrip->FreeReference();
-	}
-	if( pOldStrip ){
-		pOldStrip->FreeReference();
-	}
-	if( pBodyLA ){
-		pBodyLA->FreeReference();
-	}
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -95,10 +73,10 @@ ceUCAASpeakBodyLASet::~ceUCAASpeakBodyLASet(){
 
 void ceUCAASpeakBodyLASet::Undo(){
 	*pBodyLA = *pOldStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakBodyLASet::Redo(){
 	*pBodyLA = *pNewStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

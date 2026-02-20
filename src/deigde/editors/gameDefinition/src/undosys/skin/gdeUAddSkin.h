@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeSkin;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/skin/gdeSkin.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeSkin;
  * \brief Undo action add skin.
  */
 class gdeUAddSkin : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUAddSkin> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddSkin( gdeGameDefinition *gameDefinition, gdeSkin *skin );
+	gdeUAddSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin);
 	
 protected:
 	/** \brief Clean up undo action. */

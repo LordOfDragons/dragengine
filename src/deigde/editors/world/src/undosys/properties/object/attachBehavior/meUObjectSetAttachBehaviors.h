@@ -35,6 +35,10 @@
  * \brief Undo action object set attach behaviors.
  */
 class meUObjectSetAttachBehaviors : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectSetAttachBehaviors>;
+	
+	
 private:
 	const meObject::Ref pObject;
 	decStringList pOldValues, pNewValues;

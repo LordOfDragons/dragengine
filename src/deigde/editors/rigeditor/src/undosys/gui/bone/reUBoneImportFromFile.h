@@ -25,15 +25,15 @@
 #ifndef _REUBONEIMPORTFROMFILE_H_
 #define _REUBONEIMPORTFROMFILE_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/constraint/reRigConstraint.h"
+#include "../../../rig/shape/reRigShape.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class reRig;
-class reRigBone;
-class reRigShapeList;
-class reRigConstraintList;
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -44,29 +44,31 @@ class reRigConstraintList;
  * Existing shapes and constraints are replaced with the imported ones.
  */
 class reUBoneImportFromFile : public igdeUndo{
-private:
-	struct sBoneState{
-		decVector cmp;
-		float mass;
-		bool dynamic;
-		reRigBone *parentBone;
-		reRigShapeList *shapes;
-		reRigConstraintList *constraints;
-	};
+public:
+	using Ref = deTObjectReference<reUBoneImportFromFile>;
 	
-	struct sBone{
-		reRigBone *bone;
-		reRigBone *importBone;
+	
+private:
+	class cBone : public deObject{
+	public:
+		using Ref = deTObjectReference<cBone>;
+		
+		reRigBone::Ref bone;
+		reRigBone::Ref importBone;
 		
 		decVector oldCMP;
 		float oldMass;
 		bool oldDynamic;
-		reRigShapeList *oldShapes;
-		reRigConstraintList *oldConstraints;
+		reRigShape::List oldShapes;
+		reRigConstraint::List oldConstraints;
 		decVector oldIKLimitsLower;
 		decVector oldIKLimitsUpper;
 		decVector oldIKResistance;
-		bool oldIKLocked[ 3 ];
+		bool oldIKLocked[3];
+		
+		cBone() = default;
+	protected:
+		~cBone() override = default;
 	};
 	
 	
@@ -79,8 +81,7 @@ private:
 	bool pImportShapes;
 	bool pImportConstraints;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTObjectList<cBone> pBones;
 	
 	
 	
@@ -88,11 +89,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUBoneImportFromFile( reRig *rig, reRig *importedRig );
+	reUBoneImportFromFile(reRig *rig, reRig *importedRig);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUBoneImportFromFile();
+	~reUBoneImportFromFile() override;
 	/*@}*/
 	
 	
@@ -104,37 +105,32 @@ public:
 	inline float GetScale() const{ return pScale; }
 	
 	/** \brief Set scale factor. */
-	void SetScale( float scale );
+	void SetScale(float scale);
 	
 	/** \brief Bone properties are imported. */
 	inline bool GetImportBoneProperties() const{ return pImportBoneProperties; }
 	
 	/** \brief Set if bone properties are imported. */
-	void SetImportBoneProperties( bool import );
+	void SetImportBoneProperties(bool import);
 	
 	/** \brief Shapes are imported. */
 	inline bool GetImportShapes() const{ return pImportShapes; }
 	
 	/** \brief Set if shapes are imported. */
-	void SetImportShapes( bool import );
+	void SetImportShapes(bool import);
 	
 	/** \brief Constraints are imported. */
 	inline bool GetImportConstraints() const{ return pImportConstraints; }
 	
 	/** \brief Set if constraints are imported. */
-	void SetImportConstraints( bool import );
+	void SetImportConstraints(bool import);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -40,53 +40,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedFromImage::seUPropertyConstructedFromImage( seProperty *property ) :
-pProperty( NULL ),
-pOldContent( NULL ),
-pNewContent( NULL )
+seUPropertyConstructedFromImage::seUPropertyConstructedFromImage(seProperty *property) :
+
+pOldContent(nullptr)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deImage * const image = property->GetEngineImage();
-	if( ! image ){
-		DETHROW( deeInvalidParam );
+	if(!image){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldBitCount = property->GetNodeBitCount();
 	pNewBitCount = image->GetBitCount();
 	
-	const decPoint3 size( image->GetWidth(), image->GetHeight(), image->GetDepth() );
+	const decPoint3 size(image->GetWidth(), image->GetHeight(), image->GetDepth());
 	
-	SetShortInfo( "Property constructed from image" );
+	SetShortInfo("@Skin.Undo.PropertyConstructedFromImage");
 	
-	sePropertyNodeImage *nodeImage = NULL;
+	sePropertyNodeImage::Ref nodeImage;
 	
 	try{
-		nodeImage = new sePropertyNodeImage( *property->GetEngine() );
-		nodeImage->SetSize( size );
-		nodeImage->SetPath( property->GetImagePath() );
+		nodeImage = sePropertyNodeImage::Ref::New(*property->GetEngine());
+		nodeImage->SetSize(size);
+		nodeImage->SetPath(property->GetImagePath());
 		
-		pNewContent = new sePropertyNodeGroup( *property->GetEngine() );
-		pNewContent->SetSize( size );
-		pNewContent->AddNode( nodeImage );
-		nodeImage->FreeReference();
-		nodeImage = NULL;
+		pNewContent = sePropertyNodeGroup::Ref::New(*property->GetEngine());
+		pNewContent->SetSize(size);
+		pNewContent->AddNode(nodeImage);
+		nodeImage = nullptr;
 		
-	}catch( const deException & ){
-		if( nodeImage ){
-			nodeImage->FreeReference();
-		}
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
 	pOldContent = property->GetNodeGroup();
-	pOldContent->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedFromImage::~seUPropertyConstructedFromImage(){
@@ -99,13 +91,13 @@ seUPropertyConstructedFromImage::~seUPropertyConstructedFromImage(){
 ///////////////
 
 void seUPropertyConstructedFromImage::Undo(){
-	pProperty->SetNodeGroup( pOldContent );
-	pProperty->SetNodeBitCount( pOldBitCount );
+	pProperty->SetNodeGroup(pOldContent);
+	pProperty->SetNodeBitCount(pOldBitCount);
 }
 
 void seUPropertyConstructedFromImage::Redo(){
-	pProperty->SetNodeGroup( pNewContent );
-	pProperty->SetNodeBitCount( pNewBitCount );
+	pProperty->SetNodeGroup(pNewContent);
+	pProperty->SetNodeBitCount(pNewBitCount);
 }
 
 
@@ -114,13 +106,4 @@ void seUPropertyConstructedFromImage::Redo(){
 //////////////////////
 
 void seUPropertyConstructedFromImage::pCleanUp(){
-	if( pNewContent ){
-		pNewContent->FreeReference();
-	}
-	if( pOldContent ){
-		pOldContent->FreeReference();
-	}
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }

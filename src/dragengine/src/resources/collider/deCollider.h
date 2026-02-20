@@ -25,19 +25,20 @@
 #ifndef _DECOLLIDER_H_
 #define _DECOLLIDER_H_
 
+#include "deColliderAttachment.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include "../../common/collection/decObjectSet.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTSet.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTUniqueList.h"
 
 class deBasePhysicsCollider;
 class deBaseScriptingCollider;
-class deColliderAttachment;
-class deColliderCollisionTest;
 class deColliderConstraint;
 class deColliderManager;
 class deColliderVisitor;
+class deColliderCollisionTest;
 class deWorld;
 
 
@@ -81,8 +82,7 @@ class deWorld;
 class DE_DLL_EXPORT deCollider : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCollider> Ref;
-	
+	using Ref = deTObjectReference<deCollider>;
 	
 	
 public:
@@ -117,25 +117,19 @@ private:
 	float pForceFieldMass;
 	float pForceFieldSpeed;
 	
-	deColliderAttachment **pAttachments;
-	int pAttachmentCount;
-	int pAttachmentSize;
+	deColliderAttachment::List pAttachments;
 	
-	deColliderConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
-	
-	decObjectOrderedSet pCollisionTests;
+	decTObjectOrderedSet<deColliderConstraint> pConstraints;
+	decTObjectOrderedSet<deColliderCollisionTest> pCollisionTests;
 	
 	decCollisionFilter pCollisionFilter;
-	decObjectSet pIgnoreColliders;
+	decTObjectSet<deCollider> pIgnoreColliders;
 	
 	deBasePhysicsCollider *pPeerPhysics;
 	deBaseScriptingCollider *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deCollider *pLLWorldPrev;
-	deCollider *pLLWorldNext;
+	decTObjectLinkedList<deCollider>::Element pLLWorld;
 	
 	
 	
@@ -143,8 +137,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create collider. */
-	deCollider( deColliderManager *manager );
+	deCollider(deColliderManager *manager);
 	
+	deCollider(const deCollider&) = delete;
+	deCollider& operator=(const deCollider&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up collider.
@@ -152,7 +149,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCollider();
+	~deCollider() override;
 	/*@}*/
 	
 	
@@ -164,13 +161,13 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set central mass point position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/**
 	 * \brief Set position and orientation at the same time.
@@ -181,10 +178,10 @@ public:
 	 * attachments are potentially repositioned twice. This call ensures attachments are
 	 * only repositioned once improving performance.
 	 */
-	void SetGeometry( const decDVector &position, const decQuaternion &orientation );
+	void SetGeometry(const decDVector &position, const decQuaternion &orientation);
 	
-	void SetGeometry( const decDVector &position, const decQuaternion &orientation,
-		const decVector &scale );
+	void SetGeometry(const decDVector &position, const decQuaternion &orientation,
+		const decVector &scale);
 	
 	/** \brief Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
@@ -198,31 +195,31 @@ public:
 	 * do not have to set the scaling on the deColliderComponent. For
 	 * deColliderVolume and deColliderRig using scaling is required.
 	 */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	/** \brief Linear velocity in m/s. */
 	inline const decVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
 	/** \brief Set linear velocity in m/s. */
-	void SetLinearVelocity( const decVector &linVelo );
+	void SetLinearVelocity(const decVector &linVelo);
 	
 	/** \brief Angular velocity in degree/s. */
 	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
 	/** \brief Set angular velocity in degree/s. */
-	void SetAngularVelocity( const decVector &angVelo );
+	void SetAngularVelocity(const decVector &angVelo);
 	
 	/** \brief Mass in kg. */
 	inline float GetMass() const{ return pMass; }
 	
 	/** \brief Set mass in kg. */
-	void SetMass( float mass );
+	void SetMass(float mass);
 	
 	/** \brief Gravity in m/s^2. */
 	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** \brief Set gravity in m/s^2. */
-	void SetGravity( const decVector &gravity );
+	void SetGravity(const decVector &gravity);
 	
 	/**
 	 * \brief Collider is enabled.
@@ -240,19 +237,19 @@ public:
 	 * Disabled colliders though still update attachments and can be used
 	 * in manual collision detection.
 	 */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Collision response type. */
 	inline eResponseType GetResponseType() const{ return pResponseType; }
 	
 	/** \brief Set Collision response type. */
-	void SetResponseType( eResponseType responseType );
+	void SetResponseType(eResponseType responseType);
 	
 	/** \brief Use local gravity instead of the world gravity. */
 	inline bool GetUseLocalGravity() const{ return pUseLocalGravity; }
 	
 	/** \brief Set if local gravity is used instead of the world gravity. */
-	void SetUseLocalGravity( bool useLocalGravity );
+	void SetUseLocalGravity(bool useLocalGravity);
 	
 	
 	
@@ -260,25 +257,25 @@ public:
 	inline float GetForceFieldDirect() const{ return pForceFieldDirect; }
 	
 	/** \brief Set factor for direct type force fields. */
-	void SetForceFieldDirect( float factor );
+	void SetForceFieldDirect(float factor);
 	
 	/** \brief Factor for surface type force fields. */
 	inline float GetForceFieldSurface() const{ return pForceFieldSurface; }
 	
 	/** \brief Set factor for surface type force fields. */
-	void SetForceFieldSurface( float factor );
+	void SetForceFieldSurface(float factor);
 	
 	/** \brief Factor for mass type force fields. */
 	inline float GetForceFieldMass() const{ return pForceFieldMass; }
 	
 	/** \brief Set factor for mass type force fields. */
-	void SetForceFieldMass( float factor );
+	void SetForceFieldMass(float factor);
 	
 	/** \brief Factor for speed type force fields. */
 	inline float GetForceFieldSpeed() const{ return pForceFieldSpeed; }
 	
 	/** \brief Set factor for speed type force fields. */
-	void SetForceFieldSpeed( float factor );
+	void SetForceFieldSpeed(float factor);
 	
 	
 	
@@ -286,7 +283,7 @@ public:
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &filter );
+	void SetCollisionFilter(const decCollisionFilter &filter);
 	/*@}*/
 	
 	
@@ -298,21 +295,21 @@ public:
 	 * 
 	 * This affects linear and angular velocity. This is the best way way to apply impacts.
 	 */
-	void ApplyImpuls( const decVector &impuls );
+	void ApplyImpuls(const decVector &impuls);
 	
 	/**
 	 * \brief Apply impuls relative to the collider position.
 	 * 
 	 * This affects linear and angular velocity. This is the best way way to apply impacts.
 	 */
-	void ApplyImpulsAt( const decVector &impuls, const decVector &point );
+	void ApplyImpulsAt(const decVector &impuls, const decVector &point);
 	
 	/**
 	 * \brief Apply torque impuls at the center mass point.
 	 * 
 	 * This affects angular velocity. This is the best way way to apply impacts.
 	 */
-	void ApplyTorqueImpuls( const decVector &torqueImpuls );
+	void ApplyTorqueImpuls(const decVector &torqueImpuls);
 	
 	/**
 	 * \brief Apply force at the center mass point.
@@ -320,7 +317,7 @@ public:
 	 * This affects the total force and torque applied during the next debpWorld::DetectCollision only.
 	 * Useful to apply continuous forces on an object. Has to be called every frame update.
 	 */
-	void ApplyForce( const decVector &force );
+	void ApplyForce(const decVector &force);
 	
 	/**
 	 * \brief Apply force relative to the collider position.
@@ -328,7 +325,7 @@ public:
 	 * This affects the total force and torque applied during the next debpWorld::DetectCollision only.
 	 * Useful to apply continuous forces on an object. Has to be called every frame update.
 	 */
-	void ApplyForceAt( const decVector &force, const decVector &point );
+	void ApplyForceAt(const decVector &force, const decVector &point);
 	
 	/**
 	 * \brief Apply torque force at the center mass point.
@@ -336,39 +333,42 @@ public:
 	 * This affects the total torque applied during the next debpWorld::DetectCollision only.
 	 * Useful to apply continuous forces on an object. Has to be called every frame update.
 	 */
-	void ApplyTorque( const decVector &torque );
+	void ApplyTorque(const decVector &torque);
 	/*@}*/
 	
 	
 	
 	/** \name Attachments */
 	/*@{*/
+	/** \brief Attachments. */
+	inline const deColliderAttachment::List &GetAttachments() const{ return pAttachments; }
+	
 	/** \brief Number of attachments. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	inline int GetAttachmentCount() const{ return pAttachments.GetCount(); }
 	
 	/**
 	 * \brief Attachment at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetAttachmentCount().
+	 * \throws deeInvalidParam \em index is less than 0 or larger than or equal to GetAttachmentCount().
 	 */
-	deColliderAttachment *GetAttachmentAt( int index ) const;
+	const deColliderAttachment::Ref &GetAttachmentAt(int index) const{ return pAttachments.GetAt(index); }
 	
 	/** \brief Resource is attached. */
-	bool HasAttachmentWith( deResource *resource ) const;
+	bool HasAttachmentWith(deResource *resource) const;
 	
 	/** \brief Attachment with resource or NULL if not attached. */
-	deColliderAttachment *GetAttachmentWith( deResource *resource ) const;
+	deColliderAttachment *GetAttachmentWith(deResource *resource) const;
 	
 	/**
 	 * \brief Add attachment.
 	 * \throws deeInvalidParam Resource is already attached.
 	 */
-	void AddAttachment( deColliderAttachment *attachment );
+	void AddAttachment(deColliderAttachment::Ref &&attachment);
 	
 	/**
 	 * \brief Remove attachment.
 	 * \throws deeInvalidParam \em attachment is absent.
 	 */
-	void RemoveAttachment( deColliderAttachment *attachment );
+	void RemoveAttachment(deColliderAttachment *attachment);
 	
 	/** \brief Remove all attachments. */
 	void RemoveAllAttachments();
@@ -378,7 +378,7 @@ public:
 	 * 
 	 * You have to call this explicitly if you changed attachments.
 	 */
-	void NotifyAttachmentChanged( int index );
+	void NotifyAttachmentChanged(int index);
 	
 	/**
 	 * \brief Force update of all attachments.
@@ -395,29 +395,17 @@ public:
 	
 	/** \name Constraints */
 	/*@{*/
-	/** \brief Number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
-	
-	/**
-	 * \brief Constraint at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetConstraintCount().
-	 */
-	deColliderConstraint *GetConstraintAt( int index ) const;
-	
-	/** \brief Index of constraint or -1 if absent. */
-	int IndexOfConstraint( deColliderConstraint *constraint ) const;
-	
-	/** \brief Constraint is present. */
-	bool HasConstraint( deColliderConstraint *constraint ) const;
+	/** \brief Constaints. */
+	inline const decTObjectOrderedSet<deColliderConstraint> &GetConstraints() const{ return pConstraints; }
 	
 	/** \brief Add constraint. */
-	void AddConstraint( deColliderConstraint *constraint );
+	void AddConstraint(deColliderConstraint *constraint);
 	
 	/**
 	 * \brief Remove constraint.
 	 * \throws deeInvalidParam \em constraint is absent.
 	 */
-	void RemoveConstraint( deColliderConstraint *constraint );
+	void RemoveConstraint(deColliderConstraint *constraint);
 	
 	/** \brief Remove all constraints. */
 	void RemoveAllConstraints();
@@ -427,37 +415,27 @@ public:
 	 * 
 	 * You have to call this explicitly if you changed something on an constraint.
 	 */
-	void NotifyConstraintChanged( int index );
+	void NotifyConstraintChanged(int index);
 	/*@}*/
 	
 	
 	
 	/** \name Ignore colliders */
 	/*@{*/
-	/** \brief Number of colliders to ignore. */
-	int GetIgnoreColliderCount() const;
-	
-	/**
-	 * \brief Collider to ignore at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
-	 */
-	deCollider *GetIgnoreColliderAt( int index ) const;
-	
-	/** \brief Collider to ignore is present. */
-	bool HasIgnoreCollider( deCollider *collider ) const;
+	/** \brief Colliders to ignore. */
+	inline const decTObjectSet<deCollider> &GetIgnoreColliders() const{ return pIgnoreColliders; }
 	
 	/**
 	 * \brief Add collider to ignore.
 	 * \throws deeInvalidParam \em collider is present.
 	 */
-	void AddIgnoreCollider( deCollider *collider );
+	void AddIgnoreCollider(deCollider *collider);
 	
 	/**
 	 * \brief Remove collider to ignore.
 	 * \throws deeInvalidParam \em collider is absent.
 	 */
-	void RemoveIgnoreCollider( deCollider *collider );
+	void RemoveIgnoreCollider(deCollider *collider);
 	
 	/** \brief Remove all colliders to ignore. */
 	void RemoveAllIgnoreColliders();
@@ -467,34 +445,17 @@ public:
 	
 	/** \name Post physics collision tests */
 	/*@{*/
-	/** \brief Number of post physics collision tests. */
-	int GetCollisionTestCount() const;
-	
-	/**
-	 * \brief Post physics collision test at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetCollisionTestCount()-1.
-	 */
-	deColliderCollisionTest *GetCollisionTestAt( int index ) const;
-	
-	/**
-	 * \brief Index of post physics collision test or -1 if not found.
-	 */
-	int IndexOfCollisionTest( deColliderCollisionTest *collisionTest ) const;
-	
-	/**
-	 * \brief Post physics collision test is present.
-	 */
-	bool HasCollisionTest( deColliderCollisionTest *collisionTest ) const;
+	/** \brief Collision tests. */
+	inline const decTObjectOrderedSet<deColliderCollisionTest> &GetCollisionTests() const{ return pCollisionTests; }
 	
 	/** \brief Adds post physics collision test. */
-	void AddCollisionTest( deColliderCollisionTest *collisionTest );
+	void AddCollisionTest(deColliderCollisionTest *collisionTest);
 	
 	/**
 	 * \brief Remove post physics collision test.
 	 * \throws deeInvalidParam \em collisionTest is absent.
 	 */
-	void RemoveCollisionTest( deColliderCollisionTest *collisionTest );
+	void RemoveCollisionTest(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Remove all post physics collision tests. */
 	void RemoveAllCollisionTests();
@@ -506,7 +467,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em index is less than 0 or greater than or equal to GetCollisionTestCount().
 	 */
-	void NotifyCollisionTestChanged( int index );
+	void NotifyCollisionTestChanged(int index);
 	
 	/**
 	 * \brief Notify peers a post physics collision test enabled or disabled.
@@ -515,7 +476,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em index is less than 0 or greater than or equal to GetCollisionTestCount().
 	 */
-	void NotifyCollisionTestEnableChanged( int index );
+	void NotifyCollisionTestEnableChanged(int index);
 	/*@}*/
 	
 	
@@ -523,7 +484,7 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** \brief Test if a point is located inside the collider. */
-	bool PointInside( const decDVector &point );
+	bool PointInside(const decDVector &point);
 	
 	/**
 	 * \brief Test ray for collision with the collider.
@@ -533,7 +494,7 @@ public:
 	 * in the collision response represents the actual distance to the ray origin along
 	 * the ray direction.
 	 */
-	void RayHits( const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener );
+	void RayHits(const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test collider for collision with collider.
@@ -542,7 +503,7 @@ public:
 	 * set in the tested collider is called. To stop testing set deCollisionInfo::SetStopTesting()
 	 * to true.
 	 */
-	void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving collider for collision with collider.
@@ -551,7 +512,7 @@ public:
 	 * set in the tested collider is called. To stop testing set deCollisionInfo::SetStopTesting()
 	 * to true.
 	 */
-	void ColliderMoveHits( deCollider *collider, const decVector &displacement, deBaseScriptingCollider *listener );
+	void ColliderMoveHits(deCollider *collider, const decVector &displacement, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test rotating collider for collision with collider.
@@ -560,7 +521,7 @@ public:
 	 * set in the tested collider is called. To stop testing set deCollisionInfo::SetStopTesting()
 	 * to true.
 	 */
-	void ColliderRotateHits( deCollider *collider, const decVector &rotation, deBaseScriptingCollider *listener );
+	void ColliderRotateHits(deCollider *collider, const decVector &rotation, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving and rotating collider for collision with collider.
@@ -569,8 +530,8 @@ public:
 	 * set in the tested collider is called. To stop testing set deCollisionInfo::SetStopTesting()
 	 * to true.
 	 */
-	void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-		const decVector &rotation, deBaseScriptingCollider *listener );
+	void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+		const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 	
@@ -581,13 +542,13 @@ public:
 	inline deBasePhysicsCollider *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerPhysics( deBasePhysicsCollider *peer );
+	void SetPeerPhysics(deBasePhysicsCollider *peer);
 	
 	/** \brief Scripting system peer. */
 	inline deBaseScriptingCollider *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer. */
-	void SetPeerScripting( deBaseScriptingCollider *peer );
+	void SetPeerScripting(deBaseScriptingCollider *peer);
 	/*@}*/
 	
 	
@@ -595,7 +556,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deColliderVisitor &visitor );
+	virtual void Visit(deColliderVisitor &visitor);
 	/*@}*/
 	
 	
@@ -608,24 +569,15 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous collider in the parent world linked list. */
-	inline deCollider *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next collider in the parent world linked list. */
-	void SetLLWorldPrev( deCollider *collider );
-	
-	/** \brief Next collider in the parent world linked list. */
-	inline deCollider *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next collider in the parent world linked list. */
-	void SetLLWorldNext( deCollider *collider );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deCollider>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	int pFindAttachment( deColliderAttachment *attachment );
+	int pFindAttachment(deColliderAttachment *attachment);
 
 protected:
 	// for deCollisionVolume
@@ -639,12 +591,12 @@ protected:
 	
 	// for deColliderBone
 	friend class deColliderBone;
-	void pNotifyBonePositionChanged( int index );
-	void pNotifyBoneOrientationChanged( int index );
-	void pNotifyBoneLinearVelocityChanged( int index );
-	void pNotifyBoneAngularVelocityChanged( int index );
-	void pNotifyBonePropertiesChanged( int index );
-	void pNotifyBoneDynamicChanged( int index );
+	void pNotifyBonePositionChanged(int index);
+	void pNotifyBoneOrientationChanged(int index);
+	void pNotifyBoneLinearVelocityChanged(int index);
+	void pNotifyBoneAngularVelocityChanged(int index);
+	void pNotifyBonePropertiesChanged(int index);
+	void pNotifyBoneDynamicChanged(int index);
 };
 
 #endif

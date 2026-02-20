@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "projConfiguration.h"
 #include "projConfigurationXml.h"
 #include "../gui/projWindowMain.h"
@@ -61,7 +57,7 @@ projConfigurationXml::~projConfigurationXml(){
 ///////////////
 
 void projConfigurationXml::ReadFromFile(decBaseFileReader &reader, projConfiguration &config){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -92,7 +88,7 @@ void projConfigurationXml::pWriteConfig(decXmlWriter &writer, const projConfigur
 	
 	pWriteRemoteLauncher(writer, config);
 	
-	writer.WriteClosingTag( "projectEditor", true );
+	writer.WriteClosingTag("projectEditor", true);
 }
 
 void projConfigurationXml::pWriteRemoteLauncher(decXmlWriter &writer,
@@ -115,7 +111,7 @@ void projConfigurationXml::pReadConfig(const decXmlElementTag &root, projConfigu
 			continue;
 		}
 		
-		if(tag->GetName() == "remoteLauncher" ){
+		if(tag->GetName() == "remoteLauncher"){
 			pReadRemoteLauncher(*tag, config);
 			
 		}else{

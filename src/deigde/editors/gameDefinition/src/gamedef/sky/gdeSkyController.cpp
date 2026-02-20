@@ -38,14 +38,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeSkyController::gdeSkyController( const char *name, float value ) :
-pName( name ),
-pValue( value ){
+gdeSkyController::gdeSkyController(const char *name, float value) :
+pName(name),
+pValue(value){
 }
 
-gdeSkyController::gdeSkyController( const gdeSkyController &controller ) :
-pName( controller.pName ),
-pValue( controller.pValue )
+gdeSkyController::gdeSkyController(const gdeSkyController &controller) :
+pName(controller.pName),
+pValue(controller.pValue)
 {
 }
 
@@ -57,11 +57,11 @@ gdeSkyController::~gdeSkyController(){
 // Management
 ///////////////
 
-void gdeSkyController::SetName( const char *name ){
+void gdeSkyController::SetName(const char *name){
 	pName = name;
 }
 
-void gdeSkyController::SetValue( float value ){
+void gdeSkyController::SetValue(float value){
 	pValue = value;
 }
 

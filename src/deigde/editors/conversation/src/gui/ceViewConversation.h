@@ -25,17 +25,18 @@
 #ifndef _CEVIEWCONVO_H_
 #define _CEVIEWCONVO_H_
 
+#include "ceViewConversationListener.h"
+#include "ceCanvasRuleOfThirdsAid.h"
+#include "../conversation/ceConversation.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
 
 
-class ceViewConversationListener;
-class ceCanvasRuleOfThirdsAid;
 class ceWindowMain;
-class ceConversation;
 class decBoundary;
 
 
@@ -44,27 +45,32 @@ class decBoundary;
  * \brief Conversation View.
  */
 class ceViewConversation : public igdeViewRenderWindow{
+public:
+	using Ref = deTObjectReference<ceViewConversation>;
+	
 private:
 	ceWindowMain &pWindowMain;
-	ceViewConversationListener *pListener;
+	ceViewConversationListener::Ref pListener;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
-	ceCanvasRuleOfThirdsAid *pRuleOfThirdsAid;
-	deCanvasPaintReference pCanvasBackground;
+	ceCanvasRuleOfThirdsAid::Ref pRuleOfThirdsAid;
+	deCanvasPaint::Ref pCanvasBackground;
 	
-	igdeMouseCameraListenerReference pCameraMouseListener;
-	igdeMouseKeyListenerReference pPlaybackListener;
+	igdeMouseCameraListener::Ref pCameraMouseListener;
+	igdeMouseKeyListener::Ref pPlaybackListener;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation view. */
-	ceViewConversation( ceWindowMain &windowMain );
+	ceViewConversation(ceWindowMain &windowMain);
 	
 	/** \brief Cleans up conversation view. */
-	virtual ~ceViewConversation();
+protected:
+	~ceViewConversation() override;
+public:
 	/*@}*/
 	
 	
@@ -75,25 +81,25 @@ public:
 	void ResetView();
 	
 	/** \brief Monitored conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Viewport boundary using the ratio stored in the conversation object if existing. */
-	void GetViewportWithRatio( decBoundary &viewport ) const;
+	void GetViewportWithRatio(decBoundary &viewport) const;
 	
 	/** \brief Rule of thirds aid canvas. */
-	inline ceCanvasRuleOfThirdsAid *GetRuleOfThirdsAid() const{ return pRuleOfThirdsAid; }
+	inline const ceCanvasRuleOfThirdsAid::Ref &GetRuleOfThirdsAid() const{ return pRuleOfThirdsAid; }
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	/*@}*/
 };
 

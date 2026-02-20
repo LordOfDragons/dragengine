@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCCamera;
+#include "../../../../gamedef/objectClass/camera/gdeOCCamera.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCCamera;
  */
 class gdeWPSTIMOCCamera : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCCamera *pCamera;
+	gdeOCCamera::Ref pCamera;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCCamera> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCCamera( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCCamera *camera, int index );
+	gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCCamera *camera, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCCamera();
+	~gdeWPSTIMOCCamera() override;
 	/*@}*/
 	
 	
@@ -56,24 +58,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Camera. */
-	inline gdeOCCamera *GetOCCamera() const{ return pCamera; }
+	inline const gdeOCCamera::Ref &GetOCCamera() const{ return pCamera; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

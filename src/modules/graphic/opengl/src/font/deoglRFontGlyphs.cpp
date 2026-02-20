@@ -29,6 +29,7 @@
 #include "../texture/deoglRImage.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 #include <dragengine/resources/font/deFontGlyph.h>
@@ -42,10 +43,6 @@
 
 deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread, const deFont &font) :
 pRenderThread(renderThread),
-pGlyphs(nullptr),
-pGlyphMap(nullptr),
-pGlyphCount(0),
-pGlyphMapCount(0),
 pLineHeight(font.GetLineHeight()),
 pDelayedImage(nullptr)
 {
@@ -60,10 +57,6 @@ pDelayedImage(nullptr)
 
 deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread, const deFontSize &size) :
 pRenderThread(renderThread),
-pGlyphs(nullptr),
-pGlyphMap(nullptr),
-pGlyphCount(0),
-pGlyphMapCount(0),
 pLineHeight(size.GetLineHeight()),
 pDelayedImage(nullptr)
 {
@@ -99,7 +92,7 @@ void deoglRFontGlyphs::FinalizeAsyncResLoading(){
 }
 
 const deoglRFontGlyphs::sGlyph &deoglRFontGlyphs::GetGlyphFor(int unicode) const{
-	return unicode >= 0 && unicode < pGlyphMapCount ? *pGlyphMap[unicode] : pUndefinedGlyph;
+	return unicode >= 0 && unicode < pGlyphMap.GetCount() ? *pGlyphMap.GetAt(unicode) : pUndefinedGlyph;
 }
 
 void deoglRFontGlyphs::pBuildGlyphs(const deFont &font){
@@ -113,25 +106,20 @@ void deoglRFontGlyphs::pBuildGlyphs(const deFont &font){
 		return;
 	}
 	
-	pGlyphs = new sGlyph[glyphCount];
+	pGlyphs.SetCountDiscard(glyphCount);
 	
-	int i, maxUnicode = 0;
-	for(i=0; i<glyphCount; i++){
+	int maxUnicode = 0;
+	pGlyphs.VisitIndexed([&](int i, sGlyph &glyph){
 		const deFontGlyph &g = font.GetGlyphAt(i);
-		pSetGlyph(pGlyphs[i], g);
+		pSetGlyph(glyph, g);
 		maxUnicode = decMath::max(maxUnicode, g.GetUnicode());
-	}
-	pGlyphCount = glyphCount;
+	});
 	
 	if(maxUnicode > 0){
-		pGlyphMap = new const sGlyph*[maxUnicode + 1];
-		for(i=0; i<=maxUnicode; i++){
-			pGlyphMap[i] = &pUndefinedGlyph;
-		}
-		for(i=0; i<glyphCount; i++){
-			pGlyphMap[font.GetGlyphAt(i).GetUnicode()] = pGlyphs + i;
-		}
-		pGlyphMapCount = maxUnicode + 1;
+		pGlyphMap.SetAll(maxUnicode + 1, &pUndefinedGlyph);
+		pGlyphs.VisitIndexed([&](int i, const sGlyph &glyph){
+			pGlyphMap[font.GetGlyphAt(i).GetUnicode()] = &glyph;
+		});
 	}
 }
 
@@ -141,30 +129,23 @@ void deoglRFontGlyphs::pBuildGlyphs(const deFontSize &size){
 	
 	pSetGlyph(pUndefinedGlyph, size.GetUndefinedGlyph());
 	
-	const int glyphCount = size.GetGlyphCount();
-	if(glyphCount == 0){
+	if(size.GetGlyphs().IsEmpty()){
 		return;
 	}
 	
-	pGlyphs = new sGlyph[glyphCount];
+	pGlyphs.SetCountDiscard(size.GetGlyphs().GetCount());
 	
-	int i, maxUnicode = 0;
-	for(i=0; i<glyphCount; i++){
-		const deFontGlyph &g = size.GetGlyphAt(i);
+	int maxUnicode = 0;
+	size.GetGlyphs().VisitIndexed([&](int i, const deFontGlyph &g){
 		pSetGlyph(pGlyphs[i], g);
 		maxUnicode = decMath::max(maxUnicode, g.GetUnicode());
-	}
-	pGlyphCount = glyphCount;
+	});
 	
 	if(maxUnicode > 0){
-		pGlyphMap = new const sGlyph*[maxUnicode + 1];
-		for(i=0; i<=maxUnicode; i++){
-			pGlyphMap[i] = &pUndefinedGlyph;
-		}
-		for(i=0; i<glyphCount; i++){
-			pGlyphMap[size.GetGlyphAt(i).GetUnicode()] = pGlyphs + i;
-		}
-		pGlyphMapCount = maxUnicode + 1;
+		pGlyphMap.SetAll(maxUnicode + 1, &pUndefinedGlyph);
+		pGlyphs.VisitIndexed([&](int i, const sGlyph &glyph){
+			pGlyphMap[size.GetGlyphs()[i].GetUnicode()] = &glyph;
+		});
 	}
 }
 
@@ -184,12 +165,10 @@ void deoglRFontGlyphs::SetImage(const deImage *image){
 
 void deoglRFontGlyphs::DebugPrint() const{
 	deoglRTLogger &l = pRenderThread.GetLogger();
-	int i;
-	for(i=0; i<pGlyphCount; i++){
-		const sGlyph &g = pGlyphs[i];
+	pGlyphs.VisitIndexed([&](int i, const sGlyph &g){
 		l.LogInfoFormat("i=%d s=(%d,%d) b=(%d,%d) a=%d tc=(%f,%f,%f,%f;%d)",
 			i, g.width, g.height, g.bearing, g.bearingY, g.advance, g.x1, g.y2, g.x2, g.y2, g.z);
-	}
+	});
 }
 
 
@@ -198,12 +177,6 @@ void deoglRFontGlyphs::DebugPrint() const{
 
 void deoglRFontGlyphs::pCleanUp(){
 	SetImage(nullptr);
-	if(pGlyphMap){
-		delete [] pGlyphMap;
-	}
-	if(pGlyphs){
-		delete [] pGlyphs;
-	}
 }
 
 void deoglRFontGlyphs::pSetGlyph(sGlyph &target, const deFontGlyph &source){

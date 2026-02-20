@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desmWriteProperty( decXmlWriter &writer, const deSkin &skin, const char *propertyType );
+	desmWriteProperty(decXmlWriter &writer, const deSkin &skin, const char *propertyType);
 	
 	/** \brief Clean up visitor. */
-	virtual ~desmWriteProperty();
+	~desmWriteProperty() override;
 	/*@}*/
 	
 	
@@ -59,25 +59,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void VisitProperty( deSkinProperty &property );
+	void VisitProperty(deSkinProperty &property) override;
 	
 	/** \brief Visit single value property. */
-	virtual void VisitValue( deSkinPropertyValue &property );
+	void VisitValue(deSkinPropertyValue &property) override;
 	
 	/** \brief Visit uniform color property. */
-	virtual void VisitColor( deSkinPropertyColor &property );
+	void VisitColor(deSkinPropertyColor &property) override;
 	
 	/** \brief Visit image property. */
-	virtual void VisitImage( deSkinPropertyImage &property );
+	void VisitImage(deSkinPropertyImage &property) override;
 	
 	/** \brief Visit video property. */
-	virtual void VisitVideo( deSkinPropertyVideo &property );
+	void VisitVideo(deSkinPropertyVideo &property) override;
 	
 	/** \brief Visit constructed property. */
-	virtual void VisitConstructed( deSkinPropertyConstructed &property );
+	void VisitConstructed(deSkinPropertyConstructed &property) override;
 	
 	/** \brief Visit mapped property. */
-	virtual void VisitMapped( deSkinPropertyMapped &property );
+	void VisitMapped(deSkinPropertyMapped &property) override;
 	/*@}*/
 };
 

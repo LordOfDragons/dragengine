@@ -28,8 +28,8 @@
 // Class deBaseCrashRecoveryModule
 ////////////////////////////////////
 
-deBaseCrashRecoveryModule::deBaseCrashRecoveryModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseCrashRecoveryModule::deBaseCrashRecoveryModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseCrashRecoveryModule::~deBaseCrashRecoveryModule(){

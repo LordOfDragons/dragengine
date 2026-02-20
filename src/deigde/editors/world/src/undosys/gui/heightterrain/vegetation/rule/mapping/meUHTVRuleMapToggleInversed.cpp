@@ -40,24 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed( meHTVegetationLayer *vlayer, meHTVRuleMapping *rule ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
-	SetShortInfo( "Vegetation Layer Rule Mapping Toggle Inversed" );
-	SetMemoryConsumption( sizeof( meUHTVRuleMapToggleInversed ) );
+	SetShortInfo("@World.UHTVRuleMapToggleInversed.VegetationLayerRuleMappingToggleInversed");
+	SetMemoryConsumption(sizeof(meUHTVRuleMapToggleInversed));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapToggleInversed::~meUHTVRuleMapToggleInversed(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -66,11 +62,11 @@ meUHTVRuleMapToggleInversed::~meUHTVRuleMapToggleInversed(){
 ///////////////
 
 void meUHTVRuleMapToggleInversed::Undo(){
-	pRule->SetInversed( ! pRule->GetInversed() );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetInversed(!pRule->GetInversed());
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleMapToggleInversed::Redo(){
-	pRule->SetInversed( ! pRule->GetInversed() );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetInversed(!pRule->GetInversed());
+	pVLayer->NotifyRuleChanged(pRule);
 }

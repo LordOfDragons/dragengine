@@ -27,22 +27,26 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 
 /**
  * \brief Undo action player choice option conversation action set case condition.*/
 class ceUCAPChoiceOptionSetCondition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAPChoiceOptionSetCondition>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 	
 	
@@ -50,11 +54,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAPChoiceOptionSetCondition( ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
-		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition );
+	ceUCAPChoiceOptionSetCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
+		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition);
 	
 	/** \brief Clean up undo object. */
-	virtual ~ceUCAPChoiceOptionSetCondition();
+protected:
+	~ceUCAPChoiceOptionSetCondition() override;
+public:
 	/*@}*/
 	
 	
@@ -63,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

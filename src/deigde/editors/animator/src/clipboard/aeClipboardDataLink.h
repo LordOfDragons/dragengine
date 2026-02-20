@@ -25,7 +25,7 @@
 #ifndef _AECLIPBOARDDATALINK_H_
 #define _AECLIPBOARDDATALINK_H_
 
-#include "../animator/link/aeLinkList.h"
+#include "../animator/link/aeLink.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class aeClipboardDataLink : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeClipboardDataLink>;
+	
 	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	
 	
 	
@@ -50,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataLink( aeLink *link );
+	aeClipboardDataLink(aeLink *link);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataLink( const aeLinkList &links );
+	aeClipboardDataLink(const aeLink::List &links);
 	
 protected:
 	/**
@@ -62,7 +65,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~aeClipboardDataLink();
+	~aeClipboardDataLink() override;
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Links. */
-	inline const aeLinkList &GetLinks() const{ return pLinks; }
+	inline const aeLink::List &GetLinks() const{ return pLinks; }
 	/*@}*/
 };
 

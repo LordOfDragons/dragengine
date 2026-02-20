@@ -27,10 +27,10 @@
 #define _GDEUOCSPEAKERSETTRIGGERNAME_H_
 
 #include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class speaker set trigger name.
  */
 class gdeUOCSpeakerSetTriggerName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCSpeakerSetTriggerName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	gdeOCSpeaker::eTriggers pTrigger;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetTriggerName( gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
-		gdeOCSpeaker::eTriggers trigger, const char *newValue );
+	gdeUOCSpeakerSetTriggerName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
+		gdeOCSpeaker::eTriggers trigger, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSpeakerSetTriggerName();
+	~gdeUOCSpeakerSetTriggerName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

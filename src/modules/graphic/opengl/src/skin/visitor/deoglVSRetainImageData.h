@@ -25,13 +25,14 @@
 #ifndef _DEOGLVSRETAINIMAGEDATA_H_
 #define _DEOGLVSRETAINIMAGEDATA_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVisitor.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 
 class deSkin;
 class deSkinProperty;
 class deImage;
+class deoglImage;
 
 
 
@@ -40,7 +41,7 @@ class deImage;
  */
 class deoglVSRetainImageData : public deSkinPropertyVisitor, deSkinPropertyNodeVisitor {
 public:
-	decPointerList pImages;
+	decTList<deoglImage*> pImages;
 	bool pForceLock;
 	
 	
@@ -61,13 +62,13 @@ public:
 	 * \param[in] forceLock Force locking even if not necessary. Required to deal with
 	 *                      combined images until they are removed
 	 */
-	void RetainPropertyImages( deSkinProperty &property, bool forceLock );
+	void RetainPropertyImages(deSkinProperty &property, bool forceLock);
 	
 	/** Release all retained images. */
 	void ReleaseImages();
 	
 	/** Process image. */
-	void ProcessImage( deImage &image, bool forceLock );
+	void ProcessImage(deImage &image, bool forceLock);
 	/*@}*/
 	
 	
@@ -75,22 +76,22 @@ public:
 	/** \name Visiting Property */
 	/*@{*/
 	/** Visit property. */
-	virtual void VisitProperty( deSkinProperty &property );
+	void VisitProperty(deSkinProperty &property) override;
 	
 	/** Visit single value property. */
-	virtual void VisitValue( deSkinPropertyValue &property );
+	void VisitValue(deSkinPropertyValue &property) override;
 	
 	/** Visit uniform color property. */
-	virtual void VisitColor( deSkinPropertyColor &property );
+	void VisitColor(deSkinPropertyColor &property) override;
 	
 	/** Visit image property. */
-	virtual void VisitImage( deSkinPropertyImage &property );
+	void VisitImage(deSkinPropertyImage &property) override;
 	
 	/** Visit video property. */
-	virtual void VisitVideo( deSkinPropertyVideo &property );
+	void VisitVideo(deSkinPropertyVideo &property) override;
 	
 	/** Visit complex property. */
-	virtual void VisitConstructed( deSkinPropertyConstructed &property );
+	void VisitConstructed(deSkinPropertyConstructed &property) override;
 	/*@}*/
 	
 	
@@ -98,19 +99,19 @@ public:
 	/** \name Visiting Node */
 	/*@{*/
 	/** Visit node. */
-	virtual void VisitNode( deSkinPropertyNode &node );
+	void VisitNode(deSkinPropertyNode &node) override;
 	
 	/** Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node );
+	void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 };
 

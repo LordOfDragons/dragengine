@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new microphone resource manager linked to the given engine. */
-	deMicrophoneManager( deEngine *engine );
+	deMicrophoneManager(deEngine *engine);
 	
 	/** \brief Clean up microphone resource manager and reports leaking resources. */
-	~deMicrophoneManager();
+	~deMicrophoneManager() override;
 	/*@}*/
 	
 	
@@ -63,18 +63,18 @@ public:
 	deMicrophone *GetRootMicrophone() const;
 	
 	/** \brief Create new microphone. */
-	deMicrophone *CreateMicrophone();
+	deMicrophone::Ref CreateMicrophone();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemAudioLoad();
-	void SystemAudioUnload();
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

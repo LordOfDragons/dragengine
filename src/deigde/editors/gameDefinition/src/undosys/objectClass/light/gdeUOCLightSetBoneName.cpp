@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetBoneName::gdeUOCLightSetBoneName( gdeObjectClass *objectClass,
-gdeOCLight *light, const char *newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetBoneName::gdeUOCLightSetBoneName(gdeObjectClass *objectClass,
+gdeOCLight *light, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set bone name" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetBoneName");
 	
 	pOldValue = light->GetBoneName();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetBoneName::~gdeUOCLightSetBoneName(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetBoneName::~gdeUOCLightSetBoneName(){
 ///////////////
 
 void gdeUOCLightSetBoneName::Undo(){
-	pLight->SetBoneName( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetBoneName(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetBoneName::Redo(){
-	pLight->SetBoneName( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetBoneName(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

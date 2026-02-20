@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetValue::peeUParameterSetValue( peeType *type, peeParameter *parameter, float newValue ){
-	if( ! type || ! parameter ){
-		DETHROW( deeInvalidParam );
+peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parameter, float newValue){
+	if(!type || !parameter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	pParameter = parameter;
 	
-	SetShortInfo( "Set Parameter Value" );
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetValue");
 	
 	pOldValue = parameter->GetValue();
 	pNewValue = newValue;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetValue::~peeUParameterSetValue(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -69,9 +65,9 @@ peeUParameterSetValue::~peeUParameterSetValue(){
 ///////////////
 
 void peeUParameterSetValue::Undo(){
-	pParameter->SetValue( pOldValue );
+	pParameter->SetValue(pOldValue);
 }
 
 void peeUParameterSetValue::Redo(){
-	pParameter->SetValue( pNewValue );
+	pParameter->SetValue(pNewValue);
 }

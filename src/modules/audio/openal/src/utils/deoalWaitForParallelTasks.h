@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create waiting for parallel tasks. */
-	deoalWaitForParallelTasks( int taskCount );
+	deoalWaitForParallelTasks(int taskCount);
 	
 	/** \brief Clean up waiting for parallel tasks. */
 	~deoalWaitForParallelTasks();

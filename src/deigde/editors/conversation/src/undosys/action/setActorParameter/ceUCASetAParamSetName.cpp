@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASetAParamSetName::ceUCASetAParamSetName( ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName ){
-	if( ! topic || ! action || ! newName ) DETHROW( deeInvalidParam );
+ceUCASetAParamSetName::ceUCASetAParamSetName(ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName){
+	if(!topic || !action || !newName) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldName = action->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "SetActorParameter Name" );
+	SetShortInfo("@Conversation.Undo.SetActorParameterName");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetAParamSetName::~ceUCASetAParamSetName(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCASetAParamSetName::~ceUCASetAParamSetName(){
 ///////////////
 
 void ceUCASetAParamSetName::Undo(){
-	pAction->SetName( pOldName.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetName(pOldName.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCASetAParamSetName::Redo(){
-	pAction->SetName( pNewName.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetName(pNewName.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }

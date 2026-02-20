@@ -22,21 +22,19 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHEIGHTTERRAINVEGETATION_H_
 #define _MEHEIGHTTERRAINVEGETATION_H_
 
-// includes
-#include <dragengine/common/string/decString.h>
+#include "meHTVVariation.h"
+#include "rules/meHTVRule.h"
+#include "rules/meHTVRLink.h"
 
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class meHeightTerrain;
-class meHTVRLink;
-class meHTVRule;
-class meHTVVariation;
 class meHTVEvaluationEnvironment;
 
 class deEngine;
@@ -65,124 +63,125 @@ private:
 	
 	decString pName;
 	
-	meHTVVariation **pVariations;
-	int pVariationCount;
-	int pVariationSize;
-	meHTVVariation *pActiveVariation;
+	meHTVVariation::List pVariations;
+	meHTVVariation::Ref pActiveVariation;
 	
-	meHTVRule **pRules;
-	int pRuleCount;
-	int pRuleSize;
-	meHTVRule *pActiveRule;
+	meHTVRule::List pRules;
+	meHTVRule::Ref pActiveRule;
 	
-	meHTVRLink **pLinks;
-	int pLinkCount;
-	int pLinkSize;
+	meHTVRLink::List pLinks;
 	
 	decVector2 pViewCenter;
 	
 public:
+	using Ref = deTObjectReference<meHTVegetationLayer>;
+	using List = decTObjectOrderedSet<meHTVegetationLayer>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	meHTVegetationLayer( deEngine *engine, const char *name = "" );
+	meHTVegetationLayer(deEngine *engine, const char *name = "");
+	
+protected:
 	/** Cleans up the object. */
-	virtual ~meHTVegetationLayer();
+	~meHTVegetationLayer() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent height terrain or NULL. */
+	/** \brief Parent height terrain or nullptr. */
 	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Set parent height terrain or NULL. */
-	void SetHeightTerrain( meHeightTerrain *heightTerrain );
+	/** \brief Set parent height terrain or nullptr. */
+	void SetHeightTerrain(meHeightTerrain *heightTerrain);
 	
 	/** Retrieves the center of the nodes in the nodes view. */
 	inline const decVector2 &GetViewCenter() const{ return pViewCenter; }
 	/** Sets the center of the nodes in the nodes view. */
-	void SetViewCenter( const decVector2 &center );
+	void SetViewCenter(const decVector2 &center);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/*@}*/
 	
 	/** \name Variation */
 	/*@{*/
-	/** Retrieves the number of variations. */
-	inline int GetVariationCount() const{ return pVariationCount; }
-	/** Retrieves the variation at the given index. */
-	meHTVVariation *GetVariationAt( int index ) const;
-	/** Retrieves the index of the variation or -1 if not found. */
-	int IndexOfVariation( meHTVVariation *variation ) const;
-	/** Determines if the variation exists. */
-	bool HasVariation( meHTVVariation *variation ) const;
+	/** Variations. */
+	inline const meHTVVariation::List &GetVariations() const{ return pVariations; }
+	
 	/** Adds a variation. */
-	void AddVariation( meHTVVariation *variation );
+	void AddVariation(meHTVVariation *variation);
+	
 	/** Inserts a variation. */
-	void InsertVariation( int before, meHTVVariation *variation );
+	void InsertVariation(int before, meHTVVariation *variation);
+	
 	/** Moves a variation to a new position. */
-	void MoveVariation( meHTVVariation *variation, int moveTo );
+	void MoveVariation(meHTVVariation *variation, int moveTo);
+	
 	/** Removes a variation. */
-	void RemoveVariation( meHTVVariation *variation );
+	void RemoveVariation(meHTVVariation *variation);
+	
 	/** Removes all variations. */
 	void RemoveAllVariations();
-	/** Retrieves the active variation or NULL. */
-	inline meHTVVariation *GetActiveVariation() const{ return pActiveVariation; }
-	/** Sets the active variation or NULL. */
-	void SetActiveVariation( meHTVVariation *variation );
+	
+	/** Retrieves the active variation or nullptr. */
+	inline const meHTVVariation::Ref &GetActiveVariation() const{ return pActiveVariation; }
+	
+	/** Sets the active variation or nullptr. */
+	void SetActiveVariation(meHTVVariation *variation);
 	/*@}*/
 	
 	/** \name Rule */
 	/*@{*/
-	/** Retrieves the number of rules. */
-	inline int GetRuleCount() const{ return pRuleCount; }
-	/** Retrieves the rule at the given index. */
-	meHTVRule *GetRuleAt( int index ) const;
-	/** Retrieves the index of the rule or -1 if not found. */
-	int IndexOfRule( meHTVRule *rule ) const;
-	/** Determines if the rule exists. */
-	bool HasRule( meHTVRule *rule ) const;
+	/** Rules. */
+	inline const meHTVRule::List &GetRules() const{ return pRules; }
+	
 	/** Adds a rule. */
-	void AddRule( meHTVRule *rule );
+	void AddRule(meHTVRule *rule);
+	
 	/** Removes a rule. */
-	void RemoveRule( meHTVRule *rule );
+	void RemoveRule(meHTVRule *rule);
+	
 	/** Removes all rules. */
 	void RemoveAllRules();
-	/** Retrieves the active rule or NULL. */
-	inline meHTVRule *GetActiveRule() const{ return pActiveRule; }
-	/** Sets the active rule or NULL. */
-	void SetActiveRule( meHTVRule *rule );
+	
+	/** Retrieves the active rule or nullptr. */
+	inline const meHTVRule::Ref &GetActiveRule() const{ return pActiveRule; }
+	
+	/** Sets the active rule or nullptr. */
+	void SetActiveRule(meHTVRule *rule);
+	
 	/** Notifies the world that a rule changed. */
-	void NotifyRuleChanged( meHTVRule *rule );
+	void NotifyRuleChanged(meHTVRule *rule);
+	
 	/** Notifies the world that a rule moved. */
-	void NotifyRuleMoved( meHTVRule *rule );
+	void NotifyRuleMoved(meHTVRule *rule);
 	
 	/** Evaluates the rules. */
-	void EvaluateRules( meHTVEvaluationEnvironment &evalEnv );
+	void EvaluateRules(meHTVEvaluationEnvironment &evalEnv);
 	/*@}*/
 	
 	/** \name Link */
 	/*@{*/
-	/** Retrieves the number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
-	/** Retrieves the link at the given index. */
-	meHTVRLink *GetLinkAt( int index ) const;
-	/** Retrieves the index of the link or -1 if not found. */
-	int IndexOfLink( meHTVRLink *link ) const;
-	/** Determines if the link exists. */
-	bool HasLink( meHTVRLink *link ) const;
+	/** Links. */
+	inline const meHTVRLink::List &GetLinks() const{ return pLinks; }
+	
 	/** Adds a link. */
-	void AddLink( meHTVRLink *link );
+	void AddLink(meHTVRLink *link);
+	
 	/** Removes a link. */
-	void RemoveLink( meHTVRLink *link );
+	void RemoveLink(meHTVRLink *link);
+	
 	/** Removes all links. */
 	void RemoveAllLinks();
 	
 	/** Determines if adding a given link would produce a loop. */
-	bool LinkProducesLoop( meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot );
+	bool LinkProducesLoop(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot);
 	/*@}*/
 	
 private:

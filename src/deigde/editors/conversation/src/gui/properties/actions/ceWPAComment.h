@@ -25,7 +25,7 @@
 #ifndef _CEWPACOMMENT_H_
 #define _CEWPACOMMENT_H_
 
-#include <deigde/gui/igdeTextAreaReference.h>
+#include <deigde/gui/igdeTextArea.h>
 
 #include "ceWPAction.h"
 
@@ -38,19 +38,20 @@ class ceCAComment;
  */
 class ceWPAComment : public ceWPAction{
 private:
-	igdeTextAreaReference pEditComment;
+	igdeTextArea::Ref pEditComment;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPAComment>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAComment( ceWPTopic &parentPanel );
+	ceWPAComment(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Cleans up the property window. */
-	virtual ~ceWPAComment();
+	~ceWPAComment() override;
 	/*@}*/
 	
 	

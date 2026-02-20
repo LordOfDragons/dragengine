@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT decXmlElementTag : public decXmlContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlElementTag> Ref;
-	
+	using Ref = deTObjectReference<decXmlElementTag>;
 	
 	
 private:
@@ -50,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml element tag. */
-	decXmlElementTag( const char *name );
+	decXmlElementTag(const char *name);
 	
 protected:
 	/** \brief Clean up xml element tag. */
-	virtual ~decXmlElementTag();
+	~decXmlElementTag() override;
 	/*@}*/
 	
 	
@@ -66,7 +65,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Namespace part of the tag name. */
 	inline const decString &GetNamespace() const{ return pNamespace; }
@@ -83,25 +82,25 @@ public:
 	decXmlCharacterData *GetFirstData() const;
 	
 	/** \brief Index-th element tag beeing a decXmlElementTag or NULL otherwise. */
-	decXmlElementTag *GetElementIfTag( int index ) const;
+	decXmlElementTag *GetElementIfTag(int index) const;
 	
 	/** \brief decXmlAttValue with the given name or NULL otherwise. */
-	decXmlAttValue *FindAttribute( const char *name ) const;
+	decXmlAttValue *FindAttribute(const char *name) const;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToElementTag() const;
-	virtual decXmlElementTag *CastToElementTag();
+	bool CanCastToElementTag() const override;
+	decXmlElementTag *CastToElementTag() override;
 	/*@}*/
 };
 

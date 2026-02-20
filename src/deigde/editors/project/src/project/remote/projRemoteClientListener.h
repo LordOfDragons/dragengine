@@ -35,13 +35,21 @@ class projRemoteClient;
  */
 class projRemoteClientListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projRemoteClientListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	projRemoteClientListener();
+	
+protected:
+	~projRemoteClientListener() override = default;
 	/*@}*/
 	
 	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Parameters changed. */

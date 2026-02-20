@@ -35,23 +35,19 @@
 
 aeURuleBTransSetInputSource::aeURuleBTransSetInputSource(aeRuleBoneTransformator *rule,
 	deAnimatorRuleBoneTransformator::eInputSources newValue) :
-pRule(nullptr),
+
 pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(rule)
 	
 	pOldValue = rule->GetInputSource();
 	
-	SetShortInfo("Bone transformator set input source");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetInputSource");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetInputSource::~aeURuleBTransSetInputSource(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -40,30 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeAdd::peeUTypeAdd( peeEmitter *emitter, peeType *type ){
-	if( ! emitter || ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
+	if(!emitter || !type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitter = NULL;
-	pType = NULL;
+	pEmitter = nullptr;
+	pType = nullptr;
 	
-	SetShortInfo( "Add Type" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.Add");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeAdd::~peeUTypeAdd(){
-	if( pType ){
-		pType->FreeReference();
-	}
-	if( pEmitter ){
-		pEmitter->FreeReference();
-	}
 }
 
 
@@ -72,10 +63,10 @@ peeUTypeAdd::~peeUTypeAdd(){
 ///////////////
 
 void peeUTypeAdd::Undo(){
-	pEmitter->RemoveType( pType );
+	pEmitter->RemoveType(pType);
 }
 
 void peeUTypeAdd::Redo(){
-	pEmitter->AddType( pType );
-	pEmitter->SetActiveType( pType );
+	pEmitter->AddType(pType);
+	pEmitter->SetActiveType(pType);
 }

@@ -25,15 +25,16 @@
 #ifndef _DEBPMODEL_H_
 #define _DEBPMODEL_H_
 
-#include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
+#include "debpBulletShapeModel.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
 
 class deModel;
 class deModelWeight;
 class debpModelOctree;
 class dePhysicsBullet;
-class debpBulletShapeModel;
 
 
 /**
@@ -67,18 +68,16 @@ private:
 	debpModelOctree *pOctree;
 	bool pCanDeform;
 	
-	sWeightSet *pWeightSets;
-	int pWeightSetCount;
+	decTList<sWeightSet> pWeightSets;
 	sExtends pExtends;
 	sExtends pWeightlessExtends;
 	bool pHasWeightlessExtends;
-	sExtends *pBoneExtends;
-	int pBoneCount;
+	decTList<sExtends> pBoneExtends;
 	
-	decVector *pNormals;
-	float *pFaceProbabilities;
+	decTList<decVector> pNormals;
+	decTList<float> pFaceProbabilities;
 	
-	debpBulletShapeModel *pBulletShape;
+	debpBulletShapeModel::Ref pBulletShape;
 	
 	
 	
@@ -86,10 +85,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model peer. */
-	debpModel( dePhysicsBullet &bullet, deModel &model );
+	debpModel(dePhysicsBullet &bullet, deModel &model);
 	
 	/** \brief Clean up model peer. */
-	virtual ~debpModel();
+	~debpModel() override;
 	/*@}*/
 	
 	
@@ -110,10 +109,10 @@ public:
 	
 	
 	/** \brief Weight sets. */
-	inline sWeightSet *GetWeightSets() const{ return pWeightSets; }
+	inline const sWeightSet *GetWeightSets() const{ return pWeightSets.GetArrayPointer(); }
 	
 	/** \brief Weight set count. */
-	inline int GetWeightSetCount() const{ return pWeightSetCount; }
+	inline int GetWeightSetCount() const{ return pWeightSets.GetCount(); }
 	
 	/** \brief Extends. */
 	inline const sExtends &GetExtends() const{ return pExtends; }
@@ -125,10 +124,10 @@ public:
 	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
 	
 	/** \brief Bone extends. */
-	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
+	inline const sExtends *GetBoneExtends() const{ return pBoneExtends.GetArrayPointer(); }
 	
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBoneExtends.GetCount(); }
 	
 	/** \brief Model can deform. */
 	inline bool GetCanDeform() const{ return pCanDeform; }
@@ -136,7 +135,7 @@ public:
 	
 	
 	/** \brief Normals or \em NULL if not prepared. */
-	inline const decVector *GetNormals() const{ return pNormals; }
+	inline const decVector *GetNormals() const{ return pNormals.GetArrayPointer(); }
 	
 	/** \brief Prepare normals if not prepared. */
 	void PrepareNormals();
@@ -144,10 +143,10 @@ public:
 	
 	
 	/** \brief Face probabilities or \em NULL if not prepared. */
-	inline const float *GetFaceProbabilities() const{ return pFaceProbabilities; }
+	inline const float *GetFaceProbabilities() const{ return pFaceProbabilities.GetArrayPointer(); }
 	
 	/** \brief Index of face containing probability or -1 if not found or not prepared yet. */
-	int IndexOfFaceWithProbability( float probability ) const;
+	int IndexOfFaceWithProbability(float probability) const;
 	
 	/** \brief Prepare face probabilities if not prepared. */
 	void PrepareFaceProbabilities();
@@ -155,7 +154,7 @@ public:
 	
 	
 	/** \brief Shared bullet collision shape or \em NULL if not prepared. */
-	inline debpBulletShapeModel *GetShape() const{ return pBulletShape; }
+	inline const debpBulletShapeModel::Ref &GetShape() const{ return pBulletShape; }
 	
 	/** \brief Prepare shared bullet collision shape if not prepared. */
 	void PrepareShape();
@@ -164,7 +163,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pCheckCanDeform();
 	void pCalculateExtends();
 };

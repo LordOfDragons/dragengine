@@ -37,8 +37,8 @@
 ////////////////////////////
 
 deSkyLayerBody::deSkyLayerBody(){
-	pSize.Set( DEG2RAD * 5.0f, DEG2RAD * 5.0f );
-	pColor.Set( 1.0f, 1.0f, 1.0f, 1.0f );
+	pSize.Set(DEG2RAD * 5.0f, DEG2RAD * 5.0f);
+	pColor.Set(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 deSkyLayerBody::~deSkyLayerBody(){
@@ -49,18 +49,18 @@ deSkyLayerBody::~deSkyLayerBody(){
 // Management
 ///////////////
 
-void deSkyLayerBody::SetOrientation( const decQuaternion &orientation ){
+void deSkyLayerBody::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void deSkyLayerBody::SetSize( const decVector2 &size ){
+void deSkyLayerBody::SetSize(const decVector2 &size){
 	pSize = size;
 }
 
-void deSkyLayerBody::SetColor( const decColor &color ){
+void deSkyLayerBody::SetColor(const decColor &color){
 	pColor = color;
 }
 
-void deSkyLayerBody::SetSkin( deSkin *skin ){
+void deSkyLayerBody::SetSkin(deSkin *skin){
 	pSkin = skin;
 }

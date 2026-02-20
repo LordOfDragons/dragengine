@@ -69,13 +69,13 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Bone name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
@@ -87,28 +87,28 @@ public:
 	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set geometry. */
-	void SetGeometry( const decVector &position, const decQuaternion &rotation, const decVector &scale );
+	void SetGeometry(const decVector &position, const decQuaternion &rotation, const decVector &scale);
 	
 	/** \brief Set geometry. */
-	void SetGeometry( const deComponentBone &bone );
+	void SetGeometry(const deComponentBone &bone);
 	
 	/** \brief Original matrix (rig relative). */
 	inline const decMatrix &GetOriginalMatrix() const{ return pOriginalMatrix; }
 	
 	/** \brief Set original matrix (rig relative). */
-	void SetOriginalMatrix( const decMatrix &matrix );
+	void SetOriginalMatrix(const decMatrix &matrix);
 	
 	/** \brief Rig inverse matrix. */
 	inline const decMatrix &GetRigInvMatrix() const{ return pRigInverseMatrix; }
 	
 	/** \brief Set rig inverse matrix. */
-	void SetRigInverseMatrix( const decMatrix &matrix );
+	void SetRigInverseMatrix(const decMatrix &matrix);
 	
 	/** \brief Parent bone. */
 	inline deoalAComponentBone *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent bone. */
-	void SetParent( deoalAComponentBone *bone );
+	void SetParent(deoalAComponentBone *bone);
 	
 	/** \brief Matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }

@@ -27,16 +27,17 @@
 
 #include <unordered_set>
 
+#include "projRemoteClientListener.h"
+
 #include <deremotelauncher/derlRemoteClient.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 
 class projProject;
 class projProfile;
-class projRemoteClientListener;
 
 class decXmlWriter;
 
@@ -46,8 +47,8 @@ class decXmlWriter;
  */
 class projRemoteClient : public derlRemoteClient{
 public:
-	typedef std::shared_ptr<projRemoteClient> Ref;
-	typedef std::unordered_set<Ref> Set;
+	using Ref = std::shared_ptr<projRemoteClient>;
+	using Set = std::unordered_set<Ref>;
 	
 	struct sSystemProperty{
 		std::string property, value;
@@ -55,7 +56,7 @@ public:
 	
 	
 private:
-	typedef std::vector<sSystemProperty> ListSysProps;
+	using ListSysProps = std::vector<sSystemProperty>;
 	
 	projProject &pProject;
 	
@@ -66,7 +67,7 @@ private:
 	decString pActiveLaunchProfile;
 	decString pDefaultLaunchProfile;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<projRemoteClientListener> pListeners;
 	
 	ListSysProps pReceivedSysProps;
 	

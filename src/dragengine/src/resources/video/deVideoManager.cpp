@@ -33,7 +33,6 @@
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
 #include "../../common/file/decBaseFileReader.h"
-#include "../../common/file/decBaseFileReaderReference.h"
 #include "../../common/file/decBaseFileWriter.h"
 #include "../../common/file/decPath.h"
 #include "../../errortracing/deErrorTrace.h"
@@ -57,18 +56,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVideoManager::deVideoManager( deEngine *engine ) :
-deFileResourceManager( engine, ertVideo ),
-
-pDecoderRoot( NULL ),
-pDecoderTail( NULL ),
-pDecoderCount( 0 ),
-
-pAudioDecoderRoot( NULL ),
-pAudioDecoderTail( NULL ),
-pAudioDecoderCount( 0 )
+deVideoManager::deVideoManager(deEngine *engine) :
+deFileResourceManager(engine, ertVideo)
 {
-	SetLoggingName( "video" );
+	SetLoggingName("video");
 }
 
 deVideoManager::~deVideoManager(){
@@ -85,251 +76,206 @@ int deVideoManager::GetVideoCount() const{
 }
 
 deVideo *deVideoManager::GetRootVideo() const{
-	return ( deVideo* )pVideos.GetRoot();
+	return (deVideo*)pVideos.GetRoot();
 }
 
-deVideo *deVideoManager::GetVideoWith( const char *filename ) const{
-	return GetVideoWith( GetEngine()->GetVirtualFileSystem(), filename );
+deVideo *deVideoManager::GetVideoWith(const char *filename) const{
+	return GetVideoWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-deVideo *deVideoManager::GetVideoWith( deVirtualFileSystem *vfs, const char *filename ) const{
-	deVideo * const video = ( deVideo* )pVideos.GetWithFilename( vfs, filename );
-	return video && ! video->GetOutdated() ? video : NULL;
+deVideo *deVideoManager::GetVideoWith(deVirtualFileSystem *vfs, const char *filename) const{
+	deVideo * const video = (deVideo*)pVideos.GetWithFilename(vfs, filename);
+	return video && !video->GetOutdated() ? video : nullptr;
 }
 
-deVideo *deVideoManager::LoadVideo( const char *filename, const char *basePath, bool asynchron ){
-	return LoadVideo( GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron );
+deVideo::Ref deVideoManager::LoadVideo(const char *filename, const char *basePath, bool asynchron){
+	return LoadVideo(GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron);
 }
 
-deVideo *deVideoManager::LoadVideo( deVirtualFileSystem *vfs, const char *filename,
-const char *basePath, bool asynchron ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deVideo::Ref deVideoManager::LoadVideo(deVirtualFileSystem *vfs, const char *filename,
+const char *basePath, bool asynchron){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReaderReference fileReader;
-	deVideo *video = NULL;
+	deVideo::Ref video;
 	decPath path;
 	
 	try{
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		deVideo *findVideo = ( deVideo* )pVideos.GetWithFilename( vfs, path.GetPathUnix() );
+		deVideo::Ref findVideo((deVideo*)pVideos.GetWithFilename(vfs, path.GetPathUnix()));
 		
-		if( findVideo && findVideo->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Video '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findVideo && findVideo->GetModificationTime() != modificationTime){
+			LogInfoFormat("Video '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findVideo->MarkOutdated();
-			findVideo = NULL;
+			findVideo = nullptr;
 		}
 		
-		if( findVideo ){
-			findVideo->AddReference();
+		if(findVideo){
 			video = findVideo;
 			
 		}else{
-			deBaseVideoModule * const module = ( deBaseVideoModule* )GetModuleSystem()
-				->GetModuleAbleToLoad( deModuleSystem::emtVideo, path.GetPathUnix() );
+			deBaseVideoModule * const module = (deBaseVideoModule*)GetModuleSystem()
+				->GetModuleAbleToLoad(deModuleSystem::emtVideo, path.GetPathUnix());
 			
-			fileReader.TakeOver( OpenFileForReading( *vfs, path.GetPathUnix() ) );
-			deBaseVideoInfo videoInfo;
-			module->InitLoadVideo( fileReader, videoInfo );
+				deBaseVideoInfo videoInfo;
+			module->InitLoadVideo(OpenFileForReading(*vfs, path.GetPathUnix()), videoInfo);
 			
-			video = new deVideo( this, vfs, path.GetPathUnix(), modificationTime,
+			video = deVideo::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				videoInfo.GetWidth(), videoInfo.GetHeight(), videoInfo.GetComponentCount(),
 				videoInfo.GetBitCount(), videoInfo.GetFrameRate(), videoInfo.GetFrameCount(),
 				videoInfo.GetColorConversionMatrix(), videoInfo.GetBytesPerSample(),
-				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount() );
-			video->SetAsynchron( asynchron );
+				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount());
+			video->SetAsynchron(asynchron);
 			
-			GetGraphicSystem()->LoadVideo( video );
+			GetGraphicSystem()->LoadVideo(video);
 			
-			pVideos.Add( video );
+			pVideos.Add(video);
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Loading video '%s' (base path '%s') failed",
-			filename, basePath ? basePath : "" );
-		if( video ){
-			video->FreeReference();
-		}
+	}catch(const deException &){
+		LogErrorFormat("Loading video '%s' (base path '%s') failed",
+			filename, basePath ? basePath : "");
 		throw;
 	}
 	
-	video->SetAsynchron( false );
+	video->SetAsynchron(false);
 	return video;
 }
 
-void deVideoManager::SaveVideo( deVideo *video, const char *filename ){
-	SaveVideo( GetEngine()->GetVirtualFileSystem(), video, filename );
+void deVideoManager::SaveVideo(deVideo *video, const char *filename){
+	SaveVideo(GetEngine()->GetVirtualFileSystem(), video, filename);
 }
 
-void deVideoManager::SaveVideo( deVirtualFileSystem *vfs, deVideo *video, const char *filename ){
-	if( ! video || ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename){
+	if(!video || !vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
-	
 	try{
-		deBaseVideoModule * const module = ( deBaseVideoModule* )GetModuleSystem()
-			->GetModuleAbleToLoad( deModuleSystem::emtVideo, filename );
+		deBaseVideoModule * const module = (deBaseVideoModule*)GetModuleSystem()
+			->GetModuleAbleToLoad(deModuleSystem::emtVideo, filename);
+		DEASSERT_NOTNULL(module);
 		
-		fileWriter = OpenFileForWriting( *vfs, filename );
-		module->SaveVideo( *fileWriter, *video );
-		fileWriter->FreeReference();
-		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		LogErrorFormat( "Saving video '%s' failed", filename );
+		module->SaveVideo(OpenFileForWriting(*vfs, filename), *video);
+	}catch(const deException &){
+		LogErrorFormat("Saving video '%s' failed", filename);
 		throw;
 	}
 }
 
-void deVideoManager::AddLoadedVideo( deVideo *video ){
-	if( ! video ){
-		DETHROW( deeInvalidParam );
+void deVideoManager::AddLoadedVideo(deVideo *video){
+	if(!video){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pVideos.Add( video );
+	pVideos.Add(video);
 }
 
 
 
-deVideoDecoder *deVideoManager::CreateDecoder( deVideo *video ){
-	if( ! video || ! video->GetVirtualFileSystem() ){
-		DETHROW( deeInvalidParam );
+deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
+	if(!video || !video->GetVirtualFileSystem()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deVideoDecoder *videoDecoder = NULL;
-	deBaseVideoDecoder *peer = NULL;
-	decBaseFileReaderReference reader;
-	deBaseVideoModule *module = NULL;
+	deVideoDecoder::Ref videoDecoder;
+	deBaseVideoModule *module = nullptr;
+	deBaseVideoDecoder *peer = nullptr;
 	
 	try{
-		videoDecoder = new deVideoDecoder( *this, video );
+		videoDecoder = deVideoDecoder::Ref::New(*this, video);
 		
-		module = ( deBaseVideoModule* )GetModuleSystem()->GetModuleAbleToLoad(
-			deModuleSystem::emtVideo, video->GetFilename() );
+		module = (deBaseVideoModule*)GetModuleSystem()->GetModuleAbleToLoad(
+			deModuleSystem::emtVideo, video->GetFilename());
+		DEASSERT_NOTNULL(module);
 		
-		reader.TakeOver( OpenFileForReading( *video->GetVirtualFileSystem(), video->GetFilename() ) );
-		peer = module->CreateDecoder( reader );
+		peer = module->CreateDecoder(OpenFileForReading(
+			*video->GetVirtualFileSystem(), video->GetFilename()));
 		
-		videoDecoder->SetPeerVideo( peer );
+		videoDecoder->SetPeerVideo(peer);
 		
-	}catch( const deException &e ){
-		if( peer ){
+	}catch(const deException &e){
+		if(peer){
 			delete peer;
 		}
-		if( videoDecoder ){
-			videoDecoder->FreeReference();
-		}
-		
-		LogErrorFormat( "Creating decoder for video '%s' failed",
-			video->GetFilename().GetString() );
+		LogErrorFormat("Creating decoder for video '%s' failed",
+			video->GetFilename().GetString());
 		
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
-		errorTrace.AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
+		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *errorTrace.AddPoint(
-			NULL, "deVideoManager::CreateDecoder", __LINE__ );
+		deErrorTracePoint &etp = errorTrace.AddPoint(
+			nullptr, "deVideoManager::CreateDecoder", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue( "video", "<deVideo>" );
-		etv.AddSubValue( "filename", video->GetFilename() );
-		if( module ){
-			etp.AddValue( "module", module->GetLoadableModule().GetName() );
+		deErrorTraceValue &etv = etp.AddValue("video", "<deVideo>");
+		etv.AddSubValue("filename", video->GetFilename());
+		if(module){
+			etp.AddValue("module", module->GetLoadableModule().GetName());
 		}
 		
 		throw;
 	}
 	
 	// track video decoder and return it
-	deMutexGuard guard( pMutexDecoder );
-	
-	if( pDecoderTail ){
-		pDecoderTail->SetLLManagerNext( videoDecoder );
-		videoDecoder->SetLLManagerPrev( pDecoderTail );
-		pDecoderTail = videoDecoder;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pDecoderRoot = videoDecoder;
-		pDecoderTail = videoDecoder;
-	}
-	
-	pDecoderCount++;
-	
+	deMutexGuard guard(pMutexDecoder);
+	pDecoders.Add(&videoDecoder->GetLLManager());
 	return videoDecoder;
 }
 
-deVideoAudioDecoder *deVideoManager::CreateAudioDecoder( deVideo *video ){
-	if( ! video || ! video->GetVirtualFileSystem() ){
-		DETHROW( deeInvalidParam );
+deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
+	if(!video || !video->GetVirtualFileSystem()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deVideoAudioDecoder *audioDecoder = NULL;
-	deBaseVideoAudioDecoder *peer = NULL;
-	decBaseFileReaderReference reader;
-	deBaseVideoModule *module = NULL;
+	deVideoAudioDecoder::Ref audioDecoder;
+	deBaseVideoAudioDecoder *peer = nullptr;
+	deBaseVideoModule *module = nullptr;
 	
 	try{
-		module = ( deBaseVideoModule* )GetModuleSystem()->GetModuleAbleToLoad(
-			deModuleSystem::emtVideo, video->GetFilename() );
+		module = (deBaseVideoModule*)GetModuleSystem()->GetModuleAbleToLoad(
+			deModuleSystem::emtVideo, video->GetFilename());
+		DEASSERT_NOTNULL(module);
 		
-		reader.TakeOver( OpenFileForReading( *video->GetVirtualFileSystem(), video->GetFilename() ) );
-		peer = module->CreateAudioDecoder( reader );
-		if( ! peer ){
-			return NULL;  // no audio or not supported
+		peer = module->CreateAudioDecoder(OpenFileForReading(
+			*video->GetVirtualFileSystem(), video->GetFilename()));
+		if(!peer){
+			return deVideoAudioDecoder::Ref(); // no audio or not supported
 		}
 		
-		audioDecoder = new deVideoAudioDecoder( *this, video );
-		audioDecoder->SetPeerVideo( peer );
+		audioDecoder = deVideoAudioDecoder::Ref::New(*this, video);
+		audioDecoder->SetPeerVideo(peer);
 		
-	}catch( const deException &e ){
-		if( peer ){
+	}catch(const deException &e){
+		if(peer){
 			delete peer;
 		}
-		if( audioDecoder ){
-			audioDecoder->FreeReference();
-		}
-		
-		LogErrorFormat( "Creating decoder for video '%s' failed",
-			video->GetFilename().GetString() );
+		LogErrorFormat("Creating decoder for video '%s' failed",
+			video->GetFilename().GetString());
 		
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
-		errorTrace.AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
+		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *errorTrace.AddPoint(
-			NULL, "deVideoManager::CreateSoundDecoder", __LINE__ );
+		deErrorTracePoint &etp = errorTrace.AddPoint(
+			nullptr, "deVideoManager::CreateSoundDecoder", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue( "video", "<deVideo>" );
-		etv.AddSubValue( "filename", video->GetFilename() );
-		if( module ){
-			etp.AddValue( "module", module->GetLoadableModule().GetName() );
+		deErrorTraceValue &etv = etp.AddValue("video", "<deVideo>");
+		etv.AddSubValue("filename", video->GetFilename());
+		if(module){
+			etp.AddValue("module", module->GetLoadableModule().GetName());
 		}
 		
 		throw;
 	}
 	
 	// track video decoder and return it
-	deMutexGuard guard( pMutexDecoder );
-	
-	if( pAudioDecoderTail ){
-		pAudioDecoderTail->SetLLManagerNext( audioDecoder );
-		audioDecoder->SetLLManagerPrev( pAudioDecoderTail );
-		pAudioDecoderTail = audioDecoder;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pAudioDecoderRoot = audioDecoder;
-		pAudioDecoderTail = audioDecoder;
-	}
-	
-	pAudioDecoderCount++;
-	
+	deMutexGuard guard(pMutexDecoder);
+	pAudioDecoders.Add(&audioDecoder->GetLLManager());
 	return audioDecoder;
 }
 
@@ -337,51 +283,43 @@ deVideoAudioDecoder *deVideoManager::CreateAudioDecoder( deVideo *video ){
 
 void deVideoManager::ReleaseLeakingResources(){
 	// decoders
-	deMutexGuard guard( pMutexDecoder );
+	{
+	const deMutexGuard guard(pMutexDecoder);
 	
-	if( pDecoderCount > 0 ){
-		LogWarnFormat( "%i leaking video decoders", pDecoderCount );
+	if(pDecoders.GetCount() > 0){
+		LogWarnFormat("%i leaking video decoders", pDecoders.GetCount());
 		
-		while( pDecoderRoot ){
-			LogWarnFormat( "- %s", pDecoderRoot->GetVideo()->GetFilename().IsEmpty()
-				? "<temporary>" : pDecoderRoot->GetVideo()->GetFilename().GetString() );
-			pDecoderRoot->MarkLeaking();
-			pDecoderRoot= pDecoderRoot->GetLLManagerNext();
-		}
-		
-		pDecoderTail = NULL;
-		pDecoderCount = 0;
+		pDecoders.Visit([&](deVideoDecoder *decoder){
+			LogWarnFormat("- %s", decoder->GetVideo()->GetFilename().IsEmpty()
+				? "<temporary>" : decoder->GetVideo()->GetFilename().GetString());
+			decoder->MarkLeaking();
+		});
+		pDecoders.RemoveAll();
 	}
 	
-	if( pAudioDecoderCount > 0 ){
-		LogWarnFormat( "%i leaking video audio decoders", pAudioDecoderCount );
+	if(pAudioDecoders.GetCount() > 0){
+		LogWarnFormat("%i leaking video audio decoders", pAudioDecoders.GetCount());
 		
-		while( pAudioDecoderRoot ){
-			LogWarnFormat( "- %s", pAudioDecoderRoot->GetVideo()->GetFilename().IsEmpty()
-				? "<temporary>" : pAudioDecoderRoot->GetVideo()->GetFilename().GetString() );
-			pAudioDecoderRoot->MarkLeaking();
-			pAudioDecoderRoot= pAudioDecoderRoot->GetLLManagerNext();
-		}
-		
-		pAudioDecoderTail = NULL;
-		pAudioDecoderCount = 0;
+		pAudioDecoders.Visit([&](deVideoAudioDecoder *decoder){
+			LogWarnFormat("- %s", decoder->GetVideo()->GetFilename().IsEmpty()
+				? "<temporary>" : decoder->GetVideo()->GetFilename().GetString());
+			decoder->MarkLeaking();
+		});
+		pAudioDecoders.RemoveAll();
 	}
-	
-	guard.Unlock();
+	}
 	
 	// videos
 	const int count = GetVideoCount();
 	
-	if( count > 0 ){
-		const deVideo *video = ( const deVideo * )pVideos.GetRoot();
+	if(count > 0){
+		LogWarnFormat("%i leaking videos", count);
 		
-		LogWarnFormat( "%i leaking videos", count );
-		
-		while( video ){
-			LogWarnFormat( "- %s", video->GetFilename().IsEmpty() ? "<temporary>"
-				: video->GetFilename().GetString() );
-			video = ( const deVideo * )video->GetLLManagerNext();
-		}
+		pVideos.GetResources().Visit([&](deResource *res){
+			const deVideo *video = static_cast<const deVideo*>(res);
+			LogWarnFormat("- %s", video->GetFilename().IsEmpty() ? "<temporary>"
+				: video->GetFilename().GetString());
+		});
 		
 		pVideos.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
@@ -393,147 +331,43 @@ void deVideoManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deVideoManager::SystemGraphicLoad(){
-	deVideo *video = ( deVideo* )pVideos.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
+	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while( video ){
-		if( ! video->GetPeerGraphic() ){
-			grasys.LoadVideo( video );
+	pVideos.GetResources().Visit([&](deResource *res){
+		deVideo *video = static_cast<deVideo*>(res);
+		if(!video->GetPeerGraphic()){
+			graSys.LoadVideo(video);
 		}
-		
-		video = ( deVideo* )video->GetLLManagerNext();
-	}
+	});
 }
 
 void deVideoManager::SystemGraphicUnload(){
-	deVideo *video = ( deVideo* )pVideos.GetRoot();
-	
-	while( video ){
-		video->SetPeerGraphic( NULL );
-		video = ( deVideo* )video->GetLLManagerNext();
-	}
+	pVideos.GetResources().Visit([](deResource *res){
+		static_cast<deVideo*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 
-
-void deVideoManager::RemoveResource( deResource *resource ){
-	pVideos.RemoveIfPresent( resource );
+void deVideoManager::RemoveResource(deResource *resource){
+	pVideos.RemoveIfPresent(resource);
 }
 
-void deVideoManager::RemoveDecoder( deVideoDecoder *decoder ){
-	if( ! decoder ){
-		DETHROW( deeInvalidParam );
+void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
+	if(!decoder){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deMutexGuard guard( pMutexDecoder );
-	
-	if( decoder != pDecoderRoot && ! decoder->GetLLManagerNext()
-	&& ! decoder->GetLLManagerPrev() ){
-		return;
-	}
-	
-	if( pDecoderCount == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( decoder == pDecoderTail ){
-		if( decoder->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pDecoderTail = pDecoderTail->GetLLManagerPrev();
-		if( pDecoderTail ){
-			pDecoderTail->SetLLManagerNext( NULL );
-		}
-		
-	}else{
-		if( ! decoder->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		decoder->GetLLManagerNext()->SetLLManagerPrev( decoder->GetLLManagerPrev() );
-	}
-	
-	if( decoder == pDecoderRoot ){
-		if( decoder->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pDecoderRoot = pDecoderRoot->GetLLManagerNext();
-		if( pDecoderRoot ){
-			pDecoderRoot->SetLLManagerPrev( NULL );
-		}
-		
-	}else{
-		if( ! decoder->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		decoder->GetLLManagerPrev()->SetLLManagerNext( decoder->GetLLManagerNext() );
-	}
-	
-	decoder->SetLLManagerNext( NULL );
-	decoder->SetLLManagerPrev( NULL );
-	pDecoderCount--;
-	
+	deMutexGuard guard(pMutexDecoder);
+	pDecoders.Remove(&decoder->GetLLManager());
 	decoder->MarkLeaking();
 }
 
-void deVideoManager::RemoveAudioDecoder( deVideoAudioDecoder *decoder ){
-	if( ! decoder ){
-		DETHROW( deeInvalidParam );
+void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
+	if(!decoder){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deMutexGuard guard( pMutexDecoder );
-	
-	if( decoder != pAudioDecoderRoot && ! decoder->GetLLManagerNext()
-	&& ! decoder->GetLLManagerPrev() ){
-		return;
-	}
-	
-	if( pAudioDecoderCount == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( decoder == pAudioDecoderTail ){
-		if( decoder->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pAudioDecoderTail = pAudioDecoderTail->GetLLManagerPrev();
-		if( pAudioDecoderTail ){
-			pAudioDecoderTail->SetLLManagerNext( NULL );
-		}
-		
-	}else{
-		if( ! decoder->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		decoder->GetLLManagerNext()->SetLLManagerPrev( decoder->GetLLManagerPrev() );
-	}
-	
-	if( decoder == pAudioDecoderRoot ){
-		if( decoder->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pAudioDecoderRoot = pAudioDecoderRoot->GetLLManagerNext();
-		if( pAudioDecoderRoot ){
-			pAudioDecoderRoot->SetLLManagerPrev( NULL );
-		}
-		
-	}else{
-		if( ! decoder->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		decoder->GetLLManagerPrev()->SetLLManagerNext( decoder->GetLLManagerNext() );
-	}
-	
-	decoder->SetLLManagerNext( NULL );
-	decoder->SetLLManagerPrev( NULL );
-	pAudioDecoderCount--;
-	
+	deMutexGuard guard(pMutexDecoder);
+	pAudioDecoders.Remove(&decoder->GetLLManager());
 	decoder->MarkLeaking();
 }

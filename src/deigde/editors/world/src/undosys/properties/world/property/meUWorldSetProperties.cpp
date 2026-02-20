@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetProperties::meUWorldSetProperties( meWorld *world, const decStringDictionary &newValues ) :
-pWorld( NULL ),
-pNewValues( newValues )
+meUWorldSetProperties::meUWorldSetProperties(meWorld *world, const decStringDictionary &newValues) :
+
+pNewValues(newValues)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set world properties" );
+	SetShortInfo("@World.UWorldSetProperties.SetWorldProperties");
 	
 	pOldValues = world->GetProperties();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetProperties::~meUWorldSetProperties(){
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ meUWorldSetProperties::~meUWorldSetProperties(){
 ///////////////
 
 void meUWorldSetProperties::Undo(){
-	pWorld->SetProperties( pOldValues );
+	pWorld->SetProperties(pOldValues);
 }
 
 void meUWorldSetProperties::Redo(){
-	pWorld->SetProperties( pNewValues );
+	pWorld->SetProperties(pNewValues);
 }

@@ -37,19 +37,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValueQuaternion::deNetworkValueQuaternion( eValueFormats format, const decQuaternion &value ) :
-pFormat( format ),
-pValue( value ),
-pPrecision( 0.001f )
+deNetworkValueQuaternion::deNetworkValueQuaternion(eValueFormats format, const decQuaternion &value) :
+pFormat(format),
+pValue(value),
+pPrecision(0.001f)
 {
-	switch( format ){
+	switch(format){
 	case evfFloat16:
 	case evfFloat32:
 	case evfFloat64:
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -61,12 +61,12 @@ deNetworkValueQuaternion::~deNetworkValueQuaternion(){
 // Management
 ///////////////
 
-void deNetworkValueQuaternion::SetQuaternion( const decQuaternion &value ){
+void deNetworkValueQuaternion::SetQuaternion(const decQuaternion &value){
 	pValue = value;
 }
 
-void deNetworkValueQuaternion::SetPrecision( double precision ){
-	pPrecision = decMath::max( precision, DOUBLE_SAFE_EPSILON );
+void deNetworkValueQuaternion::SetPrecision(double precision){
+	pPrecision = decMath::max(precision, DOUBLE_SAFE_EPSILON);
 }
 
 
@@ -74,6 +74,6 @@ void deNetworkValueQuaternion::SetPrecision( double precision ){
 // Visiting
 /////////////
 
-void deNetworkValueQuaternion::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitQuaternion( this );
+void deNetworkValueQuaternion::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitQuaternion(this);
 }

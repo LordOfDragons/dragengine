@@ -53,16 +53,16 @@ public:
 	decColor();
 	
 	/** \brief Create color with initial values. */
-	decColor( float red, float green, float blue );
+	decColor(float red, float green, float blue);
 	
 	/** \brief Create color with the given values. */
-	decColor( float red, float green, float blue, float alpha );
+	decColor(float red, float green, float blue, float alpha);
 	
 	/** \brief Creates copy of a color. */
-	decColor( const decColor &copy );
+	decColor(const decColor &copy);
 	
 	/** \brief Creates copy of a color with different alpha value. */
-	decColor( const decColor &copy, float alpha );
+	decColor(const decColor &copy, float alpha);
 	
 	/**
 	 * \brief Create color from HSV.
@@ -73,7 +73,7 @@ public:
 	 * \param[in] saturation Saturation in the range from 0 to 1. Value is clamped.
 	 * \param[in] value Value in the range from 0 to 1. Value is clamped.
 	 */
-	static decColor CreateHSV( float hue, float saturation, float value );
+	static decColor CreateHSV(float hue, float saturation, float value);
 	
 	/**
 	 * \brief Create color from HSL.
@@ -84,7 +84,7 @@ public:
 	 * \param[in] saturation Saturation in the range from 0 to 1. Value is clamped.
 	 * \param[in] lightness Lightness in the range from 0 to 1. Value is clamped.
 	 */
-	static decColor CreateHSL( float hue, float saturation, float lightness );
+	static decColor CreateHSL(float hue, float saturation, float lightness);
 	
 	/**
 	 * \brief Create color from CMYK.
@@ -94,7 +94,7 @@ public:
 	 * \param[in] yellow Yellow in the range from 0 to 1. Value is clamped.
 	 * \param[in] black Black in the range from 0 to 1. Value is clamped.
 	 */
-	static decColor CreateCMYK( float cyan, float magenta, float yellow, float black );
+	static decColor CreateCMYK(float cyan, float magenta, float yellow, float black);
 	/*@}*/
 	
 	
@@ -117,13 +117,13 @@ public:
 	void SetZero();
 	
 	/** \brief Set values. */
-	void Set( float red, float green, float blue );
+	void Set(float red, float green, float blue);
 	
 	/** \brief Sets values. */
-	void Set( float red, float green, float blue, float alpha );
+	void Set(float red, float green, float blue, float alpha);
 	
 	/** \brief Color is equal component wise to another color with respect to a threshold. */
-	bool IsEqualTo( const decColor &color, float threshold = COLOR_THRESHOLD ) const;
+	bool IsEqualTo(const decColor &color, float threshold = COLOR_THRESHOLD) const;
 	
 	/**
 	 * \brief Convert to HSV.
@@ -132,7 +132,7 @@ public:
 	 * \param[out] saturation Saturation in the range from 0 to 1.
 	 * \param[out] value Value in the range from 0 to 1.
 	 */
-	void ToHSV( float &hue, float &saturation, float &value ) const;
+	void ToHSV(float &hue, float &saturation, float &value) const;
 	
 	/**
 	 * \brief Convert to HSL.
@@ -141,7 +141,7 @@ public:
 	 * \param[out] saturation Saturation in the range from 0 to 1.
 	 * \param[out] lightness Lightness in the range from 0 to 1.
 	 */
-	void ToHSL( float &hue, float &saturation, float &lightness ) const;
+	void ToHSL(float &hue, float &saturation, float &lightness) const;
 	
 	/**
 	 * \brief Convert to CMYK.
@@ -151,7 +151,7 @@ public:
 	 * \param[out] yellow Yellow in the range from 0 to 1.
 	 * \param[out] black Black in the range from 0 to 1.
 	 */
-	void ToCMYK( float &cyan, float &magenta, float &yellow, float &black ) const;
+	void ToCMYK(float &cyan, float &magenta, float &yellow, float &black) const;
 	/*@}*/
 	
 	
@@ -159,42 +159,42 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy color to this color. */
-	decColor &operator=( const decColor &color );
+	decColor &operator=(const decColor &color);
 	
 	/** \brief Add components of another color to this one. */
-	decColor &operator+=( const decColor &color );
+	decColor &operator+=(const decColor &color);
 	
 	/** \brief Subtract components of another color from this color. */
-	decColor &operator-=( const decColor &color );
+	decColor &operator-=(const decColor &color);
 	
 	/** \brief Multiply components of this color with a value k. */
-	decColor &operator*=( float scalar );
+	decColor &operator*=(float scalar);
 	
 	/** \brief Multiply components of this color component wise with another color. */
-	decColor &operator*=( const decColor &color );
+	decColor &operator*=(const decColor &color);
 	
 	/**
 	 * \brief Divide components of this color by a scalar value.
 	 * \throws deeDivisionByZero Scalar is 0.
 	 */
-	decColor &operator/=( float scalar );
+	decColor &operator/=(float scalar);
 	
 	/** \brief Color with the sum of this color with another one. */
-	decColor operator+( const decColor &color ) const;
+	decColor operator+(const decColor &color) const;
 	
 	/** \brief Color with the difference of this color to another one. */
-	decColor operator-( const decColor &color ) const;
+	decColor operator-(const decColor &color) const;
 	
 	/** \brief Color with this color scaled by a scalar. */
-	decColor operator*( float scalar ) const;
+	decColor operator*(float scalar) const;
 	
 	/** \brief Color with this color multiplied component wise with another one. */
-	decColor operator*( const decColor &color ) const;
+	decColor operator*(const decColor &color) const;
 	
 	/**
 	 * \brief Color with this color divided by a scalar.
 	 * \throws deeDivisionByZero Scalar is 0.
 	 */
-	decColor operator/( float scalar ) const;
+	decColor operator/(float scalar) const;
 	/*@}*/
 };

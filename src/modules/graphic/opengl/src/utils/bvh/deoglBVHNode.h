@@ -52,6 +52,11 @@ public:
 	/*@{*/
 	/** Create bvh node. */
 	deoglBVHNode();
+	deoglBVHNode(int firstIndex, int primitiveCount);
+	
+	/** Copy bhv node. */
+	deoglBVHNode(const deoglBVHNode &node);
+	deoglBVHNode &operator=(const deoglBVHNode &node);
 	
 	/** Clean up generic octree object. */
 	~deoglBVHNode();
@@ -68,19 +73,19 @@ public:
 	inline const decVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** Set extends. */
-	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	/** Index of first child or primitive. */
 	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
 	/** Set index of first child or primitive. */
-	void SetFirstIndex( int index );
+	void SetFirstIndex(int index);
 	
 	/** Count of primitives. */
 	inline int GetPrimitiveCount() const{ return pPrimitiveCount; }
 	
 	/** Set count of primitives. */
-	void SetPrimitiveCount( int count );
+	void SetPrimitiveCount(int count);
 	
 	/** Node is leaf node containing primitives. */
 	inline bool IsLeaf() const{ return pPrimitiveCount > 0; }

@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "debpDecalFace.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -47,18 +47,18 @@ debpDecalFace::~debpDecalFace(){
 // Management
 ///////////////
 
-void debpDecalFace::SetNormal( const decVector &normal ){
+void debpDecalFace::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-void debpDecalFace::SetPoint1( const decVector &point ){
-	pPoints[ 0 ] = point;
+void debpDecalFace::SetPoint1(const decVector &point){
+	pPoints[0] = point;
 }
 
-void debpDecalFace::SetPoint2( const decVector &point ){
-	pPoints[ 1 ] = point;
+void debpDecalFace::SetPoint2(const decVector &point){
+	pPoints[1] = point;
 }
 
-void debpDecalFace::SetPoint3( const decVector &point ){
-	pPoints[ 2 ] = point;
+void debpDecalFace::SetPoint3(const decVector &point){
+	pPoints[2] = point;
 }

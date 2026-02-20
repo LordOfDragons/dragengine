@@ -25,11 +25,11 @@
 #ifndef _SEUPNGROUPPASTENODES_H_
 #define _SEUPNGROUPPASTENODES_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
 class seClipboardDataPropertyNode;
 
 
@@ -38,9 +38,13 @@ class seClipboardDataPropertyNode;
  * \brief Undo action property node paste nodes.
  */
 class seUPNGroupPasteNodes : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPNGroupPasteNodes>;
+	
+	
 private:
-	sePropertyNodeGroup *pGroup;
-	sePropertyNodeList pNodes;
+	sePropertyNodeGroup::Ref pGroup;
+	sePropertyNode::List pNodes;
 	int pLayer;
 	
 	
@@ -49,12 +53,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupPasteNodes( sePropertyNodeGroup *group, int layer,
-		const seClipboardDataPropertyNode &clipboardData );
+	seUPNGroupPasteNodes(sePropertyNodeGroup *group, int layer,
+		const seClipboardDataPropertyNode &clipboardData);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNGroupPasteNodes();
+	~seUPNGroupPasteNodes() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

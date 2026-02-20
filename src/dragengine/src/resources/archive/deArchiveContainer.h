@@ -26,8 +26,8 @@
 #define _DEARCHIVECONTAINER_H_
 
 #include "../../filesystem/deVFSContainer.h"
-
-class deArchive;
+#include "../../common/collection/decTLinkedList.h"
+#include "deArchive.h"
 
 
 /**
@@ -40,16 +40,14 @@ class deArchive;
 class DE_DLL_EXPORT deArchiveContainer : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deArchiveContainer> Ref;
-	
+	using Ref = deTObjectReference<deArchiveContainer>;
 	
 	
 private:
 	const decPath pArchivePath;
-	deArchive *pArchive;
+	deArchive::Ref pArchive;
 	
-	deArchiveContainer *pLLManagerPrev;
-	deArchiveContainer *pLLManagerNext;
+	decTLinkedList<deArchiveContainer>::Element pLLManager;
 	
 	
 	
@@ -60,7 +58,7 @@ public:
 	 * \brief Create archive container.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	deArchiveContainer( const decPath &rootPath, deArchive *archive, const decPath &archivePath );
+	deArchiveContainer(const decPath &rootPath, deArchive *archive, const decPath &archivePath);
 	
 protected:
 	/**
@@ -69,7 +67,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deArchiveContainer();
+	~deArchiveContainer() override;
 	/*@}*/
 	
 	
@@ -78,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Archive. */
-	inline deArchive *GetArchive() const{ return pArchive; }
+	inline const deArchive::Ref &GetArchive() const{ return pArchive; }
 	
 	/** \brief Archive path to map as root. */
 	inline const decPath &GetArchivePath(){ return pArchivePath; }
@@ -90,7 +88,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	bool ExistsFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be read.
@@ -99,7 +97,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	bool CanReadFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be written.
@@ -111,14 +109,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	bool CanWriteFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	bool CanDeleteFile(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for reading.
@@ -131,7 +129,7 @@ public:
 	 * wrapping the actual file reader to be able to safely drop it when the module is
 	 * unloaded while the reader is still held by somebody.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
@@ -146,41 +144,41 @@ public:
 	 * wrapping the actual file writer to be able to safely drop it when the module is
 	 * unloaded while the writer is still held by somebody.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	void DeleteFile(const decPath &path) override;
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path );
+	void TouchFile(const decPath &path) override;
 	
 	/** \brief Search files. */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) override;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	eFileTypes GetFileType(const decPath &path) override;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	uint64_t GetFileSize(const decPath &path) override;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	TIME_SYSTEM GetFileModificationTime(const decPath &path) override;
 	/*@}*/
 	
 	
@@ -190,23 +188,9 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deArchiveContainer *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerPrev( deArchiveContainer *resource );
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deArchiveContainer *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerNext( deArchiveContainer *resource );
+	/** \brief Resource manager linked list. */
+	inline decTLinkedList<deArchiveContainer>::Element &GetLLManager(){ return pLLManager; }
+	inline const decTLinkedList<deArchiveContainer>::Element &GetLLManager() const{ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

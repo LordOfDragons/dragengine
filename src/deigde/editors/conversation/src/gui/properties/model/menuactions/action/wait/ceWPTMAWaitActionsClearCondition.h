@@ -48,11 +48,12 @@ protected:
 	ceWPTMAWaitActionsClearCondition();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAWaitActionsClearCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsClearCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait );
+	ceWPTMAWaitActionsClearCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait);
 	/*@}*/
 	
 	
@@ -69,7 +70,7 @@ public:
 	inline ceCAWait &GetWait() const{ return *pWait; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

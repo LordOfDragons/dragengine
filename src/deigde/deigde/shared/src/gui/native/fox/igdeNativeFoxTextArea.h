@@ -26,8 +26,10 @@
 #define _IGDENATIVEFOXTEXTAREA_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeTextArea.h"
+#include "../../resources/igdeFont.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 class igdeTextArea;
 class igdeGuiTheme;
@@ -37,8 +39,8 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native Text Area.
  */
-class igdeNativeFoxTextArea : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxTextArea )
+class igdeNativeFoxTextArea : public FXVerticalFrame, public igdeTextArea::cNativeTextArea{
+	FXDECLARE(igdeNativeFoxTextArea)
 protected:
 	   igdeNativeFoxTextArea();
 	
@@ -51,9 +53,9 @@ public:
 	
 private:
 	igdeTextArea *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXText *pTextArea;
-	FXHiliteStyle *pStyles;
+	decTList<FXHiliteStyle> pStyles;
 	igdeNativeFoxResizer *pResizer;
 	
 	
@@ -62,14 +64,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text widget. */
-	igdeNativeFoxTextArea( igdeTextArea &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxTextArea(igdeTextArea &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
-	virtual ~igdeNativeFoxTextArea();
+	~igdeNativeFoxTextArea() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxTextArea* CreateNativeWidget( igdeTextArea &owner );
+	static igdeNativeFoxTextArea* CreateNativeWidget(igdeTextArea &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -85,49 +87,49 @@ public:
 	/** \brief Text area. */
 	inline FXText &GetTextArea() const{ return *pTextArea; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
-	void UpdateStyles();
+	void UpdateStyles() override;
 	void ApplyStyles();
-	virtual void UpdateText();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
-	virtual void UpdateEditable();
-	virtual void Focus();
+	void UpdateText() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
+	void UpdateEditable() override;
+	void Focus() override;
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition( int position );
+	void SetCursorPosition(int position) override;
 	virtual int GetCursorColumn() const;
 	virtual int GetCursorRow() const;
-	virtual void SetCursorColumn( int column );
-	virtual void SetCursorRow( int row );
+	void SetCursorColumn(int column) override;
+	void SetCursorRow(int row) override;
 	virtual int GetTopLine() const;
-	virtual void SetTopLine( int line );
+	void SetTopLine(int line) override;
 	virtual int GetBottomLine() const;
-	virtual void SetBottomLine( int line );
+	void SetBottomLine(int line) override;
 	virtual int GetLineCount() const;
-	virtual void UpdateColumns();
-	virtual void UpdateRows();
+	void UpdateColumns() override;
+	void UpdateRows() override;
 	
-	static int TextAreaFlagsBorder( const igdeTextArea &owner );
-	static int TextAreaFlags( const igdeTextArea &owner );
-	static igdeFont *TextAreaFont( const igdeTextArea &owner, const igdeGuiTheme &guitheme );
-	static int TextAreaPadLeft( const igdeGuiTheme &guitheme );
-	static int TextAreaPadRight( const igdeGuiTheme &guitheme );
-	static int TextAreaPadTop( const igdeGuiTheme &guitheme );
-	static int TextAreaPadBottom( const igdeGuiTheme &guitheme );
+	static int TextAreaFlagsBorder(const igdeTextArea &owner);
+	static int TextAreaFlags(const igdeTextArea &owner);
+	static igdeFont *TextAreaFont(const igdeTextArea &owner, const igdeGuiTheme &guitheme);
+	static int TextAreaPadLeft(const igdeGuiTheme &guitheme);
+	static int TextAreaPadRight(const igdeGuiTheme &guitheme);
+	static int TextAreaPadTop(const igdeGuiTheme &guitheme);
+	static int TextAreaPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onMouseLeftPress( FXObject*, FXSelector, void* );
-	long onMouseLeftRelease( FXObject*, FXSelector, void* );
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
+	long onMouseLeftPress(FXObject*, FXSelector, void*);
+	long onMouseLeftRelease(FXObject*, FXSelector, void*);
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
 	
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 	
@@ -136,6 +138,6 @@ private:
 	void pBuildStylesArray();
 };
 
-typedef igdeNativeFoxTextArea igdeNativeTextArea;
+using igdeNativeTextArea = igdeNativeFoxTextArea;
 
 #endif

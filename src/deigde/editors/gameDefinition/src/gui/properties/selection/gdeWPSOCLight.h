@@ -26,21 +26,21 @@
 #define _GDEWPSOCLIGHT_H_
 
 #include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCLightListener.h"
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCLight;
 class gdeWindowProperties;
-class gdeWPSOCLightListener;
 
 
 
@@ -48,39 +48,42 @@ class gdeWPSOCLightListener;
  * \brief Object class light property panel.
  */
 class gdeWPSOCLight : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCLight> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCLightListener *pListener;
+	gdeWPSOCLightListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeComboBoxReference pCBType;
-	igdeColorBoxReference pClrColor;
-	igdeTextFieldReference pEditIntensity;
-	igdeTextFieldReference pEditAmbientRatio;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeTextFieldReference pEditRange;
-	igdeTextFieldReference pEditHalfIntensityDistance;
-	igdeTextFieldReference pEditSpotAngle;
-	igdeTextFieldReference pEditSpotRatio;
-	igdeTextFieldReference pEditSpotSmoothness;
-	igdeTextFieldReference pEditSpotExponent;
-	igdeCheckBoxReference pChkActivated;
-	igdeCheckBoxReference pChkCastShadows;
-	igdeTextFieldReference pEditHintLightImportance;
-	igdeTextFieldReference pEditHintShadowImportance;
-	igdeComboBoxReference pCBHintMovement;
-	igdeComboBoxReference pCBHintParameter;
+	igdeComboBox::Ref pCBType;
+	igdeColorBox::Ref pClrColor;
+	igdeTextField::Ref pEditIntensity;
+	igdeTextField::Ref pEditAmbientRatio;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeTextField::Ref pEditRange;
+	igdeTextField::Ref pEditHalfIntensityDistance;
+	igdeTextField::Ref pEditSpotAngle;
+	igdeTextField::Ref pEditSpotRatio;
+	igdeTextField::Ref pEditSpotSmoothness;
+	igdeTextField::Ref pEditSpotExponent;
+	igdeCheckBox::Ref pChkActivated;
+	igdeCheckBox::Ref pChkCastShadows;
+	igdeTextField::Ref pEditHintLightImportance;
+	igdeTextField::Ref pEditHintShadowImportance;
+	igdeComboBox::Ref pCBHintMovement;
+	igdeComboBox::Ref pCBHintParameter;
 	
-	igdeEditPathReference pEditLightSkin;
+	igdeEditPath::Ref pEditLightSkin;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTriggerNames;
-	igdeComboBoxFilterReference pCBTriggerNameTarget;
+	igdeComboBox::Ref pCBTriggerNames;
+	igdeComboBoxFilter::Ref pCBTriggerNameTarget;
 	
 	
 	
@@ -88,7 +91,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCLight( gdeWindowProperties &windowMain );
+	gdeWPSOCLight(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -100,25 +103,25 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class light or \em NULL if not set. */
+	/** \brief Active object class light or \em nullptr if not set. */
 	gdeOCLight *GetLight() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCLight::eProperties GetPropertyName() const;
+	gdeOCLight::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCLight::eTriggers GetTriggerName() const;
+	gdeOCLight::eTriggers GetTriggerName() const;
 	
 	
 	

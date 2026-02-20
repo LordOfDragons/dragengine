@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNode;
+#include "../../../skin/property/node/sePropertyNode.h"
 
 
 
@@ -35,8 +35,12 @@ class sePropertyNode;
  * \brief Undo action property node set rotation.
  */
 class seUPropertyNodeSetRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeSetRotation>;
+	
+	
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetRotation( sePropertyNode *node, float newValue );
+	seUPropertyNodeSetRotation(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeSetRotation();
+	~seUPropertyNodeSetRotation() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -26,10 +26,11 @@
 #define _MEVIEWEDITORMOVE_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../undosys/gui/meBaseUndoMove.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class meCLSnapPoint;
 
@@ -39,10 +40,13 @@ class meCLSnapPoint;
  * \brief View editor for moving scene elements.
  */
 class meViewEditorMove : public meViewEditorNavigation{
+public:
+	using Ref = deTObjectReference<meViewEditorMove>;
+	
 private:
-	igdeUndoReference pUndoMove;
+	meBaseUndoMove::Ref pUndoMove;
 	meCLSnapPoint *pCLSnapPoint;
-	deColliderReference pCLCollider;
+	deCollider::Ref pCLCollider;
 	
 	
 	
@@ -50,10 +54,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditorMove( meView3D &view );
+	meViewEditorMove(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditorMove();
+	~meViewEditorMove() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -65,16 +72,16 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** \brief A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );
+	bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control) override;
 	
 	/** \brief The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	
 	/** \brief The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	
 	/** \brief The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/*@}*/
 };
 

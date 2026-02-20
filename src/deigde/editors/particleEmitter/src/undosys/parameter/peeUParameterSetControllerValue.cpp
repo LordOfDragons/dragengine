@@ -41,42 +41,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetControllerValue::peeUParameterSetControllerValue( peeType *type, peeParameter *parameter, peeController *newController ){
-	if( ! type || ! parameter ){
-		DETHROW( deeInvalidParam );
+peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, peeParameter *parameter, peeController *newController){
+	if(!type || !parameter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	pParameter = parameter;
-	pOldController = NULL;
-	pNewController = NULL;
+	pOldController = nullptr;
+	pNewController = nullptr;
 	
-	SetShortInfo( "Set Parameter Value Curve Controller" );
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetControllerValue");
 	
 	pOldController = parameter->GetControllerValue();
-	if( pOldController ){
-		pOldController->AddReference();
-	}
-	
 	pNewController = newController;
-	if( pNewController ){
-		pNewController->AddReference();
-	}
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetControllerValue::~peeUParameterSetControllerValue(){
-	if( pNewController ){
-		pNewController->FreeReference();
-	}
-	if( pOldController ){
-		pOldController->FreeReference();
-	}
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -85,9 +67,9 @@ peeUParameterSetControllerValue::~peeUParameterSetControllerValue(){
 ///////////////
 
 void peeUParameterSetControllerValue::Undo(){
-	pParameter->SetControllerValue( pOldController );
+	pParameter->SetControllerValue(pOldController);
 }
 
 void peeUParameterSetControllerValue::Redo(){
-	pParameter->SetControllerValue( pNewController );
+	pParameter->SetControllerValue(pNewController);
 }

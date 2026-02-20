@@ -57,7 +57,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -67,7 +67,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
@@ -91,41 +91,41 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRuleBoneTransformator &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(aeWPAPanelRuleBoneTransformator &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleBoneTransformator *rule ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleBoneTransformator *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleBoneTransformator & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRuleBoneTransformator &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -134,23 +134,23 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	cBaseComboBoxListener( aeWPAPanelRuleBoneTransformator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
+	cBaseComboBoxListener(aeWPAPanelRuleBoneTransformator &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(comboBox, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator *animator, aeRuleBoneTransformator *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleBoneTransformator *rule) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -158,23 +158,23 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	cBaseEditVectorListener( aeWPAPanelRuleBoneTransformator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
+	cBaseEditVectorListener(aeWPAPanelRuleBoneTransformator &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editVector, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator *animator, aeRuleBoneTransformator *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator *animator, aeRuleBoneTransformator *rule) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -182,225 +182,254 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	cBaseTextFieldListener( aeWPAPanelRuleBoneTransformator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(aeWPAPanelRuleBoneTransformator &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleBoneTransformator *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleBoneTransformator *rule) = 0;
 };
 
 
 class cEditTranslationMinimum : public cBaseEditVectorListener{
 public:
-	cEditTranslationMinimum( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditTranslationMinimum>;
+	cEditTranslationMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetMinimumTranslation() )
-			? new aeURuleBTransSetTransMin( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumTranslation())
+			? aeURuleBTransSetTransMin::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditTranslationMaximum : public cBaseEditVectorListener{
 public:
-	cEditTranslationMaximum( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditTranslationMaximum>;
+	cEditTranslationMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetMaximumTranslation() )
-			? new aeURuleBTransSetTransMax( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumTranslation())
+			? aeURuleBTransSetTransMax::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotationMinimum : public cBaseEditVectorListener{
 public:
-	cEditRotationMinimum( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditRotationMinimum>;
+	cEditRotationMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetMinimumRotation() )
-			? new aeURuleBTransSetRotMin( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
+			? aeURuleBTransSetRotMin::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotationMaximum : public cBaseEditVectorListener{
 public:
-	cEditRotationMaximum( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditRotationMaximum>;
+	cEditRotationMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetMaximumRotation() )
-			? new aeURuleBTransSetRotMax( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
+			? aeURuleBTransSetRotMax::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditScalingMinimum : public cBaseEditVectorListener{
 public:
-	cEditScalingMinimum( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditScalingMinimum>;
+	cEditScalingMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetMinimumScaling() )
-			? new aeURuleBTransSetScaleMin( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumScaling())
+			? aeURuleBTransSetScaleMin::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditScalingMaximum : public cBaseEditVectorListener{
 public:
-	cEditScalingMaximum( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditScalingMaximum>;
+	cEditScalingMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetMaximumScaling() )
-			? new aeURuleBTransSetScaleMax( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumScaling())
+			? aeURuleBTransSetScaleMax::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditAxis : public cBaseEditVectorListener{
 public:
-	cEditAxis( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditAxis>;
+	cEditAxis(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetAxis() )
-			? new aeURuleBTransSetAxis( rule, editVector->GetVector() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return !editVector->GetVector().IsEqualTo(rule->GetAxis())
+			? aeURuleBTransSetAxis::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditMinimumAngle : public cBaseTextFieldListener{
 public:
-	cEditMinimumAngle( aeWPAPanelRuleBoneTransformator &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cEditMinimumAngle>;
+	cEditMinimumAngle(aeWPAPanelRuleBoneTransformator &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - rule->GetMinimumAngle() ) > FLOAT_SAFE_EPSILON
-			? new aeURuleBTransSetMinAngle( rule, value ) : nullptr;
+		return fabsf(value - rule->GetMinimumAngle()) > FLOAT_SAFE_EPSILON
+			? aeURuleBTransSetMinAngle::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cEditMaximumAngle : public cBaseTextFieldListener{
 public:
-	cEditMaximumAngle( aeWPAPanelRuleBoneTransformator &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cEditMaximumAngle>;
+	cEditMaximumAngle(aeWPAPanelRuleBoneTransformator &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - rule->GetMaximumAngle() ) > FLOAT_SAFE_EPSILON
-			? new aeURuleBTransSetMaxAngle( rule, value ) : nullptr;
+		return fabsf(value - rule->GetMaximumAngle()) > FLOAT_SAFE_EPSILON
+			? aeURuleBTransSetMaxAngle::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cComboCoordFrame : public cBaseComboBoxListener{
 public:
-	cComboCoordFrame( aeWPAPanelRuleBoneTransformator &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboCoordFrame>;
+	cComboCoordFrame(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule ){
-		if( ! comboBox->GetSelectedItem() ){
-			return NULL;
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		if(!comboBox->GetSelectedItem()){
+			return {};
 		}
 		
 		deAnimatorRuleBoneTransformator::eCoordinateFrames value =
-			( deAnimatorRuleBoneTransformator::eCoordinateFrames )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return rule->GetCoordinateFrame() != value ? new aeURuleBTransSetCFrame( rule, value ) : NULL;
+			(deAnimatorRuleBoneTransformator::eCoordinateFrames)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetCoordinateFrame() != value ? aeURuleBTransSetCFrame::Ref::New(rule, value) : aeURuleBTransSetCFrame::Ref();
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition( aeWPAPanelRuleBoneTransformator &panel ) : cBaseAction( panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleBoneTransformator *rule ){
-		return new aeURuleBTransSetEnablePos( rule );
+public:
+	cActionEnablePosition(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleBoneTransformator.EnablePosition", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.EnablePosition.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return aeURuleBTransSetEnablePos::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleBoneTransformator &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnablePosition() );
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnablePosition());
 	}
 };
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation( aeWPAPanelRuleBoneTransformator &panel ) : cBaseAction( panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleBoneTransformator *rule ){
-		return new aeURuleBTransSetEnableOrien( rule );
+public:
+	cActionEnableRotation(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleBoneTransformator.EnableRotation", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.EnableRotation.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return aeURuleBTransSetEnableOrien::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleBoneTransformator &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableOrientation() );
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableOrientation());
 	}
 };
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize( aeWPAPanelRuleBoneTransformator &panel ) : cBaseAction( panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleBoneTransformator *rule ){
-		return new aeURuleBTransSetEnableSize( rule );
+public:
+	cActionEnableSize(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleBoneTransformator.EnableSize", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.EnableSize.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return aeURuleBTransSetEnableSize::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleBoneTransformator &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableSize() );
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableSize());
 	}
 };
 
 class cActionUseAxis : public cBaseAction{
 public:
-	cActionUseAxis( aeWPAPanelRuleBoneTransformator &panel ) : cBaseAction( panel,
-		"Use rotation axis", NULL, "Use rotation axis instead of direct rotation" ){ }
+	using Ref = deTObjectReference<cActionUseAxis>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleBoneTransformator *rule ){
-		return new aeURuleBTransSetUseAxis( rule );
+public:
+	cActionUseAxis(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleBoneTransformator.UseAxis", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.UseAxis.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return aeURuleBTransSetUseAxis::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleBoneTransformator &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetUseAxis() );
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetUseAxis());
 	}
 };
 
 class cComboTargetBone : public cBaseComboBoxListener{
 public:
-	cComboTargetBone( aeWPAPanelRuleBoneTransformator &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboTargetBone>;
+	cComboTargetBone(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule ){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
 		return comboBox->GetText() != rule->GetTargetBone()
-			? new aeURuleBTransSetTargetBone( rule, comboBox->GetText() ) : NULL;
+			? aeURuleBTransSetTargetBone::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cComboInputBone : public cBaseComboBoxListener{
 public:
+	using Ref = deTObjectReference<cComboInputBone>;
 	cComboInputBone(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
-	igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
 		return comboBox->GetText() != rule->GetInputBone()
-			? new aeURuleBTransSetInputBone(rule, comboBox->GetText()) : nullptr;
+			? aeURuleBTransSetInputBone::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cComboInputSource : public cBaseComboBoxListener{
 public:
+	using Ref = deTObjectReference<cComboInputSource>;
 	cComboInputSource(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
-	igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
 		if(!comboBox->GetSelectedItem()){
-			return nullptr;
+			return {};
 		}
 		
 		deAnimatorRuleBoneTransformator::eInputSources value =
 			(deAnimatorRuleBoneTransformator::eInputSources)(intptr_t)comboBox->GetSelectedItem()->GetData();
-		return rule->GetInputSource() != value ? new aeURuleBTransSetInputSource(rule, value) : nullptr;
+		return rule->GetInputSource() != value ? aeURuleBTransSetInputSource::Ref::New(rule, value) : aeURuleBTransSetInputSource::Ref();
 	}
 };
 
@@ -414,66 +443,84 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleBoneTransformator::aeWPAPanelRuleBoneTransformator( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertBoneTransformator )
+aeWPAPanelRuleBoneTransformator::aeWPAPanelRuleBoneTransformator(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertBoneTransformator)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Bone Manipulator:" );
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleBoneTransformator.BoneManipulator");
 	
-	helper.EditVector( groupBox, "Min Translation:", "Minimum translation",
-		pEditMinTrans, new cEditTranslationMinimum( *this ) );
-	helper.EditVector( groupBox, "Max Translation:", "Maximum translation",
-		pEditMaxTrans, new cEditTranslationMaximum( *this ) );
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinTranslation",
+		"@Animator.WPAPanelRuleBoneTransformator.MinTranslation.ToolTip",
+		pEditMinTrans, cEditTranslationMinimum::Ref::New(*this));
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxTranslation",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxTranslation.ToolTip",
+		pEditMaxTrans, cEditTranslationMaximum::Ref::New(*this));
 	
-	helper.EditVector( groupBox, "Min Rotation:", "Minimum rotation",
-		pEditMinRot, new cEditRotationMinimum( *this ) );
-	helper.EditVector( groupBox, "Max Rotation:", "Maximum rotation",
-		pEditMaxRot, new cEditRotationMaximum( *this ) );
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinRotation",
+		"@Animator.WPAPanelRuleBoneTransformator.MinRotation.ToolTip",
+		pEditMinRot, cEditRotationMinimum::Ref::New(*this));
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxRotation",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxRotation.ToolTip",
+		pEditMaxRot, cEditRotationMaximum::Ref::New(*this));
 	
-	helper.EditVector( groupBox, "Min Scaling:", "Minimum scaling",
-		pEditMinScale, new cEditScalingMinimum( *this ) );
-	helper.EditVector( groupBox, "Max Scaling:", "Maximum scaling",
-		pEditMaxScale, new cEditScalingMaximum( *this ) );
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinScaling",
+		"@Animator.WPAPanelRuleBoneTransformator.MinScaling.ToolTip",
+		pEditMinScale, cEditScalingMinimum::Ref::New(*this));
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxScaling",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxScaling.ToolTip",
+		pEditMaxScale, cEditScalingMaximum::Ref::New(*this));
 	
-	helper.CheckBox( groupBox, pChkUseAxis, new cActionUseAxis( *this ), true );
-	helper.EditVector( groupBox, "Axis:", "Rotation axis", pEditAxis, new cEditAxis( *this ) );
-	helper.EditFloat( groupBox, "Min Angle:", "Minimum axis rotation angle",
-		pEditMinAngle, new cEditMinimumAngle( *this ) );
-	helper.EditFloat( groupBox, "Max Angle:", "Maximum axis rotation angle",
-		pEditMaxAngle, new cEditMaximumAngle( *this ) );
+	helper.CheckBox(groupBox, pChkUseAxis, cActionUseAxis::Ref::New(*this));
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.Axis",
+		"@Animator.WPAPanelRuleBoneTransformator.Axis.ToolTip", pEditAxis, cEditAxis::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinAngle",
+		"@Animator.WPAPanelRuleBoneTransformator.MinAngle.ToolTip",
+		pEditMinAngle, cEditMinimumAngle::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxAngle",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxAngle.ToolTip",
+		pEditMaxAngle, cEditMaximumAngle::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Coord-Frame:", "Sets the coordinate frame to use for rotation",
-		pCBCoordFrame, new cComboCoordFrame( *this ) );
-	pCBCoordFrame->AddItem( "Bone Local", NULL, ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfBoneLocal );
-	pCBCoordFrame->AddItem( "Component", NULL, ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfComponent );
-	pCBCoordFrame->AddItem( "Target Bone", NULL, ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfTargetBone );
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleBoneTransformator.CoordFrame",
+		"@Animator.WPAPanelRuleBoneTransformator.CoordFrame.ToolTip",
+		pCBCoordFrame, cComboCoordFrame::Ref::New(*this));
+	pCBCoordFrame->SetAutoTranslateItems(true);
+	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleBoneTransformator.CoordFrame.BoneLocal",
+		nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfBoneLocal);
+	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleBoneTransformator.CoordFrame.Component",
+		nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfComponent);
+	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleBoneTransformator.CoordFrame.TargetBone",
+		nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfTargetBone);
 	
-	helper.ComboBoxFilter( groupBox, "Target Bone:", true, "Set bone to use as coordinate frame",
-		pCBTargetBone, new cComboTargetBone( *this ) );
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleBoneTransformator.TargetBone", true,
+		"@Animator.WPAPanelRuleBoneTransformator.TargetBone.ToolTip",
+		pCBTargetBone, cComboTargetBone::Ref::New(*this));
 	pCBTargetBone->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(groupBox, "Input Bone:", true, "Set bone to use as input",
-		pCBInputBone, new cComboInputBone(*this));
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleBoneTransformator.InputBone", true,
+		"@Animator.WPAPanelRuleBoneTransformator.InputBone.ToolTip",
+		pCBInputBone, cComboInputBone::Ref::New(*this));
 	pCBInputBone->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "Input Source:", "Source to use for input.",
-		pCBInputSource, new cComboInputSource(*this));
-	pCBInputSource->AddItem("Target Blend", nullptr,
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleBoneTransformator.InputSource",
+		"@Animator.WPAPanelRuleBoneTransformator.InputSource.ToolTip",
+		pCBInputSource, cComboInputSource::Ref::New(*this));
+	pCBInputSource->SetAutoTranslateItems(true);
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.TargetBlend", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetBlend);
-	pCBInputSource->AddItem("Target Direct", nullptr,
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.TargetDirect", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetDirect);
-	pCBInputSource->AddItem("Bone State", nullptr,
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.BoneState", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisBoneState);
-	pCBInputSource->AddItem("Bone State Inverse", nullptr,
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.BoneStateInverse", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisBoneStateInverse);
 	
-	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
 }
 
 aeWPAPanelRuleBoneTransformator::~aeWPAPanelRuleBoneTransformator(){
@@ -499,7 +546,7 @@ void aeWPAPanelRuleBoneTransformator::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				const decString &name = rig->GetBoneAt(i).GetName();
+				const decString &name = rig->GetBoneAt(i)->GetName();
 				pCBTargetBone->AddItem(name);
 				pCBInputBone->AddItem(name);
 			}
@@ -518,52 +565,52 @@ void aeWPAPanelRuleBoneTransformator::UpdateRigBoneList(){
 void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	const aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )GetRule();
+	const aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)GetRule();
 	
-	if( rule ){
-		pEditMinTrans->SetVector( rule->GetMinimumTranslation() );
-		pEditMaxTrans->SetVector( rule->GetMaximumTranslation() );
-		pEditMinRot->SetVector( rule->GetMinimumRotation() );
-		pEditMaxRot->SetVector( rule->GetMaximumRotation() );
-		pEditMinScale->SetVector( rule->GetMinimumScaling() );
-		pEditMaxScale->SetVector( rule->GetMaximumScaling() );
-		pEditAxis->SetVector( rule->GetAxis() );
-		pEditMinAngle->SetFloat( rule->GetMinimumAngle() );
-		pEditMaxAngle->SetFloat( rule->GetMaximumAngle() );
-		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )rule->GetCoordinateFrame() );
-		pCBTargetBone->SetText( rule->GetTargetBone() );
+	if(rule){
+		pEditMinTrans->SetVector(rule->GetMinimumTranslation());
+		pEditMaxTrans->SetVector(rule->GetMaximumTranslation());
+		pEditMinRot->SetVector(rule->GetMinimumRotation());
+		pEditMaxRot->SetVector(rule->GetMaximumRotation());
+		pEditMinScale->SetVector(rule->GetMinimumScaling());
+		pEditMaxScale->SetVector(rule->GetMaximumScaling());
+		pEditAxis->SetVector(rule->GetAxis());
+		pEditMinAngle->SetFloat(rule->GetMinimumAngle());
+		pEditMaxAngle->SetFloat(rule->GetMaximumAngle());
+		pCBCoordFrame->SetSelectionWithData((void*)(intptr_t)rule->GetCoordinateFrame());
+		pCBTargetBone->SetText(rule->GetTargetBone());
 		pCBInputBone->SetText(rule->GetInputBone());
 		pCBInputSource->SetSelectionWithData((void*)(intptr_t)rule->GetInputSource());
 		
 	}else{
-		pEditMinTrans->SetVector( decVector() );
-		pEditMaxTrans->SetVector( decVector() );
-		pEditMinRot->SetVector( decVector() );
-		pEditMaxRot->SetVector( decVector() );
-		pEditMinScale->SetVector( decVector() );
-		pEditMaxScale->SetVector( decVector() );
-		pEditAxis->SetVector( decVector( 0.0f, 0.0f, 1.0f ) );
-		pEditMinAngle->SetFloat( 0.0f );
-		pEditMaxAngle->SetFloat( 0.0f );
-		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfComponent );
+		pEditMinTrans->SetVector(decVector());
+		pEditMaxTrans->SetVector(decVector());
+		pEditMinRot->SetVector(decVector());
+		pEditMaxRot->SetVector(decVector());
+		pEditMinScale->SetVector(decVector());
+		pEditMaxScale->SetVector(decVector());
+		pEditAxis->SetVector(decVector(0.0f, 0.0f, 1.0f));
+		pEditMinAngle->SetFloat(0.0f);
+		pEditMaxAngle->SetFloat(0.0f);
+		pCBCoordFrame->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfComponent);
 		pCBTargetBone->ClearText();
 		pCBInputBone->ClearText();
 		pCBInputSource->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetBlend);
 	}
 	
 	const bool enabled = rule;
-	pEditMinTrans->SetEnabled( enabled );
-	pEditMaxTrans->SetEnabled( enabled );
-	pEditMinRot->SetEnabled( enabled );
-	pEditMaxRot->SetEnabled( enabled );
-	pEditMinScale->SetEnabled( enabled );
-	pEditMaxScale->SetEnabled( enabled );
+	pEditMinTrans->SetEnabled(enabled);
+	pEditMaxTrans->SetEnabled(enabled);
+	pEditMinRot->SetEnabled(enabled);
+	pEditMaxRot->SetEnabled(enabled);
+	pEditMinScale->SetEnabled(enabled);
+	pEditMaxScale->SetEnabled(enabled);
 	pChkUseAxis->GetAction()->Update();
-	pEditAxis->SetEnabled( enabled );
-	pEditMinAngle->SetEnabled( enabled );
-	pEditMaxAngle->SetEnabled( enabled );
-	pCBCoordFrame->SetEnabled( enabled );
-	pCBTargetBone->SetEnabled( enabled );
+	pEditAxis->SetEnabled(enabled);
+	pEditMinAngle->SetEnabled(enabled);
+	pEditMaxAngle->SetEnabled(enabled);
+	pCBCoordFrame->SetEnabled(enabled);
+	pCBTargetBone->SetEnabled(enabled);
 	pCBInputBone->SetEnabled(enabled);
 	pCBInputSource->SetEnabled(enabled);
 	
@@ -575,10 +622,10 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 void aeWPAPanelRuleBoneTransformator::UpdateTargetList(){
 	aeWPAPanelRule::UpdateTargetList();
 	
-	aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )GetRule();
-	if( rule ){
-		AddTarget( "Translation", &rule->GetTargetTranslation() );
-		AddTarget( "Rotation", &rule->GetTargetRotation() );
-		AddTarget( "Scaling", &rule->GetTargetScaling() );
+	aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)GetRule();
+	if(rule){
+		AddTarget("@Animator.Target.Translation", rule->GetTargetTranslation());
+		AddTarget("@Animator.Target.Rotation", rule->GetTargetRotation());
+		AddTarget("@Animator.Target.Scaling", rule->GetTargetScaling());
 	}
 }

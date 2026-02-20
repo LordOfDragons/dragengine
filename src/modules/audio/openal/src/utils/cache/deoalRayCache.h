@@ -25,12 +25,14 @@
 #ifndef _DEOALRAYCACHE_H_
 #define _DEOALRAYCACHE_H_
 
+#include "deoalRayCacheRay.h"
+#include "../../environment/raytrace/deoalRayTraceHitElement.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 
-class deoalRayCacheRay;
-class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalRayCacheOctree;
 class deoalAudioThread;
@@ -51,9 +53,7 @@ private:
 	float pSpreadDot;
 	int pOctreeDepth;
 	
-	deoalRayCacheRay *pRootRay;
-	deoalRayCacheRay *pTailRay;
-	int pRayCount;
+	decTUniqueLinkedList<deoalRayCacheRay> pRays;
 	
 	deoalRayCacheOctree *pOctree;
 	
@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model ray cache. */
-	deoalRayCache( const decVector &minExtend, const decVector &maxExtend );
+	deoalRayCache(const decVector &minExtend, const decVector &maxExtend);
 	
 	/** \brief Clean up model ray cache. */
 	~deoalRayCache();
@@ -74,24 +74,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Find matching ray. */
-	deoalRayCacheRay *FindRay( const decVector &origin, const decVector &direction );
+	deoalRayCacheRay *FindRay(const decVector &origin, const decVector &direction);
 	
 	/** \brief Cache ray if not present or longer than present cached ray. */
-	void CacheRay( const decVector &origin, const decVector &direction, float length,
-		const deoalRayTraceHitElementList &elements );
+	void CacheRay(const decVector &origin, const decVector &direction, float length,
+		const deoalRayTraceHitElement::List &elements);
 	
 	/** \brief Cache ray if not present or longer than present cached ray. */
-	void CacheRay( const decVector &origin, const decVector &direction, float length,
-		const deoalRayTraceResult &result );
+	void CacheRay(const decVector &origin, const decVector &direction, float length,
+		const deoalRayTraceResult &result);
 	
 	/** \brief Cache ray if not present or longer than present cached ray. */
-	void CacheRay( const decVector &origin, const decVector &direction, float length,
-		const deoalRayTraceResult &result, int elementCount );
+	void CacheRay(const decVector &origin, const decVector &direction, float length,
+		const deoalRayTraceResult &result, int elementCount);
 	
 	
 	
 	/** \brief Debug. */
-	void DebugPrint( deoalAudioThread &audioThread, const char *source );
+	void DebugPrint(deoalAudioThread &audioThread, const char *source);
 	/*@}*/
 	
 	
@@ -99,8 +99,8 @@ public:
 private:
 	void pLockRead();
 	void pUnlockRead();
-	deoalRayCacheRay *pFindRay( const decVector &origin, const decVector &direction ) const;
-	void pCacheRay( deoalRayCacheRay *ray );
+	deoalRayCacheRay *pFindRay(const decVector &origin, const decVector &direction) const;
+	void pCacheRay(deoalRayCacheRay::Ref &&ray);
 };
 
 #endif

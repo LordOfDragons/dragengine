@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalModelRTOctree.h"
 #include "deoalModelOctree.h"
 #include "deoalModelOctreeVisitor.h"
@@ -44,17 +40,17 @@ public:
 	int pFaceCount;
 	
 	deoalModelRTOctreeCalcCounts() :
-	pNodeCount( 0 ),
-	pFaceCount( 0 ){
+	pNodeCount(0),
+	pFaceCount(0){
 	}
 	
 	inline int GetNodeCount() const{ return pNodeCount; }
 	inline int GetFaceCount() const{ return pFaceCount; }
 	inline bool IsEmpty() const{ return pNodeCount == 0 || pFaceCount == 0; }
 	
-	virtual void VisitNode( deoalOctree *node, int /*intersection*/ ){
+	void VisitNode(deoalOctree *node, int /*intersection*/) override{
 		pNodeCount++;
-		pFaceCount += ( ( deoalModelOctree* )node )->GetFaceCount();
+		pFaceCount += ((deoalModelOctree*)node)->GetFaceCount();
 	}
 };
 
@@ -68,16 +64,16 @@ private:
 	int pIndexFace;
 	
 public:
-	deoalModelRTOctreeBuild( deoalModelRTOctree::sFace *faces, deoalModelRTOctree::sNode *nodes ) :
-	pFaces( faces ),
-	pNodes( nodes ),
-	pIndexNode( 0 ),
-	pIndexChild( 1 ),
-	pIndexFace( 0 ){
+	deoalModelRTOctreeBuild(deoalModelRTOctree::sFace *faces, deoalModelRTOctree::sNode *nodes) :
+	pFaces(faces),
+	pNodes(nodes),
+	pIndexNode(0),
+	pIndexChild(1),
+	pIndexFace(0){
 	}
 	
-	void VisitNode( deoalModelOctree &node ){
-		deoalModelRTOctree::sNode &curNode = pNodes[ pIndexNode ];
+	void VisitNode(deoalModelOctree &node){
+		deoalModelRTOctree::sNode &curNode = pNodes[pIndexNode];
 		int i;
 		
 		curNode.center = node.GetCenter();
@@ -88,18 +84,18 @@ public:
 		curNode.firstFace = pIndexFace;
 		curNode.faceCount = faceCount;
 		
-		for( i=0; i<faceCount; i++ ){
-			const deoalModelFace &modelFace = *node.GetFaceAt( i );
-			deoalModelRTOctree::sFace &face = pFaces[ pIndexFace++ ];
+		for(i=0; i<faceCount; i++){
+			const deoalModelFace &modelFace = *node.GetFaceAt(i);
+			deoalModelRTOctree::sFace &face = pFaces[pIndexFace++];
 			
 			face.normal = modelFace.GetNormal();
 			face.baseVertex = modelFace.GetVertex1();
-			face.edgeNormal[ 0 ] = modelFace.GetEdge1Normal();
-			face.edgeNormal[ 1 ] = modelFace.GetEdge2Normal();
-			face.edgeNormal[ 2 ] = modelFace.GetEdge3Normal();
-			face.edgeDistance[ 0 ] = modelFace.GetEdge1DistanceSafe();
-			face.edgeDistance[ 1 ] = modelFace.GetEdge2DistanceSafe();
-			face.edgeDistance[ 2 ] = modelFace.GetEdge3DistanceSafe();
+			face.edgeNormal[0] = modelFace.GetEdge1Normal();
+			face.edgeNormal[1] = modelFace.GetEdge2Normal();
+			face.edgeNormal[2] = modelFace.GetEdge3Normal();
+			face.edgeDistance[0] = modelFace.GetEdge1DistanceSafe();
+			face.edgeDistance[1] = modelFace.GetEdge2DistanceSafe();
+			face.edgeDistance[2] = modelFace.GetEdge3DistanceSafe();
 			face.indexFace = modelFace.GetIndex();
 			face.indexTexture = modelFace.GetTexture();
 		}
@@ -107,19 +103,19 @@ public:
 		// child pNodes
 		curNode.firstNode = pIndexChild;
 		curNode.nodeCount = 0;
-		for( i=0; i<8; i++ ){
-			if( node.GetNodeAt( i ) ){
+		for(i=0; i<8; i++){
+			if(node.GetNodeAt(i)){
 				curNode.nodeCount++;
 			}
 		}
 		pIndexChild += curNode.nodeCount;
 		
 		int iterIndex = curNode.firstNode;
-		for( i=0; i<8; i++ ){
-			deoalOctree * const child = node.GetNodeAt( i );
-			if( child ){
+		for(i=0; i<8; i++){
+			deoalOctree * const child = node.GetNodeAt(i);
+			if(child){
 				pIndexNode = iterIndex++;
-				VisitNode( *( ( deoalModelOctree* )child ) );
+				VisitNode(*((deoalModelOctree*)child));
 			}
 		}
 	}
@@ -133,53 +129,22 @@ public:
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalModelRTOctree::deoalModelRTOctree( deoalModelOctree &octree ) :
-pFaces( NULL ),
-pFaceCount( 0 ),
-pNodes( NULL ),
-pNodeCount( 0 )
-{
+deoalModelRTOctree::deoalModelRTOctree(deoalModelOctree &octree){
 	try{
 		deoalModelRTOctreeCalcCounts visitorCounts;
-		octree.VisitNodes( &visitorCounts );
-		if( visitorCounts.IsEmpty() ){
+		octree.VisitNodes(&visitorCounts);
+		if(visitorCounts.IsEmpty()){
 			return;
 		}
 		
-		pFaceCount = visitorCounts.GetFaceCount();
-		pFaces = new sFace[ pFaceCount ];
+		pFaces.AddRange(visitorCounts.GetFaceCount(), {});
+		pNodes.AddRange(visitorCounts.GetNodeCount(), {});
+		deoalModelRTOctreeBuild(pFaces.GetArrayPointer(), pNodes.GetArrayPointer()).VisitNode(octree);
 		
-		pNodeCount = visitorCounts.GetNodeCount();
-		pNodes = new sNode[ pNodeCount ];
-		
-		deoalModelRTOctreeBuild( pFaces, pNodes ).VisitNode( octree );
-		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
-		pCleanUp();
 		throw;
 	}
 }
 
-deoalModelRTOctree::~deoalModelRTOctree(){
-	pCleanUp();
-}
-
-
-
-// Management
-///////////////
-
-
-
-// Private Functions
-//////////////////////
-
-void deoalModelRTOctree::pCleanUp(){
-	if( pNodes ){
-		delete [] pNodes;
-	}
-	if( pFaces ){
-		delete [] pFaces;
-	}
-}
+deoalModelRTOctree::~deoalModelRTOctree() = default;

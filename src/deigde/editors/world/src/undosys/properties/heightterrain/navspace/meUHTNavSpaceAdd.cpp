@@ -40,30 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceAdd::meUHTNavSpaceAdd( meHeightTerrainSector *sector, meHeightTerrainNavSpace *navspace ) :
-pSector( NULL ),
-pNavSpace( NULL )
+meUHTNavSpaceAdd::meUHTNavSpaceAdd(meHeightTerrainSector *sector, meHeightTerrainNavSpace *navspace) :
+pSector(nullptr)
 {
-	if( ! sector || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!sector || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Height terrain add nav-space" );
+	SetShortInfo("@World.UHTNavSpaceAdd.HeightTerrainAddNavSpace");
 	
 	pSector = sector;
-	sector->AddReference();
-	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceAdd::~meUHTNavSpaceAdd(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
-	if( pSector ){
-		pSector->FreeReference();
-	}
 }
 
 
@@ -72,10 +62,10 @@ meUHTNavSpaceAdd::~meUHTNavSpaceAdd(){
 ///////////////
 
 void meUHTNavSpaceAdd::Undo(){
-	pSector->RemoveNavSpace( pNavSpace );
+	pSector->RemoveNavSpace(pNavSpace);
 }
 
 void meUHTNavSpaceAdd::Redo(){
-	pSector->AddNavSpace( pNavSpace );
-	pSector->SetActiveNavSpace( pNavSpace );
+	pSector->AddNavSpace(pNavSpace);
+	pSector->SetActiveNavSpace(pNavSpace);
 }

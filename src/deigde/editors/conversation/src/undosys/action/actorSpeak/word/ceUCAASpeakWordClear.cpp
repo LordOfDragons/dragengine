@@ -42,32 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordClear::ceUCAASpeakWordClear( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceUCAASpeakWordClear::ceUCAASpeakWordClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(nullptr)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak clear words" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearWords");
 	
-	pOldWords = actorSpeak->GetWordList();
+	pOldWords = actorSpeak->GetWords();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakWordClear::~ceUCAASpeakWordClear(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ ceUCAASpeakWordClear::~ceUCAASpeakWordClear(){
 ///////////////
 
 void ceUCAASpeakWordClear::Undo(){
-	pActorSpeak->GetWordList() = pOldWords;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetWords() = pOldWords;
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordClear::Redo(){
-	pActorSpeak->GetWordList().RemoveAll();
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetWords().RemoveAll();
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

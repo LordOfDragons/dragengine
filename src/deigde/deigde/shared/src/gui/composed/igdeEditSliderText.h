@@ -25,13 +25,13 @@
 #ifndef _IGDEEDITSLIDERTEXT_H_
 #define _IGDEEDITSLIDERTEXT_H_
 
-#include "../igdeSliderReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeSlider.h"
+#include "../igdeTextField.h"
 #include "../event/igdeSliderListener.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditSliderTextListener;
@@ -45,6 +45,14 @@ class igdeUIHelper;
  * widget. The text field is synchronized to the slider.
  */
 class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditSliderText>;
+	
+	/** \brief Type holding weak reference. */
+	using WeakRef = deTWeakObjectReference<igdeEditSliderText>;
+	
+	
 protected:
 	/** \brief Slider listener. */
 	class DE_DLL_EXPORT cListenerSlider : public igdeSliderListener{
@@ -52,10 +60,15 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
-		cListenerSlider( igdeEditSliderText &sliderText );
-		virtual ~cListenerSlider();
-		virtual void OnValueChanged( igdeSlider *slider );
-		virtual void OnValueChanging(igdeSlider *slider );
+		using Ref = deTObjectReference<cListenerSlider>;
+		cListenerSlider(igdeEditSliderText &sliderText);
+		
+	protected:
+		~cListenerSlider() override;
+		
+	public:
+		void OnValueChanged(igdeSlider *slider) override;
+		void OnValueChanging(igdeSlider *slider) override;
 	};
 	
 	/** \brief Text field listener. */
@@ -64,22 +77,27 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
-		cListenerTextField( igdeEditSliderText &sliderText );
-		virtual ~cListenerTextField();
-		virtual void OnTextChanged( igdeTextField *textField );
-		virtual void OnTextChanging( igdeTextField *textField );
+		using Ref = deTObjectReference<cListenerTextField>;
+		cListenerTextField(igdeEditSliderText &sliderText);
+		
+	protected:
+		~cListenerTextField() override;
+		
+	public:
+		void OnTextChanged(igdeTextField *textField) override;
+		void OnTextChanging(igdeTextField *textField) override;
 	};
 	
 	
 	
 private:
-	igdeSliderReference pSlider;
-	igdeTextFieldReference pText;
+	igdeSlider::Ref pSlider;
+	igdeTextField::Ref pText;
 	
 	float pValue;
 	bool pPreventNotify;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditSliderTextListener> pListeners;
 	
 	
 	
@@ -87,8 +105,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit point. */
-	igdeEditSliderText( igdeUIHelper &helper, float lower, float upper,
-		int columns, int precision, float tickSpacing, const char *description = "" );
+	igdeEditSliderText(igdeUIHelper &helper, float lower, float upper,
+		int columns, int precision, float tickSpacing, const char *description = "");
 	
 	
 	
@@ -99,7 +117,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditSliderText();
+	~igdeEditSliderText() override;
 	/*@}*/
 	
 	
@@ -114,37 +132,37 @@ public:
 	float GetUpper() const;
 	
 	/** \brief Set range. */
-	void SetRange( float lower, float upper );
+	void SetRange(float lower, float upper);
 	
 	/** \brief Tick spacing. */
 	float GetTickSpacing() const;
 	
 	/** \brief Set tick spacing. */
-	void SetTickSpacing( float spacing );
+	void SetTickSpacing(float spacing);
 	
 	/** \brief Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Precision. */
 	int GetPrecision() const;
 	
 	/** \brief Set precision. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Slider is enabled. */
 	bool GetEnabled() const;
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	const decString &GetDescription() const;
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -152,10 +170,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditSliderTextListener *listener );
+	void AddListener(igdeEditSliderTextListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditSliderTextListener *listener );
+	void RemoveListener(igdeEditSliderTextListener *listener);
 	
 	/** \brief Notify listeners value changed and has been accepted by user. */
 	virtual void NotifySliderTextValueChanged();
@@ -167,8 +185,8 @@ public:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper, float lower, float upper, int columns,
-		int precision, float tickSpacing, const char *description );
+	void pCreateContent(igdeUIHelper &helper, float lower, float upper, int columns,
+		int precision, float tickSpacing, const char *description);
 };
 
 #endif

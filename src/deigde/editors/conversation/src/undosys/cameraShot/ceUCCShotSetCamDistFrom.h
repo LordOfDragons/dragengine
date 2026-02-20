@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,8 +35,12 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set Start Camera Distance.
  */
 class ceUCCShotSetCamDistFrom : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotSetCamDistFrom>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldDist;
 	float pNewDist;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetCamDistFrom( ceCameraShot *cameraShot, float newDist );
+	ceUCCShotSetCamDistFrom(ceCameraShot *cameraShot, float newDist);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetCamDistFrom();
+	~ceUCCShotSetCamDistFrom() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

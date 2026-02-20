@@ -41,15 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglComponentLOD::deoglComponentLOD( deoglComponent &component, int lodIndex ) :
-pComponent( component ),
-pLODIndex( lodIndex ),
-pRLOD( NULL )
+deoglComponentLOD::deoglComponentLOD(deoglComponent &component, int lodIndex) :
+pComponent(component),
+pLODIndex(lodIndex)
 {
 	try{
-		pRLOD = new deoglRComponentLOD( *component.GetRComponent(), lodIndex );
+		pRLOD = deoglRComponentLOD::Ref::New(component.GetRComponent(), lodIndex);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -70,7 +69,4 @@ deoglComponentLOD::~deoglComponentLOD(){
 //////////////////////
 
 void deoglComponentLOD::pCleanUp(){
-	if( pRLOD ){
-		pRLOD->FreeReference();
-	}
 }

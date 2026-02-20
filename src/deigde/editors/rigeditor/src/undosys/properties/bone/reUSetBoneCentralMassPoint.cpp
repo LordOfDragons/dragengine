@@ -35,19 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneCentralMassPoint::reUSetBoneCentralMassPoint( reRigBone *bone, const decVector &centralMassPoint ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneCentralMassPoint::reUSetBoneCentralMassPoint(reRigBone *bone, const decVector &centralMassPoint){
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldCentralMassPoint = bone->GetCentralMassPoint();
 	pNewCentralMassPoint = centralMassPoint;
 	
 	try{
-		SetShortInfo( "Set Bone Central Mass Point" );
+		SetShortInfo("@Rig.Undo.BoneSetCmp");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +61,11 @@ reUSetBoneCentralMassPoint::~reUSetBoneCentralMassPoint(){
 ///////////////
 
 void reUSetBoneCentralMassPoint::Undo(){
-	pBone->SetCentralMassPoint( pOldCentralMassPoint );
+	pBone->SetCentralMassPoint(pOldCentralMassPoint);
 }
 
 void reUSetBoneCentralMassPoint::Redo(){
-	pBone->SetCentralMassPoint( pNewCentralMassPoint );
+	pBone->SetCentralMassPoint(pNewCentralMassPoint);
 }
 
 
@@ -76,5 +74,4 @@ void reUSetBoneCentralMassPoint::Redo(){
 //////////////////////
 
 void reUSetBoneCentralMassPoint::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

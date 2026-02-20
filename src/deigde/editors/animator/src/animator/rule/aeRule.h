@@ -26,18 +26,20 @@
 #define _AERULE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 #include "../controller/aeControllerTarget.h"
+#include "../link/aeLink.h"
 
-class aeLinkList;
 class aeAnimator;
 class aeRuleGroup;
 class deAnimatorRule;
 class deAnimatorRuleVisitor;
+class igdeTranslationManager;
 
 
 
@@ -47,8 +49,8 @@ class deAnimatorRuleVisitor;
 class aeRule : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<aeRule> Ref;
-	
+	using Ref = deTObjectReference<aeRule>;
+	using List = decTObjectOrderedSet<aeRule>;
 	
 	
 private:
@@ -67,17 +69,19 @@ private:
 	bool pInvertBlendFactor;
 	bool pEnabled;
 	
-	aeControllerTarget pTargetBlendFactor;
+	aeControllerTarget::Ref pTargetBlendFactor;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator rule. */
-	aeRule( deAnimatorRuleVisitorIdentify::eRuleTypes type );
+	aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name);
 	/** Create a copy of an animator rule. */
-	aeRule( const aeRule &copy );
+	aeRule(const aeRule &copy);
 	/** Clean up the animator rule. */
-	virtual ~aeRule();
+protected:
+	~aeRule() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -85,71 +89,70 @@ public:
 	/** Retrieve the parent animator. */
 	aeAnimator *GetAnimator() const;
 	/** Set the parent animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
-	/** Retrieve the engine animator rule or NULL. */
+	/** Retrieve the engine animator rule or nullptr. */
 	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }
-	/** Set the engine animator rule or NULL. */
-	void SetEngineRule( deAnimatorRule *rule );
+	/** Set the engine animator rule or nullptr. */
+	void SetEngineRule(deAnimatorRule *rule);
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule() = 0;
+	virtual deAnimatorRule::Ref CreateEngineRule() = 0;
 	/** Init the given engine rule with the default rule properties. */
-	void InitEngineRule( deAnimatorRule *engRule ) const;
+	void InitEngineRule(deAnimatorRule *engRule) const;
 	
 	/** Retrieve the rule type. */
 	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{ return pType; }
 	
-	/** Retrieve the parent group or NULL if there is none. */
+	/** Retrieve the parent group or nullptr if there is none. */
 	inline aeRuleGroup *GetParentGroup() const{ return pParentGroup; }
-	/** Set the parent group or NULL if there is none. */
-	void SetParentGroup( aeRuleGroup *group );
+	/** Set the parent group or nullptr if there is none. */
+	void SetParentGroup(aeRuleGroup *group);
 	
 	/** Retrieve the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Set the name. */
-	void SetName( const char *filename );
+	void SetName(const char *filename);
 	
 	/** Determine if the rule is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	/** Set if the rule is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	/** Set the blend mode. */
-	void SetBlendMode( deAnimatorRule::eBlendModes mode );
+	void SetBlendMode(deAnimatorRule::eBlendModes mode);
 	/** Retrieve the blend factor. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
 	/** Set the source blend factor. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	/** Invert blend factor. */
 	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
 	
 	/** Set invert blend factor. */
-	void SetInvertBlendFactor( bool invert );
+	void SetInvertBlendFactor(bool invert);
 	
 	/** Update Component and Animation. */
 	virtual void UpdateCompAnim();
 	/** Update targets. */
 	virtual void UpdateTargets();
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	virtual int CountLinkUsage(aeLink *link) const;
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	virtual void RemoveLinkFromTargets(aeLink *link);
 	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** Retrieve the source factor target. */
-	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
-	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
+	inline const aeControllerTarget::Ref &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	virtual void ListLinks(aeLink::List& list);
 	
 	/** Notify the engine that the rule changed. */
 	void NotifyRuleChanged();
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const = 0;
+	virtual aeRule::Ref CreateCopy() const = 0;
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
@@ -163,13 +166,13 @@ public:
 	inline const decStringSet &GetListBones() const{ return pListBones; }
 	
 	/** Set list of bones. */
-	void SetListBones( const decStringSet &bones );
+	void SetListBones(const decStringSet &bones);
 	
 	/** Add a bone. */
-	void AddBone( const char *bone );
+	void AddBone(const char *bone);
 	
 	/** Remove the given bone. */
-	void RemoveBone( const char *bone );
+	void RemoveBone(const char *bone);
 	
 	/** Remove all bones. */
 	void RemoveAllBones();
@@ -183,13 +186,13 @@ public:
 	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
 	
 	/** Set list of vertex position sets. */
-	void SetListVertexPositionSets( const decStringSet &sets );
+	void SetListVertexPositionSets(const decStringSet &sets);
 	
 	/** Add a vertex position set. */
-	void AddVertexPositionSet( const char *vertexPositionSet );
+	void AddVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Remove vertex position set. */
-	void RemoveVertexPositionSet( const char *vertexPositionSet );
+	void RemoveVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Remove all vertex position sets. */
 	void RemoveAllVertexPositionSets();
@@ -200,13 +203,14 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy another animator rule to this animator rule. */
-	aeRule &operator=( const aeRule &copy );
+	aeRule &operator=(const aeRule &copy);
 	/*@}*/
 	
 	/** \name Helper */
 	/*@{*/
 	/** Create a new rule from a rule type. */
-	static aeRule *CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes type );
+	static aeRule::Ref CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type,
+		const igdeTranslationManager &tm);
 	/*@}*/
 };
 

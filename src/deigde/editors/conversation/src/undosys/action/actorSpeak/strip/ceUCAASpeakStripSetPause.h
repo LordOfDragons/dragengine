@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,32 +37,37 @@ class ceStrip;
  * \brief Undo action actor speak conversation action set strip pause.
  */
 class ceUCAASpeakStripSetPause : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakStripSetPause>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	float pOldPause;
 	float pNewPause;
 	
-public:
+protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetPause( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newPause );
+	ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newPause);
+	
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripSetPause();
+	~ceUCAASpeakStripSetPause() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new pause. */
-	void SetNewPause( float pause );
+	void SetNewPause(float pause);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/** \brief Progressive redo action. */
 	void ProgressiveRedo();
 	/*@}*/

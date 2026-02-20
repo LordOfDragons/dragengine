@@ -25,9 +25,10 @@
 #ifndef _DEOALSOUNDRAYLIST_H_
 #define _DEOALSOUNDRAYLIST_H_
 
-class deoalSoundRay;
-class deoalSoundRaySegment;
+#include "deoalSoundRay.h"
+#include "deoalSoundRaySegment.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -37,17 +38,9 @@ class deoalSoundRaySegment;
  */
 class deoalSoundRayList{
 private:
-	deoalSoundRay *pRays;
-	int pRayCount;
-	int pRaySize;
-	
-	deoalSoundRaySegment *pSegments;
-	int pSegmentCount;
-	int pSegmentSize;
-	
-	deoalSoundRay *pTransmittedRays;
-	int pTransmittedRayCount;
-	int pTransmittedRaySize;
+	decTList<deoalSoundRay> pRays;
+	decTList<deoalSoundRaySegment> pSegments;
+	decTList<deoalSoundRay> pTransmittedRays;
 	
 	
 	
@@ -55,10 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound ray interaction list. */
-	deoalSoundRayList();
-	
-	/** \brief Clean up sound ray interaction list. */
-	~deoalSoundRayList();
+	deoalSoundRayList() = default;
 	/*@}*/
 	
 	
@@ -66,31 +56,31 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of rays. */
-	inline int GetRayCount() const{ return pRayCount; }
+	inline int GetRayCount() const{ return pRays.GetCount(); }
 	
 	/** \brief Ray at index. */
-	deoalSoundRay &GetRayAt( int index );
-	const deoalSoundRay &GetRayAt( int index ) const;
+	deoalSoundRay &GetRayAt(int index);
+	const deoalSoundRay &GetRayAt(int index) const;
 	
 	/** \brief Add ray returning index. */
 	int AddRay();
 	
 	/** \brief Number of segments. */
-	inline int GetSegmentCount() const{ return pSegmentCount; }
+	inline int GetSegmentCount() const{ return pSegments.GetCount(); }
 	
 	/** \brief Segment at index. */
-	deoalSoundRaySegment &GetSegmentAt( int index );
-	const deoalSoundRaySegment &GetSegmentAt( int index ) const;
+	deoalSoundRaySegment &GetSegmentAt(int index);
+	const deoalSoundRaySegment &GetSegmentAt(int index) const;
 	
 	/** \brief Add segment returning index. */
 	int AddSegment();
 	
 	/** \brief Number of transmitted rays. */
-	inline int GetTransmittedRayCount() const{ return pTransmittedRayCount; }
+	inline int GetTransmittedRayCount() const{ return pTransmittedRays.GetCount(); }
 	
 	/** \brief Transmitted ray at index. */
-	deoalSoundRay &GetTransmittedRayAt( int index );
-	const deoalSoundRay &GetTransmittedRayAt( int index ) const;
+	deoalSoundRay &GetTransmittedRayAt(int index);
+	const deoalSoundRay &GetTransmittedRayAt(int index) const;
 	
 	/** \brief Add transmitted ray returning index. */
 	int AddTransmittedRay();
@@ -99,7 +89,7 @@ public:
 	void RemoveAllRays();
 	
 	/** \brief Reserve space in the array to make future AddRay() and AddSegment() more efficient. */
-	void ReserveSize( int rays, int segments, int transmittedRays );
+	void ReserveSize(int rays, int segments, int transmittedRays);
 	/*@}*/
 	
 	
@@ -107,10 +97,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalSoundRayList &operator=( const deoalSoundRayList &list );
+	deoalSoundRayList &operator=(const deoalSoundRayList &list);
 	
 	/** \brief Append. */
-	deoalSoundRayList &operator+=( const deoalSoundRayList &list );
+	deoalSoundRayList &operator+=(const deoalSoundRayList &list);
 	/*@}*/
 };
 

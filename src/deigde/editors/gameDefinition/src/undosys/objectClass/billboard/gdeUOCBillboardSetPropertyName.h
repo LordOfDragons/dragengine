@@ -27,10 +27,10 @@
 #define _GDEUOCBILLBOARDSETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class billboard set property name.
  */
 class gdeUOCBillboardSetPropertyName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCBillboardSetPropertyName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	gdeOCBillboard::eProperties pProperty;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetPropertyName( gdeObjectClass *objectClass, gdeOCBillboard *billboard,
-		gdeOCBillboard::eProperties property, const char *newValue );
+	gdeUOCBillboardSetPropertyName(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
+		gdeOCBillboard::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCBillboardSetPropertyName();
+	~gdeUOCBillboardSetPropertyName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

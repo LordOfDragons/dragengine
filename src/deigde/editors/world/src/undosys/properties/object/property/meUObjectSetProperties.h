@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -36,8 +36,12 @@ class meObject;
  * \brief Undo Action Set Object Property.
  */
 class meUObjectSetProperties : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectSetProperties>;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
@@ -48,11 +52,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUObjectSetProperties( meObject *object, const decStringDictionary &newValues );
+	meUObjectSetProperties(meObject *object, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~meUObjectSetProperties();
+
+protected:
+	~meUObjectSetProperties() override;
+
+public:
 	/*@}*/
 	
 	
@@ -61,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

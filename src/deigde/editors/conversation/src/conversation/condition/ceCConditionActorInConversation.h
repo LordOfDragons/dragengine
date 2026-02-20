@@ -35,6 +35,9 @@
  * \brief Actor in conversation conversation Condition.
  */
 class ceCConditionActorInConversation : public ceConversationCondition{
+public:
+	using Ref = deTObjectReference<ceCConditionActorInConversation>;
+
 private:
 	decString pActor;
 	bool pNegate;
@@ -48,10 +51,12 @@ public:
 	ceCConditionActorInConversation();
 	
 	/** \brief Create copy of conversation condition. */
-	ceCConditionActorInConversation( const ceCConditionActorInConversation &condition );
+	ceCConditionActorInConversation(const ceCConditionActorInConversation &condition);
 	
 	/** \brief Clean up conversation condition. */
-	virtual ~ceCConditionActorInConversation();
+protected:
+	~ceCConditionActorInConversation() override;
+public:
 	/*@}*/
 	
 	
@@ -62,16 +67,16 @@ public:
 	inline const decString &GetActor() const{ return pActor; }
 	
 	/** \brief Set actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	
 	/** \brief Negate condition. */
 	inline bool GetNegate() const{ return pNegate; }
 	
 	/** \brief Set if condition is negated. */
-	void SetNegate( bool negate );
+	void SetNegate(bool negate);
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

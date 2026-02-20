@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECOMPONENTS_H_
 #define _MEWVNODECOMPONENTS_H_
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 #include "meWVNode.h"
 
@@ -38,11 +38,14 @@ class meHTVRuleComponents;
  * \brief Vegetation Editing Window Node Components.
  */
 class meWVNodeComponents : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeComponents>;
+	
 private:
 	meHTVRuleComponents *pRuleComponents;
 	
-	igdeContainerReference pFraParameters;
-	igdeEditVectorReference pEditVector;
+	igdeContainer::Ref pFraParameters;
+	igdeEditVector::Ref pEditVector;
 	
 	
 	
@@ -50,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeComponents( meWindowVegetation &windowVegetation, meHTVRuleComponents *rule );
+	meWVNodeComponents(meWindowVegetation &windowVegetation, meHTVRuleComponents *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeComponents();
+	~meWVNodeComponents() override;
 	/*@}*/
 	
 	
@@ -66,7 +69,7 @@ public:
 	inline meHTVRuleComponents *GetRuleComponents() const{ return pRuleComponents; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

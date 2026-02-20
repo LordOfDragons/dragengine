@@ -27,7 +27,6 @@
 
 #include "../../langpack/lpeLangPack.h"
 #include "../../langpack/entry/lpeLangPackEntry.h"
-#include "../../langpack/entry/lpeLangPackEntryList.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -36,10 +35,13 @@
  * Undo action remove language pack entries.
  */
 class lpeULangPackEntryRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<lpeULangPackEntryRemove>;
+	
+	
 private:
 	const lpeLangPack::Ref pLangPack;
-	lpeLangPackEntryList pList;
-	lpeLangPackEntryList pListRef;
+	lpeLangPackEntry::List pList, pListRef;
 	
 	
 	
@@ -47,12 +49,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackEntryRemove( lpeLangPack *langpack, const lpeLangPackEntryList &list,
-		lpeLangPack *refLangpack );
+	lpeULangPackEntryRemove(lpeLangPack *langpack, const lpeLangPackEntry::List &list,
+		lpeLangPack *refLangpack);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~lpeULangPackEntryRemove() override;
+	~lpeULangPackEntryRemove() override;
 	/*@}*/
 	
 	
@@ -61,10 +63,10 @@ public:
 	/** \description Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

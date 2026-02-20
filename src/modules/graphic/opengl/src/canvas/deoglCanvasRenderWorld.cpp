@@ -46,16 +46,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasRenderWorld::deoglCanvasRenderWorld( deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasRenderWorld( canvas ),
-pRCanvasRenderWorld( NULL ),
-pCamera( NULL ){
+deoglCanvasRenderWorld::deoglCanvasRenderWorld(deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasRenderWorld(canvas),
+pCamera(nullptr){
 }
 
 deoglCanvasRenderWorld::~deoglCanvasRenderWorld(){
-	if( pCamera ){
-		pCamera->GetNotifyCanvas().Remove( this );
+	if(pCamera){
+		pCamera->GetNotifyCanvas().Remove(this);
 	}
 }
 
@@ -65,19 +64,19 @@ deoglCanvasRenderWorld::~deoglCanvasRenderWorld(){
 ///////////////
 
 void deoglCanvasRenderWorld::DropRCanvas(){
-	pRCanvasRenderWorld = NULL;
+	pRCanvasRenderWorld = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
 void deoglCanvasRenderWorld::SyncContentToRender(){
-	if( pCamera ){
-		pRCanvasRenderWorld->SetCamera( pCamera->GetRCamera() );
+	if(pCamera){
+		pRCanvasRenderWorld->SetCamera(pCamera->GetRCamera());
 		
 	}else{
-		pRCanvasRenderWorld->SetCamera( NULL );
+		pRCanvasRenderWorld->SetCamera(nullptr);
 	}
 	
-	if( pCamera ){
+	if(pCamera){
 		pCamera->SyncToRender();
 	}
 }
@@ -87,7 +86,7 @@ void deoglCanvasRenderWorld::CameraRequiresSync(){
 }
 
 void deoglCanvasRenderWorld::DropCamera(){
-	pCamera = NULL;
+	pCamera = nullptr;
 }
 
 
@@ -96,16 +95,16 @@ void deoglCanvasRenderWorld::DropCamera(){
 //////////////////
 
 void deoglCanvasRenderWorld::ContentChanged(){
-	if( pCamera ){
-		pCamera->GetNotifyCanvas().Remove( this );
+	if(pCamera){
+		pCamera->GetNotifyCanvas().Remove(this);
 	}
 	
-	if( pCanvasRenderWorld.GetCamera() ){
-		pCamera = ( deoglCamera* )pCanvasRenderWorld.GetCamera()->GetPeerGraphic();
-		pCamera->GetNotifyCanvas().Add( this );
+	if(pCanvasRenderWorld.GetCamera()){
+		pCamera = (deoglCamera*)pCanvasRenderWorld.GetCamera()->GetPeerGraphic();
+		pCamera->GetNotifyCanvas().Add(this);
 		
 	}else{
-		pCamera = NULL;
+		pCamera = nullptr;
 	}
 	
 	deoglCanvas::ContentChanged();
@@ -117,6 +116,6 @@ void deoglCanvasRenderWorld::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasRenderWorld::CreateRCanvas(){
-	pRCanvasRenderWorld = new deoglRCanvasRenderWorld( GetOgl().GetRenderThread() );
+	pRCanvasRenderWorld = deoglRCanvasRenderWorld::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasRenderWorld;
 }

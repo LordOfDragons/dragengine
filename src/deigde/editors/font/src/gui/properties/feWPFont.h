@@ -25,15 +25,16 @@
 #ifndef _FEWPFONT_H_
 #define _FEWPFONT_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/composed/igdeEditPointReference.h>
+#include "../../font/feFont.h"
+#include "feWPFontListener.h"
 
-class feFont;
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
+
 class feWindowProperties;
-class feWPFontListener;
 
 
 
@@ -41,15 +42,18 @@ class feWPFontListener;
  * \brief Font Panel.
  */
 class feWPFont : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<feWPFont>;
+	
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feWPFontListener *pListener;
+	feFont::Ref pFont;
+	feWPFontListener::Ref pListener;
 	
-	igdeTextFieldReference pEditImagePath;
-	igdeButtonReference pBtnImagePath;
-	igdeTextFieldReference pEditLineHeight, pEditBaseLine;
-	igdeCheckBoxReference pChkColorFont;
+	igdeTextField::Ref pEditImagePath;
+	igdeButton::Ref pBtnImagePath;
+	igdeTextField::Ref pEditLineHeight, pEditBaseLine;
+	igdeCheckBox::Ref pChkColorFont;
 	
 	
 	
@@ -57,10 +61,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	feWPFont( feWindowProperties &windowProperties );
+	feWPFont(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
-	virtual ~feWPFont();
+protected:
+	~feWPFont() override;
+public:
 	/*@}*/
 	
 	
@@ -71,10 +77,10 @@ public:
 	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	/** \brief Update font. */
 	void UpdateFont();

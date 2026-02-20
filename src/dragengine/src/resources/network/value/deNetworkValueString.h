@@ -37,8 +37,7 @@
 class DE_DLL_EXPORT deNetworkValueString : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueString> Ref;
-	
+	using Ref = deTObjectReference<deNetworkValueString>;
 	
 	
 private:
@@ -53,10 +52,10 @@ public:
 	deNetworkValueString();
 	
 	/** \brief Create network value object. */
-	deNetworkValueString( const char *value );
+	deNetworkValueString(const char *value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueString();
+	~deNetworkValueString() override;
 	/*@}*/
 	
 	
@@ -67,7 +66,7 @@ public:
 	inline const decString &GetString() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetString( const char *value );
+	void SetString(const char *value);
 	/*@}*/
 	
 	
@@ -75,7 +74,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

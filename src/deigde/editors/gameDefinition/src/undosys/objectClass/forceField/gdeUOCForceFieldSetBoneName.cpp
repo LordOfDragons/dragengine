@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetBoneName::gdeUOCForceFieldSetBoneName( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const char *newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetBoneName::gdeUOCForceFieldSetBoneName(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const char *newValue) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set bone name" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetBoneName");
 	
 	pOldValue = forceField->GetBoneName();
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetBoneName::~gdeUOCForceFieldSetBoneName(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetBoneName::~gdeUOCForceFieldSetBoneName(){
 ///////////////
 
 void gdeUOCForceFieldSetBoneName::Undo(){
-	pForceField->SetBoneName( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetBoneName(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetBoneName::Redo(){
-	pForceField->SetBoneName( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetBoneName(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

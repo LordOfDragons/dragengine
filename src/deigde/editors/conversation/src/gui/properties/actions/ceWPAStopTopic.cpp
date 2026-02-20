@@ -44,11 +44,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -62,8 +62,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAStopTopic::ceWPAStopTopic( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
-	CreateGUICommon( *this );
+ceWPAStopTopic::ceWPAStopTopic(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
+	CreateGUICommon(*this);
 }
 
 ceWPAStopTopic::~ceWPAStopTopic(){
@@ -77,11 +77,11 @@ ceWPAStopTopic::~ceWPAStopTopic(){
 ceCAStopTopic *ceWPAStopTopic::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatStopTopic ){
-		return ( ceCAStopTopic* )action;
+	if(action && action->GetType() == ceConversationAction::eatStopTopic){
+		return (ceCAStopTopic*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

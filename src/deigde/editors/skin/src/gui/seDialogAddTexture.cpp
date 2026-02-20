@@ -33,17 +33,15 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabelReference.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
@@ -62,17 +60,18 @@ class cListTextureNames : public igdeListBoxListener{
 	seDialogAddTexture &pDialog;
 	
 public:
-	cListTextureNames( seDialogAddTexture &dialog ) : pDialog( dialog ){ }
+	using Ref = deTObjectReference<cListTextureNames>;
+	cListTextureNames(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
-		if( listBox->GetSelectedItem() ){
-			pDialog.SetTextureName( listBox->GetSelectedItem()->GetText() );
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(listBox->GetSelectedItem()){
+			pDialog.SetTextureName(listBox->GetSelectedItem()->GetText());
 		}
 	}
 	
-	virtual void OnDoubleClickItem( igdeListBox *listBox, int index ){
-		pDialog.SetTextureName( listBox->GetItemAt( index )->GetText() );
-		pDialog.CloseDialog( true );
+	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
+		pDialog.SetTextureName(listBox->GetItems().GetAt(index)->GetText());
+		pDialog.CloseDialog(true);
 	}
 };
 
@@ -80,10 +79,11 @@ class cTextTextureName : public igdeTextFieldListener{
 	seDialogAddTexture &pDialog;
 	
 public:
-	cTextTextureName( seDialogAddTexture &dialog ) : pDialog( dialog ){ }
+	using Ref = deTObjectReference<cTextTextureName>;
+	cTextTextureName(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
-	virtual void OnTextChanging( igdeTextField *textField ){
-		pDialog.SetTextureName( textField->GetText() );
+	void OnTextChanging(igdeTextField *textField) override{
+		pDialog.SetTextureName(textField->GetText());
 	}
 };
 
@@ -96,41 +96,40 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seDialogAddTexture::seDialogAddTexture( seWindowMain &windowMain ) :
-igdeDialog( windowMain.GetEnvironment(), "Add Texture" ),
-pWindowMain( windowMain )
+seDialogAddTexture::seDialogAddTexture(seWindowMain &windowMain) :
+igdeDialog(windowMain.GetEnvironment(), "@Skin.DialogAddTexture.Title"),
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference content, formLine;
+	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabelReference header;
-	header.TakeOver( new igdeLabel( env, "Enter texture name or choose from model textures." ) );
+	igdeLabel::Ref header(igdeLabel::Ref::New(env, "@Skin.DialogAddTexture.Header"));
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5);
 	
-	helper.ListBox( content, 5, "Textures names in model", pListModelTextureNames,
-		new cListTextureNames( *this ) );
+	helper.ListBox(content, 5, "@Skin.DialogAddTexture.TextureNames", pListModelTextureNames,
+		cListTextureNames::Ref::New(*this));
 	pListModelTextureNames->SetDefaultSorter();
 	
-	formLine.TakeOver( new igdeContainerForm( env ) );
-	helper.EditString( formLine, "Name:", "Name of texture to add", 25,
-		pEditTextureName, new cTextTextureName( *this ) );
-	content->AddChild( formLine );
+	formLine = igdeContainerForm::Ref::New(env);
+	helper.EditString(formLine, "@Skin.DialogAddTexture.Name", "@Skin.DialogAddTexture.Name.ToolTip", 25,
+		pEditTextureName, cTextTextureName::Ref::New(*this));
+	content->AddChild(formLine);
 	
 	
-	igdeContainerReference buttonBar;
-	CreateButtonBar( buttonBar, "Create Texture", "Cancel" );
+	igdeContainer::Ref buttonBar;
+	CreateButtonBar(buttonBar, "@Skin.DialogAddTexture.Button.Create", "@Igde.Cancel");
 	
 	
-	AddContent( content, header, buttonBar );
+	AddContent(content, header, buttonBar);
 	
 	
 	pUpdateModelTextureList();
 	
-	pEditTextureName->SetText( "Texture" );
+	pEditTextureName->SetText(Translate("Skin.DialogAddTexture.DefaultTextureName").ToUTF8());
 	pEditTextureName->Focus();
 }
 
@@ -146,13 +145,13 @@ const decString &seDialogAddTexture::GetTextureName() const{
 	return pEditTextureName->GetText();
 }
 
-void seDialogAddTexture::SetTextureName( const char *name ){
-	pEditTextureName->SetText( name );
+void seDialogAddTexture::SetTextureName(const char *name){
+	pEditTextureName->SetText(name);
 	
 	// name could be a string reference to the list box or edit field widget text
 	// and changing the text field might have invalidated such a link. by using
 	// the edit field GetText() we are on the safe side
-	pListModelTextureNames->SetSelection( pListModelTextureNames->IndexOfItem( pEditTextureName->GetText() ) );
+	pListModelTextureNames->SetSelection(pListModelTextureNames->IndexOfItem(pEditTextureName->GetText()));
 }
 
 
@@ -160,34 +159,34 @@ void seDialogAddTexture::SetTextureName( const char *name ){
 ////////////////////////
 
 void seDialogAddTexture::pUpdateModelTextureList(){
-	igdeIconReference iconUsed( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallPlus ) );
-	igdeIconReference iconAvailable( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ) );
+	igdeIcon::Ref iconUsed(GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus));
+	igdeIcon::Ref iconAvailable(GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus));
 	const seSkin * const skin = pWindowMain.GetSkin();
-	const deModel *engModel = NULL;
+	const deModel *engModel = nullptr;
 	
-	if( skin->GetEngineComponent() ){
+	if(skin->GetEngineComponent()){
 		engModel = skin->GetEngineComponent()->GetModel();
 	}
 	
-	if( engModel ){
-		const seTextureList &list = skin->GetTextureList();
+	if(engModel){
+		const seTexture::List &list = skin->GetTextures();
 		int i, count = engModel->GetTextureCount();
 		
-		for( i=0; i<count; i++ ){
-			const decString &modelTextureName = engModel->GetTextureAt( i )->GetName();
+		for(i=0; i<count; i++){
+			const decString &modelTextureName = engModel->GetTextureAt(i)->GetName();
 			
-			if( list.HasNamed( modelTextureName ) ){
-				pListModelTextureNames->AddItem( modelTextureName, iconUsed );
+			if(list.HasNamed(modelTextureName)){
+				pListModelTextureNames->AddItem(modelTextureName, iconUsed);
 				
 			}else{
-				pListModelTextureNames->AddItem( modelTextureName, iconAvailable );
+				pListModelTextureNames->AddItem(modelTextureName, iconAvailable);
 			}
 		}
 	}
 	
 	pListModelTextureNames->SortItems();
 	
-	if( pListModelTextureNames->GetItemCount() > 0 ){
-		pListModelTextureNames->SetSelection( 0 );
+	if(pListModelTextureNames->GetItems().IsNotEmpty()){
+		pListModelTextureNames->SetSelection(0);
 	}
 }

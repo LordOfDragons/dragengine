@@ -26,10 +26,10 @@
 #define _DEOGLDSRENDERABLEIMAGE_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableImage.h"
 
 class deoglImage;
 class deDSRenderableImage;
-class deoglRDSRenderableImage;
 
 
 
@@ -39,7 +39,7 @@ class deoglRDSRenderableImage;
 class deoglDSRenderableImage : public deoglDSRenderable{
 public:
 	const deDSRenderableImage &pRenderableImage;
-	deoglRDSRenderableImage *pRRenderableImage;
+	deoglRDSRenderableImage::Ref pRRenderableImage;
 	deoglImage *pImage;
 	bool pDirty;
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableImage( deoglDynamicSkin &dynamicSkin, const deDSRenderableImage &renderable );
+	deoglDSRenderableImage(deoglDynamicSkin &dynamicSkin, const deDSRenderableImage &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableImage();
+	~deoglDSRenderableImage() override;
 	/*@}*/
 	
 	
@@ -61,13 +61,13 @@ public:
 	inline const deDSRenderableImage &GetRenderableImage() const{ return pRenderableImage; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 private:

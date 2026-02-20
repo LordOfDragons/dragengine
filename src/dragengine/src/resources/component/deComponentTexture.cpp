@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deComponentTexture.h"
 #include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
@@ -40,19 +36,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deComponentTexture::deComponentTexture(){
-	pSkin = NULL;
-	pTexture = 0;
-	pDynamicSkin = NULL;
+deComponentTexture::deComponentTexture() :
+pTexture(0){
+}
+
+deComponentTexture::deComponentTexture(const deComponentTexture &copy){
+	*this = copy;
+}
+
+deComponentTexture &deComponentTexture::operator=(const deComponentTexture &copy){
+	if(this != &copy){
+		pSkin = copy.pSkin;
+		pTexture = copy.pTexture;
+		pTransform = copy.pTransform;
+		pDynamicSkin = copy.pDynamicSkin;
+	}
+	return *this;
 }
 
 deComponentTexture::~deComponentTexture(){
-	if( pDynamicSkin ){
-		pDynamicSkin->FreeReference();
-	}
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -60,40 +62,18 @@ deComponentTexture::~deComponentTexture(){
 // Management
 ///////////////
 
-void deComponentTexture::SetSkin( deSkin *skin ){
-	if( skin != pSkin ){
-		if( pSkin ){
-			pSkin->FreeReference();
-		}
-		
-		pSkin = skin;
-		
-		if( skin ){
-			skin->AddReference();
-		}
-	}
+void deComponentTexture::SetSkin(deSkin *skin){
+	pSkin = skin;
 }
 
-void deComponentTexture::SetTexture( int texture ){
+void deComponentTexture::SetTexture(int texture){
 	pTexture = texture;
 }
 
-void deComponentTexture::SetTransform( const decTexMatrix2 &matrix ){
+void deComponentTexture::SetTransform(const decTexMatrix2 &matrix){
 	pTransform = matrix;
 }
 
-void deComponentTexture::SetDynamicSkin( deDynamicSkin *dynamicSkin ){
-	if( dynamicSkin == pDynamicSkin ){
-		return;
-	}
-	
-	if( pDynamicSkin ){
-		pDynamicSkin->FreeReference();
-	}
-	
+void deComponentTexture::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 	pDynamicSkin = dynamicSkin;
-	
-	if( dynamicSkin ){
-		dynamicSkin->AddReference();
-	}
 }

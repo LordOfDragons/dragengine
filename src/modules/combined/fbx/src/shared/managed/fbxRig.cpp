@@ -35,7 +35,6 @@
 #include "../fbxProperty.h"
 #include "../property/fbxPropertyString.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
@@ -46,95 +45,94 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxRig::fbxRig( fbxScene &scene, fbxNode *nodePose ) :
-pScene( scene ),
-pNodePose( nodePose )
+fbxRig::fbxRig(fbxScene &scene, fbxNode *nodePose) :
+pScene(scene),
+pNodePose(nodePose)
 {
-	if( nodePose ){
-		pMatrix = nodePose->GetTransformation().QuickMultiply( scene.GetTransformation() );
+	if(nodePose){
+		pMatrix = nodePose->GetTransformation().QuickMultiply(scene.GetTransformation());
 		pMatrixInverse = pMatrix.QuickInvert();
 	}
 	
 	/*
-	const int childCount = scene.GetNodeObjects()->GetNodeCount();
+	const int childCount = scene.GetNodeObjects()->GetNodes().GetCount();
 	int i;
 	
-	for( i=0; i<childCount; i++ ){
-		fbxNode &nodePoseBone = *scene.GetNodeObjects()->GetNodeAt( i );
-		if( nodePoseBone.GetName() != "Model" || nodePoseBone.GetPropertyAt( 2 )->CastString().GetValue() != "LimbNode" ){
+	for(i=0; i<childCount; i++){
+		fbxNode &nodePoseBone = *scene.GetNodeObjects()->GetNodes().GetAt(i);
+		if(nodePoseBone.GetName() != "Model" || nodePoseBone.GetProperties().GetAt(2)->CastString().GetValue() != "LimbNode"){
 			continue;
 		}
 		
-		const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodePoseBone, nodePoseBone ) ) );
-		bone->SetIndex( pBones.GetCount() );
+		const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodePoseBone, nodePoseBone));
+		bone->SetIndex(pBones.GetCount());
 		
-		if( ! GetBoneNamed( bone->GetName() ) ){
-			pBones.Add( bone );
+		if(!GetBoneNamed(bone->GetName())){
+			pBones.Add(bone);
 		}
 	}
 	*/
 	
 	int i;
 	
-	if( nodePose ){
-		const int childCount = nodePose->GetNodeCount();
+	if(nodePose){
+		const int childCount = nodePose->GetNodes().GetCount();
 		
-		for( i=0; i<childCount; i++ ){
-			fbxNode &nodePoseBone = *nodePose->GetNodeAt( i );
-			if( nodePoseBone.GetName() != "PoseNode" ){
+		for(i=0; i<childCount; i++){
+			fbxNode &nodePoseBone = *nodePose->GetNodes().GetAt(i);
+			if(nodePoseBone.GetName() != "PoseNode"){
 				continue;
 			}
 			
-			fbxNode &nodeModel = *scene.NodeWithID( nodePoseBone.FirstNodeNamed( "Node" )->GetID() );
-			if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() == "LimbNode" ){
-				const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodePoseBone, nodeModel ) ) );
-				bone->SetIndex( pBones.GetCount() );
+			fbxNode &nodeModel = *scene.NodeWithID(nodePoseBone.FirstNodeNamed("Node")->GetID());
+			if(nodeModel.GetProperties().GetAt(2)->CastString().GetValue() == "LimbNode"){
+				const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodePoseBone, nodeModel));
+				bone->SetIndex(pBones.GetCount());
 				
-				if( ! GetBoneNamed( bone->GetName() ) ){
-					pBones.Add( bone );
+				if(!pBones.HasNamed(bone->GetName())){
+					pBones.Add(bone);
 				}
 				
-			}else if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() == "Root" ){
-				const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodeModel, nodeModel ) ) );
-				bone->SetIndex( pBones.GetCount() );
+			}else if(nodeModel.GetProperties().GetAt(2)->CastString().GetValue() == "Root"){
+				const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
+				bone->SetIndex(pBones.GetCount());
 				
-				if( ! GetBoneNamed( bone->GetName() ) ){
-					pBones.Add( bone );
+				if(!pBones.HasNamed(bone->GetName())){
+					pBones.Add(bone);
 				}
 				
-				pAddRootBone( scene, nodeModel );
+				pAddRootBone(scene, nodeModel);
 			}
 		}
 		
 	}else{
-		const int childCount = scene.GetNodeObjects()->GetNodeCount();
+		const int childCount = scene.GetNodeObjects()->GetNodes().GetCount();
 		
-		for( i=0; i<childCount; i++ ){
-			fbxNode &nodeModel = *scene.GetNodeObjects()->GetNodeAt( i );
-			if( nodeModel.GetName() != "Model" ){
+		for(i=0; i<childCount; i++){
+			fbxNode &nodeModel = *scene.GetNodeObjects()->GetNodes().GetAt(i);
+			if(nodeModel.GetName() != "Model"){
 				continue;
 			}
 			
-			if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() != "Root" ){
+			if(nodeModel.GetProperties().GetAt(2)->CastString().GetValue() != "Root"){
 				continue;
 			}
 			
-			const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodeModel, nodeModel ) ) );
-			bone->SetIndex( pBones.GetCount() );
+			const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
+			bone->SetIndex(pBones.GetCount());
 			
-			if( ! GetBoneNamed( bone->GetName() ) ){
-				pBones.Add( bone );
+			if(!pBones.HasNamed(bone->GetName())){
+				pBones.Add(bone);
 			}
 			
-			pAddRootBone( scene, nodeModel );
+			pAddRootBone(scene, nodeModel);
 		}
 	}
 	
 	
-	const int boneCount = pBones.GetCount();
-	for( i=0; i<boneCount; i++ ){
-		GetBoneAt( i )->Prepare();
-	}
+	pBones.Visit([&](fbxRigBone &bone){
+		bone.Prepare();
+	});
 }
 
 fbxRig::~fbxRig(){
@@ -145,50 +143,13 @@ fbxRig::~fbxRig(){
 // Management
 ///////////////
 
-int fbxRig::GetBoneCount() const{
-	return pBones.GetCount();
-}
-
-fbxRigBone *fbxRig::GetBoneAt( int index ) const{
-	return ( fbxRigBone* )pBones.GetAt( index );
-}
-
-fbxRigBone *fbxRig::GetBoneNamed( const char *name ) const{
-	const int count = pBones.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		fbxRigBone * const bone = ( fbxRigBone* )pBones.GetAt( i );
-		if( bone->GetName() == name ){
-			return bone;
-		}
-	}
-	return NULL;
-}
-
-fbxRigBone *fbxRig::GetBoneWithModelID( int64_t id ) const{
-	const int count = pBones.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		fbxRigBone * const bone = ( fbxRigBone* )pBones.GetAt( i );
-		if( bone->GetNodeModelID() == id ){
-			return bone;
-		}
-	}
-	return NULL;
-}
-
-
-
-void fbxRig::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose ) const{
-	const int count = pBones.GetCount();
-	int i;
+void fbxRig::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	module.LogInfoFormat("%sRig:", prefix.GetString());
 	
-	module.LogInfoFormat( "%sRig:", prefix.GetString() );
-	
-	const decString childPrefix( prefix + "  " );
-	for( i=0; i<count; i++ ){
-		GetBoneAt( i )->DebugPrintStructure( module, childPrefix, verbose );
-	}
+	const decString childPrefix(prefix + "  ");
+	pBones.Visit([&](fbxRigBone &bone){
+		bone.DebugPrintStructure(module, childPrefix, verbose);
+	});
 }
 
 
@@ -196,36 +157,32 @@ void fbxRig::DebugPrintStructure( deBaseModule &module, const decString &prefix,
 // Private Functions
 //////////////////////
 
-void fbxRig::pAddRootBone( fbxScene &scene, fbxNode &nodeRoot ){
-	decPointerList cons;
-	scene.FindConnections( nodeRoot.GetID(), cons );
+void fbxRig::pAddRootBone(fbxScene &scene, fbxNode &nodeRoot){
+	decTList<fbxConnection*> cons;
+	scene.FindConnections(nodeRoot.GetID(), cons);
 	
-	const int childCount = cons.GetCount();
-	int i;
-	
-	for( i=0; i<childCount; i++ ){
-		const fbxConnection &con = *( fbxConnection* )cons.GetAt( i );
-		if( con.GetTarget() != nodeRoot.GetID() ){
-			continue;
+	cons.Visit([&](const fbxConnection *con){
+		if(con->GetTarget() != nodeRoot.GetID()){
+			return;
 		}
 		
-		fbxNode &nodeModel = *scene.NodeWithID( con.GetSource() );
-		if( nodeModel.GetName() != "Model" ){
-			continue;
+		fbxNode &nodeModel = *scene.NodeWithID(con->GetSource());
+		if(nodeModel.GetName() != "Model"){
+			return;
 		}
 		
-		if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() != "LimbNode"
-		&& nodeModel.GetPropertyAt( 2 )->CastString().GetValue() != "Root" ){
-			continue;
+		if(nodeModel.GetProperties().GetAt(2)->CastString().GetValue() != "LimbNode"
+		&& nodeModel.GetProperties().GetAt(2)->CastString().GetValue() != "Root"){
+			return;
 		}
 		
-		const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodeModel, nodeModel ) ) );
-		bone->SetIndex( pBones.GetCount() );
+		const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
+		bone->SetIndex(pBones.GetCount());
 		
-		if( ! GetBoneNamed( bone->GetName() ) ){
-			pBones.Add( bone );
+		if(!pBones.HasNamed(bone->GetName())){
+			pBones.Add(bone);
 		}
 		
-		pAddRootBone( scene, nodeModel );
-	}
+		pAddRootBone(scene, nodeModel);
+	});
 }

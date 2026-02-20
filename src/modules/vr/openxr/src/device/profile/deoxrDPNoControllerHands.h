@@ -32,21 +32,24 @@
  * Hand support without attached controller profile.
  */
 class deoxrDPNoControllerHands : public deoxrDeviceProfile{
+public:
+	using Ref = deTObjectReference<deoxrDPNoControllerHands>;
+	
+	
 protected:
 	deoxrDevice::Ref pDeviceLeft;
 	deoxrDevice::Ref pDeviceRight;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPNoControllerHands( deoxrInstance &instance );
+	deoxrDPNoControllerHands(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPNoControllerHands();
+	~deoxrDPNoControllerHands() override;
 	/*@}*/
 	
 	
@@ -54,22 +57,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Check attached. */
-	virtual void CheckAttached();
+	void CheckAttached() override;
 	
 	/** Suggest bindings. */
-	virtual void SuggestBindings();
+	void SuggestBindings() override;
 	
 	/** Clear actions. */
-	virtual void ClearActions();
+	void ClearActions() override;
 	
 	/** Remove device if matching type. */
-	virtual void RemoveDevice( deInputDevice::eDeviceTypes type );
+	void RemoveDevice(deInputDevice::eDeviceTypes type) override;
 	/*@}*/
 	
 	
 private:
-	void pAddDevice( bool left );
-	void pRemoveDevice( bool left );
+	void pAddDevice(bool left);
+	void pRemoveDevice(bool left);
 };
 
 #endif

@@ -27,7 +27,7 @@
 
 #include "../deoalBasics.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalEffectSlot;
 
@@ -40,14 +40,14 @@ class deoalEffectSlotManager{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	decObjectList pSlots;
+	decTObjectList<deoalEffectSlot> pSlots;
 	int pMaxCount;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal sources manager. */
-	deoalEffectSlotManager( deoalAudioThread &audioThread );
+	deoalEffectSlotManager(deoalAudioThread &audioThread);
 	
 	/** Clean up openal sources manager. */
 	~deoalEffectSlotManager();
@@ -66,13 +66,13 @@ public:
 	 * lowest importance is rebound unless the owner importance is lower. It is thus possible
 	 * the caller gets no effect slot.
 	 */
-	deoalEffectSlot *Bind( void *owner, float importance );
+	deoalEffectSlot *Bind(void *owner, float importance);
 	
 	/** Unbind effect slot. */
-	void Unbind( deoalEffectSlot *slot );
+	void Unbind(deoalEffectSlot *slot);
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	

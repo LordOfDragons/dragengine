@@ -26,7 +26,7 @@
 #define _DECANVASCANVASVIEW_H_
 
 #include "deCanvas.h"
-#include "deCanvasViewReference.h"
+#include "deCanvasView.h"
 
 
 /**
@@ -40,12 +40,11 @@
 class DE_DLL_EXPORT deCanvasCanvasView : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvasCanvasView> Ref;
-	
+	using Ref = deTObjectReference<deCanvasCanvasView>;
 	
 	
 private:
-	deCanvasViewReference pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	int pRepeatX;
 	int pRepeatY;
 	
@@ -55,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasCanvasView( deCanvasManager *manager );
+	deCanvasCanvasView(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -64,7 +63,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvasCanvasView();
+	~deCanvasCanvasView() override;
 	/*@}*/
 	
 	
@@ -73,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view or NULL if not set. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view or NULL to unset. */
-	void SetCanvasView( deCanvasView *canvasView );
+	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Repeat count along X axis. */
 	inline int GetRepeatX() const{ return pRepeatX; }
@@ -85,7 +84,7 @@ public:
 	 * \brief Set repeat count along X axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatX( int count );
+	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
 	inline int GetRepeatY() const{ return pRepeatY; }
@@ -94,7 +93,7 @@ public:
 	 * \brief Set repeat count along Y axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatY( int count );
+	void SetRepeatY(int count);
 	/*@}*/
 	
 	
@@ -102,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	void Visit(deCanvasVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleEnabled::aeUSetRuleEnabled( aeRule *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleEnabled::aeUSetRuleEnabled(aeRule *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleEnabled");
 		
-		SetShortInfo( "Set rule enabled" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeUSetRuleEnabled::~aeUSetRuleEnabled(){
 ///////////////
 
 void aeUSetRuleEnabled::Undo(){
-	pRule->SetEnabled( ! pRule->GetEnabled() );
+	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
 void aeUSetRuleEnabled::Redo(){
-	pRule->SetEnabled( ! pRule->GetEnabled() );
+	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
 
@@ -79,5 +77,4 @@ void aeUSetRuleEnabled::Redo(){
 //////////////////////
 
 void aeUSetRuleEnabled::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

@@ -45,11 +45,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextArea.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -66,18 +66,18 @@ class cTextComment : public igdeTextAreaListener {
 	ceWPAComment &pPanel;
 	
 public:
-	cTextComment( ceWPAComment &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextComment>;
+	cTextComment(ceWPAComment &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextArea *textArea ){
+	void OnTextChanged(igdeTextArea *textArea) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAComment * const action = pPanel.GetAction();
-		if( ! topic || ! action || textArea->GetText() == action->GetComment() ){
+		if(!topic || !action || textArea->GetText() == action->GetComment()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCACommentSetComment( topic, action, textArea->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACommentSetComment::Ref::New(topic, action, textArea->GetText()));
 	}
 };
 
@@ -91,10 +91,10 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAComment::ceWPAComment( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAComment::ceWPAComment(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditString( *this, "Comment:", "Comment", pEditComment, 8, new cTextComment( *this ) );
+	helper.EditString(*this, "@Conversation.WPActionComment.Comment", "@Conversation.Comment.ToolTip", pEditComment, 8, cTextComment::Ref::New(*this));
 }
 
 ceWPAComment::~ceWPAComment(){
@@ -108,19 +108,19 @@ ceWPAComment::~ceWPAComment(){
 ceCAComment *ceWPAComment::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatComment ){
-		return ( ceCAComment* )action;
+	if(action && action->GetType() == ceConversationAction::eatComment){
+		return (ceCAComment*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 void ceWPAComment::UpdateAction(){
 	const ceCAComment * const action = GetAction();
 	
-	if( action ){
-		pEditComment->SetText( action->GetComment() );
+	if(action){
+		pEditComment->SetText(action->GetComment());
 		
 	}else{
 		pEditComment->ClearText();

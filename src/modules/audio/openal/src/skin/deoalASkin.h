@@ -25,6 +25,9 @@
 #ifndef _DEOALASKIN_H_
 #define _DEOALASKIN_H_
 
+#include "../deoalBasics.h"
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
@@ -36,29 +39,32 @@ class deSkin;
 
 
 /**
- * \brief Skin resource peer.
+ * Skin resource peer.
  */
 class deoalASkin : public deObject{
 private:
 	deoalAudioThread &pAudioThread;
 	decString pFilename;
 	
-	deoalSkinTexture *pTextures;
-	int pTextureCount;
+	decTList<deoalSkinTexture> pTextures;
 	
 	bool pAffectsSound;
 	
 	
 	
 public:
+	/** Type holding strong reference. */
+	using Ref = deTObjectReference<deoalASkin>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin peer. */
-	deoalASkin( deoalAudioThread &audioThread, const deSkin &skin );
+	/** Create skin peer. */
+	deoalASkin(deoalAudioThread &audioThread, const deSkin &skin);
 	
 protected:
-	/** \brief Clean up skin peer. */
-	virtual ~deoalASkin();
+	/** Clean up skin peer. */
+	~deoalASkin() override;
 	/*@}*/
 	
 	
@@ -66,31 +72,27 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
-	/** \brief Filename of resource. */
+	/** Filename of resource. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	
 	
-	/** \brief Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
-	
-	/** \brief Texture at index. */
-	const deoalSkinTexture &GetTextureAt( int index ) const;
+	/** Textures. */
+	inline const decTList<deoalSkinTexture> &GetTextures() const{ return pTextures; }
 	
 	
 	
-	/** \brief Material affects sound. */
+	/** Material affects sound. */
 	inline bool GetAffectsSound() const{ return pAffectsSound; }
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
-	void pCreateTextures( const deSkin &skin );
+	void pCreateTextures(const deSkin &skin);
 };
 
 #endif

@@ -25,6 +25,8 @@
 #ifndef _DENAVIGATORPATH_H_
 #define _DENAVIGATORPATH_H_
 
+#include "../../../deObject.h"
+#include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
 
 
@@ -35,11 +37,14 @@
  * towards and including the goal. The path can be used for
  * collision checking or branching path.
  */
-class DE_DLL_EXPORT deNavigatorPath{
+class DE_DLL_EXPORT deNavigatorPath : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deNavigatorPath>;
+	
+	
 private:
-	decDVector *pPoints;
-	int pCount;
-	int pSize;
+	decTList<decDVector> pPoints;
 	
 	
 	
@@ -50,42 +55,47 @@ public:
 	deNavigatorPath();
 	
 	/** \brief Create copy of navigator path. */
-	deNavigatorPath( const deNavigatorPath &path );
+	deNavigatorPath(const deNavigatorPath &path);
 	
+	
+protected:
 	/** \brief Clean up navigator path. */
-	~deNavigatorPath();
+	~deNavigatorPath() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of points. */
-	inline int GetCount() const{ return pCount; }
+	/** \brief Points. */
+	inline const decTList<decDVector> &GetPoints() const{ return pPoints; }
+	
+	/** \brief Count of points. */
+	inline int GetCount() const{ return pPoints.GetCount(); }
 	
 	/**
 	 * \brief Path point at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
 	 */
-	const decDVector &GetAt( int index ) const;
+	const decDVector &GetAt(int index) const;
 	
 	/**
 	 * \brief Set path point at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
 	 */
-	void SetAt( int index, const decDVector &position );
+	void SetAt(int index, const decDVector &position);
 	
 	/** \brief Add path point to end of path. */
-	void Add( const decDVector &point );
+	void Add(const decDVector &point);
 	
 	/** \brief Add path points to end of path. */
-	void AddPath( const deNavigatorPath &path );
+	void AddPath(const deNavigatorPath &path);
 	
 	/**
 	 * \brief Remove path point at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
 	 */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** \brief Remove all path points. */
 	void RemoveAll();
@@ -96,7 +106,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set points. */
-	deNavigatorPath &operator=( const deNavigatorPath &path );
+	deNavigatorPath &operator=(const deNavigatorPath &path);
 	/*@}*/
 };
 

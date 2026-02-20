@@ -36,29 +36,29 @@
 ////////////////////////////
 
 decSmoothFloat::decSmoothFloat() :
-pValue( 0.0f ),
-pGoal( 0.0f ),
-pAdjustTime( 1.0f ),
-pAdjustRange( 1.0f ),
-pChangeSpeed( 0.0f ),
-pFactorTime( 0.0f ),
-pFactorLimit( 0.0f ),
-pFactorDrop( 0.0f ),
-pSmoothed( true )
+pValue(0.0f),
+pGoal(0.0f),
+pAdjustTime(1.0f),
+pAdjustRange(1.0f),
+pChangeSpeed(0.0f),
+pFactorTime(0.0f),
+pFactorLimit(0.0f),
+pFactorDrop(0.0f),
+pSmoothed(true)
 {
 	pUpdateFactors();
 }
 
-decSmoothFloat::decSmoothFloat( const decSmoothFloat &copy ) :
-pValue( copy.pValue ),
-pGoal( copy.pGoal ),
-pAdjustTime( copy.pAdjustTime ),
-pAdjustRange( copy.pAdjustRange ),
-pChangeSpeed( copy.pChangeSpeed ),
-pFactorTime( copy.pFactorTime ),
-pFactorLimit( copy.pFactorLimit ),
-pFactorDrop( copy.pFactorDrop ),
-pSmoothed( copy.pSmoothed )
+decSmoothFloat::decSmoothFloat(const decSmoothFloat &copy) :
+pValue(copy.pValue),
+pGoal(copy.pGoal),
+pAdjustTime(copy.pAdjustTime),
+pAdjustRange(copy.pAdjustRange),
+pChangeSpeed(copy.pChangeSpeed),
+pFactorTime(copy.pFactorTime),
+pFactorLimit(copy.pFactorLimit),
+pFactorDrop(copy.pFactorDrop),
+pSmoothed(copy.pSmoothed)
 {
 }
 
@@ -70,25 +70,25 @@ decSmoothFloat::~decSmoothFloat(){
 // Management
 ///////////////
 
-void decSmoothFloat::SetValue( float value ){
+void decSmoothFloat::SetValue(float value){
 	pValue = value;
 }
 
-void decSmoothFloat::SetGoal( float goal ){
+void decSmoothFloat::SetGoal(float goal){
 	pGoal = goal;
 }
 
-void decSmoothFloat::SetAdjustTime( float adjustTime ){
-	pAdjustTime = decMath::max( adjustTime, 0.0f );
+void decSmoothFloat::SetAdjustTime(float adjustTime){
+	pAdjustTime = decMath::max(adjustTime, 0.0f);
 	pUpdateFactors();
 }
 
-void decSmoothFloat::SetAdjustRange( float limit ){
-	pAdjustRange = decMath::max( limit, 0.0f );
+void decSmoothFloat::SetAdjustRange(float limit){
+	pAdjustRange = decMath::max(limit, 0.0f);
 	pUpdateFactors();
 }
 
-void decSmoothFloat::SetChangeSpeed( float changeSpeed ){
+void decSmoothFloat::SetChangeSpeed(float changeSpeed){
 	pChangeSpeed = changeSpeed;
 }
 
@@ -100,47 +100,47 @@ void decSmoothFloat::Reset(){
 	pChangeSpeed = 0.0f;
 }
 
-void decSmoothFloat::Update( float elapsed ){
-	if( elapsed < 0.001f ){
+void decSmoothFloat::Update(float elapsed){
+	if(elapsed < 0.001f){
 		return;
 	}
 	
 	float value = pGoal;
 	
-	if( pSmoothed ){
-		const float factorTime = decMath::min( elapsed * pFactorTime, 1.0f );
+	if(pSmoothed){
+		const float factorTime = decMath::min(elapsed * pFactorTime, 1.0f);
 		const float maxAdjust = value - pValue;
 		float adjustValue = maxAdjust * factorTime;
 		
 		const float drop = pFactorDrop * elapsed;
-		if( maxAdjust > 0.0f ){
+		if(maxAdjust > 0.0f){
 			adjustValue += drop;
-			if( adjustValue > maxAdjust ){
+			if(adjustValue > maxAdjust){
 				adjustValue = maxAdjust;
 			}
 			
 		}else{
 			adjustValue -= drop;
-			if( adjustValue < maxAdjust ){
+			if(adjustValue < maxAdjust){
 				adjustValue = maxAdjust;
 			}
 		}
 		
-		const float changeSpeedDifference = ( adjustValue / elapsed ) - pChangeSpeed;
+		const float changeSpeedDifference = (adjustValue / elapsed) - pChangeSpeed;
 		
 		const float limitChangeSpeed = pFactorLimit * elapsed;
 		
-		if( changeSpeedDifference > limitChangeSpeed && pValue < value ){
-			adjustValue = ( pChangeSpeed + limitChangeSpeed ) * elapsed;
+		if(changeSpeedDifference > limitChangeSpeed && pValue < value){
+			adjustValue = (pChangeSpeed + limitChangeSpeed) * elapsed;
 			
-		}else if( changeSpeedDifference < -limitChangeSpeed && pValue > value ){
-			adjustValue = ( pChangeSpeed - limitChangeSpeed ) * elapsed;
+		}else if(changeSpeedDifference < -limitChangeSpeed && pValue > value){
+			adjustValue = (pChangeSpeed - limitChangeSpeed) * elapsed;
 		}
 		
 		value = pValue + adjustValue;
 	}
 	
-	pChangeSpeed = ( value - pValue ) / elapsed;
+	pChangeSpeed = (value - pValue) / elapsed;
 	pValue = value;
 }
 
@@ -149,15 +149,15 @@ void decSmoothFloat::Update( float elapsed ){
 // Operators
 //////////////
 
-bool decSmoothFloat::operator==( const decSmoothFloat &other ) const{
-	return fabsf( pValue - other.pValue ) < FLOAT_SAFE_EPSILON;
+bool decSmoothFloat::operator==(const decSmoothFloat &other) const{
+	return fabsf(pValue - other.pValue) < FLOAT_SAFE_EPSILON;
 }
 
-bool decSmoothFloat::operator!=( const decSmoothFloat &other ) const{
-	return fabsf( pValue - other.pValue ) >= FLOAT_SAFE_EPSILON;
+bool decSmoothFloat::operator!=(const decSmoothFloat &other) const{
+	return fabsf(pValue - other.pValue) >= FLOAT_SAFE_EPSILON;
 }
 
-decSmoothFloat &decSmoothFloat::operator=( const decSmoothFloat &other ){
+decSmoothFloat &decSmoothFloat::operator=(const decSmoothFloat &other){
 	pValue = other.pValue;
 	pGoal = other.pGoal;
 	pAdjustTime = other.pAdjustTime;
@@ -176,7 +176,7 @@ decSmoothFloat &decSmoothFloat::operator=( const decSmoothFloat &other ){
 //////////////////////
 
 void decSmoothFloat::pUpdateFactors(){
-	if( pAdjustTime < 0.001f ){
+	if(pAdjustTime < 0.001f){
 		pFactorTime = 0.0f;
 		pFactorLimit = 0.0f;
 		pFactorDrop = 0.0f;
@@ -184,7 +184,7 @@ void decSmoothFloat::pUpdateFactors(){
 		
 	}else{
 		pFactorTime = 4.0f / pAdjustTime;
-		pFactorLimit = powf( 4.0f, 1.0f - logf( pAdjustTime ) / logf( 2.0f ) ) * pAdjustRange;
+		pFactorLimit = powf(4.0f, 1.0f - logf(pAdjustTime) / logf(2.0f)) * pAdjustRange;
 			// log(1/adjustTime) = log(1) - log(adjustTime) = -log(adjustTime)
 		pFactorDrop = pAdjustRange * 0.0025f / pAdjustTime;
 			// 0.25% drop of entire range over entire time

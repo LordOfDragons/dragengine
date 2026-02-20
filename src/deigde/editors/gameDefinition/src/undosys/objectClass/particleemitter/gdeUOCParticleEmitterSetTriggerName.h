@@ -27,10 +27,10 @@
 #define _GDEUOCPARTICLEEMITTERSETTRIGGERNAME_H_
 
 #include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,13 +38,16 @@ class gdeObjectClass;
  * \brief Undo action object class particle emitter set trigger name.
  */
 class gdeUOCParticleEmitterSetTriggerName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetTriggerName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	gdeOCParticleEmitter::eTriggers pTrigger;
-	decString pOldValue;
-	decString pNewValue;
+	decString pOldValue, pNewValue;
 	
 	
 	
@@ -52,13 +55,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetTriggerName( gdeObjectClass *objectClass,
+	gdeUOCParticleEmitterSetTriggerName(gdeObjectClass *objectClass,
 		gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eTriggers trigger,
-		const char *newValue );
+		const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCParticleEmitterSetTriggerName();
+	~gdeUOCParticleEmitterSetTriggerName() override;
 	/*@}*/
 	
 	
@@ -67,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

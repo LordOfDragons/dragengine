@@ -34,16 +34,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetMapped::seUPropertyNodeSetMapped( sePropertyNode *node, int type, seMapped *newValue ) :
-pNode( node ),
-pType( type ),
-pOldValue( node ? node->GetMappedFor( type ) : nullptr ),
-pNewValue( newValue )
+seUPropertyNodeSetMapped::seUPropertyNodeSetMapped(sePropertyNode *node, int type, seMapped *newValue) :
+pNode(node),
+pType(type),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( node )
-	DEASSERT_NOTNULL( node->GetProperty() )
+	DEASSERT_NOTNULL(node)
+	DEASSERT_NOTNULL(node->GetProperty())
 	
-	SetShortInfo( "Node set mapped" );
+	pOldValue = node->GetMappedFor(type);
+	
+	SetShortInfo("@Skin.Undo.NodeSetMapped");
 }
 
 seUPropertyNodeSetMapped::~seUPropertyNodeSetMapped(){
@@ -55,9 +56,9 @@ seUPropertyNodeSetMapped::~seUPropertyNodeSetMapped(){
 ///////////////
 
 void seUPropertyNodeSetMapped::Undo(){
-	pNode->SetMappedFor( pType, pOldValue );
+	pNode->SetMappedFor(pType, pOldValue);
 }
 
 void seUPropertyNodeSetMapped::Redo(){
-	pNode->SetMappedFor( pType, pNewValue );
+	pNode->SetMappedFor(pType, pNewValue);
 }

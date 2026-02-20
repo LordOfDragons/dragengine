@@ -42,40 +42,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionTrigger *condition, const char *newTrigger ){
-	if( ! topic || ! action || ! condition ){
-		DETHROW( deeInvalidParam );
+ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionTrigger *condition, const char *newTrigger){
+	if(!topic || !action || !condition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldTrigger = condition->GetTrigger();
 	pNewTrigger = newTrigger;
 	
-	SetShortInfo( "Condition trigger set trigger" );
+	SetShortInfo("@Conversation.Undo.ConditionTriggerSetTrigger");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -84,11 +70,11 @@ ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
 ///////////////
 
 void ceUCCTriggerSetTrigger::Undo(){
-	pCondition->SetTrigger( pOldTrigger );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTrigger(pOldTrigger);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCTriggerSetTrigger::Redo(){
-	pCondition->SetTrigger( pNewTrigger );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTrigger(pNewTrigger);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

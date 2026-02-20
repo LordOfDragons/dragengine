@@ -27,6 +27,7 @@
 #include "dewlLoggerJS.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 // Class dewlLoggerJS
@@ -73,7 +74,7 @@ void dewlLoggerJS::LogError(const char *source, const char *message){
 void dewlLoggerJS::LogException(const char *source, const deException &exception){
 	DEASSERT_NOTNULL(source)
 	
-	AddLogEntry(eSeverity::error, source, exception.FormatOutput().Join("\n"));
+	AddLogEntry(eSeverity::error, source, DEJoin(exception.FormatOutput(), "\n"));
 }
 
 void dewlLoggerJS::AddLogEntry(eSeverity severity, const char *source, const char *message){

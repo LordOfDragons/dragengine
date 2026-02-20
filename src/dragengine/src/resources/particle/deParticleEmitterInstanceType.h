@@ -25,17 +25,24 @@
 #ifndef _DEPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEPARTICLEEMITTERINSTANCETYPE_H_
 
-#include "../component/deComponentReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../component/deComponent.h"
+#include "../skin/dynamic/deDynamicSkin.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 
 
 /**
  * \brief Particle Emitter Instance Type.
  */
-class DE_DLL_EXPORT deParticleEmitterInstanceType{
+class DE_DLL_EXPORT deParticleEmitterInstanceType : public deObject{
 public:
-	struct DE_DLL_EXPORT sParticle{ // sizeCast = 6 bytes, sizeDynamic = 22 bytes, sizeTotal = 28 bytes
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deParticleEmitterInstanceType>;
+	
+	/** \brief Particle emitter instance type list. */
+	using List = decTObjectOrderedSet<deParticleEmitterInstanceType>;
+	
+	struct DE_DLL_EXPORT sParticle{// sizeCast = 6 bytes, sizeDynamic = 22 bytes, sizeTotal = 28 bytes
 		float lifetime; // unsigned char possible (1 frame accuracy for 5s particle at 60Hz)
 		float positionX; // short possible (~1m accuracy on 50m)
 		float positionY; // short possible (~1m accuracy on 50m)
@@ -63,8 +70,8 @@ public:
 	
 	
 private:
-	deComponentReference pComponent;
-	deDynamicSkinReference pDynamicSkin;
+	deComponent::Ref pComponent;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	int pParticleCount;
 	sParticle *pParticleArray;
@@ -77,25 +84,26 @@ public:
 	/** \brief Create new particle emitter instance type. */
 	deParticleEmitterInstanceType();
 	
+protected:
 	/** \brief Clean up particle emitter instance type. */
-	~deParticleEmitterInstanceType();
+	~deParticleEmitterInstanceType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component used for casting or NULL. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	/** \brief Dynamic skin or null if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or null if not used. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Particle array or NULL if not set. */
 	inline sParticle *GetParticleArray() const{ return pParticleArray; }
@@ -109,7 +117,7 @@ public:
 	 * Used by the Physics Module to set the particle array for the Graphic Module
 	 * to render later on.
 	 */
-	void SetParticleArray( sParticle *particleArray, int count );
+	void SetParticleArray(sParticle *particleArray, int count);
 	/*@}*/
 };
 

@@ -35,8 +35,7 @@ class seWPMapped;
  */
 class seWPMappedListener : public seSkinListener{
 public:
-	typedef deTObjectReference<seWPMappedListener> Ref;
-	
+	using Ref = deTObjectReference<seWPMappedListener>;
 	
 	
 private:
@@ -48,25 +47,27 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	seWPMappedListener( seWPMapped &panel );
+	seWPMappedListener(seWPMapped &panel);
 	
 	/** Clean up listener. */
-	virtual ~seWPMappedListener() override;
+protected:
+	~seWPMappedListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Mapped added or removed. */
-	virtual void MappedStructureChanged( seSkin *skin ) override;
+	void MappedStructureChanged(seSkin *skin) override;
 	
 	/** Mapped changed. */
-	virtual void MappedChanged( seSkin *skin, seMapped *mapped ) override;
+	void MappedChanged(seSkin *skin, seMapped *mapped) override;
 	
 	/** Mapped name changed. */
-	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped ) override;
+	void MappedNameChanged(seSkin *skin, seMapped *mapped) override;
 	
 	/** Active mapped changed. */
-	virtual void ActiveMappedChanged( seSkin *skin ) override;
+	void ActiveMappedChanged(seSkin *skin) override;
 	/*@}*/
 };
 

@@ -39,7 +39,8 @@ igdeNativeNullScrollBar::igdeNativeNullScrollBar(){
 igdeNativeNullScrollBar::~igdeNativeNullScrollBar(){
 }
 
-igdeNativeNullScrollBar *igdeNativeNullScrollBar::CreateNativeWidget( igdeScrollBar& ){
+igdeNativeNullScrollBar *igdeNativeNullScrollBar::CreateNativeWidget(igdeScrollBar&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullScrollBar;
 }
 

@@ -35,6 +35,9 @@ class ceCAIfElse;
  * \brief Menu action copy all topic actions.
  */
 class ceWPTMAIfElseElseCopyActions : public ceWPTMACopyActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAIfElseElseCopyActions>;
+	
 protected:
 	/** \brief FOX constructor. */
 	ceWPTMAIfElseElseCopyActions();
@@ -43,8 +46,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseElseCopyActions( ceWindowMain &windowMain,
-		const ceCAIfElse &ifElse );
+	ceWPTMAIfElseElseCopyActions(ceWindowMain &windowMain,
+		const ceCAIfElse &ifElse);
 	/*@}*/
 };
 

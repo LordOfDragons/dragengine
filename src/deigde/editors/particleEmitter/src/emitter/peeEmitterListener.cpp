@@ -43,63 +43,63 @@ peeEmitterListener::~peeEmitterListener(){
 // Notifications
 //////////////////
 
-void peeEmitterListener::StateChanged( peeEmitter* ){
+void peeEmitterListener::StateChanged(peeEmitter*){
 }
 
-void peeEmitterListener::UndoChanged( peeEmitter* ){
+void peeEmitterListener::UndoChanged(peeEmitter*){
 }
 
-void peeEmitterListener::EmitterChanged( peeEmitter* ){
+void peeEmitterListener::EmitterChanged(peeEmitter*){
 }
 
-void peeEmitterListener::SkyChanged( peeEmitter* ){
+void peeEmitterListener::SkyChanged(peeEmitter*){
 }
 
-void peeEmitterListener::EnvObjectChanged( peeEmitter* ){
+void peeEmitterListener::EnvObjectChanged(peeEmitter*){
 }
 
-void peeEmitterListener::ViewChanged( peeEmitter* ){
+void peeEmitterListener::ViewChanged(peeEmitter*){
 }
 
-void peeEmitterListener::CameraChanged( peeEmitter* ){
-}
-
-
-
-void peeEmitterListener::ControllerStructureChanged( peeEmitter* ){
-}
-
-void peeEmitterListener::ControllerNameChanged( peeEmitter*, peeController* ){
-}
-
-void peeEmitterListener::ControllerChanged( peeEmitter*, peeController* ){
-}
-
-void peeEmitterListener::ControllerValueChanged( peeEmitter*, peeController* ){
-}
-
-void peeEmitterListener::ActiveControllerChanged( peeEmitter* ){
+void peeEmitterListener::CameraChanged(peeEmitter*){
 }
 
 
 
-void peeEmitterListener::TypeStructureChanged( peeEmitter* ){
+void peeEmitterListener::ControllerStructureChanged(peeEmitter*){
 }
 
-void peeEmitterListener::TypeChanged( peeEmitter*, peeType *type ){
+void peeEmitterListener::ControllerNameChanged(peeEmitter*, peeController*){
 }
 
-void peeEmitterListener::TypeActiveTrailControllerChanged( peeEmitter*, peeType *type ){
+void peeEmitterListener::ControllerChanged(peeEmitter*, peeController*){
 }
 
-void peeEmitterListener::TypeActiveEmitControllerChanged( peeEmitter*, peeType *type ){
+void peeEmitterListener::ControllerValueChanged(peeEmitter*, peeController*){
 }
 
-void peeEmitterListener::TypeParameterChanged( peeEmitter*, peeType *type, peeParameter *parameter ){
+void peeEmitterListener::ActiveControllerChanged(peeEmitter*){
 }
 
-void peeEmitterListener::ActiveTypeParameterChanged( peeEmitter*, peeType *type ){
+
+
+void peeEmitterListener::TypeStructureChanged(peeEmitter*){
 }
 
-void peeEmitterListener::ActiveTypeChanged( peeEmitter* ){
+void peeEmitterListener::TypeChanged(peeEmitter*, peeType *type){
+}
+
+void peeEmitterListener::TypeActiveTrailControllerChanged(peeEmitter*, peeType *type){
+}
+
+void peeEmitterListener::TypeActiveEmitControllerChanged(peeEmitter*, peeType *type){
+}
+
+void peeEmitterListener::TypeParameterChanged(peeEmitter*, peeType *type, peeParameter *parameter){
+}
+
+void peeEmitterListener::ActiveTypeParameterChanged(peeEmitter*, peeType *type){
+}
+
+void peeEmitterListener::ActiveTypeChanged(peeEmitter*){
 }

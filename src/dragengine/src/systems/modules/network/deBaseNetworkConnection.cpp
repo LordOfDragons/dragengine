@@ -43,18 +43,18 @@ deBaseNetworkConnection::~deBaseNetworkConnection(){
 // Management
 ///////////////
 
-bool deBaseNetworkConnection::ConnectTo( const char* ){
+bool deBaseNetworkConnection::ConnectTo(const char*){
 	return false;
 }
 
 void deBaseNetworkConnection::Disconnect(){
 }
 
-void deBaseNetworkConnection::SendMessage( deNetworkMessage*, int ){
+void deBaseNetworkConnection::SendMessage(deNetworkMessage*, int){
 }
 
-void deBaseNetworkConnection::SendReliableMessage( deNetworkMessage* ){
+void deBaseNetworkConnection::SendReliableMessage(deNetworkMessage*){
 }
 
-void deBaseNetworkConnection::LinkState( deNetworkMessage*, deNetworkState*, bool ){
+void deBaseNetworkConnection::LinkState(deNetworkMessage*, deNetworkState*, bool){
 }

@@ -36,15 +36,15 @@ igdeNativeNullSeparator::igdeNativeNullSeparator(){
 igdeNativeNullSeparator::~igdeNativeNullSeparator(){
 }
 
-void *igdeNativeNullSeparator::CreateNativeWidget( igdeSeparator& ){
+void *igdeNativeNullSeparator::CreateNativeWidget(igdeSeparator&){
 	return new igdeNativeNullSeparator;
 }
 
-void igdeNativeNullSeparator::PostCreateNativeWidget( igdeSeparator&, void* ){
+void igdeNativeNullSeparator::PostCreateNativeWidget(igdeSeparator&, void*){
 }
 
-void igdeNativeNullSeparator::DestroyNativeWidget( igdeSeparator&, void *native ){
-	delete ( igdeNativeNullSeparator* )native;
+void igdeNativeNullSeparator::DestroyNativeWidget(igdeSeparator&, void *native){
+	delete (igdeNativeNullSeparator*)native;
 }
 
 #endif

@@ -49,6 +49,6 @@ dedaiNavMeshBuilderFace::~dedaiNavMeshBuilderFace(){
 // Management
 ///////////////
 
-void dedaiNavMeshBuilderFace::SetIndex( int index ){
+void dedaiNavMeshBuilderFace::SetIndex(int index){
 	pIndex = index;
 }

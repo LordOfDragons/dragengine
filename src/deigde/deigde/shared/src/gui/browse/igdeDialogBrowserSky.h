@@ -36,11 +36,14 @@ class igdeGDSky;
  */
 class DE_DLL_EXPORT igdeDialogBrowserSky : public igdeDialogBrowser{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogBrowserSky> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogBrowserSky( igdeEnvironment &environment,
-		const char *title = "Select Object Class", bool canResize = true );
+	igdeDialogBrowserSky(igdeEnvironment &environment,
+		const char *title = "@Igde.DialogBrowser.Sky.DefaultTitle", bool canResize = true);
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -56,24 +59,24 @@ public:
 	igdeGDSky *GetSelectedSky() const;
 	
 	/** \brief Set selected sky. */
-	void SetSelectedSky( igdeGDSky *gdSky );
+	void SetSelectedSky(igdeGDSky *gdSky);
 	
 	
 	
 	/** \brief Convenience method to select sky. */
-	static bool SelectSky( igdeWidget *owner, igdeGDSky* &sky, const char *title = "Select Sky" );
+	static bool SelectSky(igdeWidget *owner, igdeGDSky* &sky, const char *title = "@Igde.DialogBrowser.Sky.DefaultTitle");
 	
 	/** \brief Convenience method to select sky. */
-	static bool SelectSky( igdeWidget *owner, decString &sky, const char *title = "Select Sky" );
+	static bool SelectSky(igdeWidget *owner, decString &sky, const char *title = "@Igde.DialogBrowser.Sky.DefaultTitle");
 	/*@}*/
 	
 	
 	
 protected:
 	virtual igdeGDCategory *GetRootCategory() const;
-	virtual void AddItemsToList( igdeGDAddToListVisitor &visitor );
-	virtual void RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener );
-	virtual void GetSelectedItemInfo( decString &info );
+	virtual void AddItemsToList(igdeGDAddToListVisitor &visitor);
+	virtual void RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener);
+	virtual void GetSelectedItemInfo(decString &info);
 };
 
 #endif

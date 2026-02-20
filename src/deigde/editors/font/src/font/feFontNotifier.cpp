@@ -43,31 +43,31 @@ feFontNotifier::~feFontNotifier(){
 // Notifications
 //////////////////
 
-void feFontNotifier::ModeChanged( feFont *font ){
+void feFontNotifier::ModeChanged(feFont *font){
 }
 
-void feFontNotifier::StateChanged( feFont *font ){
+void feFontNotifier::StateChanged(feFont *font){
 }
 
-void feFontNotifier::UndoChanged( feFont *font ){
+void feFontNotifier::UndoChanged(feFont *font){
 }
 
 
 
-void feFontNotifier::FontChanged( feFont *font ){
+void feFontNotifier::FontChanged(feFont *font){
 }
 
-void feFontNotifier::ImageChanged( feFont *font, feFontImage *image ){
+void feFontNotifier::ImageChanged(feFont *font, feFontImage *image){
 }
 
-void feFontNotifier::GlyphStructureChanged( feFont *font ){
+void feFontNotifier::GlyphStructureChanged(feFont *font){
 }
 
-void feFontNotifier::GlyphChanged( feFont *font, feFontGlyph *glyph ){
+void feFontNotifier::GlyphChanged(feFont *font, feFontGlyph *glyph){
 }
 
-void feFontNotifier::GlyphSelectionChanged( feFont *font ){
+void feFontNotifier::GlyphSelectionChanged(feFont *font){
 }
 
-void feFontNotifier::ActiveGlyphChanged( feFont *font ){
+void feFontNotifier::ActiveGlyphChanged(feFont *font){
 }

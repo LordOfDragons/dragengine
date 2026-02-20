@@ -39,8 +39,7 @@ class devkDevice;
 class devkRenderPass : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkRenderPass> Ref;
-	
+	using Ref = deTObjectReference<devkRenderPass>;
 	
 	
 protected:
@@ -55,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkRenderPass( devkDevice &device, const devkRenderPassConfiguration &configuration );
+	devkRenderPass(devkDevice &device, const devkRenderPassConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkRenderPass();
+	~devkRenderPass() override;
 	/*@}*/
 	
 	

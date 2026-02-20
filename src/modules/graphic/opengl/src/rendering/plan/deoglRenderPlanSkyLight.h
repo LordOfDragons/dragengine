@@ -25,6 +25,10 @@
 #ifndef _DEOGLRENDERPLANSKYLIGHT_H_
 #define _DEOGLRENDERPLANSKYLIGHT_H_
 
+#include "parallel/deoglRPTSkyLightFindContent.h"
+#include "parallel/deoglRPTSkyLightBuildRT.h"
+#include "parallel/deoglRPTSkyLightGIFindContent.h"
+#include "parallel/deoglRPTSkyLightGIUpdateRT.h"
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglComputeRenderTask.h"
@@ -32,18 +36,12 @@
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 
-#include <dragengine/deObjectReference.h>
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
 
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTSkyLightFindContent;
-class deoglRPTSkyLightBuildRT;
-class deoglRPTSkyLightGIFindContent;
-class deoglRPTSkyLightGIUpdateRT;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 
@@ -86,7 +84,7 @@ private:
 	bool pUseLight;
 	bool pUseShadow;
 	int pShadowLayerCount;
-	sShadowLayer pShadowLayers[ 4 ];
+	sShadowLayer pShadowLayers[4];
 	deoglCollideList pSLCollideList1;
 	deoglCollideList pSLCollideList2;
 	
@@ -101,11 +99,11 @@ private:
 	deoglAddToRenderTask pGIRenderTaskAddStatic;
 	deoglAddToRenderTask pGIRenderTaskAddDynamic;
 	
-	deoglRPTSkyLightFindContent *pTaskFindContent;
-	deoglRPTSkyLightBuildRT *pTaskBuildRT1;
-	deoglRPTSkyLightBuildRT *pTaskBuildRT2;
-	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
-	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
+	deoglRPTSkyLightFindContent::Ref pTaskFindContent;
+	deoglRPTSkyLightBuildRT::Ref pTaskBuildRT1;
+	deoglRPTSkyLightBuildRT::Ref pTaskBuildRT2;
+	deoglRPTSkyLightGIFindContent::Ref pTaskGIFindContent;
+	deoglRPTSkyLightGIUpdateRT::Ref pTaskGIUpdateRT;
 	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
@@ -128,7 +126,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan light. */
-	deoglRenderPlanSkyLight( deoglRenderPlan &plan );
+	deoglRenderPlanSkyLight(deoglRenderPlan &plan);
 	
 	/** Clean up render plan light. */
 	~deoglRenderPlanSkyLight();
@@ -148,7 +146,7 @@ public:
 	inline deoglRSkyInstanceLayer *GetLayer() const{ return pLayer; }
 	
 	/** Set sky layer. */
-	void SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
+	void SetLayer(deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer);
 	
 	
 	
@@ -163,7 +161,7 @@ public:
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
 	/** Set frustom box extends. */
-	void SetFrustumBoxExtend( const decVector &minExtend, const decVector &maxExtend );
+	void SetFrustumBoxExtend(const decVector &minExtend, const decVector &maxExtend);
 	
 	
 	
@@ -171,7 +169,7 @@ public:
 	inline deoglOcclusionTest *GetOcclusionTest() const{ return pOcclusionTest; }
 	
 	/** Set occlusion test. */
-	void SetOcclusionTest( deoglOcclusionTest *occlusionTest );
+	void SetOcclusionTest(deoglOcclusionTest *occlusionTest);
 	
 	
 	
@@ -191,8 +189,8 @@ public:
 	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
 	
 	/** Shadow layer at index. */
-	sShadowLayer &GetShadowLayerAt( int index );
-	const sShadowLayer &GetShadowLayerAt( int index ) const;
+	sShadowLayer &GetShadowLayerAt(int index);
+	const sShadowLayer &GetShadowLayerAt(int index) const;
 	
 	
 	
@@ -278,7 +276,7 @@ public:
 	
 	void PrepareBuffers();
 	void ReadVisibleElements();
-	void BuildComputeRenderTasks( bool rebuild = false );
+	void BuildComputeRenderTasks(bool rebuild = false);
 	void FinishReadBackComputeRenderTasks();
 	
 	/** Clean up after rendering. */
@@ -290,21 +288,21 @@ private:
 	void pPrepareFindConfig();
 	void pPrepareFindConfigGIStatic();
 	void pPrepareFindConfigGIDynamic();
-	void pPrepareFindConfigGI( deoglSPBlockUBO &ubo );
-	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
+	void pPrepareFindConfigGI(deoglSPBlockUBO &ubo);
+	void pPrepareBuffer(deoglSPBlockSSBO &ssbo, int count);
 	void pClearCounters();
-	void pSetWorldComputeParams( deoglSPBlockUBO &ubo );
-	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
-	void pSetLightFrustumPlanes( deoglSPBlockUBO &ubo,
-		const decDMatrix &frustumMatrix, const decDMatrix &matrixLightSpace );
-	void pSetLightFrustumPlane( deoglSPBlockUBO &ubo, const decDMatrix &matrix,
-		int &index, const decDVector &normal, double distance );
-	void pCalcLightFrustum( const decDMatrix &matrix, decDVector (&frustumPoints)[ 5 ] );
-	void pLightFrustumBox( const decDVector (&frustumPoints)[ 5 ], decDVector &minExtend, decDVector &maxExtend );
-	void pFrustumHull( deoglSPBlockUBO &ubo, const decDVector (&frustumPoints)[ 5 ] );
-	void pCullLayerMask( deoglSPBlockUBO &ubo );
-	void pSetSplits( deoglSPBlockUBO &ubo, float backtrack );
-	void pSetGISplits( deoglSPBlockUBO &ubo );
+	void pSetWorldComputeParams(deoglSPBlockUBO &ubo);
+	void pSetFrustumPlane(deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance);
+	void pSetLightFrustumPlanes(deoglSPBlockUBO &ubo,
+		const decDMatrix &frustumMatrix, const decDMatrix &matrixLightSpace);
+	void pSetLightFrustumPlane(deoglSPBlockUBO &ubo, const decDMatrix &matrix,
+		int &index, const decDVector &normal, double distance);
+	void pCalcLightFrustum(const decDMatrix &matrix, decDVector (&frustumPoints)[5]);
+	void pLightFrustumBox(const decDVector (&frustumPoints)[5], decDVector &minExtend, decDVector &maxExtend);
+	void pFrustumHull(deoglSPBlockUBO &ubo, const decDVector (&frustumPoints)[5]);
+	void pCullLayerMask(deoglSPBlockUBO &ubo);
+	void pSetSplits(deoglSPBlockUBO &ubo, float backtrack);
+	void pSetGISplits(deoglSPBlockUBO &ubo);
 	
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();
@@ -312,8 +310,8 @@ private:
 	void pWaitFinishedGIFindContent();
 	void pGICalcShadowLayerParams();
 	
-	void pBuildCRTShadow( int  layer );
-	void pBuildCRTShadowGI( deoglComputeRenderTask &renderTask );
+	void pBuildCRTShadow(int  layer);
+	void pBuildCRTShadowGI(deoglComputeRenderTask &renderTask);
 	/*@}*/
 };
 

@@ -36,6 +36,11 @@ class deoglRenderPlanMasked;
  * Parallel task build render tasks.
  */
 class deoglRPTBuildRTsGeometry : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoglRPTBuildRTsGeometry>;
+	
+	
 private:
 	deoglRenderPlanTasks &pPlan;
 	const deoglRenderPlanMasked *pMask;
@@ -49,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTBuildRTsGeometry( deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask );
+	deoglRPTBuildRTsGeometry(deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTBuildRTsGeometry();
+	~deoglRPTBuildRTsGeometry() override;
 	/*@}*/
 	
 	
@@ -60,13 +65,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
@@ -79,10 +84,10 @@ public:
 	
 private:
 	void pInitPipelineModifier();
-	void pSolid( bool xray );
-	void pSolidTerrain( bool xray );
-	void pSolidOutline( bool xray );
-	void pSolidDecals( bool xray );
+	void pSolid(bool xray);
+	void pSolidTerrain(bool xray);
+	void pSolidOutline(bool xray);
+	void pSolidDecals(bool xray);
 };
 
 #endif

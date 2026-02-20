@@ -35,6 +35,10 @@
  */
 class DE_DLL_EXPORT igdeMouseDragListener : public igdeMouseKeyListener{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeMouseDragListener>;
+	
+	
 	/** \brief Drag state. */
 	enum eDragState{
 		/** \brief No dragging in progress. */
@@ -75,7 +79,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMouseDragListener();
+	~igdeMouseDragListener() override;
 	/*@}*/
 	
 	
@@ -87,13 +91,13 @@ public:
 	inline const decPoint &GetDragOrigin() const{ return pDragOrigin; }
 	
 	/** \brief Set drag origin position. */
-	void SetDragOrigin( const decPoint &origin );
+	void SetDragOrigin(const decPoint &origin);
 	
 	/** \brief Current drag position. */
 	inline const decPoint &GetDragPosition() const{ return pDragPosition; }
 	
 	/** \brief Set current drag position. */
-	void SetDragPosition( const decPoint &position );
+	void SetDragPosition(const decPoint &position);
 	
 	/** \brief Current distance from drag position to drag origin position. */
 	decPoint GetDragDistance() const;
@@ -104,7 +108,7 @@ public:
 	inline eDragState GetDragState() const{ return pDragState; }
 	
 	/** \brief Set drag state. */
-	void SetDragState( eDragState state );
+	void SetDragState(eDragState state);
 	
 	/**
 	 * \brief Cancel dragging.
@@ -119,13 +123,13 @@ public:
 	inline bool GetShiftOrigin() const{ return pShiftOrigin; }
 	
 	/** \brief Set if shift modifier button has been pressed at the beginning of dragging. */
-	void SetShiftOrigin( bool pressed );
+	void SetShiftOrigin(bool pressed);
 	
 	/** \brief Shift modifier button is pressed now. */
 	inline bool GetShiftNow() const{ return pShiftNow; }
 	
 	/** \brief Set if shift modifier button is pressed now. */
-	void SetShiftNow( bool pressed );
+	void SetShiftNow(bool pressed);
 	
 	/** \brief Shift modifier button is pressed now or had been pressed at the beginning of dragging. */
 	inline bool GetShift() const{ return pShiftNow | pShiftOrigin; }
@@ -134,13 +138,13 @@ public:
 	inline bool GetControlOrigin() const{ return pControlOrigin; }
 	
 	/** \brief Set if control modifier button has been pressed at the beginning of dragging. */
-	void SetControlOrigin( bool pressed );
+	void SetControlOrigin(bool pressed);
 	
 	/** \brief Control modifier button is pressed now. */
 	inline bool GetControlNow() const{ return pControlNow; }
 	
 	/** \brief Set if control modifier button is pressed now. */
-	void SetControlNow( bool pressed );
+	void SetControlNow(bool pressed);
 	
 	/** \brief Control modifier button is pressed now or had been pressed at the beginning of dragging. */
 	inline bool GetControl() const{ return pControlNow | pControlOrigin; }
@@ -175,7 +179,7 @@ public:
 	 * Called if state is not edsNone and mouse button used to start draggins has been
 	 * released. Subclass has to finish dragging operation.
 	 */
-	virtual void OnDragFinish( bool cancelled );
+	virtual void OnDragFinish(bool cancelled);
 	/*@}*/
 	
 	
@@ -192,7 +196,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of press. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User released down mouse button.
@@ -204,7 +208,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonRelease( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User moved mouse.
@@ -214,7 +218,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseMoved( igdeWidget *widget, const decPoint &position, int modifiers );
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
 	/*@}*/
 };
 

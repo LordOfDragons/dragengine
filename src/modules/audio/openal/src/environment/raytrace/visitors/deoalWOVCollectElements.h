@@ -25,7 +25,7 @@
 #ifndef _DEOALWOVCOLLECTELEMENTS_H_
 #define _DEOALWOVCOLLECTELEMENTS_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../../world/octree/deoalWorldOctreeVisitor.h"
@@ -41,9 +41,11 @@ class deoalAComponent;
  */
 class deoalWOVCollectElements : public deoalWorldOctreeVisitor{
 private:
+	decDVector pPosition;
 	decDVector pBoxMin;
 	decDVector pBoxMax;
-	decPointerList pComponents;
+	
+	decTList<deoalAComponent*> pComponents;
 	
 	
 	
@@ -54,7 +56,7 @@ public:
 	deoalWOVCollectElements();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVCollectElements();
+	~deoalWOVCollectElements() override;
 	/*@}*/
 	
 	
@@ -68,10 +70,10 @@ public:
 	inline const decDVector &GetBoxMax() const{ return pBoxMax; }
 	
 	/** \brief Set box. */
-	void SetBox( const decDVector &minimum, const decDVector &maximum );
+	void SetBox(const decDVector &minimum, const decDVector &maximum);
 	
 	/** \brief Set box. */
-	void SetBoxRange( const decDVector &position, double range );
+	void SetBoxRange(const decDVector &position, double range);
 	
 	/** \brief Reset. */
 	void Reset();
@@ -82,12 +84,12 @@ public:
 	int GetComponentCount() const;
 	
 	/** \brief Component at index. */
-	deoalAComponent *GetComponentAt( int index ) const;
+	deoalAComponent *GetComponentAt(int index) const;
 	
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	void VisitComponent(deoalAComponent *component) override;
 	/*@}*/
 };
 

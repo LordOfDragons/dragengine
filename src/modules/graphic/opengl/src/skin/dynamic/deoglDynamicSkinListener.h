@@ -57,10 +57,10 @@ public:
 	virtual void DynamicSkinRenderablesChanged();
 	
 	/** Renderable changed. Typically requires texture configuration update. */
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
 	
 	/** Rendeable content requires sync. */
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 };
 

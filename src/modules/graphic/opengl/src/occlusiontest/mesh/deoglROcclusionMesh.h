@@ -27,14 +27,15 @@
 
 #include "../../deoglBasics.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
+#include "../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 class deOcclusionMesh;
 class deoglRenderThread;
-class deoglSharedVBOBlock;
 class deoglSharedSPBListUBO;
 class deoglBVH;
 class deoglRayTraceField;
@@ -46,6 +47,10 @@ class deoglRayTraceField;
  */
 class deoglROcclusionMesh : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglROcclusionMesh>;
+	
+	
 	/** Mesh weight. */
 	struct sWeight{
 		int bone;
@@ -62,18 +67,12 @@ public:
 	deoglRenderThread &pRenderThread;
 	decString pFilename;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	
-	sWeight *pWeightsEntries;
-	int pWeightsEntryCount;
-	int *pWeightsCounts;
-	int pWeightsCount;
-	
-	sVertex *pVertices;
-	int pVertexCount;
-	
-	unsigned short *pCorners;
-	int pCornerCount;
+	decTList<sWeight> pWeightsEntries;
+	decTList<int> pWeightsCounts;
+	decTList<sVertex> pVertices;
+	decTList<unsigned short> pCorners;
 	int pSingleSidedFaceCount;
 	int pDoubleSidedFaceCount;
 	
@@ -90,14 +89,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render occlusion mesh. */
-	deoglROcclusionMesh( deoglRenderThread &renderThread, const deOcclusionMesh &occlusionMesh );
+	deoglROcclusionMesh(deoglRenderThread &renderThread, const deOcclusionMesh &occlusionMesh);
 	
+protected:
 	/** Clean up render occlusion mesh. */
-	virtual ~deoglROcclusionMesh();
+	~deoglROcclusionMesh() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -107,7 +107,7 @@ public:
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	/** Prepare VBO block. */
 	void PrepareVBOBlock();
@@ -115,34 +115,16 @@ public:
 	
 	
 	/** Weights entries. */
-	inline sWeight *GetWeightsEntries() const{ return pWeightsEntries; }
-	
-	/** Number of weights entries. */
-	inline int GetWeightsEntryCount() const{ return pWeightsEntryCount; }
+	inline const decTList<sWeight> &GetWeightsEntries() const{ return pWeightsEntries; }
 	
 	/** Weights entries count list. */
-	inline int *GetWeightsCounts() const{ return pWeightsCounts; }
-	
-	/** Number of weights. */
-	inline int GetWeightsCount() const{ return pWeightsCount; }
-	
-	
+	inline const decTList<int> &GetWeightsCounts() const{ return pWeightsCounts; }
 	
 	/** Vertices. */
-	inline sVertex *GetVertices() const{ return pVertices; }
-	
-	/** Vertex count. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	
-	
+	inline const decTList<sVertex> &GetVertices() const{ return pVertices; }
 	
 	/** Corners. */
-	inline unsigned short *GetCorners() const{ return pCorners; }
-	
-	/** Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
-	
-	
+	inline const decTList<unsigned short> &GetCorners() const{ return pCorners; }
 	
 	/**
 	 * Single sided face count.
@@ -189,7 +171,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pBuildArrays( const deOcclusionMesh &occlusionMesh );
+	void pBuildArrays(const deOcclusionMesh &occlusionMesh);
 	void pWriteVBOData();
 };
 

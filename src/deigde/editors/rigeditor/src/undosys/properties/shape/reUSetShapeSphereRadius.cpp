@@ -24,7 +24,7 @@
 
 #include "reUSetShapeSphereRadius.h"
 #include "../../../rig/shape/reRigShapeSphere.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,21 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeSphereRadius::reUSetShapeSphereRadius( reRigShapeSphere *shape, float radius ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float radius){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
 	pOldRadius = shape->GetRadius();
 	pNewRadius = radius;
 	
-	SetShortInfo( "Set Sphere Shape Radius" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeSphereSetRadius");
 }
 
 reUSetShapeSphereRadius::~reUSetShapeSphereRadius(){
-	pShape->FreeReference();
 }
 
 
@@ -57,9 +54,9 @@ reUSetShapeSphereRadius::~reUSetShapeSphereRadius(){
 ///////////////
 
 void reUSetShapeSphereRadius::Undo(){
-	pShape->SetRadius( pOldRadius );
+	pShape->SetRadius(pOldRadius);
 }
 
 void reUSetShapeSphereRadius::Redo(){
-	pShape->SetRadius( pNewRadius );
+	pShape->SetRadius(pNewRadius);
 }

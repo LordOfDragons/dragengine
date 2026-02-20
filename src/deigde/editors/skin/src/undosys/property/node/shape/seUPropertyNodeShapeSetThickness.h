@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeShape;
+#include "../../../../skin/property/node/sePropertyNodeShape.h"
 
 
 
@@ -35,8 +35,12 @@ class sePropertyNodeShape;
  * \brief Undo action property node shape set thickness.
  */
 class seUPropertyNodeShapeSetThickness : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeShapeSetThickness>;
+	
+	
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetThickness( sePropertyNodeShape *node, float newValue );
+	seUPropertyNodeShapeSetThickness(sePropertyNodeShape *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeShapeSetThickness();
+	~seUPropertyNodeShapeSetThickness() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

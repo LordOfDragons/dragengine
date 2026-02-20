@@ -26,11 +26,10 @@
 #define _DEOGLDELAYEDFILEWRITE_H_
 
 #include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decMemoryFile.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 
-class decMemoryFile;
 class deVirtualFileSystem;
-class decBaseFileWriter;
-
 
 
 /**
@@ -38,14 +37,14 @@ class decBaseFileWriter;
  */
 class deoglDelayedFileWrite{
 private:
-	decMemoryFile *pMemoryFile;
+	decMemoryFile::Ref pMemoryFile;
 	const decPath pPath;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create delayed file write object. */
-	deoglDelayedFileWrite( const decPath &path );
+	deoglDelayedFileWrite(const decPath &path);
 	
 	/** Clean up delayed file write object. */
 	~deoglDelayedFileWrite();
@@ -56,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create file writer for the memory file. */
-	decBaseFileWriter *GetFileWriter() const;
+	decBaseFileWriter::Ref GetFileWriter() const;
 	
 	/**
 	 * Write file to virtual file system.
 	 * \details This has to be called during main thread.
 	 */
-	void SaveFile( deVirtualFileSystem &vfs );
+	void SaveFile(deVirtualFileSystem &vfs);
 	/*@}*/
 	
 private:

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeToolBarSeparator::igdeToolBarSeparator( igdeEnvironment &environment ) :
-igdeWidget( environment ){
+igdeToolBarSeparator::igdeToolBarSeparator(igdeEnvironment &environment) :
+igdeWidget(environment){
 }
 
 igdeToolBarSeparator::~igdeToolBarSeparator(){
@@ -54,20 +54,20 @@ igdeToolBarSeparator::~igdeToolBarSeparator(){
 ///////////////
 
 void igdeToolBarSeparator::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeToolBarSeparator * const native = igdeNativeToolBarSeparator::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeToolBarSeparator * const native = igdeNativeToolBarSeparator::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeToolBarSeparator::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeToolBarSeparator* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeToolBarSeparator*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }

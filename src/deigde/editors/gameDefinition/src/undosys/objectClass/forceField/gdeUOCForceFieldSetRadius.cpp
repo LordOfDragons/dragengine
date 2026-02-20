@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetRadius::gdeUOCForceFieldSetRadius( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, float newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetRadius::gdeUOCForceFieldSetRadius(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, float newValue) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set radius" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetRadius");
 	
 	pOldValue = forceField->GetRadius();
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetRadius::~gdeUOCForceFieldSetRadius(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetRadius::~gdeUOCForceFieldSetRadius(){
 ///////////////
 
 void gdeUOCForceFieldSetRadius::Undo(){
-	pForceField->SetRadius( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetRadius(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetRadius::Redo(){
-	pForceField->SetRadius( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetRadius(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

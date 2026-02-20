@@ -34,14 +34,16 @@
  */
 class aeUSetRuleRemoveAllVertexPositionSets : public aeUSetRuleVertexPositionSets{
 public:
+	using Ref = deTObjectReference<aeUSetRuleRemoveAllVertexPositionSets>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleRemoveAllVertexPositionSets( aeRule *rule );
+	aeUSetRuleRemoveAllVertexPositionSets(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleRemoveAllVertexPositionSets();
+	~aeUSetRuleRemoveAllVertexPositionSets() override;
 	/*@}*/
 };
 

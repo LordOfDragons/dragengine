@@ -26,7 +26,7 @@
 #define _DESKYLAYERBODY_H_
 
 #include "../../common/math/decMath.h"
-#include "../skin/deSkinReference.h"
+#include "../skin/deSkin.h"
 
 
 /**
@@ -50,7 +50,7 @@ private:
 	decQuaternion pOrientation;
 	decVector2 pSize;
 	decColor pColor;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	
 	
 	
@@ -72,25 +72,25 @@ public:
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Size in radians. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** \brief Set size in radians. */
-	void SetSize( const decVector2 &size );
+	void SetSize(const decVector2 &size);
 	
 	/** \brief Blending color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set blending color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	/*@}*/
 };
 

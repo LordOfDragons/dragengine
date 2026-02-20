@@ -34,15 +34,18 @@
  */
 class ceWPTTIMCTrigger : public ceWPTTIMCondition{
 public:
+	using Ref = deTObjectReference<ceWPTTIMCTrigger>;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCTrigger( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionTrigger *condition );
+	ceWPTTIMCTrigger(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionTrigger *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCTrigger();
+	~ceWPTTIMCTrigger() override;
 	/*@}*/
 	
 	
@@ -51,13 +54,15 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Condition. */
-	inline ceCConditionTrigger *GetConditionTrigger() const{ return ( ceCConditionTrigger* )GetCondition(); }
+	inline ceCConditionTrigger *GetConditionTrigger() const{
+		return (ceCConditionTrigger*)GetCondition().Pointer();
+	}
 	
 	/** \brief Text representation for test mode. */
-	static const char *GetTestModeText( ceCConditionTrigger::eTestModes testMode );
+	decString GetTestModeText(ceCConditionTrigger::eTestModes testMode) const;
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

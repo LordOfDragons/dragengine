@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../../../undosys/objectClass/component/gdeUOCAddComponent.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCComponentPaste::gdeMAOCComponentPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Component",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class component" )
+gdeMAOCComponentPaste::gdeMAOCComponentPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCComponentPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,20 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCComponent::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCComponent &clipOCComponent =
-		( const gdeClipboardDataOCComponent & )( igdeClipboardData& )clip;
-	
-	deObjectReference component;
-	component.TakeOver( new gdeOCComponent( *clipOCComponent.GetComponent() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddComponent( &objectClass,
-		( gdeOCComponent* )( deObject* )component );
-	undo->SetShortInfo( "Paste object class component" );
+	const igdeUndo::Ref undo = gdeUOCAddComponent::Ref::New(&objectClass,
+		gdeOCComponent::Ref::New(*clip.DynamicCast<gdeClipboardDataOCComponent>()->GetComponent()));
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCComponent");
 	return undo;
 }
 
 void gdeMAOCComponentPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCComponent::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
 }

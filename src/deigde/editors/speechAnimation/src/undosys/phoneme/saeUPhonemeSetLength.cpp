@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetLength::saeUPhonemeSetLength( saePhoneme *phoneme, float newLength ){
-	if( ! phoneme ) DETHROW( deeInvalidParam );
+saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme *phoneme, float newLength){
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
-	SetShortInfo( "Phoneme Set Length" );
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetLength");
 	
 	pOldLength = phoneme->GetLength();
 	pNewLength = newLength;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetLength::~saeUPhonemeSetLength(){
-	if( pPhoneme ){
-		pPhoneme->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUPhonemeSetLength::~saeUPhonemeSetLength(){
 ///////////////
 
 void saeUPhonemeSetLength::Undo(){
-	pPhoneme->SetLength( pOldLength );
+	pPhoneme->SetLength(pOldLength);
 }
 
 void saeUPhonemeSetLength::Redo(){
-	pPhoneme->SetLength( pNewLength );
+	pPhoneme->SetLength(pNewLength);
 }

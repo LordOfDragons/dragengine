@@ -22,12 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "decCurve2D.h"
 
+#include "../collection/decTList.h"
 #include "../exceptions.h"
 
 
@@ -39,29 +36,13 @@
 ////////////////////////////
 
 decCurve2D::decCurve2D(){
-	pPoints = NULL;
-	pPointCount = 0;
 }
 
-decCurve2D::decCurve2D( const decCurve2D &curve ){
-	pPoints = NULL;
-	
-	if( curve.pPointCount > 0 ){
-		pPoints = new decVector2[ curve.pPointCount ];
-		if( ! pPoints ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		memcpy( pPoints, curve.pPoints, sizeof( decVector2 ) * curve.pPointCount );
-	}
-	
-	pPointCount = curve.pPointCount;
+decCurve2D::decCurve2D(const decCurve2D &curve) :
+pPoints(curve.pPoints){
 }
 
 decCurve2D::~decCurve2D(){
-	if( pPoints ){
-		delete [] pPoints;
-	}
 }
 
 
@@ -69,24 +50,20 @@ decCurve2D::~decCurve2D(){
 // Management
 ///////////////
 
-const decVector2 &decCurve2D::GetPointAt( int position ) const{
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pPoints[ position ];
+const decVector2 &decCurve2D::GetPointAt(int position) const{
+	return pPoints.GetAt(position);
 }
 
-int decCurve2D::IndexOfPointClosestTo( float coordinate, float threshold ) const{
+int decCurve2D::IndexOfPointClosestTo(float coordinate, float threshold) const{
 	const float lower = coordinate - threshold;
 	const float upper = coordinate + threshold;
 	int p;
 	
-	for( p=0; p<pPointCount; p++ ){
-		if( pPoints[ p ].x > upper ){
+	for(p=0; p<pPoints.GetCount(); p++){
+		if(pPoints[p].x > upper){
 			break;
 		}
-		if( pPoints[ p ].x >= lower ){
+		if(pPoints[p].x >= lower){
 			return p;
 		}
 	}
@@ -94,161 +71,109 @@ int decCurve2D::IndexOfPointClosestTo( float coordinate, float threshold ) const
 	return -1;
 }
 
-int decCurve2D::IndexOfPointBefore( float coordinate ) const{
+int decCurve2D::IndexOfPointBefore(float coordinate) const{
 	int p;
 	
-	for( p=0; p<pPointCount; p++ ){
-		if( coordinate < pPoints[ p ].x ){
+	for(p=0; p<pPoints.GetCount(); p++){
+		if(coordinate < pPoints[p].x){
 			return p - 1;
 		}
 	}
 	
-	return pPointCount - 1;
+	return pPoints.GetCount() - 1;
 }
 
-int decCurve2D::AddPoint( const decVector2 &point, float threshold ){
-	const int index = IndexOfPointBefore( point.x );
-	int p;
-	
-	if( index != -1 && fabsf( point.x - pPoints[ index ].x ) <= threshold ){
-		pPoints[ index ].y = point.y;
-		
+int decCurve2D::AddPoint(const decVector2 &point, float threshold){
+	const int index = IndexOfPointBefore(point.x);
+	if(index != -1 && fabsf(point.x - pPoints[index].x) <= threshold){
+		pPoints[index].y = point.y;
 		return index;
 		
 	}else{
-		decVector2 * const newArray = new decVector2[ pPointCount + 1 ];
-		
-		for( p=0; p<=index; p++ ){
-			newArray[ p ] = pPoints[ p ];
-		}
-		
-		newArray[ index + 1 ] = point;
-		
-		for( p=index+1; p<pPointCount; p++ ){
-			newArray[ p + 1 ] = pPoints[ p ];
-		}
-		
-		if( pPoints ){
-			delete [] pPoints;
-		}
-		pPoints = newArray;
-		pPointCount++;
-		
+		pPoints.Insert(point, index + 1);
 		return index + 1;
 	}
 }
 
-void decCurve2D::RemovePointFrom( int position ){
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int p;
-	
-	for( p=position+1; p<pPointCount; p++ ){
-		pPoints[ p - 1 ] = pPoints[ p ];
-	}
-	pPointCount--;
+void decCurve2D::RemovePointFrom(int position){
+	pPoints.RemoveFrom(position);
 }
 
 void decCurve2D::RemoveAllPoints(){
-	if( pPoints ){
-		delete [] pPoints;
-		pPoints = NULL;
-	}
-	pPointCount = 0;
+	pPoints.RemoveAll();
 }
 
 
 
 void decCurve2D::SetDefaultCurve(){
-	decVector2 * const newArray = new decVector2[ 2 ];
-	
-	newArray[ 0 ].Set( 0.0f, 0.0f );
-	newArray[ 1 ].Set( 1.0f, 1.0f );
-	
-	if( pPoints ){
-		delete [] pPoints;
-	}
-	pPoints = newArray;
-	pPointCount = 2;
+	pPoints.RemoveAll();
+	pPoints.Add({0.0f, 0.0f});
+	pPoints.Add({1.0f, 1.0f});
 }
 
-void decCurve2D::OffsetPointsBy( float offset ){
+void decCurve2D::OffsetPointsBy(float offset){
 	int p;
 	
-	for( p=0; p<pPointCount; p++ ){
-		pPoints[ p ].y += offset;
+	for(p=0; p<pPoints.GetCount(); p++){
+		pPoints[p].y += offset;
 	}
 }
 
-void decCurve2D::ScalePointsBy( float scale ){
+void decCurve2D::ScalePointsBy(float scale){
 	int p;
 	
-	for( p=0; p<pPointCount; p++ ){
-		pPoints[ p ].y *= scale;
+	for(p=0; p<pPoints.GetCount(); p++){
+		pPoints[p].y *= scale;
 	}
 }
 
 
 
-float decCurve2D::EvaluateConstant( float coordinate ) const{
-	if( pPointCount == 0 ){
+float decCurve2D::EvaluateConstant(float coordinate) const{
+	if(pPoints.GetCount() == 0){
 		return 0.0f;
 	}
 	
 	int p;
 	
-	for( p=1; p<pPointCount; p++ ){
-		if( coordinate < pPoints[ p ].x ){
-			return pPoints[ p - 1 ].y;
+	for(p=1; p<pPoints.GetCount(); p++){
+		if(coordinate < pPoints[p].x){
+			return pPoints[p - 1].y;
 		}
 	}
 	
-	return pPoints[ pPointCount - 1 ].y;
+	return pPoints[pPoints.GetCount() - 1].y;
 }
 
-float decCurve2D::EvaluateLinear( float coordinate ) const{
-	if( pPointCount == 0 ){
+float decCurve2D::EvaluateLinear(float coordinate) const{
+	if(pPoints.GetCount() == 0){
 		return 0.0f;
 	}
-	if( pPointCount == 1 ){
-		return pPoints[ 0 ].y;
+	if(pPoints.GetCount() == 1){
+		return pPoints[0].y;
 	}
 	
 	float blend;
 	int p;
 	
-	if( coordinate < pPoints[ 0 ].x ){
-		return pPoints[ 0 ].y;
+	if(coordinate < pPoints[0].x){
+		return pPoints[0].y;
 		
 	}else{
-		for( p=1; p<pPointCount; p++ ){
-			if( coordinate < pPoints[ p ].x ){
-				blend = ( coordinate - pPoints[ p - 1 ].x ) / ( pPoints[ p ].x - pPoints[ p - 1 ].x );
-				return pPoints[ p - 1 ].y * ( 1.0f - blend ) + pPoints[ p ].y * blend;
+		for(p=1; p<pPoints.GetCount(); p++){
+			if(coordinate < pPoints[p].x){
+				blend = (coordinate - pPoints[p - 1].x) / (pPoints[p].x - pPoints[p - 1].x);
+				return pPoints[p - 1].y * (1.0f - blend) + pPoints[p].y * blend;
 			}
 		}
 		
-		return pPoints[ pPointCount - 1 ].y;
+		return pPoints[pPoints.GetCount() - 1].y;
 	}
 }
 
 
 
-decCurve2D &decCurve2D::operator=( const decCurve2D &curve ){
-	decVector2 *newArray = NULL;
-	
-	if( curve.pPointCount > 0 ){
-		newArray = new decVector2[ curve.pPointCount ];
-		memcpy( newArray, curve.pPoints, sizeof( decVector2 ) * curve.pPointCount );
-	}
-	
-	if( pPoints ){
-		delete [] pPoints;
-	}
-	pPoints = newArray;
-	pPointCount = curve.pPointCount;
-	
+decCurve2D &decCurve2D::operator=(const decCurve2D &curve){
+	pPoints = curve.pPoints;
 	return *this;
 }

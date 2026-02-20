@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeTextSetSize::seUPropertyNodeTextSetSize( sePropertyNodeText *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeTextSetSize::seUPropertyNodeTextSetSize(sePropertyNodeText *node, float newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node text set font size" );
+	SetShortInfo("@Skin.Undo.NodeTextSetFontSize");
 	
 	pOldValue = node->GetTextSize();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetSize::~seUPropertyNodeTextSetSize(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ seUPropertyNodeTextSetSize::~seUPropertyNodeTextSetSize(){
 ///////////////
 
 void seUPropertyNodeTextSetSize::Undo(){
-	pNode->SetTextSize( pOldValue );
+	pNode->SetTextSize(pOldValue);
 }
 
 void seUPropertyNodeTextSetSize::Redo(){
-	pNode->SetTextSize( pNewValue );
+	pNode->SetTextSize(pNewValue);
 }

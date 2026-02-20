@@ -50,13 +50,13 @@
 #include "../../undosys/link/aeULinkToggleWrapY.h"
 #include "../../undosys/link/aeULinkPaste.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
@@ -72,10 +72,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -97,101 +96,107 @@ protected:
 	aeWPLink &pPanel;
 	
 public:
-	cBaseAction( aeWPLink &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(aeWPLink &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeLink * const link = pPanel.GetLink();
-		if( ! animator || ! link ){
+		if(!animator || !link){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( animator, link ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(animator, link));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeLink *link ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeLink *link) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeLink * const link = pPanel.GetLink();
-		if( animator && link ){
-			Update( *animator, *link );
+		if(animator && link){
+			Update(*animator, *link);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeLink & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeLink &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 
 class cActionCopy : public cBaseAction{
 public:
-	cActionCopy( aeWPLink &panel ) : cBaseAction( panel, "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-		"Copy link to clipboard" ){ }
+	using Ref = deTObjectReference<cActionCopy>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		igdeClipboardDataReference cdata;
-		cdata.TakeOver( new aeClipboardDataLink( link ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
-		return nullptr;
+public:
+	cActionCopy(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.Action.Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPLink.Action.Copy.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataLink::Ref::New(link));
+		return {};
 	}
 };
 
 class cActionCut : public cBaseAction{
 public:
-	cActionCut( aeWPLink &panel ) : cBaseAction( panel, "Cut",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-		"Cut link into clipboard" ){ }
+	using Ref = deTObjectReference<cActionCut>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		igdeClipboardDataReference cdata;
-		cdata.TakeOver( new aeClipboardDataLink( link ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
-		return new aeULinkRemove( link );
+public:
+	cActionCut(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.Action.Cut",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Animator.WPLink.Action.Cut.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataLink::Ref::New(link));
+		return aeULinkRemove::Ref::New(link);
 	}
 };
 
 class cActionPaste : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionPaste>;
+	
+private:
 	aeWPLink &pPanel;
 	
 public:
-	cActionPaste( aeWPLink &panel ) : igdeAction( "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste link from clipboard" ), pPanel( panel ){ }
+	cActionPaste(aeWPLink &panel) : igdeAction("@Animator.WPLink.Action.Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Animator.WPLink.Action.Paste.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if( ! animator ){
+		if(!animator){
 			return;
 		}
 		
-		aeClipboardDataLink * const cdata = ( aeClipboardDataLink* )pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataLink::TYPE_NAME );
-		if( ! cdata ){
+		aeClipboardDataLink * const cdata = (aeClipboardDataLink*)pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataLink::TYPE_NAME);
+		if(!cdata){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkPaste( animator, cdata->GetLinks() ) );
-		animator->GetUndoSystem()->Add( undo );
+		animator->GetUndoSystem()->Add(aeULinkPaste::Ref::New(animator, cdata->GetLinks()));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
-			.GetWithTypeName( aeClipboardDataLink::TYPE_NAME ) && pPanel.GetAnimator() );
+	void Update() override{
+		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
+			.GetWithTypeName(aeClipboardDataLink::TYPE_NAME) && pPanel.GetAnimator());
 	}
 };
 
@@ -199,28 +204,29 @@ class cListLinks : public igdeListBoxListener{
 	aeWPLink &pPanel;
 	
 public:
-	cListLinks( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cListLinks>;
+	cListLinks(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
-		if( pPanel.GetAnimator() ){
-			pPanel.GetAnimator()->SetActiveLink( listBox->GetSelectedItem()
-				? ( aeLink* )listBox->GetSelectedItem()->GetData() : NULL );
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(pPanel.GetAnimator()){
+			pPanel.GetAnimator()->SetActiveLink(listBox->GetSelectedItem()
+				? (aeLink*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, windowMain.GetActionLinkAdd() );
-		helper.MenuCommand( menu, windowMain.GetActionLinkDuplicate() );
-		helper.MenuCommand( menu, windowMain.GetActionLinkRemove() );
-		helper.MenuCommand( menu, windowMain.GetActionLinkRemoveUnused() );
+		helper.MenuCommand(menu, windowMain.GetActionLinkAdd());
+		helper.MenuCommand(menu, windowMain.GetActionLinkDuplicate());
+		helper.MenuCommand(menu, windowMain.GetActionLinkRemove());
+		helper.MenuCommand(menu, windowMain.GetActionLinkRemoveUnused());
 		
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCopy( pPanel ), true );
-		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPaste( pPanel ), true );
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionCopy::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionCut::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPaste::Ref::New(pPanel));
 	}
 };
 
@@ -228,19 +234,19 @@ class cTextName : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextName( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextName>;
+	cTextName(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const decString value = textField->GetText();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetName() == value ){
+		if(!link || link->GetName() == value){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetName( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetName::Ref undo(aeULinkSetName::Ref::New(link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -250,24 +256,24 @@ class cComboBone : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	cComboBone( aeWPLink &panel, bool &preventUpdate ) :
-		pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	using Ref = deTObjectReference<cComboBone>;
+	cComboBone(aeWPLink &panel, bool &preventUpdate) :
+		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( pPreventUpdate ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		if(pPreventUpdate){
 			return;
 		}
 		
 		const decString &bone = comboBox->GetText();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetBone() == bone ){
+		if(!link || link->GetBone() == bone){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetBone( link, bone ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::New(link, bone));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -277,25 +283,25 @@ class cComboConnectionController : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	cComboConnectionController( aeWPLink &panel, bool &preventUpdate ) :
-		pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	using Ref = deTObjectReference<cComboConnectionController>;
+	cComboConnectionController(aeWPLink &panel, bool &preventUpdate) :
+		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( pPreventUpdate ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		if(pPreventUpdate){
 			return;
 		}
 		
 		aeController * const controller = comboBox->GetSelectedItem()
-			? ( aeController* )comboBox->GetSelectedItem()->GetData() : NULL;
+			? (aeController*)comboBox->GetSelectedItem()->GetData() : nullptr;
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetController() == controller ){
+		if(!link || link->GetController() == controller){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetController( link, controller ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetController::Ref undo(aeULinkSetController::Ref::New(link, controller));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -304,85 +310,90 @@ class cSpinRepeat : public igdeSpinTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cSpinRepeat( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cSpinRepeat>;
+	cSpinRepeat(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged( igdeSpinTextField *textField ){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		const int value = textField->GetValue();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetRepeat() == value ){
+		if(!link || link->GetRepeat() == value){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetRepeat( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetRepeat::Ref undo(aeULinkSetRepeat::Ref::New(link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
 
 class cActionCurveInsertAt : public cBaseAction{
 public:
-	cActionCurveInsertAt( aeWPLink &panel ) : cBaseAction( panel, "Insert Value At Controller",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Insert value at X coordinate matching linked controller value" ){}
+	using Ref = deTObjectReference<cActionCurveInsertAt>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		if( ! link->GetController() ){
-			return NULL;
+public:
+	cActionCurveInsertAt(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.Action.CurveInsertAt",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPLink.Action.CurveInsertAt.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
+		if(!link->GetController()){
+			return {};
 		}
 		
 		const aeController &controller = *link->GetController();
-		const float x = decMath::linearStep( controller.GetCurrentValue(),
-			controller.GetMinimumValue(), controller.GetMaximumValue() );
+		const float x = decMath::linearStep(controller.GetCurrentValue(),
+			controller.GetMinimumValue(), controller.GetMaximumValue());
 		float y = 0.0f;
-		if( ! igdeCommonDialogs::GetFloat( &pPanel, "Insert Curve Value", "Y Value:", y ) ){
-			return NULL;
+		if(!igdeCommonDialogs::GetFloat(pPanel, "@Animator.WPLink.Dialog.InsertCurveValue.Title",
+		"@Animator.WPLink.Dialog.InsertCurveValue.YValue", y)){
+			return {};
 		}
 		
-		decCurveBezier curve( link->GetCurve() );
-		curve.AddPoint( decVector2( x, y ) );
-		return new aeULinkSetCurve( link, curve );
+		decCurveBezier curve(link->GetCurve());
+		curve.AddPoint(decVector2(x, y));
+		return aeULinkSetCurve::Ref::New(link, curve);
 	}
 };
 
 class cEditCurve : public igdeViewCurveBezierListener{
 	aeWPLink &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
-	cEditCurve( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cEditCurve>;
+	cEditCurve(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier ){
-		if( pUndo ){
-			( ( aeULinkSetCurve& )( igdeUndo& )pUndo ).SetNewCurve( viewCurveBezier->GetCurve() );
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
+		if(pUndo){
+			((aeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
-		}else if( ! pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve() ){
+		}else if(!pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
 			
 		}else{
-			pUndo.TakeOver( new aeULinkSetCurve( pPanel.GetLink(), viewCurveBezier->GetCurve() ) );
+			pUndo = aeULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 		
-		pPanel.GetAnimator()->GetUndoSystem()->Add( pUndo );
-		pUndo = NULL;
+		pPanel.GetAnimator()->GetUndoSystem()->Add(pUndo);
+		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier ){
-		if( pUndo ){
-			( ( aeULinkSetCurve& )( igdeUndo& )pUndo ).SetNewCurve( viewCurveBezier->GetCurve() );
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
+		if(pUndo){
+			((aeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
-		}else if( pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve() ){
-			pUndo.TakeOver( new aeULinkSetCurve( pPanel.GetLink(), viewCurveBezier->GetCurve() ) );
+		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
+			pUndo = aeULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeViewCurveBezier*, igdeMenuCascade &menu ){
+	void AddContextMenuEntries(igdeViewCurveBezier*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCurveInsertAt( pPanel ), true );
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionCurveInsertAt::Ref::New(pPanel));
 	}
 };
 
@@ -390,19 +401,19 @@ class cTextBone : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextBone( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextBone>;
+	cTextBone(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		const decString value( textField->GetText() );
+	void OnTextChanged(igdeTextField *textField) override{
+		const decString value(textField->GetText());
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetBone() == value ){
+		if(!link || link->GetBone() == value){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetBone( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::New(link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -411,21 +422,21 @@ class cComboBoneParameter : public igdeComboBoxListener{
 	aeWPLink &pPanel;
 	
 public:
-	cComboBoneParameter( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboBoneParameter>;
+	cComboBoneParameter(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		deAnimatorLink::eBoneParameter parameter = comboBox->GetSelectedItem()
-			? ( deAnimatorLink::eBoneParameter )( intptr_t )comboBox->GetSelectedItem()->GetData()
+			? (deAnimatorLink::eBoneParameter)(intptr_t)comboBox->GetSelectedItem()->GetData()
 			: deAnimatorLink::ebpPositionZ;
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetBoneParameter() == parameter ){
+		if(!link || link->GetBoneParameter() == parameter){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetBoneParameter( link, parameter ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetBoneParameter::Ref undo(aeULinkSetBoneParameter::Ref::New(link, parameter));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -434,19 +445,19 @@ class cTextBoneMinimum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextBoneMinimum( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextBoneMinimum>;
+	cTextBoneMinimum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || fabsf( link->GetBoneMinimum() - value ) < FLOAT_SAFE_EPSILON ){
+		if(!link || fabsf(link->GetBoneMinimum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetBoneMinimum( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetBoneMinimum::Ref undo(aeULinkSetBoneMinimum::Ref::New(link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -455,19 +466,19 @@ class cTextBoneMaximum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextBoneMaximum( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextBoneMaximum>;
+	cTextBoneMaximum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || fabsf( link->GetBoneMaximum() - value ) < FLOAT_SAFE_EPSILON ){
+		if(!link || fabsf(link->GetBoneMaximum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetBoneMaximum( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetBoneMaximum::Ref undo(aeULinkSetBoneMaximum::Ref::New(link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -478,24 +489,24 @@ class cComboVertexPositionSet : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	cComboVertexPositionSet( aeWPLink &panel, bool &preventUpdate ) :
-		pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	using Ref = deTObjectReference<cComboVertexPositionSet>;
+	cComboVertexPositionSet(aeWPLink &panel, bool &preventUpdate) :
+		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( pPreventUpdate ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		if(pPreventUpdate){
 			return;
 		}
 		
 		const decString &vps = comboBox->GetText();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetVertexPositionSet() == vps ){
+		if(!link || link->GetVertexPositionSet() == vps){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSet( link, vps ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::New(link, vps));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -504,19 +515,19 @@ class cTextVertexPositionSet : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextVertexPositionSet( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextVertexPositionSet>;
+	cTextVertexPositionSet(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		const decString value( textField->GetText() );
+	void OnTextChanged(igdeTextField *textField) override{
+		const decString value(textField->GetText());
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || link->GetVertexPositionSet() == value ){
+		if(!link || link->GetVertexPositionSet() == value){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSet( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::New(link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -525,19 +536,20 @@ class cTextVertexPositionSetMinimum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextVertexPositionSetMinimum( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextVertexPositionSetMinimum>;
+	cTextVertexPositionSetMinimum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || fabsf( link->GetVertexPositionSetMinimum() - value ) < FLOAT_SAFE_EPSILON ){
+		if(!link || fabsf(link->GetVertexPositionSetMinimum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSetMinimum( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetVertexPositionSetMinimum::Ref undo(aeULinkSetVertexPositionSetMinimum::Ref::New(
+			link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -546,19 +558,20 @@ class cTextVertexPositionSetMaximum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	cTextVertexPositionSetMaximum( aeWPLink &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextVertexPositionSetMaximum>;
+	cTextVertexPositionSetMaximum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if( ! link || fabsf( link->GetVertexPositionSetMaximum() - value ) < FLOAT_SAFE_EPSILON ){
+		if(!link || fabsf(link->GetVertexPositionSetMaximum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSetMaximum( link, value ) );
-		if( undo ){
-			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		aeULinkSetVertexPositionSetMaximum::Ref undo(aeULinkSetVertexPositionSetMaximum::Ref::New(
+			link, value));
+		if(undo){
+			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -566,16 +579,19 @@ public:
 
 class cCheckWrapY : public cBaseAction{
 public:
-	cCheckWrapY( aeWPLink &panel ) : cBaseAction( panel, "Wrap Y", nullptr,
-		"Wrap Y value instead of clamping" ){ }
+	using Ref = deTObjectReference<cCheckWrapY>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		return new aeULinkToggleWrapY( link );
+public:
+	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.WrapY", nullptr,
+		"@Animator.WPLink.WrapY.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
+		return aeULinkToggleWrapY::Ref::New(link);
 	}
 	
-	virtual void Update( const aeAnimator &animator, const aeLink &link ){
-		cBaseAction::Update( animator, link );
-		SetSelected( link.GetWrapY() );
+	void Update(const aeAnimator &animator, const aeLink &link) override{
+		cBaseAction::Update(animator, link);
+		SetSelected(link.GetWrapY());
 	}
 };
 }
@@ -587,92 +603,86 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPLink::aeWPLink( aeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pAnimator( NULL ),
-pPreventUpdate( false )
+aeWPLink::aeWPLink(aeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPLinkListener( *this );
+	pListener = aeWPLinkListener::Ref::New(*this);
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// links
-	helper.GroupBoxFlow( content, groupBox, "Links:" );
-	helper.ListBox( groupBox, 8, "Links", pListLink, new cListLinks( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.Links");
+	helper.ListBox(groupBox, 8, "@Animator.WPLink.Links.ToolTip", pListLink, cListLinks::Ref::New(*this));
 	pListLink->SetDefaultSorter();
 	
 	
 	// link settings
-	helper.GroupBox( content, groupBox, "Link Settings:" );
-	helper.EditString( groupBox, "Name:", "Name of the link", pEditName, new cTextName( *this ) );
+	helper.GroupBox(content, groupBox, "@Animator.WPLink.LinkSettings");
+	helper.EditString(groupBox, "@Animator.WPLink.Name",
+		"@Animator.WPLink.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Controller:", "Sets the controller to query values from",
-		pCBController, new cComboConnectionController( *this, pPreventUpdate ) );
+	helper.ComboBox(groupBox, "@Animator.WPLink.Controller",
+		"@Animator.WPLink.Controller.ToolTip", pCBController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	pCBController->SetDefaultSorter();
 	
-	helper.EditSpinInteger( groupBox, "Repeat:", "Repeat curve along X direction", 1, 99,
-		pSpinRepeat, new cSpinRepeat( *this ) );
+	helper.EditSpinInteger(groupBox, "@Animator.WPLink.Repeat",
+		"@Animator.WPLink.Repeat.ToolTip", 1, 99, pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Bone:", true,
-		"Set bone to use parameter of as input or empty string to not use",
-		pCBBone, new cComboBone( *this, pPreventUpdate ) );
+	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.Bone", true,
+		"@Animator.WPLink.Bone.ToolTip", pCBBone, cComboBone::Ref::New(*this, pPreventUpdate));
 	pCBBone->SetDefaultSorter();
 	
-	helper.ComboBox( groupBox, "Bone Parameter:", "Set bone parameter to use as input",
-		pCBBoneParameter, new cComboBoneParameter( *this ) );
-	pCBBoneParameter->AddItem( "Position X", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpPositionX );
-	pCBBoneParameter->AddItem( "Position Y", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpPositionY );
-	pCBBoneParameter->AddItem( "Position Z", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpPositionZ );
-	pCBBoneParameter->AddItem( "Rotation X", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpRotationX );
-	pCBBoneParameter->AddItem( "Rotation Y", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpRotationY );
-	pCBBoneParameter->AddItem( "Rotation Z", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpRotationZ );
-	pCBBoneParameter->AddItem( "Scale X", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpScaleX );
-	pCBBoneParameter->AddItem( "Scale Y", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpScaleY );
-	pCBBoneParameter->AddItem( "Scale Z", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpScaleZ );
+	helper.ComboBox(groupBox, "@Animator.WPLink.BoneParameter",
+		"@Animator.WPLink.BoneParameter.ToolTip", pCBBoneParameter, cComboBoneParameter::Ref::New(*this));
+	pCBBoneParameter->SetAutoTranslateItems(true);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionX);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionY);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionZ);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.RotationX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationX);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.RotationY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationY);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.RotationZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationZ);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleX);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleY);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleZ);
 	
-	helper.EditFloat( groupBox, "Bone Minimum Value:", "Minimum bone value",
-		pEditBoneMinimum, new cTextBoneMinimum( *this ) );
-	helper.EditFloat( groupBox, "Bone Maximum Value:", "Maximum bone value",
-		pEditBoneMaximum, new cTextBoneMaximum( *this ) );
+	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMinimumValue",
+		"@Animator.WPLink.BoneMinimumValue.ToolTip", pEditBoneMinimum, cTextBoneMinimum::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMaximumValue",
+		"@Animator.WPLink.BoneMaximumValue.ToolTip", pEditBoneMaximum, cTextBoneMaximum::Ref::New(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Vertex Position Set:", true,
-		"Set vertex position set to use as input or empty string to not use",
-		pCBVertexPositionSet, new cComboVertexPositionSet( *this, pPreventUpdate ) );
+	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.VertexPositionSet", true,
+		"@Animator.WPLink.VertexPositionSet.ToolTip", pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, pPreventUpdate));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "VPS Minimum Value:", "Minimum vertex position set value",
-		pEditVertexPositionSetMinimum, new cTextVertexPositionSetMinimum( *this ) );
-	helper.EditFloat( groupBox, "VPS Maximum Value:", "Maximum vertex position set value",
-		pEditVertexPositionSetMaximum, new cTextVertexPositionSetMaximum( *this ) );
+	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMinimumValue",
+		"@Animator.WPLink.VPSMinimumValue.ToolTip", pEditVertexPositionSetMinimum, cTextVertexPositionSetMinimum::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMaximumValue",
+		"@Animator.WPLink.VPSMaximumValue.ToolTip", pEditVertexPositionSetMaximum, cTextVertexPositionSetMaximum::Ref::New(*this));
 	
-	helper.CheckBox( groupBox, pChkWrapY, new cCheckWrapY( *this ), true );
+	helper.CheckBox(groupBox, pChkWrapY, cCheckWrapY::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow( content, groupBox, "Link Curve:" );
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.LinkCurve");
 	
-	helper.ViewCurveBezier( groupBox, pEditCurve, new cEditCurve( *this ) );
-	pEditCurve->SetDefaultSize( decPoint( 200, 250 ) );
+	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
+	pEditCurve->SetDefaultSize(decPoint(200, 250));
 	pEditCurve->ClearCurve();
-	pEditCurve->SetClamp( true );
-	pEditCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
-	pEditCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
+	pEditCurve->SetClamp(true);
+	pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
+	pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 }
 
 aeWPLink::~aeWPLink(){
-	SetAnimator( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetAnimator(nullptr);
 }
 
 
@@ -680,21 +690,19 @@ aeWPLink::~aeWPLink(){
 // Management
 ///////////////
 
-void aeWPLink::SetAnimator( aeAnimator *animator ){
-	if( animator == pAnimator ){
+void aeWPLink::SetAnimator(aeAnimator *animator){
+	if(animator == pAnimator){
 		return;
 	}
 	
-	if( pAnimator ){
-		pAnimator->RemoveNotifier( pListener );
-		pAnimator->FreeReference();
+	if(pAnimator){
+		pAnimator->RemoveNotifier(pListener);
 	}
 	
 	pAnimator = animator;
 	
-	if( animator ){
-		animator->AddNotifier( pListener );
-		animator->AddReference();
+	if(animator){
+		animator->AddNotifier(pListener);
 	}
 	
 	UpdateRigBoneList();
@@ -704,34 +712,24 @@ void aeWPLink::SetAnimator( aeAnimator *animator ){
 }
 
 aeLink *aeWPLink::GetLink() const{
-	return pAnimator ? pAnimator->GetActiveLink() : NULL;
+	return pAnimator ? pAnimator->GetActiveLink() : nullptr;
 }
 
 void aeWPLink::SelectActiveLink(){
-	pListLink->SetSelectionWithData( GetLink() );
+	pListLink->SetSelectionWithData(GetLink());
 }
 
 void aeWPLink::UpdateLinkList(){
-	aeLink * const selection = GetLink();
-	
-	pListLink->RemoveAllItems();
-	
-	if( pAnimator ){
-		const aeLinkList &list = pAnimator->GetLinks();
-		const int count = list.GetCount();
-		int i;
+	pListLink->UpdateRestoreSelection([&](){
+		pListLink->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			aeLink * const link = list.GetAt( i );
-			pListLink->AddItem( link->GetName(), NULL, link );
+		if(pAnimator){
+			pAnimator->GetLinks().Visit([&](aeLink *link){
+				pListLink->AddItem(link->GetName(), nullptr, link);
+			});
+			pListLink->SortItems();
 		}
-		pListLink->SortItems();
-	}
-	
-	pListLink->SetSelectionWithData( selection );
-	if( ! pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0 ){
-		pListLink->SetSelection( 0 );
-	}
+	}, 0);
 	
 	UpdateLink();
 }
@@ -739,25 +737,25 @@ void aeWPLink::UpdateLinkList(){
 void aeWPLink::UpdateLink(){
 	const aeLink * const link = GetLink();
 	
-	if( link ){
-		pEditName->SetText( link->GetName() );
-		pCBController->SetSelectionWithData( link->GetController() );
-		pSpinRepeat->SetValue( link->GetRepeat() );
-		pCBBone->SetText( link->GetBone() );
-		pCBBoneParameter->SetSelectionWithData( ( void* )( intptr_t )link->GetBoneParameter() );
-		pEditBoneMinimum->SetFloat( link->GetBoneMinimum() );
-		pEditBoneMaximum->SetFloat( link->GetBoneMaximum() );
-		pCBVertexPositionSet->SetText( link->GetVertexPositionSet() );
-		pEditVertexPositionSetMinimum->SetFloat( link->GetVertexPositionSetMinimum() );
-		pEditVertexPositionSetMaximum->SetFloat( link->GetVertexPositionSetMaximum() );
-		pEditCurve->SetCurve( link->GetCurve() );
+	if(link){
+		pEditName->SetText(link->GetName());
+		pCBController->SetSelectionWithData(link->GetController());
+		pSpinRepeat->SetValue(link->GetRepeat());
+		pCBBone->SetText(link->GetBone());
+		pCBBoneParameter->SetSelectionWithData((void*)(intptr_t)link->GetBoneParameter());
+		pEditBoneMinimum->SetFloat(link->GetBoneMinimum());
+		pEditBoneMaximum->SetFloat(link->GetBoneMaximum());
+		pCBVertexPositionSet->SetText(link->GetVertexPositionSet());
+		pEditVertexPositionSetMinimum->SetFloat(link->GetVertexPositionSetMinimum());
+		pEditVertexPositionSetMaximum->SetFloat(link->GetVertexPositionSetMaximum());
+		pEditCurve->SetCurve(link->GetCurve());
 		
 	}else{
 		pEditName->ClearText();
-		pCBController->SetSelectionWithData( NULL );
-		pSpinRepeat->SetValue( 1 );
+		pCBController->SetSelectionWithData(nullptr);
+		pSpinRepeat->SetValue(1);
 		pCBBone->ClearText();
-		pCBBoneParameter->SetSelectionWithData( ( void* )( intptr_t )deAnimatorLink::ebpPositionZ );
+		pCBBoneParameter->SetSelectionWithData((void*)(intptr_t)deAnimatorLink::ebpPositionZ);
 		pEditBoneMinimum->ClearText();
 		pEditBoneMaximum->ClearText();
 		pCBVertexPositionSet->ClearText();
@@ -767,107 +765,100 @@ void aeWPLink::UpdateLink(){
 	}
 	
 	const bool enabled = link;
-	pEditName->SetEnabled( enabled );
-	pCBController->SetEnabled( enabled );
-	pSpinRepeat->SetEnabled( enabled );
-	pCBBone->SetEnabled( enabled );
-	pCBBoneParameter->SetEnabled( enabled );
-	pEditBoneMinimum->SetEnabled( enabled );
-	pEditBoneMaximum->SetEnabled( enabled );
-	pCBVertexPositionSet->SetEnabled( enabled );
-	pEditVertexPositionSetMinimum->SetEnabled( enabled );
-	pEditVertexPositionSetMaximum->SetEnabled( enabled );
-	pEditCurve->SetEnabled( enabled );
+	pEditName->SetEnabled(enabled);
+	pCBController->SetEnabled(enabled);
+	pSpinRepeat->SetEnabled(enabled);
+	pCBBone->SetEnabled(enabled);
+	pCBBoneParameter->SetEnabled(enabled);
+	pEditBoneMinimum->SetEnabled(enabled);
+	pEditBoneMaximum->SetEnabled(enabled);
+	pCBVertexPositionSet->SetEnabled(enabled);
+	pEditVertexPositionSetMinimum->SetEnabled(enabled);
+	pEditVertexPositionSetMaximum->SetEnabled(enabled);
+	pEditCurve->SetEnabled(enabled);
 	
 	pChkWrapY->GetAction()->Update();
 }
 
 void aeWPLink::UpdateRigBoneList(){
-	const decString selection( pCBBone->GetText() );
+	const decString selection(pCBBone->GetText());
 	
 	pPreventUpdate = true;
 	try{
 		pCBBone->RemoveAllItems();
 		
-		if( pAnimator ){
+		if(pAnimator){
 			const deRig * const rig = pAnimator->GetEngineRig();
-			if( rig ){
+			if(rig){
 				const int count = rig->GetBoneCount();
 				int i;
-				for( i=0; i<count; i++ ){
-					pCBBone->AddItem( rig->GetBoneAt( i ).GetName() );
+				for(i=0; i<count; i++){
+					pCBBone->AddItem(rig->GetBoneAt(i)->GetName());
 				}
 			}
 			pCBBone->SortItems();
 		}
 		
 		pCBBone->StoreFilterItems();
-		pCBBone->SetText( selection );
+		pCBBone->SetText(selection);
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
 }
 
 void aeWPLink::UpdateModelVertexPositionSetList(){
-	const decString selection( pCBVertexPositionSet->GetText() );
+	const decString selection(pCBVertexPositionSet->GetText());
 	
 	pPreventUpdate = true;
 	try{
 		pCBVertexPositionSet->RemoveAllItems();
 		
-		if( pAnimator ){
+		if(pAnimator){
 			const deComponent * const component = pAnimator->GetEngineComponent();
-			const deModel * const model = component ? component->GetModel() : nullptr;
-			if( model ){
+			const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
+			if(model){
 				const int count = model->GetVertexPositionSetCount();
 				int i;
-				for( i=0; i<count; i++ ){
-					pCBVertexPositionSet->AddItem( model->GetVertexPositionSetAt( i )->GetName() );
+				for(i=0; i<count; i++){
+					pCBVertexPositionSet->AddItem(model->GetVertexPositionSetAt(i)->GetName());
 				}
 			}
 			pCBVertexPositionSet->SortItems();
 		}
 		
 		pCBVertexPositionSet->StoreFilterItems();
-		pCBVertexPositionSet->SetText( selection );
+		pCBVertexPositionSet->SetText(selection);
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
 }
 
 void aeWPLink::UpdateControllerList(){
-	aeController * const selection = pCBController->GetSelectedItem()
-		? ( aeController* )pCBController->GetSelectedItem()->GetData() : NULL;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
+	void * const selection = pCBController->GetSelectedItemData();
 	
-	pPreventUpdate = true;
-	try{
-		pCBController->RemoveAllItems();
-		pCBController->AddItem( "< No Controller >", NULL, NULL );
-		
-		if( pAnimator ){
-			const aeControllerList &list = pAnimator->GetControllers();
-			const int count = list.GetCount();
-			decString text;
-			int i;
-			
-			for( i=0; i<count; i++ ){
-				aeController * const controller = list.GetAt( i );
-				text.Format( "%d: %s", i, controller->GetName().GetString() );
-				pCBController->AddItem( text, NULL, controller );
-			}
-		}
-		
-		pCBController->SetSelectionWithData( selection );
-		pPreventUpdate = false;
-		
-	}catch( const deException & ){
-		pPreventUpdate = false;
-		throw;
+	pCBController->RemoveAllItems();
+	pCBController->AddItem(Translate("Animator.WPLink.Controller.NoController").ToUTF8(), nullptr, nullptr);
+	
+	if(pAnimator){
+		decString text;
+		pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
+			text.Format("%d: %s", i, controller->GetName().GetString());
+			pCBController->AddItem(text, nullptr, controller);
+		});
 	}
+	
+	pCBController->SetSelectionWithData(selection);
+}
+
+void aeWPLink::OnLanguageChanged(){
+	igdeContainerScroll::OnLanguageChanged();
+	
+	UpdateControllerList();
 }

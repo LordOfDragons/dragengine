@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class speaker set orientation.
  */
 class gdeUOCSpeakerSetRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCSpeakerSetRotation>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetRotation( gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, const decVector &newValue );
+	gdeUOCSpeakerSetRotation(gdeObjectClass *objectClass,
+		gdeOCSpeaker *speaker, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSpeakerSetRotation();
+	~gdeUOCSpeakerSetRotation() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

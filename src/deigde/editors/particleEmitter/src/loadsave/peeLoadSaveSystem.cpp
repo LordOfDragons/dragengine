@@ -34,13 +34,10 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
-#include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -62,15 +59,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeLoadSaveSystem::peeLoadSaveSystem( peeWindowMain &windowMain ) :
-pWindowMain( windowMain )
+peeLoadSaveSystem::peeLoadSaveSystem(peeWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	pLSEmitter = new peeLoadSaveEmitter( this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE );
+	pLSEmitter = new peeLoadSaveEmitter(this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE);
 	pBuildFilePattern();
 }
 
 peeLoadSaveSystem::~peeLoadSaveSystem(){
-	if( pLSEmitter ) delete pLSEmitter;
+	if(pLSEmitter) delete pLSEmitter;
 }
 
 
@@ -78,59 +75,23 @@ peeLoadSaveSystem::~peeLoadSaveSystem(){
 // Management
 ///////////////
 
-peeEmitter *peeLoadSaveSystem::LoadEmitter( const char *filename ){
-	if( ! filename ) DETHROW( deeInvalidParam );
+peeEmitter::Ref peeLoadSaveSystem::LoadEmitter(const char *filename){
+	if(!filename) DETHROW(deeInvalidParam);
 	
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileReader *fileReader = NULL;
-	peeEmitter *emitter = NULL;
-	decPath path;
+	const peeEmitter::Ref emitter(peeEmitter::Ref::New(&pWindowMain.GetEnvironment(), *this));
+	emitter->SetFilePath(filename);
 	
-	path.SetFromUnix( filename );
-	
-	try{
-		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading( path );
-		
-		emitter = new peeEmitter( &pWindowMain.GetEnvironment(), *this );
-		emitter->SetFilePath( filename );
-		
-		pLSEmitter->LoadEmitter( *this, *emitter, *fileReader );
-		fileReader->FreeReference();
-		
-	}catch( const deException & ){
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		if( emitter ){
-			emitter->FreeReference();
-		}
-		throw;
-	}
+	pLSEmitter->LoadEmitter(*this, emitter, pWindowMain.GetEngineController().GetEngine()->
+		GetVirtualFileSystem()->OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
 	return emitter;
 }
 
-void peeLoadSaveSystem::SaveEmitter( peeEmitter *emitter, const char *filename ){
-	if( ! emitter || ! filename ) DETHROW( deeInvalidParam );
+void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
+	if(!emitter || !filename) DETHROW(deeInvalidParam);
 	
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
-	
-	path.SetFromUnix( filename );
-	
-	try{
-		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting( path );
-		pLSEmitter->SaveEmitter( *this, *emitter, *fileWriter );
-		
-		fileWriter->FreeReference();
-		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSEmitter->SaveEmitter(*this, *emitter, pWindowMain.GetEngineController().GetEngine()->
+		GetVirtualFileSystem()->OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }
 
 
@@ -140,16 +101,7 @@ void peeLoadSaveSystem::SaveEmitter( peeEmitter *emitter, const char *filename )
 //////////////////////	
 
 void peeLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
 	decString pattern;
-	
-	try{
-		pattern.Format( "*%s", pLSEmitter->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSEmitter->GetName(), pattern, pLSEmitter->GetPattern() );
-		pFPEmitter.AddFilePattern( filePattern );
-		
-	}catch( const deException & ){
-		if( filePattern ) delete filePattern;
-		throw;
-	}
+	pattern.Format("*%s", pLSEmitter->GetPattern().GetString());
+	pFPEmitter.Add(igdeFilePattern::Ref::New(pLSEmitter->GetName(), pattern, pLSEmitter->GetPattern()));
 }

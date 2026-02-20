@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetSnapDistance::gdeUOCNavSpaceSetSnapDistance( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, float newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetSnapDistance::gdeUOCNavSpaceSetSnapDistance(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set snap distance" );
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetSnapDistance");
 	
 	pOldValue = navspace->GetSnapDistance();
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetSnapDistance::~gdeUOCNavSpaceSetSnapDistance(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCNavSpaceSetSnapDistance::~gdeUOCNavSpaceSetSnapDistance(){
 ///////////////
 
 void gdeUOCNavSpaceSetSnapDistance::Undo(){
-	pNavSpace->SetSnapDistance( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetSnapDistance(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetSnapDistance::Redo(){
-	pNavSpace->SetSnapDistance( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetSnapDistance(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

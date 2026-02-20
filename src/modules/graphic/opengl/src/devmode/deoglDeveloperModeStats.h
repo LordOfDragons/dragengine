@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new developer mode stats object. */
-	deoglDeveloperModeStats( deoglRenderThread &renderThread );
+	deoglDeveloperModeStats(deoglRenderThread &renderThread);
 	/** Cleans up the developer mode stats object. */
 	~deoglDeveloperModeStats();
 	/*@}*/
@@ -52,32 +52,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Print stats syntax. */
-	void Help( decUnicodeString &answer );
+	void Help(decUnicodeString &answer);
 	/** Stats command. */
-	void Stats( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void Stats(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** Skin stats. */
-	void Skins( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void Skins(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Combined textures stats. */
-	void CombinedTextures( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void CombinedTextures(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Shader sources. */
-	void ShaderSources( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ShaderSources(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Shader programs. */
-	void ShaderPrograms( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ShaderPrograms(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Skin shaders. */
-	void SkinShaders( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void SkinShaders(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Renderables color texture. */
-	void RenderablesTexturesColor( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void RenderablesTexturesColor(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Renderables depth texture. */
-	void RenderablesTexturesDepth( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void RenderablesTexturesDepth(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Renderables color cube map. */
-	void RenderablesCubeColor( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void RenderablesCubeColor(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Renderables depth cube map. */
-	void RenderablesCubeDepth( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void RenderablesCubeDepth(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Shared VBOs. */
-	void SharedVBOs( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void SharedVBOs(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/** Texture units configurations. */
-	void TextureUnitsConfigurations( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void TextureUnitsConfigurations(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 };
 

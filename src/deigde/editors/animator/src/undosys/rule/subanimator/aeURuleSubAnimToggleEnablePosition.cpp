@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSubAnimToggleEnablePosition::aeURuleSubAnimToggleEnablePosition( aeRuleSubAnimator *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSubAnimToggleEnablePosition::aeURuleSubAnimToggleEnablePosition(aeRuleSubAnimator *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleSubAnimatorToggleEnablePosition");
 		
-		SetShortInfo( "Rule sub animator toggle enable position" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleSubAnimToggleEnablePosition::~aeURuleSubAnimToggleEnablePosition(){
 ///////////////
 
 void aeURuleSubAnimToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleSubAnimToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleSubAnimToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleSubAnimToggleEnablePosition::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

@@ -24,7 +24,7 @@ fixed class GraphicSystem
 	 * \brief X position in pixel of render window.
 	 * \version 1.24
 	 */
-	public static func int getWindowX()
+	static func int getWindowX()
 		return 0
 	end
 	
@@ -32,7 +32,7 @@ fixed class GraphicSystem
 	 * \brief Y position in pixel of render window.
 	 * \version 1.24
 	 */
-	public static func int getWindowY()
+	static func int getWindowY()
 		return 0
 	end
 	
@@ -40,38 +40,38 @@ fixed class GraphicSystem
 	 * \brief Position in pixel of render window.
 	 * \version 1.24
 	 */
-	public static func Point getWindowPosition()
+	static func Point getWindowPosition()
 		return null
 	end
 	
 	/** \brief Width in pixel of render window. */
-	public static func int getWindowWidth()
+	static func int getWindowWidth()
 		return 0
 	end
 	
 	/** \brief Height in pixel of the render window. */
-	public static func int getWindowHeight()
+	static func int getWindowHeight()
 		return 0
 	end
 	
 	/** \brief Size in pixels of render window. */
-	public static func Point getWindowSize()
+	static func Point getWindowSize()
 		return null
 	end
 	
 	/** \brief Set render window geometry. */
-	public static func void setWindowGeometry( int width, int height, bool fullScreen )
+	static func void setWindowGeometry(int width, int height, bool fullScreen)
 	end
 	
 	/**
 	 * \brief Set render window geometry.
 	 * \version 1.24.
 	 */
-	public static func void setWindowGeometry(int x, int y, int width, int height, bool fullScreen)
+	static func void setWindowGeometry(int x, int y, int width, int height, bool fullScreen)
 	end
 	
 	/** \brief Set render window title. */
-	public static func void setWindowTitle( String title )
+	static func void setWindowTitle(String title)
 	end
 
 	/**
@@ -80,7 +80,7 @@ fixed class GraphicSystem
 	 * 
 	 * Scaling factor is returned as integer scaling factor where 100 indicates 100%.
 	 */
-	public static func int getWindowScaleFactor()
+	static func int getWindowScaleFactor()
 		return 0
 	end
 
@@ -90,12 +90,12 @@ fixed class GraphicSystem
 	 * 
 	 * Scaling factor is returned as floating point scaling factor.
 	 */
-	public static func float getWindowScaleFactorFloat()
+	static func float getWindowScaleFactorFloat()
 		return 0.0
 	end
 	
 	/** \brief Primary canvas view. */
-	public static func CanvasView getPrimaryCanvas()
+	static func CanvasView getPrimaryCanvas()
 		return null
 	end
 	/*@}*/
@@ -105,7 +105,7 @@ fixed class GraphicSystem
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Number of parameters available. */
-	public static func int getParameterCount()
+	static func int getParameterCount()
 		return 0
 	end
 	
@@ -113,12 +113,12 @@ fixed class GraphicSystem
 	 * \brief Parameter information.
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
-	public static func ModuleParameter getParameterInfo( int index )
+	static func ModuleParameter getParameterInfo(int index)
 		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
-	public static func ModuleParameter getParameterInfo( String name )
+	static func ModuleParameter getParameterInfo(String name)
 		return null
 	end
 	
@@ -126,7 +126,7 @@ fixed class GraphicSystem
 	 * \brief Parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func String getParameterValue( String name )
+	static func String getParameterValue(String name)
 		return null
 	end
 	
@@ -134,11 +134,11 @@ fixed class GraphicSystem
 	 * \brief Set named parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func void setParameterValue( String name, String value )
+	static func void setParameterValue(String name, String value)
 	end
 	
 	/** \brief Send command. */
-	public static func String sendCommand( String command )
+	static func String sendCommand(String command)
 		return null
 	end
 	
@@ -148,7 +148,7 @@ fixed class GraphicSystem
 	 * 
 	 * Returns 0 if module is not using a separate thread.
 	 */
-	public static func int getFPSRate()
+	static func int getFPSRate()
 		return 0
 	end
 	
@@ -164,7 +164,7 @@ fixed class GraphicSystem
 	 * - matrix up vector along panel down direction
 	 * - matrix forward vector pointing towards the user
 	 */
-	public static func void setVRDebugPanelPosition( DVector position, Quaternion orientation )
+	static func void setVRDebugPanelPosition(DVector position, Quaternion orientation)
 	end
 	/*@}*/
 end

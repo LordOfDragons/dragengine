@@ -39,11 +39,11 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new constraint. */
-	debpBPConstraintSlider( btRigidBody &rbA, btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB );
+	debpBPConstraintSlider(btRigidBody &rbA, btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB);
 	/** Creates a new constraint. */
-	debpBPConstraintSlider( btRigidBody &rbA, const btTransform &frameInA, const btTransform &frameInB );
+	debpBPConstraintSlider(btRigidBody &rbA, const btTransform &frameInA, const btTransform &frameInB);
 	/** Cleans up the constraint. */
-	virtual ~debpBPConstraintSlider();
+	~debpBPConstraintSlider() override;
 	
 	/** @name Management */
 	/*@{*/

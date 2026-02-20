@@ -26,10 +26,10 @@
 #define _MEUHTVRULEMATHOP_H_
 
 #include "../../../../../../world/heightterrain/rules/meHTVRuleMath.h"
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHTVegetationLayer;
 
 
 
@@ -37,9 +37,15 @@ class meHTVegetationLayer;
  * \brief Undo Height Terrain Vegetation Rule Math Set Operator.
  */
 class meUHTVRuleMathSetOp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleMathSetOp>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMath::Ref pRule;
 	
 	meHTVRuleMath::eOperators pOldOp;
 	meHTVRuleMath::eOperators pNewOp;
@@ -48,17 +54,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMathSetOp( meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop );
+	meUHTVRuleMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleMathSetOp();
+
+protected:
+	~meUHTVRuleMathSetOp() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetColor::seUPropertyNodeTextSetColor(
-sePropertyNodeText *node, const decColor &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeText *node, const decColor &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node text set color" );
+	SetShortInfo("@Skin.Undo.NodeTextSetColor");
 	
 	pOldValue = node->GetColor();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetColor::~seUPropertyNodeTextSetColor(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeTextSetColor::~seUPropertyNodeTextSetColor(){
 ///////////////
 
 void seUPropertyNodeTextSetColor::Undo(){
-	pNode->SetColor( pOldValue );
+	pNode->SetColor(pOldValue);
 }
 
 void seUPropertyNodeTextSetColor::Redo(){
-	pNode->SetColor( pNewValue );
+	pNode->SetColor(pNewValue);
 }

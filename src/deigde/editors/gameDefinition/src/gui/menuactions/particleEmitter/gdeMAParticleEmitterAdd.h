@@ -33,18 +33,19 @@
  */
 class gdeMAParticleEmitterAdd : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeMAParticleEmitterAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMAParticleEmitterAdd( gdeWindowMain &windowMain );
+	gdeMAParticleEmitterAdd(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	/*@}*/
 };
 

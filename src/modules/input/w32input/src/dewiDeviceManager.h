@@ -33,7 +33,7 @@
 #include <winrt/Windows.Gaming.Input.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class deWindowsInput;
@@ -50,13 +50,12 @@ namespace wrgi = winrt::Windows::Gaming::Input;
 class dewiDeviceManager : public deObject{
 public:
 	typedef deTObjectReference<dewiDeviceManager> Ref;
-
-
-
+	
+	
 private:
 	deWindowsInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<dewiDevice> pDevices;
 	
 	dewiDeviceMouse::Ref pMouse;
 	dewiDeviceKeyboard::Ref pKeyboard;
@@ -71,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device list. */
-	dewiDeviceManager( deWindowsInput &module );
+	dewiDeviceManager(deWindowsInput &module);
 	
 protected:
 	/** Clean up device list. */
@@ -88,20 +87,17 @@ public:
 	
 	
 	
-	/** Count of devices. */
-	int GetCount() const;
-	
-	/** Device at index. */
-	dewiDevice *GetAt( int index ) const;
+	/** Devices. */
+	inline const decTObjectOrderedSet<dewiDevice> &GetDevices() const{ return pDevices; }
 	
 	/** Device with identifier or \em NULL if absent. */
-	dewiDevice *GetWithID( const char *id ) const;
+	dewiDevice *GetWithID(const char *id) const;
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	/** Input device matching controller. */
-	dewiDeviceWinRTController *GetWithController( wrgi::RawGameController const &controller ) const;
+	dewiDeviceWinRTController *GetWithController(wrgi::RawGameController const &controller) const;
 	
 	
 	
@@ -117,7 +113,7 @@ public:
 	void LogDevices() const;
 
 	/** Log input device. */
-	void LogDevice( const dewiDevice &device ) const;
+	void LogDevice(const dewiDevice &device) const;
 	
 
 
@@ -127,7 +123,7 @@ public:
 	
 	
 	/** Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	
@@ -139,12 +135,12 @@ private:
 		dewiDeviceManager *pManager;
 
 	public:
-		sEventHandlerController( dewiDeviceManager *manager );
+		sEventHandlerController(dewiDeviceManager *manager);
 		void DropManager();
 
 	private:
-		void pOnControllerAdded( wrf::IInspectable const &sender, wrgi::RawGameController const &controller );
-		void pOnControllerRemoved( wrf::IInspectable const &sender, wrgi::RawGameController const &controller );
+		void pOnControllerAdded(wrf::IInspectable const &sender, wrgi::RawGameController const &controller);
+		void pOnControllerRemoved(wrf::IInspectable const &sender, wrgi::RawGameController const &controller);
 	};
 
 	winrt::com_ptr<sEventHandlerController> pEventHandlerController;
@@ -158,8 +154,8 @@ private:
 	void pProcessAddRemoveDevices();
 	void pUpdateDeviceIndices();
 
-	void pOnControllerAdded( wrgi::RawGameController const &controller );
-	void pOnControllerRemoved( wrgi::RawGameController const &controller );
+	void pOnControllerAdded(wrgi::RawGameController const &controller);
+	void pOnControllerRemoved(wrgi::RawGameController const &controller);
 };
 
 #endif

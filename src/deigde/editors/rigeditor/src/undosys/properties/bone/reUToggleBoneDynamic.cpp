@@ -35,16 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUToggleBoneDynamic::reUToggleBoneDynamic( reRigBone *bone ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUToggleBoneDynamic::reUToggleBoneDynamic(reRigBone *bone){
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	try{
-		SetShortInfo( "Toggle Bone Dynamic" );
+		SetShortInfo("@Rig.Undo.BoneToggleDynamic");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -60,11 +58,11 @@ reUToggleBoneDynamic::~reUToggleBoneDynamic(){
 ///////////////
 
 void reUToggleBoneDynamic::Undo(){
-	pBone->SetDynamic( ! pBone->GetDynamic() );
+	pBone->SetDynamic(!pBone->GetDynamic());
 }
 
 void reUToggleBoneDynamic::Redo(){
-	pBone->SetDynamic( ! pBone->GetDynamic() );
+	pBone->SetDynamic(!pBone->GetDynamic());
 }
 
 
@@ -73,5 +71,4 @@ void reUToggleBoneDynamic::Redo(){
 //////////////////////
 
 void reUToggleBoneDynamic::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

@@ -40,33 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetDescription::gdeUOCTPSetDescription( gdeObjectClass *objectClass, gdeProperty *property, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetDescription::gdeUOCTPSetDescription(gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set description" );
+	SetShortInfo("@GameDefinition.Undo.OCTPSetDescription");
 	
 	pOldValue = property->GetDescription();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPSetDescription::~gdeUOCTPSetDescription(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCTPSetDescription::~gdeUOCTPSetDescription(){
 ///////////////
 
 void gdeUOCTPSetDescription::Undo(){
-	pProperty->SetDescription( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetDescription(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetDescription::Redo(){
-	pProperty->SetDescription( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetDescription(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

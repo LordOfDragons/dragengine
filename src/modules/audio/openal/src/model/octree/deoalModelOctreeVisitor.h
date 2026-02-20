@@ -43,7 +43,7 @@ public:
 	deoalModelOctreeVisitor();
 	
 	/** \brief Clean up model octree visitor. */
-	virtual ~deoalModelOctreeVisitor();
+	~deoalModelOctreeVisitor() override;
 	/*@}*/
 	
 	
@@ -60,17 +60,17 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalModelOctree &node );
+	virtual void VisitNode(deoalModelOctree &node);
 	
 	/**
 	 * \brief Visit octree node.
 	 * 
 	 * Default implementation visits all faces stored in node.
 	 */
-	virtual void VisitNode( deoalOctree *node, int intersection );
+	void VisitNode(deoalOctree *node, int intersection) override;
 	
 	/** \brief Visit face. */
-	virtual void VisitFace( deoalModelFace *face );
+	virtual void VisitFace(deoalModelFace *face);
 	/*@}*/
 };
 

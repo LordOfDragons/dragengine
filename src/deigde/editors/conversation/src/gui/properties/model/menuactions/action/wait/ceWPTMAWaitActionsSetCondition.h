@@ -35,6 +35,9 @@ class ceCAWait;
  * \brief Menu action set condition to wait.
  */
 class ceWPTMAWaitActionsSetCondition : public ceWPTMACreateCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMAWaitActionsSetCondition>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAWait *pWait;
@@ -49,9 +52,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsSetCondition( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsSetCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait,
-		ceConversationCondition::eConditionTypes conditionType );
+		ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -65,7 +68,7 @@ public:
 	inline ceCAWait *GetWait() const{ return pWait; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	igdeUndo::Ref CreateUndo(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

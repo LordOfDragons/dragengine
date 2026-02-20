@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringList.h>
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -39,6 +39,10 @@ class gdeGameDefinition;
  * \brief Undo action game definition set auto find path skies.
  */
 class gdeUGDSetAutoFindPathSkies : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDSetAutoFindPathSkies> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
 	
@@ -51,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetAutoFindPathSkies( gdeGameDefinition *gameDefinition, const decStringList &newValue );
+	gdeUGDSetAutoFindPathSkies(gdeGameDefinition *gameDefinition, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

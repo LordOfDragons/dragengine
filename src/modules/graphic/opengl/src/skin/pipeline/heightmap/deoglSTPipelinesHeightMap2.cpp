@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesHeightMap2::deoglSTPipelinesHeightMap2( const deoglSkinTexture &texture ) :
-deoglSTPipelinesHeightMap1( texture ){
+deoglSTPipelinesHeightMap2::deoglSTPipelinesHeightMap2(const deoglSkinTexture &texture) :
+deoglSTPipelinesHeightMap1(texture){
 }
 
 deoglSTPipelinesHeightMap2::~deoglSTPipelinesHeightMap2(){
@@ -60,8 +60,8 @@ const char *deoglSTPipelinesHeightMap2::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesHeightMap2::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
-	deoglSTPipelinesHeightMap1::pPipelineConfigGeometry( config );
+void deoglSTPipelinesHeightMap2::pPipelineConfigGeometry(deoglPipelineConfiguration &config){
+	deoglSTPipelinesHeightMap1::pPipelineConfigGeometry(config);
 	
 	config.EnableBlendBlend();
 }

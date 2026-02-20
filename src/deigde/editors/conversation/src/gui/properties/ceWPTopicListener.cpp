@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTopicListener::ceWPTopicListener( ceWPTopic &panel ) :
-pPanel( panel ){
+ceWPTopicListener::ceWPTopicListener(ceWPTopic &panel) :
+pPanel(panel){
 }
 
 ceWPTopicListener::~ceWPTopicListener(){
@@ -53,8 +53,8 @@ ceWPTopicListener::~ceWPTopicListener(){
 // Management
 ///////////////
 
-void ceWPTopicListener::ConversationChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::ConversationChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -67,16 +67,16 @@ void ceWPTopicListener::ConversationChanged( ceConversation *conversation ){
 	pPanel.UpdateTopicList();
 }
 
-void ceWPTopicListener::TargetStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::TargetStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateTargetLists();
 }
 
-void ceWPTopicListener::TargetChanged( ceConversation *conversation, ceTarget* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::TargetChanged(ceConversation *conversation, ceTarget*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -85,16 +85,16 @@ void ceWPTopicListener::TargetChanged( ceConversation *conversation, ceTarget* )
 
 
 
-void ceWPTopicListener::CameraShotStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::CameraShotStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateCameraShotLists();
 }
 
-void ceWPTopicListener::CameraShotChanged( ceConversation *conversation, ceCameraShot* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::CameraShotChanged(ceConversation *conversation, ceCameraShot*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -103,16 +103,16 @@ void ceWPTopicListener::CameraShotChanged( ceConversation *conversation, ceCamer
 
 
 
-void ceWPTopicListener::GestureStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::GestureStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateGestureLists();
 }
 
-void ceWPTopicListener::GestureChanged( ceConversation *conversation, ceGesture* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::GestureChanged(ceConversation *conversation, ceGesture*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -121,16 +121,16 @@ void ceWPTopicListener::GestureChanged( ceConversation *conversation, ceGesture*
 
 
 
-void ceWPTopicListener::FacePoseStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::FacePoseStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateFacePoseLists();
 }
 
-void ceWPTopicListener::FacePoseChanged( ceConversation *conversation, ceFacePose* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::FacePoseChanged(ceConversation *conversation, ceFacePose*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -139,24 +139,24 @@ void ceWPTopicListener::FacePoseChanged( ceConversation *conversation, ceFacePos
 
 
 
-void ceWPTopicListener::FileStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::FileStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateFileList();
 }
 
-void ceWPTopicListener::FileChanged( ceConversation *conversation, ceConversationFile* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::FileChanged(ceConversation *conversation, ceConversationFile*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateFileList();
 }
 
-void ceWPTopicListener::ActiveFileChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::ActiveFileChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -165,25 +165,25 @@ void ceWPTopicListener::ActiveFileChanged( ceConversation *conversation ){
 
 
 
-void ceWPTopicListener::TopicStructureChanged( ceConversation *conversation, ceConversationFile *file ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile() ){
+void ceWPTopicListener::TopicStructureChanged(ceConversation *conversation, ceConversationFile *file){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()){
 		return;
 	}
 	
 	pPanel.UpdateTopicList();
 }
 
-void ceWPTopicListener::TopicChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic* ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile() ){
+void ceWPTopicListener::TopicChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic*){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()){
 		return;
 	}
 	
 	pPanel.UpdateTopicList();
 }
 
-void ceWPTopicListener::ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile() ){
+void ceWPTopicListener::ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()){
 		return;
 	}
 	
@@ -192,40 +192,40 @@ void ceWPTopicListener::ActiveTopicChanged( ceConversation *conversation, ceConv
 
 
 
-void ceWPTopicListener::ActionStructureChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction* ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTopicListener::ActionStructureChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
 	pPanel.UpdateActive();
 }
 
-void ceWPTopicListener::ActionChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction* ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTopicListener::ActionChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
 	pPanel.UpdateActive();
 }
 
-void ceWPTopicListener::ConditionStructureChanged( ceConversation *conversation,
-ceConversationFile *file, ceConversationTopic *topic, ceConversationAction* ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTopicListener::ConditionStructureChanged(ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction*){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
 	pPanel.UpdateActive();
 }
 
-void ceWPTopicListener::ConditionChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction*, ceConversationCondition* ){
-	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTopicListener::ConditionChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*, ceConversationCondition*){
+	if(conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
@@ -234,16 +234,16 @@ ceConversationTopic *topic, ceConversationAction*, ceConversationCondition* ){
 
 
 
-void ceWPTopicListener::ActorStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::ActorStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateActorLists();
 }
 
-void ceWPTopicListener::ActorChanged( ceConversation *conversation, ceConversationActor* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::ActorChanged(ceConversation *conversation, ceConversationActor*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -252,16 +252,16 @@ void ceWPTopicListener::ActorChanged( ceConversation *conversation, ceConversati
 
 
 
-void ceWPTopicListener::CoordSystemStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::CoordSystemStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateConvoCoordSysLists();
 }
 
-void ceWPTopicListener::CoordSystemChanged( ceConversation *conversation, ceCoordSystem* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::CoordSystemChanged(ceConversation *conversation, ceCoordSystem*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -270,8 +270,8 @@ void ceWPTopicListener::CoordSystemChanged( ceConversation *conversation, ceCoor
 
 
 
-void ceWPTopicListener::LanguagePackChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPTopicListener::LanguagePackChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	

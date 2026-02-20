@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardCopy::gdeMAOCBillboardCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Billboard",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class billboard" )
+gdeMAOCBillboardCopy::gdeMAOCBillboardCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@GameDefinition.Menu.OCBillboardCopy.ToolTip")
 {
 }
 
@@ -59,29 +59,25 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard ){
-		return NULL;
+igdeUndo::Ref gdeMAOCBillboardCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard){
+		return {};
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
-	if( ! billboard ){
-		return NULL;
+	if(!billboard){
+		return {};
 	}
 	
-	deObjectReference clipOCBillboard;
-	clipOCBillboard.TakeOver( new gdeOCBillboard( *billboard ) );
+	const gdeOCBillboard::Ref clipOCBillboard(gdeOCBillboard::Ref::New(*billboard));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCBillboard( ( gdeOCBillboard* )( deObject* )clipOCBillboard ) );
-	
-	pWindowMain.GetClipboard().Set( clipData );
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCBillboard::Ref::New(clipOCBillboard));
+	return {};
 }
 
 void gdeMAOCBillboardCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard
-		&& gameDefinition->GetActiveOCBillboard() != NULL );
+		&& gameDefinition->GetActiveOCBillboard() != nullptr);
 }

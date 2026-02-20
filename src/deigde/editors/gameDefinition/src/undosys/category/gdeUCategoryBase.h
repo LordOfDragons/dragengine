@@ -26,10 +26,11 @@
 #ifndef _GDEUCATEGORYBASE_H_
 #define _GDEUCATEGORYBASE_H_
 
+#include "../../gamedef/category/gdeCategory.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class gdeGameDefinition;
-class gdeCategory;
 
 
 
@@ -37,6 +38,10 @@ class gdeCategory;
  * \brief Undo action category base class.
  */
 class gdeUCategoryBase : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUCategoryBase> Ref;
+	
+	
 public:
 	/** \brief Category type. */
 	enum eCategoryType{
@@ -58,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategoryBase( gdeGameDefinition *gameDefintiion, eCategoryType type );
+	gdeUCategoryBase(gdeGameDefinition *gameDefintiion, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */

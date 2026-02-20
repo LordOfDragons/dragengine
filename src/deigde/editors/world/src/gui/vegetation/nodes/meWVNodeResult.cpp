@@ -41,9 +41,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -60,18 +58,18 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
-	cTextProbability( meWVNodeResult &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextProbability>;
+	cTextProbability(meWVNodeResult &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleResult()->GetProbability() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleResult()->GetProbability()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleResultSetProb( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleResult(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleResultSetProb::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleResult(), value));
 	}
 };
 
@@ -80,18 +78,18 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
-	cTextVariation( meWVNodeResult &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextVariation>;
+	cTextVariation(meWVNodeResult &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const int value = textField->GetInteger();
-		if( value == pNode.GetRuleResult()->GetVariation() ){
+		if(value == pNode.GetRuleResult()->GetVariation()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleResultSetVar( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleResult(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleResultSetVar::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleResult(), value));
 	}
 };
 
@@ -105,33 +103,33 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeResult::meWVNodeResult( meWindowVegetation &windowVegetation, meHTVRuleResult *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleResult( rule )
+meWVNodeResult::meWVNodeResult(meWindowVegetation &windowVegetation, meHTVRuleResult *rule) :
+meWVNode(windowVegetation, rule),
+pRuleResult(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Result" );
+	SetTitle("@World.WVNodeResult.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Probability", "Probability in the range from 0 to 1",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability ) );
-	helper.EditFloat( slot, "Probability if slot is not connected.",
-		pEditProbability, new cTextProbability( *this ) );
-	AddSlot( slot );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeResult.Input.Probability", "@World.WVNodeResult.Input.Probability.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
+	helper.EditFloat(slot, "@World.WVNodeResult.Probability",
+		pEditProbability, cTextProbability::Ref::New(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Variation", "Variation to use",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation ) );
-	helper.EditInteger( slot, "Variation if slot is not connected.",
-		pEditVariation, new cTextVariation( *this ) );
-	AddSlot( slot );
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeResult.Input.Variation", "@World.WVNodeResult.Input.Variation.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation);
+	helper.EditInteger(slot, "@World.WVNodeResult.Variation",
+		pEditVariation, cTextVariation::Ref::New(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 }
 
 meWVNodeResult::~meWVNodeResult(){
@@ -145,8 +143,8 @@ meWVNodeResult::~meWVNodeResult(){
 void meWVNodeResult::Update(){
 	meWVNode::Update();
 	
-	pEditProbability->SetFloat( pRuleResult->GetProbability() );
-	pEditVariation->SetInteger( pRuleResult->GetVariation() );
+	pEditProbability->SetFloat(pRuleResult->GetProbability());
+	pEditVariation->SetInteger(pRuleResult->GetVariation());
 }
 
 bool meWVNodeResult::CanDelete() const{

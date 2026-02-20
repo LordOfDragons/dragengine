@@ -25,11 +25,12 @@
 #ifndef _DEOALMODEL_H_
 #define _DEOALMODEL_H_
 
+#include "deoalAModel.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/audio/deBaseAudioModel.h>
 
 class deAudioOpenAL;
-class deoalAModel;
 
 class deModel;
 
@@ -42,7 +43,7 @@ class deoalModel : public deBaseAudioModel{
 private:
 	deAudioOpenAL &pOal;
 	const deModel &pModel;
-	deoalAModel *pAModel;
+	deoalAModel::Ref pAModel;
 	
 	
 	
@@ -50,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model peer. */
-	deoalModel( deAudioOpenAL &oal, const deModel &model );
+	deoalModel(deAudioOpenAL &oal, const deModel &model);
 	
 	/** \brief Clean up model peer. */
-	virtual ~deoalModel();
+	~deoalModel() override;
 	/*@}*/
 	
 	
@@ -67,7 +68,7 @@ public:
 	inline const deModel &GetModel() const{ return pModel; }
 	
 	/** \brief Audio model. */
-	inline deoalAModel *GetAModel() const{ return pAModel; }
+	inline const deoalAModel::Ref &GetAModel() const{ return pAModel; }
 	/*@}*/
 };
 

@@ -25,8 +25,15 @@
 #ifndef _DEDAINAVMESHBUILDERFACE_H_
 #define _DEDAINAVMESHBUILDERFACE_H_
 
-#include <dragengine/common/collection/decIntSet.h>
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
+
+
+/**
+ * @brief Navigation Mesh Builder Face.
+ */
+class dedaiNavMeshBuilderFace;
+class dedaiNavMeshBuilderEdge;
 
 
 
@@ -36,8 +43,8 @@
 class dedaiNavMeshBuilderFace{
 private:
 	int pIndex;
-	decIntSet pVertices;
-	decPointerSet pEdges;
+	decTOrderedSet<int> pVertices;
+	decTOrderedSet<dedaiNavMeshBuilderEdge*> pEdges;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -53,13 +60,12 @@ public:
 	/** Retrieves the index. */
 	inline int GetIndex() const{ return pIndex; }
 	/** Sets the index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	/** Retrieves the vertex list. */
-	inline decIntSet &GetVertices(){ return pVertices; }
-	inline const decIntSet &GetVertices() const{ return pVertices; }
+	inline decTOrderedSet<int> &GetVertices(){ return pVertices; }
+	inline const decTOrderedSet<int> &GetVertices() const{ return pVertices; }
 	/** Retrieves the edges list. */
-	inline decPointerSet &GetEdges(){ return pEdges; }
-	inline const decPointerSet &GetEdges() const{ return pEdges; }
+	inline const decTOrderedSet<dedaiNavMeshBuilderEdge*> &GetEdges() const{ return pEdges; }
 	/*@}*/
 };
 

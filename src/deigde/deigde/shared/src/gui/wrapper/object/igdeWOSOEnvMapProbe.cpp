@@ -40,7 +40,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/probe/deEnvMapProbe.h>
 #include <dragengine/resources/probe/deEnvMapProbeManager.h>
@@ -58,14 +58,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSOEnvMapProbe::igdeWOSOEnvMapProbe( igdeWObject &wrapper,
-	const igdeGDCEnvMapProbe &gdEnvMapProbe, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDEnvMapProbe( gdEnvMapProbe ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSOEnvMapProbe::igdeWOSOEnvMapProbe(igdeWObject &wrapper,
+	const igdeGDCEnvMapProbe &gdEnvMapProbe, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDEnvMapProbe(gdEnvMapProbe),
+pAddedToWorld(false),
+pAttachment(nullptr)
 {
-	wrapper.SubObjectFinishedLoading( *this, true );
+	wrapper.SubObjectFinishedLoading(*this, true);
 }
 
 igdeWOSOEnvMapProbe::~igdeWOSOEnvMapProbe(){
@@ -78,12 +78,12 @@ igdeWOSOEnvMapProbe::~igdeWOSOEnvMapProbe(){
 ///////////////
 
 void igdeWOSOEnvMapProbe::UpdateParameters(){
-	GetWrapper().SubObjectFinishedLoading( *this, true );
+	GetWrapper().SubObjectFinishedLoading(*this, true);
 }
 
 void igdeWOSOEnvMapProbe::UpdateLayerMasks(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->SetLayerMask( LayerMaskFromInt( GetWrapper().GetRenderEnvMapMask() ) );
+	if(pEnvMapProbe){
+		pEnvMapProbe->SetLayerMask(LayerMaskFromInt(GetWrapper().GetRenderEnvMapMask()));
 	}
 }
 
@@ -91,8 +91,8 @@ void igdeWOSOEnvMapProbe::OnAllSubObjectsFinishedLoading(){
 	pUpdateEnvMapProbe();
 }
 
-void igdeWOSOEnvMapProbe::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitEnvMapProbe( *this );
+void igdeWOSOEnvMapProbe::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitEnvMapProbe(*this);
 }
 
 
@@ -101,28 +101,27 @@ void igdeWOSOEnvMapProbe::Visit( igdeWOSOVisitor &visitor ){
 //////////////////////
 
 void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
-	if( ! pEnvMapProbe ){
-		pEnvMapProbe.TakeOver( GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe() );
+	if(!pEnvMapProbe){
+		pEnvMapProbe = GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe();
 		
-		pEnvMapProbe->SetScaling( pGDEnvMapProbe.GetScaling() );
+		pEnvMapProbe->SetScaling(pGDEnvMapProbe.GetScaling());
 		
 		UpdateLayerMasks();
 	}
 	
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
 	decString value;
 	
-	pEnvMapProbe->SetInfluencePriority( GetIntProperty(
-		pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epInfluencePriority ),
-		pGDEnvMapProbe.GetInfluencePriority() ) );
-	pEnvMapProbe->SetInfluenceBorderSize( GetFloatProperty(
-		pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epInfluenceBorderSize ),
-		pGDEnvMapProbe.GetInfluenceBorderSize() ) );
+	pEnvMapProbe->SetInfluencePriority(GetIntProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epInfluencePriority),
+		pGDEnvMapProbe.GetInfluencePriority()));
+	pEnvMapProbe->SetInfluenceBorderSize(GetFloatProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epInfluenceBorderSize),
+		pGDEnvMapProbe.GetInfluenceBorderSize()));
 	
 	// influence area property
-	if( GetPropertyValue( pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epInfluenceArea ), value ) ){
-		codec.DecodeShapeList( value, pEnvMapProbe->GetShapeListInfluence() );
+	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epInfluenceArea), value)){
+		codec.DecodeShapeList(value, pEnvMapProbe->GetShapeListInfluence());
 		
 	}else{
 		pEnvMapProbe->GetShapeListInfluence() = pGDEnvMapProbe.GetShapeListInfluence();
@@ -130,104 +129,97 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	pEnvMapProbe->NotifyShapeListInfluenceChanged();
 	
 	// reflection shape
-	if( GetPropertyValue( pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epReflectionShape ), value ) ){
-		codec.DecodeShapeList( value, shapeList );
+	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epReflectionShape), value)){
+		decShape::List shapeList;
+		codec.DecodeShapeList(value, shapeList);
 		
-		if( shapeList.GetCount() == 0 ){
-			pEnvMapProbe->SetShapeReflection( NULL );
+		if(shapeList.GetCount() == 0){
+			pEnvMapProbe->SetShapeReflection(nullptr);
 			
 		}else{
-			pEnvMapProbe->SetShapeReflection( shapeList.GetAt( 0 )->Copy() );
+			pEnvMapProbe->SetShapeReflection(shapeList.First()->Copy());
 		}
 		
 	}else{
-		if( pGDEnvMapProbe.GetShapeReflection() ){
-			pEnvMapProbe->SetShapeReflection( pGDEnvMapProbe.GetShapeReflection()->Copy() );
+		if(pGDEnvMapProbe.GetShapeReflection()){
+			pEnvMapProbe->SetShapeReflection(pGDEnvMapProbe.GetShapeReflection()->Copy());
 			
 		}else{
-			pEnvMapProbe->SetShapeReflection( NULL );
+			pEnvMapProbe->SetShapeReflection(nullptr);
 		}
 	}
 	
 	// reflection mask property
-	if( GetPropertyValue( pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epReflectionMask ), value ) ){
-		codec.DecodeShapeList( value, pEnvMapProbe->GetShapeListReflectionMask() );
+	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epReflectionMask), value)){
+		codec.DecodeShapeList(value, pEnvMapProbe->GetShapeListReflectionMask());
 		
 	}else{
 		pEnvMapProbe->GetShapeListReflectionMask() = pGDEnvMapProbe.GetShapeListReflectionMask();
 	}
 	pEnvMapProbe->NotifyShapeReflectionChanged();
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddEnvMapProbe( pEnvMapProbe );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddEnvMapProbe(pEnvMapProbe);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSOEnvMapProbe::pDestroyEnvMapProbe(){
-	if( ! pEnvMapProbe ){
+	if(!pEnvMapProbe){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveEnvMapProbe( pEnvMapProbe );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveEnvMapProbe(pEnvMapProbe);
 	}
 	
-	pEnvMapProbe = NULL;
+	pEnvMapProbe = nullptr;
 	pAddedToWorld = false;
 }
 
 void igdeWOSOEnvMapProbe::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pEnvMapProbe ){
+	if(!pEnvMapProbe){
 		return;
 	}
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
 	
-	try{
-		attachment = new deColliderAttachment( pEnvMapProbe );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epAttachPosition ),
-			pGDEnvMapProbe.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epAttachRotation ),
-			pGDEnvMapProbe.GetOrientation() ) );
+	auto attachment = deColliderAttachment::Ref::New(pEnvMapProbe);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachPosition),
+		pGDEnvMapProbe.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachRotation),
+		pGDEnvMapProbe.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		if( colliderComponent ){
-			colliderComponent->AddAttachment( attachment );
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment( attachment );
-			pAttachedToCollider = colliderFallback;
-		}
-		
-		pAttachment = attachment;
-		
-	}catch( const deException & ){
-		if( attachment ){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOEnvMapProbe::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachedToCollider->RemoveAttachment(pAttachment);
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

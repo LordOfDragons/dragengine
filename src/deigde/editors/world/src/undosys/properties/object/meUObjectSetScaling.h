@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 
@@ -42,8 +42,12 @@ class meObject;
  * Undo action to change the scaling of an object.
  */
 class meUObjectSetScaling : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectSetScaling>;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldScaling;
 	decVector pNewScaling;
@@ -52,20 +56,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectSetScaling( meObject *object, const decVector &nscaling );
+	meUObjectSetScaling(meObject *object, const decVector &nscaling);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~meUObjectSetScaling();
+
+protected:
+	~meUObjectSetScaling() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,7 +28,6 @@
 
 #include "deModelModule.h"
 #include "demdlWeightSet.h"
-#include "demdlWeightSetList.h"
 #include "demdlTexCoordSorter.h"
 
 #include <dragengine/resources/model/deModel.h>
@@ -60,20 +59,20 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DEModelCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DEModelCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *DEModelCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *DEModelCreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deModelModule( *loadableModule );
+		module = new deModelModule(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 	
 	return module;
@@ -108,20 +107,20 @@ struct sWeight{
 // Constructor, destructor
 ////////////////////////////
 
-deModelModule::deModelModule( deLoadableModule &loadableModule ) :
-deBaseModelModule( loadableModule ){
-	pCacheTCSorter = NULL;
+deModelModule::deModelModule(deLoadableModule &loadableModule) :
+deBaseModelModule(loadableModule){
+	pCacheTCSorter = nullptr;
 	
 	// create cache
 	deVirtualFileSystem &vfs = GetVFS();
 	decPath path;
 	
-	path.SetFromUnix( "/cache/local/tcsorter" );
-	pCacheTCSorter = new deCacheHelper( &vfs, path );
+	path.SetFromUnix("/cache/local/tcsorter");
+	pCacheTCSorter = new deCacheHelper(&vfs, path);
 }
 
 deModelModule::~deModelModule(){
-	if( pCacheTCSorter ){
+	if(pCacheTCSorter){
 		delete pCacheTCSorter;
 	}
 }
@@ -131,32 +130,32 @@ deModelModule::~deModelModule(){
 // Loading and Saving
 ///////////////////////
 
-void deModelModule::LoadModel( decBaseFileReader &reader, deModel &model ){
+void deModelModule::LoadModel(decBaseFileReader &reader, deModel &model){
 #ifdef OS_ANDROID
 	decTimer timer;
 #endif
 	
 	const char *infosSigOld = "Drag[en]gine Model Low  ";
-	char checkSig[ 24 ];
+	char checkSig[24];
 	
-	reader.Read( &checkSig, 24 );
-	reader.SetPosition( 0 );
+	reader.Read(&checkSig, 24);
+	reader.SetPosition(0);
 	
-	if( strncmp( checkSig, infosSigOld, 24 ) == 0 ){
-		LogWarnFormat( "Loading '%s' using old format (DEPRECATED)", reader.GetFilename() );
-		pLoadVersion0( reader, model );
+	if(strncmp(checkSig, infosSigOld, 24) == 0){
+		LogWarnFormat("Loading '%s' using old format (DEPRECATED)", reader.GetFilename());
+		pLoadVersion0(reader, model);
 		
 	}else{
-		pLoadModel( reader, model );
+		pLoadModel(reader, model);
 	}
 	
 #ifdef OS_ANDROID
-	LogInfoFormat( "Loaded '%s' in %dms", reader.GetFilename(), ( int )( timer.GetElapsedTime() * 1e3f ) );
+	LogInfoFormat("Loaded '%s' in %dms", reader.GetFilename(), (int)(timer.GetElapsedTime() * 1e3f));
 #endif
 }
 
 void deModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
-	pSaveModel( writer, model );
+	pSaveModel(writer, model);
 }
 
 
@@ -164,41 +163,35 @@ void deModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
 // Private Functions
 //////////////////////
 
-void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
+void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 	const char *infosSig = "Drag[en]gine Model Low  ";
 	decString readStr;
-	char checkSig[ 24 ];
+	char checkSig[24];
 	int i, j, k, version, /*reserved, */count;
 	int width, height, parent, boneCount;
-	int boneIndex, vertexIndex, normalIndex, textureIndex, weightsIndex;
+	int boneIndex, vertexIndex, normalIndex, textureIndex;
 	int vertexCount = 0, normalCount = 0;
-	demdlWeightSetList weightSetList;
-	demdlWeightSet *weightSet;
+	demdlWeightSet::List weightSetList;
 	int weightGroupCount;
-	int weightSetCount;
 	int weightCount;
 	int faceCount;
 	decVector2 texPos;
-	deModelBone *bone;
-	deModelTexture *texture;
-	deModelLOD *lod = NULL;
 	int textureFlags;
 	float curWeight;
 	demdlTexCoordSorter texCoordSorter;
 	
 	// add a lod mesh
-	lod = new deModelLOD;
-	model.AddLOD( lod );
+	auto lod = deModelLOD::Ref::New();
 	
 	// check infos
-	reader.Read( &checkSig, 24 );
-	if( strncmp( checkSig, infosSig, 24 ) != 0 ){
-		DETHROW( deeInvalidFormat );
+	reader.Read(&checkSig, 24);
+	if(strncmp(checkSig, infosSig, 24) != 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
 	version = reader.ReadShort();
-	if( version != 1 ){
-		DETHROW( deeInvalidFormat );
+	if(version != 1){
+		DETHROW(deeInvalidFormat);
 	}
 	/*reserved = */reader.ReadShort();
 	
@@ -208,175 +201,166 @@ void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
 	
 	// bones
 	count = reader.ReadShort();
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		// name
 		readStr = reader.ReadString8();
-		if( model.HasBoneNamed(readStr) ){
-			DETHROW( deeInvalidFormat );
+		if(model.HasBoneNamed(readStr)){
+			DETHROW(deeInvalidFormat);
 		}
 		
-		bone = new deModelBone( readStr );
-		model.AddBone( bone );
+		auto bone = deModelBone::Ref::New(readStr);
 		
 		// position
-		bone->SetPosition( reader.ReadVector() );
+		bone->SetPosition(reader.ReadVector());
 		
 		// orientation
-		bone->SetOrientation( decMatrix::CreateRotation( reader.ReadVector() * DEG2RAD ).ToQuaternion() );
+		bone->SetOrientation(decMatrix::CreateRotation(reader.ReadVector() * DEG2RAD).ToQuaternion());
 		
 		// parent index
 		parent = reader.ReadShort();
-		if( parent < -1 || parent >= count || parent == i ){
-			DETHROW( deeInvalidFormat );
+		if(parent < -1 || parent >= count || parent == i){
+			DETHROW(deeInvalidFormat);
 		}
-		bone->SetParent( parent );
+		bone->SetParent(parent);
 		
 		// properties
 		reader.ReadUShort(); // dummy: property list
+		
+		model.AddBone(std::move(bone));
 	}
 	
 	// textures
 	count = reader.ReadShort();
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		// name
 		readStr = reader.ReadString8();
-		if( model.HasTextureNamed( readStr ) ){
-			DETHROW( deeInvalidFormat );
+		if(model.HasTextureNamed(readStr)){
+			DETHROW(deeInvalidFormat);
 		}
 		
 		// width
 		width = reader.ReadShort();
-		if( width < 1 ){
-			DETHROW( deeInvalidFormat );
+		if(width < 1){
+			DETHROW(deeInvalidFormat);
 		}
 		
 		// height
 		height = reader.ReadShort();
-		if( height < 1 ){
-			DETHROW( deeInvalidFormat );
+		if(height < 1){
+			DETHROW(deeInvalidFormat);
 		}
 		
-		texture = new deModelTexture( readStr, width, height );
-		model.AddTexture( texture );
+		auto texture = deModelTexture::Ref::New(readStr, width, height);
 		
 		// flags
 		textureFlags = reader.ReadUShort();
-		if( ( textureFlags & FLAG_TEX_DOUBLE_SIDED ) == FLAG_TEX_DOUBLE_SIDED ){
-			texture->SetDoubleSided( true );
+		if((textureFlags & FLAG_TEX_DOUBLE_SIDED) == FLAG_TEX_DOUBLE_SIDED){
+			texture->SetDoubleSided(true);
 		}
+		
+		model.AddTexture(std::move(texture));
 	}
 	
 	// vertices
 	vertexCount = reader.ReadShort();
-	if( vertexCount < 0 ){
-		DETHROW( deeInvalidFormat );
+	if(vertexCount < 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
-	lod->SetVertexCount( vertexCount );
+	lod->GetVertices().AddRange(vertexCount, {});
 	
-	for( i=0; i<vertexCount; i++ ){
-		deModelVertex &vertex = lod->GetVertexAt( i );
+	for(i=0; i<vertexCount; i++){
+		deModelVertex &vertex = lod->GetVertices()[i];
 		
 		// weights
 		boneCount = reader.ReadByte();
-		if( boneCount > 0 ){
-			weightSet = new demdlWeightSet;
+		if(boneCount > 0){
+			demdlWeightSet::Ref weightSet = demdlWeightSet::Ref::New();
 			
-			try{
-				for( j=0; j<boneCount; j++ ){
-					boneIndex = reader.ReadShort();
-					if( boneIndex < 0 || boneIndex >= model.GetBoneCount() ){
-						DETHROW( deeInvalidFormat );
-					}
-					
-					curWeight = ( float )reader.ReadShort() / 1000.0f;
-					weightSet->Set( boneIndex, curWeight );
+			for(j=0; j<boneCount; j++){
+				boneIndex = reader.ReadShort();
+				if(boneIndex < 0 || boneIndex >= model.GetBoneCount()){
+					DETHROW(deeInvalidFormat);
 				}
 				
-				weightSet->Normalize();
-				weightsIndex = weightSetList.IndexOfEqual( *weightSet );
-				
-				if( weightsIndex == -1 ){
-					weightSetList.Add( weightSet );
-					weightSet = NULL;
-					
-					vertex.SetWeightSet( weightSetList.GetCount() - 1 );
-					
-				}else{
-					delete weightSet;
-					weightSet = NULL;
-					
-					vertex.SetWeightSet( weightsIndex );
-				}
-				
-			}catch( const deException & ){
-				if( weightSet ){
-					delete weightSet;
-				}
-				throw;
+				curWeight = (float)reader.ReadShort() / 1000.0f;
+				weightSet->Set(boneIndex, curWeight);
+			}
+			
+			weightSet->Normalize();
+			vertex.SetWeightSet(weightSetList.IndexOfMatching([&](const demdlWeightSet &ws){
+				return ws.Equals(*weightSet);
+			}));
+			
+			if(vertex.GetWeightSet() == -1){
+				weightSetList.Add(std::move(weightSet));
+				vertex.SetWeightSet(weightSetList.GetCount() - 1);
 			}
 		}
 		
 		// position
-		vertex.SetPosition( reader.ReadVector() );
+		vertex.SetPosition(reader.ReadVector());
 	}
 	
 	// sort weight sets by the number of weights stored inside from the lowest to the highest
-	weightGroupCount = weightSetList.GetLargestWeightCount();
-	weightSetCount = weightSetList.GetCount();
+	weightGroupCount = 0;
+	weightSetList.Visit([&](const demdlWeightSet &ws) {
+		if(ws.GetWeights().GetCount() > weightGroupCount){
+			weightGroupCount = ws.GetWeights().GetCount();
+		}
+	});
+	
 	weightCount = 0;
-	for( i=0; i<weightSetCount; i++ ){
-		weightCount += weightSetList.GetAt( i )->GetCount();
-	}
+	weightSetList.Visit([&](const demdlWeightSet &ws){
+		weightCount += ws.GetWeights().GetCount();
+	});
 	
-	lod->SetWeightGroupCount( weightGroupCount );
-	lod->SetWeightCount( weightCount );
+	lod->GetWeightGroups().AddRange(weightGroupCount, {});
+	lod->GetWeights().AddRange(weightCount, {});
 	
-	deModelWeight * const modelWeights = lod->GetWeights();
-	int * const modelWeightGroups = lod->GetWeightGroups();
+	deModelWeight * const modelWeights = lod->GetWeights().GetArrayPointer();
+	int * const modelWeightGroups = lod->GetWeightGroups().GetArrayPointer();
 	int weightSetIndex = 0;
 	weightCount = 0;
 	
-	for( i=0; i<weightGroupCount; i++ ){
+	for(i=0; i<weightGroupCount; i++){
 		const int tempCount = i + 1;
 		
-		modelWeightGroups[ i ] = 0;
+		modelWeightGroups[i] = 0;
 		
-		for( j=0; j<weightSetCount; j++ ){
-			demdlWeightSet &weightSet2 = *weightSetList.GetAt( j );
-			
-			if( weightSet2.GetCount() == tempCount ){
-				for( k=0; k<tempCount; k++ ){
-					modelWeights[ weightCount + k ].SetBone( weightSet2.GetBoneAt( k ) );
-					modelWeights[ weightCount + k ].SetWeight( weightSet2.GetWeightAt( k ) );
+		weightSetList.Visit([&](demdlWeightSet &weightSet2) {
+			if(weightSet2.GetWeights().GetCount() == tempCount){
+				for(k=0; k<tempCount; k++){
+					modelWeights[weightCount + k].SetBone(weightSet2.GetWeights()[k].bone);
+					modelWeights[weightCount + k].SetWeight(weightSet2.GetWeights()[k].weight);
 				}
 				
-				weightSet2.SetGroupedIndex( weightSetIndex );
+				weightSet2.SetGroupedIndex(weightSetIndex);
 				
 				weightSetIndex++;
 				weightCount += tempCount;
-				modelWeightGroups[ i ]++;
+				modelWeightGroups[i]++;
 			}
-		}
+		});
 	}
 	
 	// adjust the weight set of all vertices to point to the new location
-	for( i=0; i<vertexCount; i++ ){
-		deModelVertex &vertex = lod->GetVertexAt( i );
+	for(i=0; i<vertexCount; i++){
+		deModelVertex &vertex = lod->GetVertices()[i];
 		
-		if( vertex.GetWeightSet() != -1 ){
-			vertex.SetWeightSet( weightSetList.GetAt( vertex.GetWeightSet() )->GetGroupedIndex() );
+		if(vertex.GetWeightSet() != -1){
+			vertex.SetWeightSet(weightSetList.GetAt(vertex.GetWeightSet())->GetGroupedIndex());
 		}
 	}
 	
 	// normal and tangent count
 	normalCount = reader.ReadShort(); // normal count
-	if( normalCount < 0 ){
-		DETHROW( deeInvalidFormat );
+	if(normalCount < 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
-	lod->SetNormalCount( normalCount );
-	lod->SetTangentCount( normalCount );
+	lod->SetNormalCount(normalCount);
+	lod->SetTangentCount(normalCount);
 	
 	// we have to hack for the time being since the number of faces depends on the triangle and
 	// quad count but the counts are not stored in a header but inside the data out of reach
@@ -384,7 +368,7 @@ void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
 	
 	count = reader.ReadShort();
 	faceCount = count;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		reader.ReadShort();
 		reader.ReadShort();
 		reader.ReadShort();
@@ -400,84 +384,84 @@ void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
 	count = reader.ReadShort();
 	faceCount += count * 2;
 	
-	lod->SetFaceCount( faceCount );
-	lod->SetTextureCoordinatesSetCount( 1 );
-	model.GetTextureCoordinatesSetList().Add( "" ); // default tc set name
-	deModelFace * const modelFaces = lod->GetFaces();
+	lod->GetFaces().AddRange(faceCount, {});
+	lod->GetTextureCoordinatesSets().Add({});
+	model.GetTextureCoordinatesSets().Add(""); // default tc set name
+	deModelFace * const modelFaces = lod->GetFaces().GetArrayPointer();
 	
 	faceCount = 0;
 	
-	reader.SetPosition( filePosition );
+	reader.SetPosition(filePosition);
 	
 	// prepare the texture coordinate sorter
-	texCoordSorter.Resize( lod->GetFaceCount(), 1 );
+	texCoordSorter.Resize(lod->GetFaces().GetCount(), 1);
 	
 	// triangles
 	count = reader.ReadShort();
-	if( count < 0 ){
-		DETHROW( deeInvalidFormat );
+	if(count < 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
-	for( i=0; i<count; i++ ){
-		deModelFace &face1 = modelFaces[ faceCount ];
+	for(i=0; i<count; i++){
+		deModelFace &face1 = modelFaces[faceCount];
 		
 		// texture index
 		textureIndex = reader.ReadShort();
-		if( textureIndex < 0 || textureIndex >= model.GetTextureCount() ){
-			DETHROW( deeInvalidFormat );
+		if(textureIndex < 0 || textureIndex >= model.GetTextureCount()){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTexture( textureIndex );
+		face1.SetTexture(textureIndex);
 		
 		// vertex index 1
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex1( vertexIndex );
+		face1.SetVertex1(vertexIndex);
 		
 		// vertex index 2
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex2( vertexIndex );
+		face1.SetVertex2(vertexIndex);
 		
 		// vertex index 3
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex3( vertexIndex );
+		face1.SetVertex3(vertexIndex);
 		
 		// normal index 1
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal1( normalIndex );
-		face1.SetTangent1( normalIndex );
+		face1.SetNormal1(normalIndex);
+		face1.SetTangent1(normalIndex);
 		
 		// normal index 2
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal2( normalIndex );
-		face1.SetTangent2( normalIndex );
+		face1.SetNormal2(normalIndex);
+		face1.SetTangent2(normalIndex);
 		
 		// normal index 3
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
 		
-		face1.SetNormal3( normalIndex );
-		face1.SetTangent3( normalIndex );
+		face1.SetNormal3(normalIndex);
+		face1.SetTangent3(normalIndex);
 		
 		// texture coordinates
-		texCoordSorter.SetFaceTexCoordAt( faceCount, 0, 0, reader.ReadVector2() );
-		texCoordSorter.SetFaceTexCoordAt( faceCount, 1, 0, reader.ReadVector2() );
-		texCoordSorter.SetFaceTexCoordAt( faceCount, 2, 0, reader.ReadVector2() );
+		texCoordSorter.SetFaceTexCoordAt(faceCount, 0, 0, reader.ReadVector2());
+		texCoordSorter.SetFaceTexCoordAt(faceCount, 1, 0, reader.ReadVector2());
+		texCoordSorter.SetFaceTexCoordAt(faceCount, 2, 0, reader.ReadVector2());
 		//face1.SetTextureCoordinates1( reader.ReadVector2() );
 		//face1.SetTextureCoordinates2( reader.ReadVector2() );
 		//face1.SetTextureCoordinates3( reader.ReadVector2() );
@@ -487,167 +471,169 @@ void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
 	
 	// quad faces
 	count = reader.ReadShort();
-	if( count < 0 ){
-		DETHROW( deeInvalidFormat );
+	if(count < 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
-	for( i=0; i<count; i++ ){
-		deModelFace &face1 = modelFaces[ faceCount ];
-		deModelFace &face2 = modelFaces[ faceCount + 1 ];
+	for(i=0; i<count; i++){
+		deModelFace &face1 = modelFaces[faceCount];
+		deModelFace &face2 = modelFaces[faceCount + 1];
 		
 		// texture index
 		textureIndex = reader.ReadShort();
-		if( textureIndex < 0 || textureIndex >= model.GetTextureCount() ){
-			DETHROW( deeInvalidFormat );
+		if(textureIndex < 0 || textureIndex >= model.GetTextureCount()){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTexture( textureIndex );
-		face2.SetTexture( textureIndex );
+		face1.SetTexture(textureIndex);
+		face2.SetTexture(textureIndex);
 		
 		// vertex index 1
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex1( vertexIndex );
-		face2.SetVertex1( vertexIndex );
+		face1.SetVertex1(vertexIndex);
+		face2.SetVertex1(vertexIndex);
 		
 		// vertex index 2
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex2( vertexIndex );
+		face1.SetVertex2(vertexIndex);
 		
 		// vertex index 3
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex3( vertexIndex );
-		face2.SetVertex2( vertexIndex );
+		face1.SetVertex3(vertexIndex);
+		face2.SetVertex2(vertexIndex);
 		
 		// vertex index 4
 		vertexIndex = reader.ReadShort();
-		if( vertexIndex < 0 || vertexIndex >= vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(vertexIndex < 0 || vertexIndex >= vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetVertex3( vertexIndex );
+		face2.SetVertex3(vertexIndex);
 		
 		// normal index 1
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal1( normalIndex );
-		face1.SetTangent1( normalIndex );
-		face2.SetNormal1( normalIndex );
-		face2.SetTangent1( normalIndex );
+		face1.SetNormal1(normalIndex);
+		face1.SetTangent1(normalIndex);
+		face2.SetNormal1(normalIndex);
+		face2.SetTangent1(normalIndex);
 		
 		// normal index 2
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal2( normalIndex );
-		face1.SetTangent2( normalIndex );
+		face1.SetNormal2(normalIndex);
+		face1.SetTangent2(normalIndex);
 		
 		// normal index 3
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal3( normalIndex );
-		face1.SetTangent3( normalIndex );
-		face2.SetNormal2( normalIndex );
-		face2.SetTangent2( normalIndex );
+		face1.SetNormal3(normalIndex);
+		face1.SetTangent3(normalIndex);
+		face2.SetNormal2(normalIndex);
+		face2.SetTangent2(normalIndex);
 		
 		// normal index 4
 		normalIndex = reader.ReadShort();
-		if( normalIndex < 0 || normalIndex >= normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(normalIndex < 0 || normalIndex >= normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetNormal3( normalIndex );
-		face2.SetTangent3( normalIndex );
+		face2.SetNormal3(normalIndex);
+		face2.SetTangent3(normalIndex);
 		
 		// texture position 1
 		texPos = reader.ReadVector2();
-		texCoordSorter.SetFaceTexCoordAt( faceCount, 0, 0, texPos );
-		texCoordSorter.SetFaceTexCoordAt( faceCount + 1, 0, 0, texPos );
+		texCoordSorter.SetFaceTexCoordAt(faceCount, 0, 0, texPos);
+		texCoordSorter.SetFaceTexCoordAt(faceCount + 1, 0, 0, texPos);
 		//face1.SetTextureCoordinates1( texPos );
 		//face2.SetTextureCoordinates1( texPos );
 		
 		// texture position 2
 		texPos = reader.ReadVector2();
-		texCoordSorter.SetFaceTexCoordAt( faceCount, 1, 0, texPos );
+		texCoordSorter.SetFaceTexCoordAt(faceCount, 1, 0, texPos);
 		//face1.SetTextureCoordinates2( texPos );
 		
 		// texture position 3
 		texPos = reader.ReadVector2();
-		texCoordSorter.SetFaceTexCoordAt( faceCount, 2, 0, texPos );
-		texCoordSorter.SetFaceTexCoordAt( faceCount + 1, 1, 0, texPos );
+		texCoordSorter.SetFaceTexCoordAt(faceCount, 2, 0, texPos);
+		texCoordSorter.SetFaceTexCoordAt(faceCount + 1, 1, 0, texPos);
 		//face1.SetTextureCoordinates3( texPos );
 		//face2.SetTextureCoordinates2( texPos );
 		
 		// texture position 4
 		texPos = reader.ReadVector2();
-		texCoordSorter.SetFaceTexCoordAt( faceCount + 1, 2, 0, texPos );
+		texCoordSorter.SetFaceTexCoordAt(faceCount + 1, 2, 0, texPos);
 		//face2.SetTextureCoordinates3( texPos );
 		
 		faceCount += 2;
 	}
 	
 	// sort texture coordinates and assign the indices
-	deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt( 0 );
+	deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSets()[0];
 	
 	texCoordSorter.Sort();
 	
 	count = texCoordSorter.GetTexCoordCount();
-	lod->SetTextureCoordinatesCount( count );
-	tcset.SetTextureCoordinatesCount( count );
-	for( i=0; i<count; i++ ){
-		tcset.SetTextureCoordinatesAt( i, texCoordSorter.GetTexCoordAt( i, 0 ) );
+	lod->SetTextureCoordinatesCount(count);
+	tcset.GetTextureCoordinates().RemoveAll();
+	tcset.GetTextureCoordinates().EnlargeCapacity(count);
+	for(i=0; i<count; i++){
+		tcset.GetTextureCoordinates().Add(texCoordSorter.GetTexCoordAt(i, 0));
 	}
 	
 	count = texCoordSorter.GetFaceCount();
-	for( i=0; i<count; i++ ){
-		deModelFace &face = lod->GetFaceAt( i );
+	for(i=0; i<count; i++){
+		deModelFace &face = lod->GetFaces()[i];
 		
-		face.SetTextureCoordinates1( texCoordSorter.GetFaceCornerAt( i, 0 ) );
-		face.SetTextureCoordinates2( texCoordSorter.GetFaceCornerAt( i, 1 ) );
-		face.SetTextureCoordinates3( texCoordSorter.GetFaceCornerAt( i, 2 ) );
+		face.SetTextureCoordinates1(texCoordSorter.GetFaceCornerAt(i, 0));
+		face.SetTextureCoordinates2(texCoordSorter.GetFaceCornerAt(i, 1));
+		face.SetTextureCoordinates3(texCoordSorter.GetFaceCornerAt(i, 2));
 	}
+	
+	model.AddLOD(std::move(lod));
 }
 
-void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
+void deModelModule::pLoadModel(decBaseFileReader &reader, deModel &model){
 	const char *signature = "Drag[en]gine Model";
 	demdlTexCoordSorter texCoordSorter;
-	deModelLOD *lod = NULL;
-	char sigbuf[ 18 ];
+	char sigbuf[18];
 	sModelInfos infos;
 	int i;
 	
 	// check signature
-	reader.Read( &sigbuf, 18 );
-	if( strncmp( sigbuf, signature, 18 ) != 0 ){
-		DETHROW( deeInvalidFormat );
+	reader.Read(&sigbuf, 18);
+	if(strncmp(sigbuf, signature, 18) != 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
 	// read infos
 	infos.filename = reader.GetFilename();
-	infos.weightSetList = NULL;
+	infos.weightSetList = nullptr;
 	infos.vertexPositionSetCount = 0;
 	
 	infos.version = reader.ReadUShort();
 	infos.flags = reader.ReadUShort();
 	
 	try{
-		infos.weightSetList = new demdlWeightSetList;
+		infos.weightSetList = new demdlWeightSet::List;
 		
-		switch( infos.version ){
+		switch(infos.version){
 		case 1:{
 			infos.boneCount = reader.ReadUShort();
 			infos.textureCount = reader.ReadUShort();
-			infos.texCoordSetCount = ( int )reader.ReadUShort() + 1; // because base set is not counted but has to for engine
+			infos.texCoordSetCount = (int)reader.ReadUShort() + 1; // because base set is not counted but has to for engine
 			infos.normalCount = reader.ReadUShort();
 			infos.tangentCount = reader.ReadUShort();
 			infos.weightsCount = reader.ReadUShort();
@@ -655,30 +641,30 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 			infos.triangleCount = reader.ReadUShort();
 			infos.quadCount = reader.ReadUShort();
 			
-			infos.isLargeModel = ( ( infos.flags & 0x1 ) == 0x1 );
+			infos.isLargeModel = ((infos.flags & 0x1) == 0x1);
 			infos.faceCount = infos.triangleCount + infos.quadCount * 2;
 			infos.texCoordSorter = &texCoordSorter;
 			
-			lod = new deModelLOD;
-			model.AddLOD( lod );
+			auto lod = deModelLOD::Ref::New();
 			
-			lod->SetVertexCount( infos.vertexCount );
-			lod->SetFaceCount( infos.faceCount );
-			lod->SetNormalCount( infos.normalCount );
-			lod->SetTangentCount( infos.tangentCount );
-			lod->SetTextureCoordinatesSetCount( infos.texCoordSetCount );
+			lod->GetVertices().AddRange(infos.vertexCount, {});
+			lod->GetFaces().AddRange(infos.faceCount, {});
+			lod->SetNormalCount(infos.normalCount);
+			lod->SetTangentCount(infos.tangentCount);
+			lod->GetTextureCoordinatesSets().AddRange(infos.texCoordSetCount, {});
 			
-			texCoordSorter.Resize( infos.faceCount, infos.texCoordSetCount );
+			texCoordSorter.Resize(infos.faceCount, infos.texCoordSetCount);
 			
-			pLoadBones( reader, model, infos );
-			pLoadTextures( reader, model, infos );
-			pLoadTexCoordSetsOld( reader, model, infos );
-			pLoadWeights( reader, infos, *lod );
-			pLoadVertices( reader, infos, *lod );
-			pLoadTrianglesOld( reader, infos, *lod );
-			pLoadQuadsOld( reader, infos, *lod );
+			pLoadBones(reader, model, infos);
+			pLoadTextures(reader, model, infos);
+			pLoadTexCoordSetsOld(reader, model, infos);
+			pLoadWeights(reader, infos, lod);
+			pLoadVertices(reader, infos, lod);
+			pLoadTrianglesOld(reader, infos, lod);
+			pLoadQuadsOld(reader, infos, lod);
 			
-			pUpdateFaceTexCoordIndices( model, infos, *lod );
+			pUpdateFaceTexCoordIndices(model, infos, lod);
+			model.AddLOD(std::move(lod));
 			}break;
 			
 		case 2:
@@ -686,28 +672,28 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 		case 4:{
 			infos.boneCount = reader.ReadUShort();
 			infos.textureCount = reader.ReadUShort();
-			infos.texCoordSetCount = ( int )reader.ReadUShort() + 1; // because base set is not counted but has to for engine
+			infos.texCoordSetCount = (int)reader.ReadUShort() + 1; // because base set is not counted but has to for engine
 			infos.texCoordSorter = &texCoordSorter;
 			
 			const int lodMeshCount = reader.ReadUShort();
 			
-			infos.isLargeModel = ( ( infos.flags & 0x1 ) == 0x1 );
+			infos.isLargeModel = ((infos.flags & 0x1) == 0x1);
 			
-			pLoadBones( reader, model, infos );
-			pLoadTextures( reader, model, infos );
-			pLoadTexCoordSetsOld( reader, model, infos );
+			pLoadBones(reader, model, infos);
+			pLoadTextures(reader, model, infos);
+			pLoadTexCoordSetsOld(reader, model, infos);
 			
-			for( i=0; i<lodMeshCount; i++ ){
+			for(i=0; i<lodMeshCount; i++){
 				const int flags = infos.version >= 4 ? reader.ReadByte() : 0;
 				float lodError = 0.01f;
 				
-				const bool hasLodError = ( ( flags & FLAG_HAS_LOD_ERROR ) == FLAG_HAS_LOD_ERROR );
+				const bool hasLodError = ((flags & FLAG_HAS_LOD_ERROR) == FLAG_HAS_LOD_ERROR);
 				
-				if( hasLodError ){
+				if(hasLodError){
 					lodError = reader.ReadFloat(); // lod error
 				}
 				
-				if( infos.isLargeModel ){
+				if(infos.isLargeModel){
 					infos.normalCount = reader.ReadInt();
 					infos.tangentCount = reader.ReadInt();
 					infos.weightsCount = reader.ReadInt();
@@ -727,26 +713,26 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 				infos.faceCount = infos.triangleCount + infos.quadCount * 2;
 				infos.weightSetList->RemoveAll();
 				
-				lod = new deModelLOD;
-				model.AddLOD( lod );
+				auto lod = deModelLOD::Ref::New();
 				
-				lod->SetVertexCount( infos.vertexCount );
-				lod->SetFaceCount( infos.faceCount );
-				lod->SetNormalCount( infos.normalCount );
-				lod->SetTangentCount( infos.tangentCount );
-				lod->SetTextureCoordinatesSetCount( infos.texCoordSetCount );
+				lod->GetVertices().AddRange(infos.vertexCount, {});
+				lod->GetFaces().AddRange(infos.faceCount, {});
+				lod->SetNormalCount(infos.normalCount);
+				lod->SetTangentCount(infos.tangentCount);
+				lod->GetTextureCoordinatesSets().AddRange(infos.texCoordSetCount, {});
 				
-				lod->SetLodError( lodError );
-				lod->SetHasLodError( hasLodError );
+				lod->SetLodError(lodError);
+				lod->SetHasLodError(hasLodError);
 				
-				texCoordSorter.Resize( infos.faceCount, infos.texCoordSetCount );
+				texCoordSorter.Resize(infos.faceCount, infos.texCoordSetCount);
 				
-				pLoadWeights( reader, infos, *lod );
-				pLoadVertices( reader, infos, *lod );
-				pLoadTrianglesOld( reader, infos, *lod );
-				pLoadQuadsOld( reader, infos, *lod );
+				pLoadWeights(reader, infos, lod);
+				pLoadVertices(reader, infos, lod);
+				pLoadTrianglesOld(reader, infos, lod);
+				pLoadQuadsOld(reader, infos, lod);
 				
-				pUpdateFaceTexCoordIndices( model, infos, *lod );
+				pUpdateFaceTexCoordIndices(model, infos, lod);
+				model.AddLOD(std::move(lod));
 			}
 			}break;
 			
@@ -756,22 +742,22 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 			infos.texCoordSetCount = reader.ReadUShort();
 			const int lodMeshCount = reader.ReadUShort();
 			
-			pLoadBones( reader, model, infos );
-			pLoadTextures( reader, model, infos );
-			pLoadTexCoordSets( reader, model, infos );
+			pLoadBones(reader, model, infos);
+			pLoadTextures(reader, model, infos);
+			pLoadTexCoordSets(reader, model, infos);
 			
-			for( i=0; i<lodMeshCount; i++ ){
+			for(i=0; i<lodMeshCount; i++){
 				const int flags = reader.ReadByte();
 				
-				const bool hasLodError = ( ( flags & FLAG_HAS_LOD_ERROR ) == FLAG_HAS_LOD_ERROR );
+				const bool hasLodError = ((flags & FLAG_HAS_LOD_ERROR) == FLAG_HAS_LOD_ERROR);
 				float lodError = 0.01f;
-				if( hasLodError ){
+				if(hasLodError){
 					lodError = reader.ReadFloat(); // lod error
 				}
 				
-				infos.isLargeModel = ( ( flags & FLAG_LARGE_MODEL ) == FLAG_LARGE_MODEL );
+				infos.isLargeModel = ((flags & FLAG_LARGE_MODEL) == FLAG_LARGE_MODEL);
 				
-				if( infos.isLargeModel ){
+				if(infos.isLargeModel){
 					infos.normalCount = reader.ReadInt();
 					infos.tangentCount = reader.ReadInt();
 					infos.weightsCount = reader.ReadInt();
@@ -791,23 +777,23 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 				infos.faceCount = infos.triangleCount + infos.quadCount * 2;
 				infos.weightSetList->RemoveAll();
 				
-				lod = new deModelLOD;
-				model.AddLOD( lod );
+				auto lod = deModelLOD::Ref::New();
 				
-				lod->SetVertexCount( infos.vertexCount );
-				lod->SetFaceCount( infos.faceCount );
-				lod->SetNormalCount( infos.normalCount );
-				lod->SetTangentCount( infos.tangentCount );
-				lod->SetTextureCoordinatesSetCount( infos.texCoordSetCount );
+				lod->GetVertices().AddRange(infos.vertexCount, {});
+				lod->GetFaces().AddRange(infos.faceCount, {});
+				lod->SetNormalCount(infos.normalCount);
+				lod->SetTangentCount(infos.tangentCount);
+				lod->GetTextureCoordinatesSets().AddRange(infos.texCoordSetCount, {});
 				
-				lod->SetLodError( lodError );
-				lod->SetHasLodError( hasLodError );
+				lod->SetLodError(lodError);
+				lod->SetHasLodError(hasLodError);
 				
-				pLoadWeights( reader, infos, *lod );
-				pLoadVertices( reader, infos, *lod );
-				pLoadTexCoords( reader, infos, *lod );
-				pLoadTriangles( reader, infos, *lod );
-				pLoadQuads( reader, infos, *lod );
+				pLoadWeights(reader, infos, lod);
+				pLoadVertices(reader, infos, lod);
+				pLoadTexCoords(reader, infos, lod);
+				pLoadTriangles(reader, infos, lod);
+				pLoadQuads(reader, infos, lod);
+				model.AddLOD(std::move(lod));
 			}
 			}break;
 			
@@ -818,23 +804,23 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 			infos.vertexPositionSetCount = reader.ReadUShort();
 			const int lodMeshCount = reader.ReadUShort();
 			
-			pLoadBones( reader, model, infos );
-			pLoadTextures( reader, model, infos );
-			pLoadTexCoordSets( reader, model, infos );
-			pLoadVertPosSets( reader, model, infos );
+			pLoadBones(reader, model, infos);
+			pLoadTextures(reader, model, infos);
+			pLoadTexCoordSets(reader, model, infos);
+			pLoadVertPosSets(reader, model, infos);
 			
-			for( i=0; i<lodMeshCount; i++ ){
+			for(i=0; i<lodMeshCount; i++){
 				const int flags = reader.ReadByte();
 				
-				const bool hasLodError = ( ( flags & FLAG_HAS_LOD_ERROR ) == FLAG_HAS_LOD_ERROR );
+				const bool hasLodError = ((flags & FLAG_HAS_LOD_ERROR) == FLAG_HAS_LOD_ERROR);
 				float lodError = 0.01f;
-				if( hasLodError ){
+				if(hasLodError){
 					lodError = reader.ReadFloat(); // lod error
 				}
 				
-				infos.isLargeModel = ( ( flags & FLAG_LARGE_MODEL ) == FLAG_LARGE_MODEL );
+				infos.isLargeModel = ((flags & FLAG_LARGE_MODEL) == FLAG_LARGE_MODEL);
 				
-				if( infos.isLargeModel ){
+				if(infos.isLargeModel){
 					infos.normalCount = reader.ReadInt();
 					infos.tangentCount = reader.ReadInt();
 					infos.weightsCount = reader.ReadInt();
@@ -854,36 +840,36 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 				infos.faceCount = infos.triangleCount + infos.quadCount * 2;
 				infos.weightSetList->RemoveAll();
 				
-				lod = new deModelLOD;
-				model.AddLOD( lod );
+				auto lod = deModelLOD::Ref::New();
 				
-				lod->SetVertexCount( infos.vertexCount );
-				lod->SetFaceCount( infos.faceCount );
-				lod->SetNormalCount( infos.normalCount );
-				lod->SetTangentCount( infos.tangentCount );
-				lod->SetTextureCoordinatesSetCount( infos.texCoordSetCount );
-				lod->SetVertexPositionSetCount( infos.vertexPositionSetCount );
+				lod->GetVertices().AddRange(infos.vertexCount, {});
+				lod->GetFaces().AddRange(infos.faceCount, {});
+				lod->SetNormalCount(infos.normalCount);
+				lod->SetTangentCount(infos.tangentCount);
+				lod->GetTextureCoordinatesSets().AddRange(infos.texCoordSetCount, {});
+				lod->GetVertexPositionSets().AddRange(infos.vertexPositionSetCount, {});
 				
-				lod->SetLodError( lodError );
-				lod->SetHasLodError( hasLodError );
+				lod->SetLodError(lodError);
+				lod->SetHasLodError(hasLodError);
 				
-				pLoadWeights( reader, infos, *lod );
-				pLoadVertices( reader, infos, *lod );
-				pLoadTexCoords( reader, infos, *lod );
-				pLoadVertPosSets( reader, infos, *lod );
-				pLoadTriangles( reader, infos, *lod );
-				pLoadQuads( reader, infos, *lod );
+				pLoadWeights(reader, infos, lod);
+				pLoadVertices(reader, infos, lod);
+				pLoadTexCoords(reader, infos, lod);
+				pLoadVertPosSets(reader, infos, lod);
+				pLoadTriangles(reader, infos, lod);
+				pLoadQuads(reader, infos, lod);
+				model.AddLOD(std::move(lod));
 			}
 			}break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
 		delete infos.weightSetList;
 		
-	}catch( const deException & ){
-		if( infos.weightSetList ){
+	}catch(const deException &){
+		if(infos.weightSetList){
 			delete infos.weightSetList;
 		}
 		
@@ -891,965 +877,944 @@ void deModelModule::pLoadModel( decBaseFileReader &reader, deModel &model ){
 	}
 }
 
-void deModelModule::pLoadBones( decBaseFileReader &reader, deModel &model, sModelInfos &infos ){
-	deModelBone *bone = NULL;
+void deModelModule::pLoadBones(decBaseFileReader &reader, deModel &model, sModelInfos &infos){
 	decString name;
 	int b, parent;
 	
 	try{
-		for( b=0; b<infos.boneCount; b++ ){
+		for(b=0; b<infos.boneCount; b++){
 			name = reader.ReadString8();
-			if( model.HasBoneNamed( name ) ){
-				DETHROW( deeInvalidFormat );
+			if(model.HasBoneNamed(name)){
+				DETHROW(deeInvalidFormat);
 			}
 			
-			bone = new deModelBone( name );
+			auto bone = deModelBone::Ref::New(name);
 			
-			bone->SetPosition( reader.ReadVector() );
-			bone->SetOrientation( decMatrix::CreateRotation( reader.ReadVector() * DEG2RAD ).ToQuaternion() );
+			bone->SetPosition(reader.ReadVector());
+			bone->SetOrientation(decMatrix::CreateRotation(reader.ReadVector() * DEG2RAD).ToQuaternion());
 			
-			parent = ( int )( reader.ReadUShort() ) - 1;
-			if( parent >= infos.boneCount || parent == b ){
-				DETHROW( deeInvalidFormat );
+			parent = (int)(reader.ReadUShort()) - 1;
+			if(parent >= infos.boneCount || parent == b){
+				DETHROW(deeInvalidFormat);
 			}
-			bone->SetParent( parent );
+			bone->SetParent(parent);
 			
-			model.AddBone( bone );
-			bone = NULL;
+			model.AddBone(std::move(bone));
 		}
 		
-	}catch( const deException & ){
-		if( bone ){
-			delete bone;
-		}
+	}catch(const deException &){
 		throw;
 	}
 }
 
-void deModelModule::pLoadTextures( decBaseFileReader &reader, deModel &model, sModelInfos &infos ){
-	deModelTexture *texture = NULL;
+void deModelModule::pLoadTextures(decBaseFileReader &reader, deModel &model, sModelInfos &infos){
 	int t,  width, height;
 	decString name;
 	int textureFlags;
 	
 	try{
-		for( t=0; t<infos.textureCount; t++ ){
+		for(t=0; t<infos.textureCount; t++){
 			name = reader.ReadString8();
-			if( model.HasTextureNamed( name ) ){
-				DETHROW( deeInvalidFormat );
+			if(model.HasTextureNamed(name)){
+				DETHROW(deeInvalidFormat);
 			}
 			
 			width = reader.ReadUShort();
-			if( width < 1 ){
-				DETHROW( deeInvalidFormat );
+			if(width < 1){
+				DETHROW(deeInvalidFormat);
 			}
 			height = reader.ReadUShort();
-			if( height < 1 ){
-				DETHROW( deeInvalidFormat );
+			if(height < 1){
+				DETHROW(deeInvalidFormat);
 			}
 			
-			texture = new deModelTexture( name, width, height );
+			auto texture = deModelTexture::Ref::New(name, width, height);
 			
 			textureFlags = reader.ReadUShort();
-			if( ( textureFlags & FLAG_TEX_DOUBLE_SIDED ) == FLAG_TEX_DOUBLE_SIDED ){
-				texture->SetDoubleSided( true );
+			if((textureFlags & FLAG_TEX_DOUBLE_SIDED) == FLAG_TEX_DOUBLE_SIDED){
+				texture->SetDoubleSided(true);
 			}
 			
-			if( ( textureFlags & FLAG_TEX_DECAL ) == FLAG_TEX_DECAL ){
-				texture->SetDecal( true );
-				texture->SetDecalOffset( reader.ReadByte() );
+			if((textureFlags & FLAG_TEX_DECAL) == FLAG_TEX_DECAL){
+				texture->SetDecal(true);
+				texture->SetDecalOffset(reader.ReadByte());
 			}
 			
-			model.AddTexture( texture );
-			texture = NULL;
+			model.AddTexture(std::move(texture));
 		}
 		
-	}catch( const deException & ){
-		if( texture ){
-			delete texture;
-		}
+	}catch(const deException &){
 		throw;
 	}
 }
 
-void deModelModule::pLoadTexCoordSetsOld( decBaseFileReader &reader, deModel &model, sModelInfos &infos ){
+void deModelModule::pLoadTexCoordSetsOld(decBaseFileReader &reader, deModel &model, sModelInfos &infos){
 	decString name;
 	int t;
 	
 	// add default texture coordinate set name
-	model.GetTextureCoordinatesSetList().Add( "" );
+	model.GetTextureCoordinatesSets().Add("");
 	
 	// store the texture coordinate set names in the model checking for duplicate errors
-	for( t=1; t<infos.texCoordSetCount; t++ ){
+	for(t=1; t<infos.texCoordSetCount; t++){
 		name = reader.ReadString8();
-		if( model.GetTextureCoordinatesSetList().Has( name ) ){
-			DETHROW( deeInvalidFormat );
+		if(model.GetTextureCoordinatesSets().Has(name)){
+			DETHROW(deeInvalidFormat);
 		}
 		
-		model.GetTextureCoordinatesSetList().Add( name );
+		model.GetTextureCoordinatesSets().Add(name);
 	}
 }
 
-void deModelModule::pLoadTexCoordSets( decBaseFileReader &reader, deModel &model, sModelInfos &infos ){
+void deModelModule::pLoadTexCoordSets(decBaseFileReader &reader, deModel &model, sModelInfos &infos){
 	int i;
 	
-	for( i=0; i<infos.texCoordSetCount; i++ ){
-		const decString name( reader.ReadString8() );
-		if( model.GetTextureCoordinatesSetList().Has( name ) ){
-			DETHROW( deeInvalidFormat );
+	for(i=0; i<infos.texCoordSetCount; i++){
+		const decString name(reader.ReadString8());
+		if(model.GetTextureCoordinatesSets().Has(name)){
+			DETHROW(deeInvalidFormat);
 		}
-		model.GetTextureCoordinatesSetList().Add( name );
+		model.GetTextureCoordinatesSets().Add(name);
 	}
 }
 
-void deModelModule::pLoadVertPosSets( decBaseFileReader& reader, deModel& model, sModelInfos& infos ){
+void deModelModule::pLoadVertPosSets(decBaseFileReader& reader, deModel& model, sModelInfos& infos){
 	int i;
-	for( i=0; i<infos.vertexPositionSetCount; i++ ){
-		const decString name( reader.ReadString8() );
-		if( model.HasVertexPositionSetNamed( name ) ){
-			DETHROW( deeInvalidFormat );
+	for(i=0; i<infos.vertexPositionSetCount; i++){
+		const decString name(reader.ReadString8());
+		if(model.HasVertexPositionSetNamed(name)){
+			DETHROW(deeInvalidFormat);
 		}
 		
-		const int baseSet = reader.ReadUShort() - 1;
-		deModelVertexPositionSet * const vpset = new deModelVertexPositionSet( name );
-		vpset->SetBaseSet( baseSet );
-		model.AddVertexPositionSet( vpset );
+	const int baseSet = reader.ReadUShort() - 1;
+	auto vpset = deModelVertexPositionSet::Ref::New(name);
+	vpset->SetBaseSet(baseSet);
+	model.AddVertexPositionSet(std::move(vpset));
 	}
-}
-
-void deModelModule::pLoadWeights( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
-	demdlWeightSet *weightSet = NULL;
+}void deModelModule::pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
 	int w, b, boneCount;
 	float factor;
 	int bone;
 	
-	try{
-		for( w=0; w<infos.weightsCount; w++ ){
-			weightSet = new demdlWeightSet;
-			
-			boneCount = ( int )reader.ReadByte();
-			for( b=0; b<boneCount; b++ ){
-				bone = reader.ReadUShort();
-				if( bone >= infos.boneCount ){
-					DETHROW( deeInvalidFormat );
-				}
-				
-				factor = ( float )reader.ReadUShort() / 1000.0f;
-				
-				weightSet->Set( bone, factor );
+	for(w=0; w<infos.weightsCount; w++){
+		demdlWeightSet::Ref weightSet = demdlWeightSet::Ref::New();
+		
+		boneCount = (int)reader.ReadByte();
+		for(b=0; b<boneCount; b++){
+			bone = reader.ReadUShort();
+			if(bone >= infos.boneCount){
+				DETHROW(deeInvalidFormat);
 			}
 			
-			weightSet->Normalize();
+			factor = (float)reader.ReadUShort() / 1000.0f;
 			
-			infos.weightSetList->Add( weightSet );
-			weightSet = NULL;
+			weightSet->Set(bone, factor);
 		}
 		
-	}catch( const deException & ){
-		if( weightSet ){
-			delete weightSet;
-		}
-		
-		throw;
+		weightSet->Normalize();
+		infos.weightSetList->Add(std::move(weightSet));
 	}
 	
 	// add weights sorted by the number of weights stored inside from the lowest to the highest
-	const int weightGroupCount = infos.weightSetList->GetLargestWeightCount();
-	const int weightSetCount = infos.weightSetList->GetCount();
-	int i, j, k, weightCount = 0, weightSetIndex = 0;
+	int weightGroupCount = 0;
+	infos.weightSetList->Visit([&](const demdlWeightSet &ws){
+		if(ws.GetWeights().GetCount() > weightGroupCount){
+			weightGroupCount = ws.GetWeights().GetCount();
+		}
+	});
 	
-	for( i=0; i<weightSetCount; i++ ){
-		weightCount += infos.weightSetList->GetAt( i )->GetCount();
-	}
+	int i, k, weightCount = 0, weightSetIndex = 0;
 	
-	lodMesh.SetWeightGroupCount( weightGroupCount );
-	lodMesh.SetWeightCount( weightCount );
+	infos.weightSetList->Visit([&](const demdlWeightSet &ws){
+		weightCount += ws.GetWeights().GetCount();
+	});
 	
-	deModelWeight * const modelWeights = lodMesh.GetWeights();
-	int * const modelWeightGroups = lodMesh.GetWeightGroups();
+	lodMesh.GetWeightGroups().AddRange(weightGroupCount, {});
+	lodMesh.GetWeights().AddRange(weightCount, {});
+	
+	deModelWeight * const modelWeights = lodMesh.GetWeights().GetArrayPointer();
+	int * const modelWeightGroups = lodMesh.GetWeightGroups().GetArrayPointer();
 	weightCount = 0;
 	weightSetIndex = 0;
 	
-	for( i=0; i<weightGroupCount; i++ ){
+	for(i=0; i<weightGroupCount; i++){
 		const int tempCount = i + 1;
 		
-		modelWeightGroups[ i ] = 0;
+		modelWeightGroups[i] = 0;
 		
-		for( j=0; j<weightSetCount; j++ ){
-			demdlWeightSet &weightSet2 = *infos.weightSetList->GetAt( j );
-			
-			if( weightSet2.GetCount() == tempCount ){
-				for( k=0; k<tempCount; k++ ){
-					modelWeights[ weightCount + k ].SetBone( weightSet2.GetBoneAt( k ) );
-					modelWeights[ weightCount + k ].SetWeight( weightSet2.GetWeightAt( k ) );
+		infos.weightSetList->Visit([&](demdlWeightSet &weightSet2){
+			if(weightSet2.GetWeights().GetCount() == tempCount){
+				for(k=0; k<tempCount; k++){
+					modelWeights[weightCount + k].SetBone(weightSet2.GetWeights()[k].bone);
+					modelWeights[weightCount + k].SetWeight(weightSet2.GetWeights()[k].weight);
 				}
 				
-				weightSet2.SetGroupedIndex( weightSetIndex );
+				weightSet2.SetGroupedIndex(weightSetIndex);
 				
 				weightSetIndex++;
 				weightCount += tempCount;
-				modelWeightGroups[ i ]++;
+				modelWeightGroups[i]++;
 			}
-		}
+		});
 	}
 }
 
-void deModelModule::pLoadVertices( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
-	const int indexOffset = ( infos.version >= 3 ) ? -1 : 0; // hack until format is final
-	deModelVertex * const vertices = lodMesh.GetVertices();
+void deModelModule::pLoadVertices(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
+	const int indexOffset = (infos.version >= 3) ? -1 : 0; // hack until format is final
+	deModelVertex * const vertices = lodMesh.GetVertices().GetArrayPointer();
 	int v, weights;
 	
-	for( v=0; v<infos.vertexCount; v++ ){
-		deModelVertex &vertex = vertices[ v ];
+	for(v=0; v<infos.vertexCount; v++){
+		deModelVertex &vertex = vertices[v];
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			weights = reader.ReadInt() + indexOffset;
 			
 		}else{
-			weights = ( int )reader.ReadUShort() + indexOffset;
+			weights = (int)reader.ReadUShort() + indexOffset;
 		}
 		
-		if( infos.weightsCount == 0 ){
-			vertex.SetWeightSet( -1 );
+		if(infos.weightsCount == 0){
+			vertex.SetWeightSet(-1);
 			
 		}else{
-			if( weights >= infos.weightsCount ){
-				DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+			if(weights >= infos.weightsCount){
+				DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 			}
 			
-			if( weights == -1 ){
-				vertex.SetWeightSet( -1 );
+			if(weights == -1){
+				vertex.SetWeightSet(-1);
 				
 			}else{
-				vertex.SetWeightSet( infos.weightSetList->GetAt( weights )->GetGroupedIndex() );
+				vertex.SetWeightSet(infos.weightSetList->GetAt(weights)->GetGroupedIndex());
 			}
 		}
 		
-		vertex.SetPosition( reader.ReadVector() );
+		vertex.SetPosition(reader.ReadVector());
 	}
 }
 
-void deModelModule::pLoadTexCoords( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
+void deModelModule::pLoadTexCoords(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
 	int i, j;
 	
-	for( i=0; i<infos.texCoordSetCount; i++ ){
-		deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt( i );
+	for(i=0; i<infos.texCoordSetCount; i++){
+		deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSets()[i];
 		int count;
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			count = reader.ReadInt();
 			
 		}else{
 			count = reader.ReadUShort();
 		}
 		
-		if( i == 0 ){
-			lodMesh.SetTextureCoordinatesCount( count );
+		if(i == 0){
+			lodMesh.SetTextureCoordinatesCount(count);
 		}
-		tcset.SetTextureCoordinatesCount( count );
+		tcset.GetTextureCoordinates().RemoveAll();
+		tcset.GetTextureCoordinates().EnlargeCapacity(count);
 		
-		decVector2 * const texCoords = tcset.GetTextureCoordinates();
-		for( j=0; j<count; j++ ){
-			texCoords[ j ] = reader.ReadVector2();
+		for(j=0; j<count; j++){
+			tcset.GetTextureCoordinates().Add(reader.ReadVector2());
 		}
 	}
 }
 
-void deModelModule::pLoadVertPosSets( decBaseFileReader& reader, sModelInfos& infos, deModelLOD& lodMesh ){
+void deModelModule::pLoadVertPosSets(decBaseFileReader& reader, sModelInfos& infos, deModelLOD& lodMesh){
 	int i, j;
 	
-	for( i=0; i<infos.vertexPositionSetCount; i++ ){
-		deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSetAt( i );
+	for(i=0; i<infos.vertexPositionSetCount; i++){
+		deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSets()[i];
 		
 		int vertexCount;
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			vertexCount = reader.ReadInt();
 			
 		}else{
 			vertexCount = reader.ReadUShort();
 		}
 		
-		vpset.SetPositionCount( vertexCount );
-		deModelLodVertexPositionSetPosition * const positions = vpset.GetPositions();
+		vpset.GetPositions().RemoveAll();
+		vpset.GetPositions().EnlargeCapacity(vertexCount);
+		for(j=0; j<vertexCount; j++){
+			vpset.GetPositions().Add({});
+		}
 		
-		for( j=0; j<vertexCount; j++ ){
-			if( infos.isLargeModel ){
-				positions[ j ].SetVertex( reader.ReadInt() );
+		for(j=0; j<vertexCount; j++){
+			if(infos.isLargeModel){
+				vpset.GetPositions().GetAt(j).SetVertex(reader.ReadInt());
 				
 			}else{
-				positions[ j ].SetVertex( reader.ReadUShort() );
+				vpset.GetPositions().GetAt(j).SetVertex(reader.ReadUShort());
 			}
-			positions[ j ].SetPosition( reader.ReadVector() );
+			vpset.GetPositions().GetAt(j).SetPosition(reader.ReadVector());
 		}
 	}
 }
 
-void deModelModule::pLoadTrianglesOld( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
-	deModelFace * const faces = lodMesh.GetFaces();
+void deModelModule::pLoadTrianglesOld(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
+	deModelFace * const faces = lodMesh.GetFaces().GetArrayPointer();
 	int i, tcs, index;
 	
-	for( i=0; i<infos.triangleCount; i++ ){
-		deModelFace &face = faces[ i ];
+	for(i=0; i<infos.triangleCount; i++){
+		deModelFace &face = faces[i];
 		
 		// texture
 		index = reader.ReadUShort();
-		if( index >= infos.textureCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.textureCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTexture( index );
+		face.SetTexture(index);
 		
 		// vertices
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetVertex1( index );
+		face.SetVertex1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetVertex2( index );
+		face.SetVertex2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetVertex3( index );
+		face.SetVertex3(index);
 		
 		// normals
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetNormal1( index );
+		face.SetNormal1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetNormal2( index );
+		face.SetNormal2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetNormal3( index );
+		face.SetNormal3(index);
 		
 		// tangents
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTangent1( index );
+		face.SetTangent1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTangent2( index );
+		face.SetTangent2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTangent3( index );
+		face.SetTangent3(index);
 		
 		// texture coordinates
-		for( tcs=0; tcs<infos.texCoordSetCount; tcs++ ){
-			infos.texCoordSorter->SetFaceTexCoordAt( i, 0, tcs, reader.ReadVector2() );
-			infos.texCoordSorter->SetFaceTexCoordAt( i, 1, tcs, reader.ReadVector2() );
-			infos.texCoordSorter->SetFaceTexCoordAt( i, 2, tcs, reader.ReadVector2() );
+		for(tcs=0; tcs<infos.texCoordSetCount; tcs++){
+			infos.texCoordSorter->SetFaceTexCoordAt(i, 0, tcs, reader.ReadVector2());
+			infos.texCoordSorter->SetFaceTexCoordAt(i, 1, tcs, reader.ReadVector2());
+			infos.texCoordSorter->SetFaceTexCoordAt(i, 2, tcs, reader.ReadVector2());
 		}
 	}
 }
 
-void deModelModule::pLoadQuadsOld( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
-	deModelFace * const faces = lodMesh.GetFaces();
+void deModelModule::pLoadQuadsOld(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
+	deModelFace * const faces = lodMesh.GetFaces().GetArrayPointer();
 	decVector2 texCoord;
 	int i, tcs, index;
 	
-	for( i=0; i<infos.quadCount; i++ ){
-		deModelFace &face1 = faces[ infos.triangleCount + i * 2 ];
-		deModelFace &face2 = faces[ infos.triangleCount + i * 2 + 1 ];
+	for(i=0; i<infos.quadCount; i++){
+		deModelFace &face1 = faces[infos.triangleCount + i * 2];
+		deModelFace &face2 = faces[infos.triangleCount + i * 2 + 1];
 		
 		// texture
 		index = reader.ReadUShort();
-		if( index >= infos.textureCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.textureCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTexture( index );
-		face2.SetTexture( index );
+		face1.SetTexture(index);
+		face2.SetTexture(index);
 		
 		// vertices
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex1( index );
-		face2.SetVertex1( index );
+		face1.SetVertex1(index);
+		face2.SetVertex1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex2( index );
+		face1.SetVertex2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex3( index );
-		face2.SetVertex2( index );
+		face1.SetVertex3(index);
+		face2.SetVertex2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetVertex3( index );
+		face2.SetVertex3(index);
 		
 		// normals
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal1( index );
-		face2.SetNormal1( index );
+		face1.SetNormal1(index);
+		face2.SetNormal1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal2( index );
+		face1.SetNormal2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal3( index );
-		face2.SetNormal2( index );
+		face1.SetNormal3(index);
+		face2.SetNormal2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetNormal3( index );
+		face2.SetNormal3(index);
 		
 		// tangents
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTangent1( index );
-		face2.SetTangent1( index );
+		face1.SetTangent1(index);
+		face2.SetTangent1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTangent2( index );
+		face1.SetTangent2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTangent3( index );
-		face2.SetTangent2( index );
+		face1.SetTangent3(index);
+		face2.SetTangent2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetTangent3( index );
+		face2.SetTangent3(index);
 		
 		// texture coordinates
 		index = infos.triangleCount + i * 2;
 		
-		for( tcs=0; tcs<infos.texCoordSetCount; tcs++ ){
+		for(tcs=0; tcs<infos.texCoordSetCount; tcs++){
 			texCoord = reader.ReadVector2();
-			infos.texCoordSorter->SetFaceTexCoordAt( index, 0, tcs, texCoord );
-			infos.texCoordSorter->SetFaceTexCoordAt( index + 1, 0, tcs, texCoord );
+			infos.texCoordSorter->SetFaceTexCoordAt(index, 0, tcs, texCoord);
+			infos.texCoordSorter->SetFaceTexCoordAt(index + 1, 0, tcs, texCoord);
 			
 			texCoord = reader.ReadVector2();
-			infos.texCoordSorter->SetFaceTexCoordAt( index, 1, tcs, texCoord );
+			infos.texCoordSorter->SetFaceTexCoordAt(index, 1, tcs, texCoord);
 			
 			texCoord = reader.ReadVector2();
-			infos.texCoordSorter->SetFaceTexCoordAt( index, 2, tcs, texCoord );
-			infos.texCoordSorter->SetFaceTexCoordAt( index + 1, 1, tcs, texCoord );
+			infos.texCoordSorter->SetFaceTexCoordAt(index, 2, tcs, texCoord);
+			infos.texCoordSorter->SetFaceTexCoordAt(index + 1, 1, tcs, texCoord);
 			
 			texCoord = reader.ReadVector2();
-			infos.texCoordSorter->SetFaceTexCoordAt( index + 1, 2, tcs, texCoord );
+			infos.texCoordSorter->SetFaceTexCoordAt(index + 1, 2, tcs, texCoord);
 		}
 	}
 }
 
-void deModelModule::pLoadTriangles( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
-	deModelFace * const faces = lodMesh.GetFaces();
+void deModelModule::pLoadTriangles(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
+	deModelFace * const faces = lodMesh.GetFaces().GetArrayPointer();
 	int i, tcs, index;
 	
-	for( i=0; i<infos.triangleCount; i++ ){
-		deModelFace &face = faces[ i ];
+	for(i=0; i<infos.triangleCount; i++){
+		deModelFace &face = faces[i];
 		
 		// texture
 		index = reader.ReadUShort();
-		if( index >= infos.textureCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.textureCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTexture( index );
+		face.SetTexture(index);
 		
 		// vertices
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetVertex1( index );
+		face.SetVertex1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetVertex2( index );
+		face.SetVertex2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetVertex3( index );
+		face.SetVertex3(index);
 		
 		// normals
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetNormal1( index );
+		face.SetNormal1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetNormal2( index );
+		face.SetNormal2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetNormal3( index );
+		face.SetNormal3(index);
 		
 		// tangents
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTangent1( index );
+		face.SetTangent1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTangent2( index );
+		face.SetTangent2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face.SetTangent3( index );
+		face.SetTangent3(index);
 		
 		// texture coordinates
-		for( tcs=0; tcs<infos.texCoordSetCount; tcs++ ){
-			deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt( tcs );
+		for(tcs=0; tcs<infos.texCoordSetCount; tcs++){
+			deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSets()[tcs];
 			
 			// corner 1
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face.SetTextureCoordinates1( index );
+			face.SetTextureCoordinates1(index);
 			
 			// corner 2
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face.SetTextureCoordinates2( index );
+			face.SetTextureCoordinates2(index);
 			
 			// corner 3
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face.SetTextureCoordinates3( index );
+			face.SetTextureCoordinates3(index);
 		}
 	}
 }
 
-void deModelModule::pLoadQuads( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh ){
-	deModelFace * const faces = lodMesh.GetFaces();
+void deModelModule::pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
+	deModelFace * const faces = lodMesh.GetFaces().GetArrayPointer();
 	decVector2 texCoord;
 	int i, tcs, index;
 	
-	for( i=0; i<infos.quadCount; i++ ){
-		deModelFace &face1 = faces[ infos.triangleCount + i * 2 ];
-		deModelFace &face2 = faces[ infos.triangleCount + i * 2 + 1 ];
+	for(i=0; i<infos.quadCount; i++){
+		deModelFace &face1 = faces[infos.triangleCount + i * 2];
+		deModelFace &face2 = faces[infos.triangleCount + i * 2 + 1];
 		
 		// texture
 		index = reader.ReadUShort();
-		if( index >= infos.textureCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.textureCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTexture( index );
-		face2.SetTexture( index );
+		face1.SetTexture(index);
+		face2.SetTexture(index);
 		
 		// vertices
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex1( index );
-		face2.SetVertex1( index );
+		face1.SetVertex1(index);
+		face2.SetVertex1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex2( index );
+		face1.SetVertex2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetVertex3( index );
-		face2.SetVertex2( index );
+		face1.SetVertex3(index);
+		face2.SetVertex2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.vertexCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.vertexCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetVertex3( index );
+		face2.SetVertex3(index);
 		
 		// normals
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal1( index );
-		face2.SetNormal1( index );
+		face1.SetNormal1(index);
+		face2.SetNormal1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal2( index );
+		face1.SetNormal2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetNormal3( index );
-		face2.SetNormal2( index );
+		face1.SetNormal3(index);
+		face2.SetNormal2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.normalCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.normalCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetNormal3( index );
+		face2.SetNormal3(index);
 		
 		// tangents
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTangent1( index );
-		face2.SetTangent1( index );
+		face1.SetTangent1(index);
+		face2.SetTangent1(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTangent2( index );
+		face1.SetTangent2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face1.SetTangent3( index );
-		face2.SetTangent2( index );
+		face1.SetTangent3(index);
+		face2.SetTangent2(index);
 		
-		if( infos.isLargeModel ){
+		if(infos.isLargeModel){
 			index = reader.ReadInt();
 		}else{
 			index = reader.ReadUShort();
 		}
-		if( index >= infos.tangentCount ){
-			DETHROW( deeInvalidFormat );
+		if(index >= infos.tangentCount){
+			DETHROW(deeInvalidFormat);
 		}
-		face2.SetTangent3( index );
+		face2.SetTangent3(index);
 		
 		// texture coordinates
-		for( tcs=0; tcs<infos.texCoordSetCount; tcs++ ){
-			deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt( tcs );
+		for(tcs=0; tcs<infos.texCoordSetCount; tcs++){
+			deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSets()[tcs];
 			
 			// corner 1
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face1.SetTextureCoordinates1( index );
-			face2.SetTextureCoordinates1( index );
+			face1.SetTextureCoordinates1(index);
+			face2.SetTextureCoordinates1(index);
 			
 			// corner 2
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face1.SetTextureCoordinates2( index );
+			face1.SetTextureCoordinates2(index);
 			
 			// corner 3
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face1.SetTextureCoordinates3( index );
-			face2.SetTextureCoordinates2( index );
+			face1.SetTextureCoordinates3(index);
+			face2.SetTextureCoordinates2(index);
 			
 			// corner 4
-			if( infos.isLargeModel ){
+			if(infos.isLargeModel){
 				index = reader.ReadInt();
 			}else{
 				index = reader.ReadUShort();
 			}
-			if( index >= tcset.GetTextureCoordinatesCount() ){
-				DETHROW( deeInvalidFormat );
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
+				DETHROW(deeInvalidFormat);
 			}
-			face2.SetTextureCoordinates3( index );
+			face2.SetTextureCoordinates3(index);
 		}
 	}
 }
 
 
-void deModelModule::pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &infos, deModelLOD &lodMesh ){
+void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &infos, deModelLOD &lodMesh){
 	// check if there exists a cached copy of the data
-	decBaseFileReader *cacheReader = NULL;
 	deVirtualFileSystem &vfs = *model.GetVirtualFileSystem();
+	decBaseFileReader::Ref cacheReader;
 	bool hasCached = false;
 	decPath cachePath;
 	decString cacheID;
 	int i;
 	
-	cachePath.SetFromUnix( model.GetFilename() );
+	cachePath.SetFromUnix(model.GetFilename());
 	
 	cacheID = model.GetFilename();
-	for( i=0; i<model.GetLODCount(); i++ ){
-		if( model.GetLODAt( i ) == &lodMesh ){
-			cacheID.AppendFormat( ";%i", i );
-			break;
-		}
+	const int lodIndex = model.GetLODs().IndexOf(&lodMesh);
+	if(lodIndex >= 0){
+		cacheID.AppendFormat(";%d", lodIndex);
 	}
 	
 	pCacheMutex.Lock();
 	#ifdef OS_ANDROID
-	LogInfoFormat( "TCSorting '%s' (faces=%d sets=%d)", infos.filename,
-		infos.texCoordSorter->GetFaceCount(), infos.texCoordSorter->GetTexCoordSetCount() );
+	LogInfoFormat("TCSorting '%s' (faces=%d sets=%d)", infos.filename,
+		infos.texCoordSorter->GetFaceCount(), infos.texCoordSorter->GetTexCoordSetCount());
 	decTimer timer;
 	#endif
 	
 	try{
-		cacheReader = pCacheTCSorter->Read( cacheID );
+		cacheReader = pCacheTCSorter->Read(cacheID);
 		
-		if( cacheReader ){
+		if(cacheReader){
 			// check the cache version in case we upgraded
-			if( cacheReader->ReadByte() != 0x1 ){
+			if(cacheReader->ReadByte() != 0x1){
 				// cache file outdated
-				cacheReader->FreeReference();
-				cacheReader = NULL;
-				pCacheTCSorter->Delete( cacheID );
+				cacheReader = nullptr;
+				pCacheTCSorter->Delete(cacheID);
 				//LogInfoFormat( "TCSorter: '%s' cache ignored due to different version", cacheID.GetString() );
 			}
 			
@@ -1857,431 +1822,419 @@ void deModelModule::pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &inf
 		//	LogInfoFormat( "TCSorter: '%s' cache not found", cacheID.GetString() );
 		}
 		
-		if( cacheReader ){
+		if(cacheReader){
 			// check if the cache is still valid
-			const TIME_SYSTEM checkTime = ( TIME_SYSTEM )cacheReader->ReadUInt();
+			const TIME_SYSTEM checkTime = (TIME_SYSTEM)cacheReader->ReadUInt();
 			
-			if( vfs.GetFileModificationTime( cachePath ) != checkTime ){
+			if(vfs.GetFileModificationTime(cachePath) != checkTime){
 				// cache file outdated
-				cacheReader->FreeReference();
-				cacheReader = NULL;
-				pCacheTCSorter->Delete( cacheID );
+				cacheReader = nullptr;
+				pCacheTCSorter->Delete(cacheID);
 				//LogInfoFormat( "TCSorter: '%s' cache ignored due to different mod-time", cacheID.GetString() );
 			}
 		}
 		
-		if( cacheReader ){
+		if(cacheReader){
 			// read cached data
-			const int texCoordSetCount = lodMesh.GetTextureCoordinatesSetCount();
+			const int texCoordSetCount = lodMesh.GetTextureCoordinatesSets().GetCount();
 			int j, count;
 			
 			count = cacheReader->ReadInt();
-			lodMesh.SetTextureCoordinatesCount( count );
-			for( i=0; i<texCoordSetCount; i++ ){
-				lodMesh.GetTextureCoordinatesSetAt( i ).SetTextureCoordinatesCount( count );
-			}
-			
-			for( i=0; i<texCoordSetCount; i++ ){
-				deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt( i );
-				
-				for( j=0; j<count; j++ ){
-					tcset.SetTextureCoordinatesAt( j, cacheReader->ReadVector2() );
+			lodMesh.SetTextureCoordinatesCount(count);
+			for(i=0; i<texCoordSetCount; i++){
+				deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSets()[i];
+				tcset.GetTextureCoordinates().RemoveAll();
+				tcset.GetTextureCoordinates().EnlargeCapacity(count);
+				for(j=0; j<count; j++){
+					tcset.GetTextureCoordinates().Add(cacheReader->ReadVector2());
 				}
 			}
 			
 			count = cacheReader->ReadInt();
-			for( i=0; i<count; i++ ){
-				deModelFace &face = lodMesh.GetFaceAt( i );
+			for(i=0; i<count; i++){
+				deModelFace &face = lodMesh.GetFaces()[i];
 				
-				face.SetTextureCoordinates1( cacheReader->ReadInt() );
-				face.SetTextureCoordinates2( cacheReader->ReadInt() );
-				face.SetTextureCoordinates3( cacheReader->ReadInt() );
+				face.SetTextureCoordinates1(cacheReader->ReadInt());
+				face.SetTextureCoordinates2(cacheReader->ReadInt());
+				face.SetTextureCoordinates3(cacheReader->ReadInt());
 			}
 			
 			// done
-			cacheReader->FreeReference();
+			cacheReader = nullptr;
 			hasCached = true;
 			#ifdef OS_ANDROID
-			LogInfoFormat( "TCSorting.LoadCache '%s' (tcs=%d) in %dms", infos.filename,
-				infos.texCoordSorter->GetTexCoordCount(), ( int )( timer.GetElapsedTime() * 1e3f ) );
+			LogInfoFormat("TCSorting.LoadCache '%s' (tcs=%d) in %dms", infos.filename,
+				infos.texCoordSorter->GetTexCoordCount(), (int)(timer.GetElapsedTime() * 1e3f));
 			#endif
 		}
 		
 		pCacheMutex.Unlock();
 		
-	}catch( const deException & ){
-		if( cacheReader ){
-			cacheReader->FreeReference();
-		}
-		pCacheTCSorter->Delete( cacheID );
+	}catch(const deException &){
+		cacheReader = nullptr;
+		pCacheTCSorter->Delete(cacheID);
 		pCacheMutex.Unlock();
-		LogInfoFormat( "Cache file '%s' damaged, discarding", cacheID.GetString() );
+		LogInfoFormat("Cache file '%s' damaged, discarding", cacheID.GetString());
 		hasCached = false;
 	}
 	
 	// update tex-coord sorting if not cached
-	if( hasCached ){
+	if(hasCached){
 		return;
 	}
 	
 	demdlTexCoordSorter &texCoordSorter = *infos.texCoordSorter;
-	const int texCoordSetCount = lodMesh.GetTextureCoordinatesSetCount();
+	const int texCoordSetCount = lodMesh.GetTextureCoordinatesSets().GetCount();
 	int j, count;
 	
 	// sort texture coordinates and assign the indices
 	texCoordSorter.Sort();
 #ifdef OS_ANDROID
-	LogInfoFormat( "TCSorting.Sorted '%s' in %dms", infos.filename, ( int )( timer.GetElapsedTime() * 1e3f ) );
+	LogInfoFormat("TCSorting.Sorted '%s' in %dms", infos.filename, (int)(timer.GetElapsedTime() * 1e3f));
 #endif
 	
 	count = texCoordSorter.GetTexCoordCount();
-	lodMesh.SetTextureCoordinatesCount( count );
-	for( i=0; i<texCoordSetCount; i++ ){
-		lodMesh.GetTextureCoordinatesSetAt( i ).SetTextureCoordinatesCount( count );
-	}
-	
-	for( i=0; i<texCoordSetCount; i++ ){
-		deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt( i );
-		
-		for( j=0; j<count; j++ ){
-			tcset.SetTextureCoordinatesAt( j, texCoordSorter.GetTexCoordAt( j, i ) );
+	lodMesh.SetTextureCoordinatesCount(count);
+	for(i=0; i<texCoordSetCount; i++){
+		deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSets()[i];
+		tcset.GetTextureCoordinates().RemoveAll();
+		tcset.GetTextureCoordinates().EnlargeCapacity(count);
+		for(j=0; j<count; j++){
+			tcset.GetTextureCoordinates().Add(texCoordSorter.GetTexCoordAt(j, i));
 		}
 	}
 	
 	count = texCoordSorter.GetFaceCount();
-	for( i=0; i<count; i++ ){
-		deModelFace &face = lodMesh.GetFaceAt( i );
+	for(i=0; i<count; i++){
+		deModelFace &face = lodMesh.GetFaces()[i];
 		
-		face.SetTextureCoordinates1( texCoordSorter.GetFaceCornerAt( i, 0 ) );
-		face.SetTextureCoordinates2( texCoordSorter.GetFaceCornerAt( i, 1 ) );
-		face.SetTextureCoordinates3( texCoordSorter.GetFaceCornerAt( i, 2 ) );
+		face.SetTextureCoordinates1(texCoordSorter.GetFaceCornerAt(i, 0));
+		face.SetTextureCoordinates2(texCoordSorter.GetFaceCornerAt(i, 1));
+		face.SetTextureCoordinates3(texCoordSorter.GetFaceCornerAt(i, 2));
 	}
 #ifdef OS_ANDROID
-	LogInfoFormat( "TCSorting.Sorted '%s' (tcs=%d) in %dms", infos.filename,
-		texCoordSorter.GetTexCoordCount(), ( int )( timer.GetElapsedTime() * 1e3f ) );
+	LogInfoFormat("TCSorting.Sorted '%s' (tcs=%d) in %dms", infos.filename,
+		texCoordSorter.GetTexCoordCount(), (int)(timer.GetElapsedTime() * 1e3f));
 #endif
 	
 	// cache the result
-	decBaseFileWriter *cacheWriter = NULL;
+	decBaseFileWriter::Ref cacheWriter;
 	pCacheMutex.Lock();
 	
 	try{
-		cacheWriter = pCacheTCSorter->Write( cacheID );
+		cacheWriter = pCacheTCSorter->Write(cacheID);
 		
 		// write cache version
-		cacheWriter->WriteByte( 0x1 );
+		cacheWriter->WriteByte(0x1);
 		
 		// write file modification time to reject the cached file if the source model changed
-		cacheWriter->WriteUInt( ( unsigned int )vfs.GetFileModificationTime( cachePath ) );
+		cacheWriter->WriteUInt((unsigned int)vfs.GetFileModificationTime(cachePath));
 		
 		// write data
 		count = texCoordSorter.GetTexCoordCount();
-		cacheWriter->WriteInt( count );
-		for( i=0; i<texCoordSetCount; i++ ){
-			for( j=0; j<count; j++ ){
-				cacheWriter->WriteVector2( texCoordSorter.GetTexCoordAt( j, i ) );
+		cacheWriter->WriteInt(count);
+		for(i=0; i<texCoordSetCount; i++){
+			for(j=0; j<count; j++){
+				cacheWriter->WriteVector2(texCoordSorter.GetTexCoordAt(j, i));
 			}
 		}
 		
 		count = texCoordSorter.GetFaceCount();
-		cacheWriter->WriteInt( count );
-		for( i=0; i<count; i++ ){
-			cacheWriter->WriteInt( texCoordSorter.GetFaceCornerAt( i, 0 ) );
-			cacheWriter->WriteInt( texCoordSorter.GetFaceCornerAt( i, 1 ) );
-			cacheWriter->WriteInt( texCoordSorter.GetFaceCornerAt( i, 2 ) );
+		cacheWriter->WriteInt(count);
+		for(i=0; i<count; i++){
+			cacheWriter->WriteInt(texCoordSorter.GetFaceCornerAt(i, 0));
+			cacheWriter->WriteInt(texCoordSorter.GetFaceCornerAt(i, 1));
+			cacheWriter->WriteInt(texCoordSorter.GetFaceCornerAt(i, 2));
 		}
 		
 		// done
-		cacheWriter->FreeReference();
-		cacheWriter = NULL;
+		cacheWriter = nullptr;
 		
 		//LogInfoFormat( "TCSorter: '%s' written to cache", cacheID.GetString() );
 		
 		pCacheMutex.Unlock();
 		
-	}catch( const deException &e ){
-		if( cacheWriter ){
-			cacheWriter->FreeReference();
-		}
-		pCacheTCSorter->Delete( cacheID );
+	}catch(const deException &e){
+		cacheWriter = nullptr;
+		pCacheTCSorter->Delete(cacheID);
 		pCacheMutex.Unlock();
-		LogInfoFormat( "Writing cache file '%s' failed, deleted", cacheID.GetString() );
-		LogException( e );
+		LogInfoFormat("Writing cache file '%s' failed, deleted", cacheID.GetString());
+		LogException(e);
 		throw;
 	}
 #ifdef OS_ANDROID
-	LogInfoFormat( "TCSorting.WriteCache '%s' in %dms", infos.filename, ( int )( timer.GetElapsedTime() * 1e3f ) );
+	LogInfoFormat("TCSorting.WriteCache '%s' in %dms", infos.filename, (int)(timer.GetElapsedTime() * 1e3f));
 #endif
 }
 
 
 
-void deModelModule::pSaveModel( decBaseFileWriter &writer, const deModel &model ){
-	writer.Write( "Drag[en]gine Model", 18 );
-	writer.WriteUShort( 6 ); // version
-	writer.WriteUShort( 0 ); // flags
-	writer.WriteUShort( model.GetBoneCount() );
-	writer.WriteUShort( model.GetTextureCount() );
-	writer.WriteUShort( model.GetTextureCoordinatesSetList().GetCount() );
-	writer.WriteUShort( model.GetVertexPositionSetCount() );
-	writer.WriteUShort( model.GetLODCount() );
+void deModelModule::pSaveModel(decBaseFileWriter &writer, const deModel &model){
+	writer.Write("Drag[en]gine Model", 18);
+	writer.WriteUShort(6); // version
+	writer.WriteUShort(0); // flags
+	writer.WriteUShort(model.GetBoneCount());
+	writer.WriteUShort(model.GetTextureCount());
+	writer.WriteUShort(model.GetTextureCoordinatesSets().GetCount());
+	writer.WriteUShort(model.GetVertexPositionSetCount());
+	writer.WriteUShort(model.GetLODCount());
 	
-	pSaveBones( writer, model );
-	pSaveTextures( writer, model );
-	pSaveTexCoordSets( writer, model );
-	pSaveVertPosSets( writer, model );
-	pSaveLods( writer, model );
+	pSaveBones(writer, model);
+	pSaveTextures(writer, model);
+	pSaveTexCoordSets(writer, model);
+	pSaveVertPosSets(writer, model);
+	pSaveLods(writer, model);
 }
 
-void deModelModule::pSaveBones( decBaseFileWriter &writer, const deModel &model ){
+void deModelModule::pSaveBones(decBaseFileWriter &writer, const deModel &model){
 	const int count = model.GetBoneCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deModelBone &bone = *model.GetBoneAt( i );
-		writer.WriteString8( bone.GetName() );
-		writer.WriteVector( bone.GetPosition() );
-		writer.WriteVector( bone.GetOrientation().GetEulerAngles() * RAD2DEG );
-		writer.WriteUShort( bone.GetParent() + 1 );
+	for(i=0; i<count; i++){
+		const deModelBone &bone = model.GetBoneAt(i);
+		writer.WriteString8(bone.GetName());
+		writer.WriteVector(bone.GetPosition());
+		writer.WriteVector(bone.GetOrientation().GetEulerAngles() * RAD2DEG);
+		writer.WriteUShort(bone.GetParent() + 1);
 	}
 }
 
-void deModelModule::pSaveTextures( decBaseFileWriter &writer, const deModel &model ){
+void deModelModule::pSaveTextures(decBaseFileWriter &writer, const deModel &model){
 	const int count = model.GetTextureCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deModelTexture &texture = *model.GetTextureAt( i );
-		writer.WriteString8( texture.GetName() );
-		writer.WriteUShort( texture.GetWidth() );
-		writer.WriteUShort( texture.GetHeight() );
+	for(i=0; i<count; i++){
+		const deModelTexture &texture = model.GetTextureAt(i);
+		writer.WriteString8(texture.GetName());
+		writer.WriteUShort(texture.GetWidth());
+		writer.WriteUShort(texture.GetHeight());
 		
 		int flags = 0;
-		if( texture.GetDoubleSided() ){
+		if(texture.GetDoubleSided()){
 			flags |= FLAG_TEX_DOUBLE_SIDED;
 		}
-		if( texture.GetDecal() ){
+		if(texture.GetDecal()){
 			flags |= FLAG_TEX_DECAL;
 		}
 		
-		writer.WriteUShort( flags );
+		writer.WriteUShort(flags);
 		
-		if( texture.GetDecal() ){
-			writer.WriteByte( texture.GetDecalOffset() );
+		if(texture.GetDecal()){
+			writer.WriteByte(texture.GetDecalOffset());
 		}
 	}
 }
 
-void deModelModule::pSaveTexCoordSets( decBaseFileWriter &writer, const deModel &model ){
-	const int count = model.GetTextureCoordinatesSetList().GetCount();
+void deModelModule::pSaveTexCoordSets(decBaseFileWriter &writer, const deModel &model){
+	const int count = model.GetTextureCoordinatesSets().GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		writer.WriteString8( model.GetTextureCoordinatesSetList().GetAt( i ) );
+	for(i=0; i<count; i++){
+		writer.WriteString8(model.GetTextureCoordinatesSets().GetAt(i));
 	}
 }
 
-void deModelModule::pSaveVertPosSets( decBaseFileWriter& writer, const deModel& model ){
+void deModelModule::pSaveVertPosSets(decBaseFileWriter& writer, const deModel& model){
 	const int count = model.GetVertexPositionSetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deModelVertexPositionSet &vpset = *model.GetVertexPositionSetAt( i );
-		writer.WriteString8( vpset.GetName() );
-		writer.WriteUShort( ( uint16_t )( vpset.GetBaseSet() + 1 ) );
+	for(i=0; i<count; i++){
+		const deModelVertexPositionSet &vpset = model.GetVertexPositionSetAt(i);
+		writer.WriteString8(vpset.GetName());
+		writer.WriteUShort((uint16_t)(vpset.GetBaseSet() + 1));
 	}
 }
 
-void deModelModule::pSaveLods( decBaseFileWriter &writer, const deModel &model ){
+void deModelModule::pSaveLods(decBaseFileWriter &writer, const deModel &model){
 	const int count = model.GetLODCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deModelLOD &lod = *model.GetLODAt( i );
+	for(i=0; i<count; i++){
+		const deModelLOD &lod = model.GetLODAt(i);
 		
 		const bool largeModel = lod.GetNormalCount() > 65000
 			|| lod.GetTangentCount() > 65000
-			|| lod.GetWeightCount() > 65000
-			|| lod.GetVertexCount() > 65000
-			|| lod.GetFaceCount() > 65000;
+			|| lod.GetWeights().GetCount() > 65000
+			|| lod.GetVertices().GetCount() > 65000
+			|| lod.GetFaces().GetCount() > 65000;
 		
 		int flags = 0;
-		if( largeModel ){
+		if(largeModel){
 			flags |= FLAG_LARGE_MODEL;
 		}
-		if( lod.GetHasLodError() ){
+		if(lod.GetHasLodError()){
 			flags |= FLAG_HAS_LOD_ERROR;
 		}
-		writer.WriteByte( flags );
+		writer.WriteByte(flags);
 		
-		if( lod.GetHasLodError() ){
-			writer.WriteFloat( lod.GetLodError() );
+		if(lod.GetHasLodError()){
+			writer.WriteFloat(lod.GetLodError());
 		}
 		
-		if( largeModel ){
-			writer.WriteInt( lod.GetNormalCount() );
-			writer.WriteInt( lod.GetTangentCount() );
-			writer.WriteInt( lod.GetWeightCount() );
-			writer.WriteInt( lod.GetVertexCount() );
-			writer.WriteInt( lod.GetFaceCount() );
-			writer.WriteInt( 0 ); // quad count
+		if(largeModel){
+			writer.WriteInt(lod.GetNormalCount());
+			writer.WriteInt(lod.GetTangentCount());
+			writer.WriteInt(lod.GetWeights().GetCount());
+			writer.WriteInt(lod.GetVertices().GetCount());
+			writer.WriteInt(lod.GetFaces().GetCount());
+			writer.WriteInt(0); // quad count
 			
 		}else{
-			writer.WriteUShort( ( uint16_t )lod.GetNormalCount() );
-			writer.WriteUShort( ( uint16_t )lod.GetTangentCount() );
-			writer.WriteUShort( ( uint16_t )lod.GetWeightCount() );
-			writer.WriteUShort( ( uint16_t )lod.GetVertexCount() );
-			writer.WriteUShort( ( uint16_t )lod.GetFaceCount() );
-			writer.WriteUShort( 0 ); // quad count
+			writer.WriteUShort((uint16_t)lod.GetNormalCount());
+			writer.WriteUShort((uint16_t)lod.GetTangentCount());
+			writer.WriteUShort((uint16_t)lod.GetWeights().GetCount());
+			writer.WriteUShort((uint16_t)lod.GetVertices().GetCount());
+			writer.WriteUShort((uint16_t)lod.GetFaces().GetCount());
+			writer.WriteUShort(0); // quad count
 		}
 		
-		pSaveWeights( writer, lod );
-		pSaveVertices( writer, lod, largeModel );
-		pSaveTexCoords( writer, lod, largeModel );
-		pSaveVertPosSets( writer, lod, largeModel );
-		pSaveTriangles( writer, lod, largeModel );
+		pSaveWeights(writer, lod);
+		pSaveVertices(writer, lod, largeModel);
+		pSaveTexCoords(writer, lod, largeModel);
+		pSaveVertPosSets(writer, lod, largeModel);
+		pSaveTriangles(writer, lod, largeModel);
 	}
 }
 
-void deModelModule::pSaveWeights( decBaseFileWriter &writer, const deModelLOD &lodMesh ){
-	const int wgcount = lodMesh.GetWeightGroupCount();
+void deModelModule::pSaveWeights(decBaseFileWriter &writer, const deModelLOD &lodMesh){
+	const int wgcount = lodMesh.GetWeightGroups().GetCount();
 	int weightIndex = 0;
 	int i, j, k;
 	
-	for( i=0; i<wgcount; i++ ){
-		const int weightsCount = lodMesh.GetWeightGroupAt( i );
+	for(i=0; i<wgcount; i++){
+		const int weightsCount = lodMesh.GetWeightGroups()[i];
 		const int boneCount = i + 1;
 		
-		for( j=0; j<weightsCount; j++ ){
-			writer.WriteByte( boneCount );
+		for(j=0; j<weightsCount; j++){
+			writer.WriteByte(boneCount);
 			
-			for( k=0; k<boneCount; k++ ){
-				const deModelWeight &weight = lodMesh.GetWeightAt( weightIndex++ );
-				writer.WriteUShort( weight.GetBone() );
-				writer.WriteUShort( ( int )( weight.GetWeight() * 1000.0f ) );
+			for(k=0; k<boneCount; k++){
+				const deModelWeight &weight = lodMesh.GetWeights()[weightIndex++];
+				writer.WriteUShort(weight.GetBone());
+				writer.WriteUShort((int)(weight.GetWeight() * 1000.0f));
 			}
 		}
 	}
 }
 
-void deModelModule::pSaveVertices( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel ){
-	const deModelVertex * const vertices = lodMesh.GetVertices();
-	const int count = lodMesh.GetVertexCount();
+void deModelModule::pSaveVertices(decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel){
+	const deModelVertex * const vertices = lodMesh.GetVertices().GetArrayPointer();
+	const int count = lodMesh.GetVertices().GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deModelVertex &vertex = vertices[ i ];
+	for(i=0; i<count; i++){
+		const deModelVertex &vertex = vertices[i];
 		
-		if( largeModel ){
-			writer.WriteInt( vertex.GetWeightSet() + 1 );
+		if(largeModel){
+			writer.WriteInt(vertex.GetWeightSet() + 1);
 			
 		}else{
-			writer.WriteUShort( ( uint16_t )( vertex.GetWeightSet() + 1 ) );
+			writer.WriteUShort((uint16_t)(vertex.GetWeightSet() + 1));
 		}
 		
-		writer.WriteVector( vertex.GetPosition() );
+		writer.WriteVector(vertex.GetPosition());
 	}
 }
 
-void deModelModule::pSaveTexCoords( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel ){
-	const deModelTextureCoordinatesSet * const tcsets = lodMesh.GetTextureCoordinatesSets();
-	const int count = lodMesh.GetTextureCoordinatesSetCount();
+void deModelModule::pSaveTexCoords(decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel){
+	const deModelTextureCoordinatesSet * const tcsets = lodMesh.GetTextureCoordinatesSets().GetArrayPointer();
+	const int count = lodMesh.GetTextureCoordinatesSets().GetCount();
 	int i, j;
 	
-	for( i=0; i<count; i++ ){
-		const deModelTextureCoordinatesSet &tcset = tcsets[ i ];
-		const decVector2 * const texCoords = tcset.GetTextureCoordinates();
-		const int texCoordCount = tcset.GetTextureCoordinatesCount();
+	for(i=0; i<count; i++){
+		const deModelTextureCoordinatesSet &tcset = tcsets[i];
+		const deModelTextureCoordinatesSet::TextureCoordinatesList &texCoords = tcset.GetTextureCoordinates();
+		const int texCoordCount = texCoords.GetCount();
 		
-		if( largeModel ){
-			writer.WriteInt( texCoordCount );
+		if(largeModel){
+			writer.WriteInt(texCoordCount);
 			
 		}else{
-			writer.WriteUShort( ( uint16_t )texCoordCount );
+			writer.WriteUShort((uint16_t)texCoordCount);
 		}
 		
-		for( j=0; j<texCoordCount; j++ ){
-			writer.WriteVector2( texCoords[ j ] );
+		for(j=0; j<texCoordCount; j++){
+			writer.WriteVector2(texCoords[j]);
 		}
 	}
 }
 
-void deModelModule::pSaveVertPosSets( decBaseFileWriter& writer, const deModelLOD& lodMesh, bool largeModel ){
-	const int setCount = lodMesh.GetVertexPositionSetCount();
+void deModelModule::pSaveVertPosSets(decBaseFileWriter& writer, const deModelLOD& lodMesh, bool largeModel){
+	const int setCount = lodMesh.GetVertexPositionSets().GetCount();
 	int i, j;
 	
-	for( i=0; i<setCount; i++ ){
-		const deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSetAt( i );
-		const deModelLodVertexPositionSetPosition * const positions = vpset.GetPositions();
-		const int positionCount = vpset.GetPositionCount();
+	for(i=0; i<setCount; i++){
+		const deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSets()[i];
+		const deModelLodVertexPositionSet::PositionsList &positions = vpset.GetPositions();
+		const int positionCount = positions.GetCount();
 		
-		if( largeModel ){
-			writer.WriteInt( positionCount );
+		if(largeModel){
+			writer.WriteInt(positionCount);
 			
 		}else{
-			writer.WriteUShort( ( uint16_t )positionCount );
+			writer.WriteUShort((uint16_t)positionCount);
 		}
 		
-		for( j=0; j<positionCount; j++ ){
-			if( largeModel ){
-				writer.WriteInt( positions[ j ].GetVertex() );
+		for(j=0; j<positionCount; j++){
+			if(largeModel){
+				writer.WriteInt(positions[j].GetVertex());
 				
 			}else{
-				writer.WriteUShort( ( uint16_t )positions[ j ].GetVertex() );
+				writer.WriteUShort((uint16_t)positions[j].GetVertex());
 			}
 			
-			writer.WriteVector( positions[ j ].GetPosition() );
+			writer.WriteVector(positions[j].GetPosition());
 		}
 	}
 }
 
-void deModelModule::pSaveTriangles( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel ){
-	const int tcsetCount = lodMesh.GetTextureCoordinatesSetCount();
-	const deModelFace * const faces = lodMesh.GetFaces();
-	const int count = lodMesh.GetFaceCount();
+void deModelModule::pSaveTriangles(decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel){
+	const int tcsetCount = lodMesh.GetTextureCoordinatesSets().GetCount();
+	const deModelFace * const faces = lodMesh.GetFaces().GetArrayPointer();
+	const int count = lodMesh.GetFaces().GetCount();
 	int i, j;
 	
-	for( i=0; i<count; i++ ){
-		const deModelFace &face = faces[ i ];
+	for(i=0; i<count; i++){
+		const deModelFace &face = faces[i];
 		
-		writer.WriteUShort( face.GetTexture() );
+		writer.WriteUShort(face.GetTexture());
 		
-		if( largeModel ){
-			writer.WriteInt( face.GetVertex1() );
-			writer.WriteInt( face.GetVertex2() );
-			writer.WriteInt( face.GetVertex3() );
+		if(largeModel){
+			writer.WriteInt(face.GetVertex1());
+			writer.WriteInt(face.GetVertex2());
+			writer.WriteInt(face.GetVertex3());
 			
-			writer.WriteInt( face.GetNormal1() );
-			writer.WriteInt( face.GetNormal2() );
-			writer.WriteInt( face.GetNormal3() );
+			writer.WriteInt(face.GetNormal1());
+			writer.WriteInt(face.GetNormal2());
+			writer.WriteInt(face.GetNormal3());
 			
-			writer.WriteInt( face.GetTangent1() );
-			writer.WriteInt( face.GetTangent2() );
-			writer.WriteInt( face.GetTangent3() );
+			writer.WriteInt(face.GetTangent1());
+			writer.WriteInt(face.GetTangent2());
+			writer.WriteInt(face.GetTangent3());
 			
-			for( j=0; j<tcsetCount; j++ ){
-				writer.WriteInt( face.GetTextureCoordinates1() );
-				writer.WriteInt( face.GetTextureCoordinates2() );
-				writer.WriteInt( face.GetTextureCoordinates3() );
+			for(j=0; j<tcsetCount; j++){
+				writer.WriteInt(face.GetTextureCoordinates1());
+				writer.WriteInt(face.GetTextureCoordinates2());
+				writer.WriteInt(face.GetTextureCoordinates3());
 			}
 			
 		}else{
-			writer.WriteUShort( ( uint16_t )face.GetVertex1() );
-			writer.WriteUShort( ( uint16_t )face.GetVertex2() );
-			writer.WriteUShort( ( uint16_t )face.GetVertex3() );
+			writer.WriteUShort((uint16_t)face.GetVertex1());
+			writer.WriteUShort((uint16_t)face.GetVertex2());
+			writer.WriteUShort((uint16_t)face.GetVertex3());
 			
-			writer.WriteUShort( ( uint16_t )face.GetNormal1() );
-			writer.WriteUShort( ( uint16_t )face.GetNormal2() );
-			writer.WriteUShort( ( uint16_t )face.GetNormal3() );
+			writer.WriteUShort((uint16_t)face.GetNormal1());
+			writer.WriteUShort((uint16_t)face.GetNormal2());
+			writer.WriteUShort((uint16_t)face.GetNormal3());
 			
-			writer.WriteUShort( ( uint16_t )face.GetTangent1() );
-			writer.WriteUShort( ( uint16_t )face.GetTangent2() );
-			writer.WriteUShort( ( uint16_t )face.GetTangent3() );
+			writer.WriteUShort((uint16_t)face.GetTangent1());
+			writer.WriteUShort((uint16_t)face.GetTangent2());
+			writer.WriteUShort((uint16_t)face.GetTangent3());
 			
-			for( j=0; j<tcsetCount; j++ ){
-				writer.WriteUShort( ( uint16_t )face.GetTextureCoordinates1() );
-				writer.WriteUShort( ( uint16_t )face.GetTextureCoordinates2() );
-				writer.WriteUShort( ( uint16_t )face.GetTextureCoordinates3() );
+			for(j=0; j<tcsetCount; j++){
+				writer.WriteUShort((uint16_t)face.GetTextureCoordinates1());
+				writer.WriteUShort((uint16_t)face.GetTextureCoordinates2());
+				writer.WriteUShort((uint16_t)face.GetTextureCoordinates3());
 			}
 		}
 	}
@@ -2296,6 +2249,8 @@ void deModelModule::pSaveTriangles( decBaseFileWriter &writer, const deModelLOD 
 
 class demdlModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<demdlModuleInternal>;
+	
 	demdlModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEModel");
 		SetDescription("Handles models in the binary Drag[en]gine model format.");
@@ -2317,7 +2272,7 @@ public:
 	}
 };
 
-deInternalModule *demdlRegisterInternalModule(deModuleSystem *system){
-	return new demdlModuleInternal(system);
+deTObjectReference<deInternalModule> demdlRegisterInternalModule(deModuleSystem *system){
+	return demdlModuleInternal::Ref::New(system);
 }
 #endif

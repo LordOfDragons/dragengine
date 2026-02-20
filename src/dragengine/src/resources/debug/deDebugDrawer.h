@@ -25,11 +25,11 @@
 #ifndef _DEDEBUGDRAWER_H_
 #define _DEDEBUGDRAWER_H_
 
+#include "deDebugDrawerShape.h"
 #include "../../common/math/decMath.h"
-#include "../../common/collection/decPointerList.h"
+#include "../../common/collection/decTList.h"
 #include "../deResource.h"
 
-class deDebugDrawerShape;
 class deDebugDrawerManager;
 class deBaseGraphicDebugDrawer;
 class deWorld;
@@ -57,8 +57,7 @@ class deWorld;
 class DE_DLL_EXPORT deDebugDrawer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDebugDrawer> Ref;
-	
+	using Ref = deTObjectReference<deDebugDrawer>;
 	
 	
 private:
@@ -69,13 +68,12 @@ private:
 	bool pVisible;
 	bool pXRay;
 	
-	decPointerList pShapes;
+	deDebugDrawerShape::List pShapes;
 	
 	deBaseGraphicDebugDrawer *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deDebugDrawer *pLLWorldPrev;
-	deDebugDrawer *pLLWorldNext;
+	decTObjectLinkedList<deDebugDrawer>::Element pLLWorld;
 	
 	
 	
@@ -83,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new debug drawer object with the given resource manager. */
-	deDebugDrawer( deDebugDrawerManager *manager );
+	deDebugDrawer(deDebugDrawerManager *manager);
 	
 protected:
 	/**
@@ -92,7 +90,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deDebugDrawer();
+	~deDebugDrawer() override;
 	/*@}*/
 	
 	
@@ -104,69 +102,60 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	/** \brief Debug drawer is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if debug drawer is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Debug drawer is rendered in x-ray mode. */
 	inline bool GetXRay() const{ return pXRay; }
 	
 	/** \brief Set if debug drawer is rendered in x-ray mode. */
-	void SetXRay( bool xray );
+	void SetXRay(bool xray);
 	/*@}*/
 	
 	
 	
 	/** \name Shape Management */
 	/*@{*/
-	/** \brief Count of shapes. */
-	int GetShapeCount() const;
-	
-	/** \brief Shape at the given index. */
-	deDebugDrawerShape *GetShapeAt( int index ) const;
-	
-	/** \brief Retrieve index of the given shape. */
-	int IndexOfShape( deDebugDrawerShape *shape ) const;
-	
-	/** \brief Shape exists. */
-	bool HasShape( deDebugDrawerShape *shape ) const;
+	/** \brief Shapes. */
+	inline const deDebugDrawerShape::List &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Adds a collision shape.
 	 * 
 	 * calls NotifyShapeLayoutChanged.
 	 */
-	void AddShape( deDebugDrawerShape *shape );
+	void AddShape(deDebugDrawerShape::Ref &&shape);
 	
 	/**
 	 * \brief Removes the collision shape.
 	 * 
 	 * calls NotifyShapeLayoutChanged.
 	 */
-	void RemoveShape( deDebugDrawerShape *shape );
+	void RemoveShape(deDebugDrawerShape *shape);
 	
 	/**
 	 * \brief Removes the collision shape at the given index.
 	 * 
 	 * calls NotifyShapeLayoutChanged.
 	 */
-	void RemoveShapeFrom( int index );
+	void RemoveShapeFrom(int index);
 	
 	/**
 	 * \brief Removes all collision shapes.
@@ -196,7 +185,7 @@ public:
 	inline deBaseGraphicDebugDrawer *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphics system peer object. */
-	void SetPeerGraphic( deBaseGraphicDebugDrawer *peer );
+	void SetPeerGraphic(deBaseGraphicDebugDrawer *peer);
 	/*@}*/
 	
 	
@@ -209,17 +198,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous debug drawer in the parent world linked list. */
-	inline deDebugDrawer *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next debug drawer in the parent world linked list. */
-	void SetLLWorldPrev( deDebugDrawer *debugDrawer );
-	
-	/** \brief Next debug drawer in the parent world linked list. */
-	inline deDebugDrawer *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next debug drawer in the parent world linked list. */
-	void SetLLWorldNext( deDebugDrawer *debugDrawer );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deDebugDrawer>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

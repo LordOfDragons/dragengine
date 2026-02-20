@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -36,26 +36,30 @@ class aeRuleGroup;
  * Undo rule group set enable size.
  */
 class aeURuleGroupToggleEnableSize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleGroupToggleEnableSize>;
+	
+	
 private:
-	aeRuleGroup *pRule;
+	aeRuleGroup::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupToggleEnableSize( aeRuleGroup *rule );
+	aeURuleGroupToggleEnableSize(aeRuleGroup *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleGroupToggleEnableSize();
+	~aeURuleGroupToggleEnableSize() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** <brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

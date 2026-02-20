@@ -35,22 +35,20 @@
 ////////////////////////////
 
 aeURuleLimitSetVertexPositionSetMax::aeURuleLimitSetVertexPositionSetMax(
-	aeRuleLimit *rule, float newMax )
+	aeRuleLimit *rule, float newMax)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumVertexPositionSet();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Limit Set maximum vertex position set" );
+		SetShortInfo("@Animator.Undo.SetRuleLimitMaximumVertexPositionSet");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeURuleLimitSetVertexPositionSetMax::~aeURuleLimitSetVertexPositionSetMax(){
 ///////////////
 
 void aeURuleLimitSetVertexPositionSetMax::Undo(){
-	pRule->SetMaximumVertexPositionSet( pOldMax );
+	pRule->SetMaximumVertexPositionSet(pOldMax);
 }
 
 void aeURuleLimitSetVertexPositionSetMax::Redo(){
-	pRule->SetMaximumVertexPositionSet( pNewMax );
+	pRule->SetMaximumVertexPositionSet(pNewMax);
 }
 
 
@@ -79,7 +77,4 @@ void aeURuleLimitSetVertexPositionSetMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetVertexPositionSetMax::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

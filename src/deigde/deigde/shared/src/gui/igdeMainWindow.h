@@ -41,6 +41,10 @@ class igdeApplication;
  */
 class DE_DLL_EXPORT igdeMainWindow : public igdeWindow{
 public:
+	/** \brief Strong reference. */
+	using Ref = deTObjectReference<igdeMainWindow>;
+	
+	
 	/** \brief Window state. */
 	enum eWindowStates{
 		ewsNormal,
@@ -48,20 +52,29 @@ public:
 		ewsMaximized
 	};
 	
+	class cNativeMainWindow : public cNativeWindow{
+	public:
+		virtual ~cNativeMainWindow() override = default;
+		virtual void UpdateWindowState() = 0;
+	};
 	
 	
 private:
 	igdeEngineController *pEngineController;
-	decPoint pInitialSize;
 	eWindowStates pWindowState;
+	decPoint pNormalPosition, pNormalSize;
+	bool pNormalPositionSet, pNormalSizeSet;
 	
+	
+protected:
+	cNativeMainWindow *pNativeMainWindow;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window prototype. */
-	igdeMainWindow( igdeEnvironment &environment, const char *title );
+	igdeMainWindow(igdeEnvironment &environment, const char *title);
 	
 	
 	
@@ -71,7 +84,7 @@ protected:
 	 * \warning Subclass is responsible to calls StopEngine to shut down the engine
 	 *          before starting cleaning up widgets.
 	 */
-	virtual ~igdeMainWindow();
+	~igdeMainWindow() override;
 	/*@}*/
 	
 	
@@ -79,21 +92,32 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Initial size when shown or (0,0) to choose automatically. */
-	inline const decPoint &GetInitialSize() const{ return pInitialSize; }
-	
-	/** \brief Set initial size when shown or (0,0) to choose automatically. */
-	void SetInitialSize( const decPoint &initialSize );
-	
 	/** \brief Window state. */
 	inline eWindowStates GetWindowState() const{ return pWindowState; }
 	
 	/** \brief Set window state. */
-	void SetWindowState( eWindowStates windowState );
+	void SetWindowState(eWindowStates windowState);
+	
+	/** \brief Position in normal state. */
+	inline const decPoint &GetNormalPosition() const{ return pNormalPosition; }
+	
+	/** \brief Set position in normal state. */
+	void SetNormalPosition(const decPoint &position);
+	
+	/** \brief Size in normal state. */
+	inline const decPoint &GetNormalSize() const{ return pNormalSize; }
+	
+	/** \brief Set size in normal state. */
+	void SetNormalSize(const decPoint &size);
+	
+	/** \brief Normal position has been set at least once. */
+	inline bool GetNormalPositionSet() const{ return pNormalPositionSet; }
+	
+	/** \brief Normal size has been set at least once. */
+	inline bool GetNormalSizeSet() const{ return pNormalSizeSet; }
 	
 	
-	
-	/** \brief Get engine controller or NULL if not present. */
+	/** \brief Get engine controller or nullptr if not present. */
 	inline igdeEngineController *GetMainWindowEngineController() const{ return pEngineController; }
 	
 	/** \brief Start engine. */
@@ -123,7 +147,7 @@ public:
 	
 	
 	/** \brief Close window bypassing CloseWindow(). */
-	virtual void Close();
+	void Close() override;
 	
 	
 	
@@ -144,53 +168,25 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Drop native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DropNativeWidget();
+	void DropNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 	
 	
-	
 protected:
-	/**
-	 * \brief Window title changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	virtual void OnTitleChanged();
-	
-	/**
-	 * \brief Window icon changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	virtual void OnIconChanged();
-	
-	/**
-	 * \brief Window size changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	virtual void OnSizeChanged();
-	
-	/**
-	 * \brief Window position changed.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	virtual void OnPositionChanged();
-	
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
-	
-	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnVisibleChanged() override;
 	
 	/** \brief Window state changed. */
 	virtual void OnWindowStateChanged();

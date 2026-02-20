@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynCreateSynthesizerSource.h"
 #include "source/desynSynthesizerSourceChain.h"
 #include "source/desynSynthesizerSourceGroup.h"
@@ -43,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynCreateSynthesizerSource::desynCreateSynthesizerSource( desynSynthesizer &synthesizer, int firstLink ) :
-pSynthesizer( synthesizer ),
-pFirstLink( firstLink ),
-pSource( NULL ){
+desynCreateSynthesizerSource::desynCreateSynthesizerSource(desynSynthesizer &synthesizer, int firstLink) :
+pSynthesizer(synthesizer),
+pFirstLink(firstLink){
 }
 
 desynCreateSynthesizerSource::~desynCreateSynthesizerSource(){
@@ -58,7 +54,7 @@ desynCreateSynthesizerSource::~desynCreateSynthesizerSource(){
 ///////////////
 
 void desynCreateSynthesizerSource::Reset(){
-	pSource = NULL;
+	pSource.Clear();
 }
 
 
@@ -67,26 +63,26 @@ void desynCreateSynthesizerSource::Reset(){
 // Visiting
 /////////////
 
-void desynCreateSynthesizerSource::VisitSource( deSynthesizerSource &source ){
-	pSource = NULL;
+void desynCreateSynthesizerSource::VisitSource(deSynthesizerSource &source){
+	pSource.Clear();
 }
 
-void desynCreateSynthesizerSource::VisitSound( deSynthesizerSourceSound &source ){
-	pSource = new desynSynthesizerSourceSound( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitSound(deSynthesizerSourceSound &source){
+	pSource = deTUniqueReference<desynSynthesizerSourceSound>::New(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitWave( deSynthesizerSourceWave &source ){
-	pSource = new desynSynthesizerSourceWave( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitWave(deSynthesizerSourceWave &source){
+	pSource = deTUniqueReference<desynSynthesizerSourceWave>::New(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitChain( deSynthesizerSourceChain &source ){
-	pSource = new desynSynthesizerSourceChain( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitChain(deSynthesizerSourceChain &source){
+	pSource = deTUniqueReference<desynSynthesizerSourceChain>::New(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitSynthesizer( deSynthesizerSourceSynthesizer &source ){
-	pSource = new desynSynthesizerSourceSynthesizer( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitSynthesizer(deSynthesizerSourceSynthesizer &source){
+	pSource = deTUniqueReference<desynSynthesizerSourceSynthesizer>::New(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitGroup( deSynthesizerSourceGroup &source ){
-	pSource = new desynSynthesizerSourceGroup( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitGroup(deSynthesizerSourceGroup &source){
+	pSource = deTUniqueReference<desynSynthesizerSourceGroup>::New(pSynthesizer, pFirstLink, source);
 }

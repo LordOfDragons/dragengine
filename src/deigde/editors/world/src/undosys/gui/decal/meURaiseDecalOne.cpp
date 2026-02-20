@@ -26,7 +26,7 @@
 #include "../../../world/meWorld.h"
 #include "../../../world/decal/meDecal.h"
 #include "../../../world/object/meObject.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -36,22 +36,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURaiseDecalOne::meURaiseDecalOne( meWorld *world, meDecal *decal ){
-	if( ! world || ! decal ) DETHROW( deeInvalidParam );
+meURaiseDecalOne::meURaiseDecalOne(meWorld *world, meDecal *decal){
+	if(!world || !decal) DETHROW(deeInvalidParam);
 	
-	if( ! decal->GetParentObject() ) DETHROW( deeInvalidParam );
+	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
-	SetShortInfo( "Raise decal one level." );
-	SetLongInfo( "" );
+	SetShortInfo("@World.URaiseDecalOne.RaiseDecalOneLevel");
+	SetLongInfo("");
 }
 
 meURaiseDecalOne::~meURaiseDecalOne(){
-	if( pDecal ) pDecal->FreeReference();
 }
 
 
@@ -63,14 +60,14 @@ void meURaiseDecalOne::Undo(){
 	meObject *object = pDecal->GetParentObject();
 	int index;
 	
-	if( object ){
-		index = object->IndexOfDecal( pDecal );
-		if( index > 0 ){
-			object->MoveDecalTo( pDecal, index - 1 );
+	if(object){
+		index = object->GetDecals().IndexOf(pDecal);
+		if(index > 0){
+			object->MoveDecalTo(pDecal, index - 1);
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -78,13 +75,13 @@ void meURaiseDecalOne::Redo(){
 	meObject *object = pDecal->GetParentObject();
 	int index;
 	
-	if( object ){
-		index = object->IndexOfDecal( pDecal );
-		if( index < object->GetDecalCount() - 1 ){
-			object->MoveDecalTo( pDecal, index + 1 );
+	if(object){
+		index = object->GetDecals().IndexOf(pDecal);
+		if(index < object->GetDecals().GetCount() - 1){
+			object->MoveDecalTo(pDecal, index + 1);
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

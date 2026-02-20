@@ -27,7 +27,7 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 
 
 class aeController;
@@ -37,14 +37,18 @@ class aeController;
  * Sub Animator Rule Panel.
  */
 class aeWPAPanelRuleSubAnimator : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleSubAnimator>;
+	
+	
 private:
-	igdeEditPathReference pEditPathAnimator;
-	igdeComboBoxReference pCBConnection;
-	igdeComboBoxReference pCBConnectionController;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeEditPath::Ref pEditPathAnimator;
+	igdeComboBox::Ref pCBConnection;
+	igdeComboBox::Ref pCBConnectionController;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	bool pPreventUpdate;
 	
 	
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleSubAnimator( aeWPRule &wpRule );
+	aeWPAPanelRuleSubAnimator(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleSubAnimator();
+	~aeWPAPanelRuleSubAnimator() override;
 	/*@}*/
 	
 	
@@ -69,13 +73,13 @@ public:
 	void UpdateConnectionList();
 	
 	/** Animator path changed. */
-	virtual void OnAnimatorPathChanged();
+	void OnAnimatorPathChanged() override;
 	
 	/** Update controller list. */
-	virtual void UpdateControllerList();
+	void UpdateControllerList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update connection. */
 	virtual void UpdateConnection();

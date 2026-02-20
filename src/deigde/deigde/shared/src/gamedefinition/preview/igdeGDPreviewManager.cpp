@@ -62,11 +62,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDPreviewManager::igdeGDPreviewManager( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pPathCache( "/igde/cache/preview" ),
-pImageSize( 256 ), // large=128, medium=96, small=64
-pHasCreators( false ){
+igdeGDPreviewManager::igdeGDPreviewManager(igdeEnvironment &environment) :
+pEnvironment(environment),
+pPathCache("/igde/cache/preview"),
+pImageSize(256), // large=128, medium=96, small=64
+pHasCreators(false){
 }
 
 igdeGDPreviewManager::~igdeGDPreviewManager(){
@@ -78,37 +78,36 @@ igdeGDPreviewManager::~igdeGDPreviewManager(){
 // Management
 ///////////////
 
-void igdeGDPreviewManager::SetPathCache( const char *path ){
+void igdeGDPreviewManager::SetPathCache(const char *path){
 	pPathCache = path;
 }
 
-void igdeGDPreviewManager::SetDirectoryObjectClass( const char *directory ){
+void igdeGDPreviewManager::SetDirectoryObjectClass(const char *directory){
 	pDirObjectClass = directory;
 }
 
-void igdeGDPreviewManager::SetDirectorySkin( const char *directory ){
+void igdeGDPreviewManager::SetDirectorySkin(const char *directory){
 	pDirSkin = directory;
 }
 
-void igdeGDPreviewManager::SetDirectorySky( const char *directory ){
+void igdeGDPreviewManager::SetDirectorySky(const char *directory){
 	pDirSky = directory;
 }
 
 
 
 void igdeGDPreviewManager::OnAfterEngineStart(){
-	if( pImageCreating || pImageFailed ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NULL(pImageCreating)
+	DEASSERT_NULL(pImageFailed)
 	
 	deImageManager &imgmgr = *pEnvironment.GetEngineController()->GetEngine()->GetImageManager();
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemIGDE();
 	
 	try{
-		pImageCreating.TakeOver( imgmgr.LoadImage( vfs, "/data/data/models/previewBuilder/rendering.png", "/" ) );
-		pImageFailed.TakeOver( imgmgr.LoadImage( vfs, "/data/data/models/previewBuilder/failed.png", "/" ) );
+		pImageCreating = imgmgr.LoadImage(vfs, "/data/data/models/previewBuilder/rendering.png", "/");
+		pImageFailed = imgmgr.LoadImage(vfs, "/data/data/models/previewBuilder/failed.png", "/");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		OnBeforeEngineStop();
 		throw;
 	}
@@ -119,106 +118,85 @@ void igdeGDPreviewManager::OnBeforeEngineStop(){
 }
 
 void igdeGDPreviewManager::Update(){
-	if( ! pHasCreators ){
+	if(!pHasCreators){
 		return;
 	}
 	
 	// update object classes
-	int count = pCreatorsObjectClass.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		igdeGDPCObjectClass &creator = *( ( igdeGDPCObjectClass* )pCreatorsObjectClass.GetAt( i ) );
-		if( ! creator.FinishCreation() ){
-			continue;
+	pCreatorsObjectClass.RemoveIf([&](igdeGDPCObjectClass &creator){
+		if(!creator.FinishCreation()){
+			return false;
 		}
 		
-		if( creator.GetImage() ){
-			creator.GetGDClass()->SetPreviewImage( creator.GetImage() );
-			pSaveToFile( creator.GetImage(), pDirObjectClass, creator.GetGDClass()->GetName() );
+		if(creator.GetImage()){
+			creator.GetGDClass()->SetPreviewImage(creator.GetImage());
+			pSaveToFile(creator.GetImage(), pDirObjectClass, creator.GetGDClass()->GetName());
 			
 		}else{
-			creator.GetGDClass()->SetPreviewImage( pImageFailed );
+			creator.GetGDClass()->SetPreviewImage(pImageFailed);
 		}
-		
-		pCreatorsObjectClass.RemoveFrom( i );
-		i--;
-		count--;
-	}
+		return true;
+	});
 	
 	// update skins
-	count = pCreatorsSkin.GetCount();
-	
-	for( i=0; i<count; i++ ){
-		igdeGDPCSkin &creator = *( ( igdeGDPCSkin* )pCreatorsSkin.GetAt( i ) );
-		if( ! creator.FinishCreation() ){
-			continue;
+	pCreatorsSkin.RemoveIf([&](igdeGDPCSkin &creator){
+		if(!creator.FinishCreation()){
+			return false;
 		}
 		
-		if( creator.GetImage() ){
-			creator.GetGDSkin()->SetPreviewImage( creator.GetImage() );
-			pSaveToFile( creator.GetImage(), pDirSkin, creator.GetGDSkin()->GetName() );
+		if(creator.GetImage()){
+			creator.GetGDSkin()->SetPreviewImage(creator.GetImage());
+			pSaveToFile(creator.GetImage(), pDirSkin, creator.GetGDSkin()->GetName());
 			
 		}else{
-			creator.GetGDSkin()->SetPreviewImage( pImageFailed );
+			creator.GetGDSkin()->SetPreviewImage(pImageFailed);
 		}
-		
-		pCreatorsSkin.RemoveFrom( i );
-		i--;
-		count--;
-	}
+		return true;
+	});
 	
 	// update skies
-	count = pCreatorsSky.GetCount();
-	for( i=0; i<count; i++ ){
-		igdeGDPCSky &creator = *( ( igdeGDPCSky* )pCreatorsSky.GetAt( i ) );
-		if( ! creator.FinishCreation() ){
-			continue;
+	pCreatorsSky.RemoveIf([&](igdeGDPCSky &creator){
+		if(!creator.FinishCreation()){
+			return false;
 		}
 		
-		if( creator.GetImage() ){
-			creator.GetGDSky()->SetPreviewImage( creator.GetImage() );
-			pSaveToFile( creator.GetImage(), pDirSky, creator.GetGDSky()->GetName() );
+		if(creator.GetImage()){
+			creator.GetGDSky()->SetPreviewImage(creator.GetImage());
+			pSaveToFile(creator.GetImage(), pDirSky, creator.GetGDSky()->GetName());
 			
 		}else{
-			creator.GetGDSky()->SetPreviewImage( pImageFailed );
+			creator.GetGDSky()->SetPreviewImage(pImageFailed);
 		}
-		
-		pCreatorsSky.RemoveFrom( i );
-		i--;
-		count--;
-	}
+		return true;
+	});
 	
 	// check if still some creators are left
-	pHasCreators = pCreatorsObjectClass.GetCount() > 0
-		|| pCreatorsSkin.GetCount() > 0
-		|| pCreatorsSky.GetCount() > 0;
+	pHasCreators = pCreatorsObjectClass.IsNotEmpty()
+		|| pCreatorsSkin.IsNotEmpty()
+		|| pCreatorsSky.IsNotEmpty();
 }
 
 void igdeGDPreviewManager::AbortAllCreators(){
-	if( ! pHasCreators ){
+	if(!pHasCreators){
 		return;
 	}
 	
 	// update object classes
-	int count = pCreatorsObjectClass.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeGDPCObjectClass* )pCreatorsObjectClass.GetAt( i ) )->AbortCreation();
-	}
+	pCreatorsObjectClass.Visit([&](igdeGDPCObjectClass &c){
+		c.AbortCreation();
+	});
 	pCreatorsObjectClass.RemoveAll();
 	
 	// update skins
-	count = pCreatorsSkin.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( igdeGDPCSkin* )pCreatorsSkin.GetAt( i ) )->AbortCreation();
-	}
+	pCreatorsSkin.Visit([&](igdeGDPCSkin &c){
+		c.AbortCreation();
+	});
 	pCreatorsSkin.RemoveAll();
 	
 	// update skies
-	count = pCreatorsSky.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( igdeGDPCSky* )pCreatorsSky.GetAt( i ) )->AbortCreation();
-	}
+	pCreatorsSky.Visit([&](igdeGDPCSky &c){
+		c.AbortCreation();
+	});
 	pCreatorsSky.RemoveAll();
 	
 	pHasCreators = false;
@@ -226,155 +204,134 @@ void igdeGDPreviewManager::AbortAllCreators(){
 
 
 
-deImage *igdeGDPreviewManager::GetPreviewObjectClass( igdeGDClass *gdclass ) const{
-	if( ! gdclass ){
-		DETHROW( deeInvalidParam );
-	}
+deImage *igdeGDPreviewManager::GetPreviewObjectClass(igdeGDClass *gdclass) const{
+	DEASSERT_NOTNULL(gdclass)
 	
-	if( gdclass->GetPreviewImage() ){
+	if(gdclass->GetPreviewImage()){
 		return gdclass->GetPreviewImage();
 	}
 	
-	deImageReference image;
-	pLoadFromFile( image, pDirObjectClass, gdclass->GetName() );
-	gdclass->SetPreviewImage( image );
+	deImage::Ref image;
+	pLoadFromFile(image, pDirObjectClass, gdclass->GetName());
+	gdclass->SetPreviewImage(image);
 	return image;
 }
 
-void igdeGDPreviewManager::CreatePreviewObjectClass( igdeGDClass *gdclass, igdeGDPreviewListener *listener ){
-	if( ! gdclass || ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeGDPreviewManager::CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGDPreviewListener *listener){
+	DEASSERT_NOTNULL(gdclass)
+	DEASSERT_NOTNULL(listener)
+	
+	igdeGDPCObjectClass * const found = pCreatorsObjectClass.FindOrDefault([&](const igdeGDPCObjectClass &c){
+		return c.GetGDClass() == gdclass;
+	});
+	if(found){
+		found->AddListener(listener);
+		return;
 	}
 	
-	const int count = pCreatorsObjectClass.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		igdeGDPCObjectClass &creator = *( ( igdeGDPCObjectClass* )pCreatorsObjectClass.GetAt( i ) );
-		if( creator.GetGDClass() == gdclass ){
-			creator.AddListener( listener );
-			return;
-		}
-	}
-	
-	deObjectReference creator;
-	creator.TakeOver( new igdeGDPCObjectClass( pEnvironment, gdclass, decPoint( pImageSize, pImageSize ) ) );
-	( ( igdeGDPCObjectClass& )( deObject& )creator ).AddListener( listener );
-	( ( igdeGDPCObjectClass& )( deObject& )creator ).BeginCreation();
-	pCreatorsObjectClass.Add( creator );
+	const igdeGDPCObjectClass::Ref creator(igdeGDPCObjectClass::Ref::New(
+		pEnvironment, gdclass, decPoint(pImageSize, pImageSize)));
+	creator->AddListener(listener);
+	creator->BeginCreation();
+	pCreatorsObjectClass.Add(creator);
 	
 	pHasCreators = true;
 }
 
-void igdeGDPreviewManager::ClearPreviewObjectClass( igdeGDClass *gdclass ){
-	if( ! gdclass ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeGDPreviewManager::ClearPreviewObjectClass(igdeGDClass *gdclass){
+	DEASSERT_NOTNULL(gdclass)
 	
-	gdclass->SetPreviewImage( NULL );
+	gdclass->SetPreviewImage(nullptr);
 	
-	pDeleteFile( pDirObjectClass, gdclass->GetName() );
+	pDeleteFile(pDirObjectClass, gdclass->GetName());
 }
 
 
 
-deImage *igdeGDPreviewManager::GetPreviewSkin( igdeGDSkin *gdskin ) const{
-	if( ! gdskin ){
-		DETHROW( deeInvalidParam );
-	}
+deImage *igdeGDPreviewManager::GetPreviewSkin(igdeGDSkin *gdskin) const{
+	DEASSERT_NOTNULL(gdskin)
 	
-	if( gdskin->GetPreviewImage() ){
+	if(gdskin->GetPreviewImage()){
 		return gdskin->GetPreviewImage();
 	}
 	
-	deImageReference image;
-	pLoadFromFile( image, pDirSkin, gdskin->GetName() );
-	gdskin->SetPreviewImage( image );
+	deImage::Ref image;
+	pLoadFromFile(image, pDirSkin, gdskin->GetName());
+	gdskin->SetPreviewImage(image);
 	return image;
 }
 
-void igdeGDPreviewManager::CreatePreviewSkin( igdeGDSkin *gdskin, igdeGDPreviewListener *listener ){
-	if( ! gdskin || ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeGDPreviewManager::CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewListener *listener){
+	DEASSERT_NOTNULL(gdskin)
+	DEASSERT_NOTNULL(listener)
+	
+	igdeGDPCSkin * const found = pCreatorsSkin.FindOrDefault([&](const igdeGDPCSkin &c){
+		return c.GetGDSkin() == gdskin;
+	});
+	if(found){
+		found->AddListener(listener);
+		return;
 	}
 	
-	const int count = pCreatorsSkin.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		igdeGDPCSkin &creator = *( ( igdeGDPCSkin* )pCreatorsSkin.GetAt( i ) );
-		if( creator.GetGDSkin() == gdskin ){
-			creator.AddListener( listener );
-			return;
-		}
-	}
-	
-	deObjectReference creator;
-	creator.TakeOver( new igdeGDPCSkin( pEnvironment, gdskin, decPoint( pImageSize, pImageSize ) ) );
-	( ( igdeGDPCSkin& )( deObject& )creator ).AddListener( listener );
-	( ( igdeGDPCSkin& )( deObject& )creator ).BeginCreation();
-	pCreatorsSkin.Add( creator );
+	const igdeGDPCSkin::Ref creator(igdeGDPCSkin::Ref::New(
+		pEnvironment, gdskin, decPoint(pImageSize, pImageSize)));
+	creator->AddListener(listener);
+	creator->BeginCreation();
+	pCreatorsSkin.Add(creator);
 	
 	pHasCreators = true;
 }
 
-void igdeGDPreviewManager::ClearPreviewSkin( igdeGDSkin *gdskin ){
-	if( ! gdskin ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeGDPreviewManager::ClearPreviewSkin(igdeGDSkin *gdskin){
+	DEASSERT_NOTNULL(gdskin)
 	
-	gdskin->SetPreviewImage( NULL );
+	gdskin->SetPreviewImage(nullptr);
 	
-	pDeleteFile( pDirSkin, gdskin->GetName() );
+	pDeleteFile(pDirSkin, gdskin->GetName());
 }
 
 
 
-deImage *igdeGDPreviewManager::GetPreviewSky( igdeGDSky *gdsky ) const{
-	if( ! gdsky ){
-		DETHROW( deeInvalidParam );
-	}
+deImage *igdeGDPreviewManager::GetPreviewSky(igdeGDSky *gdsky) const{
+	DEASSERT_NOTNULL(gdsky)
 	
-	if( gdsky->GetPreviewImage() ){
+	if(gdsky->GetPreviewImage()){
 		return gdsky->GetPreviewImage();
 	}
 	
-	deImageReference image;
-	pLoadFromFile( image, pDirSky, gdsky->GetName() );
-	gdsky->SetPreviewImage( image );
+	deImage::Ref image;
+	pLoadFromFile(image, pDirSky, gdsky->GetName());
+	gdsky->SetPreviewImage(image);
 	return image;
 }
 
-void igdeGDPreviewManager::CreatePreviewSky( igdeGDSky *gdsky, igdeGDPreviewListener *listener ){
-	if( ! gdsky || ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeGDPreviewManager::CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListener *listener){
+	DEASSERT_NOTNULL(gdsky)
+	DEASSERT_NOTNULL(listener)
+	
+	igdeGDPCSky * const found = pCreatorsSky.FindOrDefault([&](const igdeGDPCSky &c){
+		return c.GetGDSky() == gdsky;
+	});
+	if(found){
+		found->AddListener(listener);
+		return;
 	}
 	
-	const int count = pCreatorsSky.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		igdeGDPCSky &creator = *( ( igdeGDPCSky* )pCreatorsSky.GetAt( i ) );
-		if( creator.GetGDSky() == gdsky ){
-			creator.AddListener( listener );
-			return;
-		}
-	}
-	
-	deObjectReference creator;
-	creator.TakeOver( new igdeGDPCSky( pEnvironment, gdsky, decPoint( pImageSize, pImageSize ) ) );
-	( ( igdeGDPCSky& )( deObject& )creator ).AddListener( listener );
-	( ( igdeGDPCSky& )( deObject& )creator ).BeginCreation();
-	pCreatorsSky.Add( creator );
+	const igdeGDPCSky::Ref creator(igdeGDPCSky::Ref::New(
+		pEnvironment, gdsky, decPoint(pImageSize, pImageSize)));
+	creator->AddListener(listener);
+	creator->BeginCreation();
+	pCreatorsSky.Add(creator);
 	
 	pHasCreators = true;
 }
 
-void igdeGDPreviewManager::ClearPreviewSky( igdeGDSky *gdsky ){
-	if( ! gdsky ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeGDPreviewManager::ClearPreviewSky(igdeGDSky *gdsky){
+	DEASSERT_NOTNULL(gdsky)
 	
-	gdsky->SetPreviewImage( NULL );
+	gdsky->SetPreviewImage(nullptr);
 	
-	pDeleteFile( pDirSky, gdsky->GetName() );
+	pDeleteFile(pDirSky, gdsky->GetName());
 }
 
 
@@ -382,67 +339,64 @@ void igdeGDPreviewManager::ClearPreviewSky( igdeGDSky *gdsky ){
 // Private Functions
 //////////////////////
 
-void igdeGDPreviewManager::pLoadFromFile( deImageReference &image, const decString &typedir, const decString &filename ) const{
-	image = NULL;
+void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &typedir, const decString &filename) const{
+	image = nullptr;
+	
+	decPath path;
+	path.SetFromUnix(pPathCache);
+	path.AddComponent(typedir);
+	path.AddComponent(filename + ".png");
 	
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
-	decPath path;
-	path.SetFromUnix( pPathCache );
-	path.AddComponent( typedir );
-	path.AddComponent( filename + ".png" );
-	
-	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	if( ! vfs->ExistsFile( path ) ){
+	if(!vfs->ExistsFile(path)){
 		return;
 	}
 	
 	try{
-		image.TakeOver( engine.GetImageManager()->LoadImage( vfs, path.GetPathUnix(), "/" ) );
-		if( image->GetBitCount() != 8 ){
-			image = NULL;
+		image = pEnvironment.GetEngineController()->GetEngine()->GetImageManager()->LoadImage(vfs, path.GetPathUnix(), "/");
+		if(image->GetBitCount() != 8){
+			image = nullptr;
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 	}
 }
 
-void igdeGDPreviewManager::pSaveToFile( deImage *image, const decString &typedir, const decString &filename ) const{
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeGDPreviewManager::pSaveToFile(deImage *image, const decString &typedir, const decString &filename) const{
+	DEASSERT_NOTNULL(image)
 	
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	decPath path;
-	path.SetFromUnix( pPathCache );
-	path.AddComponent( typedir );
-	path.AddComponent( filename + ".png" );
+	path.SetFromUnix(pPathCache);
+	path.AddComponent(typedir);
+	path.AddComponent(filename + ".png");
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	try{
-		engine.GetImageManager()->SaveImage( vfs, image, path.GetPathUnix() );
+		engine.GetImageManager()->SaveImage(vfs, image, path.GetPathUnix());
 		
-	}catch( const deException & ){
-		pEnvironment.GetLogger()->LogWarnFormat( LOGSOURCE,
-			"Can not save preview image to cache file '%s'", path.GetPathUnix().GetString() );
+	}catch(const deException &){
+		pEnvironment.GetLogger()->LogWarnFormat(LOGSOURCE,
+			"Can not save preview image to cache file '%s'", path.GetPathUnix().GetString());
 	}
 }
 
-void igdeGDPreviewManager::pDeleteFile( const decString &typedir, const decString &filename ) const{
-	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
+void igdeGDPreviewManager::pDeleteFile(const decString &typedir, const decString &filename) const{
 	decPath path;
-	path.SetFromUnix( pPathCache );
-	path.AddComponent( typedir );
-	path.AddComponent( filename + ".png" );
+	path.SetFromUnix(pPathCache);
+	path.AddComponent(typedir);
+	path.AddComponent(filename + ".png");
 	
-	if( ! vfs->ExistsFile( path ) ){
+	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
+	if(!vfs->ExistsFile(path)){
 		return;
 	}
 	
 	try{
-		vfs->DeleteFile( path );
+		vfs->DeleteFile(path);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 	}
 }

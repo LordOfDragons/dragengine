@@ -39,8 +39,8 @@
 #include "property/fbxPropertyString.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/math/decMath.h>
@@ -56,26 +56,26 @@
 ////////////////////////////
 
 fbxNode::fbxNode() :
-pNodeProperties70( NULL ),
-pID( 0 ),
-pDirtyTransformation( true ){
+pNodeProperties70(nullptr),
+pID(0),
+pDirtyTransformation(true){
 }
 
-fbxNode::fbxNode( fbxScene &scene, decBaseFileReader &reader ) :
-pNodeProperties70( NULL ),
-pID( 0 ),
-pDirtyTransformation( true )
+fbxNode::fbxNode(fbxScene &scene, decBaseFileReader &reader) :
+pNodeProperties70(nullptr),
+pID(0),
+pDirtyTransformation(true)
 {
-	pRead( scene, reader, reader.ReadUInt() );
+	pRead(scene, reader, reader.ReadUInt());
 	pInitID();
 }
 
-fbxNode::fbxNode( fbxScene &scene, decBaseFileReader &reader, int endOffset ) :
-pNodeProperties70( NULL ),
-pID( 0 ),
-pDirtyTransformation( true )
+fbxNode::fbxNode(fbxScene &scene, decBaseFileReader &reader, int endOffset) :
+pNodeProperties70(nullptr),
+pID(0),
+pDirtyTransformation(true)
 {
-	pRead( scene, reader, endOffset );
+	pRead(scene, reader, endOffset);
 	pInitID();
 }
 
@@ -87,26 +87,16 @@ fbxNode::~fbxNode(){
 // Loading and Saving
 ///////////////////////
 
-void fbxNode::SetName( const char *name ){
+void fbxNode::SetName(const char *name){
 	pName = name;
 }
 
 
 
-int fbxNode::GetPropertyCount() const{
-	return pProperties.GetCount();
-}
-
-fbxProperty *fbxNode::GetPropertyAt( int index ) const{
-	return ( fbxProperty* )pProperties.GetAt( index );
-}
-
-
-
-bool fbxNode::GetPropertyBoolIf( const char *name, bool &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value = node->GetPropertyAt( 4 )->GetValueAsBool();
+bool fbxNode::GetPropertyBoolIf(const char *name, bool &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value = node->pProperties.GetAt(4)->GetValueAsBool();
 		return true;
 		
 	}else{
@@ -114,10 +104,10 @@ bool fbxNode::GetPropertyBoolIf( const char *name, bool &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyIntIf( const char *name, int &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value = node->GetPropertyAt( 4 )->GetValueAsInt();
+bool fbxNode::GetPropertyIntIf(const char *name, int &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value = node->pProperties.GetAt(4)->GetValueAsInt();
 		return true;
 		
 	}else{
@@ -125,10 +115,10 @@ bool fbxNode::GetPropertyIntIf( const char *name, int &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyLongIf( const char *name, int64_t &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value = node->GetPropertyAt( 4 )->GetValueAsLong();
+bool fbxNode::GetPropertyLongIf(const char *name, int64_t &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value = node->pProperties.GetAt(4)->GetValueAsLong();
 		return true;
 		
 	}else{
@@ -136,10 +126,10 @@ bool fbxNode::GetPropertyLongIf( const char *name, int64_t &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyFloatIf( const char *name, float &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value = node->GetPropertyAt( 4 )->GetValueAsFloat();
+bool fbxNode::GetPropertyFloatIf(const char *name, float &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value = node->pProperties.GetAt(4)->GetValueAsFloat();
 		return true;
 		
 	}else{
@@ -147,10 +137,10 @@ bool fbxNode::GetPropertyFloatIf( const char *name, float &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyDoubleIf( const char *name, double &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value = node->GetPropertyAt( 4 )->GetValueAsDouble();
+bool fbxNode::GetPropertyDoubleIf(const char *name, double &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value = node->pProperties.GetAt(4)->GetValueAsDouble();
 		return true;
 		
 	}else{
@@ -158,10 +148,10 @@ bool fbxNode::GetPropertyDoubleIf( const char *name, double &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyStringIf( const char *name, decString &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value = node->GetPropertyAt( 4 )->CastString().GetValue();
+bool fbxNode::GetPropertyStringIf(const char *name, decString &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value = node->pProperties.GetAt(4)->CastString().GetValue();
 		return true;
 		
 	}else{
@@ -169,12 +159,12 @@ bool fbxNode::GetPropertyStringIf( const char *name, decString &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyVectorIf( const char *name, decVector &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value.x = node->GetPropertyAt( 4 )->GetValueAsFloat();
-		value.y = node->GetPropertyAt( 5 )->GetValueAsFloat();
-		value.z = node->GetPropertyAt( 6 )->GetValueAsFloat();
+bool fbxNode::GetPropertyVectorIf(const char *name, decVector &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value.x = node->pProperties.GetAt(4)->GetValueAsFloat();
+		value.y = node->pProperties.GetAt(5)->GetValueAsFloat();
+		value.z = node->pProperties.GetAt(6)->GetValueAsFloat();
 		return true;
 		
 	}else{
@@ -182,12 +172,12 @@ bool fbxNode::GetPropertyVectorIf( const char *name, decVector &value ) const{
 	}
 }
 
-bool fbxNode::GetPropertyColorIf( const char *name, decColor &value ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( node ){
-		value.r = node->GetPropertyAt( 4 )->GetValueAsFloat();
-		value.g = node->GetPropertyAt( 5 )->GetValueAsFloat();
-		value.b = node->GetPropertyAt( 6 )->GetValueAsFloat();
+bool fbxNode::GetPropertyColorIf(const char *name, decColor &value) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(node){
+		value.r = node->pProperties.GetAt(4)->GetValueAsFloat();
+		value.g = node->pProperties.GetAt(5)->GetValueAsFloat();
+		value.b = node->pProperties.GetAt(6)->GetValueAsFloat();
 		return true;
 		
 	}else{
@@ -197,118 +187,118 @@ bool fbxNode::GetPropertyColorIf( const char *name, decColor &value ) const{
 
 
 
-bool fbxNode::GetPropertyBool( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+bool fbxNode::GetPropertyBool(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt( 4 )->GetValueAsBool();
+	return node->pProperties.GetAt(4)->GetValueAsBool();
 }
 
-int fbxNode::GetPropertyInt( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+int fbxNode::GetPropertyInt(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt( 4 )->GetValueAsInt();
+	return node->pProperties.GetAt(4)->GetValueAsInt();
 }
 
-int64_t fbxNode::GetPropertyLong( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+int64_t fbxNode::GetPropertyLong(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt( 4 )->GetValueAsLong();
+	return node->pProperties.GetAt(4)->GetValueAsLong();
 }
 
-float fbxNode::GetPropertyFloat( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+float fbxNode::GetPropertyFloat(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt( 4 )->GetValueAsFloat();
+	return node->pProperties.GetAt(4)->GetValueAsFloat();
 }
 
-double fbxNode::GetPropertyDouble( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+double fbxNode::GetPropertyDouble(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt( 4 )->GetValueAsDouble();
+	return node->pProperties.GetAt(4)->GetValueAsDouble();
 }
 
-const decString &fbxNode::GetPropertyString( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+const decString &fbxNode::GetPropertyString(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt( 4 )->CastString().GetValue();
+	return node->pProperties.GetAt(4)->CastString().GetValue();
 }
 
-decVector fbxNode::GetPropertyVector( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+decVector fbxNode::GetPropertyVector(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return decVector( node->GetPropertyAt( 4 )->GetValueAsFloat(),
-		node->GetPropertyAt( 5 )->GetValueAsFloat(),
-		node->GetPropertyAt( 6 )->GetValueAsFloat() );
+	return decVector(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat());
 }
 
-decColor fbxNode::GetPropertyColor( const char *name ) const{
-	const fbxNode * const node = pProp70Named( name );
-	if( ! node ){
-		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+decColor fbxNode::GetPropertyColor(const char *name) const{
+	const fbxNode * const node = pProp70Named(name);
+	if(!node){
+		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return decColor( node->GetPropertyAt( 4 )->GetValueAsFloat(),
-		node->GetPropertyAt( 5 )->GetValueAsFloat(),
-		node->GetPropertyAt( 6 )->GetValueAsFloat() );
+	return decColor(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat());
 }
 
 
 
-bool fbxNode::GetPropertyBool( const char *name, bool defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? node->GetPropertyAt( 4 )->GetValueAsBool() : defaultValue;
+bool fbxNode::GetPropertyBool(const char *name, bool defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? node->pProperties.GetAt(4)->GetValueAsBool() : defaultValue;
 }
 
-int fbxNode::GetPropertyInt( const char *name, int defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? node->GetPropertyAt( 4 )->GetValueAsInt() : defaultValue;
+int fbxNode::GetPropertyInt(const char *name, int defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? node->pProperties.GetAt(4)->GetValueAsInt() : defaultValue;
 }
 
-int64_t fbxNode::GetPropertyLong( const char *name, int64_t defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? node->GetPropertyAt( 4 )->GetValueAsLong() : defaultValue;
+int64_t fbxNode::GetPropertyLong(const char *name, int64_t defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? node->pProperties.GetAt(4)->GetValueAsLong() : defaultValue;
 }
 
-float fbxNode::GetPropertyFloat( const char *name, float defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? node->GetPropertyAt( 4 )->GetValueAsFloat() : defaultValue;
+float fbxNode::GetPropertyFloat(const char *name, float defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? node->pProperties.GetAt(4)->GetValueAsFloat() : defaultValue;
 }
 
-double fbxNode::GetPropertyDouble( const char *name, double defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? node->GetPropertyAt( 4 )->GetValueAsDouble() : defaultValue;
+double fbxNode::GetPropertyDouble(const char *name, double defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? node->pProperties.GetAt(4)->GetValueAsDouble() : defaultValue;
 }
 
-const decString &fbxNode::GetPropertyString( const char *name, const decString &defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? node->GetPropertyAt( 4 )->CastString().GetValue() : defaultValue;
+const decString &fbxNode::GetPropertyString(const char *name, const decString &defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? node->pProperties.GetAt(4)->CastString().GetValue() : defaultValue;
 }
 
-decVector fbxNode::GetPropertyVector( const char *name, const decVector &defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? decVector( node->GetPropertyAt( 4 )->GetValueAsFloat(),
-		node->GetPropertyAt( 5 )->GetValueAsFloat(),
-		node->GetPropertyAt( 6 )->GetValueAsFloat() ) : defaultValue;
+decVector fbxNode::GetPropertyVector(const char *name, const decVector &defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? decVector(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat()) : defaultValue;
 }
 
-decColor fbxNode::GetPropertyColor( const char *name, const decColor &defaultValue ) const{
-	const fbxNode * const node = pProp70Named( name );
-	return node ? decColor( node->GetPropertyAt( 4 )->GetValueAsFloat(),
-		node->GetPropertyAt( 5 )->GetValueAsFloat(),
-		node->GetPropertyAt( 6 )->GetValueAsFloat() ) : defaultValue;
+decColor fbxNode::GetPropertyColor(const char *name, const decColor &defaultValue) const{
+	const fbxNode * const node = pProp70Named(name);
+	return node ? decColor(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat()) : defaultValue;
 }
 
 
@@ -340,90 +330,82 @@ const decMatrix &fbxNode::GetInverseTransformation(){
 
 
 
-void fbxNode::SetID( int64_t id ){
+void fbxNode::SetID(int64_t id){
 	pID = id;
 }
 
 
 
-int fbxNode::GetNodeCount() const{
-	return pNodes.GetCount();
+void fbxNode::AddNode(fbxNode *node){
+	pNodes.Add(node);
 }
 
-fbxNode *fbxNode::GetNodeAt( int index ) const{
-	return ( fbxNode* )pNodes.GetAt( index );
-}
-
-void fbxNode::AddNode( fbxNode *node ){
-	pNodes.Add( node );
-}
-
-fbxNode *fbxNode::FirstNodeNamed( const char *name ) const{
-	fbxNode * const node = FirstNodeNamedOrNull( name );
-	if( node ){
+fbxNode *fbxNode::FirstNodeNamed(const char *name) const{
+	fbxNode * const node = FirstNodeNamedOrNull(name);
+	if(node){
 		return node;
 	}
 	
 	decString message;
-	message.Format( "missing node '%s'", name );
-	DETHROW_INFO( deeInvalidParam, message );
+	message.Format("missing node '%s'", name);
+	DETHROW_INFO(deeInvalidParam, message);
 }
 
-fbxNode *fbxNode::FirstNodeNamedOrNull( const char* name ) const{
+fbxNode *fbxNode::FirstNodeNamedOrNull(const char* name) const{
 	const int count = pNodes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		fbxNode * const node = ( fbxNode* )pNodes.GetAt( i );
-		if( node->GetName() == name ){
+	for(i=0; i<count; i++){
+		fbxNode * const node = pNodes.GetAt(i);
+		if(node->GetName() == name){
 			return node;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
-void fbxNode::FindNodesNamed( decPointerList &list, const char *name ) const{
+void fbxNode::FindNodesNamed(decTList<fbxNode*> &list, const char *name) const{
 	const int count = pNodes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		fbxNode * const node = ( fbxNode* )pNodes.GetAt( i );
-		if( node->GetName() == name ){
-			list.Add( node );
+	for(i=0; i<count; i++){
+		fbxNode * const node = pNodes.GetAt(i);
+		if(node->GetName() == name){
+			list.Add(node);
 		}
 	}
 }
 
-void fbxNode::GetNodeNames( decStringSet &list ) const{
+void fbxNode::GetNodeNames(decStringSet &list) const{
 	const int count = pNodes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list.Add( ( ( fbxNode* )pNodes.GetAt( i ) )->GetName() );
+	for(i=0; i<count; i++){
+		list.Add(pNodes.GetAt(i)->GetName());
 	}
 }
 
 
 
-void fbxNode::Prepare( deBaseModule &module ){
+void fbxNode::Prepare(deBaseModule &module){
 	const int nodeCount = pNodes.GetCount();
 	int i;
 	
-	for( i=0; i<nodeCount; i++ ){
-		GetNodeAt( i )->Prepare( module );
+	for(i=0; i<nodeCount; i++){
+		pNodes.GetAt(i)->Prepare(module);
 	}
 	
-	pNodeProperties70 = FirstNodeNamedOrNull( "Properties70" );
-	if( pNodeProperties70 ){
-		const int count = pNodeProperties70->GetNodeCount();
-		for( i=0; i<count; i++ ){
-			const fbxNode &node = *pNodeProperties70->GetNodeAt( i );
-			if( node.GetName() != "P" ){
-				DETHROW_INFO( deeInvalidFileFormat, "properties70: entry is not named 'P'" );
+	pNodeProperties70 = FirstNodeNamedOrNull("Properties70");
+	if(pNodeProperties70){
+		const int count = pNodeProperties70->GetNodes().GetCount();
+		for(i=0; i<count; i++){
+			const fbxNode &node = *pNodeProperties70->pNodes.GetAt(i);
+			if(node.GetName() != "P"){
+				DETHROW_INFO(deeInvalidFileFormat, "properties70: entry is not named 'P'");
 			}
-			if( node.GetPropertyCount() < 4 /*5*/ ){
-				DETHROW_INFO( deeInvalidFileFormat, "properties70: entry has less than 4 properties" );
+			if(node.GetProperties().GetCount() < 4 /*5*/){
+				DETHROW_INFO(deeInvalidFileFormat, "properties70: entry has less than 4 properties");
 			}
 		}
 	}
@@ -431,36 +413,36 @@ void fbxNode::Prepare( deBaseModule &module ){
 
 
 
-void fbxNode::Save(decBaseFileWriter &writer ){
+void fbxNode::Save(decBaseFileWriter &writer){
 }
 
-void fbxNode::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose ) const{
+void fbxNode::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
 	const int propertyCount = pProperties.GetCount();
-	const decString childPrefix( prefix + "  " );
+	const decString childPrefix(prefix + "  ");
 	const int nodeCount = pNodes.GetCount();
 	int i;
 	
-	if( verbose ){
-		module.LogInfoFormat( "%sNode (%s):", prefix.GetString(), pName.GetString() );
+	if(verbose){
+		module.LogInfoFormat("%sNode (%s):", prefix.GetString(), pName.GetString());
 		
-		for( i=0; i<propertyCount; i++ ){
-			GetPropertyAt( i )->DebugPrintStructure( module, childPrefix );
+		for(i=0; i<propertyCount; i++){
+			pProperties.GetAt(i)->DebugPrintStructure(module, childPrefix);
 		}
 		
-		for( i=0; i<nodeCount; i++ ){
-			GetNodeAt( i )->DebugPrintStructure( module, childPrefix, true );
+		for(i=0; i<nodeCount; i++){
+			pNodes.GetAt(i)->DebugPrintStructure(module, childPrefix, true);
 		}
 		
 	}else{
 		decStringList properties;
-		for( i=0; i<propertyCount; i++ ){
-			properties.Add( GetPropertyAt( i )->DebugTypeName() );
+		for(i=0; i<propertyCount; i++){
+			properties.Add(pProperties.GetAt(i)->DebugTypeName());
 		}
-		module.LogInfoFormat( "%sNode (%s): %s", prefix.GetString(),
-			pName.GetString(), properties.Join( ", " ).GetString() );
+		module.LogInfoFormat("%sNode (%s): %s", prefix.GetString(),
+			pName.GetString(), DEJoin(properties, ", ").GetString());
 		
-		for( i=0; i<nodeCount; i++ ){
-			GetNodeAt( i )->DebugPrintStructure( module, childPrefix, false );
+		for(i=0; i<nodeCount; i++){
+			pNodes.GetAt(i)->DebugPrintStructure(module, childPrefix, false);
 		}
 	}
 }
@@ -470,22 +452,22 @@ void fbxNode::DebugPrintStructure( deBaseModule &module, const decString &prefix
 // Private Functions
 //////////////////////
 
-void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset ){
+void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 	int countProperties;
 	
-	if( scene.GetVersion() < 7500 ){
+	if(scene.GetVersion() < 7500){
 		countProperties = reader.ReadUInt();
 		
 	}else{
-		countProperties = ( int )reader.ReadULong();
+		countProperties = (int)reader.ReadULong();
 	}
 	
 	int propertyListByteCount;
-	if( scene.GetVersion() < 7500 ){
+	if(scene.GetVersion() < 7500){
 		propertyListByteCount = reader.ReadUInt();
 		
 	}else{
-		propertyListByteCount = ( int )reader.ReadULong();
+		propertyListByteCount = (int)reader.ReadULong();
 	}
 	
 	pName = reader.ReadString8();
@@ -493,15 +475,13 @@ void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset )
 	const int endOfPropertyList = reader.GetPosition() + propertyListByteCount;
 	
 	int i;
-	deObjectReference property;
-	for( i=0; i<countProperties; i++ ){
-		property.TakeOver( fbxProperty::Read( reader ) );
-		pProperties.Add( property );
+	for(i=0; i<countProperties; i++){
+		pProperties.Add(fbxProperty::Read(reader));
 	}
 	
 	const int position = reader.GetPosition();
-	if( position != endOfPropertyList ){
-		DETHROW_INFO( deeInvalidFileFormat, "reader.position > endOfPropertyList" );
+	if(position != endOfPropertyList){
+		DETHROW_INFO(deeInvalidFileFormat, "reader.position > endOfPropertyList");
 	}
 	
 	// the presence of this list depends on the fact that there are surplus bytes in the
@@ -510,69 +490,67 @@ void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset )
 	// property list byte count and name length all being 0 (or said differently the next
 	// 13 bytes are all 0). we do this by reading the end offset and if this is 0 we
 	// consider this to be the end of node list marker
-	if( position > endOffset ){
-		DETHROW_INFO( deeInvalidFileFormat, "reader.position > endOffset" );
+	if(position > endOffset){
+		DETHROW_INFO(deeInvalidFileFormat, "reader.position > endOffset");
 	}
-	if( position == endOffset ){
+	if(position == endOffset){
 		return; // no node list
 	}
 	
 	const int markerOffset = scene.GetVersion() < 7500 ? 9 : 17;
 	
-	deObjectReference node;
-	while( true ){
+	while(true){
 		int checkEndOffset;
 		
-		if( scene.GetVersion() < 7500 ){
+		if(scene.GetVersion() < 7500){
 			checkEndOffset = reader.ReadUInt();
 			
 		}else{
-			checkEndOffset = ( int )reader.ReadULong();
+			checkEndOffset = (int)reader.ReadULong();
 		}
 		
-		if( checkEndOffset == 0 ){
+		if(checkEndOffset == 0){
 			// end of list marker
-			if( reader.GetPosition() + markerOffset != endOffset ){
-				DETHROW_INFO( deeInvalidFileFormat, "reader.position + markerOffset > endOffset" );
+			if(reader.GetPosition() + markerOffset != endOffset){
+				DETHROW_INFO(deeInvalidFileFormat, "reader.position + markerOffset > endOffset");
 			}
 			
-			reader.SetPosition( endOffset );
+			reader.SetPosition(endOffset);
 			break;
 		}
 		
-		node.TakeOver( new fbxNode( scene, reader, checkEndOffset ) );
-		pNodes.Add( node );
+		pNodes.Add(fbxNode::Ref::New(scene, reader, checkEndOffset));
 	}
 }
 
 
-fbxNode *fbxNode::pProp70Named( const char* name ) const{
-	if( ! pNodeProperties70 ){
-		return NULL;
+fbxNode *fbxNode::pProp70Named(const char* name) const{
+	if(!pNodeProperties70){
+		return nullptr;
 	}
 	
-	const int count = pNodeProperties70->GetNodeCount();
+	const int count = pNodeProperties70->GetNodes().GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		fbxNode * const node = pNodeProperties70->GetNodeAt( i );
-		if( node->GetPropertyAt( 0 )->CastString().GetValue() == name ){
+	for(i=0; i<count; i++){
+		fbxNode * const node = pNodeProperties70->pNodes.GetAt(i);
+		if(node->pProperties.GetAt(0)->CastString().GetValue() == name){
 			return node;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void fbxNode::pInitID(){
 	pID = 0;
 	
-	if( pProperties.GetCount() == 0 ){
+	if(pProperties.GetCount() == 0){
 		return;
 	}
 	
-	const fbxProperty &property = *( ( fbxProperty* )pProperties.GetAt( 0 ) );
-	if( property.GetType() != fbxProperty::etLong ){
+	const fbxProperty &property = pProperties.First();
+	if(property.GetType() != fbxProperty::etLong){
 		return;
 	}
 	
@@ -580,7 +558,7 @@ void fbxNode::pInitID(){
 }
 
 void fbxNode::pPrepareTransformation(){
-	if( ! pDirtyTransformation ){
+	if(!pDirtyTransformation){
 		return;
 	}
 	
@@ -606,64 +584,64 @@ void fbxNode::pPrepareTransformation(){
 	
 	// RotationOrder, enum, 0 (XYZ?)
 	const fbxScene::eRotationOrder rotationOrder =
-		fbxScene::ConvRotationOrder( GetPropertyInt( "RotationOrder", 0 ) );
+		fbxScene::ConvRotationOrder(GetPropertyInt("RotationOrder", 0));
 	
 	const decVector zeroVector;
-	const decVector oneVector( 1.0f, 1.0f, 1.0f );
+	const decVector oneVector(1.0f, 1.0f, 1.0f);
 	
-	const decVector rotationOffset( GetPropertyVector( "RotationOffset", zeroVector ) );
-	const decVector rotationPivot( GetPropertyVector( "RotationPivot", zeroVector ) );
-	const decVector scalingOffset( GetPropertyVector( "ScalingOffset", zeroVector ) );
-	const decVector scalingPivot( GetPropertyVector( "ScalingPivot", zeroVector ) );
-	const decVector preRotation( GetPropertyVector( "PreRotation", zeroVector ) * DEG2RAD );
-	const decVector postRotation( GetPropertyVector( "PostRotation", zeroVector ) * DEG2RAD );
-	pLocalTranslation = GetPropertyVector( "Lcl Translation", zeroVector );
-	pLocalRotation = GetPropertyVector( "Lcl Rotation", zeroVector );
-	pLocalScaling = GetPropertyVector( "Lcl Scaling", oneVector );
+	const decVector rotationOffset(GetPropertyVector("RotationOffset", zeroVector));
+	const decVector rotationPivot(GetPropertyVector("RotationPivot", zeroVector));
+	const decVector scalingOffset(GetPropertyVector("ScalingOffset", zeroVector));
+	const decVector scalingPivot(GetPropertyVector("ScalingPivot", zeroVector));
+	const decVector preRotation(GetPropertyVector("PreRotation", zeroVector) * DEG2RAD);
+	const decVector postRotation(GetPropertyVector("PostRotation", zeroVector) * DEG2RAD);
+	pLocalTranslation = GetPropertyVector("Lcl Translation", zeroVector);
+	pLocalRotation = GetPropertyVector("Lcl Rotation", zeroVector);
+	pLocalScaling = GetPropertyVector("Lcl Scaling", oneVector);
 	
-	if( ! scalingPivot.IsZero() ){ // Inverse of the scaling pivot
+	if(!scalingPivot.IsZero()){ // Inverse of the scaling pivot
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( -scalingPivot ) );
+			decMatrix::CreateTranslation(-scalingPivot));
 	}
-	if( ! pLocalScaling.IsEqualTo( oneVector ) ){ // Scaling
+	if(!pLocalScaling.IsEqualTo(oneVector)){ // Scaling
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateScale( pLocalScaling ) );
+			decMatrix::CreateScale(pLocalScaling));
 	}
-	if( ! scalingPivot.IsZero() ){ // Scaling pivot
+	if(!scalingPivot.IsZero()){ // Scaling pivot
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( scalingPivot ) );
+			decMatrix::CreateTranslation(scalingPivot));
 	}
-	if( ! scalingOffset.IsZero() ){ // Scaling offset
+	if(!scalingOffset.IsZero()){ // Scaling offset
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( scalingOffset ) );
+			decMatrix::CreateTranslation(scalingOffset));
 	}
-	if( ! rotationPivot.IsZero() ){ // Inverse of the rotation pivot
+	if(!rotationPivot.IsZero()){ // Inverse of the rotation pivot
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( -rotationPivot ) );
+			decMatrix::CreateTranslation(-rotationPivot));
 	}
-	if( ! postRotation.IsZero() ){ // Inverse of the post-rotation
+	if(!postRotation.IsZero()){ // Inverse of the post-rotation
 		pTransformation = pTransformation.QuickMultiply(
-			fbxScene::CreateRotationMatrix( postRotation, rotationOrder ).QuickInvert() );
+			fbxScene::CreateRotationMatrix(postRotation, rotationOrder).QuickInvert());
 	}
-	if( ! pLocalRotation.IsZero() ){ // Rotation
+	if(!pLocalRotation.IsZero()){ // Rotation
 		pTransformation = pTransformation.QuickMultiply(
-			fbxScene::CreateRotationMatrix( pLocalRotation * DEG2RAD, rotationOrder ) );
+			fbxScene::CreateRotationMatrix(pLocalRotation * DEG2RAD, rotationOrder));
 	}
-	if( ! preRotation.IsZero() ){ // Pre-rotation
+	if(!preRotation.IsZero()){ // Pre-rotation
 		pTransformation = pTransformation.QuickMultiply(
-			fbxScene::CreateRotationMatrix( preRotation, rotationOrder ) );
+			fbxScene::CreateRotationMatrix(preRotation, rotationOrder));
 	}
-	if( ! rotationPivot.IsZero() ){ // Rotation pivot
+	if(!rotationPivot.IsZero()){ // Rotation pivot
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( rotationPivot ) );
+			decMatrix::CreateTranslation(rotationPivot));
 	}
-	if( ! rotationOffset.IsZero() ){ // Rotation offset
+	if(!rotationOffset.IsZero()){ // Rotation offset
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( rotationOffset ) );
+			decMatrix::CreateTranslation(rotationOffset));
 	}
-	if( ! pLocalTranslation.IsZero() ){ // Translation
+	if(!pLocalTranslation.IsZero()){ // Translation
 		pTransformation = pTransformation.QuickMultiply(
-			decMatrix::CreateTranslation( pLocalTranslation ) );
+			decMatrix::CreateTranslation(pLocalTranslation));
 	}
 	
 	pInverseTransformation = pTransformation.QuickInvert();

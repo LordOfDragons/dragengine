@@ -34,15 +34,18 @@
  */
 class peeUParameterSetCurveProgress : public peeUParameterSetCurve{
 public:
+	using Ref = deTObjectReference<peeUParameterSetCurveProgress>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	peeUParameterSetCurveProgress( peeType *type, peeParameter *parameter,
-		const decCurveBezier &newCurve );
+	peeUParameterSetCurveProgress(peeType *type, peeParameter *parameter,
+		const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~peeUParameterSetCurveProgress();
+	~peeUParameterSetCurveProgress() override;
 	/*@}*/
 	
 	
@@ -51,10 +54,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

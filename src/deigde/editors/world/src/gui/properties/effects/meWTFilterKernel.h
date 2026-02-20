@@ -24,12 +24,11 @@
 
 #if 0
 
-// include only once
 #ifndef _MEWTFILTERKERNEL_H_
 #define _MEWTFILTERKERNEL_H_
 
-// includes
-
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -38,8 +37,8 @@
  */
 class meWTFilterKernel{
 private:
-	char *pName;
-	float *pKernel;
+	decString pName;
+	decTList<float> pKernel;
 	int pKernelRows;
 	int pKernelCols;
 	float pScale;
@@ -48,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new effect filter kernel template object. */
-	meWTFilterKernel( const char *name, int rows, int cols, float scale );
+	meWTFilterKernel(const char *name, int rows, int cols, float scale);
 	/** Cleans up the world. */
 	~meWTFilterKernel();
 	/*@}*/
@@ -56,21 +55,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the template. */
-	inline const char *GetName() const{ return ( const char * )pName; }
+	inline const decString &GetName() const{ return (const char *)pName; }
 	/** Retrieves the rows of the filter kernel. */
 	inline int GetKernelRows() const{ return pKernelRows; }
 	/** Retrieves the cols of the filter kernel. */
 	inline int GetKernelCols() const{ return pKernelCols; }
 	/** Retrieves kernel value at the given location. */
-	float GetKernelValueAt( int row, int col ) const;
+	float GetKernelValueAt(int row, int col) const;
 	/** Sets the kernel value at the given location. */
-	void SetKernelValueAt( int row, int col, float value );
+	void SetKernelValueAt(int row, int col, float value);
 	
 	/** \brief Kernel scale. */
 	inline float GetScale() const{ return pScale; }
 	
 	/** \brief Set kernel scale. */
-	void SetScale( float scale );
+	void SetScale(float scale);
 	/*@}*/
 };
 

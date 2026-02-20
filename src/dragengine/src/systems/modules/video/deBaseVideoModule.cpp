@@ -29,8 +29,8 @@
 // Class deBaseVideoModule
 ////////////////////////////
 
-deBaseVideoModule::deBaseVideoModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseVideoModule::deBaseVideoModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseVideoModule::~deBaseVideoModule(){

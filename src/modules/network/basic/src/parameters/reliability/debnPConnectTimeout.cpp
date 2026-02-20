@@ -35,14 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnPConnectTimeout::debnPConnectTimeout( deNetworkBasic &network ) :
-debnParameterFloat( network )
+debnPConnectTimeout::debnPConnectTimeout(deNetworkBasic &network) :
+debnParameterFloat(network)
 {
-	SetName( "connectTimeout" );
-	SetDescription( "Timeout in seconds for connection requests." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Connect Timeout" );
-	SetDefaultValue( "5" );
+	SetName("connectTimeout");
+	SetDescription("Timeout in seconds for connection requests.");
+	SetCategory(ecExpert);
+	SetDisplayName("Connect Timeout");
+	SetDefaultValue("5");
 }
 
 
@@ -53,6 +53,6 @@ float debnPConnectTimeout::GetParameterFloat(){
 	return pNetwork.GetConfiguration().GetConnectTimeout();
 }
 
-void debnPConnectTimeout::SetParameterFloat( float value ){
-	pNetwork.GetConfiguration().SetConnectTimeout( value );
+void debnPConnectTimeout::SetParameterFloat(float value){
+	pNetwork.GetConfiguration().SetConnectTimeout(value);
 }

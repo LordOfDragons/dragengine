@@ -43,59 +43,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseRemove::ceUCAIfElseRemove( ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, ceConversationAction *action ){
-	if( ! topic || ! ifElse || ! action ){
-		DETHROW( deeInvalidParam );
+ceUCAIfElseRemove::ceUCAIfElseRemove(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationAction *action){
+	if(!topic || !ifElse || !action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pAction = NULL;
-	pCase = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pAction = nullptr;
+	pCase = nullptr;
 	pIndex = -1;
 	
-	if( ifcase ){
-		pIndex = ifcase->GetActions().IndexOf( action );
+	if(ifcase){
+		pIndex = ifcase->GetActions().IndexOf(action);
 		
 	}else{
-		pIndex = ifElse->GetElseActions().IndexOf( action );
+		pIndex = ifElse->GetElseActions().IndexOf(action);
 	}
 	
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "IfElse Remove Action" );
+	SetShortInfo("@Conversation.Undo.IfElseRemoveAction");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
-	if( ifcase ){
+	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAIfElseRemove::~ceUCAIfElseRemove(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pCase ){
-		pCase->FreeReference();
-	}
-	if( pIfElse ){
-		pIfElse->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -104,30 +86,30 @@ ceUCAIfElseRemove::~ceUCAIfElseRemove(){
 ///////////////
 
 void ceUCAIfElseRemove::Undo(){
-	if( pCase ){
-		pCase->GetActions().InsertAt( pAction, pIndex );
+	if(pCase){
+		pCase->GetActions().InsertOrThrow(pAction, pIndex);
 		
 	}else{
-		pIfElse->GetElseActions().InsertAt( pAction, pIndex );
+		pIfElse->GetElseActions().InsertOrThrow(pAction, pIndex);
 	}
 	
-	pTopic->NotifyActionStructureChanged( pIfElse );
-	pTopic->SetActive( pAction, NULL );
+	pTopic->NotifyActionStructureChanged(pIfElse);
+	pTopic->SetActive(pAction, nullptr);
 }
 
 void ceUCAIfElseRemove::Redo(){
-	ceConversationAction *activateAction = NULL;
+	ceConversationAction *activateAction = nullptr;
 	
-	if( pCase ){
-		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pCase->GetActions(), pAction );
-		pCase->GetActions().Remove( pAction );
+	if(pCase){
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove(pCase->GetActions(), pAction);
+		pCase->GetActions().Remove(pAction);
 		
 	}else{
-		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pIfElse->GetElseActions(), pAction );
-		pIfElse->GetElseActions().Remove( pAction );
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove(pIfElse->GetElseActions(), pAction);
+		pIfElse->GetElseActions().Remove(pAction);
 	}
 	
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive( activateAction ? activateAction : pIfElse, NULL );
+	pTopic->SetActive(activateAction ? activateAction : pIfElse, nullptr);
 }

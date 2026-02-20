@@ -25,17 +25,18 @@
 #ifndef _PEEWINDOWCURVES_H_
 #define _PEEWINDOWCURVES_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/resources/igdeIconReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include "peeWindowCurvesListener.h"
+#include "../../emitter/peeEmitter.h"
 
-class peeEmitter;
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/layout/igdeContainerSplitted.h>
+#include <deigde/gui/resources/igdeIcon.h>
+#include <deigde/undo/igdeUndo.h>
+
 class peeParameter;
 class peeType;
-class peeWindowCurvesListener;
 class peeWindowMain;
 
 
@@ -45,6 +46,8 @@ class peeWindowMain;
  */
 class peeWindowCurves : public igdeContainerSplitted{
 public:
+	using Ref = deTObjectReference<peeWindowCurves>;
+	
 	/** \brief Curve to edit. */
 	enum eCurves{
 		ecValue,
@@ -57,17 +60,17 @@ public:
 	
 private:
 	peeWindowMain &pWindowMain;
-	peeWindowCurvesListener *pListener;
+	peeWindowCurvesListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
-	igdeIconReference pIconCurveEmpty;
-	igdeIconReference pIconCurveUsed;
+	igdeIcon::Ref pIconCurveEmpty;
+	igdeIcon::Ref pIconCurveUsed;
 	
-	igdeListBoxReference pListCurves;
-	igdeViewCurveBezierReference pEditCurve;
+	igdeListBox::Ref pListCurves;
+	igdeViewCurveBezier::Ref pEditCurve;
 	
-	igdeUndoReference pUndoSetCurve;
+	igdeUndo::Ref pUndoSetCurve;
 	
 	
 	
@@ -75,11 +78,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	peeWindowCurves( peeWindowMain &windowMain );
+	peeWindowCurves(peeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~peeWindowCurves();
+	~peeWindowCurves() override;
 	/*@}*/
 	
 	
@@ -100,10 +103,10 @@ public:
 	eCurves GetCurve() const;
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Update curve. */
 	void UpdateCurve();

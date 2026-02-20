@@ -78,25 +78,25 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Type. */
 	inline deInputDeviceAxis::eAxisTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( deInputDeviceAxis::eAxisTypes type );
+	void SetType(deInputDeviceAxis::eAxisTypes type);
 	
 	
 	
@@ -104,44 +104,44 @@ public:
 	inline int GetMinimum() const{ return pMinimum; }
 	
 	/** \brief Set minimum value. */
-	void SetMinimum( int minimum );
+	void SetMinimum(int minimum);
 	
 	/** \brief Maximum value. */
 	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** \brief Set maximum value. */
-	void SetMaximum( int maximum );
+	void SetMaximum(int maximum);
 	
 	/** \brief Fuzz. */
 	inline int GetFuzz() const{ return pFuzz; }
 	
 	/** \brief Set fuzz. */
-	void SetFuzz( int fuzz );
+	void SetFuzz(int fuzz);
 	
 	/** \brief Flat. */
 	inline int GetFlat() const{ return pFlat; }
 	
 	/** \brief Set flat. */
-	void SetFlat( int flat );
+	void SetFlat(int flat);
 	
 	/** \brief Axis is absolute. */
 	inline bool GetAbsolute() const{ return pAbsolute; }
 	
 	/** \brief Set if axis is absolute. */
-	void SetAbsolute( bool absolute );
+	void SetAbsolute(bool absolute);
 	
 	/** \brief Wheel around other axis. */
 	inline bool GetWheelOtherAxis() const{ return pWheelOtherAxis; }
 	
 	/** \brief Set to wheel around other axis. */
-	void SetWheelOtherAxis( bool otherAxis );
+	void SetWheelOtherAxis(bool otherAxis);
 	
 	
 	/** \brief Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	
 	
@@ -149,15 +149,15 @@ public:
 	inline int GetAICode() const{ return pAICode; }
 	
 	/** \brief Set Android specific code. */
-	void SetAICode( int code );
+	void SetAICode(int code);
 	
 	
 	
 	/** \brief Update engine input device information axis. */
-	void GetInfo( deInputDeviceAxis &info ) const;
+	void GetInfo(deInputDeviceAxis &info) const;
 	
 	/** \brief Send events if present. */
-	void SendEvents( deainpDevice &device );
+	void SendEvents(deainpDevice &device);
 	/*@}*/
 };
 

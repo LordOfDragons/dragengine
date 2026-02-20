@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeWPLangPackListener::lpeWPLangPackListener( lpeWPLangPack &panel ) :
-pPanel( panel ){
+lpeWPLangPackListener::lpeWPLangPackListener(lpeWPLangPack &panel) :
+pPanel(panel){
 }
 
 lpeWPLangPackListener::~lpeWPLangPackListener(){
@@ -51,8 +51,8 @@ lpeWPLangPackListener::~lpeWPLangPackListener(){
 // Management
 ///////////////
 
-void lpeWPLangPackListener::LangPackChanged( lpeLangPack *langpack ){
-	if( pPanel.GetLangPack() == langpack ){
+void lpeWPLangPackListener::LangPackChanged(lpeLangPack *langpack){
+	if(pPanel.GetLangPack() == langpack){
 		pPanel.UpdateLangPack();
 	}
 }

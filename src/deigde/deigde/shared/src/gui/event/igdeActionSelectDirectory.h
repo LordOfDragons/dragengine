@@ -40,6 +40,12 @@ class igdeTextField;
  * Select file using directory dialog. Requires a target igdeTextField to obtain/store the file path.
  */
 class DE_DLL_EXPORT igdeActionSelectDirectory : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeActionSelectDirectory>;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	bool pUseGameVFS;
@@ -51,7 +57,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionSelectDirectory( igdeEnvironment &environment, igdeTextField &textField, bool useGameVFS = true );
+	igdeActionSelectDirectory(igdeEnvironment &environment, igdeTextField &textField, bool useGameVFS = true);
 	
 	
 	
@@ -62,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionSelectDirectory();
+	~igdeActionSelectDirectory() override;
 	/*@}*/
 	
 	
@@ -88,7 +94,7 @@ public:
 	 * If user selected a directory and it is different updates the text field and notifies
 	 * listeners about the change.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Accept directory.
@@ -98,7 +104,7 @@ public:
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the stored value.
 	 */
-	virtual bool AcceptDirectory( decString &directory );
+	virtual bool AcceptDirectory(decString &directory);
 	
 	/**
 	 * \brief Default directory if text is empty.

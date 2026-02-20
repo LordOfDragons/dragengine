@@ -38,8 +38,7 @@
 class devkFramebuffer : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkFramebuffer> Ref;
-	
+	using Ref = deTObjectReference<devkFramebuffer>;
 	
 	
 protected:
@@ -53,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkFramebuffer( devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration );
+	devkFramebuffer(devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkFramebuffer();
+	~devkFramebuffer() override;
 	/*@}*/
 	
 	

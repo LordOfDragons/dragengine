@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntrySetName::lpeULangPackEntrySetName( lpeLangPackEntry *entry, const char *newName ) :
-pEntry( NULL ),
-pNewName( newName )
+lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry *entry, const char *newName) :
+
+pNewName(newName)
 {
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
+	if(!entry){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Entry set name" );
+	SetShortInfo("@LangPack.Undo.EntrySetName");
 	
 	pOldName = entry->GetName();
 	
 	pEntry = entry;
-	entry->AddReference();
 }
 
 lpeULangPackEntrySetName::~lpeULangPackEntrySetName(){
-	if( pEntry ){
-		pEntry->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ lpeULangPackEntrySetName::~lpeULangPackEntrySetName(){
 ///////////////
 
 void lpeULangPackEntrySetName::Undo(){
-	pEntry->SetName( pOldName );
+	pEntry->SetName(pOldName);
 }
 
 void lpeULangPackEntrySetName::Redo(){
-	pEntry->SetName( pNewName );
+	pEntry->SetName(pNewName);
 }

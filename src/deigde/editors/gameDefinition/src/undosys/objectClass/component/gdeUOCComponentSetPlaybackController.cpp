@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPlaybackController::gdeUOCComponentSetPlaybackController( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetPlaybackController::gdeUOCComponentSetPlaybackController(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set move name" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetPlaybackController");
 	
 	pOldValue = component->GetPlaybackController();
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPlaybackController::~gdeUOCComponentSetPlaybackController(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCComponentSetPlaybackController::~gdeUOCComponentSetPlaybackController(){
 ///////////////
 
 void gdeUOCComponentSetPlaybackController::Undo(){
-	pComponent->SetPlaybackController( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPlaybackController(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetPlaybackController::Redo(){
-	pComponent->SetPlaybackController( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPlaybackController(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

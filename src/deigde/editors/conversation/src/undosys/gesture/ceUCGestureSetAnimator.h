@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
+#include "../../conversation/gesture/ceGesture.h"
 
 
 
@@ -35,8 +35,12 @@ class ceGesture;
  * \brief Undo Action Gesture Set Animator.
  */
 class ceUCGestureSetAnimator : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCGestureSetAnimator>;
+	
+	
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	decString pOldAnimator;
 	decString pNewAnimator;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureSetAnimator( ceGesture *file, const char *newAnimator );
+	ceUCGestureSetAnimator(ceGesture *file, const char *newAnimator);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCGestureSetAnimator();
+	~ceUCGestureSetAnimator() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

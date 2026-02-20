@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceConversationFile;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/file/ceConversationFile.h"
 
 
 
@@ -36,27 +36,31 @@ class ceConversationFile;
  * \brief Undo Action Remove File.
  */
 class ceUCFileRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCFileRemove>;
+	
+	
 private:
 	ceConversation *pConversation;
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFileRemove( ceConversationFile *file );
+	ceUCFileRemove(ceConversationFile *file);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCFileRemove();
+	~ceUCFileRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

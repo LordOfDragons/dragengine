@@ -47,11 +47,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -68,18 +68,18 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPAGameCommand &pPanel;
 	
 public:
-	cTextCommand( ceWPAGameCommand &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextCommand>;
+	cTextCommand(ceWPAGameCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetCommand() ){
+		if(!topic || !action || textField->GetText() == action->GetCommand()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAGameCmdSetCommand( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAGameCmdSetCommand::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -87,28 +87,28 @@ class cActionEditCommand : public igdeAction {
 	ceWPAGameCommand &pPanel;
 	
 public:
-	cActionEditCommand( ceWPAGameCommand &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionEditCommand>;
+	cActionEditCommand(ceWPAGameCommand &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
-		decString text( action->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == action->GetCommand() ){
+		decString text(action->GetCommand());
+		if(!igdeCommonDialogs::GetMultilineString(
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"@Conversation.Dialog.EditCommand", "@Conversation.Dialog.Command", text)
+		|| text == action->GetCommand()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAGameCmdSetCommand( topic, action, text ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAGameCmdSetCommand::Ref::New(topic, action, text));
 	}
 };
 
@@ -122,15 +122,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAGameCommand::ceWPAGameCommand( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAGameCommand::ceWPAGameCommand(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionGameCommand.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionGameCommand.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 
 ceWPAGameCommand::~ceWPAGameCommand(){
@@ -144,11 +144,11 @@ ceWPAGameCommand::~ceWPAGameCommand(){
 ceCAGameCommand *ceWPAGameCommand::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatGameCommand ){
-		return ( ceCAGameCommand* )action;
+	if(action && action->GetType() == ceConversationAction::eatGameCommand){
+		return (ceCAGameCommand*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -157,8 +157,8 @@ void ceWPAGameCommand::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditCommand->SetText( action->GetCommand() );
+	if(action){
+		pEditCommand->SetText(action->GetCommand());
 		
 	}else{
 		pEditCommand->ClearText();

@@ -38,11 +38,11 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -56,24 +56,24 @@ namespace {
 class cTextRadius : public igdeTextFieldListener{
 	reWPPanelShapeSphere &pPanel;
 public:
-	cTextRadius( reWPPanelShapeSphere &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextRadius>;
+	cTextRadius(reWPPanelShapeSphere &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeSphere * const sphere = ( reRigShapeSphere* )pPanel.GetShape();
-		if( ! rig || ! sphere ){
+		reRigShapeSphere * const sphere = (reRigShapeSphere*)pPanel.GetShape();
+		if(!rig || !sphere){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - sphere->GetRadius() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - sphere->GetRadius()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new reUSetShapeSphereRadius( sphere, value ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::New(sphere, value));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -88,22 +88,22 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPPanelShapeSphere::reWPPanelShapeSphere( reWPShape &wpShapes ) :
-reWPPanelShape( wpShapes, reRigShape::estSphere )
+reWPPanelShapeSphere::reWPPanelShapeSphere(reWPShape &wpShapes) :
+reWPPanelShape(wpShapes, reRigShape::estSphere)
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	
 	
-	helper.GroupBox( *this, groupBox, "Sphere Parameters:" );
+	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeSphere.GroupBox.SphereParameters");
 	
-	helper.EditVector( groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelShapeSphere.Position", "@Rig.PanelShapeSphere.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditString( groupBox, "Radius:", "Radius of the sphere in meters.",
-		pEditRadius, new cTextRadius( *this ) );
+	helper.EditString(groupBox, "@Rig.PanelShapeSphere.Radius", "@Rig.PanelShapeSphere.Radius.ToolTip",
+		pEditRadius, cTextRadius::Ref::New(*this));
 }
 
 reWPPanelShapeSphere::~reWPPanelShapeSphere(){
@@ -117,18 +117,18 @@ reWPPanelShapeSphere::~reWPPanelShapeSphere(){
 void reWPPanelShapeSphere::UpdateShape(){
 	reWPPanelShape::UpdateShape();
 	
-	reRigShapeSphere * const sphere = ( reRigShapeSphere* )GetShape();
+	reRigShapeSphere * const sphere = (reRigShapeSphere*)GetShape();
 	
-	if( sphere ){
-		pEditPosition->SetVector( sphere->GetPosition() );
-		pEditRadius->SetFloat( sphere->GetRadius() );
+	if(sphere){
+		pEditPosition->SetVector(sphere->GetPosition());
+		pEditRadius->SetFloat(sphere->GetRadius());
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
 		pEditRadius->ClearText();
 	}
 	
-	const bool enabled = sphere != NULL;
-	pEditPosition->SetEnabled( enabled );
-	pEditRadius->SetEnabled( enabled );
+	const bool enabled = sphere != nullptr;
+	pEditPosition->SetEnabled(enabled);
+	pEditRadius->SetEnabled(enabled);
 }

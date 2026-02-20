@@ -35,6 +35,11 @@ class aeWPController;
  * Controller panel listener
  */
 class aeWPControllerListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeWPControllerListener>;
+	
+	
 private:
 	aeWPController &pPanel;
 	
@@ -44,10 +49,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPControllerListener( aeWPController &panel );
+	aeWPControllerListener(aeWPController &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPControllerListener();
+protected:
+	~aeWPControllerListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,19 +62,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Active controller changed. */
-	virtual void ActiveControllerChanged( aeAnimator *animator, aeController *controller );
+	void ActiveControllerChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( aeAnimator *animator, aeController *controller );
+	void ControllerChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller name changed. */
-	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
+	void ControllerNameChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller value changed. */
-	virtual void ControllerValueChanged( aeAnimator *animator, aeController *controller );
+	void ControllerValueChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( aeAnimator *animator );
+	void ControllerStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

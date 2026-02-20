@@ -55,20 +55,20 @@ public:
 	 * If finished is true the request finished with this response otherwise more responses
 	 * will be delivered. Id is a unique identifier used to start the matching request.
 	 */
-	virtual void RequestResponse( const decUniqueID &id,
-		const deServiceObject::Ref &response, bool finished );
+	virtual void RequestResponse(const decUniqueID &id,
+		const deServiceObject::Ref &response, bool finished);
 	
 	/**
 	 * \brief Response received for request.
 	 * 
 	 * Id is a unique identifier used to start the matching request.
 	 */
-	virtual void RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error );
+	virtual void RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error);
 	
 	/**
 	 * \brief Service event received.
 	 */
-	virtual void EventReceived( const deServiceObject::Ref &event );
+	virtual void EventReceived(const deServiceObject::Ref &event);
 	/*@}*/
 };
 

@@ -28,9 +28,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/math/decMath.h>
+#include "../../project/profile/projProfile.h"
 
-class projProfile;
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetWindowSize : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;
@@ -47,13 +47,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProfileSetWindowSize>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetWindowSize( projProfile *profile, const decPoint &newValue );
+	projUProfileSetWindowSize(projProfile *profile, const decPoint &newValue);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProfileSetWindowSize();
+protected:
+	~projUProfileSetWindowSize() override;
+public:
 	/*@}*/
 	
 	
@@ -61,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

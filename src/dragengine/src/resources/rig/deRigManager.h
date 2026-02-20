@@ -47,16 +47,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new rig resource manager linked to the given engine. */
-	deRigManager( deEngine *engine );
+	deRigManager(deEngine *engine);
 	
 	/** \brief Clean up rig resource manager and reports leaking resources. */
-	virtual ~deRigManager();
+	~deRigManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Rigs. */
+	inline const deFileResourceList &GetRigs() const{ return pRigs; }
+	
 	/** \brief Count of rigs. */
 	int GetRigCount() const;
 	
@@ -64,22 +67,22 @@ public:
 	deRig *GetRootRig() const;
 	
 	/** \brief Rig with the given filename or NULL if not loaded yet. */
-	deRig *GetRigWith( const char *filename ) const;
+	deRig *GetRigWith(const char *filename) const;
 	
 	/** \brief Rig with the given filename or NULL if not loaded yet. */
-	deRig *GetRigWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deRig *GetRigWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new rig. */
-	deRig *CreateRig( const char *filename, deRigBuilder &builder );
+	deRig::Ref CreateRig(const char *filename, deRigBuilder &builder);
 	
 	/** \brief Create new rig. */
-	deRig *CreateRig( deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder );
+	deRig::Ref CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder);
 	
 	/** \brief Loads a rig from the given file relative to the given base path. */
-	deRig *LoadRig( const char *filename, const char *basePath );
+	deRig::Ref LoadRig(const char *filename, const char *basePath);
 	
 	/** \brief Loads a rig from the given file relative to the given base path. */
-	deRig *LoadRig( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deRig::Ref LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Add loaded and fully prepared rig.
@@ -87,18 +90,18 @@ public:
 	 * This method is to be used only by the resource loader to add an rig that has been
 	 * loaded asynchronously.
 	 */
-	void AddLoadedRig( deRig *rig );
+	void AddLoadedRig(deRig *rig);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
 	/*@}*/
 	
 	
@@ -109,7 +112,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

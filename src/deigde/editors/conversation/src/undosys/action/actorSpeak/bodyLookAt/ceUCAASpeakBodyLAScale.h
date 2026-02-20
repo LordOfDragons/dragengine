@@ -34,12 +34,14 @@
  */
 class ceUCAASpeakBodyLAScale : public ceUCAASpeakStripsScale{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakBodyLAScale>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakBodyLAScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakBodyLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakBodyLAScale();
+	~ceUCAASpeakBodyLAScale() override;
 	/*@}*/
 };
 

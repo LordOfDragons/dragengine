@@ -33,7 +33,7 @@
 #include "../feWindowMain.h"
 #include "../../font/feFont.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -47,23 +47,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWindowProperties::feWindowProperties( feWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+feWindowProperties::feWindowProperties(feWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelFont.TakeOver( new feWPFont( *this ) );
-	AddChild( pPanelFont, "Font" );
+	pPanelFont = feWPFont::Ref::New(*this);
+	AddChild(pPanelFont, "@Font.WindowProperties.TabFont");
 	
-	pPanelGlyph.TakeOver( new feWPGlyph( *this ) );
-	AddChild( pPanelGlyph, "Glyph" );
+	pPanelGlyph = feWPGlyph::Ref::New(*this);
+	AddChild(pPanelGlyph, "@Font.WindowProperties.TabGlyph");
 	
-	pPanelUndoHistory.TakeOver( new feWPUndoHistory( env ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory = feWPUndoHistory::Ref::New(env);
+	AddChild(pPanelUndoHistory, "@Font.WindowProperties.TabUndo");
 	
-	SetActivePanel( 0 );
+	SetActivePanel(0);
 }
 
 feWindowProperties::~feWindowProperties(){
@@ -74,8 +74,8 @@ feWindowProperties::~feWindowProperties(){
 // Management
 ///////////////
 
-void feWindowProperties::SetFont( feFont *font ){
-	( ( feWPFont& )( igdeWidget& )pPanelFont ).SetFont( font );
-	( ( feWPGlyph& )( igdeWidget& )pPanelGlyph ).SetFont( font );
-	( ( feWPUndoHistory* )pPanelUndoHistory.operator->() )->SetFont( font );
+void feWindowProperties::SetFont(feFont *font){
+	pPanelFont->SetFont(font);
+	pPanelGlyph->SetFont(font);
+	pPanelUndoHistory->SetFont(font);
 }

@@ -25,11 +25,11 @@
 #ifndef _DEOGLSCCONSTRUCTEDDEFINITION_H_
 #define _DEOGLSCCONSTRUCTEDDEFINITION_H_
 
-#include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
+#include <dragengine/common/file/decMemoryFileWriter.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 
 class deSkinPropertyConstructed;
-class decMemoryFileWriter;
 class decMemoryFile;
 class deEngine;
 
@@ -40,8 +40,8 @@ class deEngine;
 class deoglSCConstructedDefinition : public deSkinPropertyNodeVisitor{
 private:
 	const deEngine &pEngine;
-	decMemoryFileWriter *pDefinition;
-	decMemoryFileWriter *pVerify;
+	decMemoryFileWriter::Ref pDefinition;
+	decMemoryFileWriter::Ref pVerify;
 	bool pCacheValid;
 	
 	
@@ -50,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglSCConstructedDefinition( const deEngine &engine, decMemoryFile *definition,
-		decMemoryFile *verify, const deSkinPropertyConstructed &property );
+	deoglSCConstructedDefinition(const deEngine &engine, decMemoryFile *definition,
+		decMemoryFile *verify, const deSkinPropertyConstructed &property);
 	
 	/** Clean up visitor. */
-	virtual ~deoglSCConstructedDefinition();
+	~deoglSCConstructedDefinition() override;
 	/*@}*/
 	
 	
@@ -70,24 +70,24 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node );
+	void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteBasicProperties( const deSkinPropertyNode &node );
-	void pWriteFloat( float value, float rounding );
-	void pWriteColor( const decColor &color );
+	void pWriteBasicProperties(const deSkinPropertyNode &node);
+	void pWriteFloat(float value, float rounding);
+	void pWriteColor(const decColor &color);
 };
 
 #endif

@@ -36,8 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meLSHeightTerrain::meLSHeightTerrain( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+meLSHeightTerrain::meLSHeightTerrain(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 meLSHeightTerrain::~meLSHeightTerrain(){
@@ -48,10 +48,10 @@ meLSHeightTerrain::~meLSHeightTerrain(){
 // Management
 ///////////////
 
-void meLSHeightTerrain::SetName( const char *name ){
+void meLSHeightTerrain::SetName(const char *name){
 	pName = name;
 }
 
-void meLSHeightTerrain::SetPattern( const char *pattern ){
+void meLSHeightTerrain::SetPattern(const char *pattern){
 	pPattern = pattern;
 }

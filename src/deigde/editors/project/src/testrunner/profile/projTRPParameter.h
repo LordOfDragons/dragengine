@@ -42,6 +42,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projTRPParameter>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create profile module parameter. */
@@ -49,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up profile module parameter. */
-	virtual ~projTRPParameter();
+	~projTRPParameter() override;
 	/*@}*/
 	
 	
@@ -61,19 +65,19 @@ public:
 	inline const decString &GetModule() const{ return pModule; }
 	
 	/** \brief Set module name. */
-	void SetModule( const char *name );
+	void SetModule(const char *name);
 	
 	/** \brief Parameter name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set parameter name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parameter value. */
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set parameter value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 };
 

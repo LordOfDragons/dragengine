@@ -39,25 +39,25 @@ private:
 	
 public:
 	/** Convert uint32. */
-	static uint32 UInt32( const deServiceObject &so );
-	static deServiceObject::Ref UInt32( uint32 value );
+	static uint32 UInt32(const deServiceObject &so);
+	static deServiceObject::Ref UInt32(uint32 value);
 	
-	static uint32 UInt32( const decString &string );
-	static decString UInt32ToString( uint32 value );
+	static uint32 UInt32(const decString &string);
+	static decString UInt32ToString(uint32 value);
 	
 	/** Convert uint64. */
-	static uint64 UInt64( const deServiceObject &so );
-	static deServiceObject::Ref UInt64( uint64 value );
+	static uint64 UInt64(const deServiceObject &so);
+	static deServiceObject::Ref UInt64(uint64 value);
 	
-	static uint64 UInt64( const decString &string );
-	static decString UInt64ToString( uint64 value );
+	static uint64 UInt64(const decString &string);
+	static decString UInt64ToString(uint64 value);
 	
 	/** Convert SteamID. */
-	static CSteamID SteamID( const deServiceObject::Ref &so );
-	static deServiceObject::Ref SteamID( const CSteamID &id );
+	static CSteamID SteamID(const deServiceObject::Ref &so);
+	static deServiceObject::Ref SteamID(const CSteamID &id);
 	
-	static CSteamID SteamID( const decString &string );
-	static decString SteamIDToString( const CSteamID &id );
+	static CSteamID SteamID(const decString &string);
+	static decString SteamIDToString(const CSteamID &id);
 };
 
 #endif

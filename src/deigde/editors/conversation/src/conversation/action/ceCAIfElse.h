@@ -26,8 +26,7 @@
 #define _CECAIFELSE_H_
 
 #include "ceConversationAction.h"
-#include "ceConversationActionList.h"
-#include "ceCAIfElseCaseList.h"
+#include "ceCAIfElseCase.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -45,24 +44,26 @@ class ceConversationCondition;
  */
 class ceCAIfElse : public ceConversationAction{
 private:
-	ceCAIfElseCaseList pCases;
-	ceConversationActionList pElseActions;
-	bool pTIMExpanded;
-	bool pTIMElseExpanded;
+	ceCAIfElseCase::List pCases;
+	ceConversationAction::List pElseActions;
+	bool pTIMExpanded, pTIMElseExpanded;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceCAIfElse>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create if-else conversation action. */
 	ceCAIfElse();
 	
 	/** \brief Create copy of if-else conversation action. */
-	ceCAIfElse( const ceCAIfElse &action );
+	ceCAIfElse(const ceCAIfElse &action);
 	
 	/** \brief Clean up if-else conversation action. */
-	virtual ~ceCAIfElse();
+protected:
+	~ceCAIfElse() override;
+public:
 	/*@}*/
 	
 	
@@ -70,15 +71,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of cases. */
-	inline ceCAIfElseCaseList &GetCases(){ return pCases; }
-	inline const ceCAIfElseCaseList &GetCases() const{ return pCases; }
+	inline ceCAIfElseCase::List &GetCases(){ return pCases; }
+	inline const ceCAIfElseCase::List &GetCases() const{ return pCases; }
 	
 	/** \brief List of else-actions. */
-	inline ceConversationActionList &GetElseActions(){ return pElseActions; }
-	inline const ceConversationActionList &GetElseActions() const{ return pElseActions; }
+	inline ceConversationAction::List &GetElseActions(){ return pElseActions; }
+	inline const ceConversationAction::List &GetElseActions() const{ return pElseActions; }
 	
 	/** \brief Create copy of action. */
-	virtual ceConversationAction *CreateCopy() const;
+	ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 	
 	
@@ -89,13 +90,13 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Else tree list item expanded state. */
 	inline bool GetTIMElseExpanded() const{ return pTIMElseExpanded; }
 	
 	/** \brief Set else tree list item expanded state. */
-	void SetTIMElseExpanded( bool expanded );
+	void SetTIMElseExpanded(bool expanded);
 	/*@}*/
 };
 

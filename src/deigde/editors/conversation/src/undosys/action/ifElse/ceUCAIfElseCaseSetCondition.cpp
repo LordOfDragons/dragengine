@@ -42,56 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCaseSetCondition::ceUCAIfElseCaseSetCondition( ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, ceConversationCondition *newCondition ){
-	if( ! topic || ! ifElse || ! ifcase ){
-		DETHROW( deeInvalidParam );
+ceUCAIfElseCaseSetCondition::ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationCondition *newCondition){
+	if(!topic || !ifElse || !ifcase){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pCase = NULL;
-	pOldCondition = NULL;
-	pNewCondition = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pCase = nullptr;
+	pOldCondition = nullptr;
+	pNewCondition = nullptr;
 	
-	SetShortInfo( "If-else set case condition" );
+	SetShortInfo("@Conversation.Undo.IfElseSetCaseCondition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	pCase = ifcase;
-	ifcase->AddReference();
-	
 	pOldCondition = ifcase->GetCondition();
-	if( pOldCondition ){
-		pOldCondition->AddReference();
-	}
-	
 	pNewCondition = newCondition;
-	if( newCondition ){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAIfElseCaseSetCondition::~ceUCAIfElseCaseSetCondition(){
-	if( pNewCondition ){
-		pNewCondition->FreeReference();
-	}
-	if( pOldCondition ){
-		pOldCondition->FreeReference();
-	}
-	if( pCase ){
-		pCase->FreeReference();
-	}
-	if( pIfElse ){
-		pIfElse->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -100,15 +72,15 @@ ceUCAIfElseCaseSetCondition::~ceUCAIfElseCaseSetCondition(){
 ///////////////
 
 void ceUCAIfElseCaseSetCondition::Undo(){
-	pCase->SetCondition( pOldCondition );
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pCase->SetCondition(pOldCondition);
+	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive( pIfElse, pOldCondition );
+	pTopic->SetActive(pIfElse, pOldCondition);
 }
 
 void ceUCAIfElseCaseSetCondition::Redo(){
-	pCase->SetCondition( pNewCondition );
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pCase->SetCondition(pNewCondition);
+	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive( pIfElse, pNewCondition );
+	pTopic->SetActive(pIfElse, pNewCondition);
 }

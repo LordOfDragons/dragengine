@@ -48,9 +48,8 @@ class dewiDeviceWinRTController : public dewiDevice{
 public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dewiDeviceWinRTController> Ref;
-
-
-
+	
+	
 private:
 	const wrgi::RawGameController pController;
 	const wrgi::Gamepad pGamepad;
@@ -69,11 +68,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	dewiDeviceWinRTController( deWindowsInput &module, wrgi::RawGameController const &controller );
+	dewiDeviceWinRTController(deWindowsInput &module, wrgi::RawGameController const &controller);
 	
 protected:
 	/** Clean up device. */
-	virtual ~dewiDeviceWinRTController();
+	~dewiDeviceWinRTController() override;
 	/*@}*/
 	
 	
@@ -85,16 +84,16 @@ public:
 	inline const wrgi::RawGameController &GetController() const{ return pController; }
 
 	/** Update device state. */
-	virtual void Update();
+	void Update() override;
 
 	/** Axis reading. */
-	double GetReadingAxis( int index ) const;
+	double GetReadingAxis(int index) const;
 
 	/** Switch position reading. */
-	wrgi::GameControllerSwitchPosition GetReadingSwitch( int index ) const;
+	wrgi::GameControllerSwitchPosition GetReadingSwitch(int index) const;
 
 	/** Button reading. */
-	bool GetReadingButton( int index ) const;
+	bool GetReadingButton(int index) const;
 
 	/** Reading time. */
 	inline DWORD GetReadingTime() const{ return pReadingTime; }

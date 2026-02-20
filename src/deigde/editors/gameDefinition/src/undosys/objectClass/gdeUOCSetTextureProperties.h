@@ -26,13 +26,13 @@
 #ifndef _GDEUOBJECTCLASSSETTEXTUREPROPERTIES_H_
 #define _GDEUOBJECTCLASSSETTEXTUREPROPERTIES_H_
 
-#include "../../gamedef/property/gdePropertyList.h"
+#include "../../gamedef/property/gdeProperty.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
 
 
 
@@ -40,11 +40,15 @@ class gdeObjectClass;
  * \brief Undo action object class set texture properties.
  */
 class gdeUOCSetTextureProperties : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
+public:
+	using Ref = deTObjectReference<gdeUOCSetTextureProperties>;
 	
-	gdePropertyList pOldValue;
-	gdePropertyList pNewValue;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	
+	gdeProperty::List pOldValue;
+	gdeProperty::List pNewValue;
 	
 	
 	
@@ -52,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetTextureProperties( gdeObjectClass *objectClass, const gdePropertyList &newValue );
+	gdeUOCSetTextureProperties(gdeObjectClass *objectClass, const gdeProperty::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSetTextureProperties();
+	~gdeUOCSetTextureProperties() override;
 	/*@}*/
 	
 	
@@ -65,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

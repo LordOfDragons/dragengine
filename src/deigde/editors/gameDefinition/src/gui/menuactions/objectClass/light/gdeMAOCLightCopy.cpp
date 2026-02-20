@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCLightCopy::gdeMAOCLightCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Light",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class light" )
+gdeMAOCLightCopy::gdeMAOCLightCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@GameDefinition.Menu.OCLightCopy.ToolTip")
 {
 }
 
@@ -59,29 +59,25 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight ){
-		return NULL;
+igdeUndo::Ref gdeMAOCLightCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
+		return {};
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
-	if( ! light ){
-		return NULL;
+	if(!light){
+		return {};
 	}
 	
-	deObjectReference clipOCLight;
-	clipOCLight.TakeOver( new gdeOCLight( *light ) );
+	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::New(*light));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCLight( ( gdeOCLight* )( deObject* )clipOCLight ) );
-	
-	pWindowMain.GetClipboard().Set( clipData );
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::New(clipOCLight));
+	return {};
 }
 
 void gdeMAOCLightCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL );
+		&& gameDefinition->GetActiveOCLight() != nullptr);
 }

@@ -27,13 +27,14 @@
 
 #include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/deObjectReference.h>
-
-
 /**
  * Undo action controller set default value.
  */
 class aeUControllerSetDefaultValue : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerSetDefaultValue>;
+	
+	
 private:
 	const aeController::Ref pController;
 	float pOldValue;
@@ -45,11 +46,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetDefaultValue( aeController *controller, float newValue );
+	aeUControllerSetDefaultValue(aeController *controller, float newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerSetDefaultValue();
+	~aeUControllerSetDefaultValue() override;
 	/*@}*/
 	
 	
@@ -58,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

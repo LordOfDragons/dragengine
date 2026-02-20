@@ -25,13 +25,15 @@
 #ifndef _IGDELOGGERHISTORY_H_
 #define _IGDELOGGERHISTORY_H_
 
+#include "igdeLoggerHistoryListener.h"
+
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class igdeLoggerHistoryEntry;
-class igdeLoggerHistoryListener;
 
 
 
@@ -47,17 +49,15 @@ class igdeLoggerHistoryListener;
 class DE_DLL_EXPORT igdeLoggerHistory : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeLoggerHistory> Ref;
-	
+	using Ref = deTObjectReference<igdeLoggerHistory>;
 	
 	
 private:
-	int pHistorySize;
-	igdeLoggerHistoryEntry *pEntries;
+	decTList<igdeLoggerHistoryEntry> pEntries;
 	int pEntryPointer;
 	int pEntryCount;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<igdeLoggerHistoryListener> pListeners;
 	
 	bool pLogInfo;
 	bool pLogWarn;
@@ -74,8 +74,11 @@ public:
 	/** \brief Create logger history. */
 	igdeLoggerHistory();
 	
+protected:
 	/** \brief Clean up logger history. */
-	virtual ~igdeLoggerHistory();
+	~igdeLoggerHistory() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -86,20 +89,20 @@ public:
 	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** \brief Size of the history. */
-	int GetHistorySize() const{ return pHistorySize; }
+	int GetHistorySize() const{ return pEntries.GetCount(); }
 	
 	/**
 	 * \brief Set size of the history. This clears the history.
 	 * \note This call does an implicite lock/unlock on the mutex.
 	 */
-	void SetHistorySize( int size );
+	void SetHistorySize(int size);
 	
 	/** \brief Number of history entries. */
 	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/** \brief Entry at the given position. */
-	igdeLoggerHistoryEntry &GetEntryAt( int index );
-	const igdeLoggerHistoryEntry &GetEntryAt( int index ) const;
+	igdeLoggerHistoryEntry &GetEntryAt(int index);
+	const igdeLoggerHistoryEntry &GetEntryAt(int index) const;
 	
 	/**
 	 * \brief Adds a new entry to the history.
@@ -116,25 +119,25 @@ public:
 	void Clear();
 	
 	/** \brief Determines if a message can be added. */
-	bool CanAddMessage( int type, const char *source );
+	bool CanAddMessage(int type, const char *source);
 	
 	/** \brief Adds a listener. */
-	void AddListener( igdeLoggerHistoryListener *listener );
+	void AddListener(igdeLoggerHistoryListener *listener);
 	
 	/** \brief Removes a listener. */
-	void RemoveListener( igdeLoggerHistoryListener *listener );
+	void RemoveListener(igdeLoggerHistoryListener *listener);
 	
 	/** \brief Notifies all listeners that a message has been added. */
-	void NotifyMessageAdded( igdeLoggerHistoryEntry &entry );
+	void NotifyMessageAdded(igdeLoggerHistoryEntry &entry);
 	
 	/** \brief Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 };
 

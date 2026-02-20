@@ -33,21 +33,23 @@
  */
 class deoxrDPSamsungOdysseyController : public deoxrDPMicrosoftMixedRealityMotionController{
 public:
+	using Ref = deTObjectReference<deoxrDPSamsungOdysseyController>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPSamsungOdysseyController( deoxrInstance &instance );
+	deoxrDPSamsungOdysseyController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPSamsungOdysseyController();
+	~deoxrDPSamsungOdysseyController() override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual const char *pDeviceIdPrefix() const;
+	bool pProfileEnabled() const override;
+	const char *pDeviceIdPrefix() const override;
 };
 
 #endif

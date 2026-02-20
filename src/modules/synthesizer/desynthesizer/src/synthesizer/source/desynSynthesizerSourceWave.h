@@ -50,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSourceWave( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceWave &source );
+	desynSynthesizerSourceWave(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceWave &source);
 	
 	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSourceWave();
+	~desynSynthesizerSourceWave() override;
 	/*@}*/
 	
 	
@@ -77,7 +77,7 @@ public:
 	
 	
 	/** \brief Current frequency. */
-	float GetFrequency( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetFrequency(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -86,10 +86,13 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	int StateDataSizeSource(int offset) override;
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	void InitStateDataSource(char *stateData) override;
+	
+	/** Clean up state data of source itself. */
+	void CleanUpStateDataSource(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound using source.
@@ -99,24 +102,24 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) override;
 	
 	/** \brief Generate sine wave. */
-	void GenerateSineWave( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSineWave(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Generate square wave. */
-	void GenerateSquareWave( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSquareWave(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Generate saw tooth wave. */
-	void GenerateSawToothWave( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSawToothWave(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Generate triangle wave. */
-	void GenerateTriangleWave( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateTriangleWave(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
@@ -125,8 +128,8 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) override;
 	/*@}*/
 };
 

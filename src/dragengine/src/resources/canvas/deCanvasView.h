@@ -34,14 +34,11 @@
 class DE_DLL_EXPORT deCanvasView : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvasView> Ref;
-	
+	using Ref = deTObjectReference<deCanvasView>;
 	
 	
 private:
-	deCanvas *pCanvasRoot;
-	deCanvas *pCanvasTail;
-	int pCanvasCount;
+	decTObjectLinkedList<deCanvas> pCanvas;
 	
 	
 	
@@ -49,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasView( deCanvasManager *manager );
+	deCanvasView(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -58,7 +55,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvasView();
+	~deCanvasView() override;
 	/*@}*/
 	
 	
@@ -66,25 +63,28 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Children canvas. */
+	inline const decTObjectLinkedList<deCanvas> &GetCanvas() const{ return pCanvas; }
+	
 	/** \brief Number of child canvas. */
-	inline int GetCanvasCount() const{ return pCanvasCount; }
+	inline int GetCanvasCount() const{ return pCanvas.GetCount(); }
 	
 	/** \brief Root canvas or NULL if there is none. */
-	inline deCanvas *GetRootCanvas() const{ return pCanvasRoot; }
+	inline deCanvas *GetRootCanvas() const{ return pCanvas.GetRootOwner(); }
 	
 	/**
 	 * \brief Add child canvas.
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas has a parent view.
 	 */
-	void AddCanvas( deCanvas *canvas );
+	void AddCanvas(deCanvas *canvas);
 	
 	/**
 	 * \brief Remove child canvas.
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas parent view is not this canvas.
 	 */
-	void RemoveCanvas( deCanvas *canvas );
+	void RemoveCanvas(deCanvas *canvas);
 	
 	/** \brief Remove all child canvas. */
 	void RemoveAllCanvas();
@@ -95,7 +95,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	void Visit(deCanvasVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -26,6 +26,7 @@
 #define _SAEWORD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
@@ -46,19 +47,25 @@ private:
 	bool pActive;
 	
 public:
+	using Ref = deTObjectReference<saeWord>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<saeWord>,saeWord>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create word. */
 	saeWord();
 	
 	/** Create word. */
-	saeWord( const char *name );
+	explicit saeWord(const char *name);
 	
 	/** Create word. */
-	saeWord( const char *name, const decUnicodeString &phonetics );
+	saeWord(const char *name, const decUnicodeString &phonetics);
 	
 	/** Cleans up the word. */
-	virtual ~saeWord();
+protected:
+	~saeWord() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -66,20 +73,20 @@ public:
 	/** Retrieves the parent speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	/** Sets the parent speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the phonetics. */
 	inline const decUnicodeString &GetPhonetics() const{ return pPhonetics; }
 	/** Sets the phonetics. */
-	void SetPhonetics( const decUnicodeString &phonetics );
+	void SetPhonetics(const decUnicodeString &phonetics);
 	/** Determines if this is the active word. */
 	inline bool GetActive() const{ return pActive; }
 	/** Sets if this is the active word. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	/*@}*/
 };
 

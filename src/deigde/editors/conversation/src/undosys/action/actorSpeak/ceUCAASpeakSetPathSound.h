@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo Action Actor Speak Conversation Action Set Path Sound.
  */
 class ceUCAASpeakSetPathSound : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakSetPathSound>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldPath;
 	decString pNewPath;
 	
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetPathSound( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath );
+	ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakSetPathSound();
+	~ceUCAASpeakSetPathSound() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

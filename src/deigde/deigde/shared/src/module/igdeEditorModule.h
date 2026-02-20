@@ -25,16 +25,18 @@
 #ifndef _IGDEEDITORMODULE_H_
 #define _IGDEEDITORMODULE_H_
 
-#include <dragengine/common/string/decString.h>
+#include "../localization/igdeLanguagePack.h"
+#include "../gui/igdeEditorWindow.h"
 
-class decStringList;
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
+
 class igdeEnvironment;
-class igdeEditorWindow;
 class igdeStepableTask;
 class deEngine;
 class deLogger;
 class deException;
-class decUnicodeStringList;
 
 
 /**
@@ -49,7 +51,8 @@ private:
 	decString pLoggingName;
 	decString pEditorDirectory;
 	decString pEditorPathLib;
-	igdeEditorWindow *pEditorWindow;
+	igdeEditorWindow::Ref pEditorWindow;
+	igdeLanguagePack::List pLanguagePacks;
 	
 	
 	
@@ -57,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor module. */
-	igdeEditorModule( igdeEnvironment &environment );
+	igdeEditorModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up editor module. */
 	virtual ~igdeEditorModule();
@@ -81,7 +84,7 @@ public:
 	 * 
 	 * To be used only by IGDE. Do not call from editor modules.
 	 */
-	void SetEditorDirectory( const char *directory );
+	void SetEditorDirectory(const char *directory);
 	
 	/** \brief Editor module libraries directory path. */
 	inline const decString &GetEditorPathLib() const{ return pEditorPathLib; }
@@ -91,18 +94,21 @@ public:
 	 * 
 	 * To be used only by IGDE. Do not call from editor modules.
 	 */
-	void SetEditorPathLib( const char *path );
+	void SetEditorPathLib(const char *path);
 	
 	/** \brief Editor window used by module. */
-	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
+	inline const igdeEditorWindow::Ref &GetEditorWindow() const{ return pEditorWindow; }
 	
 	/**
 	 * \brief Set editor window used by module.
 	 * 
 	 * Takes over the reference. Use only like this: SetEditorWindow(new MyEditorWindow());
 	 */
-	void SetEditorWindow( igdeEditorWindow *editorWindow );
+	void SetEditorWindow(igdeEditorWindow *editorWindow);
 	
+	/** \brief Language packs. */
+	inline igdeLanguagePack::List &GetLanguagePacks(){ return pLanguagePacks; }
+	inline const igdeLanguagePack::List &GetLanguagePacks() const{ return pLanguagePacks; }
 	
 	
 	/** \brief Start module. */
@@ -138,7 +144,7 @@ public:
 	 * and might not be as accurate as the game timer provided by the game engine in a
 	 * real game situation.
 	 */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -149,12 +155,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -164,7 +170,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief The game project has changed.
@@ -183,12 +189,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update NULL can be returned. The caller delets the task once
+	 * does not need any update nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns NULL.
+	 * The default implementation returns nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	
 	/**
 	 * \brief Process command line arguments.
@@ -199,7 +205,12 @@ public:
 	 * wishes to close the application it has to return false. Return true to continue
 	 * processing command line arguments.
 	 */
-	virtual bool ProcessCommandLine( decUnicodeStringList &arguments );
+	virtual bool ProcessCommandLine(decUnicodeStringList &arguments);
+	
+	/**
+	 * \brief Active language changed.
+	 */
+	virtual void OnLanguageChanged();
 	/*@}*/
 	
 	
@@ -213,37 +224,37 @@ public:
 	const decString &GetLoggingName() const;
 	
 	/** \brief Set name used as source for logging. */
-	void SetLoggingName( const char *name );
+	void SetLoggingName(const char *name);
 	
 	/** \brief Output information message on console. */
-	void LogInfo( const char *message ) const;
+	void LogInfo(const char *message) const;
 	
 	/** \brief Output formated information message on console. */
-	void LogInfoFormat( const char *message, ... ) const;
+	void LogInfoFormat(const char *message, ...) const;
 	
 	/** \brief Output formated information message on console. */
-	void LogInfoFormatUsing( const char *message, va_list args ) const;
+	void LogInfoFormatUsing(const char *message, va_list args) const;
 	
 	/** \brief Output warning message on console. */
-	void LogWarn( const char *message ) const;
+	void LogWarn(const char *message) const;
 	
 	/** \brief Output formated warning message on console. */
-	void LogWarnFormat( const char *message, ... ) const;
+	void LogWarnFormat(const char *message, ...) const;
 	
 	/** \brief Output formated warning message on console. */
-	void LogWarnFormatUsing( const char *message, va_list args ) const;
+	void LogWarnFormatUsing(const char *message, va_list args) const;
 	
 	/** \brief Output error message on console. */
-	void LogError( const char *message ) const;
+	void LogError(const char *message) const;
 	
 	/** \brief Output formated error message on console. */
-	void LogErrorFormat( const char *message, ... ) const;
+	void LogErrorFormat(const char *message, ...) const;
 	
 	/** \brief Output formated error message on console. */
-	void LogErrorFormatUsing( const char *message, va_list args ) const;
+	void LogErrorFormatUsing(const char *message, va_list args) const;
 	
 	/** \brief Output exception as error message on console. */
-	void LogException( const deException &exception ) const;
+	void LogException(const deException &exception) const;
 	/*@}*/
 };
 

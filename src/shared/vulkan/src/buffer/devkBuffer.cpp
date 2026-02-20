@@ -30,6 +30,7 @@
 #include "../devkDevice.h"
 #include "../devkInstance.h"
 #include "../queue/devkQueue.h"
+#include "../queue/devkCommandPool.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>

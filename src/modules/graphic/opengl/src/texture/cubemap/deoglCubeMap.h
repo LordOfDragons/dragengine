@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new cube map. */
-	deoglCubeMap( deoglRenderThread &renderThread );
+	deoglCubeMap(deoglRenderThread &renderThread);
 	/** Cleans up the cube map. */
 	~deoglCubeMap();
 	/*@}*/
@@ -85,23 +85,23 @@ public:
 	/** Retrieves the size of the cube map. */
 	inline int GetSize() const{ return pSize; }
 	/** Sets the size of the cube map destroying the old cube map if present. */
-	void SetSize( int size );
+	void SetSize(int size);
 	/** Retrieves the texture format. */
 	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	/** Sets the texture format. */
-	void SetFormat( const deoglCapsTextureFormat *format );
+	void SetFormat(const deoglCapsTextureFormat *format);
 	/** Sets the texture format by number from the list of mapping texture formats to use. */
-	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
+	void SetFormatMappingByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
 	/** Sets the texture format by number from the list of fbo texture formats to use. */
-	void SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
+	void SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
 	/** Determines if mip mapping has to be used on this cube map. */
 	inline bool GetMipMapped() const{ return pMipMapped; }
 	/** Sets if mip mapping has to be used on this cube map. */
-	void SetMipMapped( bool mipmapped );
+	void SetMipMapped(bool mipmapped);
 	/** Retrieves the mip map level count or 0 to let the hardware auto-generate them. */
 	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	/** Sets the mip map level count or 0 to let the hardware auto-generate them. */
-	void SetMipMapLevelCount( int count );
+	void SetMipMapLevelCount(int count);
 	/** Retrieves the real mip map level count which is either mipMapLevelCount or the real texture mip map level count. */
 	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
 	
@@ -110,26 +110,26 @@ public:
 	/** Destroys the cube map if existing. */
 	void DestroyCubeMap();
 	/** Copies pixel data from the given pixel buffer into the cube map. */
-	void SetPixels( const deoglPixelBuffer &pixels );
+	void SetPixels(const deoglPixelBuffer &pixels);
 	/** Sets texture level pixels from a pixel buffer without touching other mip map levels. */
-	void SetPixelsLevel( int level, const deoglPixelBuffer &pixels );
+	void SetPixelsLevel(int level, const deoglPixelBuffer &pixels);
 	
 	/** Copy pixels from first level into pixel buffer. */
-	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
+	void GetPixels(deoglPixelBuffer &pixelBuffer) const;
 	
 	/** Copy pixels from level into pixel buffer. */
-	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
+	void GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) const;
 	
 	/** Retrieves the size of a mip map level. */
-	int GetLevelSize( int level ) const;
+	int GetLevelSize(int level) const;
 	
 	/** Force mip map creation if the cube map is mip mapped. */
 	void CreateMipMaps();
 	
 	/** Copy from another cubemap to this texture. */
-	void CopyFrom( const deoglCubeMap &cubemap, bool withMipMaps );
+	void CopyFrom(const deoglCubeMap &cubemap, bool withMipMaps);
 	/** Copy area from cubemap texture to this texture. */
-	void CopyFrom( const deoglCubeMap &cubemap, bool withMipMaps, int size, int srcX, int srcY, int destX, int destY );
+	void CopyFrom(const deoglCubeMap &cubemap, bool withMipMaps, int size, int srcX, int srcY, int destX, int destY);
 	
 	/** Memory consumption. */
 	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
@@ -141,19 +141,19 @@ public:
 	/** \name Helper Functions */
 	/*@{*/
 	/** Sets the texture format suitable for texture mapping according to the provided texture description. */
-	void SetMapingFormat( int channels, bool useFloat, bool compressed );
+	void SetMapingFormat(int channels, bool useFloat, bool compressed);
 	/** Sets the texture format suitable for attaching as FBO render target. */
-	void SetFBOFormat( int channels, bool useFloat );
+	void SetFBOFormat(int channels, bool useFloat);
 	
 	/** Sets the suitable depth texture format. */
-	void SetDepthFormat( bool useFloat );
+	void SetDepthFormat(bool useFloat);
 	
 	/** Creates a camera matrix for a cube map face. */
-	static void CreateMatrixForFace( decMatrix &matrix, const decVector &position, int face );
-	static void CreateMatrixForFace( decDMatrix &matrix, const decDVector &position, int face );
+	static void CreateMatrixForFace(decMatrix &matrix, const decVector &position, int face);
+	static void CreateMatrixForFace(decDMatrix &matrix, const decDVector &position, int face);
 	
 	/** Set debug object label. */
-	void SetDebugObjectLabel( const char *name );
+	void SetDebugObjectLabel(const char *name);
 	/*@}*/
 	
 private:

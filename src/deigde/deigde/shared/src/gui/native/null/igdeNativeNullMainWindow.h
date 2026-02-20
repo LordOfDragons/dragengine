@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLMAINWINDOW_H_
 #define _IGDENATIVENULLMAINWINDOW_H_
 
+#include "../../igdeMainWindow.h"
+
 #include "../../../environment/igdeEnvironment.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -35,7 +37,7 @@ class igdeMainWindow;
 /**
  * Null main window.
  */
-class igdeNativeNullMainWindow{
+class igdeNativeNullMainWindow : public igdeMainWindow::cNativeMainWindow{
 private:
 	igdeMainWindow &pOwner;
 	
@@ -43,13 +45,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeNullMainWindow( igdeMainWindow &owner );
+	igdeNativeNullMainWindow(igdeMainWindow &owner);
 	
 	/** \brief Clean up container. */
 	virtual ~igdeNativeNullMainWindow();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullMainWindow* CreateNativeWidget( igdeMainWindow &owner );
+	static igdeNativeNullMainWindow* CreateNativeWidget(igdeMainWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -63,31 +65,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Update window state. */
 	void UpdateWindowState();
 	
 	/** \brief Update enabled state. */
-	virtual void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update position. */
-	virtual void UpdatePosition();
+	void UpdatePosition() override;
 	
 	/** \brief Update icon. */
-	virtual void UpdateIcon();
+	void UpdateIcon() override;
 	
 	/** \brief Update window title. */
-	virtual void UpdateTitle();
+	void UpdateTitle() override;
 	
 	/** \brief Update size. */
-	virtual void UpdateSize();
+	void UpdateSize() override;
+	
+	/** \brief Raise and activate window. */
+	void RaiseAndActivate() override;
 	
 	/** \brief Set window state to owner. */
 	void SetWindowState();
 	
 	/** \brief Get main app font config. */
-	static void GetAppFontConfig( igdeFont::sConfiguration &config );
+	static void GetAppFontConfig(igdeFont::sConfiguration &config);
 	/*@}*/
 };
 

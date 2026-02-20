@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "dedaiHeightTerrain.h"
 #include "dedaiHeightTerrainSector.h"
 #include "dedaiHeightTerrainNavSpace.h"
@@ -46,26 +43,22 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiHeightTerrainSector::dedaiHeightTerrainSector( dedaiHeightTerrain &heightTerrain,
-	const deHeightTerrainSector &sector ) :
-pHeightTerrain( heightTerrain ),
-pSector( sector ),
-pHeights( NULL )
+dedaiHeightTerrainSector::dedaiHeightTerrainSector(dedaiHeightTerrain &heightTerrain,
+	const deHeightTerrainSector &sector) :
+pHeightTerrain(heightTerrain),
+pSector(sector)
 {
-	const int navSpaceCount = sector.GetNavSpaceCount();
-	int i;
-	
 	try{
 		pPosition.x = heightTerrain.GetHeightTerrain().GetSectorSize() * sector.GetSector().x;
 		pPosition.z = heightTerrain.GetHeightTerrain().GetSectorSize() * sector.GetSector().y;
 		
 		pUpdateHeights();
 		
-		for( i=0; i<navSpaceCount; i++ ){
-			NavSpaceAdded( sector.GetNavSpaceAt( i ) );
-		}
+		sector.GetNavSpaces().Visit([&](deHeightTerrainNavSpace *navspace){
+			NavSpaceAdded(navspace);
+		});
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -85,87 +78,65 @@ dedaiHeightTerrainSector::~dedaiHeightTerrainSector(){
 // Navigation spaces
 //////////////////////
 
-int dedaiHeightTerrainSector::GetNavSpaceCount() const{
-	return pNavSpaces.GetCount();
-}
-
-dedaiHeightTerrainNavSpace *dedaiHeightTerrainSector::GetNavSpaceAt( int index ) const{
-	return ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( index );
-}
-
 
 
 // Notifications
 //////////////////
 
 void dedaiHeightTerrainSector::ParentWorldChanged(){
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
-	for( i=0; i<navSpaceCount; i++ ){
-		( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( i ) )->ParentWorldChanged();
-	}
+	pNavSpaces.Visit([&](dedaiHeightTerrainNavSpace &n){
+		n.ParentWorldChanged();
+	});
 }
 
 void dedaiHeightTerrainSector::SectorChanged(){
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
-	if( pHeights ){
-		delete [] pHeights;
-		pHeights = NULL;
-	}
+	pHeights.SetCountDiscard(0);
 	
 	pUpdateHeights();
 	
 	const int imageSize = pHeightTerrain.GetHeightTerrain().GetSectorResolution();
-	const decPoint to( imageSize - 1, imageSize - 1 );
-	for( i=0; i<navSpaceCount; i++ ){
-		( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( i ) )->HeightChanged( decPoint(), to );
-	}
+	const decPoint to(imageSize - 1, imageSize - 1);
+	pNavSpaces.Visit([&](dedaiHeightTerrainNavSpace &n){
+		n.HeightChanged(decPoint(), to);
+	});
 }
 
-void dedaiHeightTerrainSector::HeightChanged( const decPoint &from, const decPoint &to ){
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
+void dedaiHeightTerrainSector::HeightChanged(const decPoint &from, const decPoint &to){
 	pUpdateHeights();
 	
-	for( i=0; i<navSpaceCount; i++ ){
-		( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( i ) )->HeightChanged( from, to );
-	}
+	pNavSpaces.Visit([&](dedaiHeightTerrainNavSpace &n){
+		n.HeightChanged(from, to);
+	});
 }
 
 
 
-void dedaiHeightTerrainSector::NavSpaceAdded( deHeightTerrainNavSpace *navspace ){
-	deObjectReference refNavSpace;
-	refNavSpace.TakeOver( new dedaiHeightTerrainNavSpace( *this, *navspace ) );
-	pNavSpaces.Add( refNavSpace );
+void dedaiHeightTerrainSector::NavSpaceAdded(deHeightTerrainNavSpace *navspace){
+	pNavSpaces.Add(dedaiHeightTerrainNavSpace::Ref::New(*this, *navspace));
 }
 
-void dedaiHeightTerrainSector::NavSpaceRemoved( int index ){
-	pNavSpaces.RemoveFrom( index );
+void dedaiHeightTerrainSector::NavSpaceRemoved(int index){
+	pNavSpaces.RemoveFrom(index);
 }
 
 void dedaiHeightTerrainSector::AllNavSpacesRemoved(){
 	pNavSpaces.RemoveAll();
 }
 
-void dedaiHeightTerrainSector::NavSpaceLayerChanged( int index ){
-	( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( index ) )->LayerChanged();
+void dedaiHeightTerrainSector::NavSpaceLayerChanged(int index){
+	pNavSpaces.GetAt(index)->LayerChanged();
 }
 
-void dedaiHeightTerrainSector::NavSpaceTypeChanged( int index ){
-	( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( index ) )->TypeChanged();
+void dedaiHeightTerrainSector::NavSpaceTypeChanged(int index){
+	pNavSpaces.GetAt(index)->TypeChanged();
 }
 
-void dedaiHeightTerrainSector::NavSpaceSnappingChanged( int index ){
-	( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( index ) )->SnappingChanged();
+void dedaiHeightTerrainSector::NavSpaceSnappingChanged(int index){
+	pNavSpaces.GetAt(index)->SnappingChanged();
 }
 
-void dedaiHeightTerrainSector::NavSpaceLayoutChanged( int index ){
-	( ( dedaiHeightTerrainNavSpace* )pNavSpaces.GetAt( index ) )->LayoutChanged();
+void dedaiHeightTerrainSector::NavSpaceLayoutChanged(int index){
+	pNavSpaces.GetAt(index)->LayoutChanged();
 }
 
 
@@ -175,66 +146,62 @@ void dedaiHeightTerrainSector::NavSpaceLayoutChanged( int index ){
 
 void dedaiHeightTerrainSector::pCleanUp(){
 	AllNavSpacesRemoved();
-	
-	if( pHeights ){
-		delete [] pHeights;
-	}
 }
 
 
 
 void dedaiHeightTerrainSector::pUpdateHeights(){
 	const int imageDim = pHeightTerrain.GetHeightTerrain().GetSectorResolution() - 1;
-	pUpdateHeights( decPoint(), decPoint( imageDim, imageDim ) );
+	pUpdateHeights(decPoint(), decPoint(imageDim, imageDim));
 }
 
-void dedaiHeightTerrainSector::pUpdateHeights( const decPoint &from, const decPoint &to ){
+void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoint &to){
 	const int imageDim = pHeightTerrain.GetHeightTerrain().GetSectorResolution();
 	const float baseHeight = pHeightTerrain.GetHeightTerrain().GetBaseHeight();
 	deImage * const heightImage = pSector.GetHeightImage();
 	const int pixelCount = imageDim * imageDim;
 	
 	// create height values if not existing already
-	if( ! pHeights ){
-		pHeights = new float[ pixelCount ];
+	if(pHeights.IsEmpty()){
+		pHeights.AddRange(pixelCount, 0.0f);
 	}
 	
 	// update height values unless image is not set
 	int x, y;
 	
-	if( ! heightImage ){
-		for( y=from.y; y<=to.y; y++ ){
-			float * const heightsRow = pHeights + imageDim * y;
-			for( x=from.x; x<=to.x; x++ ){
-				heightsRow[ x ] = 0.0f;
+	if(!heightImage){
+		for(y=from.y; y<=to.y; y++){
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
+			for(x=from.x; x<=to.x; x++){
+				heightsRow[x] = 0.0f;
 			}
 		}
 		return;
 	}
 	
-	if( heightImage->GetBitCount() == 8 ){
+	if(heightImage->GetBitCount() == 8){
 		const float scaling = pHeightTerrain.GetHeightTerrain().GetHeightScaling() * HT_8BIT_PTOH;
 		const sGrayscale8 * const imageData = heightImage->GetDataGrayscale8();
 		
-		for( y=from.y; y<=to.y; y++ ){
+		for(y=from.y; y<=to.y; y++){
 			const sGrayscale8 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
-			for( x=from.x; x<=to.x; x++ ){
-				heightsRow[ x ] = baseHeight + ( float )( imageDataRow[ x ].value - HT_8BIT_BASE ) * scaling;
+			for(x=from.x; x<=to.x; x++){
+				heightsRow[x] = baseHeight + (float)(imageDataRow[x].value - HT_8BIT_BASE) * scaling;
 			}
 		}
 		
-	}else if( heightImage->GetBitCount() == 16 ){
+	}else if(heightImage->GetBitCount() == 16){
 		const float scaling = pHeightTerrain.GetHeightTerrain().GetHeightScaling() * HT_16BIT_PTOH;
 		sGrayscale16 * const imageData = heightImage->GetDataGrayscale16();
 		
-		for( y=from.y; y<=to.y; y++ ){
+		for(y=from.y; y<=to.y; y++){
 			const sGrayscale16 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
-			for( x=from.x; x<=to.x; x++ ){
-				heightsRow[ x ] = baseHeight + ( float )( imageDataRow[ x ].value - HT_16BIT_BASE ) * scaling;
+			for(x=from.x; x<=to.x; x++){
+				heightsRow[x] = baseHeight + (float)(imageDataRow[x].value - HT_16BIT_BASE) * scaling;
 			}
 		}
 		
@@ -242,12 +209,12 @@ void dedaiHeightTerrainSector::pUpdateHeights( const decPoint &from, const decPo
 		const float scaling = pHeightTerrain.GetHeightTerrain().GetHeightScaling();
 		sGrayscale32 * const imageData = heightImage->GetDataGrayscale32();
 		
-		for( y=from.y; y<=to.y; y++ ){
+		for(y=from.y; y<=to.y; y++){
 			const sGrayscale32 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
-			for( x=from.x; x<=to.x; x++ ){
-				heightsRow[ x ] = baseHeight + imageDataRow[ x ].value * scaling;
+			for(x=from.x; x<=to.x; x++){
+				heightsRow[x] = baseHeight + imageDataRow[x].value * scaling;
 			}
 		}
 	}

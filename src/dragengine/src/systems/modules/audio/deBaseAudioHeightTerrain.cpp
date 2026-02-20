@@ -46,27 +46,27 @@ deBaseAudioHeightTerrain::~deBaseAudioHeightTerrain(){
 void deBaseAudioHeightTerrain::ParametersChanged(){
 }
 
-void deBaseAudioHeightTerrain::HeightChanged( const decPoint &, const decPoint &,
-const decPoint &, const decPoint & ){
+void deBaseAudioHeightTerrain::HeightChanged(const decPoint &, const decPoint &,
+const decPoint &, const decPoint &){
 }
 
-void deBaseAudioHeightTerrain::SectorAdded( deHeightTerrainSector* ){
+void deBaseAudioHeightTerrain::SectorAdded(deHeightTerrainSector*){
 }
 
-void deBaseAudioHeightTerrain::SectorRemoved( int ){
+void deBaseAudioHeightTerrain::SectorRemoved(int){
 }
 
 void deBaseAudioHeightTerrain::AllSectorsRemoved(){
 }
 
-void deBaseAudioHeightTerrain::SectorChanged( int ){
+void deBaseAudioHeightTerrain::SectorChanged(int){
 }
 
-void deBaseAudioHeightTerrain::DecalAdded( int, deDecal* ){
+void deBaseAudioHeightTerrain::DecalAdded(int, deDecal*){
 }
 
-void deBaseAudioHeightTerrain::DecalRemoved( int, deDecal* ){
+void deBaseAudioHeightTerrain::DecalRemoved(int, deDecal*){
 }
 
-void deBaseAudioHeightTerrain::AllDecalsRemoved( int ){
+void deBaseAudioHeightTerrain::AllDecalsRemoved(int){
 }

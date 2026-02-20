@@ -27,8 +27,8 @@
 #define _DEBPSKIN_H_
 
 // includes
-#include "dragengine/systems/modules/physics/deBasePhysicsSkin.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/physics/deBasePhysicsSkin.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefintions
 class deSkin;
@@ -50,8 +50,8 @@ private:
 	
 public:
 	// constructor, destructor
-	debpSkin( deSkin *skin );
-	~debpSkin();
+	debpSkin(deSkin *skin);
+	~debpSkin() override;
 	// management
 	inline deSkin *GetSkin() const{ return pSkin; }
 	

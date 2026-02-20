@@ -27,8 +27,8 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 
 
 
@@ -36,28 +36,31 @@ class ceCAPlayerChoiceOption;
  * \brief Undo Action Player Choice Add Conversation Action.
  */
 class ceUCAPChoiceActionPaste : public ceUCActionPaste{
+public:
+	using Ref = deTObjectReference<ceUCAPChoiceActionPaste>;
+
 private:
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceActionPaste( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-		ceCAPlayerChoiceOption *option, const ceConversationActionList &actions, int index );
+	ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+		ceCAPlayerChoiceOption *option, const ceConversationAction::List &actions, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAPChoiceActionPaste();
+	~ceUCAPChoiceActionPaste() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

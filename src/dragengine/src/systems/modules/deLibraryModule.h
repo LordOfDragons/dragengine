@@ -41,7 +41,7 @@
 #include "../../app/include_windows.h"
 #endif
 
-#include "../../common/collection/decPointerList.h"
+#include "../../common/collection/decTList.h"
 
 class decBaseFileReader;
 
@@ -55,6 +55,10 @@ class decBaseFileReader;
  */
 class DE_DLL_EXPORT deLibraryModule : public deLoadableModule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deLibraryModule>;
+	
+	
 	/** \brief Error Codes. */
 	enum eErrorCodes{
 		/** \brief Module library file could not be found. */
@@ -100,7 +104,7 @@ private:
 	#endif
 	
 	decStringList pPreloadLibraryPath;
-	decPointerList pPreloadedLibraries;
+	decTList<void*> pPreloadedLibraries;
 	
 	
 	
@@ -108,10 +112,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new library module. */
-	deLibraryModule( deModuleSystem *system, const char *xmlDefFilename );
+	deLibraryModule(deModuleSystem *system, const char *xmlDefFilename);
 	
 	/** \brief Clean up loadable module. */
-	virtual ~deLibraryModule();
+	~deLibraryModule() override;
 	/*@}*/
 	
 	
@@ -141,10 +145,10 @@ public:
 	 * Sets the error code in both the case of success and failure and stored the module
 	 * for later retrieval.
 	 */
-	virtual void LoadModule();
+	void LoadModule() override;
 	
 	/** \brief Unloads the module. Sets the module to NULL and clears the error code. */
-	virtual void UnloadModule();
+	void UnloadModule() override;
 	/*@}*/
 	
 	
@@ -152,10 +156,10 @@ public:
 	/** \name Type Testing and Safe Casting */
 	/*@{*/
 	/** \brief Determines if this is a library loaded module. */
-	virtual bool IsLibraryModule() const;
+	bool IsLibraryModule() const override;
 	
 	/** \brief Cast to a library loaded rule. */
-	virtual deLibraryModule *CastToLibraryModule();
+	deLibraryModule *CastToLibraryModule() override;
 	/*@}*/
 	
 	
@@ -163,17 +167,17 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit module. */
-	virtual void Visit( deLoadableModuleVisitor &visitor );
+	void Visit(deLoadableModuleVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	bool pLoadLibrary( const char *filename );
-	bool pVerifyLibrary( const char *filename );
-	void pLoadXML( const char *filename );
-	void pParseXML( const char *filename, decBaseFileReader &reader );
+	bool pLoadLibrary(const char *filename);
+	bool pVerifyLibrary(const char *filename);
+	void pLoadXML(const char *filename);
+	void pParseXML(const char *filename, decBaseFileReader &reader);
 	void pVerifyModule();
 	void pPreloadLibraries();
 	void pUnloadPreloadedLibraries();

@@ -36,14 +36,16 @@ class gdeCategory;
  */
 class gdeWPSTIMCategoriesSkin : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMCategoriesSkin> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategoriesSkin( gdeWPSTreeModel &tree );
+	gdeWPSTIMCategoriesSkin(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMCategoriesSkin();
+	~gdeWPSTIMCategoriesSkin() override;
 	/*@}*/
 	
 	
@@ -51,8 +53,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with category or \em NULL. */
-	gdeWPSTIMCategorySkin *GetChildWith( gdeCategory* category, bool deep ) const;
+	/** \brief Model with category or \em nullptr. */
+	gdeWPSTIMCategorySkin *GetChildWith(gdeCategory* category, bool deep) const;
 	
 	/** \brief Categories changed. */
 	void CategoriesChanged();
@@ -60,13 +62,13 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

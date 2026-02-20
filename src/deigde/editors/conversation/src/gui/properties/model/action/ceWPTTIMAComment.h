@@ -34,15 +34,16 @@
  */
 class ceWPTTIMAComment : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAComment>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAComment( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAComment *action );
+	ceWPTTIMAComment(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAComment *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAComment();
+	~ceWPTTIMAComment() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAComment *GetActionComment() const{ return ( ceCAComment* )GetAction(); }
+	inline ceCAComment *GetActionComment() const{ return GetAction().DynamicCast<ceCAComment>(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

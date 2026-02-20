@@ -25,10 +25,10 @@
 #ifndef _DEOGLSPBLOCKSSBO_H_
 #define _DEOGLSPBLOCKSSBO_H_
 
-#include <stdint.h>
-
 #include "deoglShaderParameterBlock.h"
 #include "../../utils/deoglFence.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -36,7 +36,8 @@
  */
 class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
-	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
+	using Ref = deTObjectReference<deoglSPBlockSSBO>;
+	
 	
 	/** Type. */
 	enum eType{
@@ -77,8 +78,7 @@ private:
 	bool pCompact;
 	bool pAllocateBuffer;
 	
-	char *pWriteBuffer;
-	int pWriteBufferCapacity;
+	decTList<char> pWriteBuffer;
 	
 	char *pPersistentMapped;
 	deoglFence::Ref pFenceTransfer;
@@ -91,15 +91,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader storage buffer object. */
-	deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type );
+	deoglSPBlockSSBO(deoglRenderThread &renderThread, eType type);
 	
 	/** Create copy of shader storage buffer object. */
-	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock );
-	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType eype );
+	deoglSPBlockSSBO(const deoglSPBlockSSBO &paramBlock);
+	deoglSPBlockSSBO(const deoglSPBlockSSBO &paramBlock, eType eype);
 	
 protected:
 	/** Clean up shader storage buffer object. */
-	virtual ~deoglSPBlockSSBO();
+	~deoglSPBlockSSBO() override;
 	/*@}*/
 	
 	
@@ -117,37 +117,37 @@ public:
 	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
 	/** Set binding point. */
-	void SetBindingPoint( int bindingPoint );
+	void SetBindingPoint(int bindingPoint);
 	
 	/** UBO Binding point. */
 	inline int GetBindingPointUBO() const{ return pBindingPointUBO; }
 	
 	/** Set UBO binding point. */
-	void SetBindingPointUBO( int bindingPoint );
+	void SetBindingPointUBO(int bindingPoint);
 	
 	/** Atmomic counter binding point. */
 	inline int GetBindingPointAtomic() const{ return pBindingPointAtomic; }
 	
 	/** Set atomic counter binding point. */
-	void SetBindingPointAtomic( int bindingPoint );
+	void SetBindingPointAtomic(int bindingPoint);
 	
 	/** Compact elements. If true mapping individual elements is prohibited. */
 	inline bool GetCompact() const{ return pCompact; }
 	
 	/** Set if elements are compact. If true mapping individual elements is prohibited. */
-	void SetCompact( bool compact );
+	void SetCompact(bool compact);
 	
 	/** Activate buffer. */
-	virtual void Activate() const;
+	void Activate() const override;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint ) const;
+	void Activate(int bindingPoint) const override;
 	
 	/** Deactivate buffer. */
-	virtual void Deactivate() const;
+	void Deactivate() const override;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint ) const;
+	void Deactivate(int bindingPoint) const override;
 	
 	/** Activate buffer as UBO. */
 	void ActivateUBO() const;
@@ -159,13 +159,13 @@ public:
 	void ActivateAtomic() const;
 	
 	/** Activate buffer as atomic buffer overriding binding point. */
-	void ActivateAtomic( int bindingPoint ) const;
+	void ActivateAtomic(int bindingPoint) const;
 	
 	/** Deactivate buffer as atomic buffer. */
 	void DeactivateAtomic() const;
 	
 	/** Deactivate buffer as atomic buffer overriding binding point. */
-	void DeactivateAtomic( int bindingPoint ) const;
+	void DeactivateAtomic(int bindingPoint) const;
 	
 	/** Activate buffer as dispatch indirect. */
 	void ActivateDispatchIndirect() const;
@@ -174,7 +174,7 @@ public:
 	void DeactivateDispatchIndirect() const;
 	
 	/** Map buffer discarding content. */
-	virtual void MapBuffer();
+	void MapBuffer() override;
 	
 	/**
 	 * Map buffer for specific element discarding content.
@@ -182,7 +182,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element );
+	void MapBuffer(int element) override;
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -190,48 +190,48 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element, int count );
+	void MapBuffer(int element, int count) override;
 	
 	/** Unmap buffer uploading data to GPU. */
-	virtual void UnmapBuffer();
+	void UnmapBuffer() override;
 	
 	/** Ensure buffer exists. */
-	virtual void EnsureBuffer();
+	void EnsureBuffer() override;
 	
 	/** Clear buffer. */
-	void ClearDataUInt( uint32_t value );
-	void ClearDataUInt( int offset, int count, uint32_t value );
-	void ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
-	void ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	void ClearDataUInt(uint32_t value);
+	void ClearDataUInt(int offset, int count, uint32_t value);
+	void ClearDataUInt(uint32_t r, uint32_t g, uint32_t b, uint32_t a);
+	void ClearDataUInt(int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a);
 	
-	void ClearDataFloat( float value );
-	void ClearDataFloat( int offset, int count, float value );
-	void ClearDataFloat( float r, float g, float b, float a );
-	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
+	void ClearDataFloat(float value);
+	void ClearDataFloat(int offset, int count, float value);
+	void ClearDataFloat(float r, float g, float b, float a);
+	void ClearDataFloat(int offset, int count, float r, float g, float b, float a);
 	
 	/** Copy buffer data from SSBO into this SSBO. */
-	void CopyData( const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset );
+	void CopyData(const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset);
 	
 	/** GPU finished writing data to SSBO. */
 	void GPUFinishedWriting();
 	
 	/** Asynchronously read data from GPU to CPU. */
 	void GPUReadToCPU();
-	void GPUReadToCPU( int elementCount );
+	void GPUReadToCPU(int elementCount);
 	
 	/** Map buffer for reading. */
 	void MapBufferRead();
-	void MapBufferRead( int element );
-	void MapBufferRead( int element, int count );
+	void MapBufferRead(int element);
+	void MapBufferRead(int element, int count);
 	
 	/** Unmap buffer after reading. */
 	void UnmapBufferRead();
 	
 	/** Get platform alignment requirements. */
-	virtual int GetAlignmentRequirements() const;
+	int GetAlignmentRequirements() const override;
 	
 	/** Create copy of shader parameter block. */
-	virtual deoglShaderParameterBlock *Copy() const;
+	deoglShaderParameterBlock::Ref Copy() const override;
 	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
@@ -242,18 +242,18 @@ public:
 	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUSSBO; }
 	
 	/** Debug print configuration. */
-	void DebugPrintConfig( const char *name );
+	void DebugPrintConfig(const char *name);
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pUpdateBufferSize();
+	void pUpdateBufferSize() override;
 	
 	
 	
 private:
-	void pGrowWriteBuffer( int size );
+	void pGrowWriteBuffer(int size);
 	void pEnsureSSBO();
 };
 

@@ -32,9 +32,9 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/meWorld.h"
+#include "../../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -44,10 +44,14 @@ class meHeightTerrainTexture;
  * Undo action to set the skin of a height terrain texture.
  */
 class meUHTSetTexSkin : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetTexSkin>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -56,20 +60,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexSkin( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath );
+	meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetTexSkin();
+
+protected:
+	~meUHTSetTexSkin() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

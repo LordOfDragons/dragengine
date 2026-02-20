@@ -48,7 +48,7 @@ public:
 	/** Creates a new visitor. */
 	aeALOccupiedTest();
 	/** Cleans up the visitor. */
-	virtual ~aeALOccupiedTest();
+	~aeALOccupiedTest() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -66,17 +66,17 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
 	 * then the script is asked to determine if the two collider can hit each
-	 * other. If this peer is used in a ray test owner is NULL and the script
+	 * other. If this peer is used in a ray test owner is nullptr and the script
 	 * is asked to determine if the ray can hit the collider.
-	 * @param owner Collider this peer belongs to or NULL if a ray test is done.
+	 * @param owner Collider this peer belongs to or nullptr if a ray test is done.
 	 * @param collider Collider to test.
 	 * @return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/*@}*/
 };
 

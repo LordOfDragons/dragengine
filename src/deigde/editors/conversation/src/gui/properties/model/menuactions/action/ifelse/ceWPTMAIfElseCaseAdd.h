@@ -48,11 +48,12 @@ protected:
 	ceWPTMAIfElseCaseAdd();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseAdd>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseAdd( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse );
+	ceWPTMAIfElseCaseAdd(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse);
 	/*@}*/
 	
 	
@@ -69,7 +70,7 @@ public:
 	inline ceCAIfElse &GetIfElse() const{ return *pIfElse; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

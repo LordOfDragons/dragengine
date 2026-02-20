@@ -26,22 +26,23 @@
 #define _DEOGLRWORLD_H_
 
 #include "deoglWorldCompute.h"
-#include "../envmap/deoglEnvironmentMapList.h"
+#include "../envmap/deoglEnvironmentMap.h"
+#include "../envmap/deoglEnvironmentMap.h"
+#include "../terrain/heightmap/deoglRHeightTerrain.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
-class deoglEnvironmentMapList;
-class deoglRBillboard;
+class deoglDebugDrawer;
 class deoglRComponent;
 class deoglRDebugDrawer;
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglREnvMapProbe;
-class deoglRHeightTerrain;
 class deoglRLight;
 class deoglRLumimeter;
 class deoglRParticleEmitterInstance;
@@ -49,7 +50,6 @@ class deoglRPropField;
 class deoglRSkyInstance;
 class deoglWorldOctree;
 class deoglWorldOctreeVisitor;
-class deoglEnvironmentMap;
 class deoglRenderPlanMasked;
 class deoglGIState;
 
@@ -60,7 +60,8 @@ class deoglGIState;
  */
 class deoglRWorld : public deObject{
 public:
-	typedef deTObjectReference<deoglRWorld> Ref;
+	using Ref = deTObjectReference<deoglRWorld>;
+	
 	
 private:
 	deoglRenderThread &pRenderThread;
@@ -72,25 +73,20 @@ private:
 	
 	bool pDirtyNotifySkyChanged;
 	bool pDirtySkyOrder;
-	deoglEnvironmentMap *pSkyEnvMap;
+	deoglEnvironmentMap::Ref pSkyEnvMap;
 	
-	deoglRHeightTerrain *pHeightTerrain;
+	deoglRHeightTerrain::Ref pHeightTerrain;
 	
-	deoglRComponent *pRootComponent;
-	deoglRComponent *pTailComponent;
-	int pComponentCount;
+	decTObjectLinkedList<deoglRComponent> pComponents;
+	decTObjectLinkedList<deoglRBillboard> pBillboards;
 	
-	deoglRBillboard *pRootBillboard;
-	deoglRBillboard *pTailBillboard;
-	int pBillboardCount;
-	
-	decObjectList pSkies;
-	decObjectList pDebugDrawers;
-	decObjectList pEnvMapProbes;
-	decObjectList pLights;
-	decObjectList pLumimeters;
-	decObjectList pParticleEmitterInstances;
-	decObjectList pPropFields;
+	decTObjectList<deoglRSkyInstance> pSkies;
+	decTObjectList<deoglRDebugDrawer> pDebugDrawers;
+	decTObjectList<deoglREnvMapProbe> pEnvMapProbes;
+	decTObjectList<deoglRLight> pLights;
+	decTObjectList<deoglRLumimeter> pLumimeters;
+	decTObjectList<deoglRParticleEmitterInstance> pParticleEmitterInstances;
+	decTObjectList<deoglRPropField> pPropFields;
 	
 	decColor pAmbientLight;
 	bool pDisableLights;
@@ -99,25 +95,25 @@ private:
 	decDVector pReferencePosition;
 	double pValidReferenceDistance;
 	
-	deoglEnvironmentMapList pEnvMapList;
+	deoglEnvironmentMap::List pEnvMapList;
 	int pEnvMapUpdateCount;
 	deoglRenderPlan *pEnvMapRenderPlan;
 	bool pDirtyEnvMapLayout;
 	
-	decPointerSet pGIStates;
+	decTOrderedSet<deoglGIState*> pGIStates;
 	
 	deoglWorldOctree *pOctree;
 	deoglWorldCompute::Ref pCompute;
 	
-	decPointerLinkedList pListPrepareForRenderComponents;
-	decPointerLinkedList pListPrepareForRenderBillboards;
-	decPointerLinkedList pListPrepareForRenderLights;
-	decPointerLinkedList pListPrepareForRenderPropFields;
+	decTLinkedList<deoglRComponent> pListPrepareForRenderComponents;
+	decTLinkedList<deoglRBillboard> pListPrepareForRenderBillboards;
+	decTLinkedList<deoglRLight> pListPrepareForRenderLights;
+	decTLinkedList<deoglRPropField> pListPrepareForRenderPropFields;
 	
-	decPointerList pListPrepareRenderComponents;
-	decPointerList pListPrepareRenderBillboards;
-	decPointerList pListPrepareRenderLights;
-	decPointerList pListPrepareRenderPropFields;
+	decTList<deoglRComponent*> pListPrepareRenderComponents;
+	decTList<deoglRBillboard*> pListPrepareRenderBillboards;
+	decTList<deoglRLight*> pListPrepareRenderLights;
+	decTList<deoglRPropField*> pListPrepareRenderPropFields;
 	
 	
 	
@@ -125,14 +121,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render world. */
-	deoglRWorld( deoglRenderThread &renderThread, const decDVector &size );
+	deoglRWorld(deoglRenderThread &renderThread, const decDVector &size);
 	
+protected:
 	/** Clean up render camera. */
-	virtual ~deoglRWorld();
+	~deoglRWorld() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -142,7 +139,7 @@ public:
 	inline const decDVector &GetSize() const{ return pSize; }
 	
 	/** Set size. */
-	void SetSize( const decDVector &size );
+	void SetSize(const decDVector &size);
 	
 	/** Requires prepare for render. */
 	void RequiresPrepareForRender();
@@ -151,15 +148,15 @@ public:
 	void MarkSkyOrderDirty();
 	
 	/** Sky environment map or \em NULL if not existing. */
-	inline deoglEnvironmentMap *GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
 	
 	
 	
 	/** Height terrain or \em NULL if not set. */
-	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deoglRHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Set height terrain or \em NULL if not set. */
-	void SetHeightTerrain( deoglRHeightTerrain *heightTerrain );
+	void SetHeightTerrain(deoglRHeightTerrain *heightTerrain);
 	
 	
 	
@@ -168,19 +165,19 @@ public:
 	inline bool GetDisableLights() const{ return pDisableLights; }
 	
 	/** Set if all lights are disabled. */
-	void SetDisableLights( bool disable );
+	void SetDisableLights(bool disable);
 	
 	/** Ambient light color. */
 	inline const decColor &GetAmbientLight() const{ return pAmbientLight; }
 	
 	/** Set ambient light color. */
-	void SetAmbientLight( const decColor &color );
+	void SetAmbientLight(const decColor &color);
 	
 	/** Light color matrix. */
 	inline const decMatrix &GetLightColorMatrix() const{ return pLightColorMatrix; }
 	
 	/** Set light color matrix. */
-	void SetLightColorMatrix( const decMatrix &matrix );
+	void SetLightColorMatrix(const decMatrix &matrix);
 	
 	
 	
@@ -188,11 +185,11 @@ public:
 	inline deoglWorldOctree &GetOctree() const{ return *pOctree; }
 	
 	/** Visit entire content of the world. */
-	void VisitAll( deoglWorldOctreeVisitor &visitor );
+	void VisitAll(deoglWorldOctreeVisitor &visitor);
 	
 	/** Visit content of the world using an axis aligned box. */
-	void VisitRegion( const decDVector &boxMinExtend, const decDVector &boxMaxExtend,
-		deoglWorldOctreeVisitor &visitor );
+	void VisitRegion(const decDVector &boxMinExtend, const decDVector &boxMaxExtend,
+		deoglWorldOctreeVisitor &visitor);
 	
 	
 	
@@ -202,27 +199,27 @@ public:
 	
 	
 	/** Early prepare for rendering. */
-	void EarlyPrepareForRender( deoglRenderPlan &plan );
+	void EarlyPrepareForRender(deoglRenderPlan &plan);
 	
 	/** Prepare for rendering. */
-	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for rendering render. */
 protected:
-	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 public:
 	
-	void AddPrepareForRenderComponent( deoglRComponent *component );
-	void RemovePrepareForRenderComponent( deoglRComponent *component );
+	void AddPrepareForRenderComponent(deoglRComponent *component);
+	void RemovePrepareForRenderComponent(deoglRComponent *component);
 	
-	void AddPrepareForRenderBillboard( deoglRBillboard *billboard );
-	void RemovePrepareForRenderBillboard( deoglRBillboard *billboard );
+	void AddPrepareForRenderBillboard(deoglRBillboard *billboard);
+	void RemovePrepareForRenderBillboard(deoglRBillboard *billboard);
 	
-	void AddPrepareForRenderLight( deoglRLight *light );
-	void RemovePrepareForRenderLight( deoglRLight *light );
+	void AddPrepareForRenderLight(deoglRLight *light);
+	void RemovePrepareForRenderLight(deoglRLight *light);
 	
-	void AddPrepareForRenderPropField( deoglRPropField *propField );
-	void RemovePrepareForRenderPropField( deoglRPropField *propField );
+	void AddPrepareForRenderPropField(deoglRPropField *propField);
+	void RemovePrepareForRenderPropField(deoglRPropField *propField);
 	/*@}*/
 	
 	
@@ -239,7 +236,7 @@ public:
 	 * Set reference position for world matrices and positions used directly in shaders.
 	 * \details Notifies all affected elements about the change.
 	 */
-	void SetReferencePosition( const decDVector &position );
+	void SetReferencePosition(const decDVector &position);
 	
 	/**
 	 * Check new reference position against the current reference position.
@@ -247,13 +244,13 @@ public:
 	 *          components the reference position is updated and all affected elements notified
 	 *          about the change.
 	 */
-	void CheckReferencePosition( const decDVector &position );
+	void CheckReferencePosition(const decDVector &position);
 	
 	/** Validity distance for reference position checks. */
 	inline double GetValidReferenceDistance() const{ return pValidReferenceDistance; }
 	
 	/** Set validity distance for reference position checks. */
-	void SetValidReferenceDistance( double distance );
+	void SetValidReferenceDistance(double distance);
 	/*@}*/
 	
 	
@@ -264,13 +261,13 @@ public:
 	int GetPropFieldCount() const;
 	
 	/** Prop field at index. */
-	deoglRPropField *GetPropFieldAt( int index ) const;
+	deoglRPropField *GetPropFieldAt(int index) const;
 	
 	/** Add prop field. */
-	void AddPropField( deoglRPropField *propField );
+	void AddPropField(deoglRPropField *propField);
 	
 	/** Remove prop field. */
-	void RemovePropField( deoglRPropField *propField );
+	void RemovePropField(deoglRPropField *propField);
 	
 	/** Remove all prop fields. */
 	void RemoveAllPropFields();
@@ -287,13 +284,13 @@ public:
 	int GetParticleEmitterInstanceCount() const;
 	
 	/** Particle emitter instance at index. */
-	deoglRParticleEmitterInstance *GetParticleEmitterInstanceAt( int index ) const;
+	deoglRParticleEmitterInstance *GetParticleEmitterInstanceAt(int index) const;
 	
 	/** Add particle emitter instance. */
-	void AddParticleEmitterInstance( deoglRParticleEmitterInstance *instance );
+	void AddParticleEmitterInstance(deoglRParticleEmitterInstance *instance);
 	
 	/** Remove particle emitter instance. */
-	void RemoveParticleEmitterInstance( deoglRParticleEmitterInstance *instance );
+	void RemoveParticleEmitterInstance(deoglRParticleEmitterInstance *instance);
 	
 	/** Remove all particle emitter instances. */
 	void RemoveAllParticleEmitterInstances();
@@ -306,17 +303,20 @@ public:
 	
 	/** \name Components. */
 	/*@{*/
+	/** Components. */
+	inline const decTObjectLinkedList<deoglRComponent> &GetComponents() const{ return pComponents; }
+	
 	/** Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** Root component. */
-	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
+	inline deoglRComponent *GetRootComponent() const{ return pComponents.GetRootOwner(); }
 	
 	/** Add component. */
-	void AddComponent( deoglRComponent *component );
+	void AddComponent(deoglRComponent *component);
 	
 	/** Remove component. */
-	void RemoveComponent( deoglRComponent *component );
+	void RemoveComponent(deoglRComponent *component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -333,13 +333,13 @@ public:
 	int GetLightCount() const;
 	
 	/** Light at index. */
-	deoglRLight *GetLightAt( int index ) const;
+	deoglRLight *GetLightAt(int index) const;
 	
 	/** Add light. */
-	void AddLight( deoglRLight *light );
+	void AddLight(deoglRLight *light);
 	
 	/** Remove light. */
-	void RemoveLight( deoglRLight *light );
+	void RemoveLight(deoglRLight *light);
 	
 	/** Remove all light. */
 	void RemoveAllLights();
@@ -356,19 +356,19 @@ public:
 	int GetEnvMapProbeCount() const;
 	
 	/** environment map probe at index. */
-	deoglREnvMapProbe *GetEnvMapProbeAt( int index ) const;
+	deoglREnvMapProbe *GetEnvMapProbeAt(int index) const;
 	
 	/**
 	 * Add environment map probe.
 	 * \note Called during synchronization by main thread.
 	 */
-	void AddEnvMapProbe( deoglREnvMapProbe *envMapProbe );
+	void AddEnvMapProbe(deoglREnvMapProbe *envMapProbe);
 	
 	/**
 	 * Remove environment map probe.
 	 * \note Called during synchronization by main thread.
 	 */
-	void RemoveEnvMapProbe( deoglREnvMapProbe *envMapProbe );
+	void RemoveEnvMapProbe(deoglREnvMapProbe *envMapProbe);
 	
 	/** Remove all environment map probes. */
 	void RemoveAllEnvMapProbes();
@@ -382,13 +382,13 @@ public:
 	/** \name Environment maps */
 	/*@{*/
 	/** Environment map list. */
-	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMapList; }
+	inline const deoglEnvironmentMap::List &GetEnvMapList() const{ return pEnvMapList; }
 	
 	/** Add environment map. */
-	void AddEnvMap( deoglEnvironmentMap *envmap );
+	void AddEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Remove environment map. */
-	void RemoveEnvMap( deoglEnvironmentMap *envmap );
+	void RemoveEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Remove all environment maps. */
 	void RemoveAllEnvMaps();
@@ -423,13 +423,13 @@ public:
 	int GetLumimeterCount() const;
 	
 	/** Lumimeter at index. */
-	deoglRLumimeter *GetLumimeterAt( int index ) const;
+	deoglRLumimeter *GetLumimeterAt(int index) const;
 	
 	/** Add lumimeter. */
-	void AddLumimeter( deoglRLumimeter *lumimeter );
+	void AddLumimeter(deoglRLumimeter *lumimeter);
 	
 	/** Remove lumimeter. */
-	void RemoveLumimeter( deoglRLumimeter *lumimeter );
+	void RemoveLumimeter(deoglRLumimeter *lumimeter);
 	
 	/** Remove all lumimeter. */
 	void RemoveAllLumimeters();
@@ -442,17 +442,20 @@ public:
 	
 	/** \name Billboards. */
 	/*@{*/
+	/** Billboards. */
+	inline const decTObjectLinkedList<deoglRBillboard> &GetBillboards() const{ return pBillboards; }
+	
 	/** Number of billboards. */
-	inline int GetBillboardCount() const{ return pBillboardCount; }
+	inline int GetBillboardCount() const{ return pBillboards.GetCount(); }
 	
 	/** Root billboard. */
-	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
+	inline deoglRBillboard *GetRootBillboard() const{ return pBillboards.GetRootOwner(); }
 	
 	/** Add billboard. */
-	void AddBillboard( deoglRBillboard *billboard );
+	void AddBillboard(deoglRBillboard *billboard);
 	
 	/** Remove billboard. */
-	void RemoveBillboard( deoglRBillboard *billboard );
+	void RemoveBillboard(deoglRBillboard *billboard);
 	
 	/** Remove all billboard. */
 	void RemoveAllBillboards();
@@ -469,13 +472,13 @@ public:
 	int GetSkyCount() const;
 	
 	/** Sky at index. */
-	deoglRSkyInstance *GetSkyAt( int index ) const;
+	deoglRSkyInstance *GetSkyAt(int index) const;
 	
 	/** Add sky. */
-	void AddSky( deoglRSkyInstance *sky );
+	void AddSky(deoglRSkyInstance *sky);
 	
 	/** Remove sky. */
-	void RemoveSky( deoglRSkyInstance *sky );
+	void RemoveSky(deoglRSkyInstance *sky);
 	
 	/** Remove all skys. */
 	void RemoveAllSkies();
@@ -484,7 +487,7 @@ public:
 	void RemoveRemovalMarkedSkies();
 	
 	/** Notify skies render static component changed requiring updates. */
-	void SkiesNotifyUpdateStaticComponent( deoglRComponent *component );
+	void SkiesNotifyUpdateStaticComponent(deoglRComponent *component);
 	/*@}*/
 	
 	
@@ -495,13 +498,13 @@ public:
 	int GetDebugDrawerCount() const;
 	
 	/** Debug drawer at index. */
-	deoglRDebugDrawer *GetDebugDrawerAt( int index ) const;
+	deoglRDebugDrawer *GetDebugDrawerAt(int index) const;
 	
 	/** Add debug drawer. */
-	void AddDebugDrawer( deoglRDebugDrawer *debugDrawer );
+	void AddDebugDrawer(deoglRDebugDrawer *debugDrawer);
 	
 	/** Remove debug drawer. */
-	void RemoveDebugDrawer( deoglRDebugDrawer *debugDrawer );
+	void RemoveDebugDrawer(deoglRDebugDrawer *debugDrawer);
 	
 	/** Remove all debug drawer. */
 	void RemoveAllDebugDrawers();
@@ -518,31 +521,31 @@ public:
 	int GetGICascadeCount() const;
 	
 	/** GI State at index. */
-	const deoglGIState *GetGICascadeAt( int index ) const;
+	const deoglGIState *GetGICascadeAt(int index) const;
 	
 	/** GI State closest to position. */
-	const deoglGIState *ClosestGIState( const decDVector &position ) const;
+	const deoglGIState *ClosestGIState(const decDVector &position) const;
 	
 	/** Add GI State if absent. */
-	void AddGICascade( const deoglGIState *giState );
+	void AddGICascade(deoglGIState *giState);
 	
 	/** Remove GI State if present. */
-	void RemoveGICascade( const deoglGIState *giState );
+	void RemoveGICascade(deoglGIState *giState);
 	
 	/** Remove all GI states. */
 	void RemoveAllGICascades();
 	
 	/** Notify GI states component entered world. */
-	void GIStatesNotifyComponentEnteredWorld( deoglRComponent *component );
+	void GIStatesNotifyComponentEnteredWorld(deoglRComponent *component);
 	
 	/** Notify GI states component changed layer mask. */
-	void GIStatesNotifyComponentChangedLayerMask( deoglRComponent *component );
+	void GIStatesNotifyComponentChangedLayerMask(deoglRComponent *component);
 	
 	/** Notify GI states component became visible. */
-	void GIStatesNotifyComponentBecameVisible( deoglRComponent *component );
+	void GIStatesNotifyComponentBecameVisible(deoglRComponent *component);
 	
 	/** Notify GI states component changed gi importance. */
-	void GIStatesNotifyComponentChangedGIImportance( deoglRComponent *component );
+	void GIStatesNotifyComponentChangedGIImportance(deoglRComponent *component);
 	/*@}*/
 	
 	
@@ -550,8 +553,8 @@ public:
 private:
 	void pCleanUp();
 	
-	decDVector pSanitizeOctreeSize( const decDVector &size ) const;
-	int pCalcOctreeInsertDepth( const decDVector &size ) const;
+	decDVector pSanitizeOctreeSize(const decDVector &size) const;
+	int pCalcOctreeInsertDepth(const decDVector &size) const;
 	void pReorderSkies();
 	void pCreateSkyEnvMap();
 	void pFreeSkyEnvMap();

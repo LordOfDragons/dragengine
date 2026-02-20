@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetName::meUHTNavSpaceTypeSetName( meHeightTerrainNavSpaceType *type, const char *newName ) :
-pType( NULL ),
-pNewName( newName )
+meUHTNavSpaceTypeSetName::meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType *type, const char *newName) :
+
+pNewName(newName)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldName = type->GetName();
 	
-	SetShortInfo( "Height terrain nav-space type set name" );
+	SetShortInfo("@World.UHTNavSpaceTypeSetName.HeightTerrainNavSpaceTypeSetName");
 	
 	pType = type;
-	type->AddReference();
 }
 
 meUHTNavSpaceTypeSetName::~meUHTNavSpaceTypeSetName(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ meUHTNavSpaceTypeSetName::~meUHTNavSpaceTypeSetName(){
 ///////////////
 
 void meUHTNavSpaceTypeSetName::Undo(){
-	pType->SetName( pOldName );
+	pType->SetName(pOldName);
 }
 
 void meUHTNavSpaceTypeSetName::Redo(){
-	pType->SetName( pNewName );
+	pType->SetName(pNewName);
 }

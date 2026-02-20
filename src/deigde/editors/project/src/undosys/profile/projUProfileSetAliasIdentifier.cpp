@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetAliasIdentifier::projUProfileSetAliasIdentifier( projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetAliasIdentifier::projUProfileSetAliasIdentifier(projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set alias identifier" );
+	SetShortInfo("@Project.Undo.ProfileSetAliasIdentifier");
 	
 	pOldValue = profile->GetAliasIdentifier();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetAliasIdentifier::~projUProfileSetAliasIdentifier(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ projUProfileSetAliasIdentifier::~projUProfileSetAliasIdentifier(){
 ///////////////
 
 void projUProfileSetAliasIdentifier::Undo(){
-	pProfile->SetAliasIdentifier( pOldValue );
+	pProfile->SetAliasIdentifier(pOldValue);
 }
 
 void projUProfileSetAliasIdentifier::Redo(){
-	pProfile->SetAliasIdentifier( pNewValue );
+	pProfile->SetAliasIdentifier(pNewValue);
 }

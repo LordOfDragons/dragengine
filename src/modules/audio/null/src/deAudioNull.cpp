@@ -41,7 +41,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -52,14 +52,14 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule( deLoadableModule *load
 // Entry Function
 ///////////////////
 
-deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *NullAudioCreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deAudioNull( *loadableModule );
+		module = new deAudioNull(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 	
 	return module;
@@ -73,8 +73,8 @@ deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deAudioNull::deAudioNull( deLoadableModule &loadableModule ) :
-deBaseAudioModule( loadableModule ){
+deAudioNull::deAudioNull(deLoadableModule &loadableModule) :
+deBaseAudioModule(loadableModule){
 }
 
 deAudioNull::~deAudioNull(){
@@ -85,7 +85,7 @@ deAudioNull::~deAudioNull(){
 // Management
 ///////////////
 
-bool deAudioNull::Init( deMicrophone *activeMic ){
+bool deAudioNull::Init(deMicrophone *activeMic){
 	return true;
 }
 
@@ -94,29 +94,25 @@ void deAudioNull::CleanUp(){
 
 void deAudioNull::ProcessAudio(){
 	deMicrophone *activeMicrophone = GetGameEngine()->GetAudioSystem()->GetActiveMicrophone();
-	deWorld *world = NULL;
+	deWorld *world = nullptr;
 	
 	// stepping the speakers is required as game code can synchronize to sound finished playing.
 	// for the time being we stop all speakers found playing. this is not correct but prevents
 	// problems until proper code is written
-	if( activeMicrophone ){
+	if(activeMicrophone){
 		world = activeMicrophone->GetParentWorld();
 	}
 	
-	if( world ){
-		deSpeaker *speaker = world->GetRootSpeaker();
-		while( speaker ){
-			deSpeaker * const safeSpeaker = speaker;
-			speaker = speaker->GetLLWorldNext();
-			
-			if( safeSpeaker->GetPlaying() ){
-				safeSpeaker->Stop();
+	if(world){
+		world->GetSpeakers().Visit([&](deSpeaker *speaker){
+			if(speaker->GetPlaying()){
+				speaker->Stop();
 			}
-		}
+		});
 	}
 }
 
-void deAudioNull::SetActiveMicrophone( deMicrophone *microphone ){
+void deAudioNull::SetActiveMicrophone(deMicrophone *microphone){
 }
 
 
@@ -124,52 +120,52 @@ void deAudioNull::SetActiveMicrophone( deMicrophone *microphone ){
 // Audio Management
 /////////////////////
 
-deBaseAudioWorld *deAudioNull::CreateWorld( deWorld* ){
-	return NULL;
+deBaseAudioWorld *deAudioNull::CreateWorld(deWorld*){
+	return nullptr;
 }
 
-deBaseAudioSound *deAudioNull::CreateSound( deSound* ){
-	return NULL;
+deBaseAudioSound *deAudioNull::CreateSound(deSound*){
+	return nullptr;
 }
 
-deBaseAudioSpeaker *deAudioNull::CreateSpeaker( deSpeaker* ){
-	return NULL;
+deBaseAudioSpeaker *deAudioNull::CreateSpeaker(deSpeaker*){
+	return nullptr;
 }
 
-deBaseAudioMicrophone *deAudioNull::CreateMicrophone( deMicrophone* ){
-	return NULL;
+deBaseAudioMicrophone *deAudioNull::CreateMicrophone(deMicrophone*){
+	return nullptr;
 }
 
-deBaseAudioComponent *deAudioNull::CreateComponent( deComponent* ){
-	return NULL;
+deBaseAudioComponent *deAudioNull::CreateComponent(deComponent*){
+	return nullptr;
 }
 
-deBaseAudioModel *deAudioNull::CreateModel( deModel* ){
-	return NULL;
+deBaseAudioModel *deAudioNull::CreateModel(deModel*){
+	return nullptr;
 }
 
-deBaseAudioSkin *deAudioNull::CreateSkin( deSkin* ){
-	return NULL;
+deBaseAudioSkin *deAudioNull::CreateSkin(deSkin*){
+	return nullptr;
 }
 
-deBaseAudioDecal *deAudioNull::CreateDecal( deDecal* ){
-	return NULL;
+deBaseAudioDecal *deAudioNull::CreateDecal(deDecal*){
+	return nullptr;
 }
 
-deBaseAudioSoundLevelMeter *deAudioNull::CreateSoundLevelMeter( deSoundLevelMeter* ){
-	return NULL;
+deBaseAudioSoundLevelMeter *deAudioNull::CreateSoundLevelMeter(deSoundLevelMeter*){
+	return nullptr;
 }
 
-deBaseAudioVideoPlayer *deAudioNull::CreateVideoPlayer( deVideoPlayer* ){
-	return NULL;
+deBaseAudioVideoPlayer *deAudioNull::CreateVideoPlayer(deVideoPlayer*){
+	return nullptr;
 }
 
-deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance( deSynthesizerInstance* ){
-	return NULL;
+deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance(deSynthesizerInstance*){
+	return nullptr;
 }
 
-deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain( deHeightTerrain& ){
-	return NULL;
+deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain(deHeightTerrain&){
+	return nullptr;
 }
 
 #ifdef WITH_INTERNAL_MODULE
@@ -181,6 +177,8 @@ deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain( deHeightTerrain& ){
 
 class deanModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<deanModuleInternal>;
+	
 	deanModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullAudio");
 		SetDescription("Outputs no audio.");
@@ -201,7 +199,7 @@ public:
 	}
 };
 
-deInternalModule *deanRegisterInternalModule(deModuleSystem *system){
-	return new deanModuleInternal(system);
+deTObjectReference<deInternalModule> deanRegisterInternalModule(deModuleSystem *system){
+	return deanModuleInternal::Ref::New(system);
 }
 #endif

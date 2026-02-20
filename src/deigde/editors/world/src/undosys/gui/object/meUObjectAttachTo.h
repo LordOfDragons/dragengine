@@ -25,13 +25,12 @@
 #ifndef _MEUOBJECTATTACHTO_H_
 #define _MEUOBJECTATTACHTO_H_
 
+#include "../../../world/meWorld.h"
+#include "../../../world/object/meObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class meWorld;
-class meObject;
-class meObjectList;
 
 
 
@@ -39,16 +38,26 @@ class meObjectList;
  * \brief Undo Action Attach Objects.
  */
 class meUObjectAttachTo : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectAttachTo>;
+	
+	
 private:
-	struct sObject{
-		meObject *object;
-		meObject *oldAttachTo;
+	class cObject : public deObject{
+	public:
+		using Ref = deTObjectReference<cObject>;
+		using List = decTObjectOrderedSet<cObject>;
+		
+		meObject::Ref object, oldAttachTo;
+		
+		cObject() = default;
+	protected:
+		~cObject() override = default;
 	};
 	
-	meWorld *pWorld;
-	sObject *pObjects;
-	int pObjectCount;
-	meObject *pAttachTo;
+	meWorld::Ref pWorld;
+	cObject::List pObjects;
+	meObject::Ref pAttachTo;
 	
 	
 	
@@ -56,10 +65,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectAttachTo( meWorld *world, const meObjectList &objects, meObject *attachTo );
+	meUObjectAttachTo(meWorld *world, const meObject::List &objects, meObject *attachTo);
 	
 	/** \brief Clean up undo action. */
-	virtual ~meUObjectAttachTo();
+
+protected:
+	~meUObjectAttachTo() override;
+
+public:
 	/*@}*/
 	
 	
@@ -67,16 +80,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

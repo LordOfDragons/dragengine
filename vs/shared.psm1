@@ -248,6 +248,71 @@ function UpdateModuleVersion {
 }
 
 
+# Download file with retry logic and exponential backoff
+##########################################################
+
+function Invoke-WebRequestWithRetry {
+    param (
+        [Parameter(Mandatory=$true)][string]$Uri,
+        [Parameter(Mandatory=$true)][string]$OutFile,
+        [Parameter(Mandatory=$false)][int]$MaxRetries = 5,
+        [Parameter(Mandatory=$false)][int]$TimeoutSec = 300,
+        [Parameter(Mandatory=$false)][hashtable]$Headers = @{}
+    )
+    
+    $retryCount = 0
+    $success = $false
+    
+    while (-not $success -and $retryCount -lt $MaxRetries) {
+        try {
+            $retryCount++
+            Write-Host "Downloading $Uri (Attempt $retryCount of $MaxRetries)..."
+            
+            # Use TLS 1.2 or higher (GitHub requires this)
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            
+            # Download with timeout and progress preference
+            $ProgressPreference = 'SilentlyContinue'
+            
+            $params = @{
+                Uri = $Uri
+                OutFile = $OutFile
+                TimeoutSec = $TimeoutSec
+                UseBasicParsing = $true
+            }
+            
+            if ($Headers. Count -gt 0) {
+                $params.Headers = $Headers
+            }
+            
+            Invoke-WebRequest @params
+            
+            $success = $true
+            Write-Host "Download successful!"
+            
+        } catch {
+            Write-Warning "Download attempt $retryCount failed: $_"
+            
+            # Clean up partial download
+            if (Test-Path $OutFile) {
+                Remove-Item $OutFile -Force -ErrorAction SilentlyContinue
+            }
+            
+            if ($retryCount -lt $MaxRetries) {
+                # Exponential backoff:  2, 4, 8, 16, 32 seconds
+                $waitTime = [Math]:: Pow(2, $retryCount)
+                Write-Host "Retrying in $waitTime seconds..."
+                Start-Sleep -Seconds $waitTime
+                
+            } else {
+                Write-Error "Failed to download after $MaxRetries attempts:  $_"
+                throw
+            }
+        }
+    }
+}
+
+
 # Various path constants
 ##########################
 

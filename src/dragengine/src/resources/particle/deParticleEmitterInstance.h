@@ -25,9 +25,11 @@
 #ifndef _DEPARTICLEEMITTERINSTANCE_H_
 #define _DEPARTICLEEMITTERINSTANCE_H_
 
-#include "deParticleEmitterReference.h"
+#include "deParticleEmitter.h"
+#include "deParticleEmitterController.h"
 #include "../deResource.h"
-#include "../../common/collection/decObjectSet.h"
+#include "../../common/collection/decTSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/utils/decLayerMask.h"
@@ -38,7 +40,6 @@ class deCollider;
 class deCollisionInfo;
 class deParticleEmitterInstanceType;
 class deParticleEmitterInstanceManager;
-class deParticleEmitterController;
 class deBaseGraphicParticleEmitterInstance;
 class deBasePhysicsParticleEmitterInstance;
 class deBaseScriptingParticleEmitterInstance;
@@ -51,12 +52,11 @@ class deBaseScriptingParticleEmitterInstance;
 class DE_DLL_EXPORT deParticleEmitterInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitterInstance> Ref;
-	
+	using Ref = deTObjectReference<deParticleEmitterInstance>;
 	
 	
 private:
-	deParticleEmitterReference pEmitter;
+	deParticleEmitter::Ref pEmitter;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -71,24 +71,19 @@ private:
 	
 	float pBurstTime;
 	
-	deParticleEmitterController *pControllers;
-	int pControllerCount;
-	int pControllerSize;
-	
-	deParticleEmitterInstanceType *pTypes;
-	int pTypeCount;
+	deParticleEmitterController::List pControllers;
+	decTObjectOrderedSet<deParticleEmitterInstanceType> pTypes;
 	
 	decLayerMask pLayerMask;
 	decCollisionFilter pCollisionFilter;
-	decObjectSet pIgnoreColliders;
+	decTObjectSet<deCollider> pIgnoreColliders;
 	
 	deBaseGraphicParticleEmitterInstance *pPeerGraphic;
 	deBasePhysicsParticleEmitterInstance *pPeerPhysics;
 	deBaseScriptingParticleEmitterInstance *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deParticleEmitterInstance *pLLWorldPrev;
-	deParticleEmitterInstance *pLLWorldNext;
+	decTObjectLinkedList<deParticleEmitterInstance>::Element pLLWorld;
 	
 	
 	
@@ -96,8 +91,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new particle emitter instance. */
-	deParticleEmitterInstance( deParticleEmitterInstanceManager *manager );
+	deParticleEmitterInstance(deParticleEmitterInstanceManager *manager);
 	
+	deParticleEmitterInstance(const deParticleEmitterInstance&) = delete;
+	deParticleEmitterInstance& operator=(const deParticleEmitterInstance&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up particle emitter instance.
@@ -105,7 +103,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deParticleEmitterInstance();
+	~deParticleEmitterInstance() override;
 	/*@}*/
 	
 	
@@ -114,22 +112,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set emitter or NULL if none is set. */
-	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
+	inline const deParticleEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter or NULL to unset it. */
-	void SetEmitter( deParticleEmitter *emitter );
+	void SetEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/**
 	 * \brief Reference position. Particles positions are relative to this position.
@@ -147,83 +145,68 @@ public:
 	 * have to be rendered. If the Graphic Module does the simulation by itself setting
 	 * the reference position is not required.
 	 */
-	void SetReferencePosition( const decDVector &position );
+	void SetReferencePosition(const decDVector &position);
 	
 	/** \brief Determines if casting particles is enabled. */
 	inline bool GetEnableCasting() const{ return pEnableCasting; }
 	
 	/** \brief Sets if casting particles is enabled. */
-	void SetEnableCasting( bool enable );
+	void SetEnableCasting(bool enable);
 	
 	/** \brief Emitter instance is removed from the world if the last particle died. */
 	inline bool GetRemoveAfterLastParticleDied() const{ return pRemoveAfterLastParticleDied; }
 	
 	/** \brief Set if emitter instance is removed from the world if the last particle died. */
-	void SetRemoveAfterLastParticleDied( bool remove );
+	void SetRemoveAfterLastParticleDied(bool remove);
 	
 	/** \brief Scaling for the time to be added to controllers linked to time. */
 	inline float GetTimeScale() const{ return pTimeScale; }
 	
 	/** \brief Set scaling for the time to be added to controllers linked to time. */
-	void SetTimeScale( float scale );
+	void SetTimeScale(float scale);
 	
 	/** \brief Warm up time used when enabling casting. */
 	inline float GetWarmUpTime() const{ return pWarmUpTime; }
 	
 	/** \brief Set warm up time used when enabling casting. */
-	void SetWarmUpTime( float warmUpTime );
+	void SetWarmUpTime(float warmUpTime);
 	
 	/** \brief Burst time. Set by the physics module to be used by the graphics module. */
 	inline float GetBurstTime() const{ return pBurstTime; }
 	
 	/** \brief Set burst time. Set by the physics module to be used by the graphics module. */
-	void SetBurstTime( float burstTime );
+	void SetBurstTime(float burstTime);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &collisionFilter );
+	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	
 	
-	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetControllerCount().
-	 */
-	deParticleEmitterController &GetControllerAt( int index );
-	const deParticleEmitterController &GetControllerAt( int index ) const;
-	
-	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	/** \brief Controllers. */
+	inline const deParticleEmitterController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Notify peer controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	
 	
 	
-	/** \brief Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
-	
-	/** \brief Type at the given index. */
-	deParticleEmitterInstanceType &GetTypeAt( int index );
-	const deParticleEmitterInstanceType &GetTypeAt( int index ) const;
+	/** \brief Types. */
+	inline const decTObjectOrderedSet<deParticleEmitterInstanceType> &GetTypes() const{ return pTypes; }
 	
 	/** \brief Notifies the peers that the type at the given index changed. */
-	void NotifyTypeChangedAt( int type );
+	void NotifyTypeChangedAt(int type);
 	
 	/** \brief Notifies the peers that the particles in a type changed. */
-	void NotifyTypeParticlesChangedAt( int type );
+	void NotifyTypeParticlesChangedAt(int type);
 	
 	/** \brief Reset burst particles. */
 	void ResetBurst();
@@ -237,7 +220,7 @@ public:
 	/**
 	 * \brief Let scripting module determine response for a custom particle collision.
 	 */
-	void CollisionResponse( deCollisionInfo *cinfo );
+	void CollisionResponse(deCollisionInfo *cinfo);
 	/*@}*/
 	
 	
@@ -245,38 +228,24 @@ public:
 	/** \name Ignore colliders */
 	/*@{*/
 	/**
-	 * \brief Number of colliders to ignore.
+	 * \brief Colliders to ignore.
 	 * \version 1.7
 	 */
-	int GetIgnoreColliderCount() const;
-	
-	/**
-	 * \brief Collider to ignore at index.
-	 * \version 1.7
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
-	 */
-	deCollider *GetIgnoreColliderAt( int index ) const;
-	
-	/**
-	 * \brief Collider to ignore is present.
-	 * \version 1.7
-	 */
-	bool HasIgnoreCollider( deCollider *collider ) const;
+	inline const decTObjectSet<deCollider> &GetIgnoreColliders() const{ return pIgnoreColliders; }
 	
 	/**
 	 * \brief Add collider to ignore.
 	 * \version 1.7
 	 * \throws deeInvalidParam \em collider is present.
 	 */
-	void AddIgnoreCollider( deCollider *collider );
+	void AddIgnoreCollider(deCollider *collider);
 	
 	/**
 	 * \brief Remove collider to ignore.
 	 * \version 1.7
 	 * \throws deeInvalidParam \em collider is absent.
 	 */
-	void RemoveIgnoreCollider( deCollider *collider );
+	void RemoveIgnoreCollider(deCollider *collider);
 	
 	/**
 	 * \brief Remove all colliders to ignore.
@@ -293,19 +262,19 @@ public:
 	inline deBaseGraphicParticleEmitterInstance *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not assigned. */
-	void SetPeerGraphic( deBaseGraphicParticleEmitterInstance *peer );
+	void SetPeerGraphic(deBaseGraphicParticleEmitterInstance *peer);
 	
 	/** \brief Physics system peer object or NULL if not assigned. */
 	inline deBasePhysicsParticleEmitterInstance *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object or NULL if not assigned. */
-	void SetPeerPhysics( deBasePhysicsParticleEmitterInstance *peer );
+	void SetPeerPhysics(deBasePhysicsParticleEmitterInstance *peer);
 	
 	/** \brief Scripting system peer object or NULL if not assigned. */
 	inline deBaseScriptingParticleEmitterInstance *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object or NULL if not assigned. */
-	void SetPeerScripting( deBaseScriptingParticleEmitterInstance *peer );
+	void SetPeerScripting(deBaseScriptingParticleEmitterInstance *peer);
 	/*@}*/
 	
 	
@@ -318,17 +287,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous particle emitter in the parent world linked list. */
-	inline deParticleEmitterInstance *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next particle emitter in the parent world linked list. */
-	void SetLLWorldPrev( deParticleEmitterInstance *instance );
-	
-	/** \brief Next particle emitter in the parent world linked list. */
-	inline deParticleEmitterInstance *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next particle emitter in the parent world linked list. */
-	void SetLLWorldNext( deParticleEmitterInstance *instance );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deParticleEmitterInstance>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

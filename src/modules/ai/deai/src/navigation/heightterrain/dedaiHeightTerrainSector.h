@@ -27,11 +27,11 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class dedaiHeightTerrain;
 class dedaiHeightTerrainNavSpace;
-class dedaiSpace;
 
 class deHeightTerrainSector;
 
@@ -41,14 +41,19 @@ class deHeightTerrainSector;
  * \brief Navigation space peer.
  */
 class dedaiHeightTerrainSector : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<dedaiHeightTerrainSector>;
+	
+	
 private:
 	dedaiHeightTerrain &pHeightTerrain;
 	const deHeightTerrainSector &pSector;
 	
 	decDVector pPosition;
-	float *pHeights;
+	decTList<float> pHeights;
 	
-	decObjectOrderedSet pNavSpaces;
+	decTObjectOrderedSet<dedaiHeightTerrainNavSpace> pNavSpaces;
 	
 	
 	
@@ -56,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sector. */
-	dedaiHeightTerrainSector( dedaiHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
+	dedaiHeightTerrainSector(dedaiHeightTerrain &heightTerrain, const deHeightTerrainSector &sector);
 	
 protected:
 	/** \brief Clean up sector. */
-	virtual ~dedaiHeightTerrainSector();
+	~dedaiHeightTerrainSector() override;
 	/*@}*/
 	
 	
@@ -80,18 +85,15 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Heights. */
-	inline const float *GetHeights() const{ return pHeights; }
+	inline const decTList<float> &GetHeights() const{ return pHeights; }
 	/*@}*/
 	
 	
 	
 	/** \name Navigation spaces */
 	/*@{*/
-	/** \brief Number of navigation spaces. */
-	int GetNavSpaceCount() const;
-	
-	/** \brief Navigation space at index. */
-	dedaiHeightTerrainNavSpace *GetNavSpaceAt( int index ) const;
+	/** \brief Navigation spaces. */
+	inline const decTObjectOrderedSet<dedaiHeightTerrainNavSpace> &GetNavSpaces() const{ return pNavSpaces; }
 	/*@}*/
 	
 	
@@ -105,28 +107,28 @@ public:
 	void SectorChanged();
 	
 	/** \brief Sector heights changed. */
-	void HeightChanged( const decPoint &from, const decPoint &to );
+	void HeightChanged(const decPoint &from, const decPoint &to);
 	
 	/** \brief Navigation space added. */
-	void NavSpaceAdded( deHeightTerrainNavSpace *navspace );
+	void NavSpaceAdded(deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Navigation space removed. */
-	void NavSpaceRemoved( int index );
+	void NavSpaceRemoved(int index);
 	
 	/** \brief All navigation spaces removed. */
 	void AllNavSpacesRemoved();
 	
 	/** \brief Navigation space layer changed. */
-	void NavSpaceLayerChanged( int index );
+	void NavSpaceLayerChanged(int index);
 	
 	/** \brief Navigation space type changed. */
-	void NavSpaceTypeChanged( int index );
+	void NavSpaceTypeChanged(int index);
 	
 	/** \brief Navigation space snapping parameters changed. */
-	void NavSpaceSnappingChanged( int index );
+	void NavSpaceSnappingChanged(int index);
 	
 	/** \brief Navigation space layout changed. */
-	void NavSpaceLayoutChanged( int index );
+	void NavSpaceLayoutChanged(int index);
 	/*@}*/
 	
 	
@@ -135,7 +137,7 @@ private:
 	void pCleanUp();
 	
 	void pUpdateHeights();
-	void pUpdateHeights( const decPoint &from, const decPoint &to );
+	void pUpdateHeights(const decPoint &from, const decPoint &to);
 };
 
 #endif

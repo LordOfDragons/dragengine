@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create command thread. */
-	projTestRunCommandThread( projTestRunProcess &process );
+	projTestRunCommandThread(projTestRunProcess &process);
 	
 	/** \brief Cleans up the run game thread. */
 	virtual ~projTestRunCommandThread();

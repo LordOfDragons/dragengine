@@ -35,6 +35,9 @@ class reWPConstraint;
  * \brief Constraint panel listener.
  */
 class reWPConstraintListener : public reRigNotifier{
+public:
+	using Ref = deTObjectReference<reWPConstraintListener>;
+	
 private:
 	reWPConstraint &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPConstraintListener( reWPConstraint &panel );
+	reWPConstraintListener(reWPConstraint &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPConstraintListener();
+protected:
+	~reWPConstraintListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,20 +60,20 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged( reRig *rig );
+	void BoneCountChanged(reRig *rig) override;
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged( reRig *rig, reRigBone *bone );
+	void BoneChanged(reRig *rig, reRigBone *bone) override;
 	
 	/** \brief A constraint changed. */
-	virtual void ConstraintChanged( reRig *rig, reRigConstraint *constraint );
+	void ConstraintChanged(reRig *rig, reRigConstraint *constraint) override;
 	
 	/** \brief A constraint degree of freedom changed. */
-	virtual void ConstraintDofChanged( reRig *rig, reRigConstraint *constraint,
-		deColliderConstraint::eDegreesOfFreedom dof );
+	void ConstraintDofChanged(reRig *rig, reRigConstraint *constraint,
+		deColliderConstraint::eDegreesOfFreedom dof) override;
 	
 	/** \brief The active constraint changed. */
-	virtual void ActiveConstraintChanged( reRig *rig );
+	void ActiveConstraintChanged(reRig *rig) override;
 	/*@}*/
 };
 

@@ -49,13 +49,14 @@ protected:
 	ceWPTMAPChoiceOptionAddAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionAddAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionAddAction( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionAddAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option,
-		ceConversationAction::eActionTypes actionType, int index );
+		ceConversationAction::eActionTypes actionType, int index);
 	/*@}*/
 	
 	
@@ -75,7 +76,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationAction *action );
+	igdeUndo::Ref CreateUndo(ceConversationAction *action) override;
 	/*@}*/
 };
 

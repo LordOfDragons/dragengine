@@ -27,20 +27,23 @@
 
 #include "foxtoolkit.h"
 #include "../../igdeTabBook.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 class igdeTabBook;
 class igdeEnvironment;
 class igdeGuiTheme;
 class igdeWidget;
 class igdeNativeFoxAutoScroller;
+class igdeNativeFoxTabBookHeader;
 
 
 /**
  * FOX Native tabBook.
  */
-class igdeNativeFoxTabBook : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxTabBook )
+class igdeNativeFoxTabBook : public FXVerticalFrame, public igdeTabBook::cNativeTabBook {
+	FXDECLARE(igdeNativeFoxTabBook)
 	
 protected:
 	igdeNativeFoxTabBook();
@@ -61,24 +64,25 @@ private:
 	igdeNativeFoxAutoScroller *pAutoScroller;
 	FXHorizontalFrame *pHeaders;
 	FXSwitcher *pSwitcher;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	int pPadLeft;
 	int pPadRight;
 	int pPadTop;
 	int pPadBottom;
+	decTList<igdeNativeFoxTabBookHeader*> pHeaderWidgets;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxTabBook( igdeTabBook &owner, FXComposite *parent, FXComposite *windowParent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxTabBook(igdeTabBook &owner, FXComposite *parent, FXComposite *windowParent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTabBook();
+	~igdeNativeFoxTabBook() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxTabBook* CreateNativeWidget( igdeTabBook &owner );
+	static igdeNativeFoxTabBook* CreateNativeWidget(igdeTabBook &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -92,32 +96,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	inline FXSwitcher *GetSwitcher() const{ return pSwitcher; }
-	
-	virtual void AddHeader( const igdeTabBook::cHeader &header );
-	virtual void RemoveHeader( int index );
-	virtual void RemoveAllHeaders();
-	virtual void ChangePanel( int index );
+	void AddHeader(const igdeTabBook::cHeader &header) override;
+	void UpdateHeader(int index, const igdeTabBook::cHeader &header) override;
+	void RemoveHeader(int index) override;
+	void RemoveAllHeaders() override;
+	void ChangePanel(int index) override;
 	virtual void *GetNativeContainer();
 	
-	static igdeFont *TabBookFont( const igdeTabBook &owner, const igdeGuiTheme &guitheme );
-	static int TabBookPadLeft( const igdeGuiTheme &guitheme );
-	static int TabBookPadRight( const igdeGuiTheme &guitheme );
-	static int TabBookPadTop( const igdeGuiTheme &guitheme );
-	static int TabBookPadBottom( const igdeGuiTheme &guitheme );
+	static igdeFont *TabBookFont(const igdeTabBook &owner, const igdeGuiTheme &guitheme);
+	static int TabBookPadLeft(const igdeGuiTheme &guitheme);
+	static int TabBookPadRight(const igdeGuiTheme &guitheme);
+	static int TabBookPadTop(const igdeGuiTheme &guitheme);
+	static int TabBookPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onHeaderCommand( FXObject*, FXSelector, void* );
-	long onHeaderUpdate( FXObject*, FXSelector, void* );
-	long onHeaderMouseWheel( FXObject*, FXSelector, void* );
-	long onHeaderMouseMoved( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onHeaderCommand(FXObject*, FXSelector, void*);
+	long onHeaderUpdate(FXObject*, FXSelector, void*);
+	long onHeaderMouseWheel(FXObject*, FXSelector, void*);
+	long onHeaderMouseMoved(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxTabBook igdeNativeTabBook;
+using igdeNativeTabBook = igdeNativeFoxTabBook;
 
 #endif

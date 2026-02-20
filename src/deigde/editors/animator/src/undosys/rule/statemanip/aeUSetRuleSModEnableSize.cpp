@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModEnableSize::aeUSetRuleSModEnableSize( aeRuleStateManipulator *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModEnableSize::aeUSetRuleSModEnableSize(aeRuleStateManipulator *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnableSize");
 		
-		SetShortInfo( "Set state manipulator rule enable position" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeUSetRuleSModEnableSize::~aeUSetRuleSModEnableSize(){
 ///////////////
 
 void aeUSetRuleSModEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeUSetRuleSModEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -79,5 +77,4 @@ void aeUSetRuleSModEnableSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnableSize::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

@@ -38,30 +38,30 @@
 /////////////////////////////////
 
 deAnimatorLink::deAnimatorLink() :
-pController( -1 ),
-pRepeat( 1 ),
-pBoneParameter( ebpPositionZ ),
-pBoneMinValue( 0.0f ),
-pBoneMaxValue( 1.0f ),
-pVertexPositionSetMinValue( 0.0f ),
-pVertexPositionSetMaxValue( 1.0f ),
-pWrapY( false )
+pController(-1),
+pRepeat(1),
+pBoneParameter(ebpPositionZ),
+pBoneMinValue(0.0f),
+pBoneMaxValue(1.0f),
+pVertexPositionSetMinValue(0.0f),
+pVertexPositionSetMaxValue(1.0f),
+pWrapY(false)
 {
 	pCurve.SetDefaultLinear();
 }
 
-deAnimatorLink::deAnimatorLink( const deAnimatorLink &copy ) :
-pController( copy.pController ),
-pCurve( copy.pCurve ),
-pRepeat( copy.pRepeat ),
-pBone( copy.pBone ),
-pBoneParameter( copy.pBoneParameter ),
-pBoneMinValue( copy.pBoneMinValue ),
-pBoneMaxValue( copy.pBoneMaxValue ),
-pVertexPositionSet( copy.pVertexPositionSet ),
-pVertexPositionSetMinValue( copy.pVertexPositionSetMinValue ),
-pVertexPositionSetMaxValue( copy.pVertexPositionSetMaxValue ),
-pWrapY( copy.pWrapY ){
+deAnimatorLink::deAnimatorLink(const deAnimatorLink &copy) :
+pController(copy.pController),
+pCurve(copy.pCurve),
+pRepeat(copy.pRepeat),
+pBone(copy.pBone),
+pBoneParameter(copy.pBoneParameter),
+pBoneMinValue(copy.pBoneMinValue),
+pBoneMaxValue(copy.pBoneMaxValue),
+pVertexPositionSet(copy.pVertexPositionSet),
+pVertexPositionSetMinValue(copy.pVertexPositionSetMinValue),
+pVertexPositionSetMaxValue(copy.pVertexPositionSetMaxValue),
+pWrapY(copy.pWrapY){
 }
 
 deAnimatorLink::~deAnimatorLink(){
@@ -72,43 +72,43 @@ deAnimatorLink::~deAnimatorLink(){
 // Management
 ///////////////
 
-void deAnimatorLink::SetController( int controller ){
-	DEASSERT_TRUE( controller >= -1 )
+void deAnimatorLink::SetController(int controller){
+	DEASSERT_TRUE(controller >= -1)
 	pController = controller;
 }
 
-void deAnimatorLink::SetCurve( const decCurveBezier &curve ){
+void deAnimatorLink::SetCurve(const decCurveBezier &curve){
 	pCurve = curve;
 }
 
-void deAnimatorLink::SetRepeat( int repeat ){
-	DEASSERT_TRUE( repeat > 0 )
+void deAnimatorLink::SetRepeat(int repeat){
+	DEASSERT_TRUE(repeat > 0)
 	pRepeat = repeat;
 }
 
-void deAnimatorLink::SetBone( const char *bone ){
+void deAnimatorLink::SetBone(const char *bone){
 	pBone = bone;
 }
 
-void deAnimatorLink::SetBoneParameter( eBoneParameter parameter ){
+void deAnimatorLink::SetBoneParameter(eBoneParameter parameter){
 	pBoneParameter = parameter;
 }
 
-void deAnimatorLink::SetBoneValueRange( float minimum, float maximum ){
+void deAnimatorLink::SetBoneValueRange(float minimum, float maximum){
 	pBoneMinValue = minimum;
 	pBoneMaxValue = maximum;
 }
 
-void deAnimatorLink::SetVertexPositionSet( const char *vertexPositionSet ){
+void deAnimatorLink::SetVertexPositionSet(const char *vertexPositionSet){
 	pVertexPositionSet = vertexPositionSet;
 }
 
-void deAnimatorLink::SetVertexPositionSetValueRange( float minimum, float maximum ){
+void deAnimatorLink::SetVertexPositionSetValueRange(float minimum, float maximum){
 	pVertexPositionSetMinValue = minimum;
 	pVertexPositionSetMaxValue = maximum;
 }
 
-void deAnimatorLink::SetWrapY( bool wrap ){
+void deAnimatorLink::SetWrapY(bool wrap){
 	pWrapY = wrap;
 }
 
@@ -117,7 +117,7 @@ void deAnimatorLink::SetWrapY( bool wrap ){
 // Operators
 //////////////
 
-deAnimatorLink &deAnimatorLink::operator=( const deAnimatorLink &copy ){
+deAnimatorLink &deAnimatorLink::operator=(const deAnimatorLink &copy){
 	pController = copy.pController;
 	pCurve = copy.pCurve;
 	pRepeat = copy.pRepeat;

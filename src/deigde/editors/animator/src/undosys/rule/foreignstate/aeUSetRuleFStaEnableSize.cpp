@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaEnableSize::aeUSetRuleFStaEnableSize( aeRuleForeignState *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaEnableSize::aeUSetRuleFStaEnableSize(aeRuleForeignState *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateEnableSize");
 		
-		SetShortInfo( "Set bone rotator rule enable size" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeUSetRuleFStaEnableSize::~aeUSetRuleFStaEnableSize(){
 ///////////////
 
 void aeUSetRuleFStaEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeUSetRuleFStaEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -79,5 +77,4 @@ void aeUSetRuleFStaEnableSize::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableSize::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

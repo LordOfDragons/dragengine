@@ -35,19 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneIKResistance::reUSetBoneIKResistance( reRigBone *bone, const decVector &ikResistance ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneIKResistance::reUSetBoneIKResistance(reRigBone *bone, const decVector &ikResistance){
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldIKResistance = bone->GetIKResistance();
 	pNewIKResistance = ikResistance;
 	
 	try{
-		SetShortInfo( "Set Bone IK Resistance" );
+		SetShortInfo("@Rig.Undo.BoneSetIkResistance");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +61,11 @@ reUSetBoneIKResistance::~reUSetBoneIKResistance(){
 ///////////////
 
 void reUSetBoneIKResistance::Undo(){
-	pBone->SetIKResistance( pOldIKResistance );
+	pBone->SetIKResistance(pOldIKResistance);
 }
 
 void reUSetBoneIKResistance::Redo(){
-	pBone->SetIKResistance( pNewIKResistance );
+	pBone->SetIKResistance(pNewIKResistance);
 }
 
 
@@ -76,5 +74,4 @@ void reUSetBoneIKResistance::Redo(){
 //////////////////////
 
 void reUSetBoneIKResistance::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

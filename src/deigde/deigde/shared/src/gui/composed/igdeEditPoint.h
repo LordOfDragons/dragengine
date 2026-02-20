@@ -25,11 +25,11 @@
 #ifndef _IGDEEDITPOINT_H_
 #define _IGDEEDITPOINT_H_
 
-#include "../igdeTextFieldReference.h"
+#include "../igdeTextField.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerBoxAlternate.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -43,19 +43,31 @@ class igdeUIHelper;
  * Composed widget to edit decPoint.
  */
 class DE_DLL_EXPORT igdeEditPoint : public igdeContainerBoxAlternate{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditPoint>;
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditPoint &pEditPoint;
-		igdeTextFieldReference pTextX;
-		igdeTextFieldReference pTextY;
+		igdeTextField::WeakRef pTextX;
+		igdeTextField::WeakRef pTextY;
 		
 	public:
-		cListener( igdeEditPoint &editPoint, igdeTextField *textX, igdeTextField *textY );
-		virtual ~cListener();
-		virtual void OnTextChanged( igdeTextField *textField );
-		virtual void OnTextChanging( igdeTextField *textField );
+		using Ref = deTObjectReference<cListener>;
+		
+		cListener(igdeEditPoint &editPoint, igdeTextField *textX, igdeTextField *textY);
+		
+	protected:
+		~cListener() override;
+		
+	public:
+		void OnTextChanged(igdeTextField *textField) override;
+		void OnTextChanging(igdeTextField *textField) override;
 	};
 	
 	
@@ -67,11 +79,11 @@ private:
 	bool pEditable;
 	decString pDescription;
 	
-	igdeTextFieldReference pTextX;
-	igdeTextFieldReference pTextY;
+	igdeTextField::Ref pTextX;
+	igdeTextField::Ref pTextY;
 	bool pPreventUpdate;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPointListener> pListeners;
 	
 	
 	
@@ -79,10 +91,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit point. */
-	igdeEditPoint( igdeUIHelper &helper, int columns, const char *description = "" );
+	igdeEditPoint(igdeUIHelper &helper, int columns, const char *description = "");
 	
-	igdeEditPoint( igdeUIHelper &helper, int columns, bool editable,
-		const char *description = "" );
+	igdeEditPoint(igdeUIHelper &helper, int columns, bool editable,
+		const char *description = "");
 	
 	
 	
@@ -93,7 +105,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditPoint();
+	~igdeEditPoint() override;
 	/*@}*/
 	
 	
@@ -105,7 +117,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit fields. */
 	inline int GetColumns() const{ return pColumns; }
@@ -114,13 +126,13 @@ public:
 	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if widget is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -131,15 +143,15 @@ public:
 	inline const decPoint &GetPoint() const{ return pPoint; }
 	
 	/** \brief Set point. */
-	void SetPoint( const decPoint &point );
+	void SetPoint(const decPoint &point);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditPointListener *listener );
+	void AddListener(igdeEditPointListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditPointListener *listener );
+	void RemoveListener(igdeEditPointListener *listener);
 	
 	/** \brief Notify listeners point changed. */
 	virtual void NotifyPointChanged();
@@ -169,7 +181,7 @@ protected:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper );
+	void pCreateContent(igdeUIHelper &helper);
 };
 
 #endif

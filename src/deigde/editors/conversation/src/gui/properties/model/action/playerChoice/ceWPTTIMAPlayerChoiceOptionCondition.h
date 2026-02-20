@@ -28,7 +28,7 @@
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../../../conversation/action/ceCAPlayerChoiceOption.h"
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
 
@@ -38,8 +38,11 @@ class ceWPTTIMAPlayerChoiceOption;
  * \brief Condition player choice actions.
  */
 class ceWPTTIMAPlayerChoiceOptionCondition : public ceWPTTIMConditionContainer{
+public:
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoiceOptionCondition>;
+	
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	
 	
 	
@@ -47,12 +50,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoiceOptionCondition( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option );
+	ceWPTTIMAPlayerChoiceOptionCondition(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAPlayerChoiceOptionCondition();
+	~ceWPTTIMAPlayerChoiceOptionCondition() override;
 	/*@}*/
 	
 	
@@ -70,13 +73,13 @@ public:
 	void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition) override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

@@ -25,11 +25,10 @@
 #ifndef _DEOGLRRDSRENDERABLECAMERA_H_
 #define _DEOGLRRDSRENDERABLECAMERA_H_
 
-#include <dragengine/deObject.h>
-
 #include "deoglRDSRenderable.h"
+#include "../../../../world/deoglRCamera.h"
 
-class deoglRCamera;
+#include <dragengine/deObject.h>
 
 
 
@@ -37,17 +36,22 @@ class deoglRCamera;
  * Render dynamic skin camera renderable.
  */
 class deoglRDSRenderableCamera : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDSRenderableCamera>;
+	
+	
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin camera renderable. */
-	deoglRDSRenderableCamera( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableCamera(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin camera renderable. */
-	virtual ~deoglRDSRenderableCamera();
+	~deoglRDSRenderableCamera() override;
 	/*@}*/
 	
 	
@@ -55,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set camera. */
-	void SetCamera( deoglRCamera *camera );
+	void SetCamera(deoglRCamera *camera);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglRenderPlan *GetRenderPlan() const;
+	deoglRenderPlan *GetRenderPlan() const override;
 	/*@}*/
 	
 private:

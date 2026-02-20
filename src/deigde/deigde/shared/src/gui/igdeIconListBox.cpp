@@ -22,24 +22,17 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeIconListBox.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeIconListBoxListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascadeReference.h"
 #include "model/igdeListHeader.h"
 #include "model/igdeListItem.h"
-#include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -55,27 +48,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeIconListBox::igdeIconListBox( igdeEnvironment &environment, const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pSelectionMode( esmSingle ),
-pViewMode( evmList ),
-pSelection( -1 ),
-pMinimumSize( 100, 60 ),
-pDescription( description ){
+igdeIconListBox::igdeIconListBox(igdeEnvironment &environment, const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pSelectionMode(esmSingle),
+pViewMode(evmList),
+pSelection(-1),
+pMinimumSize(100, 60),
+pDescription(description),
+pAutoTranslateItems(false),
+pNativeIconListBox(nullptr){
 }
 
-igdeIconListBox::igdeIconListBox( igdeEnvironment &environment,
-	const decPoint &minimumSize, const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pSelectionMode( esmSingle ),
-pViewMode( evmList ),
-pSelection( -1 ),
-pMinimumSize( minimumSize ),
-pDescription( description ){
-	if( ! ( minimumSize >= decPoint() ) ){
-		DETHROW( deeInvalidParam );
+igdeIconListBox::igdeIconListBox(igdeEnvironment &environment,
+	const decPoint &minimumSize, const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pSelectionMode(esmSingle),
+pViewMode(evmList),
+pSelection(-1),
+pMinimumSize(minimumSize),
+pDescription(description),
+pAutoTranslateItems(false),
+pNativeIconListBox(nullptr)
+{
+	if(!(minimumSize >= decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -88,8 +86,8 @@ igdeIconListBox::~igdeIconListBox(){
 // Management
 ///////////////
 
-void igdeIconListBox::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeIconListBox::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -97,12 +95,12 @@ void igdeIconListBox::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeIconListBox::SetMinimumSize( const decPoint &size ){
-	if( ! ( size >= decPoint() ) ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::SetMinimumSize(const decPoint &size){
+	if(!(size >= decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size == pMinimumSize ){
+	if(size == pMinimumSize){
 		return;
 	}
 	
@@ -110,8 +108,8 @@ void igdeIconListBox::SetMinimumSize( const decPoint &size ){
 	OnMinimumSizeChanged();
 }
 
-void igdeIconListBox::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeIconListBox::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -119,8 +117,8 @@ void igdeIconListBox::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeIconListBox::SetViewMode( eViewMode mode ){
-	if( mode == pViewMode ){
+void igdeIconListBox::SetViewMode(eViewMode mode){
+	if(mode == pViewMode){
 		return;
 	}
 	
@@ -129,178 +127,151 @@ void igdeIconListBox::SetViewMode( eViewMode mode ){
 }
 
 void igdeIconListBox::Focus(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->Focus();
+	if(pNativeIconListBox){
+		pNativeIconListBox->Focus();
 	}
 }
 
-
-
-int igdeIconListBox::GetItemCount() const{
-	return pItems.GetCount();
+void igdeIconListBox::SetAutoTranslateItems(bool autoTranslate){
+	pAutoTranslateItems = autoTranslate;
 }
 
-igdeListItem *igdeIconListBox::GetItemAt( int index ) const{
-	return ( igdeListItem* )pItems.GetAt( index );
+
+bool igdeIconListBox::HasItem(const char *item) const{
+	return IndexOfItem(item) != -1;
 }
 
-bool igdeIconListBox::HasItem( igdeListItem *item ) const{
-	return pItems.Has( item );
+bool igdeIconListBox::HasItemWithData(void *data) const{
+	return IndexOfItemWithData(data) != -1;
 }
 
-bool igdeIconListBox::HasItem( const char *item ) const{
-	return IndexOfItem( item ) != -1;
-}
-
-bool igdeIconListBox::HasItemWithData( void *data ) const{
-	return IndexOfItemWithData( data ) != -1;
-}
-
-int igdeIconListBox::IndexOfItem( igdeListItem *item ) const{
-	return pItems.IndexOf( item );
-}
-
-int igdeIconListBox::IndexOfItem( const char *item ) const{
-	if( ! item ){
-		DETHROW( deeInvalidParam );
+int igdeIconListBox::IndexOfItem(const char *item) const{
+	if(!item){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( const igdeListItem* )pItems.GetAt( i ) )->GetText() == item ){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetText() == item;
+	});
 }
 
-int igdeIconListBox::IndexOfItemWithData( void *data ) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( const igdeListItem* )pItems.GetAt( i ) )->GetData() == data ){
-			return i;
-		}
-	}
-	
-	return -1;
+int igdeIconListBox::IndexOfItemWithData(void *data) const{
+	return pItems.IndexOfMatching([&](const igdeListItem &item){
+		return item.GetData() == data;
+	});
 }
 
-void igdeIconListBox::AddItem( igdeListItem *item ){
-	if( ! item ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::AddItem(igdeListItem *item){
+	if(!item){
+		DETHROW(deeInvalidParam);
 	}
-	pItems.Add( item );
-	OnItemAdded( pItems.GetCount() - 1 );
+	pItems.AddOrThrow(item);
+	OnItemAdded(pItems.GetCount() - 1);
 	
-	if( pItems.GetCount() == 1 ){
-		SetSelection( 0 );
+	if(pItems.GetCount() == 1){
+		SetSelection(0);
 	}
 }
 
-void igdeIconListBox::AddItem( const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
-	AddItem( item, text, icon, data );
+void igdeIconListBox::AddItem(const char *text, igdeIcon *icon, void *data){
+	igdeListItem::Ref item;
+	AddItem(item, text, icon, data);
 }
 
-void igdeIconListBox::AddItem( const char *text, const decStringList &details,
-igdeIcon *icon, void *data ){
-	igdeListItemReference item;
-	AddItem( item, text, details, icon, data );
+void igdeIconListBox::AddItem(const char *text, const decStringList &details,
+igdeIcon *icon, void *data){
+	igdeListItem::Ref item;
+	AddItem(item, text, details, icon, data);
 }
 
-void igdeIconListBox::AddItem( igdeListItemReference &item, const char *text,
-igdeIcon *icon, void *data ){
-	item.TakeOver( new igdeListItem( text, icon, data ) );
-	AddItem( item );
+void igdeIconListBox::AddItem(igdeListItem::Ref &item, const char *text,
+igdeIcon *icon, void *data){
+	item = igdeListItem::Ref::New(text, icon, data);
+	AddItem(item);
 }
 
-void igdeIconListBox::AddItem( igdeListItemReference &item, const char *text,
-const decStringList &details, igdeIcon *icon, void *data ){
-	item.TakeOver( new igdeListItem( text, icon, data ) );
+void igdeIconListBox::AddItem(igdeListItem::Ref &item, const char *text,
+const decStringList &details, igdeIcon *icon, void *data){
+	item = igdeListItem::Ref::New(text, icon, data);
 	item->GetDetails() = details;
-	AddItem( item );
+	AddItem(item);
 }
 
-void igdeIconListBox::InsertItem( int index, igdeListItem *item ){
-	if( ! item ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::InsertItem(int index, igdeListItem *item){
+	if(!item){
+		DETHROW(deeInvalidParam);
 	}
 	
 	igdeListItem * const selection = GetSelectedItem();
 	
-	pItems.Insert( item, index );
+	pItems.InsertOrThrow(item, index);
 	
-	if( selection ){
-		pSelection = pItems.IndexOf( selection );
+	if(selection){
+		pSelection = pItems.IndexOf(selection);
 	}
 	
-	OnItemAdded( index );
+	OnItemAdded(index);
 	
-	if( pItems.GetCount() == 1 ){
-		SetSelection( 0 );
+	if(pItems.GetCount() == 1){
+		SetSelection(0);
 	}
 }
 
-void igdeIconListBox::InsertItem( int index, const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
-	InsertItem( item, index, text, icon, data );
+void igdeIconListBox::InsertItem(int index, const char *text, igdeIcon *icon, void *data){
+	igdeListItem::Ref item;
+	InsertItem(item, index, text, icon, data);
 }
 
-void igdeIconListBox::InsertItem( int index, const char *text,
-const decStringList &details, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
-	InsertItem( item, index, text, details, icon, data );
+void igdeIconListBox::InsertItem(int index, const char *text,
+const decStringList &details, igdeIcon *icon, void *data){
+	igdeListItem::Ref item;
+	InsertItem(item, index, text, details, icon, data);
 }
 
-void igdeIconListBox::InsertItem( igdeListItemReference &item, int index, const char *text,
-igdeIcon *icon, void *data ){
-	item.TakeOver( new igdeListItem( text, icon, data ) );
-	InsertItem( index, item );
+void igdeIconListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
+igdeIcon *icon, void *data){
+	item = igdeListItem::Ref::New(text, icon, data);
+	InsertItem(index, item);
 }
 
-void igdeIconListBox::InsertItem( igdeListItemReference &item, int index, const char *text,
-const decStringList &details, igdeIcon *icon, void *data ){
-	item.TakeOver( new igdeListItem( text, icon, data ) );
+void igdeIconListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
+const decStringList &details, igdeIcon *icon, void *data){
+	item = igdeListItem::Ref::New(text, icon, data);
 	item->GetDetails() = details;
-	InsertItem( index, item );
+	InsertItem(index, item);
 }
 
-void igdeIconListBox::MoveItem( int fromIndex, int toIndex ){
+void igdeIconListBox::MoveItem(int fromIndex, int toIndex){
 	igdeListItem * const selection = GetSelectedItem();
 	
-	pItems.Move( fromIndex, toIndex );
+	pItems.MoveIndex(fromIndex, toIndex);
 	
-	if( selection ){
-		pSelection = pItems.IndexOf( selection );
+	if(selection){
+		pSelection = pItems.IndexOf(selection);
 	}
 	
-	OnItemMoved( fromIndex, toIndex );
+	OnItemMoved(fromIndex, toIndex);
 }
 
-void igdeIconListBox::RemoveItem( int index ){
-	pItems.RemoveFrom( index );
-	OnItemRemoved( index );
+void igdeIconListBox::RemoveItem(int index){
+	pItems.RemoveFrom(index);
+	OnItemRemoved(index);
 	
-	if( index == pSelection ){
-		SetSelection( decMath::min( pSelection, pItems.GetCount() - 1 ) );
+	if(index == pSelection){
+		SetSelection(decMath::min(pSelection, pItems.GetCount() - 1));
 		
-	}else if( index < pSelection ){
+	}else if(index < pSelection){
 		pSelection--;
 	}
 }
 
 void igdeIconListBox::RemoveAllItems(){
-	if( pItems.GetCount() == 0 ){
+	if(pItems.GetCount() == 0){
 		return;
 	}
 	
-	if( pSelection != -1 ){
-		SetSelection( -1 );
+	if(pSelection != -1){
+		SetSelection(-1);
 	}
 	
 	pItems.RemoveAll();
@@ -308,70 +279,41 @@ void igdeIconListBox::RemoveAllItems(){
 	OnAllItemsRemoved();
 }
 
-void igdeIconListBox::ItemChangedAt( int index ){
-	if( index < 0 || index >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::ItemChangedAt(int index){
+	if(index < 0 || index >= pItems.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
-	OnItemChanged( index );
+	OnItemChanged(index);
 }
 
 
 
-void igdeIconListBox::SetSorter( igdeListItemSorter *sorter ){
+void igdeIconListBox::SetSorter(igdeListItemSorter *sorter){
 	pSorter = sorter;
 }
 
 void igdeIconListBox::SetDefaultSorter(){
-	pSorter.TakeOver( new igdeListItemSorter );
-}
-
-static void igdeIconListBox_Sort( decObjectList &items, igdeListItemSorter &sorter, int left, int right ){
-	igdeListItemReference pivot = ( igdeListItem* )items.GetAt( left );
-	const int r_hold = right;
-	const int l_hold = left;
-	
-	while( left < right ){
-		while( left < right && sorter.Precedes( pivot, *( ( igdeListItem* )items.GetAt( right ) ) ) ){
-			right--;
-		}
-		if( left != right ){
-			items.SetAt( left, items.GetAt( right ) );
-			left++;
-		}
-		while( left < right && sorter.Precedes( *( ( igdeListItem* )items.GetAt( left ) ), pivot ) ){
-			left++;
-		}
-		if( left != right ){
-			items.SetAt( right, items.GetAt( left ) );
-			right--;
-		}
-	}
-	
-	items.SetAt( left, ( igdeListItem* )pivot );
-	if( l_hold < left ){
-		igdeIconListBox_Sort( items, sorter, l_hold, left - 1 );
-	}
-	if( r_hold > left ){
-		igdeIconListBox_Sort( items, sorter, left + 1, r_hold );
-	}
+	pSorter = igdeListItemSorter::Ref::New();
 }
 
 void igdeIconListBox::SortItems(){
-	if( ! pSorter ){
+	if(!pSorter){
 		return;
 	}
 	
 	const int count = pItems.GetCount();
-	if( count < 2 ){
+	if(count < 2){
 		return;
 	}
 	
 	igdeListItem * const selected = GetSelectedItem();
 	
-	igdeIconListBox_Sort( pItems, pSorter, 0, count - 1 );
+	pItems.Sort([&](const igdeListItem &a, const igdeListItem &b){
+		return pSorter->Precedes(a, b) ? -1 : 1;
+	});
 	
-	if( selected ){
-		pSelection = pItems.IndexOf( selected );
+	if(selected){
+		pSelection = pItems.IndexOf(selected);
 	}
 	
 	OnItemsSorted();
@@ -379,8 +321,8 @@ void igdeIconListBox::SortItems(){
 
 
 
-void igdeIconListBox::SetSelectionMode( eSelectionMode mode ){
-	if( mode == pSelectionMode ){
+void igdeIconListBox::SetSelectionMode(eSelectionMode mode){
+	if(mode == pSelectionMode){
 		return;
 	}
 	
@@ -389,164 +331,201 @@ void igdeIconListBox::SetSelectionMode( eSelectionMode mode ){
 }
 
 igdeListItem *igdeIconListBox::GetSelectedItem() const{
-	if( pSelection != -1 ){
-		return ( igdeListItem* )pItems.GetAt( pSelection );
-		
-	}else{
-		return NULL;
-	}
+	return pSelection != -1 ? pItems.GetAt(pSelection).Pointer() : nullptr;
 }
 
-void igdeIconListBox::SetSelection( int selection ){
-	if( selection < -1 || selection >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
+void *igdeIconListBox::GetSelectedItemData() const{
+	igdeListItem * const item = GetSelectedItem();
+	return item ? item->GetData() : nullptr;
+}
+
+void igdeIconListBox::SetSelection(int selection){
+	if(selection < -1 || selection >= pItems.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( selection == pSelection ){
+	if(pSelectionMode == esmSingle && pItems.IsNotEmpty()){
+		selection = decMath::max(selection, 0);
+	}
+	
+	if(selection == pSelection){
 		return;
 	}
 	
 	pSelection = selection;
 	OnSelectionChanged();
 	NotifySelectionChanged();
-}
-
-void igdeIconListBox::SetSelectionWithData( void *data ){
-	SetSelection( IndexOfItemWithData( data ) );
-}
-
-void igdeIconListBox::SelectItem( int index ){
-	if( pSelectionMode != esmMultiple ){
-		DETHROW( deeInvalidParam );
+	
+	if(pSelection != -1){
+		MakeItemVisible(pSelection);
 	}
-	if( index < -1 || index >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
+}
+
+void igdeIconListBox::SetSelectionWithData(void *data){
+	SetSelection(IndexOfItemWithData(data));
+}
+
+void igdeIconListBox::SelectItem(int index){
+	if(pSelectionMode != esmMultiple){
+		DETHROW(deeInvalidParam);
+	}
+	if(index < -1 || index >= pItems.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( index ) );
-	if( item.GetSelected() ){
+	igdeListItem * const item = pItems.GetAt(index);
+	if(item->GetSelected()){
 		return;
 	}
 	
-	item.SetSelected( true );
+	item->SetSelected(true);
 	OnSelectionChanged();
 }
 
 void igdeIconListBox::SelectAllItems(){
-	if( pSelectionMode != esmMultiple ){
-		DETHROW( deeInvalidParam );
+	if(pSelectionMode != esmMultiple){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
 	bool changed = false;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( i ) );
-		if( item.GetSelected() ){
-			continue;
+	pItems.Visit([&](igdeListItem *item){
+		if(item->GetSelected()){
+			return;
 		}
 		
-		item.SetSelected( true );
+		item->SetSelected(true);
 		changed = true;
-	}
+	});
 	
-	if( changed ){
+	if(changed){
 		OnSelectionChanged();
 	}
 }
 
-void igdeIconListBox::DeselectItem( int index ){
-	if( pSelectionMode != esmMultiple ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::DeselectItem(int index){
+	if(pSelectionMode != esmMultiple){
+		DETHROW(deeInvalidParam);
 	}
-	if( index < -1 || index >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < -1 || index >= pItems.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( index ) );
-	if( ! item.GetSelected() ){
+	igdeListItem * const item = pItems.GetAt(index);
+	if(!item->GetSelected()){
 		return;
 	}
 	
-	item.SetSelected( false );
+	item->SetSelected(false);
 	OnSelectionChanged();
 }
 
 void igdeIconListBox::DeselectAllItems(){
-	if( pSelectionMode != esmMultiple ){
-		DETHROW( deeInvalidParam );
+	if(pSelectionMode != esmMultiple){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
 	bool changed = false;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( i ) );
-		if( ! item.GetSelected() ){
-			continue;
+	pItems.Visit([&](igdeListItem *item){
+		if(!item->GetSelected()){
+			return;
 		}
 		
-		item.SetSelected( false );
+		item->SetSelected(false);
 		changed = true;
-	}
+	});
 	
-	if( changed ){
+	if(changed){
 		OnSelectionChanged();
 	}
 }
 
-void igdeIconListBox::NotifyItemSelected( int index ){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeIconListBoxListener* )listeners.GetAt( i ) )->OnItemSelected( this, index );
-	}
-}
-
-void igdeIconListBox::NotifyItemDeselected( int index ){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeIconListBoxListener* )listeners.GetAt( i ) )->OnItemDeselected( this, index );
-	}
-}
-
-
-
-int igdeIconListBox::GetHeaderCount() const{
-	return pHeaders.GetCount();
-}
-
-igdeListHeader *igdeIconListBox::GetHeaderAt( int index ) const{
-	return ( igdeListHeader* )pHeaders.GetAt( index );
-}
-
-bool igdeIconListBox::HasHeader( igdeListHeader *header ) const{
-	return pHeaders.Has( header );
-}
-
-void igdeIconListBox::AddHeader( igdeListHeader *header ){
-	if( ! header || pHeaders.Has( header ) ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
+	decPoint cpos;
+	if(pNativeIconListBox){
+		cpos = pNativeIconListBox->GetContentPosition();
 	}
 	
-	pHeaders.Add( header );
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1 && defaultSelection != -1){
+			index = decMath::min(defaultSelection, pItems.GetCount() - 1);
+		}
+	}
+	
+	if(pNativeIconListBox){
+		pNativeIconListBox->SetContentPosition(cpos);
+	}
+	
+	SetSelection(index);
+}
+
+void igdeIconListBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
+	decPoint cpos;
+	if(pNativeIconListBox){
+		cpos = pNativeIconListBox->GetContentPosition();
+	}
+	
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1){
+			index = IndexOfItemWithData(defaultSelection);
+		}
+	}
+	
+	if(pNativeIconListBox){
+		pNativeIconListBox->SetContentPosition(cpos);
+	}
+	
+	SetSelection(index);
+}
+
+
+
+void igdeIconListBox::NotifyItemSelected(int index){
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnItemSelected(this, index);
+	});
+}
+
+void igdeIconListBox::NotifyItemDeselected(int index){
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnItemDeselected(this, index);
+	});
+}
+
+
+
+bool igdeIconListBox::HasHeader(igdeListHeader *header) const{
+	return pHeaders.Has(header);
+}
+
+void igdeIconListBox::AddHeader(igdeListHeader *header){
+	DEASSERT_NOTNULL(header)
+	pHeaders.AddOrThrow(header);
 	OnHeaderChanged();
 }
 
-void igdeIconListBox::RemoveHeader( igdeListHeader *header ){
-	pHeaders.Remove( header );
+void igdeIconListBox::RemoveHeader(igdeListHeader *header){
+	pHeaders.RemoveOrThrow(header);
 	OnHeaderChanged();
 }
 
 void igdeIconListBox::RemoveAllHeaders(){
-	if( pHeaders.GetCount() == 0 ){
+	if(pHeaders.IsEmpty()){
 		return;
 	}
 	
@@ -554,196 +533,194 @@ void igdeIconListBox::RemoveAllHeaders(){
 	OnHeaderChanged();
 }
 
-void igdeIconListBox::HeaderChangedAt( int index ){
-	if( index < 0 || index >= pHeaders.GetCount() ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::HeaderChangedAt(int index){
+	if(index < 0 || index >= pHeaders.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	OnHeaderChanged();
 }
-
-void igdeIconListBox::NotifyHeaderClicked( int index ){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeIconListBoxListener* )listeners.GetAt( i ) )->OnHeaderClicked( this, index );
-	}
+void igdeIconListBox::NotifyHeaderClicked(int index){
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnHeaderClicked(this, index);
+	});
 }
 
 
 
-void igdeIconListBox::EnsureItemVisible( int index ){
-	if( ! GetNativeWidget() ){
+void igdeIconListBox::MakeItemVisible(int index){
+	if(!pNativeIconListBox){
 		return;
 	}
 	
-	( ( igdeNativeIconListBox* )GetNativeWidget() )->MakeItemVisible( index );
+	pNativeIconListBox->MakeItemVisible(index);
 }
 
-void igdeIconListBox::EnsureSelectedItemVisible(){
-	if( pSelection != -1 ){
-		EnsureItemVisible( pSelection );
+void igdeIconListBox::MakeSelectedItemVisible(){
+	if(pSelection != -1){
+		MakeItemVisible(pSelection);
 	}
 }
 
-void igdeIconListBox::ShowContextMenu( const decPoint &position ){
-	if( ! GetNativeWidget() ){
+void igdeIconListBox::ShowContextMenu(const decPoint &position){
+	if(!pNativeIconListBox){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
-	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
-	const int count = pListeners.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeIconListBoxListener* )pListeners.GetAt( i ) )->AddContextMenuEntries( this, menu );
-	}
+	pListeners.Visit([&](igdeIconListBoxListener &l){
+		l.AddContextMenuEntries(this, menu);
+	});
 	
-	if( menu->GetChildCount() > 0 ){
-		menu->Popup( *this, position );
+	if(menu->GetChildren().IsNotEmpty()){
+		menu->Popup(*this, position);
 	}
 }
 
 
 
-void igdeIconListBox::AddListener( igdeIconListBoxListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeIconListBox::AddListener(igdeIconListBoxListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeIconListBox::RemoveListener( igdeIconListBoxListener *listener ){
-	pListeners.Remove( listener );
+void igdeIconListBox::RemoveListener(igdeIconListBoxListener *listener){
+	pListeners.Remove(listener);
 }
-
 void igdeIconListBox::NotifySelectionChanged(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeIconListBoxListener* )listeners.GetAt( i ) )->OnSelectionChanged( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnSelectionChanged(this);
+	});
 }
 
-void igdeIconListBox::NotifyDoubleClickItem( int index ){
-	if( index < 0 || index >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeIconListBox::NotifyDoubleClickItem(int index){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pItems.GetCount())
 	
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeIconListBoxListener* )listeners.GetAt( i ) )->OnDoubleClickItem( this, index );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnDoubleClickItem(this, index);
+	});
 }
-
 
 
 void igdeIconListBox::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeIconListBox * const native = igdeNativeIconListBox::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeIconListBox * const native = igdeNativeIconListBox::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeIconListBox = native;
 	native->PostCreateNativeWidget();
 }
 
 void igdeIconListBox::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeIconListBox* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeIconListBox*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
+void igdeIconListBox::DropNativeWidget(){
+	pNativeIconListBox = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
-void igdeIconListBox::OnItemAdded( int index ){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->InsertItem(
-			index, *( ( igdeListItem* )pItems.GetAt( index ) ) );
+void igdeIconListBox::OnItemAdded(int index){
+	if(pNativeIconListBox){
+		pNativeIconListBox->InsertItem(index, pItems.GetAt(index));
 	}
 }
 
-void igdeIconListBox::OnItemRemoved( int index ){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->RemoveItem( index );
+void igdeIconListBox::OnItemRemoved(int index){
+	if(pNativeIconListBox){
+		pNativeIconListBox->RemoveItem(index);
 	}
 }
 
 void igdeIconListBox::OnAllItemsRemoved(){
-	if( ! GetNativeWidget() ){
+	if(!pNativeIconListBox){
 		return;
 	}
 	
-	( ( igdeNativeIconListBox* )GetNativeWidget() )->RemoveAllItems();
+	pNativeIconListBox->RemoveAllItems();
 }
 
-void igdeIconListBox::OnItemChanged( int index ){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateItem( index );
+void igdeIconListBox::OnItemChanged(int index){
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateItem(index);
 	}
 }
 
-void igdeIconListBox::OnItemMoved( int fromIndex, int toIndex ){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
+void igdeIconListBox::OnItemMoved(int fromIndex, int toIndex){
+	if(pNativeIconListBox){
+		pNativeIconListBox->MoveItem(fromIndex, toIndex);
 	}
 }
 
 void igdeIconListBox::OnItemsSorted(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->BuildList();
+	if(pNativeIconListBox){
+		pNativeIconListBox->BuildList();
 	}
 }
 
 void igdeIconListBox::OnSelectionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateSelection();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateSelection();
 	}
 }
 
 void igdeIconListBox::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateEnabled();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateEnabled();
 	}
 }
 
 void igdeIconListBox::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateDescription();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateDescription();
 	}
 }
 
 void igdeIconListBox::OnViewModeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateStyles();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnSelectionModeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateStyles();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnHeaderChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateHeader();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateHeader();
 	}
 }
 
 void igdeIconListBox::OnMinimumSizeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateMinimumSize();
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateMinimumSize();
+	}
+}
+
+void igdeIconListBox::OnNativeWidgetLanguageChanged(){
+	if(pNativeIconListBox){
+		pNativeIconListBox->UpdateDescription();
+		pNativeIconListBox->UpdateHeader();
+		if(pAutoTranslateItems){
+			pNativeIconListBox->BuildList();
+		}
 	}
 }

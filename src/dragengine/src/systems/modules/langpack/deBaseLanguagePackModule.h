@@ -40,20 +40,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseLanguagePackModule( deLoadableModule &loadableModule );
+	deBaseLanguagePackModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseLanguagePackModule();
+	~deBaseLanguagePackModule() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/** \brief Load  language pack. */
-	virtual void LoadLanguagePack( decBaseFileReader &reader, deLanguagePack &languagePack ) = 0;
+	virtual void LoadLanguagePack(decBaseFileReader &reader, deLanguagePack &languagePack) = 0;
 	
 	/** \brief Save language pack. */
-	virtual void SaveLanguagePack( decBaseFileWriter &writer, const deLanguagePack &languagePack ) = 0;
+	virtual void SaveLanguagePack(decBaseFileWriter &writer, const deLanguagePack &languagePack) = 0;
 	/*@}*/
 };
 

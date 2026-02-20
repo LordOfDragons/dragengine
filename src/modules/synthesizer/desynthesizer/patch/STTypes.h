@@ -51,7 +51,7 @@ typedef unsigned long   ulong;
 
 
 // Helper macro for aligning pointer up to next 16-byte boundary
-#define SOUNDTOUCH_ALIGN_POINTER_16(x)      ( ( (ulongptr)(x) + 15 ) & ~(ulongptr)15 )
+#define SOUNDTOUCH_ALIGN_POINTER_16(x)      (((ulongptr)(x) + 15) & ~(ulongptr)15)
 
 
 #if (defined(__GNUC__) && !defined(OS_ANDROID))
@@ -168,7 +168,7 @@ namespace soundtouch
 // fail loading. SoundTouch does not seem to use exceptions anyways so it is replaced
 // with Drag[en]gine exception handling to avoid problems
 #include <dragengine/common/exceptions.h>
-#define ST_THROW_RT_ERROR(x)	throw deException( "SoundTouchRTError", (const char *)x, __FILE__, __LINE__ );
+#define ST_THROW_RT_ERROR(x)	throw deException("SoundTouchRTError", (const char *)x, __FILE__, __LINE__);
 // End of RPTD Fix
 
 // When this #define is active, eliminates a clicking sound when the "rate" or "pitch" 

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSelectionListener::gdeWPSelectionListener( gdeWPSelection &panel ) :
-pPanel( panel ){
+gdeWPSelectionListener::gdeWPSelectionListener(gdeWPSelection &panel) :
+pPanel(panel){
 }
 
 gdeWPSelectionListener::~gdeWPSelectionListener(){
@@ -51,6 +51,6 @@ gdeWPSelectionListener::~gdeWPSelectionListener(){
 // Management
 ///////////////
 
-void gdeWPSelectionListener::SelectedObjectChanged( gdeGameDefinition* ){
+void gdeWPSelectionListener::SelectedObjectChanged(gdeGameDefinition*){
 	pPanel.SelectedObjectChanged();
 }

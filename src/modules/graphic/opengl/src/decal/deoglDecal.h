@@ -25,12 +25,12 @@
 #ifndef _DEOGLDECAL_H_
 #define _DEOGLDECAL_H_
 
+#include "deoglRDecal.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicDecal.h>
 
 class deoglDynamicSkin;
-class deoglRDecal;
 class deoglComponent;
 
 class deGraphicOpenGl;
@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDecal &pDecal;
 	
-	deoglRDecal *pRDecal;
+	deoglRDecal::Ref pRDecal;
 	
 	deoglDynamicSkin *pDynamicSkin;
 	
@@ -73,10 +73,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglDecal( deGraphicOpenGl &ogl, const deDecal &decal );
+	deoglDecal(deGraphicOpenGl &ogl, const deDecal &decal);
 	
 	/** Clean up peer. */
-	virtual ~deoglDecal();
+	~deoglDecal() override;
 	/*@}*/
 	
 	
@@ -92,7 +92,7 @@ public:
 	
 	
 	/** Render decal. */
-	inline deoglRDecal *GetRDecal() const{ return pRDecal; }
+	inline const deoglRDecal::Ref &GetRDecal() const{ return pRDecal; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -103,17 +103,17 @@ public:
 	inline deoglComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/** Set parent component or \em NULL. */
-	void SetParentComponent( deoglComponent *component );
+	void SetParentComponent(deoglComponent *component);
 	/*@}*/
 	
 	
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	
@@ -121,19 +121,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position, orientation or size changed. */
-	virtual void GeometryChanged();
+	void GeometryChanged() override;
 	
 	/** Texture coordinates transformation changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	
 	/** Visible changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	/*@}*/
 	
 	

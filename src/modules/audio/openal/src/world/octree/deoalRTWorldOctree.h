@@ -25,6 +25,7 @@
 #ifndef _DEOALRTWORLDOCTREE_H_
 #define _DEOALRTWORLDOCTREE_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoalAComponent;
@@ -56,7 +57,7 @@ public:
 	struct sBuildNode{
 		decVector center;
 		decVector halfSize;
-		int child[ 8 ];
+		int child[8];
 		int childCount;
 		int firstComponent;
 		int lastComponent;
@@ -100,21 +101,10 @@ private:
 	decVector pHalfExtends;
 	int pMaxDepth;
 	
-	sBuildNode *pBuildNodes;
-	int pBuildNodeCount;
-	int pBuildNodeSize;
-	
-	sBuildComponent *pBuildComponents;
-	int pBuildComponentCount;
-	int pBuildComponentSize;
-	
-	sVisitNode *pVisitNodes;
-	int pVisitNodeCount;
-	int pVisitNodeSize;
-	
-	sVisitComponent *pVisitComponents;
-	int pVisitComponentCount;
-	int pVisitComponentSize;
+	decTList<sBuildNode> pBuildNodes;
+	decTList<sBuildComponent> pBuildComponents;
+	decTList<sVisitNode> pVisitNodes;
+	decTList<sVisitComponent> pVisitComponents;
 	
 	int pGatherNodeCount;
 	int pGatherComponentCount;
@@ -149,17 +139,17 @@ public:
 	 * 
 	 * Clears visit and build nodes. Sets position and half extends.
 	 */
-	void Build( const decDVector &position, const decVector &halfExtends );
+	void Build(const decDVector &position, const decVector &halfExtends);
 	
 	/**
 	 * \brief Begin building octree.
 	 * 
 	 * Clears visit and build nodes. Sets position and half extends.
 	 */
-	void Build( const decDVector &position, double radius );
+	void Build(const decDVector &position, double radius);
 	
 	/** \brief Add component during build phase. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/**
 	 * \brief Finish building octree.
@@ -174,28 +164,28 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit nodes array. */
-	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes; }
+	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes.GetArrayPointer(); }
 	
 	/** \brief Visit node count. */
-	inline int GetVisitNodeCount() const{ return pVisitNodeCount; }
+	inline int GetVisitNodeCount() const{ return pVisitNodes.GetCount(); }
 	
 	/** \brief Visit components array. */
-	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents; }
+	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents.GetArrayPointer(); }
 	
 	/** \brief Visit component count. */
-	inline int GetVisitComponentCount() const{ return pVisitComponentCount; }
+	inline int GetVisitComponentCount() const{ return pVisitComponents.GetCount(); }
 	/*@}*/
 	
 	
 	
 private:
-	int pGetBuildNodeFor( const decVector &center, const decVector &halfSize );
-	int pGetBuildNodeFor( int nodeIndex, const decVector &center, const decVector &halfSize );
-	int pGetBuildOctantFor( sBuildNode &node, const decVector &center, const decVector &halfSize ) const;
+	int pGetBuildNodeFor(const decVector &center, const decVector &halfSize);
+	int pGetBuildNodeFor(int nodeIndex, const decVector &center, const decVector &halfSize);
+	int pGetBuildOctantFor(sBuildNode &node, const decVector &center, const decVector &halfSize) const;
 	int pAddBuildNode();
 	int pAddBuildComponent();
-	void pGatherCounts( const sBuildNode &node );
-	void pBuildVisitNode( const sBuildNode &buildNode, sVisitNode &node );
+	void pGatherCounts(const sBuildNode &node);
+	void pBuildVisitNode(const sBuildNode &buildNode, sVisitNode &node);
 };
 
 #endif

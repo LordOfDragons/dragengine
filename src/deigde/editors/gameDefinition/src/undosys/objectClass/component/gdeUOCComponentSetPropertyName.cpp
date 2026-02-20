@@ -39,35 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pProperty( property )
+gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue) :
+
+
+pProperty(property)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set property name" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetPropertyName");
 	
-	pOldValue = component->GetPropertyName( property );
+	pOldValue = component->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
 ///////////////
 
 void gdeUOCComponentSetPropertyName::Undo(){
-	pComponent->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetPropertyName::Redo(){
-	pComponent->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

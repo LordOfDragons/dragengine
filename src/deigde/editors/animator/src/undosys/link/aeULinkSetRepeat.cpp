@@ -40,26 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetRepeat::aeULinkSetRepeat( aeLink *link, int newRepeat ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+aeULinkSetRepeat::aeULinkSetRepeat(aeLink *link, int newRepeat){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
-	SetShortInfo( "Link set repeat" );
+	SetShortInfo("@Animator.Undo.LinkSetRepeat");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldRepeat = link->GetRepeat();
 	pNewRepeat = newRepeat;
 }
 
 aeULinkSetRepeat::~aeULinkSetRepeat(){
-	if( pLink ){
-		pLink->FreeReference();
-	}
 }
 
 
@@ -68,9 +63,9 @@ aeULinkSetRepeat::~aeULinkSetRepeat(){
 ///////////////
 
 void aeULinkSetRepeat::Undo(){
-	pLink->SetRepeat( pOldRepeat );
+	pLink->SetRepeat(pOldRepeat);
 }
 
 void aeULinkSetRepeat::Redo(){
-	pLink->SetRepeat( pNewRepeat );
+	pLink->SetRepeat(pNewRepeat);
 }

@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef _CERULEOFTHIRDS_H_
-#define _CERULEOFTHIRDS_H_
+#ifndef _CECANVASRULEOFTHIRDS_H_
+#define _CECANVASRULEOFTHIRDS_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 class igdeEnvironment;
 
@@ -34,10 +34,13 @@ class igdeEnvironment;
 /**
  * \brief Rule of thirds aid canvas.
  */
-class ceCanvasRuleOfThirdsAid{
+class ceCanvasRuleOfThirdsAid : public deObject{
+public:
+	using Ref = deTObjectReference<ceCanvasRuleOfThirdsAid>;
+	
 private:
 	igdeEnvironment &pEnvironment;
-	deCanvasViewReference pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 	
 	
@@ -45,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	ceCanvasRuleOfThirdsAid( igdeEnvironment &environment );
+	ceCanvasRuleOfThirdsAid(igdeEnvironment &environment);
 	
 	/** \brief Clean up canvas. */
-	~ceCanvasRuleOfThirdsAid();
+protected:
+	~ceCanvasRuleOfThirdsAid() override;
+public:
 	/*@}*/
 	
 	
@@ -56,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas to add to render window. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	
 	
@@ -64,7 +69,7 @@ public:
 	void Resize();
 	
 	/** \brief Set visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	
@@ -73,10 +78,10 @@ private:
 	void pCreateCanvas();
 	
 	void pCreateAid();
-	void pAddLine( int x1, int y1, int x2, int y2 );
-	void pAddFocus( int x, int y );
+	void pAddLine(int x1, int y1, int x2, int y2);
+	void pAddFocus(int x, int y);
 	
-	void pAddRect( int x1, int y1, int x2, int y2, const decColor &color, float transparency );
+	void pAddRect(int x1, int y1, int x2, int y2, const decColor &color, float transparency);
 };
 
 #endif

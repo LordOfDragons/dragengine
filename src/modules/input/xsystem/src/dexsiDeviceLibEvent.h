@@ -26,6 +26,7 @@
 #define _DEXSIDEVICELIBEVENT_H_
 
 #include "dexsiDevice.h"
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -35,17 +36,16 @@
 class dexsiDeviceLibEvent : public dexsiDevice{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceLibEvent> Ref;
-	
+	using Ref = deTObjectReference<dexsiDeviceLibEvent>;
 	
 	
 private:
 	decString pEvdevPath;
 	int pEvdevFile;
 	libevdev *pEvdevDevice;
-	short *pEvdevMapRelAxis;
-	short *pEvdevMapAbsAxis;
-	short *pEvdevMapKeys;
+	decTList<short> pEvdevMapRelAxis;
+	decTList<short> pEvdevMapAbsAxis;
+	decTList<short> pEvdevMapKeys;
 	
 	
 	
@@ -53,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	dexsiDeviceLibEvent( deXSystemInput &module, const char *pathDevice );
+	dexsiDeviceLibEvent(deXSystemInput &module, const char *pathDevice);
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~dexsiDeviceLibEvent();
+	~dexsiDeviceLibEvent() override;
 	/*@}*/
 	
 	
@@ -74,7 +74,7 @@ public:
 	
 	
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

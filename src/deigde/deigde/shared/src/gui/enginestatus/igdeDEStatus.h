@@ -25,9 +25,9 @@
 #ifndef _IGDEDESTATUS_H_
 #define _IGDEDESTATUS_H_
 
-#include "../igdeTextAreaReference.h"
-#include "../igdeIconListBoxReference.h"
-#include "../igdeButtonReference.h"
+#include "../igdeTextArea.h"
+#include "../igdeIconListBox.h"
+#include "../igdeButton.h"
 #include "../layout/igdeContainerFlow.h"
 
 class igdeDialogEngine;
@@ -39,13 +39,18 @@ class deBaseSystem;
  * the engine.
  */
 class DE_DLL_EXPORT igdeDEStatus : public igdeContainerFlow{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDEStatus>;
+	
+	
 private:
 	igdeDialogEngine &pDialogEngine;
 	
-	igdeTextAreaReference pTextStatus;
-	igdeIconListBoxReference pListSystems;
-	igdeButtonReference pBtnStart;
-	igdeButtonReference pBtnStop;
+	igdeTextArea::Ref pTextStatus;
+	igdeIconListBox::Ref pListSystems;
+	igdeButton::Ref pBtnStart;
+	igdeButton::Ref pBtnStop;
 	
 	
 	
@@ -53,13 +58,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEStatus( igdeDialogEngine &windowEngine );
+	igdeDEStatus(igdeDialogEngine &windowEngine);
 	
 	
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEStatus();
+	~igdeDEStatus() override;
 	/*@}*/
 	
 	
@@ -79,7 +84,7 @@ public:
 	
 	
 private:
-	void pAddSystem( deBaseSystem *system );
+	void pAddSystem(deBaseSystem *system);
 };
 
 #endif

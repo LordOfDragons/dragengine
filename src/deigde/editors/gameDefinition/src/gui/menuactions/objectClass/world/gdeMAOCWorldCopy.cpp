@@ -29,7 +29,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -43,27 +43,26 @@
 ////////////////
 
 gdeMAOCWorldCopy::gdeMAOCWorldCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class World",
-	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy object class world"){
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@GameDefinition.Menu.OCWorldCopy.ToolTip"){
 }
 
 
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCWorldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
-		return nullptr;
+		return {};
 	}
 	
 	gdeOCWorld * const world = gameDefinition.GetActiveOCWorld();
 	if(!world){
-		return nullptr;
+		return {};
 	}
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(
-		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::New(new gdeOCWorld(*world)))));
-	return nullptr;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(gdeOCWorld::Ref::New(*world)));
+	return {};
 }
 
 void gdeMAOCWorldCopy::Update(){

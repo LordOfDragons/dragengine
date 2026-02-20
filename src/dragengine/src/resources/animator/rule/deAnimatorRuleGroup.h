@@ -26,7 +26,7 @@
 #define _DEANIMATORRULEGROUP_H_
 
 #include "deAnimatorRule.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -41,8 +41,7 @@
 class DE_DLL_EXPORT deAnimatorRuleGroup : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleGroup> Ref;
-	
+	using Ref = deTObjectReference<deAnimatorRuleGroup>;
 	
 	
 public:
@@ -75,7 +74,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pRules;
+	decTObjectOrderedSet<deAnimatorRule> pRules;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
@@ -101,7 +100,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimatorRuleGroup();
+	~deAnimatorRuleGroup() override;
 	/*@}*/
 	
 public:
@@ -111,19 +110,19 @@ public:
 	int GetRuleCount() const;
 	
 	/** \brief Rule at the given index. */
-	deAnimatorRule *GetRuleAt( int index ) const;
+	deAnimatorRule *GetRuleAt(int index) const;
 	
 	/** \brief Index of the given rule or -1 if not found. */
-	int IndexOfRule( deAnimatorRule *rule ) const;
+	int IndexOfRule(deAnimatorRule *rule) const;
 	
 	/** \brief Given rule exists. */
-	bool HasRule( deAnimatorRule *rule ) const;
+	bool HasRule(deAnimatorRule *rule) const;
 	
 	/** \brief Adds a rule. */
-	void AddRule( deAnimatorRule *rule );
+	void AddRule(deAnimatorRule *rule);
 	
 	/** \brief Removes the given rule. */
-	void RemoveRule( deAnimatorRule *rule );
+	void RemoveRule(deAnimatorRule *rule);
 	
 	/** \brief Removes all rules. */
 	void RemoveAllRules();
@@ -132,37 +131,37 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Use current animation state instead of empty state. */
 	inline bool GetUseCurrentState() const{ return pUseCurrentState; }
 	
 	/** \brief Set if current animation state is used instead of empty state. */
-	void SetUseCurrentState( bool useCurrentState );
+	void SetUseCurrentState(bool useCurrentState);
 	
 	/** \brief Rule application type. */
 	inline eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set the rule application type. */
-	void SetApplicationType( eApplicationTypes type );
+	void SetApplicationType(eApplicationTypes type);
 	
 	/** \brief Select target. */
 	inline deAnimatorControllerTarget &GetTargetSelect(){ return pTargetSelect; }
@@ -174,7 +173,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	void Visit(deAnimatorRuleVisitor &visitor) override;
 	/*@}*/
 };
 

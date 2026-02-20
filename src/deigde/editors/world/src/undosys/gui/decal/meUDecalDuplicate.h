@@ -25,13 +25,12 @@
 #ifndef _MEUDECALDUPLICATE_H_
 #define _MEUDECALDUPLICATE_H_
 
+#include "meUndoDataDecal.h"
+#include "../../../world/meWorld.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class meWorld;
-class meDecal;
-class meUndoDataDecal;
 
 
 
@@ -39,11 +38,14 @@ class meUndoDataDecal;
  * \brief Undo action duplicate decals.
  */
 class meUDecalDuplicate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalDuplicate>;
+	
+	
 private:
 	meWorld *pWorld;
 	
-	meUndoDataDecal **pDecals;
-	int pDecalCount;
+	meUndoDataDecal::List pDecals;
 	
 	
 	
@@ -51,27 +53,27 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDecalDuplicate( meWorld *world, const decVector &offset );
+	meUDecalDuplicate(meWorld *world, const decVector &offset);
 	
+protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUDecalDuplicate();
+
+protected:
+	~meUDecalDuplicate() override;
+
+public:
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

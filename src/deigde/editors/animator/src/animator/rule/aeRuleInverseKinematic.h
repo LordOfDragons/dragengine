@@ -34,7 +34,8 @@
  */
 class aeRuleInverseKinematic : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleInverseKinematic> Ref;
+	using Ref = deTObjectReference<aeRuleInverseKinematic>;
+	
 	
 private:
 	decVector pGoalPosition;
@@ -50,24 +51,26 @@ private:
 	decString pReachBone;
 	decVector pReachCenter;
 	
-	aeControllerTarget pTargetGoalPosition;
-	aeControllerTarget pTargetGoalOrientation;
-	aeControllerTarget pTargetLocalPosition;
-	aeControllerTarget pTargetLocalOrientation;
-	aeControllerTarget pTargetReachRange;
-	aeControllerTarget pTargetReachCenter;
+	aeControllerTarget::Ref pTargetGoalPosition;
+	aeControllerTarget::Ref pTargetGoalOrientation;
+	aeControllerTarget::Ref pTargetLocalPosition;
+	aeControllerTarget::Ref pTargetLocalOrientation;
+	aeControllerTarget::Ref pTargetReachRange;
+	aeControllerTarget::Ref pTargetReachCenter;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create inverse kinematic rule. */
-	aeRuleInverseKinematic();
+	explicit aeRuleInverseKinematic(const char *name);
 	
 	/** Create copy of an inverse kinematic rule. */
-	aeRuleInverseKinematic( const aeRuleInverseKinematic &copy );
+	aeRuleInverseKinematic(const aeRuleInverseKinematic &copy);
 	
 	/** Clean up the animator rule. */
-	virtual ~aeRuleInverseKinematic();
+protected:
+	~aeRuleInverseKinematic() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -76,43 +79,43 @@ public:
 	inline const decVector &GetGoalPosition() const{ return pGoalPosition; }
 	
 	/** Set goal position. */
-	void SetGoalPosition( const decVector &position );
+	void SetGoalPosition(const decVector &position);
 	
 	/** Goal orientation. */
 	inline const decVector &GetGoalOrientation() const{ return pGoalOrientation; }
 	
 	/** Set goal orientation. */
-	void SetGoalOrientation( const decVector &orientation );
+	void SetGoalOrientation(const decVector &orientation);
 	
 	/** Local position. */
 	inline const decVector &GetLocalPosition() const{ return pLocalPosition; }
 	
 	/** Set local position. */
-	void SetLocalPosition( const decVector &position );
+	void SetLocalPosition(const decVector &position);
 	
 	/** Local orientation. */
 	inline const decVector &GetLocalOrientation() const{ return pLocalOrientation; }
 	
 	/** Set local orientation. */
-	void SetLocalOrientation( const decVector &orientation );
+	void SetLocalOrientation(const decVector &orientation);
 	
 	/** Adjust orientation. */
 	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
 	
 	/** Set if the orientation is adjusted. */
-	void SetAdjustOrientation( bool adjustOrientation );
+	void SetAdjustOrientation(bool adjustOrientation);
 	
 	/** Use solver bone to obtain target position and orientation. */
 	inline bool GetUseSolverBone() const{ return pUseSolverBone; }
 	
 	/** Set if solver bone is used to obtain target position and orientation. */
-	void SetUseSolverBone( bool useSolverBone );
+	void SetUseSolverBone(bool useSolverBone);
 	
 	/** Name of the solver bone if used. */
 	inline const decString &GetSolverBone() const{ return pSolverBone; }
 	
 	/** Set the name of the solver bone. */
-	void SetSolverBone( const char *boneName );
+	void SetSolverBone(const char *boneName);
 	
 	
 	
@@ -120,79 +123,73 @@ public:
 	inline float GetReachRange() const{ return pReachRange; }
 	
 	/** Set limit reach in meters. 0 disables reach limit. */
-	void SetReachRange( float range );
+	void SetReachRange(float range);
 	
 	/** Bone to use as reach origin or an empty string to use a constant position. */
 	inline const decString &GetReachBone() const{ return pReachBone; }
 	
 	/**
 	 * Set bone to use as reach origin or an empty string to use a constant position.
-	 * \throws deeInvalidParam \em bone is \em NULL.
+	 * \throws deeInvalidParam \em bone is \em nullptr.
 	 */
-	void SetReachBone( const char *bone );
+	void SetReachBone(const char *bone);
 	
 	/** Reach center if no bone is used. */
 	inline const decVector &GetReachCenter() const{ return pReachCenter; }
 	
 	/** Set reach center if no bone is used. */
-	void SetReachCenter( const decVector &center );
+	void SetReachCenter(const decVector &center);
 	
 	
 	
 	/** Goal position target. */
-	inline aeControllerTarget &GetTargetGoalPosition(){ return pTargetGoalPosition; }
-	inline const aeControllerTarget &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
+	inline const aeControllerTarget::Ref &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
 	
 	/** Goal orientation target. */
-	inline aeControllerTarget &GetTargetGoalOrientation(){ return pTargetGoalOrientation; }
-	inline const aeControllerTarget &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
+	inline const aeControllerTarget::Ref &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
 	
 	/** Local position target. */
-	inline aeControllerTarget &GetTargetLocalPosition(){ return pTargetLocalPosition; }
-	inline const aeControllerTarget &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
+	inline const aeControllerTarget::Ref &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
 	
 	/** Local orientation target. */
-	inline aeControllerTarget &GetTargetLocalOrientation(){ return pTargetLocalOrientation; }
-	inline const aeControllerTarget &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
+	inline const aeControllerTarget::Ref &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
 	
 	/** Reach range target. */
-	inline aeControllerTarget &GetTargetReachRange(){ return pTargetReachRange; }
-	inline const aeControllerTarget &GetTargetReachRange() const{ return pTargetReachRange; }
+	inline const aeControllerTarget::Ref &GetTargetReachRange() const{ return pTargetReachRange; }
 	
 	/** Reach center target. */
-	inline aeControllerTarget &GetTargetReachCenter(){ return pTargetReachCenter; }
-	inline const aeControllerTarget &GetTargetReachCenter() const{ return pTargetReachCenter; }
+	inline const aeControllerTarget::Ref &GetTargetReachCenter() const{ return pTargetReachCenter; }
 	
 	
 	
 	/** Create engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Update targets. */
-	virtual void UpdateTargets();
+	void UpdateTargets() override;
 	
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	int CountLinkUsage(aeLink *link) const override;
 	
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	void RemoveLinkFromTargets(aeLink *link) override;
 	
 	/** Remove all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
+	void RemoveLinksFromAllTargets() override;
 	
 	
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another inverse kinematic rule to this inverse kinematic rule. */
-	virtual aeRuleInverseKinematic &operator=( const aeRuleInverseKinematic &copy );
+	virtual aeRuleInverseKinematic &operator=(const aeRuleInverseKinematic &copy);
 	/*@}*/
 };
 

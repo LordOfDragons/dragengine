@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeAction.h"
-#include "../filedialog/igdeFilePatternList.h"
+#include "../filedialog/igdeFilePattern.h"
 #include "../../environment/igdeEnvironment.h"
 
 
@@ -42,9 +42,15 @@ class igdeTextField;
  * igdeTextField to obtain/store the file path.
  */
 class DE_DLL_EXPORT igdeActionSelectFile : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeActionSelectFile>;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
-	igdeFilePatternList pFilePatterns;
+	igdeFilePattern::List pFilePatterns;
 	bool pUseGameVFS;
 	igdeTextField &pTextField;
 	
@@ -54,13 +60,13 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionSelectFile( igdeEnvironment &environment,
+	igdeActionSelectFile(igdeEnvironment &environment,
 		igdeEnvironment::eFilePatternListTypes resourceType, igdeTextField &textField,
-		bool useGameVFS = true );
+		bool useGameVFS = true);
 	
-	igdeActionSelectFile( igdeEnvironment &environment,
-		const igdeFilePatternList &filePatterns, igdeTextField &textField,
-		bool useGameVFS = true );
+	igdeActionSelectFile(igdeEnvironment &environment,
+		const igdeFilePattern::List &filePatterns, igdeTextField &textField,
+		bool useGameVFS = true);
 	
 	
 	
@@ -71,7 +77,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionSelectFile();
+	~igdeActionSelectFile() override;
 	/*@}*/
 	
 	
@@ -83,7 +89,7 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetFilePatterns() const{ return pFilePatterns; }
+	inline const igdeFilePattern::List &GetFilePatterns() const{ return pFilePatterns; }
 	
 	/** \brief Use game virtual file system or native file system. */
 	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
@@ -100,14 +106,14 @@ public:
 	 * text field. If user selected a file and it is different updates the text field and
 	 * notifies listeners about the change.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Prepare file to init dialog with.
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the initial value.
 	 */
-	virtual void PrepareFile( decString &path );
+	virtual void PrepareFile(decString &path);
 	
 	/**
 	 * \brief Accept file.
@@ -117,7 +123,7 @@ public:
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the stored value.
 	 */
-	virtual bool AcceptFile( decString &path );
+	virtual bool AcceptFile(decString &path);
 	
 	/**
 	 * \brief Default filename if text is empty.

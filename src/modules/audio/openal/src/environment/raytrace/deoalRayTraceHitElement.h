@@ -26,14 +26,24 @@
 #define _DEOALRAYTRACEHITELEMENT_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalAComponent;
 
 
 /**
- * \brief Ray tracing hit element.
+ * Ray tracing hit element.
  */
 class deoalRayTraceHitElement{
+public:
+	class List : public decTList<deoalRayTraceHitElement>{
+	public:
+		/** Add element to hit component face. */
+		void AddComponentFace(float distance, const decDVector &point, const decDVector &normal,
+			deoalAComponent *component, int face, bool frontFacing);
+	};
+	
+private:
 private:
 	float pDistance;
 	decDVector pPoint;
@@ -48,50 +58,58 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create empty ray trace hit element. */
+	/** Create empty ray trace hit element. */
 	deoalRayTraceHitElement();
 	
-	/** \brief Create copy of ray trace hit element. */
-	deoalRayTraceHitElement( const deoalRayTraceHitElement &element );
+	/** Create copy of ray trace hit element. */
+	deoalRayTraceHitElement(const deoalRayTraceHitElement &element);
+	
+	/** Create element. */
+	deoalRayTraceHitElement(float distance, const decDVector &point, const decDVector &normal,
+		deoalAComponent *component, int face, bool frontFacing);
+	
+	/** Move. */
+	deoalRayTraceHitElement(deoalRayTraceHitElement &&element) noexcept = default;
+	deoalRayTraceHitElement &operator=(deoalRayTraceHitElement &&element) noexcept = default;
 	/*@}*/
 	
 	
 	
 	/** \name Manegement */
 	/*@{*/
-	/** \brief Distance in meters to hit point. */
+	/** Distance in meters to hit point. */
 	inline float GetDistance() const{ return pDistance; }
 	
-	/** \brief Hit point in world coordinates. */
+	/** Hit point in world coordinates. */
 	inline const decDVector &GetPoint() const{ return pPoint; }
 	
-	/** \brief Hit normal in world coordinates. */
+	/** Hit normal in world coordinates. */
 	inline const decDVector &GetNormal() const{ return pNormal; }
 	
-	/** \brief Hit element is forward facing. */
+	/** Hit element is forward facing. */
 	inline bool GetForwardFacing() const{ return pForwardFacing; }
 	
 	
 	
-	/** \brief Hit component or NULL. */
+	/** Hit component or NULL. */
 	inline deoalAComponent *GetComponent() const{ return pComponent; }
 	
-	/** \brief Hit component face or -1. */
+	/** Hit component face or -1. */
 	inline int GetComponentFace() const{ return pComponentFace; }
 	
 	
 	
-	/** \brief Set empty. */
+	/** Set empty. */
 	void SetEmpty();
 	
-	/** \brief Set element to hit component face. */
-	void SetComponentFace( float distance, const decDVector &point, const decDVector &normal,
-		deoalAComponent *component, int face, bool frontFacing );
+	/** Set element to hit component face. */
+	void SetComponentFace(float distance, const decDVector &point, const decDVector &normal,
+		deoalAComponent *component, int face, bool frontFacing);
 	
 	
 	
-	/** \brief Assign element. */
-	deoalRayTraceHitElement &operator=( const deoalRayTraceHitElement &element );
+	/** Assign element. */
+	deoalRayTraceHitElement &operator=(const deoalRayTraceHitElement &element);
 	/*@}*/
 };
 

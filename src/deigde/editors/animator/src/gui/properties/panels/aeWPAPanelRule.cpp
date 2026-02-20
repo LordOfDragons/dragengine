@@ -60,7 +60,7 @@
 #include "../../../undosys/rule/aeUSetRuleVertexPositionSets.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -68,7 +68,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeWindow.h>
@@ -80,10 +80,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
@@ -105,41 +104,41 @@ protected:
 	aeWPAPanelRule &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRule &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(aeWPAPanelRule &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if( ! animator || ! rule ){
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRule *rule ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRule *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRule &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -148,23 +147,23 @@ protected:
 	aeWPAPanelRule &pPanel;
 	
 public:
-	cBaseTextFieldListener( aeWPAPanelRule &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(aeWPAPanelRule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if( ! animator || ! rule ){
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRule *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRule *rule) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -172,267 +171,318 @@ protected:
 	aeWPAPanelRule &pPanel;
 	
 public:
-	cBaseComboBoxListener( aeWPAPanelRule &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
+	cBaseComboBoxListener(aeWPAPanelRule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if( ! animator || ! rule ){
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(comboBox, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator *animator, aeRule *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRule *rule) = 0;
 };
 
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	cTextName( aeWPAPanelRule &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextName>;
+	cTextName(aeWPAPanelRule &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRule *rule ){
-		return textField->GetText() != rule->GetName() ? new aeUSetRuleName( rule, textField->GetText() ) : NULL;
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRule *rule) override{
+		return textField->GetText() != rule->GetName() ? aeUSetRuleName::Ref::New(rule, textField->GetText()) : aeUSetRuleName::Ref();
 	}
 };
 
 class cComboBlendMode : public cBaseComboBoxListener{
 public:
-	cComboBlendMode( aeWPAPanelRule &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboBlendMode>;
+	cComboBlendMode(aeWPAPanelRule &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRule *rule ){
-		if( ! comboBox->GetSelectedItem() ){
-			return NULL;
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRule *rule) override{
+		if(!comboBox->GetSelectedItem()){
+			return {};
 		}
 		
 		const deAnimatorRule::eBlendModes mode =
-			( deAnimatorRule::eBlendModes )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return mode != rule->GetBlendMode() ? new aeUSetRuleBlendMode( rule, mode ) : NULL;
+			(deAnimatorRule::eBlendModes)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return mode != rule->GetBlendMode() ? aeUSetRuleBlendMode::Ref::New(rule, mode) : aeUSetRuleBlendMode::Ref();
 	}
 };
 
 class cTextBlendFactor : public cBaseTextFieldListener{
 public:
-	cTextBlendFactor( aeWPAPanelRule &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextBlendFactor>;
+	cTextBlendFactor(aeWPAPanelRule &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRule *rule ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRule *rule) override{
 		const float factor = textField->GetFloat();
-		return fabsf( factor - rule->GetBlendFactor() ) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleBlendFactor( rule, factor ) : NULL;
+		return fabsf(factor - rule->GetBlendFactor()) > FLOAT_SAFE_EPSILON
+			? aeUSetRuleBlendFactor::Ref::New(rule, factor) : igdeUndo::Ref();
 	}
 };
 
 class cActionInvertBlendFactor : public cBaseAction{
 public:
-	cActionInvertBlendFactor( aeWPAPanelRule &panel ) : cBaseAction( panel,
-		"Invert Blend Factor", nullptr, "Use '1 - blendFactor' instead of 'blendFactor'" ){ }
+	using Ref = deTObjectReference<cActionInvertBlendFactor>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		return new aeUToggleRuleInvertBlendFactor( rule );
+public:
+	cActionInvertBlendFactor(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.InvertBlendFactor", nullptr,
+		"@Animator.WPAPanelRule.InvertBlendFactor.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
+		return aeUToggleRuleInvertBlendFactor::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetInvertBlendFactor() );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetInvertBlendFactor());
 	}
 };
 
 class cActionEnabled : public cBaseAction{
 public:
-	cActionEnabled( aeWPAPanelRule &panel ) : cBaseAction( panel, "Enable Rule", NULL,
-		"Determines if the rule is affecting animation" ){ }
+	using Ref = deTObjectReference<cActionEnabled>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		return new aeUSetRuleEnabled( rule );
+public:
+	cActionEnabled(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Enabled", nullptr,
+		"@Animator.WPAPanelRule.Enabled.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
+		return aeUSetRuleEnabled::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnabled() );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnabled());
 	}
 };
 
 
 class cActionBoneAdd : public cBaseAction{
 public:
-	cActionBoneAdd( aeWPAPanelRule &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add bone" ){}
+	using Ref = deTObjectReference<cActionBoneAdd>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionBoneAdd(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.BoneAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAPanelRule.Action.BoneAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const decString &name = pPanel.GetCBBoneText();
-		return ! name.IsEmpty() && ! rule->GetListBones().Has( name )
-			? new aeUSetRuleAddBone( rule, name ) : NULL;
+		return !name.IsEmpty() && !rule->GetListBones().Has(name)
+			? aeUSetRuleAddBone::Ref::New(rule, name) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		const decString &name = pPanel.GetCBBoneText();
-		SetEnabled( ! name.IsEmpty() && ! rule.GetListBones().Has( name ) );
+		SetEnabled(!name.IsEmpty() && !rule.GetListBones().Has(name));
 	}
 };
 
 class cActionBoneRemoves : public cBaseAction{
 public:
-	cActionBoneRemoves( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove bones" ){}
+	using Ref = deTObjectReference<cActionBoneRemoves>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionBoneRemoves(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.BoneRemoves",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.BoneRemoves.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const decString &name = pPanel.GetCBBoneText();
-		if( name.IsEmpty() ){
-			return NULL;
+		if(name.IsEmpty()){
+			return {};
 		}
-		aeUSetRuleRemoveBone * const undo = new aeUSetRuleRemoveBone( rule, name );
-		if( undo->HasBones() ){
-			return undo;
-			
-		}else{
-			undo->FreeReference();
-			return NULL;
-		}
+		const aeUSetRuleRemoveBone::Ref undo(aeUSetRuleRemoveBone::Ref::New(rule, name));
+		return undo->HasBones() ? undo : aeUSetRuleRemoveBone::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( ! pPanel.GetCBBoneText().IsEmpty() );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(!pPanel.GetCBBoneText().IsEmpty());
 	}
 };
 
 class cActionBoneRemovesAll : public cBaseAction{
 public:
-	cActionBoneRemovesAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all bones" ){}
+	using Ref = deTObjectReference<cActionBoneRemovesAll>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionBoneRemovesAll(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.BoneRemoveAll",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.BoneRemoveAll.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		return rule->GetListBones().GetCount() > 0
-			? new aeUSetRuleRemoveAllBones( rule ) : NULL;
+			? aeUSetRuleRemoveAllBones::Ref::New(rule) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( rule.GetListBones().GetCount() > 0 );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(rule.GetListBones().GetCount() > 0);
 	}
 };
 
 class cActionBoneSelectedRemove : public cBaseAction{
 public:
-	cActionBoneSelectedRemove( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove selected bone" ){}
+	using Ref = deTObjectReference<cActionBoneSelectedRemove>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionBoneSelectedRemove(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.BoneSelectedRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.BoneSelectedRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const char * const name = pPanel.GetListBoneSelection();
-		return name ? new aeUSetRuleRemoveBone( rule, name ) : NULL;
+		return name ? aeUSetRuleRemoveBone::Ref::New(rule, name) : aeUSetRuleRemoveBone::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( pPanel.GetListBoneSelection() );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(pPanel.GetListBoneSelection());
 	}
 };
 
 class cActionMirrorRigBones : public cBaseAction{
 public:
-	cActionMirrorRigBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Mirror Bones",
-		NULL, "Mirror rig bones" ){}
+	using Ref = deTObjectReference<cActionMirrorRigBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionMirrorRigBones(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.MirrorRigBones",
+		nullptr, "@Animator.WPAPanelRule.Action.MirrorRigBones.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
-		return new aeURuleMirrorBones( rule );
+		return aeURuleMirrorBones::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( rule.GetListBones().GetCount() > 0 );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(rule.GetListBones().GetCount() > 0);
 	}
 };
 
 class cActionCopyBones : public cBaseAction{
 public:
-	cActionCopyBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
+	using Ref = deTObjectReference<cActionCopyBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardDataReference clip;
-		clip.TakeOver( new aeClipboardDataBones( rule->GetListBones() ) );
-		pPanel.GetWindowMain().GetClipboard().Set( clip );
-		return NULL;
+public:
+	cActionCopyBones(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.CopyBones",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAPanelRule.Action.CopyBones.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
+		pPanel.GetWindowMain().GetClipboard().Set(
+			aeClipboardDataBones::Ref::New(rule->GetListBones()));
+		return {};
 	}
 };
 
 class cActionPasteBones : public cBaseAction{
 public:
-	cActionPasteBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
+	using Ref = deTObjectReference<cActionPasteBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		aeClipboardDataBones * const clip = ( aeClipboardDataBones* )pPanel.GetWindowMain()
-			.GetClipboard().GetWithTypeName( aeClipboardDataBones::TYPE_NAME  );
-		if( ! clip ){
-			return NULL;
+public:
+	cActionPasteBones(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.PasteBones",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAPanelRule.Action.PasteBones.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
+		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowMain()
+			.GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
+		if(!clip){
+			return {};
 		}
 		
-		aeUSetRuleBones * const undo = new aeUSetRuleBones( rule, rule->GetListBones() + clip->GetBones() );
-		undo->SetShortInfo( "Rule paste bones" );
+		const aeUSetRuleBones::Ref undo = aeUSetRuleBones::Ref::New(rule, rule->GetListBones() + clip->GetBones());
+		undo->SetShortInfo("@Animator.Undo.RulePasteBones");
 		return undo;
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule & ){
-		SetEnabled( pPanel.GetWindowMain().GetClipboard().HasWithTypeName( aeClipboardDataBones::TYPE_NAME ) );
+	void Update(const aeAnimator &, const aeRule &) override{
+		SetEnabled(pPanel.GetWindowMain().GetClipboard().HasWithTypeName(aeClipboardDataBones::TYPE_NAME));
 	}
 };
 
 class cActionExportBones : public cBaseAction{
 public:
-	cActionExportBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Export To Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export bones" ){}
+	using Ref = deTObjectReference<cActionExportBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionExportBones(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.ExportBones",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.WPAPanelRule.Action.ExportBones.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const decStringSet bones = rule->GetListBones();
 		const int count = bones.GetCount();
 		decString text;
 		int i;
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				text.AppendCharacter( '\n' );
+		for(i=0; i<count; i++){
+			if(i > 0){
+				text.AppendCharacter('\n');
 			}
-			text.Append( bones.GetAt( i ) );
+			text.Append(bones.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Bones", text );
-		return nullptr;
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAPanelRule.Dialog.ExportBones.Title",
+			"@Animator.WPAPanelRule.Dialog.ExportBones.Bones", text);
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( rule.GetListBones().GetCount() > 0 );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(rule.GetListBones().GetCount() > 0);
 	}
 };
 
 class cActionImportBones : public cBaseAction{
 public:
-	cActionImportBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Import From Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import bones" ){}
+	using Ref = deTObjectReference<cActionImportBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionImportBones(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.ImportBones",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Animator.WPAPanelRule.Action.ImportBones.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		decString text;
-		while( true ){
-			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
-			"Import From Text", "Bones. One bone per line.", text ) ){
-				return nullptr;
+		while(true){
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAPanelRule.Dialog.ImportBones.Title",
+			"@Animator.WPAPanelRule.Dialog.ImportBones.Message", text)){
+				return {};
 			}
 			break;
 		}
 		
-		const decStringList lines( text.Split( '\n' ) );
+		const decStringList lines(text.Split('\n'));
 		const int count = lines.GetCount();
 		decStringSet bones;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! lines.GetAt( i ).IsEmpty() ){
-				bones.Add( lines.GetAt( i ) );
+		for(i=0; i<count; i++){
+			if(!lines.GetAt(i).IsEmpty()){
+				bones.Add(lines.GetAt(i));
 			}
 		}
 		
-		aeUSetRuleBones * const undo = new aeUSetRuleBones( rule, rule->GetListBones() + bones );
-		undo->SetShortInfo( "Rule import bones" );
+		const aeUSetRuleBones::Ref undo = aeUSetRuleBones::Ref::New(rule, rule->GetListBones() + bones);
+		undo->SetShortInfo("@Animator.Undo.RuleImportBones");
 		return undo;
 	}
 };
@@ -442,213 +492,253 @@ class cListBones : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
 	
 public:
-	cListBones( aeWPAPanelRule &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cListBones>;
+	cListBones(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
-		if( pPanel.GetRule() && listBox->GetSelectedItem() ){
-			pPanel.SetCBBoneText( listBox->GetSelectedItem()->GetText() );
+		if(pPanel.GetRule() && listBox->GetSelectedItem()){
+			pPanel.SetCBBoneText(listBox->GetSelectedItem()->GetText());
 		}
 	}*/
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
-		if( ! pPanel.GetRule() ){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		if(!pPanel.GetRule()){
 			return;
 		}
 		
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, new cActionBoneAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionBoneSelectedRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionBoneRemovesAll( pPanel ), true );
-		helper.MenuCommand( menu, new cActionMirrorRigBones( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCopyBones( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteBones( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionExportBones( pPanel ), true );
-		helper.MenuCommand( menu, new cActionImportBones( pPanel ), true );
+		helper.MenuCommand(menu, cActionBoneAdd::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionBoneSelectedRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionBoneRemovesAll::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionMirrorRigBones::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionCopyBones::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteBones::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionExportBones::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportBones::Ref::New(pPanel));
 	}
 };
 
 
 class cActionVertexPositionSetAdd : public cBaseAction{
 public:
-	cActionVertexPositionSetAdd( aeWPAPanelRule &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add vertex position set" ){}
+	using Ref = deTObjectReference<cActionVertexPositionSetAdd>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionVertexPositionSetAdd(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.VPSAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAPanelRule.Action.VPSAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const decString &name = pPanel.GetCBVertexPositionSetText();
-		return ! name.IsEmpty() && ! rule->GetListVertexPositionSets().Has( name )
-			? new aeUSetRuleAddVertexPositionSet( rule, name ) : NULL;
+		return !name.IsEmpty() && !rule->GetListVertexPositionSets().Has(name)
+			? aeUSetRuleAddVertexPositionSet::Ref::New(rule, name) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		const decString &name = pPanel.GetCBVertexPositionSetText();
-		SetEnabled( ! name.IsEmpty() && ! rule.GetListVertexPositionSets().Has( name ) );
+		SetEnabled(!name.IsEmpty() && !rule.GetListVertexPositionSets().Has(name));
 	}
 };
 
 class cActionVertexPositionSetRemoves : public cBaseAction{
 public:
-	cActionVertexPositionSetRemoves( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove vertex position sets" ){}
+	using Ref = deTObjectReference<cActionVertexPositionSetRemoves>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionVertexPositionSetRemoves(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.VPSRemoves",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.VPSRemoves.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const decString &name = pPanel.GetCBVertexPositionSetText();
-		if( name.IsEmpty() ){
-			return NULL;
+		if(name.IsEmpty()){
+			return {};
 		}
-		aeUSetRuleRemoveVertexPositionSet * const undo = new aeUSetRuleRemoveVertexPositionSet( rule, name );
-		if( undo->HasVertexPositionSets() ){
-			return undo;
-			
-		}else{
-			undo->FreeReference();
-			return NULL;
-		}
+		const aeUSetRuleRemoveVertexPositionSet::Ref undo(aeUSetRuleRemoveVertexPositionSet::Ref::New(rule, name));
+		return undo->HasVertexPositionSets() ? undo : aeUSetRuleRemoveVertexPositionSet::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( ! pPanel.GetCBVertexPositionSetText().IsEmpty() );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(!pPanel.GetCBVertexPositionSetText().IsEmpty());
 	}
 };
 
 class cActionVertexPositionSetRemovesAll : public cBaseAction{
 public:
-	cActionVertexPositionSetRemovesAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all vertex position sets" ){}
+	using Ref = deTObjectReference<cActionVertexPositionSetRemovesAll>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionVertexPositionSetRemovesAll(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.VPSRemoveAll",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.VPSRemoveAll.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		return rule->GetListVertexPositionSets().GetCount() > 0
-			? new aeUSetRuleRemoveAllVertexPositionSets( rule ) : NULL;
+			? aeUSetRuleRemoveAllVertexPositionSets::Ref::New(rule) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( rule.GetListVertexPositionSets().GetCount() > 0 );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(rule.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
 
 class cActionVertexPositionSetSelectedRemove : public cBaseAction{
 public:
-	cActionVertexPositionSetSelectedRemove( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove selected vertex position set" ){}
+	using Ref = deTObjectReference<cActionVertexPositionSetSelectedRemove>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionVertexPositionSetSelectedRemove(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.VPSSelectedRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.VPSSelectedRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const char * const name = pPanel.GetListVertexPositionSetSelection();
-		return name ? new aeUSetRuleRemoveVertexPositionSet( rule, name ) : NULL;
+		return name ? aeUSetRuleRemoveVertexPositionSet::Ref::New(rule, name) : aeUSetRuleRemoveVertexPositionSet::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( pPanel.GetListVertexPositionSetSelection() );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(pPanel.GetListVertexPositionSetSelection());
 	}
 };
 
 class cActionMirrorRigVertexPositionSets : public cBaseAction{
 public:
-	cActionMirrorRigVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel,
-		"Mirror", nullptr, "Mirror vertex position sets" ){}
+	using Ref = deTObjectReference<cActionMirrorRigVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionMirrorRigVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.MirrorRigVPS", nullptr,
+		"@Animator.WPAPanelRule.Action.MirrorRigVPS.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
-		return new aeURuleMirrorVertexPositionSets( rule );
+		return aeURuleMirrorVertexPositionSets::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( rule.GetListVertexPositionSets().GetCount() > 0 );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(rule.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
 
 class cActionCopyVertexPositionSets : public cBaseAction{
 public:
-	cActionCopyVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position set" ){}
+	using Ref = deTObjectReference<cActionCopyVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardDataReference clip;
-		clip.TakeOver( new aeClipboardDataVertexPositionSets( rule->GetListVertexPositionSets() ) );
-		pPanel.GetWindowMain().GetClipboard().Set( clip );
-		return nullptr;
+public:
+	cActionCopyVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.CopyVPS",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAPanelRule.Action.CopyVPS.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
+		pPanel.GetWindowMain().GetClipboard().Set(
+			aeClipboardDataVertexPositionSets::Ref::New(rule->GetListVertexPositionSets()));
+		return {};
 	}
 };
 
 class cActionPasteVertexPositionSets : public cBaseAction{
 public:
-	cActionPasteVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
+	using Ref = deTObjectReference<cActionPasteVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		aeClipboardDataVertexPositionSets * const clip = ( aeClipboardDataVertexPositionSets* )pPanel.GetWindowMain()
-			.GetClipboard().GetWithTypeName( aeClipboardDataVertexPositionSets::TYPE_NAME  );
-		if( ! clip ){
-			return NULL;
+public:
+	cActionPasteVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.PasteVPS",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAPanelRule.Action.PasteVPS.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
+		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowMain()
+			.GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
+		if(!clip){
+			return {};
 		}
 		
-		aeUSetRuleVertexPositionSets * const undo = new aeUSetRuleVertexPositionSets(
-			rule, rule->GetListVertexPositionSets() + clip->GetVertexPositionSets() );
-		undo->SetShortInfo( "Rule paste vertex position sets" );
+		const aeUSetRuleVertexPositionSets::Ref undo = aeUSetRuleVertexPositionSets::Ref::New(
+			rule, rule->GetListVertexPositionSets() + clip->GetVertexPositionSets());
+		undo->SetShortInfo("@Animator.Undo.RulePasteVertexPositionSets");
 		return undo;
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule & ){
-		SetEnabled( pPanel.GetWindowMain().GetClipboard().HasWithTypeName( aeClipboardDataVertexPositionSets::TYPE_NAME ) );
+	void Update(const aeAnimator &, const aeRule &) override{
+		SetEnabled(pPanel.GetWindowMain().GetClipboard().HasWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME));
 	}
 };
 
 class cActionExportVertexPositionSets : public cBaseAction{
 public:
-	cActionExportVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Export To Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export vertex position set" ){}
+	using Ref = deTObjectReference<cActionExportVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionExportVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.ExportVPS",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.WPAPanelRule.Action.ExportVPS.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		const decStringSet vpslist = rule->GetListVertexPositionSets();
 		const int count = vpslist.GetCount();
 		decString text;
 		int i;
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				text.AppendCharacter( '\n' );
+		for(i=0; i<count; i++){
+			if(i > 0){
+				text.AppendCharacter('\n');
 			}
-			text.Append( vpslist.GetAt( i ) );
+			text.Append(vpslist.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Vertex position sets", text );
-		return nullptr;
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAPanelRule.Dialog.ExportVPS.Title",
+			"@Animator.WPAPanelRule.Dialog.ExportVPS.VPS", text);
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		SetEnabled( rule.GetListVertexPositionSets().GetCount() > 0 );
+	void Update(const aeAnimator &, const aeRule &rule) override{
+		SetEnabled(rule.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
 
 class cActionImportVertexPositionSets : public cBaseAction{
 public:
-	cActionImportVertexPositionSets( aeWPAPanelRule &panel ) : cBaseAction( panel, "Import From Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import vertex position sets" ){}
+	using Ref = deTObjectReference<cActionImportVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionImportVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.ImportVPS",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Animator.WPAPanelRule.Action.ImportVPS.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		decString text;
-		while( true ){
-			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
-			"Import From Text", "Vertex position sets. One vertex position set per line.", text ) ){
-				return nullptr;
+		while(true){
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAPanelRule.Dialog.ImportVPS.Title",
+			"@Animator.WPAPanelRule.Dialog.ImportVPS.Message", text)){
+				return {};
 			}
 			break;
 		}
 		
-		const decStringList lines( text.Split( '\n' ) );
+		const decStringList lines(text.Split('\n'));
 		const int count = lines.GetCount();
 		decStringSet vpslist;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! lines.GetAt( i ).IsEmpty() ){
-				vpslist.Add( lines.GetAt( i ) );
+		for(i=0; i<count; i++){
+			if(!lines.GetAt(i).IsEmpty()){
+				vpslist.Add(lines.GetAt(i));
 			}
 		}
 		
-		aeUSetRuleVertexPositionSets * const undo = new aeUSetRuleVertexPositionSets(
-			rule, rule->GetListVertexPositionSets() + vpslist );
-		undo->SetShortInfo( "Rule import vertex position sets" );
+		const aeUSetRuleVertexPositionSets::Ref undo = aeUSetRuleVertexPositionSets::Ref::New(
+			rule, rule->GetListVertexPositionSets() + vpslist);
+		undo->SetShortInfo("@Animator.Undo.RuleImportVertexPositionSets");
 		return undo;
 	}
 };
@@ -657,102 +747,110 @@ class cListVertexPositionSets : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
 	
 public:
-	cListVertexPositionSets( aeWPAPanelRule &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cListVertexPositionSets>;
+	cListVertexPositionSets(aeWPAPanelRule &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
-		if( ! pPanel.GetRule() ){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		if(!pPanel.GetRule()){
 			return;
 		}
 		
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, new cActionVertexPositionSetAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionVertexPositionSetSelectedRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionVertexPositionSetRemovesAll( pPanel ), true );
-		helper.MenuCommand( menu, new cActionMirrorRigVertexPositionSets( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCopyVertexPositionSets( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteVertexPositionSets( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionExportVertexPositionSets( pPanel ), true );
-		helper.MenuCommand( menu, new cActionImportVertexPositionSets( pPanel ), true );
+		helper.MenuCommand(menu, cActionVertexPositionSetAdd::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionVertexPositionSetSelectedRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionVertexPositionSetRemovesAll::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionMirrorRigVertexPositionSets::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionCopyVertexPositionSets::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteVertexPositionSets::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionExportVertexPositionSets::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportVertexPositionSets::Ref::New(pPanel));
 	}
 };
 
 
 class cComboTarget : public cBaseComboBoxListener{
 public:
-	cComboTarget( aeWPAPanelRule &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboTarget>;
+	cComboTarget(aeWPAPanelRule &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRule* ){
-		pPanel.SetTarget( comboBox->GetSelectedItem()
-			? ( aeControllerTarget* )comboBox->GetSelectedItem()->GetData() : NULL );
-		return NULL;
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRule*) override{
+		pPanel.SetTarget(comboBox->GetSelectedItem()
+			? (aeControllerTarget*)comboBox->GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 
 class cActionLinkAdd : public cBaseAction{
 public:
-	cActionLinkAdd( aeWPAPanelRule &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add link" ){}
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionLinkAdd(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.LinkAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAPanelRule.Action.LinkAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
-		return target && link && ! target->HasLink( link )
-			? new aeURuleTargetAddLink( rule, target, link ) : NULL;
+		return target && link && !target->GetLinks().Has(link)
+			? aeURuleTargetAddLink::Ref::New(rule, target, link) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule & ){
+	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
-		SetEnabled( target && link && ! target->HasLink( link ) );
+		SetEnabled(target && link && !target->GetLinks().Has(link));
 	}
 };
 
 class cActionLinkRemove : public cBaseAction{
 public:
-	cActionLinkRemove( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove link" ){}
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionLinkRemove(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.LinkRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.LinkRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetListLinkSelection();
-		return target && link && target->HasLink( link )
-			? new aeURuleTargetRemoveLink( rule, target, link ) : NULL;
+		return target && link && target->GetLinks().Has(link)
+			? aeURuleTargetRemoveLink::Ref::New(rule, target, link) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule & ){
+	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetListLinkSelection();
-		SetEnabled( target && link && target->HasLink( link ) );
+		SetEnabled(target && link && target->GetLinks().Has(link));
 	}
 };
 
 class cActionLinkRemoveAll : public cBaseAction{
 public:
-	cActionLinkRemoveAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all links" ){}
+	using Ref = deTObjectReference<cActionLinkRemoveAll>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+public:
+	cActionLinkRemoveAll(aeWPAPanelRule &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRule.Action.LinkRemoveAll",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRule.Action.LinkRemoveAll.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
-		if( ! target || target->GetLinkCount() == 0 ){
-			return NULL;
-		}
-		
-		const int count = target->GetLinkCount();
-		aeLinkList list;
-		int i;
-		for( i=0; i<count; i++ ){
-			list.Add( target->GetLinkAt( i ) );
-		}
-		return new aeURuleTargetRemoveAllLinks( rule, target, list );
+		return target && target->GetLinks().IsNotEmpty()
+			? aeURuleTargetRemoveAllLinks::Ref::New(rule, target) : igdeUndo::Ref();
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRule & ){
+	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
-		SetEnabled( target && target->GetLinkCount() > 0 );
+		SetEnabled(target && target->GetLinks().IsNotEmpty());
 	}
 };
 
@@ -761,24 +859,25 @@ class cListLinks : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
 	
 public:
-	cListLinks( aeWPAPanelRule &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cListLinks>;
+	cListLinks(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
-		if( listBox->GetSelectedItem() ){
-			pPanel.SetCBLinkSelection( ( aeLink* )listBox->GetSelectedItem()->GetData() );
+		if(listBox->GetSelectedItem()){
+			pPanel.SetCBLinkSelection((aeLink*)listBox->GetSelectedItem()->GetData());
 		}
 	}*/
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
-		if( ! pPanel.GetRule() ){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		if(!pPanel.GetRule()){
 			return;
 		}
 		
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, new cActionLinkAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionLinkRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionLinkRemoveAll( pPanel ), true );
+		helper.MenuCommand(menu, cActionLinkAdd::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionLinkRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionLinkRemoveAll::Ref::New(pPanel));
 	}
 };
 
@@ -792,76 +891,83 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRule::aeWPAPanelRule( aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType ) :
-igdeContainerFlow( wpRule.GetEnvironment(), igdeContainerFlow::eaY ),
-pWPRule( wpRule ),
-pRequiredType( requiredType ),
-pTarget( NULL )
+aeWPAPanelRule::aeWPAPanelRule(aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType) :
+igdeContainerFlow(wpRule.GetEnvironment(), igdeContainerFlow::eaY),
+pWPRule(wpRule),
+pRequiredType(requiredType)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, formLine;
+	igdeContainer::Ref groupBox, formLine;
 	
 	
 	// animation
-	helper.GroupBox( *this, groupBox, "General Settings:" );
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRule.GeneralSettings");
 	
-	helper.EditString( groupBox, "Name:", "Name of the rule", pEditName, new cTextName( *this ) );
+	helper.EditString(groupBox, "@Animator.WPAPanelRule.Name",
+		"@Animator.WPAPanelRule.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Blend Mode:", "Sets the blend mode",
-		pCBBlendMode, new cComboBlendMode( *this ) );
-	pCBBlendMode->AddItem( "Blend", NULL, ( void* )( intptr_t )deAnimatorRule::ebmBlend );
-	pCBBlendMode->AddItem( "Overlay", NULL, ( void* )( intptr_t )deAnimatorRule::ebmOverlay );
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRule.BlendMode",
+		"@Animator.WPAPanelRule.BlendMode.ToolTip",
+		pCBBlendMode, cComboBlendMode::Ref::New(*this));
+	pCBBlendMode->SetAutoTranslateItems(true);
+	pCBBlendMode->AddItem("@Animator.WPAPanelRule.BlendMode.Blend", nullptr, (void*)(intptr_t)deAnimatorRule::ebmBlend);
+	pCBBlendMode->AddItem("@Animator.WPAPanelRule.BlendMode.Overlay", nullptr, (void*)(intptr_t)deAnimatorRule::ebmOverlay);
 	
-	helper.EditFloat( groupBox, "Blend Factor:", "Sets the blend factor",
-		pEditBlendFactor, new cTextBlendFactor( *this ) );
-	helper.CheckBox( groupBox, pChkInvertBlendFactor, new cActionInvertBlendFactor( *this ), true );
-	helper.CheckBox( groupBox, pChkEnabled, new cActionEnabled( *this ), true );
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRule.BlendFactor",
+		"@Animator.WPAPanelRule.BlendFactor.ToolTip",
+		pEditBlendFactor, cTextBlendFactor::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkInvertBlendFactor, cActionInvertBlendFactor::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnabled, cActionEnabled::Ref::New(*this));
 	
 	
 	// affected bones
-	helper.GroupBoxFlow( *this, groupBox, "Affected bones:", false, true );
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.AffectedBones", false, true);
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBoxFilter( formLine, true, "Bones", pCBBones, NULL );
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	groupBox->AddChild(formLine);
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAPanelRule.Bones.ToolTip", pCBBones, {});
 	pCBBones->SetDefaultSorter();
-	helper.Button( formLine, pBtnBoneAdd, new cActionBoneAdd( *this ), true );
-	helper.Button( formLine, pBtnBoneDel, new cActionBoneRemoves( *this ), true );
+	helper.Button(formLine, pBtnBoneAdd, cActionBoneAdd::Ref::New(*this));
+	helper.Button(formLine, pBtnBoneDel, cActionBoneRemoves::Ref::New(*this));
 	
-	helper.ListBox( groupBox, 4, "Bones affected by rule", pListBones, new cListBones( *this ) );
+	helper.ListBox(groupBox, 4, "@Animator.WPAPanelRule.ListBones.ToolTip",
+		pListBones, cListBones::Ref::New(*this));
 	pListBones->SetDefaultSorter();
 	
 	
 	// affected vertex position sets
-	helper.GroupBoxFlow( *this, groupBox, "Affected Vertex Position Sets:", false, true );
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.AffectedVertexPositionSets", false, true);
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBoxFilter( formLine, true, "Vertex Position Sets", pCBVertexPositionSets, NULL );
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	groupBox->AddChild(formLine);
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAPanelRule.VertexPositionSets.ToolTip", pCBVertexPositionSets, {});
 	pCBVertexPositionSets->SetDefaultSorter();
-	helper.Button( formLine, pBtnVertexPositionSetAdd, new cActionVertexPositionSetAdd( *this ), true );
-	helper.Button( formLine, pBtnVertexPositionSetDel, new cActionVertexPositionSetRemoves( *this ), true );
+	helper.Button(formLine, pBtnVertexPositionSetAdd, cActionVertexPositionSetAdd::Ref::New(*this));
+	helper.Button(formLine, pBtnVertexPositionSetDel, cActionVertexPositionSetRemoves::Ref::New(*this));
 	
-	helper.ListBox( groupBox, 4, "Vertex position sets affected by rule",
-		pListVertexPositionSets, new cListVertexPositionSets( *this ) );
+	helper.ListBox(groupBox, 4, "@Animator.WPAPanelRule.ListVertexPositionSets.ToolTip",
+		pListVertexPositionSets, cListVertexPositionSets::Ref::New(*this));
 	pListVertexPositionSets->SetDefaultSorter();
 	
 	
 	// targets
-	helper.GroupBoxFlow( *this, groupBox, "Targets and Links:" );
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.TargetsAndLinks");
 	
-	formLine.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBox( formLine, "Target:", "Targets", pCBTarget, new cComboTarget( *this ) );
+	formLine = igdeContainerForm::Ref::New(env);
+	groupBox->AddChild(formLine);
+	helper.ComboBox(formLine, "@Animator.WPAPanelRule.Target",
+		"@Animator.WPAPanelRule.Target.ToolTip", pCBTarget, cComboTarget::Ref::New(*this));
+	pCBTarget->SetAutoTranslateItems(true);
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBoxFilter( formLine, "Links", pCBLinks, NULL );
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	groupBox->AddChild(formLine);
+	helper.ComboBoxFilter(formLine, "@Animator.WPAPanelRule.Links.ToolTip", pCBLinks, {});
 	pCBLinks->SetDefaultSorter();
-	helper.Button( formLine, pBtnLinkAdd, new cActionLinkAdd( *this ), true );
+	helper.Button(formLine, pBtnLinkAdd, cActionLinkAdd::Ref::New(*this));
 	
-	helper.ListBox( groupBox, 4, "Links affecting target", pListLinks, new cListLinks( *this ) );
+	helper.ListBox(groupBox, 4, "@Animator.WPAPanelRule.ListLinks.ToolTip",
+		pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 }
 
@@ -883,11 +989,11 @@ aeAnimator *aeWPAPanelRule::GetAnimator() const{
 
 aeRule *aeWPAPanelRule::GetRule() const{
 	aeRule * const rule = pWPRule.GetRule();
-	return rule && rule->GetType() == pRequiredType ? rule : NULL;
+	return rule && rule->GetType() == pRequiredType ? rule : nullptr;
 }
 
-void aeWPAPanelRule::SetTarget( aeControllerTarget *target ){
-	if( target == pTarget ){
+void aeWPAPanelRule::SetTarget(aeControllerTarget *target){
+	if(target == pTarget){
 		return;
 	}
 	
@@ -898,7 +1004,7 @@ void aeWPAPanelRule::SetTarget( aeControllerTarget *target ){
 
 
 void aeWPAPanelRule::OnActivated(){
-	SetTarget( NULL );
+	SetTarget(nullptr);
 	
 	UpdateRigBoneList();
 	UpdateModelVertexPositionSetList();
@@ -910,13 +1016,13 @@ void aeWPAPanelRule::OnActivated(){
 	
 	OnAnimatorPathChanged();
 	
-	if( pCBTarget->GetItemCount() > 0 ){
-		pCBTarget->SetSelection( 0 );
+	if(pCBTarget->GetItems().IsNotEmpty()){
+		pCBTarget->SetSelection(0);
 	}
 }
 
 void aeWPAPanelRule::OnAnimatorChanged(){
-	SetTarget( NULL );
+	SetTarget(nullptr);
 	OnAnimatorPathChanged();
 }
 
@@ -929,69 +1035,64 @@ void aeWPAPanelRule::UpdateControllerList(){
 }
 
 void aeWPAPanelRule::UpdateLinkList(){
-	aeLink * const selection = GetCBLinkSelection();
+	void * const selection = GetCBLinkSelection();
 	
 	pCBLinks->RemoveAllItems();
 	
-	if( GetAnimator() ){
-		const aeLinkList &list = GetAnimator()->GetLinks();
-		const int count = list.GetCount();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			aeLink * const link = list.GetAt( i );
-			pCBLinks->AddItem( link->GetName(), NULL, link );
-		}
+	if(GetAnimator()){
+		GetAnimator()->GetLinks().Visit([&](aeLink *link){
+			pCBLinks->AddItem(link->GetName(), nullptr, link);
+		});
 		pCBLinks->SortItems();
 	}
 	
 	pCBLinks->StoreFilterItems();
-	pCBLinks->SetSelectionWithData( selection );
+	pCBLinks->SetSelectionWithData(selection);
 }
 
 void aeWPAPanelRule::UpdateRigBoneList(){
-	const decString selection( GetCBBoneText() );
+	const decString selection(GetCBBoneText());
 	
 	pCBBones->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deRig * const rig = GetAnimator()->GetEngineRig();
-		if( rig ){
+		if(rig){
 			const int count = rig->GetBoneCount();
 			int i;
 			
-			for( i=0; i<count; i++ ){
-				pCBBones->AddItem( rig->GetBoneAt( i ).GetName() );
+			for(i=0; i<count; i++){
+				pCBBones->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBBones->SortItems();
 	}
 	
 	pCBBones->StoreFilterItems();
-	pCBBones->SetText( selection );
+	pCBBones->SetText(selection);
 }
 
 void aeWPAPanelRule::UpdateModelVertexPositionSetList(){
-	const decString selection( GetCBVertexPositionSetText() );
+	const decString selection(GetCBVertexPositionSetText());
 	
 	pCBVertexPositionSets->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deComponent * const component = GetAnimator()->GetEngineComponent();
-		const deModel * const model = component ? component->GetModel() : nullptr;
-		if( model ){
+		const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
+		if(model){
 			const int count = model->GetVertexPositionSetCount();
 			int i;
 			
-			for( i=0; i<count; i++ ){
-				pCBVertexPositionSets->AddItem( model->GetVertexPositionSetAt( i )->GetName() );
+			for(i=0; i<count; i++){
+				pCBVertexPositionSets->AddItem(model->GetVertexPositionSetAt(i)->GetName());
 			}
 		}
 		pCBVertexPositionSets->SortItems();
 	}
 	
 	pCBVertexPositionSets->StoreFilterItems();
-	pCBVertexPositionSets->SetText( selection );
+	pCBVertexPositionSets->SetText(selection);
 }
 
 void aeWPAPanelRule::UpdateAnimMoveList(){
@@ -1000,11 +1101,11 @@ void aeWPAPanelRule::UpdateAnimMoveList(){
 void aeWPAPanelRule::UpdateRule(){
 	const aeRule * const rule = GetRule();
 	
-	if( rule ){
+	if(rule){
 		// update rule
-		pEditName->SetText( rule->GetName() );
-		pCBBlendMode->SetSelectionWithData( ( void* )( intptr_t )rule->GetBlendMode() );
-		pEditBlendFactor->SetFloat( rule->GetBlendFactor() );
+		pEditName->SetText(rule->GetName());
+		pCBBlendMode->SetSelectionWithData((void*)(intptr_t)rule->GetBlendMode());
+		pEditBlendFactor->SetFloat(rule->GetBlendFactor());
 		
 		// update affected bone list
 		const decStringSet &boneList = rule->GetListBones();
@@ -1012,8 +1113,8 @@ void aeWPAPanelRule::UpdateRule(){
 		int i;
 		
 		pListBones->RemoveAllItems();
-		for( i=0; i<boneCount; i++ ){
-			pListBones->AddItem( boneList.GetAt( i ) );
+		for(i=0; i<boneCount; i++){
+			pListBones->AddItem(boneList.GetAt(i));
 		}
 		pListBones->SortItems();
 		
@@ -1022,25 +1123,25 @@ void aeWPAPanelRule::UpdateRule(){
 		const int vpsCount = vpsList.GetCount();
 		
 		pListVertexPositionSets->RemoveAllItems();
-		for( i=0; i<vpsCount; i++ ){
-			pListVertexPositionSets->AddItem( vpsList.GetAt( i ) );
+		for(i=0; i<vpsCount; i++){
+			pListVertexPositionSets->AddItem(vpsList.GetAt(i));
 		}
 		pListVertexPositionSets->SortItems();
 		
 	}else{
 		pEditName->ClearText();
-		pCBBlendMode->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRule::ebmBlend );
+		pCBBlendMode->SetSelectionWithData((void*)(intptr_t)deAnimatorRule::ebmBlend);
 		pEditBlendFactor->ClearText();
 		pListBones->RemoveAllItems();
 		pListVertexPositionSets->RemoveAllItems();
 	}
 	
 	const bool enabled = rule;
-	pEditName->SetEnabled( enabled );
-	pCBBlendMode->SetEnabled( enabled );
-	pEditBlendFactor->SetEnabled( enabled );
-	pListBones->SetEnabled( enabled );
-	pListVertexPositionSets->SetEnabled( enabled );
+	pEditName->SetEnabled(enabled);
+	pCBBlendMode->SetEnabled(enabled);
+	pEditBlendFactor->SetEnabled(enabled);
+	pListBones->SetEnabled(enabled);
+	pListVertexPositionSets->SetEnabled(enabled);
 	
 	pChkInvertBlendFactor->GetAction()->Update();
 	pChkEnabled->GetAction()->Update();
@@ -1054,28 +1155,24 @@ void aeWPAPanelRule::UpdateRule(){
 
 void aeWPAPanelRule::UpdateTargetList(){
 	pCBTarget->RemoveAllItems();
-	if( GetRule() ){
-		AddTarget( "Blend Factor", &GetRule()->GetTargetBlendFactor() );
+	if(GetRule()){
+		AddTarget("@Animator.Target.BlendFactor", GetRule()->GetTargetBlendFactor());
 	}
 }
 
 void aeWPAPanelRule::UpdateTarget(){
-	if( pTarget ){
-		const int linkCount = pTarget->GetLinkCount();
-		int i;
-		
+	if(pTarget){
 		pListLinks->RemoveAllItems();
-		for( i=0; i<linkCount; i++ ){
-			aeLink * const link = pTarget->GetLinkAt( i );
-			pListLinks->AddItem( link->GetName(), NULL, link );
-		}
+		pTarget->GetLinks().Visit([&](aeLink *link){
+			pListLinks->AddItem(link->GetName(), nullptr, link);
+		});
 		pListLinks->SortItems();
 		
 	}else{
 		pListLinks->RemoveAllItems();
 	}
 	
-	pListLinks->SetEnabled( pTarget );
+	pListLinks->SetEnabled(pTarget);
 	
 	pBtnLinkAdd->GetAction()->Update();
 }
@@ -1084,20 +1181,20 @@ const decString &aeWPAPanelRule::GetCBBoneText() const{
 	return pCBBones->GetText();
 }
 
-void aeWPAPanelRule::SetCBBoneText( const char *text ){
-	pCBBones->SetText( text );
+void aeWPAPanelRule::SetCBBoneText(const char *text){
+	pCBBones->SetText(text);
 }
 
 const char *aeWPAPanelRule::GetListBoneSelection() const{
-	return pListBones->GetSelectedItem() ? pListBones->GetSelectedItem()->GetText().GetString() : NULL;
+	return pListBones->GetSelectedItem() ? pListBones->GetSelectedItem()->GetText().GetString() : nullptr;
 }
 
 const decString &aeWPAPanelRule::GetCBVertexPositionSetText() const{
 	return pCBVertexPositionSets->GetText();
 }
 
-void aeWPAPanelRule::SetCBVertexPositionSetText( const char *text ){
-	pCBVertexPositionSets->SetText( text );
+void aeWPAPanelRule::SetCBVertexPositionSetText(const char *text){
+	pCBVertexPositionSets->SetText(text);
 }
 
 const char *aeWPAPanelRule::GetListVertexPositionSetSelection() const{
@@ -1106,19 +1203,19 @@ const char *aeWPAPanelRule::GetListVertexPositionSetSelection() const{
 }
 
 aeLink *aeWPAPanelRule::GetCBLinkSelection() const{
-	return pCBLinks->GetSelectedItem() ? ( aeLink* )pCBLinks->GetSelectedItem()->GetData() : NULL;
+	return pCBLinks->GetSelectedItem() ? (aeLink*)pCBLinks->GetSelectedItem()->GetData() : nullptr;
 }
 
-void aeWPAPanelRule::SetCBLinkSelection( aeLink *selection ){
-	pCBLinks->SetSelectionWithData( selection );
+void aeWPAPanelRule::SetCBLinkSelection(aeLink *selection){
+	pCBLinks->SetSelectionWithData(selection);
 }
 
 aeLink *aeWPAPanelRule::GetListLinkSelection() const{
-	return pListLinks->GetSelectedItem() ? ( aeLink* )pListLinks->GetSelectedItem()->GetData() : NULL;
+	return pListLinks->GetSelectedItem() ? (aeLink*)pListLinks->GetSelectedItem()->GetData() : nullptr;
 }
 
-void aeWPAPanelRule::SetListLinkSelection( aeLink *selection ){
-	pListLinks->SetSelectionWithData( selection );
+void aeWPAPanelRule::SetListLinkSelection(aeLink *selection){
+	pListLinks->SetSelectionWithData(selection);
 }
 
 
@@ -1127,6 +1224,6 @@ void aeWPAPanelRule::RemoveAllTargets(){
 	pCBTarget->RemoveAllItems();
 }
 
-void aeWPAPanelRule::AddTarget( const char *name, aeControllerTarget *target ){
-	pCBTarget->AddItem( name, NULL, target );
+void aeWPAPanelRule::AddTarget(const char *name, aeControllerTarget *target){
+	pCBTarget->AddItem(name, nullptr, target);
 }

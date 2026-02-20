@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCComponent;
+#include "../gamedef/objectClass/component/gdeOCComponent.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCComponent;
  */
 class gdeClipboardDataOCComponent : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCComponent>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCComponent( gdeOCComponent *component );
+	gdeClipboardDataOCComponent(gdeOCComponent *component);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCComponent();
+	~gdeClipboardDataOCComponent() override;
 	/*@}*/
 	
 	

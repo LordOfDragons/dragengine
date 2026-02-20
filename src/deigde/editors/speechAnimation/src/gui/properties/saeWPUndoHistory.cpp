@@ -40,17 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeWPUndoHistory::saeWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pSAnimation( NULL ),
-pListener( new saeWPUndoHistoryListener( *this ) ){
+saeWPUndoHistory::saeWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(saeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 saeWPUndoHistory::~saeWPUndoHistory(){
-	SetSAnimation( NULL );
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetSAnimation(nullptr);
 }
 
 
@@ -58,24 +54,21 @@ saeWPUndoHistory::~saeWPUndoHistory(){
 // Management
 ///////////////
 
-void saeWPUndoHistory::SetSAnimation( saeSAnimation *sanimation ){
-	if( sanimation == pSAnimation ){
+void saeWPUndoHistory::SetSAnimation(saeSAnimation *sanimation){
+	if(sanimation == pSAnimation){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(nullptr);
 	
-	if( pSAnimation ){
-		pSAnimation->RemoveListener( pListener );
-		pSAnimation->FreeReference();
+	if(pSAnimation){
+		pSAnimation->RemoveListener(pListener);
 	}
 	
 	pSAnimation = sanimation;
 	
-	if( sanimation ){
-		sanimation->AddListener( pListener );
-		sanimation->AddReference();
-		
-		SetUndoSystem( sanimation->GetUndoSystem() );
+	if(sanimation){
+		sanimation->AddListener(pListener);
+		SetUndoSystem(sanimation->GetUndoSystem());
 	}
 }

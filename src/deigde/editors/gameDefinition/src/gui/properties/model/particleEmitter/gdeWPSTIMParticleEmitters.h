@@ -36,14 +36,16 @@ class gdeParticleEmitter;
  */
 class gdeWPSTIMParticleEmitters : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMParticleEmitters> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMParticleEmitters( gdeWPSTreeModel &tree );
+	gdeWPSTIMParticleEmitters(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMParticleEmitters();
+	~gdeWPSTIMParticleEmitters() override;
 	/*@}*/
 	
 	
@@ -51,8 +53,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with particle emitter or \em NULL. */
-	gdeWPSTIMParticleEmitter *GetChildWith( gdeParticleEmitter *particleEmitter ) const;
+	/** \brief Model with particle emitter or \em nullptr. */
+	gdeWPSTIMParticleEmitter *GetChildWith(gdeParticleEmitter *particleEmitter) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -60,13 +62,13 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

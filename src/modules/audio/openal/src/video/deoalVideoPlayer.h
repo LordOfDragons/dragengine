@@ -25,12 +25,13 @@
 #ifndef _DEOALVIDEOPLAYER_H_
 #define _DEOALVIDEOPLAYER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include "deoalAVideoPlayer.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
 #include <dragengine/systems/modules/audio/deBaseAudioVideoPlayer.h>
 
 class deAudioOpenAL;
-class deoalAVideoPlayer;
 class deoalSpeaker;
 
 class deVideoPlayer;
@@ -44,14 +45,14 @@ class deoalVideoPlayer : public deBaseAudioVideoPlayer{
 private:
 	deAudioOpenAL &pOal;
 	deVideoPlayer &pVideoPlayer;
-	deoalAVideoPlayer *pAVideoPlayer;
+	deoalAVideoPlayer::Ref pAVideoPlayer;
 	
 	bool pDirtyVideo;
 	bool pDirtyParameters;
 	bool pDirtyPlayPosition;
 	bool pRequiresSeeking;
 	
-	decPointerSet pSpeakers;
+	decTOrderedSet<deoalSpeaker*> pSpeakers;
 	
 	
 	
@@ -59,10 +60,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	deoalVideoPlayer( deAudioOpenAL &oal, deVideoPlayer &videoPlayer );
+	deoalVideoPlayer(deAudioOpenAL &oal, deVideoPlayer &videoPlayer);
 	
 	/** \brief Clean up peer. */
-	virtual ~deoalVideoPlayer();
+	~deoalVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -76,15 +77,15 @@ public:
 	inline deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Audio peer. */
-	inline deoalAVideoPlayer *GetAVideoPlayer() const{ return pAVideoPlayer; }
+	inline const deoalAVideoPlayer::Ref &GetAVideoPlayer() const{ return pAVideoPlayer; }
 	
 	
 	
 	/** \brief Add speaker to track. */
-	void AddSpeaker( deoalSpeaker *speaker );
+	void AddSpeaker(deoalSpeaker *speaker);
 	
 	/** \brief Remove speaker to track. */
-	void RemoveSpeaker( deoalSpeaker *speaker );
+	void RemoveSpeaker(deoalSpeaker *speaker);
 	
 	/**
 	 * \brief Synchronize.
@@ -98,25 +99,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Sound source changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	/** \brief Looping changed. */
-	virtual void LoopingChanged();
+	void LoopingChanged() override;
 	
 	/** \brief Play range changed. */
-	virtual void PlayRangeChanged();
+	void PlayRangeChanged() override;
 	
 	/** \brief Play speed changed. */
-	virtual void PlaySpeedChanged();
+	void PlaySpeedChanged() override;
 	
 	/**
 	 * \brief Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged( bool seeking );
+	void PlayPositionChanged(bool seeking) override;
 	
 	/** \brief Play state changed. */
-	virtual void PlayStateChanged();
+	void PlayStateChanged() override;
 	/*@}*/
 };
 

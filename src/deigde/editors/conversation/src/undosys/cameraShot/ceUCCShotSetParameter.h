@@ -29,7 +29,7 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -37,8 +37,12 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set Parameter.
  */
 class ceUCCShotSetParameter : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotSetParameter>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	int pParameter;
 	
 	decCurveBezier pOldCurve;
@@ -48,22 +52,22 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetParameter( ceCameraShot *cameraShot, int parameter );
+	ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetParameter();
+	~ceUCCShotSetParameter() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets the new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

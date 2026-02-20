@@ -27,7 +27,7 @@
 #ifdef OS_WEBWASM
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decPointerDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 
 #include "../deoglGL.h"
 #include "wasmfix.h"
@@ -41,7 +41,7 @@
 void wasm_glBindFragDataLocation(GLuint program, GLuint color, const GLchar *name){}
 
 void *wasmGetProcAddress(deoglRenderThread &renderThread, const char *name){
-	static decPointerDictionary functions;
+	static decTStringDictionary<void*> functions;
 	
 	if(functions.GetCount() == 0){
 		functions.SetAt("glPolygonOffset", (void*)&glPolygonOffset);
@@ -132,8 +132,7 @@ void *wasmGetProcAddress(deoglRenderThread &renderThread, const char *name){
 		functions.SetAt("glBlitFramebuffer", (void*)&glBlitFramebuffer);
 	}
 	
-	void *pointer = nullptr;
-	return functions.GetAt(name, &pointer) ? pointer : nullptr;
+	return functions.GetAtOrDefault(name);
 }
 
 #endif

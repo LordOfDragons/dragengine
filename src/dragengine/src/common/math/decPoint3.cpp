@@ -43,34 +43,34 @@ decPoint3::decPoint3(){
 	z = 0;
 }
 
-decPoint3::decPoint3( int nx, int ny, int nz ){
+decPoint3::decPoint3(int nx, int ny, int nz){
 	x = nx;
 	y = ny;
 	z = nz;
 }
 
-decPoint3::decPoint3( const decPoint3 &p ){
+decPoint3::decPoint3(const decPoint3 &p){
 	x = p.x;
 	y = p.y;
 	z = p.z;
 }
 
-decPoint3::decPoint3( const decPoint &p, int nz ){
+decPoint3::decPoint3(const decPoint &p, int nz){
 	x = p.x;
 	y = p.y;
 	z = nz;
 }
 
-decPoint3::decPoint3( const decVector &p ){
-	x = ( int )p.x;
-	y = ( int )p.y;
-	z = ( int )p.z;
+decPoint3::decPoint3(const decVector &p){
+	x = (int)p.x;
+	y = (int)p.y;
+	z = (int)p.z;
 }
 
-decPoint3::decPoint3( const decDVector &p ){
-	x = ( int )p.x;
-	y = ( int )p.y;
-	z = ( int )p.z;
+decPoint3::decPoint3(const decDVector &p){
+	x = (int)p.x;
+	y = (int)p.y;
+	z = (int)p.z;
 }
 
 
@@ -79,7 +79,7 @@ decPoint3::decPoint3( const decDVector &p ){
 ///////////////
 
 float decPoint3::Length() const{
-	return sqrtf( ( float )( x * x + y * y + z * z ) );
+	return sqrtf((float)(x * x + y * y + z * z));
 }
 
 void decPoint3::SetZero(){
@@ -88,85 +88,85 @@ void decPoint3::SetZero(){
 	z = 0;
 }
 
-void decPoint3::Set( int nx, int ny, int nz ){
+void decPoint3::Set(int nx, int ny, int nz){
 	x = nx;
 	y = ny;
 	z = nz;
 }
 
 decPoint3 decPoint3::Absolute() const{
-	return decPoint3( x < 0 ? -x : x, y < 0 ? -y : y, z < 0 ? -z : z );
+	return decPoint3(x < 0 ? -x : x, y < 0 ? -y : y, z < 0 ? -z : z);
 }
 
-void decPoint3::SetSmallest( const decPoint3 &p ){
-	if( p.x < x ){
+void decPoint3::SetSmallest(const decPoint3 &p){
+	if(p.x < x){
 		x = p.x;
 	}
-	if( p.y < y ){
+	if(p.y < y){
 		y = p.y;
 	}
-	if( p.z < z ){
+	if(p.z < z){
 		z = p.z;
 	}
 }
 
-decPoint3 decPoint3::Smallest( const decPoint3 &p ) const{
+decPoint3 decPoint3::Smallest(const decPoint3 &p) const{
 	return decPoint3(
-		decMath::min( x, p.x ),
-		decMath::min( y, p.y ),
-		decMath::min( z, p.z )
-	);
+		decMath::min(x, p.x),
+		decMath::min(y, p.y),
+		decMath::min(z, p.z)
+);
 }
 
-void decPoint3::SetLargest( const decPoint3 &p ){
-	if( p.x > x ){
+void decPoint3::SetLargest(const decPoint3 &p){
+	if(p.x > x){
 		x = p.x;
 	}
-	if( p.y > y ){
+	if(p.y > y){
 		y = p.y;
 	}
-	if( p.z > z ){
+	if(p.z > z){
 		z = p.z;
 	}
 }
 
-decPoint3 decPoint3::Largest( const decPoint3 &p ) const{
+decPoint3 decPoint3::Largest(const decPoint3 &p) const{
 	return decPoint3(
-		decMath::max( x, p.x ),
-		decMath::max( y, p.y ),
-		decMath::max( z, p.z )
-	);
+		decMath::max(x, p.x),
+		decMath::max(y, p.y),
+		decMath::max(z, p.z)
+);
 }
 
-void decPoint3::SetClamped( const decPoint3 &minValue, const decPoint3 &maxValue ){
-	if( x < minValue.x ){
+void decPoint3::SetClamped(const decPoint3 &minValue, const decPoint3 &maxValue){
+	if(x < minValue.x){
 		x = minValue.x;
 		
-	}else if( x > maxValue.x ){
+	}else if(x > maxValue.x){
 		x = maxValue.x;
 	}
 	
-	if( y < minValue.y ){
+	if(y < minValue.y){
 		y = minValue.y;
 		
-	}else if( y > maxValue.y ){
+	}else if(y > maxValue.y){
 		y = maxValue.y;
 	}
 	
-	if( z < minValue.z ){
+	if(z < minValue.z){
 		z = minValue.z;
 		
-	}else if( z > maxValue.z ){
+	}else if(z > maxValue.z){
 		z = maxValue.z;
 	}
 }
 
-decPoint3 decPoint3::Clamped( const decPoint3 &minValue, const decPoint3 &maxValue ) const{
+decPoint3 decPoint3::Clamped(const decPoint3 &minValue, const decPoint3 &maxValue) const{
 	return decPoint3(
-		decMath::clamp( x, minValue.x, maxValue.x ),
-		decMath::clamp( y, minValue.y, maxValue.y ),
-		decMath::clamp( z, minValue.z, maxValue.z )
-	);
+		decMath::clamp(x, minValue.x, maxValue.x),
+		decMath::clamp(y, minValue.y, maxValue.y),
+		decMath::clamp(z, minValue.z, maxValue.z)
+);
 }
 
 
@@ -175,40 +175,40 @@ decPoint3 decPoint3::Clamped( const decPoint3 &minValue, const decPoint3 &maxVal
 //////////////
 
 decPoint3 decPoint3::operator-() const{
-	return decPoint3( -x, -y, -z );
+	return decPoint3(-x, -y, -z);
 }
 
-decPoint3 &decPoint3::operator=( const decPoint3 &p ){
+decPoint3 &decPoint3::operator=(const decPoint3 &p){
 	x = p.x;
 	y = p.y;
 	z = p.z;
 	return *this;
 }
 
-decPoint3 &decPoint3::operator+=( const decPoint3 &p ){
+decPoint3 &decPoint3::operator+=(const decPoint3 &p){
 	x += p.x;
 	y += p.y;
 	z += p.z;
 	return *this;
 }
 
-decPoint3 &decPoint3::operator-=( const decPoint3 &p ){
+decPoint3 &decPoint3::operator-=(const decPoint3 &p){
 	x -= p.x;
 	y -= p.y;
 	z -= p.z;
 	return *this;
 }
 
-decPoint3 &decPoint3::operator*=( int k ){
+decPoint3 &decPoint3::operator*=(int k){
 	x *= k;
 	y *= k;
 	z *= k;
 	return *this;
 }
 
-decPoint3 &decPoint3::operator/=( int k ){
-	if( k == 0 ){
-		DETHROW( deeDivisionByZero );
+decPoint3 &decPoint3::operator/=(int k){
+	if(k == 0){
+		DETHROW(deeDivisionByZero);
 	}
 	x /= k;
 	y /= k;
@@ -216,49 +216,49 @@ decPoint3 &decPoint3::operator/=( int k ){
 	return *this;
 }
 
-decPoint3 decPoint3::operator+( const decPoint3 &p ) const{
-	return decPoint3( x + p.x, y + p.y, z + p.z );
+decPoint3 decPoint3::operator+(const decPoint3 &p) const{
+	return decPoint3(x + p.x, y + p.y, z + p.z);
 }
 
-decPoint3 decPoint3::operator-( const decPoint3 &p ) const{
-	return decPoint3( x - p.x, y - p.y, z - p.z );
+decPoint3 decPoint3::operator-(const decPoint3 &p) const{
+	return decPoint3(x - p.x, y - p.y, z - p.z);
 }
 
-decPoint3 decPoint3::operator*( int k ) const{
-	return decPoint3( x * k, y * k, z * k );
+decPoint3 decPoint3::operator*(int k) const{
+	return decPoint3(x * k, y * k, z * k);
 }
 
-int decPoint3::operator*( const decPoint3 &p ) const{
+int decPoint3::operator*(const decPoint3 &p) const{
 	return x * p.x + y * p.y + z * p.z;
 }
 
-decPoint3 decPoint3::operator/( int k ) const{
-	if( k == 0 ){
-		DETHROW( deeDivisionByZero );
+decPoint3 decPoint3::operator/(int k) const{
+	if(k == 0){
+		DETHROW(deeDivisionByZero);
 	}
-	return decPoint3( x / k, y / k, z / k );
+	return decPoint3(x / k, y / k, z / k);
 }
 
-bool decPoint3::operator==( const decPoint3 &p ) const{
+bool decPoint3::operator==(const decPoint3 &p) const{
 	return x == p.x && y == p.y && z == p.z;
 }
 
-bool decPoint3::operator!=( const decPoint3 &p ) const{
+bool decPoint3::operator!=(const decPoint3 &p) const{
 	return x != p.x || y != p.y || z != p.z;
 }
 
-bool decPoint3::operator<( const decPoint3 &p ) const{
+bool decPoint3::operator<(const decPoint3 &p) const{
 	return x < p.x && y < p.y && z < p.z;
 }
 
-bool decPoint3::operator>( const decPoint3 &p ) const{
+bool decPoint3::operator>(const decPoint3 &p) const{
 	return x > p.x && y > p.y && z > p.z;
 }
 
-bool decPoint3::operator<=( const decPoint3 &p ) const{
+bool decPoint3::operator<=(const decPoint3 &p) const{
 	return x <= p.x && y <= p.y && z <= p.z;
 }
 
-bool decPoint3::operator>=( const decPoint3 &p ) const{
+bool decPoint3::operator>=(const decPoint3 &p) const{
 	return x >= p.x && y >= p.y && z >= p.z;
 }

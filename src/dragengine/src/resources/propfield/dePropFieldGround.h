@@ -25,11 +25,10 @@
 #ifndef _DEPROPFIELDGROUND_H_
 #define _DEPROPFIELDGROUND_H_
 
+#include "../component/deComponent.h"
 #include "../../dragengine_export.h"
-
-
-class deComponent;
-class deHeightTerrain;
+#include "../terrain/heightmap/deHeightTerrain.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -47,11 +46,9 @@ class deHeightTerrain;
  */
 class DE_DLL_EXPORT dePropFieldGround{
 private:
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	
-	deComponent **pComponents;
-	int pComponentCount;
-	int pComponentSize;
+	deComponent::List pComponents;
 	
 	
 	
@@ -73,33 +70,37 @@ public:
 	void Clear();
 	
 	/** \brief Height terrain or NULL if not set. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set height terrain or NULL if not set. */
-	void SetHeightTerrain( deHeightTerrain *heightTerrain );
+	void SetHeightTerrain(deHeightTerrain *heightTerrain);
 	/*@}*/
 	
 	
 	
 	/** \name Components */
 	/*@{*/
+	/** \brief Components. */
+	inline deComponent::List &GetComponents(){ return pComponents; }
+	inline const deComponent::List &GetComponents() const{ return pComponents; }
+	
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** \brief Component at the given index. */
-	deComponent *GetComponentAt( int index ) const;
+	const deComponent::Ref &GetComponentAt(int index) const;
 	
 	/** \brief Index of the given component or -1 if not found. */
-	int IndexOfComponent( deComponent *component ) const;
+	int IndexOfComponent(deComponent *component) const;
 	
 	/** \brief Given component exists. */
-	bool HasComponent( deComponent *component ) const;
+	bool HasComponent(deComponent *component) const;
 	
 	/** \brief Adds a component. */
-	void AddComponent( deComponent *component );
+	void AddComponent(deComponent *component);
 	
 	/** \brief Removes a component. */
-	void RemoveComponent( deComponent *component );
+	void RemoveComponent(deComponent *component);
 	
 	/** \brief Removes all components. */
 	void RemoveAllComponents();

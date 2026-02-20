@@ -25,12 +25,13 @@
 #ifndef _LPEWINDOWPROPERTIES_H_
 #define _LPEWINDOWPROPERTIES_H_
 
+#include "lpeWPLangPack.h"
+#include "lpeWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
 
 class lpeLangPack;
 class lpeWindowMain;
-class lpeWPLangPack;
 
 
 
@@ -38,11 +39,14 @@ class lpeWPLangPack;
  * \brief Properties Panel.
  */
 class lpeWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<lpeWindowProperties>;
+	
 private:
 	lpeWindowMain &pWindowMain;
 	
-	lpeWPLangPack *pPanelLangPack;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	lpeWPLangPack::Ref pPanelLangPack;
+	lpeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	lpeWindowProperties( lpeWindowMain &windowMain );
+	lpeWindowProperties(lpeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~lpeWindowProperties();
+	~lpeWindowProperties() override;
 	/*@}*/
 	
 	
@@ -65,8 +69,8 @@ public:
 	/** \brief Main window. */
 	inline lpeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Set language pack or NULL. */
-	void SetLangPack( lpeLangPack *langpack );
+	/** \brief Set language pack or nullptr. */
+	void SetLangPack(lpeLangPack *langpack);
 	/*@}*/
 };
 

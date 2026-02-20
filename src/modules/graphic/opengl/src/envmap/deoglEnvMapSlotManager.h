@@ -25,6 +25,8 @@
 #ifndef _DEOGLENVMAPSLOTMANAGER_H_
 #define _DEOGLENVMAPSLOTMANAGER_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglRenderThread;
 class deoglArrayTexture;
 class deoglEnvMapSlot;
@@ -51,18 +53,15 @@ private:
 	
 	int pWidth;
 	int pHeight;
-	int pLayerCount;
 	
-	deoglEnvMapSlot *pSlots;
-	int *pUsedSlots;
-	int pUsedSlotsSize;
-	int pUsedSlotsCount;
+	decTList<deoglEnvMapSlot> pSlots;
+	decTList<int> pUsedSlots;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map slot manager. */
-	deoglEnvMapSlotManager( deoglRenderThread &renderThread );
+	explicit deoglEnvMapSlotManager(deoglRenderThread &renderThread);
 	/** Cleans up the environment map slot manager. */
 	~deoglEnvMapSlotManager();
 	/*@}*/
@@ -79,33 +78,40 @@ public:
 	/** Retrieves the height of the array texture. */
 	inline int GetHeight() const{ return pHeight; }
 	/** Retrieves the number of layers in the array texture. This is also the number of available slots. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{ return pSlots.GetCount(); }
 	
 	/** Retrieves the slot at the given index. */
-	deoglEnvMapSlot &GetSlotAt( int index ) const;
+	deoglEnvMapSlot &GetSlotAt(int index);
+	const deoglEnvMapSlot &GetSlotAt(int index) const;
+	
 	/** Retrieves the index of the slot with the given environment map or -1 if not found. */
-	int IndexOfSlotWith( deoglEnvironmentMap *envmap ) const;
+	int IndexOfSlotWith(deoglEnvironmentMap *envmap) const;
+	
 	/** Retrieves the index of the oldest empty slot or -1 if all are used. */
 	int IndexOfOldestUnusedSlot() const;
 	
 	/** Mark all slots as unused. This has to be called before any environment maps are added for a render run. */
 	void MarkSlotsUnused();
+	
 	/**
 	 * Adds an environment map. If no slot holds the environment map the oldest empty slot is assigned the
 	 * environment map and the texture data copied to the appropriate layer in the array texture. In all
 	 * cases the last used is reset to 0.
 	 */
-	void AddEnvironmentMap( deoglEnvironmentMap *envmap );
+	void AddEnvironmentMap(deoglEnvironmentMap *envmap);
+	
 	/** Increase the last used counters of all environment slots by one. */
 	void IncreaseSlotLastUsedCounters();
 	
 	/** Notification by an environment map that the texture changed and needs to be copied to the corrensponding array texture level. */
-	void NotifyEnvMapChanged( int slotIndex );
+	void NotifyEnvMapChanged(int slotIndex);
 	
 	/** Retrieves the number of used slots. */
-	inline int GetUsedSlotCount() const{ return pUsedSlotsCount; }
+	inline int GetUsedSlotCount() const{ return pUsedSlots.GetCount(); }
+	
 	/** Retrieves the index of the used slot by index. */
-	int GetUsedSlotIndexAt( int index ) const;
+	int GetUsedSlotIndexAt(int index) const;
+	
 	/** Update the used slots list from the current slot assignment. */
 	void UpdateUsedSlots();
 	/*@}*/

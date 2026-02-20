@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -36,8 +36,12 @@ class gdeObjectClass;
  * \brief Undo action object class set base.
  */
 class gdeUOCSetCategory : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCSetCategory>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetCategory( gdeObjectClass *objectClass, const char *newValue );
+	gdeUOCSetCategory(gdeObjectClass *objectClass, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSetCategory();
+	~gdeUOCSetCategory() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

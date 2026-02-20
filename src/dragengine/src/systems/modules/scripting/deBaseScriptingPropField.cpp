@@ -46,5 +46,5 @@ deBaseScriptingPropField::~deBaseScriptingPropField(){
 // Notifications
 //////////////////
 
-void deBaseScriptingPropField::CreateInstances( float density ){
+void deBaseScriptingPropField::CreateInstances(float density){
 }

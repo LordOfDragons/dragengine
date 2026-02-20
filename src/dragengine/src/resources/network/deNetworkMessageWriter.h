@@ -25,7 +25,7 @@
 #ifndef _DENETWORKMESSAGEWRITER_H_
 #define _DENETWORKMESSAGEWRITER_H_
 
-#include "deNetworkMessageReference.h"
+#include "deNetworkMessage.h"
 #include "../../common/file/decBaseFileWriter.h"
 
 class deNetworkMessage;
@@ -37,12 +37,11 @@ class deNetworkMessage;
 class DE_DLL_EXPORT deNetworkMessageWriter : public decBaseFileWriter{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkMessageWriter> Ref;
-	
+	using Ref = deTObjectReference<deNetworkMessageWriter>;
 	
 	
 private:
-	deNetworkMessageReference pMessage;
+	deNetworkMessage::Ref pMessage;
 	int pPosition;
 	
 	
@@ -51,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network message writer. */
-	deNetworkMessageWriter( deNetworkMessage *message, bool append );
+	deNetworkMessageWriter(deNetworkMessage *message, bool append);
 	
-private:
-	deNetworkMessageWriter( const deNetworkMessageWriter &writer );
+	/** \brief Create network message writer with same message and position. */
+	deNetworkMessageWriter(const deNetworkMessageWriter &writer);
 	
 protected:
 	/**
@@ -63,7 +62,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deNetworkMessageWriter();
+	~deNetworkMessageWriter() override;
 	/*@}*/
 	
 	
@@ -72,29 +71,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the file. */
-	virtual const char *GetFilename();
+	const char *GetFilename() override;
 	
 	/** \brief Current writing position in the file. */
-	virtual int GetPosition();
+	int GetPosition() override;
 	
 	/** \brief Set file position for the next write action. */
-	virtual void SetPosition( int position );
+	void SetPosition(int position) override;
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	void MovePosition(int offset) override;
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	void SetPositionEnd(int position) override;
 	
 	/**
 	 * \brief Write \em size bytes from \em buffer and advances the file pointer.
 	 * \throws deeInvalidParam \em buffer is NULL.
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
-	virtual void Write( const void *buffer, int size );
+	void Write(const void *buffer, int size) override;
 	
 	/** \brief Duplicate file writer. */
-	virtual decBaseFileWriter::Ref Duplicate();
+	decBaseFileWriter::Ref Duplicate() override;
 	/*@}*/
 };
 

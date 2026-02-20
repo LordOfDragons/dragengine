@@ -26,10 +26,11 @@
 #define _DEOGLSHADERPROGRAMUNIT_H_
 
 #include "deoglShaderDefines.h"
+#include "deoglShaderSourceLocation.h"
 #include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -43,13 +44,14 @@ class deoglShaderCompileUnitTask;
  */
 class deoglShaderProgramUnit : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderProgramUnit> Ref;
+	using Ref = deTObjectReference<deoglShaderProgramUnit>;
+	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	const deoglShaderUnitSourceCode *pSources;
 	decString pProcessedSources;
-	decObjectList pProcessedSourceLocations;
+	decTObjectList<deoglShaderSourceLocation> pProcessedSourceLocations;
 	deoglShaderDefines pDefines;
 	
 	GLuint pHandle;
@@ -68,9 +70,12 @@ public:
 	deoglShaderProgramUnit(deoglRenderThread &renderThread,
 		const deoglShaderUnitSourceCode *sources, const deoglShaderDefines &defines);
 	
+	deoglShaderProgramUnit(const deoglShaderProgramUnit&) = delete;
+	deoglShaderProgramUnit& operator=(const deoglShaderProgramUnit&) = delete;
+
 protected:
 	/** Clean up shader program. */
-	virtual ~deoglShaderProgramUnit();
+	~deoglShaderProgramUnit() override;
 	/*@}*/
 	
 	
@@ -102,10 +107,10 @@ public:
 	void SetProcessedSources(const decString &code);
 	
 	/** Processed source locations. */
-	inline const decObjectList &GetProcessedSourceLocations() const{ return pProcessedSourceLocations; }
+	inline const decTObjectList<deoglShaderSourceLocation> &GetProcessedSourceLocations() const{ return pProcessedSourceLocations; }
 	
 	/** Set processed source locations. */
-	void SetProcessedSourceLocations(const decObjectList &locations);
+	void SetProcessedSourceLocations(const decTObjectList<deoglShaderSourceLocation> &locations);
 	
 	/** Mutex. */
 	inline deMutex &GetMutex(){ return pMutex; }

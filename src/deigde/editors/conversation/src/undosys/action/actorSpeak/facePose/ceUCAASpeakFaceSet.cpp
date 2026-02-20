@@ -42,50 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceSet::ceUCAASpeakFaceSet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, ceStrip *newStrip ){
-	if( ! topic || ! actorSpeak || ! facePose || ! newStrip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, ceStrip *newStrip){
+	if(!topic || !actorSpeak || !facePose || !newStrip){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pFacePose = NULL;
-	pOldStrip = NULL;
-	pNewStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pFacePose = nullptr;
+	pOldStrip = nullptr;
+	pNewStrip = nullptr;
 	
-	SetShortInfo( "Set face pose" );
+	SetShortInfo("@Conversation.Undo.SetFacePose");
 	
-	pOldStrip = new ceStrip( *facePose );
+	pOldStrip = ceStrip::Ref::New(*facePose);
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceSet::~ceUCAASpeakFaceSet(){
-	if( pNewStrip ){
-		pNewStrip->FreeReference();
-	}
-	if( pOldStrip ){
-		pOldStrip->FreeReference();
-	}
-	if( pFacePose ){
-		pFacePose->FreeReference();
-	}
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -95,10 +73,10 @@ ceUCAASpeakFaceSet::~ceUCAASpeakFaceSet(){
 
 void ceUCAASpeakFaceSet::Undo(){
 	*pFacePose = *pOldStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakFaceSet::Redo(){
 	*pFacePose = *pNewStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

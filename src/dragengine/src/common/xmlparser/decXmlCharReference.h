@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT decXmlCharReference : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlCharReference> Ref;
-	
+	using Ref = deTObjectReference<decXmlCharReference>;
 	
 	
 public:
@@ -65,11 +64,11 @@ public:
 	 * \param data Character Data
 	 * \param radix Value from eRadices
 	 */
-	decXmlCharReference( const char *data, eRadices radix );
+	decXmlCharReference(const char *data, eRadices radix);
 	
 protected:
 	/** \brief Clean up xml character data. */
-	virtual ~decXmlCharReference();
+	~decXmlCharReference() override;
 	/*@}*/
 	
 	
@@ -90,24 +89,24 @@ public:
 	inline bool IsHexadecimal() const{ return pRadix == erHexadecimal; }
 	
 	/** \brief Set data. */
-	void SetData( const char *data );
+	void SetData(const char *data);
 	
 	/** \brief Set radix. */
-	void SetRadix( eRadices radix );
+	void SetRadix(eRadices radix);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToCharReference() const;
-	virtual decXmlCharReference *CastToCharReference();
+	bool CanCastToCharReference() const override;
+	decXmlCharReference *CastToCharReference() override;
 	/*@}*/
 };
 

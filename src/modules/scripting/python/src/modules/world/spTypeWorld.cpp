@@ -52,12 +52,12 @@ struct sObjectData{
 // Constructor, destructor
 ////////////////////////////
 
-spTypeWorld::spTypeWorld( ScriptingPython &sp ) : spBaseType( sp, "World" ){
-	SetDocumentation( "World resource" );
-	SetNativeDataSize( sizeof( sObjectData ) );
-	SetParent( sp.GetNamespaceScenery() );
+spTypeWorld::spTypeWorld(ScriptingPython &sp) : spBaseType(sp, "World"){
+	SetDocumentation("World resource");
+	SetNativeDataSize(sizeof(sObjectData));
+	SetParent(sp.GetNamespaceScenery());
 	
-	AddMethod( "update", ( PyCFunction )cfUpdate, METH_VARARGS, "Updates the world." );
+	AddMethod("update", (PyCFunction)cfUpdate, METH_VARARGS, "Updates the world.");
 }
 
 spTypeWorld::~spTypeWorld(){
@@ -69,45 +69,45 @@ spTypeWorld::~spTypeWorld(){
 // Management
 ///////////////
 
-deWorld *spTypeWorld::WorldFromObject( PyObject *object ){
-	if( object ){
-		return ( ( sObjectData* )GetObjectData( object ) )->world;
+deWorld *spTypeWorld::WorldFromObject(PyObject *object){
+	if(object){
+		return ((sObjectData*)GetObjectData(object))->world;
 		
 	}else{
 		return NULL;
 	}
 }
 
-PyObject *spTypeWorld::ObjectFromWorld( deWorld *world ){
-	if( world ){
+PyObject *spTypeWorld::ObjectFromWorld(deWorld *world){
+	if(world){
 		PyObject *pyoWorld = CreatePyObject();
 		
-		sObjectData &od = *( ( sObjectData* )GetObjectData( pyoWorld ) );
+		sObjectData &od = *((sObjectData*)GetObjectData(pyoWorld));
 		od.world = world;
 		world->AddReference();
 		
 		return pyoWorld;
 		
 	}else{
-		Py_INCREF( Py_None );
+		Py_INCREF(Py_None);
 		return Py_None;
 	}
 }
 
 
 
-void spTypeWorld::Constructor( PyObject *myself, PyObject *args, PyObject *kwds ){
-	sObjectData &od = *( ( sObjectData* )GetObjectData( myself ) );
+void spTypeWorld::Constructor(PyObject *myself, PyObject *args, PyObject *kwds){
+	sObjectData &od = *((sObjectData*)GetObjectData(myself));
 	
 	od.world = NULL;
 	
 	od.world = GetSP().GetGameEngine()->GetWorldManager()->CreateWorld();
 }
 
-void spTypeWorld::Destructor( PyObject *myself ) {
-	sObjectData &od = *( ( sObjectData* )GetObjectData( myself ) );
+void spTypeWorld::Destructor(PyObject *myself) {
+	sObjectData &od = *((sObjectData*)GetObjectData(myself));
 	
-	if( od.world ){
+	if(od.world){
 		od.world->FreeReference();
 		od.world = NULL;
 	}
@@ -118,16 +118,16 @@ void spTypeWorld::Destructor( PyObject *myself ) {
 // Functions
 //////////////
 
-PyObject *spTypeWorld::cfUpdate( PyObject *myself, PyObject *args ){
-	deWorld &world = *( ( ( sObjectData* )GetObjectData( myself ) )->world );
+PyObject *spTypeWorld::cfUpdate(PyObject *myself, PyObject *args){
+	deWorld &world = *(((sObjectData*)GetObjectData(myself))->world);
 	float elapsed;
 	
-	if( ! PyArg_ParseTuple( args, "f", &elapsed ) ){
+	if(!PyArg_ParseTuple(args, "f", &elapsed)){
 		return NULL;
 	}
 	
-	world.Update( elapsed );
+	world.Update(elapsed);
 	
-	Py_INCREF( Py_None );
+	Py_INCREF(Py_None);
 	return Py_None;
 }

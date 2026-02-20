@@ -47,7 +47,7 @@ deColliderConstraintDof::deColliderConstraintDof(){
 	pSpringStiffness = 0.0f;
 }
 
-deColliderConstraintDof::deColliderConstraintDof( const deColliderConstraintDof &dof ){
+deColliderConstraintDof::deColliderConstraintDof(const deColliderConstraintDof &dof){
 	*this = dof;
 }
 
@@ -59,23 +59,23 @@ deColliderConstraintDof::~deColliderConstraintDof(){
 // Management
 ///////////////
 
-void deColliderConstraintDof::SetLowerLimit( float lowerLimit ){
+void deColliderConstraintDof::SetLowerLimit(float lowerLimit){
 	pLowerLimit = lowerLimit;
 }
 
-void deColliderConstraintDof::SetUpperLimit( float upperLimit ){
+void deColliderConstraintDof::SetUpperLimit(float upperLimit){
 	pUpperLimit = upperLimit;
 }
 
-void deColliderConstraintDof::SetLocked( float value ){
+void deColliderConstraintDof::SetLocked(float value){
 	pLowerLimit = value;
 	pUpperLimit = value;
 }
 
-void deColliderConstraintDof::SetLimited( float lower, float upper ){
+void deColliderConstraintDof::SetLimited(float lower, float upper){
 	pLowerLimit = lower;
 	
-	if( upper > lower ){
+	if(upper > lower){
 		pUpperLimit = upper;
 		
 	}else{
@@ -90,16 +90,16 @@ void deColliderConstraintDof::SetFree(){
 
 
 
-void deColliderConstraintDof::SetStaticFriction( float friction ){
-	if( friction < 0.0f ){
+void deColliderConstraintDof::SetStaticFriction(float friction){
+	if(friction < 0.0f){
 		friction = 0.0;
 	}
 	
 	pStaticFriction = friction;
 }
 
-void deColliderConstraintDof::SetKinematicFriction( float friction ){
-	if( friction < 0.0f ){
+void deColliderConstraintDof::SetKinematicFriction(float friction){
+	if(friction < 0.0f){
 		friction = 0.0;
 	}
 	
@@ -108,7 +108,7 @@ void deColliderConstraintDof::SetKinematicFriction( float friction ){
 
 
 
-void deColliderConstraintDof::SetSpringStiffness( float stiffness ){
+void deColliderConstraintDof::SetSpringStiffness(float stiffness){
 	pSpringStiffness = stiffness;
 }
 
@@ -117,7 +117,7 @@ void deColliderConstraintDof::SetSpringStiffness( float stiffness ){
 // Operators
 //////////////
 
-deColliderConstraintDof &deColliderConstraintDof::operator=( const deColliderConstraintDof &dof ){
+deColliderConstraintDof &deColliderConstraintDof::operator=(const deColliderConstraintDof &dof){
 	pLowerLimit = dof.pLowerLimit;
 	pUpperLimit = dof.pUpperLimit;
 	

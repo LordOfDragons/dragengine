@@ -25,9 +25,7 @@
 #ifndef _DEVFSREDIRECT_H_
 #define _DEVFSREDIRECT_H_
 
-#include "deVFSContainer.h"
-
-class deVirtualFileSystem;
+#include "deVirtualFileSystem.h"
 
 
 /**
@@ -42,15 +40,14 @@ class deVirtualFileSystem;
 class DE_DLL_EXPORT deVFSRedirect : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSRedirect> Ref;
-	
+	using Ref = deTObjectReference<deVFSRedirect>;
 	
 	
 private:
 	const decPath pRedirectPath;
-	deVFSContainer *pContainer;
+	deVFSContainer::Ref pContainer;
 	deVirtualFileSystem *pVFS;
-	bool pHoldVFSReference;
+	deVirtualFileSystem::Ref pHoldVFS;
 	
 	
 	
@@ -64,7 +61,7 @@ public:
 	 * \param[in] redirectPath Path to redirect to in \em vfs.
 	 * \param[in] container Container to redirect to.
 	 */
-	deVFSRedirect( const decPath &rootPath, const decPath &redirectPath, deVFSContainer *container );
+	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath, deVFSContainer *container);
 	
 	/**
 	 * \brief Create container redirecting to \em redirectPath in a virtual file system.
@@ -80,8 +77,8 @@ public:
 	 * \param[in] vfs Virtual file system to redirect to.
 	 * \param[in] holfVFSReference Container holds a reference to \em vfs.
 	 */
-	deVFSRedirect( const decPath &rootPath, const decPath &redirectPath,
-		deVirtualFileSystem *vfs, bool holdVFSReference );
+	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
+		deVirtualFileSystem *vfs, bool holdVFSReference);
 	
 protected:
 	/**
@@ -90,7 +87,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVFSRedirect();
+	~deVFSRedirect() override;
 	/*@}*/
 	
 	
@@ -108,7 +105,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	bool ExistsFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be read.
@@ -117,7 +114,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	bool CanReadFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be written.
@@ -129,14 +126,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	bool CanWriteFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	bool CanDeleteFile(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for reading.
@@ -145,7 +142,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
@@ -156,43 +153,43 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	void DeleteFile(const decPath &path) override;
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path );
+	void TouchFile(const decPath &path) override;
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) override;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	eFileTypes GetFileType(const decPath &path) override;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	uint64_t GetFileSize(const decPath &path) override;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	TIME_SYSTEM GetFileModificationTime(const decPath &path) override;
 	/*@}*/
 };
 

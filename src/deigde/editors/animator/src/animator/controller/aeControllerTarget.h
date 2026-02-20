@@ -25,9 +25,11 @@
 #ifndef _AECONTROLLERTARGET_H_
 #define _AECONTROLLERTARGET_H_
 
-#include "../link/aeLinkList.h"
+#include "../link/aeLink.h"
 
-class aeLink;
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class aeAnimator;
 class deAnimatorControllerTarget;
 
@@ -36,9 +38,14 @@ class deAnimatorControllerTarget;
 /**
  * Links for a controller target.
  */
-class aeControllerTarget{
+class aeControllerTarget : public deObject{
+public:
+	using Ref = deTObjectReference<aeControllerTarget>;
+	using List = decTObjectOrderedSet<aeControllerTarget>;
+	
+	
 private:
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -46,39 +53,36 @@ public:
 	/** Create a new controller target. */
 	aeControllerTarget();
 	/** Create a copy of a controller target. */
-	aeControllerTarget( const aeControllerTarget &copy );
+	aeControllerTarget(const aeControllerTarget &copy);
 	/** Cleans up the controller target. */
-	~aeControllerTarget();
+protected:
+	~aeControllerTarget() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of links. */
-	int GetLinkCount() const;
-	/** Retrieves the link at the given index. */
-	aeLink *GetLinkAt( int index ) const;
-	/** Retrieves the index of the link or -1 if not found. */
-	int IndexOfLink( aeLink *link ) const;
-	/** Determines if the link exists. */
-	bool HasLink( aeLink *link ) const;
+	/** Links. */
+	inline const aeLink::List &GetLinks() const{ return pLinks; }
+	
 	/** Adds a new link. */
-	void AddLink( aeLink *link );
+	void AddLink(aeLink *link);
 	/** Removes a link. */
-	void RemoveLink( aeLink *link );
+	void RemoveLink(aeLink *link);
 	/** Removes all links. */
 	void RemoveAllLinks();
 	
 	/** Updates the given engine target. */
-	void UpdateEngineTarget( aeAnimator *animator, deAnimatorControllerTarget &target ) const;
+	void UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const;
 	
 	/** Add links to a list of links. */
-	void AddLinksToList( aeLinkList &list );
+	void AddLinksToList(aeLink::List &list);
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another controller target to this controller target. */
-	aeControllerTarget &operator=( const aeControllerTarget &copy );
+	aeControllerTarget &operator=(const aeControllerTarget &copy);
 	/*@}*/
 };
 

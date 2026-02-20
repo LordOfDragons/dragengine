@@ -26,32 +26,32 @@
 #include <stdlib.h>
 #include <string.h>
 #include "igdeNullScriptModule.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingCollider.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingConnection.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingServer.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingTouchSensor.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingPropField.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingServer.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingTouchSensor.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingPropField.h>
+#include <dragengine/common/exceptions.h>
 
 
 // cModule
-igdeNullScriptModule::cModule::cModule( deModuleSystem *system ) : deInternalModule( system ){
-	SetName( "NullScript" );
-	SetType( deModuleSystem::emtScript );
-	SetDescription( "Null Scripting Module" );
-	SetAuthor( "Plüss Roland" );
-	SetVersion( "1.0" );
-	SetDirectoryName( "NullScript" );
+igdeNullScriptModule::cModule::cModule(deModuleSystem *system) : deInternalModule(system){
+	SetName("NullScript");
+	SetType(deModuleSystem::emtScript);
+	SetDescription("nullptr Scripting Module");
+	SetAuthor("Plüss Roland");
+	SetVersion("1.0");
+	SetDirectoryName("NullScript");
 	SetDefaultLoggingName();
 }
-igdeNullScriptModule::cModule::~cModule(){ }
+igdeNullScriptModule::cModule::~cModule(){}
 void igdeNullScriptModule::cModule::CreateModule(){
-	SetModule( new igdeNullScriptModule( *this ) );
-	if( ! GetModule() ) SetErrorCode( eecCreateModuleFailed );
+	SetModule(new igdeNullScriptModule(*this));
+	if(!GetModule()) SetErrorCode(eecCreateModuleFailed);
 }
 
 
@@ -62,8 +62,8 @@ void igdeNullScriptModule::cModule::CreateModule(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeNullScriptModule::igdeNullScriptModule( deLoadableModule &loadableModule ) :
-deBaseScriptingModule( loadableModule ){
+igdeNullScriptModule::igdeNullScriptModule(deLoadableModule &loadableModule) :
+deBaseScriptingModule(loadableModule){
 }
 
 igdeNullScriptModule::~igdeNullScriptModule(){
@@ -74,11 +74,11 @@ igdeNullScriptModule::~igdeNullScriptModule(){
 // Runtime
 ////////////
 
-bool igdeNullScriptModule::Init( const char *scriptDirectory, const char *gameObject ){
+bool igdeNullScriptModule::Init(const char *scriptDirectory, const char *gameObject){
 	return true;
 }
 
-void igdeNullScriptModule::ShutDown( ){
+void igdeNullScriptModule::ShutDown(){
 }
 
 
@@ -87,41 +87,41 @@ void igdeNullScriptModule::ShutDown( ){
 // Peer Management
 ////////////////////
 
-deBaseScriptingCollider *igdeNullScriptModule::CreateCollider( deCollider *collider ){
+deBaseScriptingCollider *igdeNullScriptModule::CreateCollider(deCollider *collider){
 	return new deBaseScriptingCollider;
 }
 
-deBaseScriptingConnection *igdeNullScriptModule::CreateConnection( deConnection *connection ){
+deBaseScriptingConnection *igdeNullScriptModule::CreateConnection(deConnection *connection){
 	return new deBaseScriptingConnection;
 }
 
-deBaseScriptingNetworkState *igdeNullScriptModule::CreateNetworkState( deNetworkState *state ){
+deBaseScriptingNetworkState *igdeNullScriptModule::CreateNetworkState(deNetworkState *state){
 	return new deBaseScriptingNetworkState;
 }
 
-deBaseScriptingServer *igdeNullScriptModule::CreateServer( deServer *server ){
+deBaseScriptingServer *igdeNullScriptModule::CreateServer(deServer *server){
 	return new deBaseScriptingServer;
 }
 
-deBaseScriptingTouchSensor *igdeNullScriptModule::CreateTouchSensor( deTouchSensor *touchSensor ){
+deBaseScriptingTouchSensor *igdeNullScriptModule::CreateTouchSensor(deTouchSensor *touchSensor){
 	return new deBaseScriptingTouchSensor;
 }
 
-deBaseScriptingPropField *igdeNullScriptModule::CreatePropField( dePropField *propField ){
+deBaseScriptingPropField *igdeNullScriptModule::CreatePropField(dePropField *propField){
 	return new deBaseScriptingPropField;
 }
 
 deBaseScriptingParticleEmitterInstance *igdeNullScriptModule::CreateParticleEmitterInstance(
-deParticleEmitterInstance *instance ){
-	return NULL;
+deParticleEmitterInstance *instance){
+	return nullptr;
 }
 
-deBaseScriptingSoundLevelMeter *igdeNullScriptModule::CreateSoundLevelMeter( deSoundLevelMeter *meter ){
-	return NULL;
+deBaseScriptingSoundLevelMeter *igdeNullScriptModule::CreateSoundLevelMeter(deSoundLevelMeter *meter){
+	return nullptr;
 }
 
-deBaseScriptingSpeaker *igdeNullScriptModule::CreateSpeaker( deSpeaker *speaker ){
-	return NULL;
+deBaseScriptingSpeaker *igdeNullScriptModule::CreateSpeaker(deSpeaker *speaker){
+	return nullptr;
 }
 
 
@@ -130,30 +130,30 @@ deBaseScriptingSpeaker *igdeNullScriptModule::CreateSpeaker( deSpeaker *speaker 
 ///////////
 
 const char *igdeNullScriptModule::GetSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 const char *igdeNullScriptModule::GetVFSSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
-bool igdeNullScriptModule::InitGame( ){
+bool igdeNullScriptModule::InitGame(){
 	return true;
 }
 
-bool igdeNullScriptModule::ExitGame( ){
+bool igdeNullScriptModule::ExitGame(){
 	return true;
 }
 
-bool igdeNullScriptModule::OnFrameUpdate( ){
+bool igdeNullScriptModule::OnFrameUpdate(){
 	return true;
 }
 
-bool igdeNullScriptModule::OnResizeRenderWindow( ){
+bool igdeNullScriptModule::OnResizeRenderWindow(){
 	return true;
 }
 
-bool igdeNullScriptModule::SendEvent( deInputEvent* ){
+bool igdeNullScriptModule::SendEvent(deInputEvent*){
 	return true;
 }
 

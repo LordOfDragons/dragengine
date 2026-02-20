@@ -38,6 +38,10 @@ class seSkin;
  * Undo action add mapped.
  */
 class seUMappedAdd : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedAdd>;
+	
+	
 protected:
 	const seMapped::Ref pMapped;
 	const seSkin::Ref pSkin;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedAdd( seSkin *skin, seMapped *mapped );
+	seUMappedAdd(seSkin *skin, seMapped *mapped);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedAdd();
+	~seUMappedAdd() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

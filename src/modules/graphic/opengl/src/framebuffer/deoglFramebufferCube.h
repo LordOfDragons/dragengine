@@ -26,7 +26,7 @@
 #define _DEOGLFRAMEBUFFERCUBE_H_
 
 #include "deoglFramebuffer.h"
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -34,13 +34,13 @@
  */
 class deoglFramebufferCube : public deObject{
 public:
-	typedef deTObjectReference<deoglFramebufferCube> Ref;
+	using Ref = deTObjectReference<deoglFramebufferCube>;
 	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	deoglFramebuffer::Ref pFBO;
-	decObjectList pFaceFBOs;
+	decTObjectList<deoglFramebuffer> pFaceFBOs;
 	
 	
 public:

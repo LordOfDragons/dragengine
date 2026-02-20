@@ -28,9 +28,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,10 +38,14 @@ class gdeObjectClass;
  * \brief Undo action object class component texture set rotation.
  */
 class gdeUOCCTextureSetRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCCTextureSetRotation>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	float pOldValue;
 	float pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \rotation Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetRotation( gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, float newValue );
+	gdeUOCCTextureSetRotation(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCCTextureSetRotation();
+	~gdeUOCCTextureSetRotation() override;
 	/*@}*/
 	
 	
@@ -65,10 +69,10 @@ protected:
 	/** \rotation Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -22,12 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "meUAddObject.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,45 +40,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObject::meUAddObject( meWorld *world, meObject *object ){
-	if( ! world || ! object ){
-		DETHROW( deeInvalidParam );
+meUAddObject::meUAddObject(meWorld *world, meObject *object){
+	if(!world || !object){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add Object" );
+	SetShortInfo("@World.UAddObject.AddObject");
 	
 	pWorld = world;
-	world->AddReference();
-	
 	pObject = object;
-	object->AddReference();
 }
 
-meUAddObject::meUAddObject( meWorld *world, const decDVector &position, const char *classname ){
-	if( ! world || ! classname ){
-		DETHROW( deeInvalidParam );
+meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const char *classname){
+	if(!world || !classname){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decString text;
+	SetShortInfo("@World.UAddObject.AddObject");
+	SetLongInfo(decString::Formatted(
+		world->GetEnvironment()->GetTranslationManager().Translate("World.UAddObject.PositionClass").ToUTF8(),
+		position.x, position.y, position.z, classname));
 	
-	SetShortInfo( "Add Object" );
-	text.Format( "position(%g,%g,%g) class(%s)", position.x, position.y, position.z, classname );
-	SetLongInfo( text.GetString() );
-	
-	pWorld = NULL;
-	pObject = NULL;
+	pWorld = nullptr;
+	pObject = nullptr;
 	
 	try{
 		pWorld = world;
-		world->AddReference();
+		pObject = meObject::Ref::New(world->GetEnvironment());
+		pObject->SetPosition(position);
+		pObject->SetSize(decVector(0.5f, 0.5f, 0.5f));
+		pObject->SetClassName(classname);
+		pObject->SetID(world->NextObjectID());
 		
-		pObject = new meObject( world->GetEnvironment() );
-		pObject->SetPosition( position );
-		pObject->SetSize( decVector( 0.5f, 0.5f, 0.5f ) );
-		pObject->SetClassName( classname );
-		pObject->SetID( world->NextObjectID() );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -95,27 +90,24 @@ meUAddObject::~meUAddObject(){
 void meUAddObject::Undo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
 	
-	selection.Remove( pObject );
-	if( pObject->GetActive() ){
-		selection.ActivateNext();
-	}
+	selection.Remove(pObject);
 	
-	pWorld->RemoveObject( pObject );
+	pWorld->RemoveObject(pObject);
 	
-	pWorld->NotifyObjectRemoved( pObject );
+	pWorld->NotifyObjectRemoved(pObject);
 	pWorld->NotifyObjectSelectionChanged();
 }
 
 void meUAddObject::Redo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
 	
-	pWorld->AddObject( pObject );
+	pWorld->AddObject(pObject);
 	
 	selection.Reset();
-	selection.Add( pObject );
-	selection.SetActive( pObject );
+	selection.Add(pObject);
+	selection.SetActive(pObject);
 	
-	pWorld->NotifyObjectAdded( pObject );
+	pWorld->NotifyObjectAdded(pObject);
 	pWorld->NotifyObjectSelectionChanged();
 }
 
@@ -125,10 +117,4 @@ void meUAddObject::Redo(){
 //////////////////////
 
 void meUAddObject::pCleanUp(){
-	if( pObject ){
-		pObject->FreeReference();
-	}
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
 }

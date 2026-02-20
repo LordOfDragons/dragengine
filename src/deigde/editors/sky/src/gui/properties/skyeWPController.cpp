@@ -1,0 +1,524 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "skyeWPController.h"
+#include "skyeWPControllerListener.h"
+#include "skyeWindowProperties.h"
+#include "../skyeWindowMain.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/controller/skyeController.h"
+#include "../../undosys/controller/skyeUControllerAdd.h"
+#include "../../undosys/controller/skyeUControllerMoveDown.h"
+#include "../../undosys/controller/skyeUControllerMoveUp.h"
+#include "../../undosys/controller/skyeUControllerRemove.h"
+#include "../../undosys/controller/skyeUControllerSetMaximum.h"
+#include "../../undosys/controller/skyeUControllerSetMinimum.h"
+#include "../../undosys/controller/skyeUControllerSetName.h"
+#include "../../undosys/controller/skyeUControllerToggleClamp.h"
+#include "../../undosys/controller/skyeUControllerToggleFrozen.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeCommonDialogs.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeLabel.h>
+#include <deigde/gui/igdeGroupBox.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/layout/igdeContainerForm.h>
+#include <deigde/gui/layout/igdeContainerFlow.h>
+#include <deigde/gui/layout/igdeContainerBorder.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditSliderTextListener.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeComboBoxListener.h>
+#include <deigde/gui/event/igdeTextFieldListener.h>
+#include <deigde/gui/event/igdeListBoxListener.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
+#include <deigde/gui/model/igdeListItem.h>
+#include <deigde/undo/igdeUndoSystem.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/exceptions.h>
+
+
+
+// Events
+///////////
+
+namespace{
+
+class cBaseTextFieldListener : public igdeTextFieldListener{
+protected:
+	skyeWPController &pPanel;
+	
+public:
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(skyeWPController &panel) : pPanel(panel){}
+	
+	void OnTextChanged(igdeTextField *textField) override{
+		skyeSky * const sky = pPanel.GetSky();
+		skyeController * const controller = pPanel.GetController();
+		if(!sky || !controller){
+			return;
+		}
+		
+		igdeUndo::Ref undo(OnChanged(textField, sky, controller));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
+		}
+	}
+	
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky *sky, skyeController *controller) = 0;
+};
+
+class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
+protected:
+	skyeWPController &pPanel;
+	
+public:
+	using Ref = deTObjectReference<cBaseEditSliderTextListener>;
+	cBaseEditSliderTextListener(skyeWPController &panel) : pPanel(panel){}
+	
+	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
+		skyeSky * const sky = pPanel.GetSky();
+		skyeController * const controller = pPanel.GetController();
+		if(!sky || !controller){
+			return;
+		}
+		
+		igdeUndo::Ref undo(OnChanged(editSlider->GetValue(), sky, controller));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
+		}
+	}
+	
+	virtual igdeUndo::Ref OnChanged(float value, skyeSky *sky, skyeController *controller) = 0;
+};
+
+class cBaseAction : public igdeAction{
+protected:
+	skyeWPController &pPanel;
+	
+public:
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(skyeWPController &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
+	
+	cBaseAction(skyeWPController &panel, igdeIcon *icon, const char *description) :
+	igdeAction("", icon, description),
+	pPanel(panel){}
+	
+	cBaseAction(skyeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
+	
+	void OnAction() override{
+		skyeSky * const sky = pPanel.GetSky();
+		if(!sky){
+			return;
+		}
+		
+		igdeUndo::Ref undo(OnAction(sky));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
+		}
+	}
+	
+	virtual igdeUndo::Ref OnAction(skyeSky *sky) = 0;
+};
+
+class cBaseActionController : public cBaseAction{
+public:
+	using Ref = deTObjectReference<cBaseActionController>;
+	
+public:
+	cBaseActionController(skyeWPController &panel, const char *text, const char *description) :
+	cBaseAction(panel, text, description){}
+	
+	cBaseActionController(skyeWPController &panel, igdeIcon *icon, const char *description) :
+	cBaseAction(panel, icon, description){}
+	
+	cBaseActionController(skyeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
+	cBaseAction(panel, text, icon, description){}
+	
+	igdeUndo::Ref OnAction(skyeSky *sky) override{
+		skyeController * const controller = pPanel.GetController();
+		if(controller){
+			return OnActionController(sky, controller);
+			
+		}else{
+			return {};
+		}
+	}
+	
+	virtual igdeUndo::Ref OnActionController(skyeSky *sky, skyeController *controller) = 0;
+};
+
+
+
+class cListControllers : public igdeListBoxListener{
+	skyeWPController &pPanel;
+public:
+	using Ref = deTObjectReference<cListControllers>;
+	cListControllers(skyeWPController &panel) : pPanel(panel){}
+	
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		skyeSky * const sky = pPanel.GetSky();
+		if(!sky){
+			return;
+		}
+		
+		const igdeListItem * const selection = listBox->GetSelectedItem();
+		
+		if(selection){
+			sky->SetActiveController((skyeController*)selection->GetData());
+			
+		}else{
+			sky->SetActiveController(nullptr);
+		}
+	}
+	
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
+		helper.MenuCommand(menu, pPanel.GetActionControllerAdd());
+		helper.MenuCommand(menu, pPanel.GetActionControllerRemove());
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, pPanel.GetActionControllerUp());
+		helper.MenuCommand(menu, pPanel.GetActionControllerDown());
+	}
+};
+
+class cActionControllerAdd : public cBaseAction{
+public:
+	using Ref = deTObjectReference<cActionControllerAdd>;
+	
+public:
+	cActionControllerAdd(skyeWPController &panel) : cBaseAction(panel, "@Sky.Action.Controller.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Sky.Action.Controller.Add.Description"){}
+	
+	igdeUndo::Ref OnAction(skyeSky *sky) override{
+		return skyeUControllerAdd::Ref::New(sky, skyeController::Ref::New());
+	}
+};
+
+class cActionControllerRemove : public cBaseActionController{
+public:
+	using Ref = deTObjectReference<cActionControllerRemove>;
+	cActionControllerRemove(skyeWPController &panel) : cBaseActionController(panel, "@Sky.Action.Controller.Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Sky.Action.Controller.Remove.Description"){}
+	
+	igdeUndo::Ref OnActionController(skyeSky *sky, skyeController *controller) override{
+		const int usageCount = sky->CountControllerUsage(controller);
+		
+		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
+			pPanel, igdeCommonDialogs::ebsYesNo, "@Sky.Action.Controller.Remove.Confirm.Title",
+			"@Sky.Action.Controller.Remove.Confirm",
+			controller->GetName().GetString(), usageCount) != igdeCommonDialogs::ebYes){
+				return {};
+		}
+		
+		return skyeUControllerRemove::Ref::New(controller);
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetController() != nullptr);
+	}
+};
+
+class cActionControllerUp : public cBaseActionController{
+	igdeListBox &pListBox;
+public:
+	using Ref = deTObjectReference<cActionControllerUp>;
+	cActionControllerUp(skyeWPController &panel, igdeListBox &listBox) : cBaseActionController(
+		panel, "@Sky.Action.Controller.Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Sky.Action.Controller.Up.Description"),
+	pListBox(listBox){}
+	
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
+		return skyeUControllerMoveUp::Ref::New(controller);
+	}
+	
+	void Update() override{
+		SetEnabled(pListBox.GetSelection() > 0);
+	}
+};
+
+class cActionControllerDown : public cBaseActionController{
+	igdeListBox &pListBox;
+public:
+	using Ref = deTObjectReference<cActionControllerDown>;
+	cActionControllerDown(skyeWPController &panel, igdeListBox &listBox) : cBaseActionController(
+		panel, "@Sky.Action.Controller.Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Sky.Action.Controller.Down.Description"),
+	pListBox(listBox){}
+	
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
+		return skyeUControllerMoveDown::Ref::New(controller);
+	}
+	
+	void Update() override{
+		SetEnabled(pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItems().GetCount() - 1);
+	}
+};
+
+
+
+class cTextName : public cBaseTextFieldListener{
+public:
+	using Ref = deTObjectReference<cTextName>;
+	cTextName(skyeWPController &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeController *controller) override{
+		const decString &name = textField->GetText();
+		if(name == controller->GetName()){
+			return {};
+		}
+		return skyeUControllerSetName::Ref::New(controller, name);
+	}
+};
+
+class cTextMinimumValue : public cBaseTextFieldListener{
+public:
+	using Ref = deTObjectReference<cTextMinimumValue>;
+	cTextMinimumValue(skyeWPController &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeController *controller) override{
+		const float value = textField->GetFloat();
+		if(fabsf(value - controller->GetMinimumValue()) <= FLOAT_SAFE_EPSILON){
+			return {};
+		}
+		return skyeUControllerSetMinimum::Ref::New(controller, value);
+	}
+};
+
+class cTextMaximumValue : public cBaseTextFieldListener{
+public:
+	using Ref = deTObjectReference<cTextMaximumValue>;
+	cTextMaximumValue(skyeWPController &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeController *controller) override{
+		const float value = textField->GetFloat();
+		if(fabsf(value - controller->GetMaximumValue()) <= FLOAT_SAFE_EPSILON){
+			return {};
+		}
+		return skyeUControllerSetMinimum::Ref::New(controller, value);
+	}
+};
+
+class cSliderValue : public igdeEditSliderTextListener{
+	skyeWPController &pPanel;
+public:
+	using Ref = deTObjectReference<cSliderValue>;
+	cSliderValue(skyeWPController &panel) : pPanel(panel){}
+	
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
+		OnSliderTextValueChanged(sliderText);
+	}
+	
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
+		skyeController * const controller = pPanel.GetController();
+		if(controller){
+			controller->SetCurrentValue(sliderText->GetValue());
+		}
+	}
+};
+
+class cActionClamp : public cBaseActionController{
+public:
+	using Ref = deTObjectReference<cActionClamp>;
+	cActionClamp(skyeWPController &panel) : cBaseActionController(panel, "@Sky.Properties.Controller.Clamp",
+		"@Sky.Properties.Controller.Clamp.Description"){ }
+	
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
+		return skyeUControllerToggleClamp::Ref::New(controller);
+	}
+};
+
+class cActionFrozen : public cBaseActionController{
+public:
+	using Ref = deTObjectReference<cActionFrozen>;
+	cActionFrozen(skyeWPController &panel) : cBaseActionController(panel,
+		"@Sky.Properties.Controller.Frozen", "@Sky.Properties.Controller.Frozen.Description"){}
+	
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
+		return skyeUControllerToggleFrozen::Ref::New(controller);
+	}
+};
+
+}
+
+
+// Class skyeWPController
+/////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWPController::skyeWPController(skyeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
+{
+	igdeEnvironment &env = windowProperties.GetEnvironment();
+	igdeContainer::Ref content, groupBox, frameLine;
+	igdeUIHelper &helper = env.GetUIHelperProperties();
+	
+	pListener = skyeWPControllerListener::Ref::New(*this);
+	
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
+	
+	// controller list
+	helper.GroupBoxFlow(content, groupBox, "@Sky.Properties.Controllers");
+	
+	helper.ListBox(groupBox, 8, "@Sky.Properties.Controllers.Description", pListController, cListControllers::Ref::New(*this));
+	
+	pActionControllerAdd = cActionControllerAdd::Ref::New(*this);
+	pActionControllerRemove = cActionControllerRemove::Ref::New(*this);
+	pActionControllerUp = cActionControllerUp::Ref::New(*this, pListController);
+	pActionControllerDown = cActionControllerDown::Ref::New(*this, pListController);
+	
+	// controller settings
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Controller.Settings");
+	helper.EditString(groupBox, "@Sky.Properties.Controller.Name", "@Sky.Properties.Controller.Name.Description", pEditName, cTextName::Ref::New(*this));
+	
+	helper.FormLine(groupBox, "@Sky.Properties.Controller.Range", "@Sky.Properties.Controller.Range.Description", frameLine);
+	helper.EditFloat(frameLine, "@Sky.Properties.Controller.Range.Minimum",
+		pEditMin, cTextMinimumValue::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Sky.Properties.Controller.Range.Maximum",
+		pEditMax, cTextMaximumValue::Ref::New(*this));
+	
+	helper.EditSliderText(groupBox, "@Sky.Properties.Controller.Value", "@Sky.Properties.Controller.Value.Description",
+		0.0f, 0.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
+	
+	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkFrozen, cActionFrozen::Ref::New(*this));
+}
+
+skyeWPController::~skyeWPController(){
+	if(pSky){
+		pSky->RemoveListener(pListener);
+		pSky = nullptr;
+	}
+}
+
+
+
+// Management
+///////////////
+
+void skyeWPController::SetSky(skyeSky *sky){
+	if(sky == pSky){
+		return;
+	}
+	
+	if(pSky){
+		pSky->RemoveListener(pListener);
+	}
+	
+	pSky = sky;
+	
+	if(sky){
+		sky->AddListener(pListener);
+	}
+	
+	UpdateControllerList();
+}
+
+skyeController *skyeWPController::GetController() const{
+	return pSky ? pSky->GetActiveController().Pointer() : nullptr;
+}
+
+
+
+void skyeWPController::UpdateControllerList(){
+	pListController->UpdateRestoreSelection([&](){
+		pListController->RemoveAllItems();
+		
+		if(pSky){
+			pSky->GetControllers().VisitIndexed([&](int i, skyeController *controller){
+				decString text;
+				text.Format("%i: %s", i, controller->GetName().GetString());
+				pListController->AddItem(text, nullptr, controller);
+			});
+		}
+	}, 0);
+	
+	UpdateController();
+}
+
+void skyeWPController::SelectActiveController(){
+	pListController->SetSelectionWithData(GetController());
+	UpdateController();
+}
+
+void skyeWPController::UpdateController(){
+	const skyeController * const controller = GetController();
+	
+	if(controller){
+		pEditName->SetText(controller->GetName());
+		pEditMin->SetFloat(controller->GetMinimumValue());
+		pEditMax->SetFloat(controller->GetMaximumValue());
+		
+		pSldValue->SetRange(controller->GetMinimumValue(), controller->GetMaximumValue());
+		pSldValue->SetTickSpacing((controller->GetMaximumValue() - controller->GetMinimumValue()) * 0.1f);
+		pSldValue->SetValue(controller->GetCurrentValue());
+		
+		pChkClamp->SetChecked(controller->GetClamp());
+		pChkFrozen->SetChecked(controller->GetFrozen());
+		
+	}else{
+		pEditName->ClearText();
+		pEditMin->ClearText();
+		pEditMax->ClearText();
+		pSldValue->SetRange(0, 0);
+		pChkClamp->SetChecked(false);
+		pChkFrozen->SetChecked(false);
+	}
+	
+	const bool enable = controller != nullptr;
+	pEditName->SetEnabled(enable);
+	pEditMin->SetEnabled(enable);
+	pEditMax->SetEnabled(enable);
+	pSldValue->SetEnabled(enable);
+	pChkClamp->SetEnabled(enable);
+	pChkFrozen->SetEnabled(enable);
+}
+
+void skyeWPController::UpdateControllerValue(){
+	skyeController * const controller = GetController();
+	if(controller){
+		pSldValue->SetValue(controller->GetCurrentValue());
+	}
+}

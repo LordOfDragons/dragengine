@@ -28,10 +28,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,12 +39,16 @@ class gdeObjectClass;
  * \brief Undo action object class navblocker set position.
  */
 class gdeUOCNavBlockerSetShapeList : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+public:
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetShapeList>;
 	
-	decShapeList pOldValue;
-	decShapeList pNewValue;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
+	
+	decShape::List pOldValue;
+	decShape::List pNewValue;
 	
 	
 	
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetShapeList( gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, const decShapeList &newValue );
+	gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navblocker, const decShape::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavBlockerSetShapeList();
+	~gdeUOCNavBlockerSetShapeList() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

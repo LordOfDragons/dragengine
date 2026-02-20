@@ -24,13 +24,11 @@
 
 #if 0
 
-// include only once
 #ifndef _MEWTCOLORMATRIX_H_
 #define _MEWTCOLORMATRIX_H_
 
-// includes
 #include <dragengine/common/math/decMath.h>
-
+#include <dragengine/common/decString.h>
 
 
 /**
@@ -39,14 +37,14 @@
  */
 class meWTColorMatrix{
 private:
-	char *pName;
+	decString pName;
 	decColorMatrix pColorMatrix;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new color matrix template object. */
-	meWTColorMatrix( const char *name, const decColorMatrix &matrix );
+	meWTColorMatrix(const char *name, const decColorMatrix &matrix);
 	/** Cleans up the color matrix template. */
 	~meWTColorMatrix();
 	/*@}*/
@@ -54,11 +52,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the template. */
-	inline const char *GetName() const{ return ( const char * )pName; }
+	inline const decString &GetName() const{ return (const char *)pName; }
 	/** Retrieves the color matrix. */
 	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
 	/** Sets the color matrix. */
-	void SetColorMatrix( const decColorMatrix &colorMatrix );
+	void SetColorMatrix(const decColorMatrix &colorMatrix);
 	/*@}*/
 };
 

@@ -26,14 +26,13 @@
 #define _DEOGLGIBVHDYNAMIC_H_
 
 #include "../deoglBasics.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglBVHNode;
 class deoglGIBVHLocal;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOBlock;
 
 struct oglModelPosition;
 struct oglModelVertex;
@@ -46,11 +45,11 @@ class deoglGIBVHDynamic{
 protected:
 	deoglGIBVHLocal &pGIBVHLocal;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOFloat32 *pTBOVertex;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
 	
-	deObjectReference pBlockNode;
-	deObjectReference pBlockVertex;
+	deoglDynamicTBOBlock::Ref pBlockNode;
+	deoglDynamicTBOBlock::Ref pBlockVertex;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -63,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination dynamic BVH. */
-	deoglGIBVHDynamic( deoglGIBVHLocal &bvhLocal );
+	deoglGIBVHDynamic(deoglGIBVHLocal &bvhLocal);
 	
 	/** Clean up global illumination dynamic BVH. */
 	~deoglGIBVHDynamic();
@@ -74,10 +73,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** Local BVH. */
 	inline deoglGIBVHLocal &GetGIBVHLocal(){ return pGIBVHLocal; }
@@ -101,10 +100,10 @@ public:
 	void UpdateBVHExtends();
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglModelPosition *positions, int count );
+	void UpdateVertices(const oglModelPosition *positions, int count);
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglVector3 *positions, int count );
+	void UpdateVertices(const oglVector3 *positions, int count);
 	
 	
 	
@@ -112,8 +111,8 @@ public:
 	 * Get block allocating it if absent.
 	 * \note Block node shares TBO index with local BVH while TBO node box is replaced.
 	 */
-	deoglDynamicTBOBlock *GetBlockNode();
-	deoglDynamicTBOBlock *GetBlockVertex();
+	const deoglDynamicTBOBlock::Ref &GetBlockNode();
+	const deoglDynamicTBOBlock::Ref &GetBlockVertex();
 	
 	/** Drop blocks. */
 	void DropBlocks();
@@ -133,8 +132,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCalcNodeExtends( const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend );
-	void pWriteNodeExtends( int index, const decVector &minExtend, const decVector &maxExtend );
+	void pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend);
+	void pWriteNodeExtends(int index, const decVector &minExtend, const decVector &maxExtend);
 };
 
 #endif

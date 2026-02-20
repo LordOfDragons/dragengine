@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPAOSelfShadowSmoothAngle::deoglPAOSelfShadowSmoothAngle( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPAOSelfShadowSmoothAngle::deoglPAOSelfShadowSmoothAngle(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "aoSelfShadowSmoothAngle" );
-	SetDescription( "Sets the ambient occlusion self shadowing smoothing angle."
+	SetName("aoSelfShadowSmoothAngle");
+	SetDescription("Sets the ambient occlusion self shadowing smoothing angle."
 		" The self shadowing algorithm is by nature an on-off test."
 		" The smoothing angle avoids the harsh step from shadows to unshadows areas by"
 		" defining an angle range in degrees over which the shadow fades."
@@ -57,10 +57,10 @@ deoglParameterFloat( ogl )
 		" 15 works best for large features like curved and normal mapped geometry with"
 		" SSAO but likes to fail due to not-oriented cone."
 		" thus for SSAO self-shadowing is disabled using only texture ambient occlusion."
-		" 6 seems to be a good value for this case." );
-	SetCategory( ecExpert );
-	SetDisplayName( "AO Self Shadow Smooth Angle" );
-	SetDefaultValue( "10" );
+		" 6 seems to be a good value for this case.");
+	SetCategory(ecExpert);
+	SetDisplayName("AO Self Shadow Smooth Angle");
+	SetDefaultValue("10");
 }
 
 deoglPAOSelfShadowSmoothAngle::~deoglPAOSelfShadowSmoothAngle(){
@@ -75,6 +75,6 @@ float deoglPAOSelfShadowSmoothAngle::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetAOSelfShadowSmoothAngle();
 }
 
-void deoglPAOSelfShadowSmoothAngle::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetAOSelfShadowSmoothAngle( value );
+void deoglPAOSelfShadowSmoothAngle::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetAOSelfShadowSmoothAngle(value);
 }

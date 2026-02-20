@@ -25,12 +25,13 @@
 #ifndef _DERIG_H_
 #define _DERIG_H_
 
+#include "deRigBone.h"
 #include "../deFileResource.h"
 #include "../../common/math/decMath.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/string/decStringList.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deRigBone;
 class deRigManager;
 class deBasePhysicsRig;
 
@@ -46,7 +47,7 @@ class deBasePhysicsRig;
  * 
  * \par Shapes
  * Shapes define the physical shape of resource and are only used by the physics system.
- * See decShapeList for information about the available shape types. Shapes can be
+ * See decShape::List for information about the available shape types. Shapes can be
  * defined for bones as well as the rig as a whole. For static rigs shapes are only
  * placed on the rig itself. For articulated rigs shapes are only placed on bines. Shapes
  * on the entire rig are ignored for articulated rigs.
@@ -70,20 +71,17 @@ class deBasePhysicsRig;
 class DE_DLL_EXPORT deRig : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deRig> Ref;
-	
+	using Ref = deTObjectReference<deRig>;
 	
 	
 private:
-	deRigBone **pBones;
-	int pBoneCount;
-	int pBoneSize;
+	deRigBone::List pBones;
 	
 	int pRootBone;
 	decVector pCMP;
 	bool pModelCollision;
 	
-	decShapeList pShapes;
+	decShape::List pShapes;
 	decStringList pShapeProperties;
 	
 	deBasePhysicsRig *pPeerPhysics;
@@ -94,8 +92,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig. */
-	deRig( deRigManager *resourceManager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deRig(deRigManager *resourceManager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -104,7 +102,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deRig();
+	~deRig() override;
 	/*@}*/
 	
 	
@@ -116,13 +114,13 @@ public:
 	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
 	
 	/** \brief Set central mass point position. */
-	void SetCentralMassPoint( const decVector &cmp );
+	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Use component model for collision instead of shapes if present. */
 	inline bool GetModelCollision() const{ return pModelCollision; }
 	
 	/** \brief Set if component model is used for collision instead of shapes if present. */
-	void SetModelCollision( bool modelCollision );
+	void SetModelCollision(bool modelCollision);
 	
 	
 	
@@ -137,26 +135,29 @@ public:
 	
 	/** \name Bones */
 	/*@{*/
+	/** \brief Bones. */
+	inline const deRigBone::List &GetBones() const{ return pBones; }
+	
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/**
 	 * \brief Bone at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	deRigBone &GetBoneAt( int index ) const;
+	const deRigBone::Ref &GetBoneAt(int index) const{ return pBones.GetAt(index); }
 	
 	/** \brief Index of named bone or -1 if absent. */
-	int IndexOfBoneNamed( const char *name ) const;
+	int IndexOfBoneNamed(const char *name) const;
 	
 	/** \brief Named bone is present. */
-	bool HasBoneNamed( const char *name ) const;
+	bool HasBoneNamed(const char *name) const;
 	
 	/**
 	 * \brief Add bone.
 	 * \throws deeInvalidParam Named bone is present.
 	 */
-	void AddBone( deRigBone *bone );
+	void AddBone(deRigBone::Ref &&bone);
 	
 	/** \brief Remove all bones. */
 	void RemoveAllBones();
@@ -168,7 +169,7 @@ public:
 	 * \brief Set physics root bone or -1 if not set.
 	 * \throws deeOutOfBoundary \em index is less than -1 or greater than or equal to GetBoneCount().
 	 */
-	void SetRootBone( int rootBone );
+	void SetRootBone(int rootBone);
 	/*@}*/
 	
 	
@@ -176,14 +177,14 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShape::List &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Set shapes.
 	 * 
 	 * Resets shape properties to empty strings for all shapes.
 	 */
-	void SetShapes( const decShapeList &shapes );
+	void SetShapes(const decShape::List &shapes);
 	
 	/** \brief Shape properties. */
 	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }
@@ -192,7 +193,7 @@ public:
 	 * \brief Set shape properties.
 	 * \throws deeInvalidParam Number of strings in \em properties does not match GetShapes().GetCount().
 	 */
-	void SetShapeProperties( const decStringList &properties );
+	void SetShapeProperties(const decStringList &properties);
 	/*@}*/
 	
 	
@@ -203,7 +204,7 @@ public:
 	inline deBasePhysicsRig *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer or NULL if not set. */
-	void SetPeerPhysics( deBasePhysicsRig *peer );
+	void SetPeerPhysics(deBasePhysicsRig *peer);
 	/*@}*/
 };
 

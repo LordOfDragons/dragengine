@@ -25,19 +25,20 @@
 #ifndef _MELOADXMLWORLDTASK_H_
 #define _MELOADXMLWORLDTASK_H_
 
+#include "../world/meWorld.h"
+
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/utils/igdeBaseXML.h>
 
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
+#include <dragengine/common/xmlparser/decXmlDocument.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
 class meDecal;
 class meLoadSaveSystem;
 class meNavigationSpace;
 class meObject;
 class meObjectTexture;
-class meWorld;
 
-class decBaseFileReader;
 class decXmlElementTag;
 
 
@@ -48,11 +49,14 @@ class decXmlElementTag;
  * Load world from file in the Drag[en]gine World World XML format using stepable task.
  */
 class meLoadXMLWorldTask : public igdeStepableTask, igdeBaseXML{
+public:
+	typedef deTObjectReference<meLoadXMLWorldTask> Ref;
+	
 private:
 	meLoadSaveSystem *pLSSys;
-	meWorld *pWorld;
-	decBaseFileReader *pReader;
-	decXmlDocumentReference pXMLDocument;
+	meWorld::Ref pWorld;
+	decBaseFileReader::Ref pReader;
+	decXmlDocument::Ref pXMLDocument;
 	decXmlElementTag *pXMLRoot;
 	int pNextTag;
 	bool pProcessPFCache;
@@ -63,10 +67,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	meLoadXMLWorldTask( meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file );
+	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file);
 	
+protected:
 	/** \brief Clean up task. */
 	virtual ~meLoadXMLWorldTask();
+	
+public:
 	/*@}*/
 	
 	
@@ -85,15 +92,15 @@ public:
 private:
 	void pCleanUp();
 	
-	void pLoadWorldEditor( const decXmlElementTag &root );
+	void pLoadWorldEditor(const decXmlElementTag &root);
 	void pLoadWorldEditorBackgroundObject(const decXmlElementTag &root);
 	void pLoadWorldEditorLimitBox(const decXmlElementTag &root);
-	void pLoadObject( const decXmlElementTag &root, meObject &object );
-	void pLoadObjectTexture( const decXmlElementTag &root, meObjectTexture &texture );
-	void pLoadObjectTextureTransform( const decXmlElementTag &root, meObjectTexture &texture );
-	void pLoadDecal( const decXmlElementTag &root, meDecal &decal );
-	void pLoadDecalTransform( const decXmlElementTag &root, meDecal &decal );
-	void pLoadNavigationSpace( const decXmlElementTag &root, meNavigationSpace &navspace );
+	void pLoadObject(const decXmlElementTag &root, meObject &object);
+	void pLoadObjectTexture(const decXmlElementTag &root, meObjectTexture &texture);
+	void pLoadObjectTextureTransform(const decXmlElementTag &root, meObjectTexture &texture);
+	void pLoadDecal(const decXmlElementTag &root, meDecal &decal);
+	void pLoadDecalTransform(const decXmlElementTag &root, meDecal &decal);
+	void pLoadNavigationSpace(const decXmlElementTag &root, meNavigationSpace &navspace);
 };
 
 #endif

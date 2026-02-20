@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create environment debugging. */
-	deoalEnvironmentDebug( const deoalEnvironment &environment);
+	deoalEnvironmentDebug(const deoalEnvironment &environment);
 	
 	/** \brief Clean up environment debugging. */
 	~deoalEnvironmentDebug();
@@ -76,19 +76,19 @@ public:
 	 */
 	void Print();
 	
-	void Prepare( const deoalEnvProbe &envProbe, const deoalEnvProbeListener listener );
+	void Prepare(const deoalEnvProbe &envProbe, const deoalEnvProbeListener listener);
 	
-	void UpdateInfo( deDebugBlockInfo &debugInfo );
+	void UpdateInfo(deDebugBlockInfo &debugInfo);
 	
-	void SoundRays( deDebugDrawer &debugDrawer, const deoalEnvProbe &envProbe );
+	void SoundRays(deDebugDrawer &debugDrawer, const deoalEnvProbe &envProbe);
 	/*@}*/
 	
 	
 	
 private:
-	void pShowImpulseResponse( deDebugBlockInfo &debugInfo );
-	void pShowEnergyHistogram( deDebugBlockInfo &debugInfo );
-	decColor pColorGradient( float value ) const;
+	void pShowImpulseResponse(deDebugBlockInfo &debugInfo);
+	void pShowEnergyHistogram(deDebugBlockInfo &debugInfo);
+	decColor pColorGradient(float value) const;
 };
 
 #endif

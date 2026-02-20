@@ -54,101 +54,29 @@
 
 class cDucpliateShapeVisitor : public decShapeVisitor{
 private:
-	deDebugDrawerShape *pDDShape;
+	deDebugDrawerShape &pDDShape;
 	
 public:
-	cDucpliateShapeVisitor( deDebugDrawerShape *ddShape ){
-		if( ! ddShape ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pDDShape = ddShape;
+	cDucpliateShapeVisitor(deDebugDrawerShape &ddShape) : pDDShape(ddShape){}
+	
+	void VisitShapeSphere(decShapeSphere &sphere) override{
+		pDDShape.GetShapeList().Add(sphere.Copy());
 	}
 	
-	virtual void VisitShapeSphere( decShapeSphere &sphere ){
-		decShapeSphere *copy = NULL;
-		
-		try{
-			copy = new decShapeSphere( sphere.GetRadius(), sphere.GetAxisScaling(), sphere.GetPosition() );
-			pDDShape->GetShapeList().Add( copy );
-			
-		}catch( const deException & ){
-			if( copy ){
-				delete copy;
-			}
-			throw;
-		}
+	void VisitShapeBox(decShapeBox &box) override{
+		pDDShape.GetShapeList().Add(box.Copy());
 	}
 	
-	virtual void VisitShapeBox( decShapeBox &box ){
-		decShapeBox *copy = NULL;
-		
-		try{
-			copy = new decShapeBox( box.GetHalfExtends(), box.GetTapering(), box.GetPosition(), box.GetOrientation() );
-			pDDShape->GetShapeList().Add( copy );
-			
-		}catch( const deException & ){
-			if( copy ){
-				delete copy;
-			}
-			throw;
-		}
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override{
+		pDDShape.GetShapeList().Add(cylinder.Copy());
 	}
 	
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder ){
-		decShapeCylinder *copy = NULL;
-		
-		try{
-			copy = new decShapeCylinder( cylinder.GetHalfHeight(), cylinder.GetTopRadius(),
-				cylinder.GetBottomRadius(), cylinder.GetTopAxisScaling(), cylinder.GetBottomAxisScaling(),
-				 cylinder.GetPosition(), cylinder.GetOrientation() );
-			pDDShape->GetShapeList().Add( copy );
-			
-		}catch( const deException & ){
-			if( copy ){
-				delete copy;
-			}
-			throw;
-		}
+	void VisitShapeCapsule(decShapeCapsule &capsule) override{
+		pDDShape.GetShapeList().Add(capsule.Copy());
 	}
 	
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule ){
-		decShapeCapsule *copy = NULL;
-		
-		try{
-			copy = new decShapeCapsule( capsule.GetHalfHeight(), capsule.GetTopRadius(),
-				capsule.GetBottomRadius(), capsule.GetTopAxisScaling(), capsule.GetBottomAxisScaling(),
-				capsule.GetPosition(), capsule.GetOrientation() );
-			pDDShape->GetShapeList().Add( copy );
-			
-		}catch( const deException & ){
-			if( copy ){
-				delete copy;
-			}
-			throw;
-		}
-	}
-	
-	virtual void VisitShapeHull( decShapeHull &hull ){
-		decShapeHull *copy = NULL;
-		
-		try{
-			copy = new decShapeHull( hull.GetPosition(), hull.GetOrientation() );
-			const int count = hull.GetPointCount();
-			int i;
-			copy->SetPointCount( count );
-			for( i=0; i<count; i++ ){
-				copy->SetPointAt( i, hull.GetPointAt( i ) );
-			}
-			
-			pDDShape->GetShapeList().Add( copy );
-			
-		}catch( const deException & ){
-			if( copy ){
-				delete copy;
-			}
-			throw;
-		}
+	void VisitShapeHull(decShapeHull &hull) override{
+		pDDShape.GetShapeList().Add(hull.Copy());
 	}
 };
 
@@ -160,19 +88,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWDebugDrawerShape::igdeWDebugDrawerShape(){
-	pEngDebugDrawer = NULL;
-	pEngDDShape = NULL;
+igdeWDebugDrawerShape::igdeWDebugDrawerShape() :
+pEngDDShape(nullptr)
+{
+	pScale.Set(1.0f, 1.0f, 1.0f);
 	
-	pScale.Set( 1.0f, 1.0f, 1.0f );
-	
-	pColorEdge.Set( 0.0f, 0.0f, 0.0f, 1.0f );
-	pColorFill.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+	pColorEdge.Set(0.0f, 0.0f, 0.0f, 1.0f);
+	pColorFill.Set(0.0f, 0.0f, 0.0f, 0.0f);
 	pVisible = true;
 }
 
 igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
-	SetParentDebugDrawer( NULL );
+	SetParentDebugDrawer(nullptr);
 	RemoveAllFaces();
 }
 
@@ -181,74 +108,64 @@ igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
 // Management
 ///////////////
 
-void igdeWDebugDrawerShape::SetParentDebugDrawer( deDebugDrawer *debugDrawer ){
-	if( debugDrawer == pEngDebugDrawer ){
+void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
+	if(debugDrawer == pEngDebugDrawer){
 		return;
 	}
 	
-	if( pEngDDShape ){
-		pEngDebugDrawer->RemoveShape( pEngDDShape );
-		pEngDDShape = NULL;
+	if(pEngDDShape){
+		pEngDebugDrawer->RemoveShape(pEngDDShape);
+		pEngDDShape = nullptr;
 	}
-	
-	if( pEngDebugDrawer ){
-		pEngDebugDrawer->FreeReference();
-	}
-	
 	pEngDebugDrawer = debugDrawer;
-	
-	if( debugDrawer ){
-		debugDrawer->AddReference();
-	}
-	
 	pUpdateDDShape();
 }
 
 
 
-void igdeWDebugDrawerShape::SetPosition( const decVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void igdeWDebugDrawerShape::SetPosition(const decVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pEngDDShape ){
-		pEngDDShape->SetPosition( position );
+	if(pEngDDShape){
+		pEngDDShape->SetPosition(position);
 		
-		if( pEngDebugDrawer ){
+		if(pEngDebugDrawer){
 			pEngDebugDrawer->NotifyShapeGeometryChanged();
 		}
 	}
 }
 
-void igdeWDebugDrawerShape::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void igdeWDebugDrawerShape::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( pEngDDShape ){
-		pEngDDShape->SetOrientation( orientation );
+	if(pEngDDShape){
+		pEngDDShape->SetOrientation(orientation);
 		
-		if( pEngDebugDrawer ){
+		if(pEngDebugDrawer){
 			pEngDebugDrawer->NotifyShapeGeometryChanged();
 		}
 	}
 }
 
-void igdeWDebugDrawerShape::SetScale( const decVector &scale ){
-	if( scale.IsEqualTo( pScale ) ){
+void igdeWDebugDrawerShape::SetScale(const decVector &scale){
+	if(scale.IsEqualTo(pScale)){
 		return;
 	}
 	
 	pScale = scale;
 	
-	if( pEngDDShape ){
-		pEngDDShape->SetScale( scale );
+	if(pEngDDShape){
+		pEngDDShape->SetScale(scale);
 		
-		if( pEngDebugDrawer ){
+		if(pEngDebugDrawer){
 			pEngDebugDrawer->NotifyShapeGeometryChanged();
 		}
 	}
@@ -256,40 +173,40 @@ void igdeWDebugDrawerShape::SetScale( const decVector &scale ){
 
 
 
-void igdeWDebugDrawerShape::SetEdgeColor( const decColor &color ){
-	if( color.IsEqualTo( pColorEdge ) ){
+void igdeWDebugDrawerShape::SetEdgeColor(const decColor &color){
+	if(color.IsEqualTo(pColorEdge)){
 		return;
 	}
 	
 	pColorEdge = color;
 	
-	if( pEngDDShape ){
-		pEngDDShape->SetEdgeColor( color );
+	if(pEngDDShape){
+		pEngDDShape->SetEdgeColor(color);
 		
-		if( pEngDebugDrawer ){
+		if(pEngDebugDrawer){
 			pEngDebugDrawer->NotifyShapeColorChanged();
 		}
 	}
 }
 
-void igdeWDebugDrawerShape::SetFillColor( const decColor &color ){
-	if( color.IsEqualTo( pColorFill ) ){
+void igdeWDebugDrawerShape::SetFillColor(const decColor &color){
+	if(color.IsEqualTo(pColorFill)){
 		return;
 	}
 	
 	pColorFill = color;
 	
-	if( pEngDDShape ){
-		pEngDDShape->SetFillColor( color );
+	if(pEngDDShape){
+		pEngDDShape->SetFillColor(color);
 		
-		if( pEngDebugDrawer ){
+		if(pEngDebugDrawer){
 			pEngDebugDrawer->NotifyShapeColorChanged();
 		}
 	}
 }
 
-void igdeWDebugDrawerShape::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void igdeWDebugDrawerShape::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
@@ -302,192 +219,80 @@ void igdeWDebugDrawerShape::SetVisible( bool visible ){
 // Shapes
 ///////////
 
-void igdeWDebugDrawerShape::AddShape( decShape *shape ){
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeWDebugDrawerShape::AddShape(decShape::Ref &&shape){
+	DEASSERT_NOTNULL(shape)
 	
-	pShapes.Add( shape );
-	pRebuildShapes();
+	pShapes.Add(std::move(shape));
+	pRebuildShapes(pEngDDShape);
 }
 
-void igdeWDebugDrawerShape::AddShapes( const decShapeList &shapes ){
-	const int count = shapes.GetCount();
-	decShape *shape = NULL;
+void igdeWDebugDrawerShape::AddShapes(const decShape::List &shapes){
+	shapes.Visit([&](decShape &shape){
+		pShapes.Add(shape.Copy());
+	});
+	pRebuildShapes(pEngDDShape);
+}
+
+void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector &position){
+	AddShape(decShapeSphere::Ref::New(radius, position));
+}
+
+void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector2 &axisScaling,
+const decVector &position){
+	AddShape(decShapeSphere::Ref::New(radius, axisScaling, position));
+}
+
+void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector &position,
+const decQuaternion &orientation){
+	AddShape(decShapeBox::Ref::New(halfExtends, position, orientation));
+}
+
+void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector2 &axiscaling,
+const decVector &position, const decQuaternion &orientation){
+	AddShape(decShapeBox::Ref::New(halfExtends, axiscaling, position, orientation));
+}
+
+void igdeWDebugDrawerShape::AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
+const decVector &position, const decQuaternion &orientation){
+	AddShape(decShapeCylinder::Ref::New(halfHeight, topRadius, bottomRadius, position, orientation));
+}
+
+void igdeWDebugDrawerShape::AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
+const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position,
+const decQuaternion &orientation){
+	AddShape(decShapeCylinder::Ref::New(halfHeight, topRadius, bottomRadius,
+		topAxisScaling, bottomAxisScaling, position, orientation));
+}
+
+void igdeWDebugDrawerShape::AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
+const decVector &position, const decQuaternion &orientation){
+	AddShape(decShapeCapsule::Ref::New(halfHeight, topRadius, bottomRadius, position, orientation));
+}
+
+void igdeWDebugDrawerShape::AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
+const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position,
+const decQuaternion &orientation){
+	AddShape(decShapeCapsule::Ref::New(halfHeight, topRadius, bottomRadius,
+		topAxisScaling, bottomAxisScaling, position, orientation));
+}
+
+void igdeWDebugDrawerShape::AddHullShape(const decVector &position,
+const decQuaternion &orientation, int pointCount, const decVector *points){
+	DEASSERT_NOTNULL(points)
+	DEASSERT_TRUE(pointCount >= 0)
+	
+	decShapeHull::Ref hull = decShapeHull::Ref::New(position, orientation);
+	hull->SetPointCount(pointCount);
 	int i;
-	
-	for( i=0; i<count; i++ ){
-		try{
-			shape = shapes.GetAt( i )->Copy();
-			pShapes.Add( shape );
-			shape = NULL;
-			
-		}catch( const deException & ){
-			if( shape ){
-				delete shape;
-			}
-			throw;
-		}
+	for(i=0; i<pointCount; i++){
+		hull->SetPointAt(i, points[i]);
 	}
-	
-	pRebuildShapes();
-}
-
-void igdeWDebugDrawerShape::AddSphereShape( float radius, const decVector &position ){
-	decShapeSphere *sphere = NULL;
-	
-	try{
-		sphere = new decShapeSphere( radius, position );
-		AddShape( sphere );
-		
-	}catch( const deException & ){
-		if( sphere ){
-			delete sphere;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddSphereShape( float radius, const decVector2 &axisScaling, const decVector &position ){
-	decShapeSphere *sphere = NULL;
-	
-	try{
-		sphere = new decShapeSphere( radius, axisScaling, position );
-		AddShape( sphere );
-		
-	}catch( const deException & ){
-		if( sphere ){
-			delete sphere;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddBoxShape( const decVector &halfExtends, const decVector &position,
-const decQuaternion &orientation ){
-	decShapeBox *box = NULL;
-	
-	try{
-		box = new decShapeBox( halfExtends, position, orientation );
-		AddShape( box );
-		
-	}catch( const deException & ){
-		if( box ){
-			delete box;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddBoxShape( const decVector &halfExtends, const decVector2 &axiscaling,
-const decVector &position, const decQuaternion &orientation ){
-	decShapeBox *box = NULL;
-	
-	try{
-		box = new decShapeBox( halfExtends, axiscaling, position, orientation );
-		AddShape( box );
-		
-	}catch( const deException & ){
-		if( box ){
-			delete box;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddCylinderShape( float halfHeight, float topRadius, float bottomRadius,
-const decVector &position, const decQuaternion &orientation ){
-	decShapeCylinder *cylinder = NULL;
-	
-	try{
-		cylinder = new decShapeCylinder( halfHeight, topRadius, bottomRadius, position, orientation );
-		AddShape( cylinder );
-		
-	}catch( const deException & ){
-		if( cylinder ){
-			delete cylinder;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddCylinderShape( float halfHeight, float topRadius, float bottomRadius,
-const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position,
-const decQuaternion &orientation ){
-	decShapeCylinder *cylinder = NULL;
-	
-	try{
-		cylinder = new decShapeCylinder( halfHeight, topRadius, bottomRadius, topAxisScaling, bottomAxisScaling, position, orientation );
-		AddShape( cylinder );
-		
-	}catch( const deException & ){
-		if( cylinder ){
-			delete cylinder;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddCapsuleShape( float halfHeight, float topRadius, float bottomRadius,
-const decVector &position, const decQuaternion &orientation ){
-	decShapeCapsule *capsule = NULL;
-	
-	try{
-		capsule = new decShapeCapsule( halfHeight, topRadius, bottomRadius, position, orientation );
-		AddShape( capsule );
-		
-	}catch( const deException & ){
-		if( capsule ){
-			delete capsule;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddCapsuleShape( float halfHeight, float topRadius, float bottomRadius,
-const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position,
-const decQuaternion &orientation ){
-	decShapeCapsule *capsule = NULL;
-	
-	try{
-		capsule = new decShapeCapsule( halfHeight, topRadius, bottomRadius, topAxisScaling, bottomAxisScaling, position, orientation );
-		AddShape( capsule );
-		
-	}catch( const deException & ){
-		if( capsule ){
-			delete capsule;
-		}
-		throw;
-	}
-}
-
-void igdeWDebugDrawerShape::AddHullShape( const decVector &position,
-const decQuaternion &orientation, int pointCount, const decVector *points ){
-	if( pointCount < 0 || ! points ){
-		DETHROW( deeInvalidParam );
-	}
-	decShapeHull *hull = NULL;
-	
-	try{
-		hull = new decShapeHull( position, orientation );
-		hull->SetPointCount( pointCount );
-		int i;
-		for( i=0; i<pointCount; i++ ){
-			hull->SetPointAt( i, points[ i ] );
-		}
-		AddShape( hull );
-		
-	}catch( const deException & ){
-		if( hull ){
-			delete hull;
-		}
-		throw;
-	}
+	AddShape(std::move(hull));
 }
 
 void igdeWDebugDrawerShape::RemoveAllShapes(){
 	pShapes.RemoveAll();
-	pRebuildShapes();
+	pRebuildShapes(pEngDDShape);
 }
 
 
@@ -495,96 +300,77 @@ void igdeWDebugDrawerShape::RemoveAllShapes(){
 // Faces
 //////////
 
-void igdeWDebugDrawerShape::AddFace( deDebugDrawerShapeFace *face ){
-	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
-	if( ! face ){
-		DETHROW( deeInvalidParam );
-	}
-	pFaces.Add( face );
-	pRebuildFaces();
+void igdeWDebugDrawerShape::AddFace(deDebugDrawerShapeFace::Ref &&face){
+	DEASSERT_NOTNULL(face)
+	
+	pFaces.Add(std::move(face));
+	pRebuildFaces(pEngDDShape);
 }
 
-void igdeWDebugDrawerShape::AddOcclusionMeshFaces( const deOcclusionMesh &occlusionMesh ){
-	const deOcclusionMeshVertex * const vertices = occlusionMesh.GetVertices();
-	const unsigned short * const corners = occlusionMesh.GetCorners();
-	const unsigned short * const faces = occlusionMesh.GetFaces();
-	const int faceCount = occlusionMesh.GetFaceCount();
-	deDebugDrawerShapeFace *shapeFace = NULL;
+void igdeWDebugDrawerShape::AddOcclusionMeshFaces(const deOcclusionMesh &occlusionMesh){
+	const deOcclusionMeshVertex * const vertices = occlusionMesh.GetVertices().GetArrayPointer();
+	const unsigned short * const corners = occlusionMesh.GetCorners().GetArrayPointer();
+	const unsigned short * const faces = occlusionMesh.GetFaces().GetArrayPointer();
+	const int faceCount = occlusionMesh.GetFaces().GetCount();
 	int f, c, cornerIndex = 0;
 	decVector normal;
 	float normalLen;
 	
-	try{
-		for( f=0; f<faceCount; f++ ){
-			const int cornerCount = ( int )faces[ f ];
+	for(f=0; f<faceCount; f++){
+		const int cornerCount = (int)faces[f];
+		
+		if(cornerCount > 2){
+			auto shapeFace = deDebugDrawerShapeFace::Ref::New();
 			
-			if( cornerCount > 2 ){
-				shapeFace = new deDebugDrawerShapeFace;
-				
-				for( c=0; c<cornerCount; c++ ){
-					shapeFace->AddVertex( vertices[ corners[ cornerIndex++ ] ].GetPosition() );
-				}
-				
-				normal = ( shapeFace->GetVertexAt( 1 ) - shapeFace->GetVertexAt( 0 ) )
-					% ( shapeFace->GetVertexAt( 2 ) - ( shapeFace->GetVertexAt( 1 ) ) );
-				normalLen = normal.Length();
-				if( normalLen > FLOAT_SAFE_EPSILON ){
-					shapeFace->SetNormal( normal / normalLen );
-					
-				}else{
-					shapeFace->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
-				}
-				
-				pFaces.Add( shapeFace );
-				shapeFace = NULL;
+			for(c=0; c<cornerCount; c++){
+				shapeFace->AddVertex(vertices[corners[cornerIndex++]].GetPosition());
+			}
+			
+			normal = (shapeFace->GetVertexAt(1) - shapeFace->GetVertexAt(0))
+				% (shapeFace->GetVertexAt(2) - (shapeFace->GetVertexAt(1)));
+			normalLen = normal.Length();
+			if(normalLen > FLOAT_SAFE_EPSILON){
+				shapeFace->SetNormal(normal / normalLen);
 				
 			}else{
-				cornerIndex += cornerCount;
+				shapeFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 			}
+			
+			pFaces.Add(std::move(shapeFace));
+			
+		}else{
+			cornerIndex += cornerCount;
 		}
-		
-	}catch( const deException & ){
-		if( shapeFace ){
-			delete shapeFace;
-		}
-		throw;
 	}
 	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
-void igdeWDebugDrawerShape::AddNavSpaceFaces( const deNavigationSpace &navSpace ){
-	if( navSpace.GetType() == deNavigationSpace::estGrid ){
-		pAddNavGrid( navSpace, false, 0 );
+void igdeWDebugDrawerShape::AddNavSpaceFaces(const deNavigationSpace &navSpace){
+	if(navSpace.GetType() == deNavigationSpace::estGrid){
+		pAddNavGrid(navSpace, false, 0);
 		
-	}else if( navSpace.GetType() == deNavigationSpace::estMesh ){
-		pAddNavMesh( navSpace, false, 0 );
+	}else if(navSpace.GetType() == deNavigationSpace::estMesh){
+		pAddNavMesh(navSpace, false, 0);
 		
 	}else{ // deNavigationSpace::estVolume
 	}
 }
 
-void igdeWDebugDrawerShape::AddNavSpaceFaces( const deNavigationSpace &navSpace, int type ){
-	if( navSpace.GetType() == deNavigationSpace::estGrid ){
-		pAddNavGrid( navSpace, true, type );
+void igdeWDebugDrawerShape::AddNavSpaceFaces(const deNavigationSpace &navSpace, int type){
+	if(navSpace.GetType() == deNavigationSpace::estGrid){
+		pAddNavGrid(navSpace, true, type);
 		
-	}else if( navSpace.GetType() == deNavigationSpace::estMesh ){
-		pAddNavMesh( navSpace, true, type );
+	}else if(navSpace.GetType() == deNavigationSpace::estMesh){
+		pAddNavMesh(navSpace, true, type);
 		
 	}else{ // deNavigationSpace::estVolume
 	}
 }
 
 void igdeWDebugDrawerShape::RemoveAllFaces(){
-	const int count = pFaces.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		delete ( deDebugDrawerShapeFace* )pFaces.GetAt( i );
-	}
 	pFaces.RemoveAll();
-	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
 
@@ -594,43 +380,34 @@ void igdeWDebugDrawerShape::RemoveAllFaces(){
 
 void igdeWDebugDrawerShape::pUpdateDDShape(){
 	// check if the debug drawer shape has to be existing
-	if( pVisible && pEngDebugDrawer ){
+	if(pVisible && pEngDebugDrawer){
 		// if not existing create the debug drawer shape and populate it with the stored parameters
-		if( ! pEngDDShape ){
-			try{
-				pEngDDShape = new deDebugDrawerShape;
-				
-				pEngDDShape->SetPosition( pPosition );
-				pEngDDShape->SetOrientation( pOrientation );
-				pEngDDShape->SetScale( pScale );
-				pEngDDShape->SetEdgeColor( pColorEdge );
-				pEngDDShape->SetFillColor( pColorFill );
-				
-				pBareRebuildShapes();
-				pBareRebuildFaces();
-				
-				pEngDebugDrawer->AddShape( pEngDDShape );
-				
-			}catch( const deException & ){
-				if( pEngDDShape ){
-					delete pEngDDShape;
-					pEngDDShape = NULL;
-				}
-				throw;
-			}
+		if(!pEngDDShape){
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetPosition(pPosition);
+			shape->SetOrientation(pOrientation);
+			shape->SetScale(pScale);
+			shape->SetEdgeColor(pColorEdge);
+			shape->SetFillColor(pColorFill);
+			
+			pBareRebuildShapes(shape);
+			pBareRebuildFaces(shape);
+			
+			pEngDDShape = shape;
+			pEngDebugDrawer->AddShape(std::move(shape));
 		}
 		
 	// otherwise remove the debug drawer shape if existing
-	}else if( pEngDDShape ){
-		pEngDebugDrawer->RemoveShape( pEngDDShape );
-		pEngDDShape = NULL;
+	}else if(pEngDDShape){
+		pEngDebugDrawer->RemoveShape(pEngDDShape);
+		pEngDDShape = nullptr;
 	}
 }
 
-void igdeWDebugDrawerShape::pRebuildShapes(){
+void igdeWDebugDrawerShape::pRebuildShapes(deDebugDrawerShape *ddshape){
 	// if the debug drawer shape exists just re-populate it with shapes
-	if( pEngDDShape ){
-		pBareRebuildShapes();
+	if(ddshape){
+		pBareRebuildShapes(ddshape);
 		
 	// otherwise update it which already does the population if required
 	}else{
@@ -638,28 +415,25 @@ void igdeWDebugDrawerShape::pRebuildShapes(){
 	}
 }
 
-void igdeWDebugDrawerShape::pBareRebuildShapes(){
-	if( pEngDDShape ){
-		cDucpliateShapeVisitor visitor( pEngDDShape );
-		const int shapeCount = pShapes.GetCount();
-		int i;
+void igdeWDebugDrawerShape::pBareRebuildShapes(deDebugDrawerShape *ddshape){
+	if(ddshape){
+		ddshape->GetShapeList().RemoveAll();
 		
-		pEngDDShape->GetShapeList().RemoveAll();
-		
-		for( i=0; i<shapeCount; i++ ){
-			pShapes.GetAt( i )->Visit( visitor );
-		}
+		cDucpliateShapeVisitor visitor(*ddshape);
+		pShapes.Visit([&](decShape &shape){
+			shape.Visit(visitor);
+		});
 	}
 	
-	if( pEngDebugDrawer ){
+	if(pEngDebugDrawer){
 		pEngDebugDrawer->NotifyShapeContentChanged();
 	}
 }
 
-void igdeWDebugDrawerShape::pRebuildFaces(){
+void igdeWDebugDrawerShape::pRebuildFaces(deDebugDrawerShape *ddshape){
 	// if the debug drawer shape exists just re-populate it with faces
-	if( pEngDDShape ){
-		pBareRebuildFaces();
+	if(ddshape){
+		pBareRebuildFaces(ddshape);
 		
 	// otherwise update it which already does the population if required
 	}else{
@@ -667,152 +441,103 @@ void igdeWDebugDrawerShape::pRebuildFaces(){
 	}
 }
 
-void igdeWDebugDrawerShape::pBareRebuildFaces(){
-	if( pEngDDShape ){
-		deDebugDrawerShapeFace *newFace = NULL;
-		const int faceCount = pFaces.GetCount();
-		int i, j;
+void igdeWDebugDrawerShape::pBareRebuildFaces(deDebugDrawerShape *ddshape){
+	if(ddshape){
+		ddshape->RemoveAllFaces();
 		
-		pEngDDShape->RemoveAllFaces();
-		
-		try{
-			for( i=0; i<faceCount; i++ ){
-				const deDebugDrawerShapeFace &face = *( ( deDebugDrawerShapeFace* )pFaces.GetAt( i ) );
-				const int vertexCount = face.GetVertexCount();
-				
-				newFace = new deDebugDrawerShapeFace;
-				newFace->SetNormal( face.GetNormal() );
-				for( j=0; j<vertexCount; j++ ){
-					newFace->AddVertex( face.GetVertexAt( j ) );
-				}
-				
-				pEngDDShape->AddFace( newFace );
-				newFace = NULL;
-			}
-			
-		}catch( const deException & ){
-			if( newFace ){
-				delete newFace;
-			}
-			throw;
-		}
+		pFaces.Visit([&](const deDebugDrawerShapeFace &face){
+			auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+			ddsFace->SetNormal(face.GetNormal());
+			face.GetVertices().Visit([&](const decVector &vertex){
+				ddsFace->AddVertex(vertex);
+			});
+			ddshape->AddFace(std::move(ddsFace));
+		});
 	}
 	
-	if( pEngDebugDrawer ){
+	if(pEngDebugDrawer){
 		pEngDebugDrawer->NotifyShapeContentChanged();
 	}
 }
 
 
 
-void igdeWDebugDrawerShape::pAddNavGrid( const deNavigationSpace &navSpace, bool filterType, int type ){
-	const deNavigationSpaceEdge * const edges = navSpace.GetEdges();
-	const decVector * const vertices = navSpace.GetVertices();
-	const int edgeCount = navSpace.GetEdgeCount();
-	deDebugDrawerShapeFace *shapeFace = NULL;
-	int i;
+void igdeWDebugDrawerShape::pAddNavGrid(const deNavigationSpace &navSpace, bool filterType, int type){
+	const decVector * const vertices = navSpace.GetVertices().GetArrayPointer();
 	
-	try{
-		for( i=0; i<edgeCount; i++ ){
-			const deNavigationSpaceEdge &edge = edges[ i ];
-			
-			if( filterType ){
-				if( edge.GetType1() != type && edge.GetType2() != type ){
-					continue;
-				}
-			}
-			
-			const decVector &vertex1 = vertices[ edge.GetVertex1() ];
-			const decVector &vertex2 = vertices[ edge.GetVertex2() ];
-			
-			shapeFace = new deDebugDrawerShapeFace;
-			
-			shapeFace->AddVertex( vertex1 );
-			shapeFace->AddVertex( vertex2 );
-			shapeFace->AddVertex( vertex2 );
-			
-			shapeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
-			
-			pFaces.Add( shapeFace );
-			shapeFace = NULL;
+	navSpace.GetEdges().Visit([&](const deNavigationSpaceEdge &edge){
+		if(filterType && edge.GetType1() != type && edge.GetType2() != type){
+			return;
 		}
 		
-	}catch( const deException & ){
-		if( shapeFace ){
-			delete shapeFace;
-		}
-		throw;
-	}
+		const decVector &vertex1 = vertices[edge.GetVertex1()];
+		const decVector &vertex2 = vertices[edge.GetVertex2()];
+		
+		auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+		ddsFace->AddVertex(vertex1);
+		ddsFace->AddVertex(vertex2);
+		ddsFace->AddVertex(vertex2);
+		ddsFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
+		pFaces.Add(std::move(ddsFace));
+	});
 	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
-void igdeWDebugDrawerShape::pAddNavMesh( const deNavigationSpace &navSpace, bool filterType, int type ){
-	const deNavigationSpaceCorner * const corners = navSpace.GetCorners();
-	const deNavigationSpaceFace * const faces = navSpace.GetFaces();
-	const decVector * const vertices = navSpace.GetVertices();
-	const int faceCount = navSpace.GetFaceCount();
-	deDebugDrawerShapeFace *shapeFace = NULL;
-	int i, j, firstCorner;
+void igdeWDebugDrawerShape::pAddNavMesh(const deNavigationSpace &navSpace, bool filterType, int type){
+	const deNavigationSpaceCorner * const corners = navSpace.GetCorners().GetArrayPointer();
+	const decVector * const vertices = navSpace.GetVertices().GetArrayPointer();
 	decVector normal;
 	float normalLen;
 	
-	try{
-		firstCorner = 0;
+	int firstCorner = 0;
+	
+	navSpace.GetFaces().Visit([&](const deNavigationSpaceFace &face){
+		const unsigned short cornerCount = face.GetCornerCount();
 		
-		for( i=0; i<faceCount; i++ ){
-			const deNavigationSpaceFace &face = faces[ i ];
-			const unsigned short cornerCount = face.GetCornerCount();
-			
-			if( cornerCount > 2 ){
-				if( filterType ){
-					bool ignore = true;
-					
-					if( face.GetType() == type ){
-						ignore = false;
-						
-					}else{
-						for( j=0; j<cornerCount; j++ ){
-							if( corners[ firstCorner + j ].GetType() == type ){
-								ignore = false;
-								break;
-							}
-						}
-					}
-					
-					if( ignore ){
-						continue;
-					}
-				}
+		if(cornerCount > 2){
+			if(filterType){
+				bool ignore = true;
 				
-				shapeFace = new deDebugDrawerShapeFace;
-				
-				for( j=0; j<cornerCount; j++ ){
-					shapeFace->AddVertex( vertices[ corners[ firstCorner + j ].GetVertex() ] );
-				}
-				
-				normal = ( shapeFace->GetVertexAt( 1 ) - shapeFace->GetVertexAt( 0 ) ) % ( shapeFace->GetVertexAt( 2 ) - ( shapeFace->GetVertexAt( 1 ) ) );
-				normalLen = normal.Length();
-				if( normalLen > FLOAT_SAFE_EPSILON ){
-					shapeFace->SetNormal( normal / normalLen );
+				if(face.GetType() == type){
+					ignore = false;
 					
 				}else{
-					shapeFace->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
+					int i;
+					for(i=0; i<cornerCount; i++){
+						if(corners[firstCorner + i].GetType() == type){
+							ignore = false;
+							break;
+						}
+					}
 				}
 				
-				pFaces.Add( shapeFace );
-				shapeFace = NULL;
+				if(ignore){
+					return;
+				}
 			}
 			
-			firstCorner += cornerCount;
+			auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+			int i;
+			for(i=0; i<cornerCount; i++){
+				ddsFace->AddVertex(vertices[corners[firstCorner + i].GetVertex()]);
+			}
+			
+			normal = (ddsFace->GetVertexAt(1) - ddsFace->GetVertexAt(0))
+				% (ddsFace->GetVertexAt(2) - (ddsFace->GetVertexAt(1)));
+			normalLen = normal.Length();
+			if(normalLen > FLOAT_SAFE_EPSILON){
+				ddsFace->SetNormal(normal / normalLen);
+				
+			}else{
+				ddsFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+			}
+			
+			pFaces.Add(std::move(ddsFace));
 		}
 		
-	}catch( const deException & ){
-		if( shapeFace ){
-			delete shapeFace;
-		}
-		throw;
-	}
+		firstCorner += cornerCount;
+	});
 	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }

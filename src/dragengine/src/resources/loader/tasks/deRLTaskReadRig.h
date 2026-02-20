@@ -26,7 +26,7 @@
 #define _DERLTASKREADRIG_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../rig/deRigReference.h"
+#include "../../rig/deRig.h"
 #include "../../../common/string/decString.h"
 
 
@@ -34,8 +34,13 @@
  * \brief Read rig resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadRig : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadRig>;
+	
+	
 private:
-	deRigReference pRig;
+	deRig::Ref pRig;
 	bool pSucceeded;
 	
 	
@@ -44,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadRig( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deRig *rig );
+	deRLTaskReadRig(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deRig *rig);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadRig();
+	~deRLTaskReadRig() override;
 	/*@}*/
 	
 	
@@ -56,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -67,7 +72,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

@@ -30,6 +30,7 @@
 #ifdef OS_UNIX_X11
 
 #include "deOS.h"
+#include "../common/collection/decTList.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -54,10 +55,8 @@ private:
 	Window pHostingMainWindow;
 	Window pHostingRenderWindow;
 	
-	sDisplayInformation *pDisplayInformation;
-	int pDisplayCount;
-	decPoint *pDisplayResolutions;
-	int pDisplayResolutionCount;
+	decTList<sDisplayInformation> pDisplayInformation;
+	decTList<decPoint> pDisplayResolutions;
 	int pScaleFactor;
 	
 	
@@ -69,7 +68,7 @@ public:
 	deOSUnix();
 	
 	/** \brief Clean up the unix operating system object. */
-	virtual ~deOSUnix();
+	~deOSUnix() override;
 	/*@}*/
 	
 	
@@ -77,22 +76,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine path. */
-	virtual decString GetPathEngine();
+	decString GetPathEngine() override;
 	
 	/** \brief Share path. */
-	virtual decString GetPathShare();
+	decString GetPathShare() override;
 	
 	/** \brief System configuration path. */
-	virtual decString GetPathSystemConfig();
+	decString GetPathSystemConfig() override;
 	
 	/** \brief User configuration path. */
-	virtual decString GetPathUserConfig();
+	decString GetPathUserConfig() override;
 	
 	/** \brief User cache path. */
-	virtual decString GetPathUserCache();
+	decString GetPathUserCache() override;
 	
 	/** \brief User capture path. */
-	virtual decString GetPathUserCapture();
+	decString GetPathUserCapture() override;
 	
 	/**
 	 * \brief Process all events in the application event queue.
@@ -102,19 +101,19 @@ public:
 	 * to false if you want to clear the event queue after a lengthy operation to
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule );
+	void ProcessEventLoop(bool sendToInputModule) override;
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
 	 * \version 1.16
 	 */
-	virtual decString GetUserLocaleLanguage();
+	decString GetUserLocaleLanguage() override;
 	
 	/**
 	 * \brief Current user locale territory (ISO 3166 country code) lower case or empty string.
 	 * \version 1.16
 	 */
-	virtual decString GetUserLocaleTerritory();
+	decString GetUserLocaleTerritory() override;
 	/*@}*/
 	
 	
@@ -122,7 +121,7 @@ public:
 	/** \name Display information. */
 	/*@{*/
 	/** \brief Number of displays. */
-	virtual int GetDisplayCount();
+	int GetDisplayCount() override;
 	
 	/**
 	 * \brief Current resolution of display.
@@ -130,7 +129,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	decPoint GetDisplayCurrentResolution(int display) override;
 	
 	/**
 	 * \brief Current refresh rate of display.
@@ -138,7 +137,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display );
+	int GetDisplayCurrentRefreshRate(int display) override;
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -146,7 +145,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display );
+	int GetDisplayResolutionCount(int display) override;
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -157,7 +156,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution );
+	decPoint GetDisplayResolution(int display, int resolution) override;
 	
 	/**
 	 * \brief Current global scaling factor for display.
@@ -168,7 +167,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display );
+	int GetDisplayCurrentScaleFactor(int display) override;
 	/*@}*/
 	
 	
@@ -179,7 +178,7 @@ public:
 	 * \brief Cast to deOSUnix.
 	 * \throws deeInvalidParam Not an instance of deOSUnix.
 	 */
-	virtual deOSUnix *CastToOSUnix();
+	deOSUnix *CastToOSUnix() override;
 	/*@}*/
 	
 	
@@ -211,7 +210,7 @@ public:
 	 * window as otherwise input modules relying on message or event queues
 	 * will not get them.
 	 */
-	void SetWindow( Window wnd );
+	void SetWindow(Window wnd);
 	
 	/**
 	 * \brief Window event mask.
@@ -225,7 +224,7 @@ public:
 	 * 
 	 * The input module sets this value to receive the required events.
 	 */
-	void SetEventMask( long mask );
+	void SetEventMask(long mask);
 	
 	/** \brief Hosting main window or 0 if not set. */
 	inline Window GetHostingMainWindow() const{ return pHostingMainWindow; }
@@ -238,7 +237,7 @@ public:
 	 * window of the hosting application that can be used to obtain visuals
 	 * from. It is not necessary the one rendered into later on.
 	 */
-	void SetHostingMainWindow( Window window );
+	void SetHostingMainWindow(Window window);
 	
 	/** \brief Hosting render window or 0 if not set. */
 	inline Window GetHostingRenderWindow() const{ return pHostingRenderWindow; }
@@ -251,7 +250,7 @@ public:
 	 * window on which the graphic module has to render from now on. This window
 	 * can be the same as the hosting main window but can also be different from it.
 	 */
-	void SetHostingRenderWindow( Window window );
+	void SetHostingRenderWindow(Window window);
 	
 	/** \brief Determine if a hosting main window is set. */
 	bool HasHostingMainWindow() const;

@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaSize::aeUSetRuleFStaSize( aeRuleForeignState *rule, float newScale ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaSize::aeUSetRuleFStaSize(aeRuleForeignState *rule, float newScale){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldScale = rule->GetScaleSize();
 		pNewScale = newScale;
 		
-		SetShortInfo( "Set foreign state rule size scale" );
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateSize");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleFStaSize::~aeUSetRuleFStaSize(){
 ///////////////
 
 void aeUSetRuleFStaSize::Undo(){
-	pRule->SetScaleSize( pOldScale );
+	pRule->SetScaleSize(pOldScale);
 }
 
 void aeUSetRuleFStaSize::Redo(){
-	pRule->SetScaleSize( pNewScale );
+	pRule->SetScaleSize(pNewScale);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleFStaSize::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaSize::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

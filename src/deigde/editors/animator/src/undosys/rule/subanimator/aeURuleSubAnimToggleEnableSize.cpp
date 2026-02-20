@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSubAnimToggleEnableSize::aeURuleSubAnimToggleEnableSize( aeRuleSubAnimator *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSubAnimToggleEnableSize::aeURuleSubAnimToggleEnableSize(aeRuleSubAnimator *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleSubAnimatorToggleEnableSize");
 		
-		SetShortInfo( "Rule sub animator toggle enable size" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleSubAnimToggleEnableSize::~aeURuleSubAnimToggleEnableSize(){
 ///////////////
 
 void aeURuleSubAnimToggleEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleSubAnimToggleEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleSubAnimToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleSubAnimToggleEnableSize::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

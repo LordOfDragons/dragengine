@@ -25,10 +25,10 @@
 #ifndef _MEWPUNDOHISTORY_H_
 #define _MEWPUNDOHISTORY_H_
 
-#include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "../../animator/aeAnimator.h"
+#include "aeWPUndoHistoryListener.h"
 
-class aeAnimator;
-class aeWPUndoHistoryListener;
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 
 
@@ -36,9 +36,14 @@ class aeWPUndoHistoryListener;
  * Undo History Panel.
  */
 class aeWPUndoHistory : public igdeWPUndoHistory{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeWPUndoHistory>;
+	
+	
 private:
-	aeAnimator *pWorld;
-	aeWPUndoHistoryListener *pListener;
+	aeAnimator::Ref pAnimator;
+	aeWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -46,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPUndoHistory( igdeEnvironment &environment );
+	aeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPUndoHistory();
+	~aeWPUndoHistory() override;
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pWorld; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	/*@}*/
 };
 

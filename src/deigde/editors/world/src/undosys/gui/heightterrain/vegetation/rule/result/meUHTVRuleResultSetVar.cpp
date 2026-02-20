@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleResultSetVar::meUHTVRuleResultSetVar( meHTVegetationLayer *vlayer, meHTVRuleResult *rule, int nvar ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, int nvar){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
-	SetShortInfo( "Vegetation Layer Rule Result Set Variation" );
-	SetMemoryConsumption( sizeof( meUHTVRuleResultSetVar ) );
+	SetShortInfo("@World.UHTVRuleResultSetVar.VegetationLayerRuleResultSetVariation");
+	SetMemoryConsumption(sizeof(meUHTVRuleResultSetVar));
 	
 	pOldVar = rule->GetVariation();
 	pNewVar = nvar;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleResultSetVar::~meUHTVRuleResultSetVar(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +65,11 @@ meUHTVRuleResultSetVar::~meUHTVRuleResultSetVar(){
 ///////////////
 
 void meUHTVRuleResultSetVar::Undo(){
-	pRule->SetVariation( pOldVar );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetVariation(pOldVar);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleResultSetVar::Redo(){
-	pRule->SetVariation( pNewVar );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetVariation(pNewVar);
+	pVLayer->NotifyRuleChanged(pRule);
 }

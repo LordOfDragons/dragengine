@@ -25,14 +25,16 @@
 #ifndef _IGDEWDEBUGDRAWERSHAPE_H_
 #define _IGDEWDEBUGDRAWERSHAPE_H_
 
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
 
 class deNavigationSpace;
-class deDebugDrawer;
 class deDebugDrawerShape;
-class deDebugDrawerShapeFace;
 class deOcclusionMesh;
 
 
@@ -48,13 +50,19 @@ class deOcclusionMesh;
  * rendering editing information in the world without having to deal with the
  * low level tasks involved. The debug drawer shape is placed in the provided
  * debug drawer. If no debug drawer is set this equals to the debug drawer shape
- * being invisible. This class does not hold a reference to the provided debug
- * drawer. Therefore make sure the debug drawer is held as long as a debug drawer
- * wrapper object is using the debug drawer.
+ * being invisible.
  */
-class DE_DLL_EXPORT igdeWDebugDrawerShape{
+class DE_DLL_EXPORT igdeWDebugDrawerShape : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWDebugDrawerShape>;
+	
+	/** \brief List of debug drawer shapes. */
+	using List = decTObjectOrderedSet<igdeWDebugDrawerShape>;
+	
+	
 private:
-	deDebugDrawer *pEngDebugDrawer;
+	deDebugDrawer::Ref pEngDebugDrawer;
 	deDebugDrawerShape *pEngDDShape;
 	
 	decVector pPosition;
@@ -66,9 +74,9 @@ private:
 	
 	bool pVisible;
 	
-	decShapeList pShapes;
+	decShape::List pShapes;
 	
-	decPointerList pFaces;
+	deDebugDrawerShapeFace::List pFaces;
 	
 	
 	
@@ -78,55 +86,57 @@ public:
 	/** \brief Create wrapper. */
 	igdeWDebugDrawerShape();
 	
+	
+protected:
 	/** \brief Clean up wrapper. */
-	~igdeWDebugDrawerShape();
+	~igdeWDebugDrawerShape() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent debug drawer or NULL. */
-	inline deDebugDrawer *GetParentDebugDrawer() const{ return pEngDebugDrawer; }
+	/** \brief Parent debug drawer or nullptr. */
+	inline const deDebugDrawer::Ref &GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
-	/** \brief Set parent debug drawer or NULL. */
-	void SetParentDebugDrawer( deDebugDrawer *debugDrawer );
+	/** \brief Set parent debug drawer or nullptr. */
+	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	/** \brief Edge color. */
 	inline const decColor &GetEdgeColor() const{ return pColorEdge; }
 	
 	/** \brief Set edge color. */
-	void SetEdgeColor( const decColor &color );
+	void SetEdgeColor(const decColor &color);
 	
 	/** \brief Fill color. */
 	inline const decColor &GetFillColor() const{ return pColorFill; }
 	
 	/** \brief Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** \brief Determines if the debug drawer shape is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Sets if the debug drawer shape is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	
@@ -134,46 +144,46 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Add shape. */
-	void AddShape( decShape *shape );
+	void AddShape(decShape::Ref &&shape);
 	
 	/** \brief Add shapes. */
-	void AddShapes( const decShapeList &shapes );
+	void AddShapes(const decShape::List &shapes);
 	
 	/** \brief Adds a sphere shape. */
-	void AddSphereShape( float radius, const decVector &position );
+	void AddSphereShape(float radius, const decVector &position);
 	
 	/** \brief Adds a sphere shape. */
-	void AddSphereShape( float radius, const decVector2 &axisScaling, const decVector &position );
+	void AddSphereShape(float radius, const decVector2 &axisScaling, const decVector &position);
 	
 	/** \brief Adds a box shape using the given parameters. */
-	void AddBoxShape( const decVector &halfExtends, const decVector &position,
-		const decQuaternion &orientation );
+	void AddBoxShape(const decVector &halfExtends, const decVector &position,
+		const decQuaternion &orientation);
 	
 	/** \brief Adds a box shape using the given parameters. */
-	void AddBoxShape( const decVector &halfExtends, const decVector2 &axiscaling,
-		const decVector &position, const decQuaternion &orientation );
+	void AddBoxShape(const decVector &halfExtends, const decVector2 &axiscaling,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a cylinder shape using the given parameters. */
-	void AddCylinderShape( float halfHeight, float topRadius, float bottomRadius,
-		const decVector &position, const decQuaternion &orientation );
+	void AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a cylinder shape using the given parameters. */
-	void AddCylinderShape( float halfHeight, float topRadius, float bottomRadius,
+	void AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
-		const decVector &position, const decQuaternion &orientation );
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a capsule shape using the given parameters. */
-	void AddCapsuleShape( float halfHeight, float topRadius, float bottomRadius,
-		const decVector &position, const decQuaternion &orientation );
+	void AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a capsule shape using the given parameters. */
-	void AddCapsuleShape( float halfHeight, float topRadius, float bottomRadius,
+	void AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
-		const decVector &position, const decQuaternion &orientation );
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Add hull shape. */
-	void AddHullShape( const decVector &position, const decQuaternion &orientation,
-		int pointCount, const decVector *points );
+	void AddHullShape(const decVector &position, const decQuaternion &orientation,
+		int pointCount, const decVector *points);
 	
 	/** \brief Clears the list of shapes. */
 	void RemoveAllShapes();
@@ -184,16 +194,16 @@ public:
 	/** \name Faces */
 	/*@{*/
 	/** \brief Adds a face. */
-	void AddFace( deDebugDrawerShapeFace *face );
+	void AddFace(deDebugDrawerShapeFace::Ref &&face);
 	
 	/** \brief Adds faces from an occlusion mesh. */
-	void AddOcclusionMeshFaces( const deOcclusionMesh &occlusionMesh );
+	void AddOcclusionMeshFaces(const deOcclusionMesh &occlusionMesh);
 	
 	/** \brief Adds faces from a navigation space. */
-	void AddNavSpaceFaces( const deNavigationSpace &navSpace );
+	void AddNavSpaceFaces(const deNavigationSpace &navSpace);
 	
 	/** \brief Adds faces from a navigation space for a certain type only. */
-	void AddNavSpaceFaces( const deNavigationSpace &navSpace, int type );
+	void AddNavSpaceFaces(const deNavigationSpace &navSpace, int type);
 	
 	/** \brief Removes all faces. */
 	void RemoveAllFaces();
@@ -203,13 +213,13 @@ public:
 	
 private:
 	void pUpdateDDShape();
-	void pRebuildShapes();
-	void pBareRebuildShapes();
-	void pRebuildFaces();
-	void pBareRebuildFaces();
+	void pRebuildShapes(deDebugDrawerShape *ddshape);
+	void pBareRebuildShapes(deDebugDrawerShape *ddshape);
+	void pRebuildFaces(deDebugDrawerShape *ddshape);
+	void pBareRebuildFaces(deDebugDrawerShape *ddshape);
 	
-	void pAddNavGrid( const deNavigationSpace &navSpace, bool filterType, int type );
-	void pAddNavMesh( const deNavigationSpace &navSpace, bool filterType, int type );
+	void pAddNavGrid(const deNavigationSpace &navSpace, bool filterType, int type);
+	void pAddNavMesh(const deNavigationSpace &navSpace, bool filterType, int type);
 };
 
 #endif

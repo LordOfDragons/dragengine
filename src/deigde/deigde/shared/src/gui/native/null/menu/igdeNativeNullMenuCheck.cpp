@@ -39,7 +39,8 @@ igdeNativeNullMenuCheck::igdeNativeNullMenuCheck(){
 igdeNativeNullMenuCheck::~igdeNativeNullMenuCheck(){
 }
 
-igdeNativeNullMenuCheck *igdeNativeNullMenuCheck::CreateNativeWidget( igdeMenuCheck& ){
+igdeNativeNullMenuCheck *igdeNativeNullMenuCheck::CreateNativeWidget(igdeMenuCheck&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullMenuCheck;
 }
 
@@ -54,6 +55,22 @@ void igdeNativeNullMenuCheck::DestroyNativeWidget(){
 
 // Management
 ///////////////
+
+void igdeNativeNullMenuCheck::UpdateText(){
+}
+
+void igdeNativeNullMenuCheck::UpdateDescription(){
+}
+
+void igdeNativeNullMenuCheck::UpdateHotKey(){
+}
+
+void igdeNativeNullMenuCheck::UpdateIcon(){
+}
+
+void igdeNativeNullMenuCheck::UpdateEnabled(){
+}
+
 
 void igdeNativeNullMenuCheck::UpdateChecked(){
 }

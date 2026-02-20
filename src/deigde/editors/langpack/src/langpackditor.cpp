@@ -33,22 +33,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *LangPackEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *LangPackEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
 
 
 
-igdeEditorModule *LangPackEditorCreateModule( igdeEnvironment *environment ){
-	lpeIGDEModule *module = NULL;
-	
+igdeEditorModule *LangPackEditorCreateModule(igdeEnvironment *environment){
 	try{
-		module = new lpeIGDEModule( *environment );
+		return new lpeIGDEModule(*environment);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
-	
-	return module;
 }

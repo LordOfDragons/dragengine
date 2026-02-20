@@ -41,41 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetProperties::gdeUOCCTextureSetProperties( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, const decStringDictionary &newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pTexture( NULL )
+gdeUOCCTextureSetProperties::gdeUOCCTextureSetProperties(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decStringDictionary &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! component || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component texture set properties" );
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetProperties");
 	
 	pOldValue = texture->GetProperties();
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCTextureSetProperties::~gdeUOCCTextureSetProperties(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -84,19 +68,19 @@ gdeUOCCTextureSetProperties::~gdeUOCCTextureSetProperties(){
 ///////////////
 
 void gdeUOCCTextureSetProperties::Undo(){
-	if( ! pOldValue.Has( pTexture->GetActiveProperty() ) ){
-		pTexture->SetActiveProperty( "" );
+	if(!pOldValue.Has(pTexture->GetActiveProperty())){
+		pTexture->SetActiveProperty("");
 	}
 	
 	pTexture->GetProperties() = pOldValue;
-	pObjectClass->NotifyComponentTexturePropertiesChanged( pComponent, pTexture );
+	pObjectClass->NotifyComponentTexturePropertiesChanged(pComponent, pTexture);
 }
 
 void gdeUOCCTextureSetProperties::Redo(){
-	if( ! pNewValue.Has( pTexture->GetActiveProperty() ) ){
-		pTexture->SetActiveProperty( "" );
+	if(!pNewValue.Has(pTexture->GetActiveProperty())){
+		pTexture->SetActiveProperty("");
 	}
 	
 	pTexture->GetProperties() = pNewValue;
-	pObjectClass->NotifyComponentTexturePropertiesChanged( pComponent, pTexture );
+	pObjectClass->NotifyComponentTexturePropertiesChanged(pComponent, pTexture);
 }

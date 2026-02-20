@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEIMAGE_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteImage : public deResourceLoaderTask {
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	bool pSucceeded;
 	
 	
@@ -43,11 +43,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskWriteImage( deEngine &engine, deResourceLoader &resourceLoader,
-		deImage *image, deVirtualFileSystem *vfs, const char *path );
+	deRLTaskWriteImage(deEngine &engine, deResourceLoader &resourceLoader,
+		deImage *image, deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskWriteImage();
+	~deRLTaskWriteImage() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

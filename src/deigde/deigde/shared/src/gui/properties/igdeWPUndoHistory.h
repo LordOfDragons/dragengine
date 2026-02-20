@@ -25,10 +25,10 @@
 #ifndef _IGDEWPUNDOHISTORY_H_
 #define _IGDEWPUNDOHISTORY_H_
 
-#include "../igdeListBoxReference.h"
-#include "../event/igdeActionUndoReference.h"
-#include "../event/igdeActionRedoReference.h"
-#include "../event/igdeActionClearUndoReference.h"
+#include "../igdeListBox.h"
+#include "../event/igdeActionUndo.h"
+#include "../event/igdeActionRedo.h"
+#include "../event/igdeActionClearUndo.h"
 #include "../layout/igdeContainerBox.h"
 
 class igdeUndoSystem;
@@ -39,12 +39,18 @@ class igdeUndoSystem;
  * \brief Undo history panel.
  */
 class DE_DLL_EXPORT igdeWPUndoHistory : public igdeContainerBox{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWPUndoHistory>;
+	
+	
 private:
 	igdeUndoSystem *pUndoSystem;
-	igdeListBoxReference pListUndo;
-	igdeActionUndoReference pActionUndo;
-	igdeActionRedoReference pActionRedo;
-	igdeActionClearUndoReference pActionClear;
+	igdeListBox::Ref pListUndo;
+	igdeActionUndo::Ref pActionUndo;
+	igdeActionRedo::Ref pActionRedo;
+	igdeActionClearUndo::Ref pActionClear;
 	
 	
 	
@@ -52,26 +58,32 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPUndoHistory( igdeEnvironment &environment );
+	igdeWPUndoHistory(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeWPUndoHistory();
+	~igdeWPUndoHistory() override;
+	
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
 	/** \brief Update undo list. */
 	void UpdateUndo();
+	
+	/** \brief Language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 };
 

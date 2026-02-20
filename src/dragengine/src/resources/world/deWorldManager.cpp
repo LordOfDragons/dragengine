@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deWorldManager::deWorldManager( deEngine *engine ) : deResourceManager( engine, ertWorld ){
-	SetLoggingName( "world" );
+deWorldManager::deWorldManager(deEngine *engine) : deResourceManager(engine, ertWorld){
+	SetLoggingName("world");
 }
 
 deWorldManager::~deWorldManager(){
@@ -61,33 +61,17 @@ int deWorldManager::GetWorldCount() const{
 }
 
 deWorld *deWorldManager::GetRootWorld() const{
-	return ( deWorld* )pWorlds.GetRoot();
+	return (deWorld*)pWorlds.GetRoot();
 }
 
-deWorld *deWorldManager::CreateWorld(){
-	deWorld *world = NULL;
-	
-	try{
-		world = new deWorld( this );
-		if( ! world ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		GetGraphicSystem()->LoadWorld( world );
-		GetPhysicsSystem()->LoadWorld( world );
-		GetAudioSystem()->LoadWorld( world );
-		GetNetworkSystem()->LoadWorld( world );
-		GetAISystem()->LoadWorld( world );
-		
-		pWorlds.Add( world );
-		
-	}catch( const deException & ){
-		if( world ){
-			world->FreeReference();
-		}
-		throw;
-	}
-	
+deWorld::Ref deWorldManager::CreateWorld(){
+	const deWorld::Ref world(deWorld::Ref::New(this));
+	GetGraphicSystem()->LoadWorld(world);
+	GetPhysicsSystem()->LoadWorld(world);
+	GetAudioSystem()->LoadWorld(world);
+	GetNetworkSystem()->LoadWorld(world);
+	GetAISystem()->LoadWorld(world);
+	pWorlds.Add(world);
 	return world;
 }
 
@@ -96,8 +80,8 @@ deWorld *deWorldManager::CreateWorld(){
 void deWorldManager::ReleaseLeakingResources(){
 	const int count = GetWorldCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking worlds", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking worlds", count);
 		pWorlds.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -106,119 +90,88 @@ void deWorldManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deWorldManager::SystemGraphicLoad(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while( world ){
-		if( ! world->GetPeerGraphic() ){
-			grasys.LoadWorld( world );
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
+		if(!world->GetPeerGraphic()){
+			graSys.LoadWorld(world);
 		}
-		
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemGraphicUnload(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	
-	while( world ){
-		world->SetPeerGraphic( NULL );
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deWorldManager::SystemPhysicsLoad(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	dePhysicsSystem &physys = *GetPhysicsSystem();
-	
-	while( world ){
-		if( ! world->GetPeerPhysics() ){
-			physys.LoadWorld( world );
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
+		if(!world->GetPeerPhysics()){
+			phySys.LoadWorld(world);
 		}
-		
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemPhysicsUnload(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	
-	while( world ){
-		world->SetPeerPhysics( NULL );
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deWorldManager::SystemAudioLoad(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	deAudioSystem &audsys = *GetAudioSystem();
-	
-	while( world ){
-		if( ! world->GetPeerAudio() ){
-			audsys.LoadWorld( world );
+	deAudioSystem &audSys = *GetAudioSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
+		if(!world->GetPeerAudio()){
+			audSys.LoadWorld(world);
 		}
-		
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemAudioUnload(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	
-	while( world ){
-		world->SetPeerAudio( NULL );
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deWorldManager::SystemNetworkLoad(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	deNetworkSystem &netsys = *GetNetworkSystem();
-	
-	while( world ){
-		if( ! world->GetPeerNetwork() ){
-			netsys.LoadWorld( world );
+	deNetworkSystem &netSys = *GetNetworkSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
+		if(!world->GetPeerNetwork()){
+			netSys.LoadWorld(world);
 		}
-		
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemNetworkUnload(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	
-	while( world ){
-		world->SetPeerNetwork( NULL );
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerNetwork(nullptr);
+	});
 }
 
 void deWorldManager::SystemAILoad(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	deAISystem &aisys = *GetAISystem();
-	
-	while( world ){
-		if( ! world->GetPeerAI() ){
-			aisys.LoadWorld( world );
+	deAISystem &aiSys = *GetAISystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
+		if(!world->GetPeerAI()){
+			aiSys.LoadWorld(world);
 		}
-		
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemAIUnload(){
-	deWorld *world = ( deWorld* )pWorlds.GetRoot();
-	
-	while( world ){
-		world->SetPeerAI( NULL );
-		world = ( deWorld* )world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerAI(nullptr);
+	});
 }
 
 
 
-void deWorldManager::RemoveResource( deResource *resource ){
-	pWorlds.RemoveIfPresent( resource );
+void deWorldManager::RemoveResource(deResource *resource){
+	pWorlds.RemoveIfPresent(resource);
 }

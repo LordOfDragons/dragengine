@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMASnippet::ceWPTTIMASnippet( ceWindowMain &windowMain,
-ceConversation &conversation, ceCASnippet *action ) :
-ceWPTTIMAction( windowMain, etActionSnippet, conversation, action )
+ceWPTTIMASnippet::ceWPTTIMASnippet(ceWindowMain &windowMain,
+ceConversation &conversation, ceCASnippet *action) :
+ceWPTTIMAction(windowMain, etActionSnippet, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionSnippet() );
+	SetIcon(windowMain.GetIconActionSnippet());
 	Update();
 }
 
@@ -60,7 +60,10 @@ ceWPTTIMASnippet::~ceWPTTIMASnippet(){
 void ceWPTTIMASnippet::Update(){
 	const ceCASnippet &action = *GetActionSnippet();
 	decString text;
-	text.Format("Snippet%s: '%s' > '%s'", action.GetCreateSideLane() ? "{S}" : "",
+	text.FormatSafe(GetWindowMain().Translate("Conversation.Format.Snippet").ToUTF8(),
+		action.GetCreateSideLane()
+			? GetWindowMain().Translate("Conversation.Text.SnippetSideLane").ToUTF8().GetString()
+			: "",
 		action.GetFile().GetString(), action.GetTopic().GetString());
 	SetText(text);
 }

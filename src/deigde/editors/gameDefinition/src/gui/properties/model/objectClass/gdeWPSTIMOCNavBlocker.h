@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCNavigationBlocker;
+#include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCNavigationBlocker;
  */
 class gdeWPSTIMOCNavBlocker : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCNavBlocker> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCNavBlocker( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navBlocker, int index );
+	gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navBlocker, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCNavBlocker();
+	~gdeWPSTIMOCNavBlocker() override;
 	/*@}*/
 	
 	
@@ -56,24 +58,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pNavBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetOCNavBlocker() const{ return pNavBlocker; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

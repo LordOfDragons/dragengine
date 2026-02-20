@@ -25,8 +25,6 @@
 #ifndef _DEOALATRAYTRACING_H_
 #define _DEOALATRAYTRACING_H_
 
-#include <dragengine/common/collection/decPointerList.h>
-
 class deoalAudioThread;
 class deoalRayTraceConfig;
 
@@ -56,7 +54,7 @@ private:
 	deoalRayTraceConfig *pConfigTraceSoundRays;
 	deoalRayTraceConfig *pConfigRoomEstimate;
 	deoalRayTraceConfig *pConfigTraceSoundRaysSensor;
-// 	decPointerList pProbeConfigs;
+// 	decTList<void*> pProbeConfigs;
 	
 	sConfigSoundTracing pConfigSoundTracingMicrophone;
 	sConfigSoundTracing pConfigSoundTracingMetering;
@@ -67,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread ray tracing. */
-	deoalATRayTracing( deoalAudioThread &audioThread );
+	deoalATRayTracing(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread renderers. */
 	~deoalATRayTracing();

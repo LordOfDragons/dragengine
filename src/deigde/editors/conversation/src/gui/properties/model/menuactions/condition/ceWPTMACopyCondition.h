@@ -46,15 +46,16 @@ protected:
 	ceWPTMACopyCondition();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMACopyCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACopyCondition( ceWindowMain &windowMain,
-		ceConversationCondition *condition );
+	ceWPTMACopyCondition(ceWindowMain &windowMain,
+		ceConversationCondition *condition);
 	
 	/** \brief Crete menu action. */
-	ceWPTMACopyCondition( ceWindowMain &windowMain,
-		ceConversationCondition *condition, const char *text, igdeIcon *icon );
+	ceWPTMACopyCondition(ceWindowMain &windowMain,
+		ceConversationCondition *condition, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -65,7 +66,7 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

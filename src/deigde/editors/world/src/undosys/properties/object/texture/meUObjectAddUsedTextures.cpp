@@ -32,7 +32,6 @@
 #include "../../../../world/object/meObject.h"
 #include "../../../../world/object/texture/meObjectTexture.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -48,40 +47,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddUsedTextures::meUObjectAddUsedTextures( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
-	SetShortInfo( "Add Used Object Textures" );
+	SetShortInfo("@World.UObjectAddUsedTextures.AddUsedObjectTextures");
 	
 	decStringList modelTextureNames;
-	object->GetModelTextureNameList( modelTextureNames );
-	const int count = modelTextureNames.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ! object->HasTextureNamed( modelTextureNames.GetAt( i ).GetString() ) ){
-			pTextureNameList.Add( modelTextureNames.GetAt( i ) );
+	object->GetModelTextureNameList(modelTextureNames);
+	modelTextureNames.Visit([&](const decString &name){
+		if(!object->GetTextures().HasNamed(name)){
+			pTextureNameList.Add(name);
 		}
-	}
+	});
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectAddUsedTextures::~meUObjectAddUsedTextures(){
-	pTextureList.RemoveAllTextures();
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -90,50 +81,41 @@ meUObjectAddUsedTextures::~meUObjectAddUsedTextures(){
 ///////////////
 
 void meUObjectAddUsedTextures::Undo(){
-	const int count = pTextureList.GetTextureCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pObject->RemoveTexture( pTextureList.GetTextureAt( i ) );
-	}
+	pTextureList.Visit([&](meObjectTexture *texture){
+		pObject->RemoveTexture(texture);
+	});
 }
 
 void meUObjectAddUsedTextures::Redo(){
-	deObjectReference texture;
-	int i, count;
-	
-	if( pTextureList.GetTextureCount() == 0 ){
-		const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( pObject->GetGDClass() );
+	if(pTextureList.IsEmpty()){
+		const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent(pObject->GetGDClass());
 		
-		const igdeGDCCTextureList *gdctexlist = NULL;
-		const igdeGDCCTextureList *gdccomptex = NULL;
+		const igdeGDCCTexture::List *gdctexlist = nullptr;
+		const igdeGDCCTexture::List *gdccomptex = nullptr;
 		
-		if( gdcomponent ){
+		if(gdcomponent){
 			gdctexlist = &gdcomponent->GetTextureList();
 		}
-		if( pObject->GetGDClass() ){
+		if(pObject->GetGDClass()){
 			gdccomptex = &pObject->GetGDClass()->GetComponentTextures();
 		}
 		
-		count = pTextureNameList.GetCount();
-		for( i=0; i<count; i++ ){
-			const decString &textureName = pTextureNameList.GetAt( i );
-			
-			igdeGDCCTexture *gdctex = NULL;
-			if( gdctexlist ){
-				gdctex = gdctexlist->GetNamed( textureName );
+		pTextureNameList.Visit([&](const decString &name){
+			igdeGDCCTexture *gdctex = nullptr;
+			if(gdctexlist){
+				gdctex = gdctexlist->FindNamed(name);
 			}
-			if( ! gdctex && gdccomptex ){
-				gdctex = gdccomptex->GetNamed( textureName );
+			if(!gdctex && gdccomptex){
+				gdctex = gdccomptex->FindNamed(name);
 			}
 			
-			meHelpers::CreateTexture( texture, pObject, textureName, gdctex );
-			pTextureList.AddTexture( ( meObjectTexture* )( deObject* )texture );
-		}
+			meObjectTexture::Ref texture;
+			meHelpers::CreateTexture(texture, pObject, name, gdctex);
+			pTextureList.Add(texture);
+		});
 	}
 	
-	count = pTextureList.GetTextureCount();
-	for( i=0; i<count; i++ ){
-		pObject->AddTexture( pTextureList.GetTextureAt( i ) );
-	}
+	pTextureList.Visit([&](meObjectTexture *t){
+		pObject->AddTexture(t);
+	});
 }

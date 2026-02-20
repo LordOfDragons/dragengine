@@ -43,29 +43,29 @@ lpeLangPackListener::~lpeLangPackListener(){
 // Notifications
 //////////////////
 
-void lpeLangPackListener::StateChanged( lpeLangPack* ){
+void lpeLangPackListener::StateChanged(lpeLangPack*){
 }
 
-void lpeLangPackListener::UndoChanged( lpeLangPack* ){
+void lpeLangPackListener::UndoChanged(lpeLangPack*){
 }
 
-void lpeLangPackListener::LangPackChanged( lpeLangPack* ){
+void lpeLangPackListener::LangPackChanged(lpeLangPack*){
 }
 
 
 
-void lpeLangPackListener::EntryStructureChanged( lpeLangPack* ){
+void lpeLangPackListener::EntryStructureChanged(lpeLangPack*){
 }
 
-void lpeLangPackListener::EntryChanged( lpeLangPack*, lpeLangPackEntry* ){
+void lpeLangPackListener::EntryChanged(lpeLangPack*, lpeLangPackEntry*){
 }
 
-void lpeLangPackListener::EntryNameChanged( lpeLangPack *langpack, lpeLangPackEntry *entry ){
-	EntryChanged( langpack, entry );
+void lpeLangPackListener::EntryNameChanged(lpeLangPack *langpack, lpeLangPackEntry *entry){
+	EntryChanged(langpack, entry);
 }
 
-void lpeLangPackListener::EntrySelectionChanged( lpeLangPack* ){
+void lpeLangPackListener::EntrySelectionChanged(lpeLangPack*){
 }
 
-void lpeLangPackListener::ActiveEntryChanged( lpeLangPack* ){
+void lpeLangPackListener::ActiveEntryChanged(lpeLangPack*){
 }

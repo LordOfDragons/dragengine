@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalRTWorldOctree.h"
 
 #include "../../component/deoalAComponent.h"
@@ -44,87 +40,62 @@
 deoalRTWorldOctree::deoalRTWorldOctree() :
 pPosition(),
 pHalfExtends(),
-pMaxDepth( 8 ), //4
-pBuildNodes( NULL ),
-pBuildNodeCount( 0 ),
-pBuildNodeSize( 0 ),
-pBuildComponents( NULL ),
-pBuildComponentCount( 0 ),
-pBuildComponentSize( 0 ),
-pVisitNodes( NULL ),
-pVisitNodeCount( 0 ),
-pVisitNodeSize( 0 ),
-pVisitComponents( NULL ),
-pVisitComponentCount( 0 ),
-pVisitComponentSize( 0 )
+pMaxDepth(8) //4
 {
 }
 
-deoalRTWorldOctree::~deoalRTWorldOctree(){
-	if( pVisitComponents ){
-		delete [] pVisitComponents;
-	}
-	if( pVisitNodes ){
-		delete [] pVisitNodes;
-	}
-	if( pBuildComponents ){
-		delete [] pBuildComponents;
-	}
-	if( pBuildNodes ){
-		delete [] pBuildNodes;
-	}
-}
+deoalRTWorldOctree::~deoalRTWorldOctree() = default;
 
 
 
 // Building
 /////////////
 
-void deoalRTWorldOctree::Build( const decDVector &position, const decVector &halfExtends ){
-	pVisitComponentCount = 0;
-	pVisitNodeCount = 0;
-	pBuildComponentCount = 0;
-	pBuildNodeCount = 0;
+void deoalRTWorldOctree::Build(const decDVector &position, const decVector &halfExtends){
+	pVisitComponents.RemoveAll();
+	pVisitNodes.RemoveAll();
+	pBuildComponents.RemoveAll();
+	pBuildNodes.RemoveAll();
 	
 	pPosition = position;
 	pHalfExtends = halfExtends;
 	
 	pAddBuildNode();
-	pBuildNodes[ 0 ].center.SetZero();
-	pBuildNodes[ 0 ].halfSize = halfExtends;
+	pBuildNodes[0].center.SetZero();
+	pBuildNodes[0].halfSize = halfExtends;
 }
 
-void deoalRTWorldOctree::Build( const decDVector &position, double radius ){
-	Build( position, decDVector( radius, radius, radius ) );
+void deoalRTWorldOctree::Build(const decDVector &position, double radius){
+	Build(position, decDVector(radius, radius, radius));
 }
 
-void deoalRTWorldOctree::AddComponent( deoalAComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void deoalRTWorldOctree::AddComponent(deoalAComponent *component){
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decVector minExtend( component->GetMinExtend() - pPosition );
-	const decVector maxExtend( component->GetMaxExtend() - pPosition );
+	const decVector minExtend(component->GetMinExtend() - pPosition);
+	const decVector maxExtend(component->GetMaxExtend() - pPosition);
 	
 	const int indexComponent = pAddBuildComponent();
-	sBuildComponent &buildComponent = pBuildComponents[ indexComponent ];
-	buildComponent.center = ( minExtend + maxExtend ) * 0.5f;
-	buildComponent.halfSize = ( maxExtend - minExtend ) * 0.5f;
+	sBuildComponent &buildComponent = pBuildComponents[indexComponent];
+	buildComponent.center = (minExtend + maxExtend) * 0.5f;
+	buildComponent.halfSize = (maxExtend - minExtend) * 0.5f;
 // 	buildComponent.sphereCenter = component->GetRTSphereCenter() - pPosition;
 // 	buildComponent.sphereRadiusSquared = component->GetRTSphereRadiusSquared();
 	buildComponent.component = component;
 	
-	const int nodeIndex = pGetBuildNodeFor( buildComponent.center, buildComponent.halfSize );
+	const int nodeIndex = pGetBuildNodeFor(buildComponent.center, buildComponent.halfSize);
 		// WARNING do not combine this line with the line below! the compiler does not know
 		//         that pBuildNodes can be modified inside pGetBuildNodeFor. due to compiler
 		//         optimizations the value of pBuildNodes is stored away before evaluating
 		//         the array index. if pBuildNodes then changes inside pGetBuildNodeFor
 		//         then the compiler uses the old array pointer stored away for optimization
 		//         purpose and causes segfaults down the line
-	sBuildNode &node = pBuildNodes[ nodeIndex ];
+	sBuildNode &node = pBuildNodes[nodeIndex];
 	
-	if( node.lastComponent != -1 ){
-		pBuildComponents[ node.lastComponent ].next = indexComponent;
+	if(node.lastComponent != -1){
+		pBuildComponents[node.lastComponent].next = indexComponent;
 		
 	}else{
 		node.firstComponent = indexComponent;
@@ -135,8 +106,8 @@ void deoalRTWorldOctree::AddComponent( deoalAComponent *component ){
 }
 
 void deoalRTWorldOctree::Finish(){
-	if( pBuildNodeCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pBuildNodes.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 	
 // 	pGatherNodeCount = 1;
@@ -146,31 +117,13 @@ void deoalRTWorldOctree::Finish(){
 // 		DETHROW( deeInvalidParam );
 // 	}
 	
-	if( pBuildNodeCount > pVisitNodeSize ){
-		sVisitNode * const nodes = new sVisitNode[ pBuildNodeCount ];
-		if( pVisitNodes ){
-			delete [] pVisitNodes;
-		}
-		pVisitNodes = nodes;
-		pVisitNodeSize = pBuildNodeCount;
-	}
-	
-	if( pBuildComponentCount > pVisitComponentSize ){
-		sVisitComponent * const components = new sVisitComponent[ pBuildComponentCount ];
-		if( pVisitComponents ){
-			delete [] pVisitComponents;
-		}
-		pVisitComponents = components;
-		pVisitComponentSize = pBuildComponentCount;
-	}
-	
-	pVisitComponentCount = pBuildComponentCount;
-	pVisitNodeCount = pBuildNodeCount;
+	pVisitNodes.AddRange(pBuildNodes.GetCount(), {});
+	pVisitComponents.AddRange(pBuildComponents.GetCount(), {});
 	
 	pIndexChild = 1;
 	pIndexComponent = 0;
-	pWorldMatrix.SetTranslation( pPosition );
-	pBuildVisitNode( pBuildNodes[ 0 ], pVisitNodes[ 0 ] );
+	pWorldMatrix.SetTranslation(pPosition);
+	pBuildVisitNode(pBuildNodes[0], pVisitNodes[0]);
 }
 
 
@@ -178,12 +131,12 @@ void deoalRTWorldOctree::Finish(){
 // Private Functions
 //////////////////////
 
-int deoalRTWorldOctree::pGetBuildNodeFor( const decVector &center, const decVector &halfSize ){
+int deoalRTWorldOctree::pGetBuildNodeFor(const decVector &center, const decVector &halfSize){
 	int i, node = 0;
 	
-	for( i=0; i<pMaxDepth; i++ ){
-		const int next = pGetBuildNodeFor( node, center, halfSize );
-		if( next == -1 ){
+	for(i=0; i<pMaxDepth; i++){
+		const int next = pGetBuildNodeFor(node, center, halfSize);
+		if(next == -1){
 			break;
 		}
 		node = next;
@@ -192,15 +145,15 @@ int deoalRTWorldOctree::pGetBuildNodeFor( const decVector &center, const decVect
 	return node;
 }
 
-int deoalRTWorldOctree::pGetBuildNodeFor( int nodeIndex, const decVector &center,
-const decVector &halfSize ){
-	const int octant = pGetBuildOctantFor( pBuildNodes[ nodeIndex ], center, halfSize );
-	if( octant == -1 ){
+int deoalRTWorldOctree::pGetBuildNodeFor(int nodeIndex, const decVector &center,
+const decVector &halfSize){
+	const int octant = pGetBuildOctantFor(pBuildNodes[nodeIndex], center, halfSize);
+	if(octant == -1){
 		return -1;
 	}
 	
-	const int childIndex = pBuildNodes[ nodeIndex ].child[ octant ];
-	if( childIndex != -1 ){
+	const int childIndex = pBuildNodes[nodeIndex].child[octant];
+	if(childIndex != -1){
 		return childIndex;
 	}
 	
@@ -208,28 +161,28 @@ const decVector &halfSize ){
 		// WARNING pAddBuildNode potentially reallocates nodes array. node references
 		//         beyond this point will be invalid!
 	
-	sBuildNode &node = pBuildNodes[ nodeIndex ];
-	node.child[ octant ] = newNodeIndex;
+	sBuildNode &node = pBuildNodes[nodeIndex];
+	node.child[octant] = newNodeIndex;
 	node.childCount++;
 	
-	sBuildNode &child = pBuildNodes[ newNodeIndex ];
+	sBuildNode &child = pBuildNodes[newNodeIndex];
 	child.halfSize = node.halfSize * 0.5f;
 	
-	if( ( octant & 4 ) == 4 ){
+	if((octant & 4) == 4){
 		child.center.x = node.center.x + child.halfSize.x;
 		
 	}else{
 		child.center.x = node.center.x - child.halfSize.x;
 	}
 	
-	if( ( octant & 2 ) == 2 ){
+	if((octant & 2) == 2){
 		child.center.y = node.center.y + child.halfSize.y;
 		
 	}else{
 		child.center.y = node.center.y - child.halfSize.y;
 	}
 	
-	if( ( octant & 1 ) == 1 ){
+	if((octant & 1) == 1){
 		child.center.z = node.center.z + child.halfSize.z;
 		
 	}else{
@@ -239,28 +192,28 @@ const decVector &halfSize ){
 	return newNodeIndex;
 }
 
-int deoalRTWorldOctree::pGetBuildOctantFor( sBuildNode &node,
-const decVector &center, const decVector &halfSize ) const{
+int deoalRTWorldOctree::pGetBuildOctantFor(sBuildNode &node,
+const decVector &center, const decVector &halfSize) const{
 	int octant = 0;
 	
-	if( center.x - halfSize.x >= node.center.x ){
+	if(center.x - halfSize.x >= node.center.x){
 		octant |= 4;
 		
-	}else if( center.x + halfSize.x >= node.center.x ){
+	}else if(center.x + halfSize.x >= node.center.x){
 		return -1;
 	}
 	
-	if( center.y - halfSize.y >= node.center.y ){
+	if(center.y - halfSize.y >= node.center.y){
 		octant |= 2;
 		
-	}else if( center.y + halfSize.y >= node.center.y ){
+	}else if(center.y + halfSize.y >= node.center.y){
 		return -1;
 	}
 	
-	if( center.z - halfSize.z >= node.center.z ){
+	if(center.z - halfSize.z >= node.center.z){
 		octant |= 1;
 		
-	}else if( center.z + halfSize.z >= node.center.z ){
+	}else if(center.z + halfSize.z >= node.center.z){
 		return -1;
 	}
 	
@@ -268,62 +221,39 @@ const decVector &center, const decVector &halfSize ) const{
 }
 
 int deoalRTWorldOctree::pAddBuildNode(){
-	if( pBuildNodeCount == pBuildNodeSize ){
-		const int size = pBuildNodeSize + 20;
-		sBuildNode * const nodes = new sBuildNode[ size ];
-		if( pBuildNodes ){
-			memcpy( nodes, pBuildNodes, sizeof( sBuildNode ) * pBuildNodeSize );
-			delete [] pBuildNodes;
-		}
-		pBuildNodes = nodes;
-		pBuildNodeSize = size;
-	}
-	
-	const int index = pBuildNodeCount++;
-	sBuildNode &node = pBuildNodes[ index ];
+	pBuildNodes.Add({});
+	sBuildNode &node = pBuildNodes.Last();
 	int i;
-	for( i=0; i<8; i++ ){
-		node.child[ i ] = -1;
+	for(i=0; i<8; i++){
+		node.child[i] = -1;
 	}
 	node.childCount = 0;
 	node.firstComponent = -1;
 	node.lastComponent = -1;
 	node.componentCount = 0;
 	
-	return index;
+	return pBuildNodes.GetCount() - 1;
 }
 
 int deoalRTWorldOctree::pAddBuildComponent(){
-	if( pBuildComponentCount == pBuildComponentSize ){
-		const int size = pBuildComponentSize + 20;
-		sBuildComponent * const components = new sBuildComponent[ size ];
-		if( pBuildComponents ){
-			memcpy( components, pBuildComponents, sizeof( sBuildComponent ) * pBuildComponentSize );
-			delete [] pBuildComponents;
-		}
-		pBuildComponents = components;
-		pBuildComponentSize = size;
-	}
-	
-	const int index = pBuildComponentCount++;
-	pBuildComponents[ index ].next = -1;
-	
-	return index;
+	pBuildComponents.Add({});
+	pBuildComponents.Last().next = -1;
+	return pBuildComponents.GetCount() - 1;
 }
 
-void deoalRTWorldOctree::pGatherCounts( const sBuildNode &node ){
+void deoalRTWorldOctree::pGatherCounts(const sBuildNode &node){
 	pGatherNodeCount += node.childCount;
 	pGatherComponentCount += node.componentCount;
 	
 	int i;
-	for( i=0; i<8; i++ ){
-		if( node.child[ i ] != -1 ){
-			pGatherCounts( pBuildNodes[ node.child[ i ] ] );
+	for(i=0; i<8; i++){
+		if(node.child[i] != -1){
+			pGatherCounts(pBuildNodes[node.child[i]]);
 		}
 	}
 }
 
-void deoalRTWorldOctree::pBuildVisitNode( const sBuildNode &buildNode, sVisitNode &visitNode ){
+void deoalRTWorldOctree::pBuildVisitNode(const sBuildNode &buildNode, sVisitNode &visitNode){
 	visitNode.center = buildNode.center;
 	visitNode.halfSize = buildNode.halfSize;
 	
@@ -332,9 +262,9 @@ void deoalRTWorldOctree::pBuildVisitNode( const sBuildNode &buildNode, sVisitNod
 	visitNode.componentCount = buildNode.componentCount;
 	
 	int indexBuildComponent = buildNode.firstComponent;
-	while( indexBuildComponent != -1 ){
-		const sBuildComponent &buildComponent = pBuildComponents[ indexBuildComponent ];
-		sVisitComponent &visitComponent = pVisitComponents[ pIndexComponent++ ];
+	while(indexBuildComponent != -1){
+		const sBuildComponent &buildComponent = pBuildComponents[indexBuildComponent];
+		sVisitComponent &visitComponent = pVisitComponents[pIndexComponent++];
 		
 		visitComponent.center = buildComponent.center;
 		visitComponent.halfSize = buildComponent.halfSize;
@@ -342,7 +272,7 @@ void deoalRTWorldOctree::pBuildVisitNode( const sBuildNode &buildNode, sVisitNod
 // 		visitComponent.sphereRadiusSquared = buildComponent.sphereRadiusSquared;
 		visitComponent.component = buildComponent.component;
 		visitComponent.inverseMatrix = pWorldMatrix.QuickMultiply(
-			buildComponent.component->GetInverseMatrix() );
+			buildComponent.component->GetInverseMatrix());
 		
 		indexBuildComponent = buildComponent.next;
 	}
@@ -354,9 +284,9 @@ void deoalRTWorldOctree::pBuildVisitNode( const sBuildNode &buildNode, sVisitNod
 	pIndexChild += buildNode.childCount;
 	
 	int i, iterIndex = visitNode.firstNode;
-	for( i=0; i<8; i++ ){
-		if( buildNode.child[ i ] != -1 ){
-			pBuildVisitNode( pBuildNodes[ buildNode.child[ i ] ], pVisitNodes[ iterIndex++ ] );
+	for(i=0; i<8; i++){
+		if(buildNode.child[i] != -1){
+			pBuildVisitNode(pBuildNodes[buildNode.child[i]], pVisitNodes[iterIndex++]);
 		}
 	}
 }

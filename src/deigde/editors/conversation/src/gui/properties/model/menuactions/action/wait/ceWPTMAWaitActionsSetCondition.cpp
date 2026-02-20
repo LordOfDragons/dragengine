@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsSetCondition::ceWPTMAWaitActionsSetCondition( ceWindowMain &windowMain,
+ceWPTMAWaitActionsSetCondition::ceWPTMAWaitActionsSetCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAWait &wait, ceConversationCondition::eConditionTypes conditionType ) :
-ceWPTMACreateCondition( windowMain, conversation, conditionType ),
-pTopic( &topic ),
-pWait( &wait ){
+ceCAWait &wait, ceConversationCondition::eConditionTypes conditionType) :
+ceWPTMACreateCondition(windowMain, conversation, conditionType),
+pTopic(&topic),
+pWait(&wait){
 }
 
 
@@ -52,6 +52,6 @@ pWait( &wait ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsSetCondition::CreateUndo( ceConversationCondition *condition ){
-	return new ceUCAWaitSetCondition( pTopic, pWait, condition );
+igdeUndo::Ref ceWPTMAWaitActionsSetCondition::CreateUndo(ceConversationCondition *condition){
+	return ceUCAWaitSetCondition::Ref::New(pTopic, pWait, condition);
 }

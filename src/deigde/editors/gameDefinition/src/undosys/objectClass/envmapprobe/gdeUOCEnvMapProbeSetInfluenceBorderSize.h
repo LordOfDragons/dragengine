@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class environment map probe set influence border size.
  */
 class gdeUOCEnvMapProbeSetInfluenceBorderSize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetInfluenceBorderSize>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetInfluenceBorderSize( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, float newValue );
+	gdeUOCEnvMapProbeSetInfluenceBorderSize(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCEnvMapProbeSetInfluenceBorderSize();
+	~gdeUOCEnvMapProbeSetInfluenceBorderSize() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

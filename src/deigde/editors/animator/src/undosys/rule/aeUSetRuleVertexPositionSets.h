@@ -29,15 +29,19 @@
 
 #include <dragengine/common/string/decStringSet.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 /**
  * Undo set rule bones.
  */
 class aeUSetRuleVertexPositionSets : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleVertexPositionSets>;
+	
+	
 protected:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -48,21 +52,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleVertexPositionSets( aeRule *rule, const decStringSet &newValue );
+	aeUSetRuleVertexPositionSets(aeRule *rule, const decStringSet &newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleVertexPositionSets();
+	~aeUSetRuleVertexPositionSets() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/meWorld.h"
+#include "../../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -42,10 +42,14 @@ class meHeightTerrainTexture;
  * Undo action to set the uv offset of a height image texture.
  */
 class meUHTSetTexUVRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetTexUVRotation>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	float pOldRotation;
 	float pNewRotation;
@@ -54,20 +58,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVRotation( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation );
+	meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetTexUVRotation();
+
+protected:
+	~meUHTSetTexUVRotation() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

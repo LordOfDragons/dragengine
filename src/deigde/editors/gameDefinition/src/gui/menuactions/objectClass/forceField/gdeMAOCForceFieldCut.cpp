@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../../../../undosys/objectClass/forceField/gdeUOCRemoveForceField.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCForceFieldCut::gdeMAOCForceFieldCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Force Field",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class force field" )
+gdeMAOCForceFieldCut::gdeMAOCForceFieldCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldCut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"@GameDefinition.Menu.OCForceFieldCut.ToolTip")
 {
 }
 
@@ -60,31 +60,27 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Force Field",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCForceField ){
-		return NULL;
+igdeUndo::Ref gdeMAOCForceFieldCut::OnActionSubObject(
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCForceField){
+		return {};
 	}
 	
 	gdeOCForceField * const forceField = gameDefinition.GetActiveOCForceField();
-	if( ! forceField ){
-		return NULL;
+	if(!forceField){
+		return {};
 	}
 	
-	deObjectReference clipOCForceField;
-	clipOCForceField.TakeOver( new gdeOCForceField( *forceField ) );
+	const gdeOCForceField::Ref clipOCForceField(gdeOCForceField::Ref::New(*forceField));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCForceField( ( gdeOCForceField* )( deObject* )clipOCForceField ) );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCForceField::Ref::New(clipOCForceField));
 	
-	pWindowMain.GetClipboard().Set( clipData );
-	
-	return new gdeUOCRemoveForceField( &objectClass, forceField );
+	return gdeUOCRemoveForceField::Ref::New(&objectClass, forceField);
 }
 
 void gdeMAOCForceFieldCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField
-		&& gameDefinition->GetActiveOCForceField() != NULL );
+		&& gameDefinition->GetActiveOCForceField() != nullptr);
 }

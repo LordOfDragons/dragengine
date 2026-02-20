@@ -43,8 +43,8 @@ igdeEditPropertyValueListener::~igdeEditPropertyValueListener(){
 // Events
 ///////////
 
-void igdeEditPropertyValueListener::OnPropertyValueChanged( igdeEditPropertyValue* ){
+void igdeEditPropertyValueListener::OnPropertyValueChanged(igdeEditPropertyValue*){
 }
 
-void igdeEditPropertyValueListener::OnPropertyValueChanging ( igdeEditPropertyValue* ){
+void igdeEditPropertyValueListener::OnPropertyValueChanging (igdeEditPropertyValue*){
 }

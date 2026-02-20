@@ -28,17 +28,21 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeSky;
-class gdeSkyController;
+#include "../../../gamedef/sky/gdeSky.h"
+#include "../../../gamedef/sky/gdeSkyController.h"
 
 
 /**
  * \brief Undo action remove sky controller.
  */
 class gdeUSkyControllerRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUSkyControllerRemove>;
+	
+	
 private:
-	gdeSky *pSky;
-	gdeSkyController *pController;
+	gdeSky::Ref pSky;
+	gdeSkyController::Ref pController;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkyControllerRemove( gdeSky *sky, gdeSkyController *controller );
+	gdeUSkyControllerRemove(gdeSky *sky, gdeSkyController *controller);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUSkyControllerRemove();
+	~gdeUSkyControllerRemove() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

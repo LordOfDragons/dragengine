@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeData::seUPropertyNodeData( sePropertyNode *node ) :
-pNode( NULL )
+seUPropertyNodeData::seUPropertyNodeData(sePropertyNode *node) :
+pNode(nullptr)
 {
-	if( ! node ){
-		DETHROW( deeInvalidParam );
+	if(!node){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPosition = node->GetPosition();
@@ -53,13 +53,9 @@ pNode( NULL )
 	pMatrix = node->CreateScreenTransformMatrix();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeData::~seUPropertyNodeData(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -68,10 +64,10 @@ seUPropertyNodeData::~seUPropertyNodeData(){
 ///////////////
 
 decTexMatrix2 seUPropertyNodeData::CreateInverseParentMatrix() const{
-	if( pNode->GetMaskParent() ){
+	if(pNode->GetMaskParent()){
 		return pNode->GetMaskParent()->CreateScreenTransformMatrix().Invert().ToTexMatrix2();
 		
-	}else if( pNode->GetParent() ){
+	}else if(pNode->GetParent()){
 		return pNode->GetParent()->CreateScreenTransformMatrix().Invert().ToTexMatrix2();
 		
 	}else{

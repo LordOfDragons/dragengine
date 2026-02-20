@@ -34,47 +34,15 @@
 ////////////////////////////
 
 deoglModelLODVertPosSet::deoglModelLODVertPosSet() :
-pVBOOffset( 0 ),
-pPositions( nullptr ),
-pPositionCount( 0 ){
+pVBOOffset(0){
 }
 
-deoglModelLODVertPosSet::~deoglModelLODVertPosSet(){
-	pCleanUp();
-}
-
+deoglModelLODVertPosSet::~deoglModelLODVertPosSet() = default;
 
 
 // Management
 ///////////////
 
-void deoglModelLODVertPosSet::SetVBOOffset( int offset ){
+void deoglModelLODVertPosSet::SetVBOOffset(int offset){
 	pVBOOffset = offset;
-}
-
-void deoglModelLODVertPosSet::SetPositionCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
-	
-	sPosition *positions = nullptr;
-	if( count > 0 ){
-		positions = new sPosition[ count ];
-	}
-	
-	if( pPositions ){
-		delete [] pPositions;
-	}
-	
-	pPositions = positions;
-	pPositionCount = count;
-}
-
-
-
-// Private functions
-//////////////////////
-
-void deoglModelLODVertPosSet::pCleanUp(){
-	if( pPositions ){
-		delete [] pPositions;
-	}
 }

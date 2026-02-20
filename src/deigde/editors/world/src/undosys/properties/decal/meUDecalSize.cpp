@@ -39,31 +39,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSize::meUDecalSize( meDecal *decal, const decVector &newSize ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
-	SetShortInfo( "Set decal size" );
+	SetShortInfo("@World.UDecalSize.SetDecalSize");
 	
 	pOldSize = decal->GetSize();
 	pNewSize = newSize;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalSize::~meUDecalSize(){
-	if( pDecal ){
-		pDecal->FreeReference();
-	}
 }
 
 
@@ -72,11 +68,11 @@ meUDecalSize::~meUDecalSize(){
 ///////////////
 
 void meUDecalSize::Undo(){
-	pDecal->SetSize( pOldSize );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetSize(pOldSize);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalSize::Redo(){
-	pDecal->SetSize( pNewSize );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetSize(pNewSize);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

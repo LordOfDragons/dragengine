@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, const char *newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const char *newValue) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set bone name" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetBoneName");
 	
 	pOldValue = speaker->GetBoneName();
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetBoneName::~gdeUOCSpeakerSetBoneName(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCSpeakerSetBoneName::~gdeUOCSpeakerSetBoneName(){
 ///////////////
 
 void gdeUOCSpeakerSetBoneName::Undo(){
-	pSpeaker->SetBoneName( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetBoneName(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetBoneName::Redo(){
-	pSpeaker->SetBoneName( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetBoneName(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

@@ -25,21 +25,22 @@
 #ifndef _AEULINKSETCURVE_H_
 #define _AEULINKSETCURVE_H_
 
+#include "../../animator/link/aeLink.h"
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/curve/decCurveBezier.h>
-
-
-class aeLink;
 
 
 /**
  * Undo link set curve.
  */
 class aeULinkSetCurve : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeULinkSetCurve>;
+	
+	
 private:
-	deObjectReference pLink;
+	const aeLink::Ref pLink;
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
 	
@@ -49,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkSetCurve( aeLink *link, const decCurveBezier &newCurve );
+	aeULinkSetCurve(aeLink *link, const decCurveBezier &newCurve);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkSetCurve();
+	~aeULinkSetCurve() override;
 	/*@}*/
 	
 	
@@ -62,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** Progressive redo action. */
 	void ProgressiveRedo();

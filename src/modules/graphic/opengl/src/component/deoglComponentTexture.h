@@ -25,11 +25,12 @@
 #ifndef _DEOGLCOMPONENTCOMPONENT_H_
 #define _DEOGLCOMPONENTCOMPONENT_H_
 
+#include "deoglRComponentTexture.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
+#include <dragengine/deTUniqueReference.h>
 
 class deoglComponent;
 class deoglDynamicSkin;
-class deoglRComponentTexture;
 class deoglSkin;
 class deoglSkinStateController;
 class deComponentTexture;
@@ -40,10 +41,14 @@ class deComponentTexture;
  * Component texture.
  */
 class deoglComponentTexture : public deoglDynamicSkinListener{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglComponentTexture>;
+	
 private:
 	deoglComponent &pComponent;
 	const int pIndex;
-	deoglRComponentTexture *pRTexture;
+	deoglRComponentTexture::Ref pRTexture;
 	
 	deoglSkinStateController *pSkinStateController;
 	
@@ -58,10 +63,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component texture. */
-	deoglComponentTexture( deoglComponent &component, int index );
+	deoglComponentTexture(deoglComponent &component, int index);
 	
 	/** Clean up component texture. */
-	~deoglComponentTexture();
+	~deoglComponentTexture() override;
 	/*@}*/
 	
 	
@@ -83,13 +88,13 @@ public:
 	inline deoglDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Render component texture. */
-	inline deoglRComponentTexture *GetRTexture() const{ return pRTexture; }
+	inline const deoglRComponentTexture::Ref &GetRTexture() const{ return pRTexture; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	inline bool GetDynamicSkinRenderablesChanged() const{ return pDynamicSkinRenderablesChanged; }
-	void SetDynamicSkinRenderablesChanged( bool changed );
+	void SetDynamicSkinRenderablesChanged(bool changed);
 	
 	void DirtyRenderableMapping();
 	
@@ -98,7 +103,7 @@ public:
 	void InitSkinState();
 	
 	/** Advance time. */
-	void AdvanceTime( float timeStep );
+	void AdvanceTime(float timeStep);
 	
 	/** Clear skin state controller. */
 	void ClearSkinStateController();
@@ -108,10 +113,10 @@ public:
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	
@@ -119,7 +124,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Texture changed. */
-	void TextureChanged( const deComponentTexture &texture );
+	void TextureChanged(const deComponentTexture &texture);
 	/*@}*/
 	
 private:

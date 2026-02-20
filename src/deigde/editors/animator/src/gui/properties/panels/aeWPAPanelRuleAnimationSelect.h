@@ -27,21 +27,25 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeListBox.h>
 
 
 /**
  * Animation select rule panel.
  */
 class aeWPAPanelRuleAnimationSelect : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleAnimationSelect>;
+	
+	
 private:
-	igdeComboBoxFilterReference pCBMoves;
-	igdeListBoxReference pListMoves;
-	igdeButtonReference pBtnMoveAdd;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBoxFilter::Ref pCBMoves;
+	igdeListBox::Ref pListMoves;
+	igdeButton::Ref pBtnMoveAdd;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleAnimationSelect( aeWPRule &wpRule );
+	aeWPAPanelRuleAnimationSelect(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleAnimationSelect();
+	~aeWPAPanelRuleAnimationSelect() override;
 	/*@}*/
 	
 	
@@ -62,13 +66,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update animation move list. */
-	virtual void UpdateAnimMoveList();
+	void UpdateAnimMoveList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	
 	/** Combo box move text. */
 	const decString &GetCBMovesText() const;

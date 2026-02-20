@@ -39,7 +39,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -56,8 +56,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delPatchManager::delPatchManager( delLauncher &launcher ) :
-pLauncher( launcher ){
+delPatchManager::delPatchManager(delLauncher &launcher) :
+pLauncher(launcher){
 }
 
 delPatchManager::~delPatchManager(){
@@ -69,127 +69,137 @@ delPatchManager::~delPatchManager(){
 // Management
 ///////////////
 
-void delPatchManager::LoadPatches( delEngineInstance &instance ){
-	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading patch list" );
+void delPatchManager::LoadPatches(delEngineInstance &instance){
+	pLauncher.GetLogger()->LogInfo(pLauncher.GetLogSource(), "Loading patch list");
 	
-	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
-	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	decPath pathDisk;
 	
 	pPatches.RemoveAll();
 	
 	// load patches from known delga directories
-	const delGameList &games = pLauncher.GetGameManager().GetGames();
+	const delGame::List &games = pLauncher.GetGameManager().GetGames();
 	const int gameCount = games.GetCount();
 	decPath pathSearch;
 	int i;
 	
-	for( i=0; i<gameCount; i++ ){
-		const delGame &game = *games.GetAt( i );
-		if( game.GetDelgaFile().IsEmpty() ){
+	for(i=0; i<gameCount; i++){
+		const delGame &game = *games.GetAt(i);
+		if(game.GetDelgaFile().IsEmpty()){
 			continue;
 		}
 		
 		vfs->RemoveAllContainers();
-		pathDisk.SetFromNative( game.GetDelgaFile() );
+		pathDisk.SetFromNative(game.GetDelgaFile());
 		pathDisk.RemoveLastComponent();
 		
-		vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
-		pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, pPatches );
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk));
+		pScanPatchDefFiles(instance, vfs, pathDisk, pathRoot, pPatches);
 	}
 	
 	// load patches from install games directory (deprecated)
 	vfs->RemoveAllContainers();
-	pathDisk.SetFromNative( pLauncher.GetPathGames() );
-	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
-	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, pPatches );
+	pathDisk.SetFromNative(pLauncher.GetPathGames());
+	vfs->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk));
+	pScanPatchDefFiles(instance, vfs, pathDisk, pathRoot, pPatches);
 }
 
-void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decString &path, delPatchList &list ){
+void delPatchManager::LoadPatchFromDisk(delEngineInstance &instance, const decString &path, delPatch::List &list){
 	deLogger &logger = *pLauncher.GetLogger();
-	delPatchXML patchXML( &logger, pLauncher.GetLogSource() );
+	delPatchXML patchXML(&logger, pLauncher.GetLogSource());
 	
-	logger.LogInfoFormat( pLauncher.GetLogSource(), "Reading patch file '%s'", path.GetString() );
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "Reading patch file '%s'", path.GetString());
 	
-	if( path.EndsWith( ".delga" ) ){
-		delPatchList delgaPatches;
-		pLauncher.GetEngine().ReadDelgaPatchDefs( instance, path, delgaPatches );
+	if(path.EndsWith(".delga")){
+		delPatch::List delgaPatches;
+		pLauncher.GetEngine().ReadDelgaPatchDefs(instance, path, delgaPatches);
 		
 		const int count = delgaPatches.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			list.Add( delgaPatches.GetAt( i ) );
+		for(i=0; i<count; i++){
+			list.Add(delgaPatches.GetAt(i));
 		}
 		
 	}else{
-		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New( new decDiskFileReader( path ) ) );
-		const delPatch::Ref patch( delPatch::Ref::New( new delPatch ) );
+		const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(path));
+		const delPatch::Ref patch(delPatch::Ref::New());
 		
-		patchXML.ReadFromFile( reader, patch );
+		patchXML.ReadFromFile(reader, patch);
 		
-		if( ! decPath::IsNativePathAbsolute( patch->GetPatchDirectory() ) ){
-			decPath baseDir( decPath::CreatePathNative( path ) );
+		if(!decPath::IsNativePathAbsolute(patch->GetPatchDirectory())){
+			decPath baseDir(decPath::CreatePathNative(path));
 			baseDir.RemoveLastComponent();
-			baseDir.AddUnixPath( patch->GetPatchDirectory() );
-			patch->SetPatchDirectory( baseDir.GetPathNative() );
+			baseDir.AddUnixPath(patch->GetPatchDirectory());
+			patch->SetPatchDirectory(baseDir.GetPathNative());
 		}
 		
-		list.Add( patch );
+		list.Add(patch);
 	}
 }
 
-void delPatchManager::LoadPatchesFromDisk( delEngineInstance &instance, const decString &baseDir, delPatchList &list ){
-	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
-	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
-	const decPath pathDisk( decPath::CreatePathNative( baseDir ) );
+void delPatchManager::LoadPatchesFromDisk(delEngineInstance &instance, const decString &baseDir, delPatch::List &list){
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	const decPath pathRoot(decPath::CreatePathUnix("/"));
+	const decPath pathDisk(decPath::CreatePathNative(baseDir));
 	
-	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk, true ) ) );
-	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, list );
+	vfs->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk, true));
+	pScanPatchDefFiles(instance, vfs, pathDisk, pathRoot, list);
 }
 
 void delPatchManager::Clear(){
 	pPatches.RemoveAll();
 }
 
+void delPatchManager::ClearCachedSearchResults(){
+	pCachedSearchResults.RemoveAll();
+}
 
 
 // Protected Functions
 ////////////////////////
 
-void delPatchManager::pScanPatchDefFiles( delEngineInstance &instance, deVirtualFileSystem &vfs,
-const decPath &baseDir, const decPath &directory, delPatchList &list ){
+void delPatchManager::pScanPatchDefFiles(delEngineInstance &instance, deVirtualFileSystem &vfs,
+const decPath &baseDir, const decPath &directory, delPatch::List &list){
 	deCollectFileSearchVisitor collect;
-	collect.AddPattern( "*.depatch" );
-	collect.AddPattern( "*.delga" );
-	collect.SetRecursive( true );
-	vfs.SearchFiles( directory, collect );
+	collect.AddPattern("*.depatch");
+	collect.AddPattern("*.delga");
+	collect.SetRecursive(true);
+	vfs.SearchFiles(directory, collect);
 	
-	const dePathList &result = collect.GetFiles();
-	const int count = result.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pProcessFoundFiles( instance, baseDir + result.GetAt( i ), list );
-	}
+	collect.GetFiles().Visit([&](const decPath &path){
+		pProcessFoundFiles(instance, baseDir + path, list);
+	});
 }
 
-void delPatchManager::pProcessFoundFiles( delEngineInstance &instance,
-const decPath &path, delPatchList &list ){
-	delPatchList subList;
-	try{
-		LoadPatchFromDisk( instance, path.GetPathNative(), subList );
-		
-	}catch( const deException &e ){
-		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
+void delPatchManager::pProcessFoundFiles(delEngineInstance &instance,
+const decPath &path, delPatch::List &list){
+	const decString nativePath(path.GetPathNative());
+	
+	const delPatch::List *foundCached = nullptr;
+	if(pCachedSearchResults.GetAt(nativePath, foundCached)){
+		foundCached->Visit([&](delPatch *patch){
+			if(!list.HasWithId(patch->GetIdentifier())){
+				list.Add(patch);
+			}
+		});
 		return;
 	}
 	
-	const int count = subList.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		delPatch * const patch = subList.GetAt( i );
-		if( ! list.HasWithID( patch->GetIdentifier() ) ){
-			list.Add( patch );
-		}
+	delPatch::List subList;
+	try{
+		LoadPatchFromDisk(instance, nativePath, subList);
+		
+	}catch(const deException &e){
+		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
+		return;
 	}
+	
+	pCachedSearchResults.SetAt(nativePath, subList);
+	
+	subList.Visit([&](delPatch *patch){
+		if(!list.HasWithId(patch->GetIdentifier())){
+			list.Add(patch);
+		}
+	});
 }

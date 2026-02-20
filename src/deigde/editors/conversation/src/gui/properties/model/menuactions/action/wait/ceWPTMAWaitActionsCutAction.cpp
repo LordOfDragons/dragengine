@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,14 +46,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsCutAction::ceWPTMAWaitActionsCutAction( ceWindowMain &windowMain,
+ceWPTMAWaitActionsCutAction::ceWPTMAWaitActionsCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAWait &wait, ceConversationAction *action ) :
-ceWPTMACopyAction( windowMain, action, "Cut Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pWait( &wait ){
+ceCAWait &wait, ceConversationAction *action) :
+ceWPTMACopyAction(windowMain, action, "@Conversation.MenuAction.CutAction",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pWait(&wait){
 }
 
 
@@ -64,8 +64,7 @@ pWait( &wait ){
 void ceWPTMAWaitActionsCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAWaitRemove( pTopic, pWait, GetAction() ) );
-	undo->SetShortInfo( "Cut Action" );
-	pConversation->GetUndoSystem()->Add( undo );
+	ceUCAWaitRemove::Ref undo(ceUCAWaitRemove::Ref::New(pTopic, pWait, GetAction()));
+	undo->SetShortInfo("@Conversation.Undo.CutAction");
+	pConversation->GetUndoSystem()->Add(undo);
 }

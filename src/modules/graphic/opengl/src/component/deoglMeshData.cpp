@@ -32,5 +32,5 @@
 ///////////////////////////
 
 // constructor, destructor
-deoglMeshData::deoglMeshData(){ }
-deoglMeshData::~deoglMeshData(){ }
+deoglMeshData::deoglMeshData(){}
+deoglMeshData::~deoglMeshData(){}

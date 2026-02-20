@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deObjectDebug::deObjectDebug( const char *logname, int logTraceIndex ) :
-pRefCount( 1 ),
-pLogName( logname ),
-pLogTraceIndex( logTraceIndex ){
+deObjectDebug::deObjectDebug(const char *logname, int logTraceIndex) :
+pRefCount(1),
+pLogName(logname),
+pLogTraceIndex(logTraceIndex){
 }
 
 deObjectDebug::~deObjectDebug(){
@@ -51,25 +51,25 @@ deObjectDebug::~deObjectDebug(){
 ///////////////
 
 void deObjectDebug::AddReference(){
-	const deeInvalidAction trace( __FILE__, __LINE__ );
-	printf( "[ObjectDebug] AddReference: object=%p logname=%s refcount=%d where=%s\n",
-		this, pLogName, pRefCount, trace.GetBacktrace().GetAt( pLogTraceIndex ).GetString() );
+	const deeInvalidAction trace(__FILE__, __LINE__);
+	printf("[ObjectDebug] AddReference: object=%p logname=%s refcount=%d where=%s\n",
+		this, pLogName, pRefCount, trace.GetBacktrace().GetAt(pLogTraceIndex).GetString());
 	
 	pRefCount++;
 }
 
 void deObjectDebug::FreeReference(){
-	const deeInvalidAction trace( __FILE__, __LINE__ );
-	printf( "[ObjectDebug] FreeReference: object=%p logname=%s refcount=%d where=%s\n",
-		this, pLogName, pRefCount, trace.GetBacktrace().GetAt( pLogTraceIndex ).GetString() );
+	const deeInvalidAction trace(__FILE__, __LINE__);
+	printf("[ObjectDebug] FreeReference: object=%p logname=%s refcount=%d where=%s\n",
+		this, pLogName, pRefCount, trace.GetBacktrace().GetAt(pLogTraceIndex).GetString());
 	
 	pRefCount--;
-	if( pRefCount > 0 ){
+	if(pRefCount > 0){
 		return;
 	}
 	
-	if( pRefCount < 0 ){
-		deeInvalidParam( __FILE__, __LINE__ ).PrintError();
+	if(pRefCount < 0){
+		deeInvalidParam(__FILE__, __LINE__).PrintError();
 		return;
 	}
 	

@@ -29,7 +29,6 @@
 #include "ceConversationTopic.h"
 #include "../ceConversation.h"
 #include "../actor/ceConversationActor.h"
-#include "../actor/speechAnimation/ceSAWordList.h"
 #include "../actor/speechAnimation/ceSpeechAnimation.h"
 #include "../action/ceConversationAction.h"
 #include "../action/ceCAActorSpeak.h"
@@ -52,36 +51,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceConversationTopic::ceConversationTopic( const char *id ) :
-pFile( NULL ),
-pID( id ),
-pActiveCondition( NULL ){
+ceConversationTopic::ceConversationTopic(const char *id) :
+pFile(nullptr),
+pID(id),
+pActiveCondition(nullptr){
 }
 
-ceConversationTopic::ceConversationTopic( const ceConversationTopic &topic ) :
-pFile( NULL ),
-pID( topic.pID ),
-pActiveCondition( NULL )
+ceConversationTopic::ceConversationTopic(const ceConversationTopic &topic) :
+pFile(nullptr),
+pID(topic.pID),
+pActiveCondition(nullptr)
 {
-	const int count = topic.pActions.GetCount();
-	ceConversationActionReference action;
-	int i;
-	
-	try{
-		for( i=0; i<count; i++ ){
-			action.TakeOver( topic.pActions.GetAt( i )->CreateCopy() );
-			pActions.Add( action );
-		}
-		
-	}catch( const deException & ){
-		pActions.RemoveAll();
-		throw;
-	}
+	topic.pActions.Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceConversationTopic::~ceConversationTopic(){
-	SetActive( NULL, NULL );
-	pActions.RemoveAll();
+	SetActive(nullptr, nullptr);
 }
 
 
@@ -89,145 +76,124 @@ ceConversationTopic::~ceConversationTopic(){
 // Management
 ///////////////
 
-void ceConversationTopic::SetFile( ceConversationFile *file ){
+void ceConversationTopic::SetFile(ceConversationFile *file){
 	pFile = file;
 }
 
-void ceConversationTopic::SetID( const char *id ){
-	if( pID == id ){
+void ceConversationTopic::SetID(const char *id){
+	if(pID == id){
 		return;
 	}
 	
-	if( pFile && pFile->GetTopicList().HasWithID( id ) ){
-		DETHROW( deeInvalidParam );
+	if(pFile && pFile->GetTopics().HasMatching([&](const ceConversationTopic *t){ return t != this && t->GetID() == id; })){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pID = id;
 	
-	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyTopicChanged( pFile, this );
+	if(pFile && pFile->GetConversation()){
+		pFile->GetConversation()->NotifyTopicChanged(pFile, this);
 	}
 }
 
-void ceConversationTopic::NotifyActionStructureChanged( ceConversationAction *action ){
-	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyActionStructureChanged( pFile, this, action );
+void ceConversationTopic::NotifyActionStructureChanged(ceConversationAction *action){
+	if(pFile && pFile->GetConversation()){
+		pFile->GetConversation()->NotifyActionStructureChanged(pFile, this, action);
 	}
 }
 
-void ceConversationTopic::NotifyActionChanged( ceConversationAction *action ){
-	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyActionChanged( pFile, this, action );
+void ceConversationTopic::NotifyActionChanged(ceConversationAction *action){
+	if(pFile && pFile->GetConversation()){
+		pFile->GetConversation()->NotifyActionChanged(pFile, this, action);
 	}
 }
 
-void ceConversationTopic::SetActive( ceConversationAction *action, ceConversationCondition *condition ){
-	if( pActiveAction == action && pActiveCondition == condition ){
+void ceConversationTopic::SetActive(ceConversationAction *action, ceConversationCondition *condition){
+	if(pActiveAction == action && pActiveCondition == condition){
 		return;
 	}
 	
 	pActiveAction = action;
 	pActiveCondition = condition;
 	
-	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyActiveChanged( pFile, this );
+	if(pFile && pFile->GetConversation()){
+		pFile->GetConversation()->NotifyActiveChanged(pFile, this);
 	}
 }
 
-void ceConversationTopic::FindMissingWords( decStringSet &missingWords ) const{
-	FindMissingWords( pActions, missingWords );
+void ceConversationTopic::FindMissingWords(decStringSet &missingWords) const{
+	FindMissingWords(pActions, missingWords);
 }
 
-void ceConversationTopic::FindMissingWords( const ceConversationActionList &actions,
-decStringSet &missingWords ) const{
-	if( ! pFile || ! pFile->GetConversation() ){
+void ceConversationTopic::FindMissingWords(const ceConversationAction::List &actions,
+decStringSet &missingWords) const{
+	if(!pFile || !pFile->GetConversation()){
 		return;
 	}
 	
 	const ceConversation &conversation = *pFile->GetConversation();
-	const ceConversationActorList &actorList = conversation.GetActorList();
-	const int count = actions.GetCount();
-	int i, j;
+	const ceConversationActor::List &actorList = conversation.GetActorList();
 	
-	for( i=0; i<count; i++ ){
-		const ceConversationAction &action = *actions.GetAt( i );
-		
-		switch( action.GetType() ){
+	actions.Visit([&](const ceConversationAction &a){
+		switch(a.GetType()){
 		case ceConversationAction::eatActorSpeak:{
-			const ceCAActorSpeak &speak = ( ceCAActorSpeak& )action;
-			if( ! speak.GetUseSpeechAnimation() ){
-				continue;
+			const ceCAActorSpeak &speak = (ceCAActorSpeak&)a;
+			if(!speak.GetUseSpeechAnimation() || speak.GetWords().IsEmpty()){
+				break;
 			}
 			
-			const ceStripList &words = speak.GetWordList();
-			const decString &actorID = speak.GetActor();
-			const int wordCount = words.GetCount();
-			if( wordCount == 0 ){
-				continue;
+			const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID(speak.GetActor());
+			if(!conversationActor || !conversationActor->GetSpeechAnimation()){
+				break;
 			}
 			
-			const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID( actorID );
-			if( ! conversationActor || ! conversationActor->GetSpeechAnimation() ){
-				continue;
-			}
+			const ceSAWord::List &saWordList = conversationActor->GetSpeechAnimation()->GetWords();
 			
-			const ceSpeechAnimation &speechAnimation = *conversationActor->GetSpeechAnimation();
-			const ceSAWordList &saWordList = speechAnimation.GetWordList();
-			
-			for( j=0; j<wordCount; j++ ){
-				const decString &word = words.GetAt( j )->GetID();
-				if( ! word.IsEmpty() && ! saWordList.HasNamed( word ) ){
-					missingWords.Add( word );
+			speak.GetWords().Visit([&](const ceStrip &s){
+				const decString &word = s.GetID();
+				if(!word.IsEmpty() && !saWordList.HasMatching([&](const ceSAWord &w){ return w.GetName() == word; })){
+					missingWords.Add(word);
 				}
-			}
+			});
 			} break;
 			
 		case ceConversationAction::eatIfElse:{
-			const ceCAIfElse &ifelse = ( ceCAIfElse& )action;
-			const ceCAIfElseCaseList &cases = ifelse.GetCases();
-			const int caseCount = cases.GetCount();
-			
-			for( j=0; j<caseCount; j++ ){
-				FindMissingWords( cases.GetAt( j )->GetActions(), missingWords );
-			}
-			
-			FindMissingWords( ifelse.GetElseActions(), missingWords );
+			const ceCAIfElse &ifelse = (ceCAIfElse&)a;
+			ifelse.GetCases().Visit([&](const ceCAIfElseCase &c){
+				FindMissingWords(c.GetActions(), missingWords);
+			});
+			FindMissingWords(ifelse.GetElseActions(), missingWords);
 			} break;
 			
 		case ceConversationAction::eatPlayerChoice:{
-			const ceCAPlayerChoice &playerChoice = ( ceCAPlayerChoice& )action;
-			const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
-			const int optionCount = options.GetCount();
-			
-			FindMissingWords( playerChoice.GetActions(), missingWords );
-			
-			for( j=0; j<optionCount; j++ ){
-				FindMissingWords( options.GetAt( j )->GetActions(), missingWords );
-			}
+			const ceCAPlayerChoice &playerChoice = (ceCAPlayerChoice&)a;
+			FindMissingWords(playerChoice.GetActions(), missingWords);
+			playerChoice.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+				FindMissingWords(o.GetActions(), missingWords);
+			});
 			} break;
 			
 		case ceConversationAction::eatWait:{
-			const ceCAWait &wait = ( ceCAWait& )action;
-			FindMissingWords( wait.GetActions(), missingWords );
+			FindMissingWords(((ceCAWait&)a).GetActions(), missingWords);
 			} break;
 			
 		default:
 			break;
 		}
-	}
+	});
 }
 
 
 
-void ceConversationTopic::NotifyConditionChanged( ceConversationAction *action,
-ceConversationCondition *condition ){
-	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyConditionChanged( pFile, this, action, condition );
+void ceConversationTopic::NotifyConditionChanged(ceConversationAction *action,
+ceConversationCondition *condition){
+	if(pFile && pFile->GetConversation()){
+		pFile->GetConversation()->NotifyConditionChanged(pFile, this, action, condition);
 	}
 }
 
-void ceConversationTopic::NotifyConditionStructureChanged( ceConversationAction *action ){
-	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyConditionStructureChanged( pFile, this, action );
+void ceConversationTopic::NotifyConditionStructureChanged(ceConversationAction *action){
+	if(pFile && pFile->GetConversation()){
+		pFile->GetConversation()->NotifyConditionStructureChanged(pFile, this, action);
 	}
 }

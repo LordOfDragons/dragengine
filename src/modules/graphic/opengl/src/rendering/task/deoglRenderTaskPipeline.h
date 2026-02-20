@@ -25,7 +25,9 @@
 #ifndef _DEOGLRENDERTASKPIPELINE_H_
 #define _DEOGLRENDERTASKPIPELINE_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 class deoglPipeline;
 class deoglRenderTaskSharedTexture;
@@ -37,15 +39,16 @@ class deoglRenderTaskTexture;
  * Render Task Pipeline.
  */
 class deoglRenderTaskPipeline{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglRenderTaskPipeline>;
+	
 private:
 	const deoglPipeline *pPipeline;
 	
-	decPointerList pTextures;
+	decTList<deoglRenderTaskTexture*> pHasTexture;
+	decTUniqueList<deoglRenderTaskTexture> pTextures;
 	int pTextureCount;
-	
-	deoglRenderTaskTexture **pHasTexture;
-	int pHasTextureCount;
-	int pHasTextureSize;
 	
 	
 	
@@ -82,16 +85,19 @@ public:
 	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
-	void SetPipeline( const deoglPipeline *pipeline );
+	void SetPipeline(const deoglPipeline *pipeline);
+	
+	/** Textures. */
+	inline const decTUniqueList<deoglRenderTaskTexture> &GetTextures() const{ return pTextures; }
 	
 	/** Number of render task textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Render task texture at index. */
-	deoglRenderTaskTexture *GetTextureAt( int index ) const;
+	deoglRenderTaskTexture *GetTextureAt(int index) const;
 	
 	/** Add render task texture. */
-	deoglRenderTaskTexture *AddTexture( const deoglRenderTaskSharedTexture *texture );
+	deoglRenderTaskTexture *AddTexture(const deoglRenderTaskSharedTexture *texture);
 	/*@}*/
 };
 

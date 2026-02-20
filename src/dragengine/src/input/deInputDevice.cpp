@@ -40,18 +40,10 @@
 ////////////////////////
 
 deInputDevice::deInputDevice() :
-pType( edtGeneric ),
-pButtons( NULL ),
-pButtonCount( 0 ),
-pAxes( NULL ),
-pAxisCount( 0 ),
-pFeedbacks( NULL ),
-pFeedbackCount( 0 ),
-pComponents( nullptr ),
-pComponentCount( 0 ),
-pBoneConfiguration( ebcNone ),
-pSupportsFaceEyeExpressions( false ),
-pSupportsFaceMouthExpressions( false ),
+pType(edtGeneric),
+pBoneConfiguration(ebcNone),
+pSupportsFaceEyeExpressions(false),
+pSupportsFaceMouthExpressions(false),
 pUsingHandInteraction(false){
 }
 
@@ -64,72 +56,66 @@ deInputDevice::~deInputDevice(){
 // Device information
 ///////////////////////
 
-void deInputDevice::SetID( const char *id ){
+void deInputDevice::SetID(const char *id){
 	pID = id;
 }
 
-void deInputDevice::SetName( const char *name ){
+void deInputDevice::SetName(const char *name){
 	pName = name;
 }
 
-void deInputDevice::SetType( eDeviceTypes type ){
+void deInputDevice::SetType(eDeviceTypes type){
 	pType = type;
 }
 
-void deInputDevice::SetDisplayModel(const deModel::Ref &model){
+void deInputDevice::SetDisplayModel(deModel *model){
 	pDisplayModel = model;
 }
 
-void deInputDevice::SetDisplaySkin(const deSkin::Ref &skin){
+void deInputDevice::SetDisplaySkin(deSkin *skin){
 	pDisplaySkin = skin;
 }
 
-void deInputDevice::SetDisplayImage(const deImage::Ref &image){
+void deInputDevice::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
-int deInputDevice::GetDisplayIconCount() const{
-	return pDisplayIcons.GetCount();
-}
 
-deImage::Ref deInputDevice::GetDisplayIconAt(int index) const{
-	return (deImage*)pDisplayIcons.GetAt(index);
-}
 
-void deInputDevice::AddDisplayIcon(const deImage::Ref &image){
+void deInputDevice::AddDisplayIcon(deImage *image){
 	DEASSERT_NOTNULL(image)
 	pDisplayIcons.Add(image);
 }
 
-void deInputDevice::SetDisplayText( const char * text){
+void deInputDevice::SetDisplayText(const char * text){
 	pDisplayText = text;
 }
 
-void deInputDevice::SetBoneConfiguration( eBoneConfigurations configuration ){
+void deInputDevice::SetBoneConfiguration(eBoneConfigurations configuration){
 	pBoneConfiguration = configuration;
 }
 
-const decVector &deInputDevice::GetFingerTipOffset( int index ) const{
+const decVector &deInputDevice::GetFingerTipOffset(int index) const{
 	DEASSERT_TRUE(index >= 0)
 	DEASSERT_TRUE(index <= 4)
-	return pFingerTipOffset[ index ];
+	return pFingerTipOffset[index];
 }
 
-void deInputDevice::SetFingerTipOffset( int index, const decVector &offset ){
+void deInputDevice::SetFingerTipOffset(int index, const decVector &offset){
 	DEASSERT_TRUE(index >= 0)
 	DEASSERT_TRUE(index <= 4)
-	pFingerTipOffset[ index ] = offset;
+	pFingerTipOffset[index] = offset;
 }
 
-void deInputDevice::SetHandRig(const deRig::Ref &rig){
+void deInputDevice::SetHandRig(deRig *rig){
 	pHandRig = rig;
 }
 
-void deInputDevice::SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions ){
+void deInputDevice::SetSupportsFaceEyeExpressions(bool supportsFaceEyeExpressions){
 	pSupportsFaceEyeExpressions = supportsFaceEyeExpressions;
 }
 
-void deInputDevice::SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions ){
+void deInputDevice::SetSupportsFaceMouthExpressions(bool supportsFaceMouthExpressions){
 	pSupportsFaceMouthExpressions = supportsFaceMouthExpressions;
 }
 
@@ -137,11 +123,11 @@ void deInputDevice::SetUsingHandInteraction(bool usingHandInteraction){
 	pUsingHandInteraction = usingHandInteraction;
 }
 
-void deInputDevice::SetVRModel(const deModel::Ref &model){
+void deInputDevice::SetVRModel(deModel *model){
 	pVRModel = model;
 }
 
-void deInputDevice::SetVRSkin(const deSkin::Ref &skin){
+void deInputDevice::SetVRSkin(deSkin *skin){
 	pVRSkin = skin;
 }
 
@@ -150,38 +136,14 @@ void deInputDevice::SetVRSkin(const deSkin::Ref &skin){
 // Buttons
 ////////////
 
-void deInputDevice::SetButtonCount( int count ){
-	if( pButtons ){
-		delete [] pButtons;
-		pButtons = NULL;
-		pButtonCount = 0;
-	}
-	
-	if( count == 0 ){
-		return;
-	}
-	
-	pButtons = new deInputDeviceButton[ count ];
-	pButtonCount = count;
+void deInputDevice::SetButtonCount(int count){
+	pButtons = decTList<deInputDeviceButton>(count, deInputDeviceButton());
 }
 
-deInputDeviceButton &deInputDevice::GetButtonAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pButtonCount)
-	return pButtons[index];
-}
-
-int deInputDevice::IndexOfButtonWithID( const char *id ) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for( i=0; i<pButtonCount; i++ ){
-		if( pButtons[ i ].GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
+int deInputDevice::IndexOfButtonWithID(const char *id) const{
+	return pButtons.IndexOfMatching([&](const deInputDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 
@@ -189,38 +151,14 @@ int deInputDevice::IndexOfButtonWithID( const char *id ) const{
 // Axes
 /////////
 
-void deInputDevice::SetAxisCount( int count ){
-	if( pAxes ){
-		delete [] pAxes;
-		pAxes = NULL;
-		pAxisCount = 0;
-	}
-	
-	if( count == 0 ){
-		return;
-	}
-	
-	pAxes = new deInputDeviceAxis[ count ];
-	pAxisCount = count;
+void deInputDevice::SetAxisCount(int count){
+	pAxes = decTList<deInputDeviceAxis>(count, deInputDeviceAxis());
 }
 
-deInputDeviceAxis &deInputDevice::GetAxisAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pAxisCount)
-	return pAxes[index];
-}
-
-int deInputDevice::IndexOfAxisWithID( const char *id ) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		if( pAxes[ i ].GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
+int deInputDevice::IndexOfAxisWithID(const char *id) const{
+	return pAxes.IndexOfMatching([&](const deInputDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 
@@ -228,38 +166,14 @@ int deInputDevice::IndexOfAxisWithID( const char *id ) const{
 // Feedbacks
 //////////////
 
-void deInputDevice::SetFeedbackCount( int count ){
-	if( pFeedbacks ){
-		delete [] pFeedbacks;
-		pFeedbacks = NULL;
-		pFeedbackCount = 0;
-	}
-	
-	if( count == 0 ){
-		return;
-	}
-	
-	pFeedbacks = new deInputDeviceFeedback[ count ];
-	pFeedbackCount = count;
+void deInputDevice::SetFeedbackCount(int count){
+	pFeedbacks = decTList<deInputDeviceFeedback>(count, deInputDeviceFeedback());
 }
 
-deInputDeviceFeedback &deInputDevice::GetFeedbackAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pFeedbackCount)
-	return pFeedbacks[index];
-}
-
-int deInputDevice::IndexOfFeedbackWithID( const char *id ) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for( i=0; i<pFeedbackCount; i++ ){
-		if( pFeedbacks[ i ].GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
+int deInputDevice::IndexOfFeedbackWithID(const char *id) const{
+	return pFeedbacks.IndexOfMatching([&](const deInputDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 
@@ -267,38 +181,14 @@ int deInputDevice::IndexOfFeedbackWithID( const char *id ) const{
 // Components
 //////////////
 
-void deInputDevice::SetComponentCount( int count ){
-	if( pComponents ){
-		delete [] pComponents;
-		pComponents = NULL;
-		pComponentCount = 0;
-	}
-	
-	if( count == 0 ){
-		return;
-	}
-	
-	pComponents = new deInputDeviceComponent[ count ];
-	pComponentCount = count;
+void deInputDevice::SetComponentCount(int count){
+	pComponents = decTList<deInputDeviceComponent>(count, deInputDeviceComponent());
 }
 
-deInputDeviceComponent &deInputDevice::GetComponentAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pComponentCount)
-	return pComponents[index];
-}
-
-int deInputDevice::IndexOfComponentWithID( const char *id ) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for( i=0; i<pComponentCount; i++ ){
-		if( pComponents[ i ].GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
+int deInputDevice::IndexOfComponentWithID(const char *id) const{
+	return pComponents.IndexOfMatching([&](const deInputDeviceComponent &component){
+		return component.GetID() == id;
+	});
 }
 
 
@@ -307,16 +197,4 @@ int deInputDevice::IndexOfComponentWithID( const char *id ) const{
 /////////////////////
 
 void deInputDevice::pCleanUp(){
-	if( pComponents ){
-		delete [] pComponents;
-	}
-	if( pFeedbacks ){
-		delete [] pFeedbacks;
-	}
-	if( pAxes ){
-		delete [] pAxes;
-	}
-	if( pButtons ){
-		delete [] pButtons;
-	}
 }

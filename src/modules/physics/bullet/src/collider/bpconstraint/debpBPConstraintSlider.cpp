@@ -37,18 +37,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBPConstraintSlider::debpBPConstraintSlider( btRigidBody &rbA, btRigidBody &rbB,
-const btTransform &frameInA, const btTransform &frameInB )
-: btSliderConstraint( rbA, rbB, frameInA, frameInB, true ) // default = false
+debpBPConstraintSlider::debpBPConstraintSlider(btRigidBody &rbA, btRigidBody &rbB,
+const btTransform &frameInA, const btTransform &frameInB)
+: btSliderConstraint(rbA, rbB, frameInA, frameInB, true) // default = false
 {
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
-debpBPConstraintSlider::debpBPConstraintSlider( btRigidBody &rbA, const btTransform &frameInA,
-const btTransform &frameInB )
-: btSliderConstraint( rbA, getFixedBody(), frameInA, frameInB, true ) // default = false
+debpBPConstraintSlider::debpBPConstraintSlider(btRigidBody &rbA, const btTransform &frameInA,
+const btTransform &frameInB)
+: btSliderConstraint(rbA, getFixedBody(), frameInA, frameInB, true) // default = false
 {
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
 debpBPConstraintSlider::~debpBPConstraintSlider(){

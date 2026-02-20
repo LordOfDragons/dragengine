@@ -41,42 +41,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCaseRemove::ceUCAIfElseCaseRemove( ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase ){
-	if( ! topic || ! ifelse || ! ifcase ){
-		DETHROW( deeInvalidParam );
+ceUCAIfElseCaseRemove::ceUCAIfElseCaseRemove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase){
+	if(!topic || !ifelse || !ifcase){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pCase = NULL;
-	pIndex = ifelse->GetCases().IndexOf( ifcase );
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pCase = nullptr;
+	pIndex = ifelse->GetCases().IndexOf(ifcase);
 	
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "If-else remove case" );
+	SetShortInfo("@Conversation.Undo.IfElseRemoveCase");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifelse;
-	ifelse->AddReference();
-	
 	pCase = ifcase;
-	ifcase->AddReference();
 }
 
 ceUCAIfElseCaseRemove::~ceUCAIfElseCaseRemove(){
-	if( pCase ){
-		pCase->FreeReference();
-	}
-	if( pIfElse ){
-		pIfElse->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -85,11 +71,11 @@ ceUCAIfElseCaseRemove::~ceUCAIfElseCaseRemove(){
 ///////////////
 
 void ceUCAIfElseCaseRemove::Undo(){
-	pIfElse->GetCases().InsertAt( pCase, pIndex );
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pIfElse->GetCases().InsertOrThrow(pCase, pIndex);
+	pTopic->NotifyActionStructureChanged(pIfElse);
 }
 
 void ceUCAIfElseCaseRemove::Redo(){
-	pIfElse->GetCases().Remove( pCase );
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pIfElse->GetCases().Remove(pCase);
+	pTopic->NotifyActionStructureChanged(pIfElse);
 }

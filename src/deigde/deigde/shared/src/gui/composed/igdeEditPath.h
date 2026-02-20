@@ -25,19 +25,17 @@
 #ifndef _IGDEEDITEDITPATH_H_
 #define _IGDEEDITEDITPATH_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeButton.h"
+#include "../igdeTextField.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
-#include "../event/igdeActionContextMenuReference.h"
-#include "../event/igdeActionReference.h"
 #include "../event/igdeActionSelectFile.h"
-#include "../filedialog/igdeFilePatternList.h"
+#include "../filedialog/igdeFilePattern.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../environment/igdeEnvironment.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditPathListener;
@@ -55,6 +53,12 @@ class igdeUIHelper;
  * allow the user to select the source to use to locate the path.
  */
 class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditPath>;
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
@@ -62,9 +66,14 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cListenerTextField( igdeEditPath &editPath );
-		virtual ~cListenerTextField();
-		virtual void OnTextChanged( igdeTextField *textField );
+		using Ref = deTObjectReference<cListenerTextField>;
+		cListenerTextField(igdeEditPath &editPath);
+		
+	protected:
+		~cListenerTextField() override;
+		
+	public:
+		void OnTextChanged(igdeTextField *textField) override;
 	};
 	
 	/** \brief Button action. */
@@ -73,10 +82,15 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionButton( igdeEditPath &editPath, const char *description );
-		virtual ~cActionButton();
-		virtual void OnAction();
-		virtual void Update();
+		using Ref = deTObjectReference<cActionButton>;
+		cActionButton(igdeEditPath &editPath, const char *description);
+		
+	protected:
+		~cActionButton() override;
+		
+	public:
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	/** \brief Button menu action. */
@@ -85,10 +99,15 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionButtonMenu( igdeEditPath &editPath, const char *description );
-		virtual ~cActionButtonMenu();
-		virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
-		virtual void Update();
+		using Ref = deTObjectReference<cActionButtonMenu>;
+		cActionButtonMenu(igdeEditPath &editPath, const char *description);
+		
+	protected:
+		~cActionButtonMenu() override;
+		
+	public:
+		void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
+		void Update() override;
 	};
 	
 	/** \brief Select file using file dialog action. */
@@ -98,11 +117,16 @@ protected:
 		bool pUseRelativePath;
 		
 	public:
-		cActionSelectFileDialog( igdeEditPath &editPath, igdeTextField &textField );
-		virtual ~cActionSelectFileDialog();
-		virtual void PrepareFile( decString &path );
-		virtual bool AcceptFile( decString &path );
-		virtual decString DefaultPath();
+		using Ref = deTObjectReference<cActionSelectFileDialog>;
+		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
+		
+	protected:
+		~cActionSelectFileDialog() override;
+		
+	public:
+		void PrepareFile(decString &path) override;
+		bool AcceptFile(decString &path) override;
+		decString DefaultPath() override;
 	};
 	
 	/** \brief Select skin resource using skin selection dialog. */
@@ -111,9 +135,14 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionSkinSelectDialog( igdeEditPath &editPath );
-		virtual ~cActionSkinSelectDialog();
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionSkinSelectDialog>;
+		cActionSkinSelectDialog(igdeEditPath &editPath);
+		
+	protected:
+		~cActionSkinSelectDialog() override;
+		
+	public:
+		void OnAction() override;
 	};
 	
 	/** \brief Browse file action. */
@@ -122,10 +151,15 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionBrowseFile( igdeEditPath &editPath );
-		virtual ~cActionBrowseFile();
-		virtual void OnAction();
-		virtual void Update();
+		using Ref = deTObjectReference<cActionBrowseFile>;
+		cActionBrowseFile(igdeEditPath &editPath);
+		
+	protected:
+		~cActionBrowseFile() override;
+		
+	public:
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	/** \brief Convert to absolute path. */
@@ -134,10 +168,15 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionConvertAbsolute( igdeEditPath &editPath );
-		virtual ~cActionConvertAbsolute();
-		virtual void OnAction();
-		virtual void Update();
+		using Ref = deTObjectReference<cActionConvertAbsolute>;
+		cActionConvertAbsolute(igdeEditPath &editPath);
+		
+	protected:
+		~cActionConvertAbsolute() override;
+		
+	public:
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	/** \brief Convert to relative path. */
@@ -146,32 +185,37 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionConvertRelative( igdeEditPath &editPath );
-		virtual ~cActionConvertRelative();
-		virtual void OnAction();
-		virtual void Update();
+		using Ref = deTObjectReference<cActionConvertRelative>;
+		cActionConvertRelative(igdeEditPath &editPath);
+		
+	protected:
+		~cActionConvertRelative() override;
+		
+	public:
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	
 	
 private:
 	igdeEnvironment::eFilePatternListTypes pResourceType;
-	igdeFilePatternList pCustomPatternList;
+	igdeFilePattern::List pCustomPatternList;
 	
-	decObjectOrderedSet pSelectPathActions;
+	decTObjectOrderedSet<igdeAction> pSelectPathActions;
 	decString pDefaultPath;
 	bool pAutoValidatePath;
 	bool pUseGameVFS;
 	decString pBasePath;
 	
-	igdeActionReference pActionButton;
-	igdeActionContextMenuReference pActionButtonMenu;
+	igdeAction::Ref pActionButton;
+	igdeActionContextMenu::Ref pActionButtonMenu;
 	
-	igdeTextFieldReference pText;
-	igdeButtonReference pButton;
-	igdeButtonReference pButtonMenu;
+	igdeTextField::Ref pText;
+	igdeButton::Ref pButton;
+	igdeButton::Ref pButtonMenu;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPathListener> pListeners;
 	
 	
 	
@@ -179,11 +223,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit point. */
-	igdeEditPath( igdeUIHelper &helper, igdeEnvironment::eFilePatternListTypes resourceType,
-		const char *description = "", bool useGameVFS = true );
+	igdeEditPath(igdeUIHelper &helper, igdeEnvironment::eFilePatternListTypes resourceType,
+		const char *description = "", bool useGameVFS = true);
 	
-	igdeEditPath( igdeUIHelper &helper, const igdeFilePatternList &filePatterns,
-		const char *description = "", bool useGameVFS = true );
+	igdeEditPath(igdeUIHelper &helper, const igdeFilePattern::List &filePatterns,
+		const char *description = "", bool useGameVFS = true);
 	
 	
 	
@@ -194,7 +238,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditPath();
+	~igdeEditPath() override;
 	/*@}*/
 	
 	
@@ -210,15 +254,15 @@ public:
 	 * 
 	 * If resource type is different than the current type SetSelectPathActions() is called.
 	 */
-	void SetResourceType( igdeEnvironment::eFilePatternListTypes resourceType );
+	void SetResourceType(igdeEnvironment::eFilePatternListTypes resourceType);
 	
 	/**
 	 * \brief Custom pattern list overruling GetResourceType if not empty.
 	 * 
 	 * If you change the content call SetSelectPathActions() to make the changes effective.
 	 */
-	inline igdeFilePatternList &GetCustomPatternList(){ return pCustomPatternList; }
-	inline const igdeFilePatternList &GetCustomPatternList() const{ return pCustomPatternList; }
+	inline igdeFilePattern::List &GetCustomPatternList(){ return pCustomPatternList; }
+	inline const igdeFilePattern::List &GetCustomPatternList() const{ return pCustomPatternList; }
 	
 	
 	
@@ -230,7 +274,7 @@ public:
 	 * 
 	 * Validates path if changed.
 	 */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Clear path. */
 	void ClearPath();
@@ -263,19 +307,19 @@ public:
 	bool GetEnabled() const;
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	const decString &GetDescription() const;
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Default path. */
 	inline const decString &GetDefaultPath() const{ return pDefaultPath; }
 	
 	/** \brief Set default path. */
-	void SetDefaultPath( const char *path );
+	void SetDefaultPath(const char *path);
 	
 	/** \brief Path is valid. */
 	bool IsPathValid() const;
@@ -284,7 +328,7 @@ public:
 	inline bool GetAutoValidatePath() const{ return pAutoValidatePath; }
 	
 	/** \brief Set if path is auto validated if changed. */
-	void SetAutoValidatePath( bool autoValidatePath );
+	void SetAutoValidatePath(bool autoValidatePath);
 	
 	/** \brief Validate path. */
 	void ValidatePath();
@@ -304,7 +348,7 @@ public:
 	 * 
 	 * If base is set relative path can be entered.
 	 */
-	void SetBasePath( const char *path );
+	void SetBasePath(const char *path);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -315,13 +359,13 @@ public:
 	int GetSelectPathActionCount() const;
 	
 	/** \brief Get select path action at index. */
-	igdeAction *GetSelectPathActionAt( int index ) const;
+	igdeAction *GetSelectPathActionAt(int index) const;
 	
 	/** \brief Add action providing support to select path. */
-	void AddSelectPathAction( igdeAction *action );
+	void AddSelectPathAction(igdeAction *action);
 	
 	/** \brief Remove action providing support to select path. */
-	void RemoveSelectPathAction( igdeAction *action );
+	void RemoveSelectPathAction(igdeAction *action);
 	
 	/** \brief Remove all actions providing support to select path. */
 	void RemoveAllSelectPathActions();
@@ -345,7 +389,7 @@ public:
 	 * 
 	 * Called by menu button action.
 	 */
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 	
 	/** \brief Convert to absolute path if possible. */
 	void ToAbsolutePath();
@@ -359,10 +403,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditPathListener *listener );
+	void AddListener(igdeEditPathListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditPathListener *listener );
+	void RemoveListener(igdeEditPathListener *listener);
 	
 	/** \brief Notify listeners path changed. */
 	virtual void NotifyEditPathChanged();

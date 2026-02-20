@@ -25,12 +25,12 @@
 #ifndef _SAEUWORDADDLIST_H_
 #define _SAEUWORDADDLIST_H_
 
-#include "../../../sanimation/dictionary/saeWordList.h"
+#include "../../../sanimation/dictionary/saeWord.h"
+#include "../../../sanimation/saeSAnimation.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 
-class saeSAnimation;
 
 
 
@@ -38,9 +38,13 @@ class saeSAnimation;
  * Undo action add word list.
  */
 class saeUWordAddList : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUWordAddList>;
+	
+	
 private:
 	saeSAnimation *pSAnimation;
-	saeWordList pWords;
+	saeWord::List pWords;
 	
 	
 	
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordAddList( saeSAnimation *sanimation, const saeWordList &words );
+	saeUWordAddList(saeSAnimation *sanimation, const saeWord::List &words);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUWordAddList();
+	~saeUWordAddList() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

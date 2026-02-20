@@ -25,7 +25,7 @@
 #ifndef _DEOXRDEVICECOMPONENT_H_
 #define _DEOXRDEVICECOMPONENT_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceComponent.h>
 #include <dragengine/resources/image/deImage.h>
@@ -39,8 +39,7 @@ class deoxrDevice;
 class deoxrDeviceComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDeviceComponent> Ref;
-	
+	using Ref = deTObjectReference<deoxrDeviceComponent>;
 	
 	
 private:
@@ -53,7 +52,7 @@ private:
 	deInputDeviceComponent::eComponentTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	
@@ -62,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device component. */
-	deoxrDeviceComponent( deoxrDevice &device );
+	deoxrDeviceComponent(deoxrDevice &device);
 	
 protected:
 	/** Clean up device component. */
-	virtual ~deoxrDeviceComponent();
+	~deoxrDeviceComponent() override;
 	/*@}*/
 	
 	
@@ -81,7 +80,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -89,44 +88,44 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Type. */
 	inline deInputDeviceComponent::eComponentTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceComponent::eComponentTypes type );
+	void SetType(deInputDeviceComponent::eComponentTypes type);
 	
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const deoxrDeviceComponent &component );
+	void SetDisplayImages(const deoxrDeviceComponent &component);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
 	/** Update engine input device information component. */
-	void GetInfo( deInputDeviceComponent &info ) const;
+	void GetInfo(deInputDeviceComponent &info) const;
 	/*@}*/
 };
 

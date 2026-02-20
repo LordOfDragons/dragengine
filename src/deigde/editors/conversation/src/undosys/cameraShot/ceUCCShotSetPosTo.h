@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -37,8 +37,12 @@ class ceCameraShot;
  * \brief Undo action camera shot set end position.
  */
 class ceUCCShotSetPosTo : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotSetPosTo>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decVector pOldPos;
 	decVector pNewPos;
@@ -47,18 +51,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */
-	ceUCCShotSetPosTo( ceCameraShot *cameraShot, const decVector &newPos );
+	ceUCCShotSetPosTo(ceCameraShot *cameraShot, const decVector &newPos);
 	/** \brief Cleans up the undo action. */
-	virtual ~ceUCCShotSetPosTo();
+protected:
+	~ceUCCShotSetPosTo() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

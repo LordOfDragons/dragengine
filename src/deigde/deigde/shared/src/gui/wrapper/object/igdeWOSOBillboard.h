@@ -26,10 +26,10 @@
 #define _IGDEWOSOBILLBOARD_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/resources/billboard/deBillboardReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/billboard/deBillboard.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -40,12 +40,17 @@ class igdeGDCBillboard;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOBillboard : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSOBillboard>;
+	
+	
 private:
 	const igdeGDCBillboard &pGDBillboard;
-	deBillboardReference pBillboard;
-	igdeResourceLoaderListenerReference pResLoad;
+	deBillboard::Ref pBillboard;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	decVector2 pBaseOffset;
 	bool pRenderEnvMap;
@@ -56,18 +61,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOBillboard( igdeWObject &wrapper, const igdeGDCBillboard &gdBillboard, const decString &prefix );
+	igdeWOSOBillboard(igdeWObject &wrapper, const igdeGDCBillboard &gdBillboard, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	~igdeWOSOBillboard() override;
-	/*@}*/
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Billboard resource. */
-	inline deBillboard *GetBillboard() const{ return pBillboard; }
+	inline const deBillboard::Ref &GetBillboard() const{ return pBillboard; }
 	
 	/** \brief Update parameters. */
 	void UpdateParameters() override;
@@ -88,13 +94,13 @@ public:
 	void CameraChanged() override;
 	
 	/** \brief Frame update. */
-	void Update( float elapsed ) override;
+	void Update(float elapsed) override;
 	
 	/** \brief Visit. */
-	void Visit( igdeWOSOVisitor &visitor ) override;
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	
 	/**
 	 * \brief Sub object is visible.
@@ -110,8 +116,8 @@ public:
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

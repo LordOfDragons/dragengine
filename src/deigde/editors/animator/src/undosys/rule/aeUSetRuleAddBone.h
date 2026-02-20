@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringSet.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -38,8 +38,12 @@ class aeRule;
  * Undo to add a bone to a rule.
  */
 class aeUSetRuleAddBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleAddBone>;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decStringSet pBones;
 	
@@ -47,19 +51,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAddBone( aeRule *rule, const char *pattern );
+	aeUSetRuleAddBone(aeRule *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleAddBone();
+	~aeUSetRuleAddBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,8 +28,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
-#include <dragengine/deObjectReference.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglTexUnitsConfig;
@@ -61,7 +60,7 @@ private:
 	int pRowsPerImage;
 	int pMaxMaterialCount;
 	
-	decPointerList pTUCs;
+	decTList<deoglTexUnitsConfig*> pTUCs;
 	
 	deoglTexture *pTexDiffuse;
 	deoglTexture *pTexReflectivity;
@@ -74,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIMaterials( deoglRenderThread &renderThread );
+	deoglGIMaterials(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination ray tracing. */
 	~deoglGIMaterials();
@@ -111,10 +110,10 @@ public:
 	
 	
 	/** Add texture units configuration. Assigns material slot to "tuc". */
-	void AddTUC( deoglTexUnitsConfig *tuc );
+	void AddTUC(deoglTexUnitsConfig *tuc);
 	
 	/** Texture units configuration assigned to slot or NULL. */
-	deoglTexUnitsConfig *GetTUC( int materialIndex ) const;
+	deoglTexUnitsConfig *GetTUC(int materialIndex) const;
 	
 	
 	

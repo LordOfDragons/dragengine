@@ -25,36 +25,36 @@
 #ifndef _SESKIN_H_
 #define _SESKIN_H_
 
-#include "property/sePropertyList.h"
-#include "texture/seTextureList.h"
-#include "mapped/seMappedList.h"
+#include "seSkinListener.h"
+#include "property/seProperty.h"
+#include "texture/seTexture.h"
+#include "mapped/seMapped.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;
 class seProperty;
 class sePropertyNode;
-class seSkinListener;
 
 class igdeWSky;
 class igdeCamera;
 
-class deAnimator;
-class deAnimatorInstance;
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
-class deComponent;
 class deDebugDrawer;
 class deLogger;
 class deParticleEmitter;
-class deSkin;
-class deWorld;
 
 
 
@@ -63,7 +63,8 @@ class deWorld;
  */
 class seSkin : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<seSkin> Ref;
+	using Ref = deTObjectReference<seSkin>;
+	
 	
 	enum ePreviewMode{
 		epmModel,
@@ -73,18 +74,18 @@ public:
 	
 	
 private:
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deSkin *pEngSkin;
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deSkin::Ref pEngSkin;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
-	deLightReference pEngLight;
+	deLight::Ref pEngLight;
 	
 	ePreviewMode pPreviewMode;
 	
@@ -97,11 +98,11 @@ private:
 	
 	igdeCamera *pCamera;
 	
-	seMappedList pMappedList;
-	seMapped *pActiveMapped;
+	seMapped::List pMapped;
+	seMapped::Ref pActiveMapped;
 	
-	seTextureList pTextureList;
-	seTexture *pActiveTexture;
+	seTexture::List pTextures;
+	seTexture::Ref pActiveTexture;
 	
 	seDynamicSkin *pDynamicSkin;
 	
@@ -110,7 +111,7 @@ private:
 	int pRewindTextures;
 	bool pEnableSkinUpdate;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<seSkinListener> pListeners;
 	
 	
 	
@@ -118,15 +119,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin. */
-	seSkin( igdeEnvironment *environment );
+	seSkin(igdeEnvironment *environment);
 	/** Cleans up the skin. */
-	virtual ~seSkin();
+protected:
+	~seSkin() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
@@ -136,47 +139,47 @@ public:
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine skin. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	/** Retrieves the particle emitter. */
 	inline deParticleEmitter *GetEngineParticleEmitter() const{ return pEngParticleEmitter; }
 	
-	/** \brief Engine light or NULL. */
-	inline deLight *GetEngineLight() const{ return pEngLight; }
+	/** \brief Engine light or nullptr. */
+	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
 	
 	/** \brief Preview mode. */
 	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
 	
 	/** \brief Set preview mode. */
-	void SetPreviewMode( ePreviewMode mode );
+	void SetPreviewMode(ePreviewMode mode);
 	
 	/** Retrieves the model path. */
 	inline const decString &GetModelPath() const{ return pModelPath; }
 	/** Sets the model path. */
-	void SetModelPath( const char *path );
+	void SetModelPath(const char *path);
 	/** Retrieves the rig path. */
 	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
-	void SetRigPath( const char *path );
+	void SetRigPath(const char *path);
 	/** Retrieves the animation path. */
 	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the animation path. */
-	void SetAnimationPath( const char *path );
+	void SetAnimationPath(const char *path);
 	/** Retrieves the name of the move to display. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
 	/** Sets the move name to display. */
-	void SetMoveName( const char *moveName );
+	void SetMoveName(const char *moveName);
 	/** Retrieves the move time to display. */
 	inline float GetMoveTime() const{ return pMoveTime; }
 	/** Sets the move time to display. */
-	void SetMoveTime( float moveTime );
+	void SetMoveTime(float moveTime);
 	/** Determines if the animation is played back. */
 	inline bool GetPlayback() const{ return pPlayback; }
 	/** Sets if the animation is played back. */
-	void SetPlayback( bool playback );
+	void SetPlayback(bool playback);
 	
 	/** Retrieves the dynamic skin. */
 	inline seDynamicSkin &GetDynamicSkin() const{ return *pDynamicSkin; }
@@ -185,12 +188,12 @@ public:
 	inline bool GetEnableSkinUpdate() const{ return pEnableSkinUpdate; }
 	
 	/** \brief Set if skin updating if changed is enabled. */
-	void SetEnableSkinUpdate( bool enableSkinUpdate );
+	void SetEnableSkinUpdate(bool enableSkinUpdate);
 	
 	/** Dispose of all resources. */
 	void Dispose();
 	/** Updates the skin. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Resets the skin. */
 	void Reset();
 	
@@ -218,25 +221,25 @@ public:
 	/** \name Mapped */
 	/*@{*/
 	/** Mapped list. */
-	inline const seMappedList &GetMappedList() const{ return pMappedList; }
+	inline const seMapped::List &GetMapped() const{ return pMapped; }
 	
 	/** Add mapped. */
-	void AddMapped( seMapped *mapped );
+	void AddMapped(seMapped *mapped);
 	
 	/** Remove mapped. */
-	void RemoveMapped( seMapped *mapped );
+	void RemoveMapped(seMapped *mapped);
 	
 	/** Remove all mappeds. */
 	void RemoveAllMapped();
 	
 	/** Active mapped or nullptr. */
-	inline seMapped *GetActiveMapped() const{ return pActiveMapped; }
+	inline const seMapped::Ref &GetActiveMapped() const{ return pActiveMapped; }
 	
 	/** Active mapped is present. */
 	bool HasActiveMapped() const;
 	
 	/** Set active mapped or nullptr. */
-	void SetActiveMapped( seMapped *mapped );
+	void SetActiveMapped(seMapped *mapped);
 	/*@}*/
 	
 	
@@ -244,19 +247,19 @@ public:
 	/** \name Textures */
 	/*@{*/
 	/** Retrieves the texture list read-only. */
-	inline const seTextureList &GetTextureList() const{ return pTextureList; }
+	inline const seTexture::List &GetTextures() const{ return pTextures; }
 	/** Adds a new texture. */
-	void AddTexture( seTexture *texture );
+	void AddTexture(seTexture *texture);
 	/** Removes a texture. */
-	void RemoveTexture( seTexture *texture );
+	void RemoveTexture(seTexture *texture);
 	/** Removes all textures. */
 	void RemoveAllTextures();
-	/** Retrieves the active texture or NULL if none is active. */
-	inline seTexture *GetActiveTexture() const{ return pActiveTexture; }
+	/** Retrieves the active texture or nullptr if none is active. */
+	inline const seTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	/** Determines if there is an active texture or not. */
 	bool HasActiveTexture() const;
-	/** Sets the active texture or NULL if none is active. */
-	void SetActiveTexture( seTexture *texture );
+	/** Sets the active texture or nullptr if none is active. */
+	void SetActiveTexture(seTexture *texture);
 	/*@}*/
 	
 	
@@ -264,14 +267,14 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Adds a listener. */
-	void AddListener( seSkinListener *listener );
+	void AddListener(seSkinListener *listener);
 	/** Removes a listener. */
-	void RemoveListener( seSkinListener *listener );
+	void RemoveListener(seSkinListener *listener);
 	
 	/** Notify all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notify all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** Notify all that a skin parameter changed. */
 	void NotifySkinChanged();
@@ -290,10 +293,10 @@ public:
 	void NotifyMappedStructureChanged();
 	
 	/** Notify all mapped changed. */
-	void NotifyMappedChanged( seMapped *mapped );
+	void NotifyMappedChanged(seMapped *mapped);
 	
 	/** Notify all mapped name changed. */
-	void NotifyMappedNameChanged( seMapped *mapped );
+	void NotifyMappedNameChanged(seMapped *mapped);
 	
 	/** Active mapped changed. */
 	void NotifyActiveMappedChanged();
@@ -303,46 +306,46 @@ public:
 	/** Notify all that textures have been added or removed. */
 	void NotifyTextureStructureChanged();
 	/** Notify all that a texture changed. */
-	void NotifyTextureChanged( seTexture *texture );
+	void NotifyTextureChanged(seTexture *texture);
 	/** Notify all that a texture name changed. */
-	void NotifyTextureNameChanged( seTexture *texture );
+	void NotifyTextureNameChanged(seTexture *texture);
 	/** Active texture changed. */
 	void NotifyActiveTextureChanged();
 	
 	
 	/** Notify all that properties have been added or removed. */
-	void NotifyPropertyStructureChanged( seTexture *texture );
+	void NotifyPropertyStructureChanged(seTexture *texture);
 	/** Notify all that a property changed. */
-	void NotifyPropertyChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyChanged(seTexture *texture, seProperty *property);
 	/** Active property changed. */
-	void NotifyActivePropertyChanged( seTexture *texture );
+	void NotifyActivePropertyChanged(seTexture *texture);
 	
 	/** \brief Property node structre changed. */
-	void NotifyPropertyNodeStructureChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyNodeStructureChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Property node changed. */
-	void NotifyPropertyNodeChanged( seTexture *texture, seProperty *property, sePropertyNode *node );
+	void NotifyPropertyNodeChanged(seTexture *texture, seProperty *property, sePropertyNode *node);
 	
 	/** \brief Active property node changed. */
-	void NotifyPropertyActiveNodeChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyActiveNodeChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Property node selection changed. */
-	void NotifyPropertyNodeSelectionChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyNodeSelectionChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Active property node group changed. */
-	void NotifyPropertyActiveNodeGroupChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyActiveNodeGroupChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Active property node layer changed. */
-	void NotifyPropertyActiveNodeLayerChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyActiveNodeLayerChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Dynamic skin renderables have been added or removed. */
 	void NotifyDynamicSkinRenderableStructureChanged();
 	
 	/** \brief Dynamic skin renderable changed. */
-	void NotifyDynamicSkinRenderableChanged( seDynamicSkinRenderable *renderable );
+	void NotifyDynamicSkinRenderableChanged(seDynamicSkinRenderable *renderable);
 	
 	/** \brief Dynamic skin renderable name changed. */
-	void NotifyDynamicSkinRenderableNameChanged( seDynamicSkinRenderable *renderable );
+	void NotifyDynamicSkinRenderableNameChanged(seDynamicSkinRenderable *renderable);
 	
 	/** \brief Active dynamic skin renderable changed. */
 	void NotifyDynamicSkinActiveRenderableChanged();

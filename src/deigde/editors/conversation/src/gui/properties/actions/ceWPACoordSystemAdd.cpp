@@ -47,11 +47,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -68,18 +68,18 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemAdd &pPanel;
 	
 public:
-	cComboCoordSystemID( ceWPACoordSystemAdd &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboCoordSystemID>;
+	cComboCoordSystemID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemAdd * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetCoordSystemID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetCoordSystemID()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCACoordSysAddSetCoordSysID( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACoordSysAddSetCoordSysID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -87,18 +87,18 @@ class cComboAliasID : public igdeComboBoxListener {
 	ceWPACoordSystemAdd &pPanel;
 	
 public:
-	cComboAliasID( ceWPACoordSystemAdd &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboAliasID>;
+	cComboAliasID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemAdd * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetAliasID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetAliasID()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCACoordSysAddSetAliasID( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACoordSysAddSetAliasID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -112,17 +112,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPACoordSystemAdd::ceWPACoordSystemAdd( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPACoordSystemAdd::ceWPACoordSystemAdd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Coord System:", true, "ID of the coordinate system to add to conversation",
-		pCBCoordSystemID, new cComboCoordSystemID( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemAdd.CoordSystem", true, "@Conversation.CoordSystemToAdd.ToolTip",
+		pCBCoordSystemID, cComboCoordSystemID::Ref::New(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 	
-	helper.ComboBox( *this, "Alias:", true, "Optional alias ID to set for the added coordinate system",
-		pCBAliasID, new cComboAliasID( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemAdd.Alias", true, "@Conversation.CoordSystemAliasToSet.ToolTip",
+		pCBAliasID, cComboAliasID::Ref::New(*this));
 	pCBAliasID->SetDefaultSorter();
 }
 
@@ -137,11 +137,11 @@ ceWPACoordSystemAdd::~ceWPACoordSystemAdd(){
 ceCACoordSystemAdd *ceWPACoordSystemAdd::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatCoordSystemAdd ){
-		return ( ceCACoordSystemAdd* )action;
+	if(action && action->GetType() == ceConversationAction::eatCoordSystemAdd){
+		return (ceCACoordSystemAdd*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -150,9 +150,9 @@ void ceWPACoordSystemAdd::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBCoordSystemID->SetText( action->GetCoordSystemID() );
-		pCBAliasID->SetText( action->GetAliasID() );
+	if(action){
+		pCBCoordSystemID->SetText(action->GetCoordSystemID());
+		pCBAliasID->SetText(action->GetAliasID());
 		
 	}else{
 		pCBCoordSystemID->ClearText();
@@ -163,6 +163,6 @@ void ceWPACoordSystemAdd::UpdateAction(){
 
 
 void ceWPACoordSystemAdd::UpdateConvoCoordSysIDLists(){
-	UpdateComboBoxWithConvoCoordSysIDList( pCBCoordSystemID );
-	UpdateComboBoxWithConvoCoordSysIDList( pCBAliasID );
+	UpdateComboBoxWithConvoCoordSysIDList(pCBCoordSystemID);
+	UpdateComboBoxWithConvoCoordSysIDList(pCBAliasID);
 }

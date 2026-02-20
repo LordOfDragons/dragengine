@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug. */
-	deoglDebugMemoryConsumption( deoglRenderThread &renderThread );
+	deoglDebugMemoryConsumption(deoglRenderThread &renderThread);
 	
 	/** Clean up debug. */
 	~deoglDebugMemoryConsumption();
@@ -69,12 +69,12 @@ public:
 	
 	
 private:
-	void pLog( const deoglMemoryConsumptionGPU &consumption );
-	void pLog( const deoglMemoryConsumptionTexture &consumption );
-	void pLog( const deoglMemoryConsumptionSkin &consumption );
-	void pLog( const deoglMemoryConsumptionBufferObject &consumption );
-	void pLog( const deoglMemoryConsumptionDeferredRendering &consumption );
-	void pLog( const deoglMemoryConsumptionShadow &consumption );
+	void pLog(const deoglMemoryConsumptionGPU &consumption);
+	void pLog(const deoglMemoryConsumptionTexture &consumption);
+	void pLog(const deoglMemoryConsumptionSkin &consumption);
+	void pLog(const deoglMemoryConsumptionBufferObject &consumption);
+	void pLog(const deoglMemoryConsumptionDeferredRendering &consumption);
+	void pLog(const deoglMemoryConsumptionShadow &consumption);
 };
 
 #endif

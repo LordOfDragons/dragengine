@@ -39,21 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleClamp::peeUControllerToggleClamp( peeController *controller ){
-	if( ! controller ) DETHROW( deeInvalidParam );
+peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
+	if(!controller) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
-	SetShortInfo( "Toggle Controller Clamp" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.ToggleClamp");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleClamp::~peeUControllerToggleClamp(){
-	if( pController ){
-		pController->FreeReference();
-	}
 }
 
 
@@ -62,9 +58,9 @@ peeUControllerToggleClamp::~peeUControllerToggleClamp(){
 ///////////////
 
 void peeUControllerToggleClamp::Undo(){
-	pController->SetClamp( ! pController->GetClamp() );
+	pController->SetClamp(!pController->GetClamp());
 }
 
 void peeUControllerToggleClamp::Redo(){
-	pController->SetClamp( ! pController->GetClamp() );
+	pController->SetClamp(!pController->GetClamp());
 }

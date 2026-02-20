@@ -45,8 +45,7 @@ class deBaseSynthesizerSound;
 class DE_DLL_EXPORT deSound : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSound> Ref;
-	
+	using Ref = deTObjectReference<deSound>;
 	
 	
 private:
@@ -65,16 +64,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound. */
-	deSound( deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	deSound(deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime, int bytesPerSample, int sampleRate,
-		int sampleCount, int channelCount );
+		int sampleCount, int channelCount);
 	
 	/**
 	 * \brief Create sound for internal loading.
 	 * \warning This is a special internal constructor. Never ever call this on your own!
 	 */
-	deSound( deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deSound(deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -83,7 +82,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSound();
+	~deSound() override;
 	/*@}*/
 	
 	
@@ -115,13 +114,13 @@ public:
 	inline deBaseAudioSound *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer object. */
-	void SetPeerAudio( deBaseAudioSound *peer );
+	void SetPeerAudio(deBaseAudioSound *peer);
 	
 	/** \brief Synthesizer system peer object. */
 	inline deBaseSynthesizerSound *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer system peer object. */
-	void SetPeerSynthesizer( deBaseSynthesizerSound *peer );
+	void SetPeerSynthesizer(deBaseSynthesizerSound *peer);
 	/*@}*/
 	
 	
@@ -132,8 +131,8 @@ public:
 	 * \brief Finalize construction after asynchronous loading.
 	 * \warning This is a special internal function. Never ever call this on your own!
 	 */
-	void FinalizeConstruction( int bytesPerSample, int sampleRate,
-		int sampleCount, int channelCount );
+	void FinalizeConstruction(int bytesPerSample, int sampleRate,
+		int sampleCount, int channelCount);
 	/*@}*/
 };
 

@@ -27,12 +27,12 @@
 #define _GDEUOCPSETPATHPATTERNTYPE_H_
 
 #include "../../../gamedef/property/gdeProperty.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
 
 
 
@@ -40,9 +40,13 @@ class gdeObjectClass;
  * \brief Undo action object class property set path pattern type.
  */
 class gdeUOCPSetPathPatternType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCPSetPathPatternType>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePathPatternTypes pOldValue;
 	gdeProperty::ePathPatternTypes pNewValue;
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPSetPathPatternType( gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePathPatternTypes newValue );
+	gdeUOCPSetPathPatternType(gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePathPatternTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCPSetPathPatternType();
+	~gdeUOCPSetPathPatternType() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

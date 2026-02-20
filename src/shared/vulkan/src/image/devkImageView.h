@@ -37,8 +37,7 @@
 class devkImageView : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkImageView> Ref;
-	
+	using Ref = deTObjectReference<devkImageView>;
 	
 	
 protected:
@@ -51,17 +50,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image view. */
-	devkImageView( devkImage *image );
+	devkImageView(devkImage *image);
 	
 	/** Create image view. */
-	devkImageView( devkImage *image, int layer );
+	devkImageView(devkImage *image, int layer);
 	
 	/** Create image view. */
-	devkImageView( devkImage *image, int layer, int level );
+	devkImageView(devkImage *image, int layer, int level);
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkImageView();
+	~devkImageView() override;
 	/*@}*/
 	
 	
@@ -70,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline devkImage *GetImage() const{ return pImage; }
+	inline const devkImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Image view. */
 	inline VkImageView GetImageView() const{ return pImageView; }

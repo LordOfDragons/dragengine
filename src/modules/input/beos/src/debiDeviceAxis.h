@@ -30,7 +30,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceAxis.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deBeOSInput;
 class debiDevice;
@@ -50,8 +50,8 @@ private:
 	decString pName;
 	deInputDeviceAxis::eAxisTypes pType;
 	
-	deImageReference pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	deImage::Ref pDisplayImage;
+	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMinimum;
@@ -72,10 +72,14 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceAxis> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device axis. */
-	debiDeviceAxis( deBeOSInput &module );
+	debiDeviceAxis(deBeOSInput &module);
 	
 protected:
 	/** \brief Clean up device axis. */
@@ -94,42 +98,42 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Type. */
 	inline deInputDeviceAxis::eAxisTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( deInputDeviceAxis::eAxisTypes type );
+	void SetType(deInputDeviceAxis::eAxisTypes type);
 	
 	
 	
 	/** \brief Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** \brief Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -137,52 +141,52 @@ public:
 	inline int GetMinimum() const{ return pMinimum; }
 	
 	/** \brief Set minimum value. */
-	void SetMinimum( int minimum );
+	void SetMinimum(int minimum);
 	
 	/** \brief Maximum value. */
 	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** \brief Set maximum value. */
-	void SetMaximum( int maximum );
+	void SetMaximum(int maximum);
 	
 	/** \brief Fuzz. */
 	inline int GetFuzz() const{ return pFuzz; }
 	
 	/** \brief Set fuzz. */
-	void SetFuzz( int fuzz );
+	void SetFuzz(int fuzz);
 	
 	/** \brief Flat. */
 	inline int GetFlat() const{ return pFlat; }
 	
 	/** \brief Set flat. */
-	void SetFlat( int flat );
+	void SetFlat(int flat);
 	
 	/** \brief Axis is absolute. */
 	inline bool GetAbsolute() const{ return pAbsolute; }
 	
 	/** \brief Set if axis is absolute. */
-	void SetAbsolute( bool absolute );
+	void SetAbsolute(bool absolute);
 	
 	/** \brief Wheel around other axis. */
 	inline bool GetWheelOtherAxis() const{ return pWheelOtherAxis; }
 	
 	/** \brief Set to wheel around other axis. */
-	void SetWheelOtherAxis( bool otherAxis );
+	void SetWheelOtherAxis(bool otherAxis);
 	
 	/** \brief Wheel changed value. */
 	inline int GetWheelChange() const{ return pWheelChange; }
 	
 	/** \brief Set wheel change value. */
-	void SetWheelChange( int change, int modifiers, const timeval &eventTime );
+	void SetWheelChange(int change, int modifiers, const timeval &eventTime);
 	
 	/** \brief Increment wheel change value. */
-	void IncrementWheelChange( int amount, int modifiers, const timeval &eventTime );
+	void IncrementWheelChange(int amount, int modifiers, const timeval &eventTime);
 	
 	/** \brief Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	
 	
@@ -190,18 +194,18 @@ public:
 	inline int GetBICode() const{ return pBICode; }
 	
 	/** \brief Set BeOS input code. */
-	void SetBICode( int code );
+	void SetBICode(int code);
 	
 	
 	
 	/** \brief Update engine input device information axis. */
-	void GetInfo( deInputDeviceAxis &info ) const;
+	void GetInfo(deInputDeviceAxis &info) const;
 	
 	/** \brief Process new value dirty axis if changed enough. */
-	void ProcessNewValue( debiDevice &device, float newValue, const timeval &eventTime );
+	void ProcessNewValue(debiDevice &device, float newValue, const timeval &eventTime);
 	
 	/** \brief Send events if required. */
-	void SendEvents( debiDevice &device );
+	void SendEvents(debiDevice &device);
 	/*@}*/
 };
 

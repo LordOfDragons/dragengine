@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLEIMAGE_H_
 
 #include "deDSRenderable.h"
-#include "../../../image/deImageReference.h"
+#include "../../../image/deImage.h"
 
 
 /**
@@ -35,8 +35,12 @@
  * The texture is defined by an image.
  */
 class DE_DLL_EXPORT deDSRenderableImage : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableImage>;
+	
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	
 	
@@ -44,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableImage( const char *name );
+	deDSRenderableImage(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableImage();
+	~deDSRenderableImage() override;
 	/*@}*/
 	
 	
@@ -55,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or NULL if not set. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 	
 	
@@ -66,7 +70,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

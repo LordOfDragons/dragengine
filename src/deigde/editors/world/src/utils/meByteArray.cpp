@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meByteArray.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,55 +34,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-meByteArray::meByteArray( int colons, int rows ) :
-pColons( colons ),
-pRows( rows ),
-pValues( NULL )
+meByteArray::meByteArray(int colons, int rows) :
+pColons(colons),
+pRows(rows)
 {
-	if( colons < 1 || rows < 1 ) {
-		DETHROW( deeInvalidParam );
+	if(colons < 1 || rows < 1) {
+		DETHROW(deeInvalidParam);
 	}
 	
-	pValues = new unsigned char[ colons * rows ];
-	SetAll( 0 );
+	pValues.SetAll(colons * rows, 0);
 }
 
-meByteArray::meByteArray( const meByteArray &array ) :
-pColons( array.pColons ),
-pRows( array.pRows ),
-pValues( NULL )
-{
-	pValues = new unsigned char[ pColons * pRows ];
-	*this = array;
+meByteArray::meByteArray(const meByteArray &array) :
+pColons(array.pColons),
+pRows(array.pRows),
+pValues(array.pValues){
 }
 
-meByteArray::~meByteArray(){
-	if( pValues ){
-		delete [] pValues;
-	}
-}
+meByteArray::~meByteArray() = default;
 
 
 
 // Management
 ///////////////
 
-int meByteArray::GetValueAt( int x, int y ) const{
-	if( x < 0 || x >= pColons || y < 0 || y >= pRows ){
-		DETHROW( deeInvalidParam );
+int meByteArray::GetValueAt(int x, int y) const{
+	if(x < 0 || x >= pColons || y < 0 || y >= pRows){
+		DETHROW(deeInvalidParam);
 	}
-	return ( int )pValues[ y * pColons + x ];
+	return (int)pValues[y * pColons + x];
 }
 
-void meByteArray::SetValueAt( int x, int y, int value ){
-	if( x < 0 || x >= pColons || y < 0 || y >= pRows ){
-		DETHROW( deeInvalidParam );
+void meByteArray::SetValueAt(int x, int y, int value){
+	if(x < 0 || x >= pColons || y < 0 || y >= pRows){
+		DETHROW(deeInvalidParam);
 	}
-	pValues[ y * pColons + x ] = ( unsigned char )value;
+	pValues[y * pColons + x] = (unsigned char)value;
 }
 
-void meByteArray::SetAll( int value ){
-	memset( pValues, value, pColons * pRows );
+void meByteArray::SetAll(int value){
+	pValues.SetRangeAt(0, pValues.GetCount(), (unsigned char)value);
 }
 
 
@@ -94,15 +81,15 @@ void meByteArray::SetAll( int value ){
 // Operators
 //////////////
 
-bool meByteArray::operator==( const meByteArray &array ) const{
+bool meByteArray::operator==(const meByteArray &array) const{
 	return pColons == array.pColons && pRows == array.pRows
-		&& memcmp( pValues, array.pValues, pColons * pRows ) == 0;
+		&& memcmp(pValues.GetArrayPointer(), array.pValues.GetArrayPointer(), pColons * pRows) == 0;
 }
 
-meByteArray &meByteArray::operator=( const meByteArray &array ){
-	if( array.pColons != pColons || array.pRows != pRows ){
-		DETHROW( deeInvalidParam );
+meByteArray &meByteArray::operator=(const meByteArray &array){
+	if(array.pColons != pColons || array.pRows != pRows){
+		DETHROW(deeInvalidParam);
 	}
-	memcpy( pValues, array.pValues, pColons * pRows );
+	pValues = array.pValues;
 	return *this;
 }

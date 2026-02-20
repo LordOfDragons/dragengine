@@ -55,25 +55,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void VisitProperty( deSkinProperty &property );
+	virtual void VisitProperty(deSkinProperty &property);
 	
 	/** \brief Visit single value property. */
-	virtual void VisitValue( deSkinPropertyValue &property );
+	virtual void VisitValue(deSkinPropertyValue &property);
 	
 	/** \brief Visit uniform color property. */
-	virtual void VisitColor( deSkinPropertyColor &property );
+	virtual void VisitColor(deSkinPropertyColor &property);
 	
 	/** \brief Visit image property. */
-	virtual void VisitImage( deSkinPropertyImage &property );
+	virtual void VisitImage(deSkinPropertyImage &property);
 	
 	/** \brief Visit video property. */
-	virtual void VisitVideo( deSkinPropertyVideo &property );
+	virtual void VisitVideo(deSkinPropertyVideo &property);
 	
 	/** \brief Visit constructed property. */
-	virtual void VisitConstructed( deSkinPropertyConstructed &property );
+	virtual void VisitConstructed(deSkinPropertyConstructed &property);
 	
 	/** \brief Visit mapped property. */
-	virtual void VisitMapped( deSkinPropertyMapped &property );
+	virtual void VisitMapped(deSkinPropertyMapped &property);
 	/*@}*/
 };
 

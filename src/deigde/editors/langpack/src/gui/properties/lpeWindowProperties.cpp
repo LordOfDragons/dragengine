@@ -32,7 +32,7 @@
 #include "../lpeWindowMain.h"
 #include "../../langpack/lpeLangPack.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -46,21 +46,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeWindowProperties::lpeWindowProperties( lpeWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pPanelLangPack( NULL )
+lpeWindowProperties::lpeWindowProperties(lpeWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
+pPanelLangPack(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelLangPack = new lpeWPLangPack( *this );
-	AddChild( pPanelLangPack, "Language Pack" );
+	pPanelLangPack = lpeWPLangPack::Ref::New(*this);
+	AddChild(pPanelLangPack, "@LangPack.Properties.LangPack");
 	
-	pPanelUndoHistory.TakeOver( new lpeWPUndoHistory( env ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory = lpeWPUndoHistory::Ref::New(env);
+	AddChild(pPanelUndoHistory, "@LangPack.Properties.Undo");
 	
-	SetActivePanel( 0 );
+	SetActivePanel(0);
 }
 
 lpeWindowProperties::~lpeWindowProperties(){
@@ -71,7 +71,7 @@ lpeWindowProperties::~lpeWindowProperties(){
 // Management
 ///////////////
 
-void lpeWindowProperties::SetLangPack( lpeLangPack *langpack ){
-	pPanelLangPack->SetLangPack( langpack );
-	( ( lpeWPUndoHistory* )pPanelUndoHistory.operator->() )->SetLangPack( langpack );
+void lpeWindowProperties::SetLangPack(lpeLangPack *langpack){
+	pPanelLangPack->SetLangPack(langpack);
+	pPanelUndoHistory->SetLangPack(langpack);
 }

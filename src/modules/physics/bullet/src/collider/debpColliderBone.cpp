@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpColliderBone.h"
 #include "debpColliderConstraint.h"
 #include "debpCollider.h"
@@ -50,22 +46,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpColliderBone::debpColliderBone( debpCollider *collider, int index ) :
-pPhyBody( NULL ),
-pDirty( true ),
-pColBoneDynamic( false ),
-pIndex( index ),
-pParent( -1 ),
-pStaticCollisionTest( NULL ),
-pStaticCollisionTestShape( NULL ),
-pDirtyStaticTest( true ),
-pDebugDrawer( NULL ),
-pDDSShape( NULL )
+debpColliderBone::debpColliderBone(debpCollider *collider, int index) :
+pPhyBody(NULL),
+pDirty(true),
+pColBoneDynamic(false),
+pIndex(index),
+pParent(-1),
+pStaticCollisionTest(NULL),
+pDirtyStaticTest(true),
+pDDSShape(NULL)
 {
-	pStaticCollisionTestObject.SetOwnerCollider( collider, index );
+	pStaticCollisionTestObject.SetOwnerCollider(collider, index);
 	
 	pPhyBody = new debpPhysicsBody;
-	pPhyBody->SetOwnerCollider( collider, index );
+	pPhyBody->SetOwnerCollider(collider, index);
 }
 
 debpColliderBone::~debpColliderBone(){
@@ -77,32 +71,32 @@ debpColliderBone::~debpColliderBone(){
 // Management
 ///////////////
 
-void debpColliderBone::SetBoneMatrices( const decDMatrix &matrix ){
+void debpColliderBone::SetBoneMatrices(const decDMatrix &matrix){
 	pBoneMatrix = matrix;
 	pInvBoneMatrix = matrix.QuickInvert();
 }
 
-void debpColliderBone::SetColliderMatrices( const decDMatrix &matrix ){
+void debpColliderBone::SetColliderMatrices(const decDMatrix &matrix){
 	pColMatrix = matrix;
 	pInvColMatrix = matrix.QuickInvert();
 }
 
-void debpColliderBone::SetLocalMatrix( const decDMatrix &matrix ){
+void debpColliderBone::SetLocalMatrix(const decDMatrix &matrix){
 	pLocalMatrix = matrix;
 	pInvLocalMatrix = matrix.QuickInvert();
 }
 
-void debpColliderBone::SetRealMatrix( const decDMatrix &matrix ){
+void debpColliderBone::SetRealMatrix(const decDMatrix &matrix){
 	pRealMatrix = matrix;
 	pInvRealMatrix = matrix.QuickInvert();
 	pDirty = true;
 }
 
-void debpColliderBone::SetDirty( bool dirty ){
+void debpColliderBone::SetDirty(bool dirty){
 	pDirty = dirty;
 }
 
-void debpColliderBone::SetColBoneDynamic( bool dynamic ){
+void debpColliderBone::SetColBoneDynamic(bool dynamic){
 	pColBoneDynamic = dynamic;
 }
 
@@ -115,50 +109,38 @@ int debpColliderBone::GetConstraintCount() const{
 	return pConstraints.GetCount();
 }
 
-debpColliderConstraint *debpColliderBone::GetConstraintAt( int index ) const{
-	return ( debpColliderConstraint* )pConstraints.GetAt( index );
+debpColliderConstraint *debpColliderBone::GetConstraintAt(int index) const{
+	return pConstraints.GetAt(index);
 }
 
-int debpColliderBone::IndexOfConstraint( debpColliderConstraint *constraint ) const{
-	return pConstraints.IndexOf( constraint );
+int debpColliderBone::IndexOfConstraint(debpColliderConstraint *constraint) const{
+	return pConstraints.IndexOf(constraint);
 }
 
-bool debpColliderBone::HasConstraint( debpColliderConstraint *constraint ) const{
-	return pConstraints.Has( constraint );
+bool debpColliderBone::HasConstraint(debpColliderConstraint *constraint) const{
+	return pConstraints.Has(constraint);
 }
 
-void debpColliderBone::AddConstraint( debpColliderConstraint *constraint ){
-	if( ! constraint ){
-		DETHROW( deeInvalidParam );
-	}
-	pConstraints.Add( constraint );
+void debpColliderBone::AddConstraint(deTUniqueReference<debpColliderConstraint> &&constraint){
+	DEASSERT_NOTNULL(constraint)
+	
+	pConstraints.Add(std::move(constraint));
 }
 
-void debpColliderBone::RemoveConstraint( debpColliderConstraint *constraint ){
-	pConstraints.Remove( constraint );
-	delete constraint;
+void debpColliderBone::RemoveConstraint(debpColliderConstraint *constraint){
+	pConstraints.Remove(constraint);
 }
 
 void debpColliderBone::RemoveAllConstraints(){
-	const int count = pConstraints.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		delete ( debpColliderConstraint* )pConstraints.GetAt( i );
-	}
 	pConstraints.RemoveAll();
 }
 
 
 
 bool debpColliderBone::RequiresAutoDirty() const{
-	const int count = pConstraints.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		if( ( ( debpColliderConstraint* )pConstraints.GetAt( i ) )->RequiresAutoDirty() ){
-			return true;
-		}
-	}
-	return false;
+	return pConstraints.HasMatching([&](const debpColliderConstraint &c){
+		return c.RequiresAutoDirty();
+	});
 }
 
 
@@ -166,7 +148,7 @@ bool debpColliderBone::RequiresAutoDirty() const{
 // helper functions
 /////////////////////
 
-void debpColliderBone::SetFromRigBone( const deRigBone &bone ){
+void debpColliderBone::SetFromRigBone(const deRigBone &bone){
 	// store away the offset due to the central mass point
 	pOffset = bone.GetCentralMassPoint();
 	
@@ -175,11 +157,11 @@ void debpColliderBone::SetFromRigBone( const deRigBone &bone ){
 	pInvBoneMatrix = pBoneMatrix.QuickInvert();
 	
 	// rig collider matrix
-	pColMatrix = decDMatrix::CreateTranslation( bone.GetCentralMassPoint() ) * pBoneMatrix;
+	pColMatrix = decDMatrix::CreateTranslation(bone.GetCentralMassPoint()) * pBoneMatrix;
 	pInvColMatrix = pColMatrix.QuickInvert();
 	
 	// local matrix
-	pLocalMatrix.SetRT( bone.GetRotation(), bone.GetPosition() );
+	pLocalMatrix.SetRT(bone.GetRotation(), bone.GetPosition());
 	pInvLocalMatrix = pLocalMatrix.QuickInvert();
 	
 	// parent
@@ -224,23 +206,11 @@ btCollisionObject *debpColliderBone::GetStaticCollisionTestPrepare(){
 // Debugging
 //////////////
 
-void debpColliderBone::SetDebugDrawer( deDebugDrawer *debugDrawer ){
-	if( debugDrawer == pDebugDrawer ){
-		return;
-	}
-	
-	if( pDebugDrawer ){
-		pDebugDrawer->FreeReference();
-	}
-	
+void debpColliderBone::SetDebugDrawer(deDebugDrawer *debugDrawer){
 	pDebugDrawer = debugDrawer;
-	
-	if( debugDrawer ){
-		debugDrawer->AddReference();
-	}
 }
 
-void debpColliderBone::SetDDSShape( deDebugDrawerShape *shape ){
+void debpColliderBone::SetDDSShape(deDebugDrawerShape *shape){
 	pDDSShape = shape;
 }
 
@@ -250,82 +220,64 @@ void debpColliderBone::SetDDSShape( deDebugDrawerShape *shape ){
 //////////////////////
 
 void debpColliderBone::pCleanUp(){
-	if( pDebugDrawer ){
-		pDebugDrawer->FreeReference();
-	}
-	
 	RemoveAllConstraints();
 	
-	if( pPhyBody ){
+	if(pPhyBody){
 		delete pPhyBody;
 	}
 	
-	if( pStaticCollisionTest ){
+	if(pStaticCollisionTest){
 		delete pStaticCollisionTest;
-	}
-	if( pStaticCollisionTestShape ){
-		pStaticCollisionTestShape->FreeReference();
 	}
 }
 
 void debpColliderBone::pUpdateStaticCollisionTest(){
-	if( ! pStaticCollisionTest ){
+	if(!pStaticCollisionTest){
 		pStaticCollisionTest = new btGhostObject;
-		pStaticCollisionTest->setUserPointer( &pStaticCollisionTestObject );
+		pStaticCollisionTest->setUserPointer(&pStaticCollisionTestObject);
 		pDirtyStaticTest = true;
 	}
 	
-	if( ! pDirtyStaticTest ){
+	if(!pDirtyStaticTest){
 		return;
 	}
 	
-	if( pStaticCollisionTestShape ){
-		pStaticCollisionTestShape->FreeReference();
-		pStaticCollisionTestShape = NULL;
-	}
+	pStaticCollisionTestShape = nullptr;
 	
 	try{
 		pStaticCollisionTestShape = pCreateBPShape();
 		
-		if( pStaticCollisionTestShape ){
-			pStaticCollisionTestShape->AddReference();
-			pStaticCollisionTest->setCollisionShape( pStaticCollisionTestShape->GetShape() );
+		if(pStaticCollisionTestShape){
+			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());
 			
 		}else{
-			pStaticCollisionTest->setCollisionShape( NULL );
+			pStaticCollisionTest->setCollisionShape(NULL);
 		}
 		
-	}catch( const deException & ){
-		if( pStaticCollisionTestShape ){
-			pStaticCollisionTestShape->FreeReference();
-			pStaticCollisionTestShape = NULL;
-		}
+	}catch(const deException &){
+		pStaticCollisionTestShape = nullptr;
 		throw;
 	}
 	
 	pDirtyStaticTest = false;
 }
 
-debpBulletShape *debpColliderBone::pCreateBPShape(){
-	const int count = pShapes.GetShapeCount();
-	if( count == 0 ){
-		return NULL;
+debpBulletShape::Ref debpColliderBone::pCreateBPShape(){
+	const int count = pShapes.GetCount();
+	if(count == 0){
+		return {};
 	}
 	
 	debpCreateBulletShape createBulletShape;
 	int i;
 	
-	createBulletShape.SetScale( pStaticCollisionTestObject.GetOwnerCollider()->GetCollider().GetScale() );
+	createBulletShape.SetScale(pStaticCollisionTestObject.GetOwnerCollider()->GetCollider().GetScale());
 	
-	for( i=0; i<count; i++ ){
-		createBulletShape.SetShapeIndex( i );
-		pShapes.GetShapeAt( i )->GetShape()->Visit( createBulletShape );
+	for(i=0; i<count; i++){
+		createBulletShape.SetShapeIndex(i);
+		pShapes.GetAt(i)->GetShape()->Visit(createBulletShape);
 	}
 	createBulletShape.Finish();
 	
-	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
-	if( bulletShape ){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
-	}
-	return bulletShape;
+	return createBulletShape.GetBulletShape();
 }

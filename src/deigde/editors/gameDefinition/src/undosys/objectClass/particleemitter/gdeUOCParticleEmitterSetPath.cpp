@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const char *newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const char *newValue) :
+
+pParticleEmitter(nullptr)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set path" );
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetPath");
 	
 	pOldValue = particleEmitter->GetPath();
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
 ///////////////
 
 void gdeUOCParticleEmitterSetPath::Undo(){
-	pParticleEmitter->SetPath( pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPath(pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetPath::Redo(){
-	pParticleEmitter->SetPath( pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPath(pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

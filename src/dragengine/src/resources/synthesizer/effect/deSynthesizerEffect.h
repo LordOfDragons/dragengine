@@ -38,8 +38,7 @@ class deSynthesizerEffectVisitor;
 class DE_DLL_EXPORT deSynthesizerEffect : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerEffect> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerEffect>;
 	
 	
 private:
@@ -64,7 +63,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerEffect();
+	~deSynthesizerEffect() override;
 	/*@}*/
 	
 	
@@ -81,19 +80,19 @@ public:
 	 * This function has to be used only by the deSynthesizer class to
 	 * assign itself as a parent. Do not call this function directly.
 	 */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	/** \brief Effect is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Strength. */
 	inline float GetStrength() const{ return pStrength; }
 	
 	/** \brief Set strength. */
-	void SetStrength( float strength );
+	void SetStrength(float strength);
 	
 	
 	
@@ -107,7 +106,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deSynthesizerEffectVisitor &visitor );
+	virtual void Visit(deSynthesizerEffectVisitor &visitor);
 	/*@}*/
 };
 

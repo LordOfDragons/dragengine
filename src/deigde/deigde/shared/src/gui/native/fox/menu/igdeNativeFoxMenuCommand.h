@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMENUCOMMAND_H_
 
 #include "../foxtoolkit.h"
+#include "../../../menu/igdeMenuCommand.h"
 
 class igdeMenuCommand;
 
@@ -33,8 +34,8 @@ class igdeMenuCommand;
 /**
  * FOX native widget.
  */
-class igdeNativeFoxMenuCommand : public FXMenuCommand{
-	FXDECLARE( igdeNativeFoxMenuCommand )
+class igdeNativeFoxMenuCommand : public FXMenuCommand, public igdeMenuCommand::cNativeMenuCommand{
+	FXDECLARE(igdeNativeFoxMenuCommand)
 	
 protected:
 	igdeNativeFoxMenuCommand();
@@ -51,13 +52,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuCommand( igdeMenuCommand &owner, FXComposite *parent );
+	igdeNativeFoxMenuCommand(igdeMenuCommand &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuCommand();
+	~igdeNativeFoxMenuCommand() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuCommand* CreateNativeWidget( igdeMenuCommand &owner );
+	static igdeNativeFoxMenuCommand* CreateNativeWidget(igdeMenuCommand &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -70,24 +71,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateHotKey();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
-	static FXString BuildConstrText( igdeMenuCommand &owner );
+	static FXString BuildConstrText(igdeMenuCommand &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuCommand igdeNativeMenuCommand;
+using igdeNativeMenuCommand = igdeNativeFoxMenuCommand;
 
 #endif

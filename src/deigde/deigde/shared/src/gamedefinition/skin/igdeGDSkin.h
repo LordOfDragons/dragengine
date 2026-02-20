@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 
 
@@ -44,12 +44,20 @@
  * string in absolute form.
  */
 class DE_DLL_EXPORT igdeGDSkin : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDSkin>;
+	
+	/** \brief List of skins. */
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<igdeGDSkin>,igdeGDSkin>;
+	
+	
 private:
 	decString pPath;
 	decString pName;
 	decString pDescription;
 	decString pCategory;
-	deImageReference pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	
@@ -57,14 +65,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game definition skin. */
-	igdeGDSkin( const char *path, const char *name );
+	igdeGDSkin(const char *path, const char *name);
 	
 	/** \brief Create game definition skin as a copy of a another game definition skin. */
-	igdeGDSkin( const igdeGDSkin &skin );
+	igdeGDSkin(const igdeGDSkin &skin);
 	
 protected:
 	/** \breif Clean up game definition skin. */
-	virtual ~igdeGDSkin();
+	~igdeGDSkin() override;
 	/*@}*/
 	
 	
@@ -82,19 +90,19 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Category. */
 	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set category. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
-	/** \brief Preview image or NULL if not created. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	/** \brief Preview image or nullptr if not created. */
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
-	/** \brief Set preview image or NULL if not created. */
-	void SetPreviewImage( deImage *image );
+	/** \brief Set preview image or nullptr if not created. */
+	void SetPreviewImage(deImage *image);
 	/*@}*/
 };
 

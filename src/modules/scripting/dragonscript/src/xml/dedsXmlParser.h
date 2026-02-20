@@ -22,32 +22,28 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEDSXMLPARSER_H_
 #define _DEDSXMLPARSER_H_
 
-// includes
-#include "dragengine/common/xmlparser/decXmlParser.h"
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/xmlparser/decXmlParser.h>
 
-// predefintions
 class deLogger;
-
 
 
 // xml parser extension with logging
 class dedsXmlParser : public decXmlParser{
 private:
-	char *pLog;
-	int pLogLen;
+	decString pLog;
 	
 public:
 	// constructor, destructor
-	dedsXmlParser( deLogger *logger );
-	virtual ~dedsXmlParser();
+	explicit dedsXmlParser(deLogger *logger);
+	~dedsXmlParser() override;
 	// management
-	inline const char *GetParseLog() const{ return ( const char * )pLog; }
-	virtual void UnexpectedEOF( int line, int pos );
-	virtual void UnexpectedToken( int line, int pos, const char *token );
+	inline const decString &GetParseLog() const{ return pLog; }
+	void UnexpectedEOF(int line, int pos) override;
+	void UnexpectedToken(int line, int pos, const char *token) override;
 };
 
 // end of include only once

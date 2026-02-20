@@ -43,7 +43,6 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -58,8 +57,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeLoadSaveSAnimation::saeLoadSaveSAnimation( saeLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+saeLoadSaveSAnimation::saeLoadSaveSAnimation(saeLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 	pLSSys = lssys;
 	
 	pName = "Speech Animation";
@@ -71,29 +70,28 @@ igdeBaseXML( logger, loggerSource ){
 // Loading and saving
 ///////////////////////
 
-void saeLoadSaveSAnimation::LoadSAnimation( saeSAnimation &sanimation, decBaseFileReader &reader ){
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+void saeLoadSaveSAnimation::LoadSAnimation(saeSAnimation &sanimation, decBaseFileReader &reader){
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "speechAnimation" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "speechAnimation") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadSAnimation( *root, sanimation );
+	pReadSAnimation(*root, sanimation);
 }
 
-void saeLoadSaveSAnimation::SaveSAnimation( const saeSAnimation &sanimation, decBaseFileWriter &writer ){
-	decXmlWriter xmlWriter( &writer );
+void saeLoadSaveSAnimation::SaveSAnimation(const saeSAnimation &sanimation, decBaseFileWriter &writer){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteSAnimation( xmlWriter, sanimation );
+	pWriteSAnimation(xmlWriter, sanimation);
 }
 
 
@@ -101,240 +99,209 @@ void saeLoadSaveSAnimation::SaveSAnimation( const saeSAnimation &sanimation, dec
 // Private Functions
 //////////////////////
 
-void saeLoadSaveSAnimation::pWriteSAnimation( decXmlWriter &writer, const saeSAnimation &sanimation ){
-	const saePhonemeList &phonemeList = sanimation.GetPhonemeList();
-	const saeWordList &wordList = sanimation.GetWordList();
-	int count, i;
+void saeLoadSaveSAnimation::pWriteSAnimation(decXmlWriter &writer, const saeSAnimation &sanimation){
+	writer.WriteOpeningTag("speechAnimation", false, true);
 	
-	writer.WriteOpeningTag( "speechAnimation", false, true );
+	pWriteDisplay(writer, sanimation);
 	
-	pWriteDisplay( writer, sanimation );
+	writer.WriteDataTagString("rig", sanimation.GetRigPath());
+	writer.WriteDataTagString("animation", sanimation.GetAnimationPath());
 	
-	writer.WriteDataTagString( "rig", sanimation.GetRigPath() );
-	writer.WriteDataTagString( "animation", sanimation.GetAnimationPath() );
-	
-	if( ! sanimation.GetNeutralMoveName().IsEmpty() ){
-		writer.WriteDataTagString( "neutralMoveName", sanimation.GetNeutralMoveName() );
+	if(!sanimation.GetNeutralMoveName().IsEmpty()){
+		writer.WriteDataTagString("neutralMoveName", sanimation.GetNeutralMoveName());
 	}
 	
-	const decStringSet &neutralVertexPositionSets = sanimation.GetNeutralVertexPositionSets();
-	count = neutralVertexPositionSets.GetCount();
-	for( i=0; i<count; i++ ){
-		writer.WriteDataTagString( "neutralVertexPositionSet", neutralVertexPositionSets.GetAt( i ) );
-	}
+	const decStringSet &nvps = sanimation.GetNeutralVertexPositionSets();
+	nvps.Visit([&](const decString &name){
+		writer.WriteDataTagString("neutralVertexPositionSet", name);
+	});
 	
-	count = phonemeList.GetCount();
-	for( i=0; i<count; i++ ){
-		pWritePhoneme( writer, *phonemeList.GetAt( i ) );
-	}
+	sanimation.GetPhonemes().Visit([&](const saePhoneme &p){
+		pWritePhoneme(writer, p);
+	});
 	
-	count = wordList.GetCount();
-	for( i=0; i<count; i++ ){
-		pWriteWord( writer, *wordList.GetAt( i ) );
-	}
+	sanimation.GetWords().Visit([&](const saeWord &w){
+		pWriteWord(writer, w);
+	});
 	
-	writer.WriteClosingTag( "speechAnimation", true );
+	writer.WriteClosingTag("speechAnimation", true);
 }
 
-void saeLoadSaveSAnimation::pWriteDisplay( decXmlWriter &writer, const saeSAnimation &sanimation ){
-	writer.WriteOpeningTag( "display" );
+void saeLoadSaveSAnimation::pWriteDisplay(decXmlWriter &writer, const saeSAnimation &sanimation){
+	writer.WriteOpeningTag("display");
 	
-	writer.WriteDataTagString( "model", sanimation.GetDisplayModelPath() );
-	writer.WriteDataTagString( "skin", sanimation.GetDisplaySkinPath() );
-	writer.WriteDataTagString( "rig", sanimation.GetDisplayRigPath() );
+	writer.WriteDataTagString("model", sanimation.GetDisplayModelPath());
+	writer.WriteDataTagString("skin", sanimation.GetDisplaySkinPath());
+	writer.WriteDataTagString("rig", sanimation.GetDisplayRigPath());
 	
-	writer.WriteClosingTag( "display" );
+	writer.WriteClosingTag("display");
 }
 
-void saeLoadSaveSAnimation::pWritePhoneme( decXmlWriter &writer, const saePhoneme &phoneme ){
-	writer.WriteOpeningTagStart( "phoneme" );
-	writer.WriteAttributeInt( "ipa", phoneme.GetIPA() );
+void saeLoadSaveSAnimation::pWritePhoneme(decXmlWriter &writer, const saePhoneme &phoneme){
+	writer.WriteOpeningTagStart("phoneme");
+	writer.WriteAttributeInt("ipa", phoneme.GetIPA());
 	writer.WriteOpeningTagEnd();
 	
-	if( ! phoneme.GetSampleText().IsEmpty() ){
-		writer.WriteDataTagString( "sampleText", phoneme.GetSampleText() );
+	if(!phoneme.GetSampleText().IsEmpty()){
+		writer.WriteDataTagString("sampleText", phoneme.GetSampleText());
 	}
-	if( ! phoneme.GetMoveName().IsEmpty() ){
-		writer.WriteDataTagString( "moveName", phoneme.GetMoveName() );
+	if(!phoneme.GetMoveName().IsEmpty()){
+		writer.WriteDataTagString("moveName", phoneme.GetMoveName());
 	}
-	if( ! phoneme.GetVertexPositionSet().IsEmpty() ){
-		writer.WriteDataTagString( "vertexPositionSet", phoneme.GetVertexPositionSet() );
+	if(!phoneme.GetVertexPositionSet().IsEmpty()){
+		writer.WriteDataTagString("vertexPositionSet", phoneme.GetVertexPositionSet());
 	}
-	writer.WriteDataTagFloat( "length", phoneme.GetLength() );
+	writer.WriteDataTagFloat("length", phoneme.GetLength());
 	
-	writer.WriteClosingTag( "phoneme" );
+	writer.WriteClosingTag("phoneme");
 }
 
-void saeLoadSaveSAnimation::pWriteWord( decXmlWriter &writer, const saeWord &word ){
-	writer.WriteOpeningTagStart( "word" );
-	writer.WriteAttributeString( "name", word.GetName().GetString() );
+void saeLoadSaveSAnimation::pWriteWord(decXmlWriter &writer, const saeWord &word){
+	writer.WriteOpeningTagStart("word");
+	writer.WriteAttributeString("name", word.GetName().GetString());
 	writer.WriteOpeningTagEnd();
 	
-	writer.WriteDataTagString( decUnicodeString::NewFromUTF8( "phonetics" ), word.GetPhonetics() );
+	writer.WriteDataTagString(decUnicodeString::NewFromUTF8("phonetics"), word.GetPhonetics());
 	
-	writer.WriteClosingTag( "word" );
+	writer.WriteClosingTag("word");
 }
 
 
 
-void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSAnimation &sanimation ){
+void saeLoadSaveSAnimation::pReadSAnimation(const decXmlElementTag &root, saeSAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	decStringSet neutralVertexPositionSets;
 	const decXmlElementTag *tag;
 	int e;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "display" ) == 0 ){
-				pReadDisplay( *tag, sanimation );
+		if(tag){
+			if(strcmp(tag->GetName(), "display") == 0){
+				pReadDisplay(*tag, sanimation);
 				
-			}else if( strcmp( tag->GetName(), "rig" ) == 0 ){
-				sanimation.SetRigPath( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "rig") == 0){
+				sanimation.SetRigPath(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "animation" ) == 0 ){
-				sanimation.SetAnimationPath( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "animation") == 0){
+				sanimation.SetAnimationPath(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "neutralMoveName" ) == 0 ){
-				sanimation.SetNeutralMoveName( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "neutralMoveName") == 0){
+				sanimation.SetNeutralMoveName(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "neutralVertexPositionSet" ) == 0 ){
-				neutralVertexPositionSets.Add( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "neutralVertexPositionSet") == 0){
+				neutralVertexPositionSets.Add(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "phoneme" ) == 0 ){
-				pReadPhoneme( *tag, sanimation );
+			}else if(strcmp(tag->GetName(), "phoneme") == 0){
+				pReadPhoneme(*tag, sanimation);
 				
-			}else if( strcmp( tag->GetName(), "word" ) == 0 ){
-				pReadWord( *tag, sanimation );
-				
-			}else{
-				LogWarnUnknownTag( root, *tag );
-			}
-		}
-	}
-	
-	sanimation.SetNeutralVertexPositionSets( neutralVertexPositionSets );
-}
-
-void saeLoadSaveSAnimation::pReadDisplay( const decXmlElementTag &root, saeSAnimation &sanimation ){
-	const int elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
-	int e;
-	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
-		
-		if( tag ){
-			if( strcmp( tag->GetName(), "model" ) == 0 ){
-				sanimation.SetDisplayModelPath( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "skin" ) == 0 ){
-				sanimation.SetDisplaySkinPath( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "rig" ) == 0 ){
-				sanimation.SetDisplayRigPath( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "word") == 0){
+				pReadWord(*tag, sanimation);
 				
 			}else{
-				LogWarnUnknownTag( root, *tag );
+				LogWarnUnknownTag(root, *tag);
+			}
+		}
+	}
+	
+	sanimation.SetNeutralVertexPositionSets(neutralVertexPositionSets);
+}
+
+void saeLoadSaveSAnimation::pReadDisplay(const decXmlElementTag &root, saeSAnimation &sanimation){
+	const int elementCount = root.GetElementCount();
+	const decXmlElementTag *tag;
+	int e;
+	
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
+		
+		if(tag){
+			if(strcmp(tag->GetName(), "model") == 0){
+				sanimation.SetDisplayModelPath(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "skin") == 0){
+				sanimation.SetDisplaySkinPath(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "rig") == 0){
+				sanimation.SetDisplayRigPath(GetCDataString(*tag));
+				
+			}else{
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
 	}
 }
 
-void saeLoadSaveSAnimation::pReadPhoneme( const decXmlElementTag &root, saeSAnimation &sanimation ){
-	const int elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
-	saePhoneme *phoneme = NULL;
-	decString text;
-	int e;
-	
-	try{
-		phoneme = new saePhoneme;
-		if( ! phoneme ) DETHROW( deeOutOfMemory );
-		
-		/*if( ! HasAttribute( root, "name" ) ){
-			LogErrorGenericProblemValue( root, "name", "Attribute missing" );
+void saeLoadSaveSAnimation::pReadPhoneme(const decXmlElementTag &root, saeSAnimation &sanimation){
+	const saePhoneme::Ref phoneme(saePhoneme::Ref::New());
+	/*if( ! HasAttribute( root, "name" ) ){
+		LogErrorGenericProblemValue(root, "name", "Attribute missing");
 		}*/
-		phoneme->SetIPA( GetAttributeInt( root, "ipa" ) );
-		
-		if( sanimation.GetPhonemeList().HasIPA( phoneme->GetIPA() ) ){
-			text.Format( "%i", phoneme->GetIPA() );
-			LogErrorGenericProblemValue( root, text.GetString(), "Duplicate Phoneme" );
-		}
-		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
-			
-			if( tag ){
-				if( tag->GetName() == "sampleText" ){
-					phoneme->SetSampleText( GetCDataString( *tag ) );
-					
-				}else if( tag->GetName() == "moveName" ){
-					phoneme->SetMoveName( GetCDataString( *tag ) );
-					
-				}else if( tag->GetName() == "vertexPositionSet" ){
-					phoneme->SetVertexPositionSet( GetCDataString( *tag ) );
-					
-				}else if( tag->GetName() == "length" ){
-					phoneme->SetLength( GetCDataFloat( *tag ) );
-					
-				}else{
-					LogWarnUnknownTag( root, *tag );
-				}
-			}
-		}
-		
-		sanimation.AddPhoneme( phoneme );
-		
-	}catch( const deException & ){
-		if( phoneme ){
-			phoneme->FreeReference();
-		}
-		
-		throw;
+	phoneme->SetIPA(GetAttributeInt(root, "ipa"));
+	
+	if(sanimation.GetPhonemes().HasMatching([&](const saePhoneme &p){
+		return p.GetIPA() == phoneme->GetIPA();
+	})){
+		decString text;
+		text.Format("%d", phoneme->GetIPA());
+		LogErrorGenericProblemValue(root, text.GetString(), "Duplicate Phoneme");
 	}
+	
+	const int elementCount = root.GetElementCount();
+	int i;
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		if(tag->GetName() == "sampleText"){
+			phoneme->SetSampleText(GetCDataString(*tag));
+			
+		}else if(tag->GetName() == "moveName"){
+			phoneme->SetMoveName(GetCDataString(*tag));
+			
+		}else if(tag->GetName() == "vertexPositionSet"){
+			phoneme->SetVertexPositionSet(GetCDataString(*tag));
+			
+		}else if(tag->GetName() == "length"){
+			phoneme->SetLength(GetCDataFloat(*tag));
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
+	}
+	
+	sanimation.AddPhoneme(phoneme);
 }
 
-void saeLoadSaveSAnimation::pReadWord( const decXmlElementTag &root, saeSAnimation &sanimation ){
-	const int elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
-	saeWord *word = NULL;
-	int e;
+void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimation &sanimation){
+	const saeWord::Ref word(saeWord::Ref::New());
+	/*if( ! HasAttribute( root, "name" ) ){
+		LogErrorGenericProblemValue(root, "name", "Attribute missing");
+	}*/
+	word->SetName(GetAttributeString(root, "name"));
 	
-	try{
-		word = new saeWord;
-		if( ! word ) DETHROW( deeOutOfMemory );
-		
-		/*if( ! HasAttribute( root, "name" ) ){
-			LogErrorGenericProblemValue( root, "name", "Attribute missing" );
-		}*/
-		word->SetName( GetAttributeString( root, "name" ) );
-		
-		if( sanimation.GetWordList().HasNamed( word->GetName().GetString() ) ){
-			LogErrorGenericProblemValue( root, word->GetName().GetString(), "Duplicate Word" );
-		}
-		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
-			
-			if( tag ){
-				if( strcmp( tag->GetName(), "phonetics" ) == 0 ){
-					word->SetPhonetics( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
-					
-				}else{
-					LogWarnUnknownTag( root, *tag );
-				}
-			}
-		}
-		
-		sanimation.AddWord( word );
-		
-	}catch( const deException & ){
-		if( word ){
-			word->FreeReference();
-		}
-		
-		throw;
+	if(sanimation.GetWords().HasNamed(word->GetName())){
+		LogErrorGenericProblemValue(root, word->GetName(), "Duplicate Word");
 	}
+	
+	const int elementCount = root.GetElementCount();
+	int i;
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		if(strcmp(tag->GetName(), "phonetics") == 0){
+			word->SetPhonetics(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
+	}
+	
+	sanimation.AddWord(word);
 }

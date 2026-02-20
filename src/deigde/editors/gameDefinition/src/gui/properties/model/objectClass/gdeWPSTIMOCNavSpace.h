@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCNavigationSpace;
+#include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCNavigationSpace;
  */
 class gdeWPSTIMOCNavSpace : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCNavSpace> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCNavSpace( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navSpace, int index );
+	gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navSpace, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCNavSpace();
+	~gdeWPSTIMOCNavSpace() override;
 	/*@}*/
 	
 	
@@ -56,24 +58,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pNavSpace; }
+	inline const gdeOCNavigationSpace::Ref &GetOCNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

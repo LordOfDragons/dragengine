@@ -27,10 +27,11 @@
 
 #include <png.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
 class decString;
-class decBaseFileReader;
 class deVideoApng;
 
 
@@ -42,7 +43,7 @@ class deapngReader{
 private:
 	deVideoApng &pModule;
 	
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	
 	png_structp pReadStruct;
 	png_infop pInfoStruct;
@@ -64,12 +65,12 @@ private:
 	png_uint_32 pLastFrameHeight;
 	unsigned char pLastFrameDop;
 	
-	png_bytep pAccumData;
-	png_bytep *pAccumRows;
-	png_bytep pFrameData;
-	png_bytep *pFrameRows;
-	png_bytep pLastFrameData;
-	png_bytep *pLastFrameRows;
+	decTList<png_byte> pAccumData;
+	decTList<png_bytep> pAccumRows;
+	decTList<png_byte> pFrameData;
+	decTList<png_bytep> pFrameRows;
+	decTList<png_byte> pLastFrameData;
+	decTList<png_bytep> pLastFrameRows;
 	
 	bool pErrorState;
 	
@@ -79,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reader. */
-	deapngReader( deVideoApng &module, decBaseFileReader *reader );
+	deapngReader(deVideoApng &module, decBaseFileReader *reader);
 	
 	/** Clean up reader. */
 	~deapngReader();
@@ -93,7 +94,7 @@ public:
 	inline deVideoApng &GetModule() const{ return pModule; }
 	
 	/** File reader. */
-	inline decBaseFileReader *GetReader() const{ return pReader; }
+	inline const decBaseFileReader::Ref &GetReader() const{ return pReader; }
 	
 	/** Width in pixels. */
 	inline int GetWidth() const{ return pWidth; }
@@ -124,13 +125,13 @@ public:
 	void Rewind();
 	
 	/** Seek to frame. */
-	void SeekFrame( int frame );
+	void SeekFrame(int frame);
 	
 	/** Read frame image into accum image and advance to next frame. */
 	void ReadImage();
 	
 	/** Copy accum image. */
-	void CopyAccumImage( void *buffer, int size ) const;
+	void CopyAccumImage(void *buffer, int size) const;
 	/*@}*/
 	
 	

@@ -47,7 +47,6 @@
 
 
 class deVROpenXR;
-class decStringList;
 class decPath;
 
 
@@ -58,7 +57,6 @@ class deoxrApiLayer : public deObject{
 public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrApiLayer> Ref;
-	
 	
 	
 private:
@@ -85,14 +83,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader. */
-	deoxrApiLayer( deVROpenXR &oxr, const char *configFile );
+	deoxrApiLayer(deVROpenXR &oxr, const char *configFile);
 	
+protected:
 	/** Clean up loader. */
 	virtual ~deoxrApiLayer();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Configuration file. */

@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAWait;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAWait.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 
@@ -37,29 +37,33 @@ class ceConversationCondition;
  * \brief Undo Action Wait Conversation Action Set Condition.
  */
 class ceUCAWaitSetCondition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAWaitSetCondition>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitSetCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition );
+	ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAWaitSetCondition();
+	~ceUCAWaitSetCondition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

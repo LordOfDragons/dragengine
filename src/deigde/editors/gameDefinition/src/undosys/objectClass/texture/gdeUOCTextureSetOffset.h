@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * Undo action object class texture set offset.
  */
 class gdeUOCTextureSetOffset : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCTextureSetOffset>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	gdeUOCTextureSetOffset( gdeObjectClass *objectClass,
-		gdeOCComponentTexture *texture, const decVector2 &newValue );
+	gdeUOCTextureSetOffset(gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture, const decVector2 &newValue);
 	
 protected:
 	/** Clean up undo action. */
-	virtual ~gdeUOCTextureSetOffset();
+	~gdeUOCTextureSetOffset() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

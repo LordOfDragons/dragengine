@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUSkinSetPath::gdeUSkinSetPath(
-gdeSkin *skin, const char *newValue ) :
-pSkin( NULL )
+gdeSkin *skin, const char *newValue) :
+pSkin(nullptr)
 {
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(!skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Skin set path" );
+	SetShortInfo("@GameDefinition.Undo.SkinSetPath");
 	
 	pOldValue = skin->GetPath();
 	pNewValue = newValue;
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeUSkinSetPath::~gdeUSkinSetPath(){
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUSkinSetPath::~gdeUSkinSetPath(){
 ///////////////
 
 void gdeUSkinSetPath::Undo(){
-	pSkin->SetPath( pOldValue );
+	pSkin->SetPath(pOldValue);
 }
 
 void gdeUSkinSetPath::Redo(){
-	pSkin->SetPath( pNewValue );
+	pSkin->SetPath(pNewValue);
 }

@@ -26,11 +26,12 @@
 #define _GDEVAOSNAPPOINT_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCSnapPoint;
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
+
 class igdeWCoordSysArrows;
 
 
@@ -39,13 +40,18 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object snap point for edit view.
  */
 class gdeVAOSnapPoint : public gdeVAOSubObject{
-private:
-	gdeOCSnapPoint *pOCSnapPoint;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOSnapPoint> Ref;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	
+private:
+	gdeOCSnapPoint::Ref pOCSnapPoint;
+	
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
-	igdeWDebugDrawerShape *pDDSSnapDistance;
+	igdeWDebugDrawerShape::Ref pDDSSnapDistance;
 	
 	
 	
@@ -53,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object snap point. */
-	gdeVAOSnapPoint( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint );
+	gdeVAOSnapPoint(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint);
 	
 protected:
 	/**
@@ -63,7 +69,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOSnapPoint();
+	~gdeVAOSnapPoint() override;
 	/*@}*/
 	
 	
@@ -72,13 +78,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pOCSnapPoint; }
+	inline const gdeOCSnapPoint::Ref &GetOCSnapPoint() const{ return pOCSnapPoint; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

@@ -27,6 +27,7 @@
 
 #include "../deEosSdkPendingRequest.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -45,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create flow. */
-	deEosSdkFlow( deEosSdkServiceEos &service, const decUniqueID &id );
+	deEosSdkFlow(deEosSdkServiceEos &service, const decUniqueID &id);
 	
 	/** Delete flow. */
 	virtual ~deEosSdkFlow();
@@ -57,10 +58,10 @@ public:
 	/*@{*/
 	deEosSdk &GetModule() const;
 	
-	void Fail( const deException &e );
-	void Fail( EOS_EResult res );
-	void Fail( const deEosSdkPendingRequest::Ref &request, const deException &e );
-	void Fail( const deEosSdkPendingRequest::Ref &request, EOS_EResult res );
+	void Fail(const deException &e);
+	void Fail(EOS_EResult res);
+	void Fail(const deEosSdkPendingRequest::Ref &request, const deException &e);
+	void Fail(const deEosSdkPendingRequest::Ref &request, EOS_EResult res);
 	void Finish();
 	void Abandon();
 	

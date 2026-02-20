@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetName::gdeUOCSetName( gdeObjectClass *objectClass, const char *newValue ) :
-pObjectClass( NULL )
+gdeUOCSetName::gdeUOCSetName(gdeObjectClass *objectClass, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set name" );
+	SetShortInfo("@GameDefinition.Undo.OCSetName");
 	
 	pOldValue = objectClass->GetName();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetName::~gdeUOCSetName(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ gdeUOCSetName::~gdeUOCSetName(){
 ///////////////
 
 void gdeUOCSetName::Undo(){
-	pObjectClass->SetName( pOldValue );
+	pObjectClass->SetName(pOldValue);
 }
 
 void gdeUOCSetName::Redo(){
-	pObjectClass->SetName( pNewValue );
+	pObjectClass->SetName(pNewValue);
 }

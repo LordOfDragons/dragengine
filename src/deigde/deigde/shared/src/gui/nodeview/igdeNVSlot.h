@@ -27,7 +27,7 @@
 
 #include "../igdeContainer.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -43,6 +43,31 @@ class igdeNVLink;
  * like igdeContainerFlow with X-Axis layout from left to right or reversed.
  */
 class DE_DLL_EXPORT igdeNVSlot : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeNVSlot>;
+	
+	/** \brief Link list. */
+	using LinkList = decTObjectOrderedSet<igdeNVLink>;
+	
+	class cNativeNVSlot{
+	public:
+		virtual ~cNativeNVSlot() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateColor() = 0;
+		virtual void UpdateLinkedState() = 0;
+		virtual decPoint GetCenter() const = 0;
+		virtual decPoint GetCenterNode() const = 0;
+		virtual decPoint GetCenterBoard() const = 0;
+		virtual decPoint GetConnector() const = 0;
+		virtual decPoint GetConnectorNode() const = 0;
+		virtual decPoint GetConnectorBoard() const = 0;
+	};
+	
+	
 private:
 	decString pText;
 	decString pDescription;
@@ -52,19 +77,24 @@ private:
 	decColor pColor;
 	
 	igdeNVNode *pOwnerNode;
-	decPointerSet pLinks;
+	LinkList pLinks;
 	
+	
+protected:
+	cNativeNVSlot *pNativeNVSlot;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeNVSlot( igdeEnvironment &environment, const char *text, bool isInput );
+	igdeNVSlot(igdeEnvironment &environment, const char *text, bool isInput);
 	
 	/** \brief Create checkbox. */
-	igdeNVSlot( igdeEnvironment &environment, const char *text, const char *description, bool isInput );
+	igdeNVSlot(igdeEnvironment &environment, const char *text, const char *description, bool isInput);
 	
+	igdeNVSlot(const igdeNVSlot&) = delete;
+	igdeNVSlot& operator=(const igdeNVSlot&) = delete;
 	
 	
 protected:
@@ -74,7 +104,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeNVSlot();
+	~igdeNVSlot() override;
 	/*@}*/
 	
 	
@@ -86,19 +116,19 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Button is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Slot is an input slot (left side) or output slot (right side). */
 	inline bool GetIsInput() const{ return pIsInput; }
@@ -107,39 +137,36 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color indicating slot type. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
-	/** \brief Owner node or NULL. */
+	/** \brief Owner node or nullptr. */
 	inline igdeNVNode *GetOwnerNode() const{ return pOwnerNode; }
 	
 	/**
-	 * \brief Set owner node or NULL.
+	 * \brief Set owner node or nullptr.
 	 * \warning For use by \em igdeNVNode only!
 	 */
-	void SetOwnerNode( igdeNVNode *node );
+	void SetOwnerNode(igdeNVNode *node);
 	
 	
 	
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt( int index ) const;
+	/** \brief Links. */
+	const LinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Has link. */
-	bool HasLink( igdeNVLink *link ) const;
+	bool HasLink(igdeNVLink *link) const;
 	
 	/**
 	 * \brief Add link.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
-	void AddLink( igdeNVLink *link );
+	void AddLink(igdeNVLink *link);
 	
 	/**
 	 * \brief Remove link.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
-	void RemoveLink( igdeNVLink *link );
+	void RemoveLink(igdeNVLink *link);
 	
 	/**
 	 * \brief Remove all links.
@@ -179,13 +206,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 	
@@ -204,6 +237,9 @@ protected:
 	
 	/** \brief Linked slots changed. */
 	virtual void OnLinksChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

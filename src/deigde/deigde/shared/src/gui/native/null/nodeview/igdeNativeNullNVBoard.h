@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLNVBOARD_H_
 #define _IGDENATIVENULLNVBOARD_H_
 
+#include "../../../nodeview/igdeNVBoard.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class igdeNVBoard;
@@ -35,7 +37,11 @@ class igdeNativeNullNVSlot;
 /**
  * Null NodeView Board.
  */
-class igdeNativeNullNVBoard{
+class igdeNativeNullNVBoard : public igdeNVBoard::cNativeNVBoard{
+private:
+	igdeNVLink::Ref pNullLink;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -43,10 +49,10 @@ public:
 	igdeNativeNullNVBoard();
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullNVBoard();
+	~igdeNativeNullNVBoard() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullNVBoard* CreateNativeWidget( igdeNVBoard &owner );
+	static igdeNativeNullNVBoard* CreateNativeWidget(igdeNVBoard &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -60,51 +66,51 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update enabled. */
-	void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update color from owner. */
-	void UpdateColors();
+	void UpdateColors() override;
 	
 	/** \brief Update nodes from owner. */
-	void UpdateNodes();
+	void UpdateNodes() override;
 	
 	/** \brief Update links from owner. */
-	void UpdateLinks();
+	void UpdateLinks() override;
 	
 	/** \brief Update offset from owner. */
-	void UpdateOffset();
+	void UpdateOffset() override;
 	
 	/** \brief Get Size. */
-	virtual decPoint GetSize();
+	decPoint GetSize() override;
 	
 	
 	
 	/** \brief Begin create link drag and drop. */
-	void BeginCreateLink( igdeNativeNullNVSlot *source );
+	void BeginCreateLink(igdeNativeNullNVSlot *source);
 	
-	/** \brief Link drag and drop source or NULL. */
+	/** \brief Link drag and drop source or nullptr. */
 	inline igdeNativeNullNVSlot *GetCreateLinkSource() const{ return nullptr; }
 	
 	/** \brief Set create link drag and drop position. */
-	void SetCreateLinkPosition( const decPoint &position );
+	void SetCreateLinkPosition(const decPoint &position);
 	
-	/** \brief Create link drag and drop target or NULL. */
+	/** \brief Create link drag and drop target or nullptr. */
 	inline igdeNativeNullNVSlot *GetCreateLinkTarget() const{ return nullptr; }
 	
-	/** \brief Set create link drag and drop target or NULL. */
-	void SetCreateLinkTarget( igdeNativeNullNVSlot *target );
+	/** \brief Set create link drag and drop target or nullptr. */
+	void SetCreateLinkTarget(igdeNativeNullNVSlot *target);
 	
 	/** \brief Finish create link drag and drop. */
 	void FinishCreateLink();
 	
-	/** \brief Link closest to position inside range in board coordinate system or NULL. */
-	igdeNVLink *ClosestLinkNear( const decPoint &position, float range ) const;
+	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
+	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
-	/** \brief Hover link or NULL. */
-	inline igdeNVLink *GetHoverLink() const{ return nullptr; }
+	/** \brief Hover link or nullptr. */
+	const igdeNVLink::Ref &GetHoverLink() const override;
 	
 	/** \brief Set hover link. */
-	void SetHoverLink( igdeNVLink *link );
+	void SetHoverLink(igdeNVLink *link);
 	/*@}*/
 };
 

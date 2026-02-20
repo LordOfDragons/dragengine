@@ -25,136 +25,140 @@
 #ifndef _MEWPHEIGHTTERRAIN_H_
 #define _MEWPHEIGHTTERRAIN_H_
 
+#include "meWPHeightTerrainListener.h"
+#include "../../world/terrain/meHeightTerrainTexture.h"
+#include "../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../world/heightterrain/meHTVVariation.h"
+#include "../../world/meWorld.h"
+
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeToggleButtonReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeToggleButton.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class meHeightTerrainNavSpaceType;
 class meHeightTerrain;
 class meHeightTerrainNavSpace;
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
-class meHTVegetationLayer;
-class meHTVVariation;
 class meWindowProperties;
-class meWorld;
-class meWPHeightTerrainListener;
 
 
 /**
  * \brief Height Terrain Properties.
  */
 class meWPHeightTerrain : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPHeightTerrain>;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPHeightTerrainListener *pListener;
+	meWPHeightTerrainListener::Ref pListener;
 	
-	meWorld *pWorld;
-	meHeightTerrainTexture *pTexture;
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVVariation;
-	
-	
-	igdeActionContextMenuReference pActionMenuTexture;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
-	
-	igdeActionContextMenuReference pActionMenuNavSpace;
-	igdeActionReference pActionNavSpaceAdd;
-	igdeActionReference pActionNavSpaceRemove;
-	
-	igdeActionContextMenuReference pActionMenuNavSpaceType;
-	igdeActionReference pActionNavSpaceTypeAdd;
-	igdeActionReference pActionNavSpaceTypeRemove;
-	
-	igdeActionReference pActionNavSpaceFaceAdd;
-	igdeActionReference pActionNavSpaceFaceRemove;
-	
-	igdeActionContextMenuReference pActionMenuVLayer;
-	igdeActionReference pActionVLayerAdd;
-	igdeActionReference pActionVLayerRemove;
-	igdeActionReference pActionVLayerUp;
-	igdeActionReference pActionVLayerDown;
-	
-	igdeActionContextMenuReference pActionMenuVVariation;
-	igdeActionReference pActionVVariationAdd;
-	igdeActionReference pActionVVariationRemove;
+	meWorld::Ref pWorld;
+	meHeightTerrainTexture::Ref pTexture;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVVariation;
 	
 	
-	igdeEditPathReference pEditPathHTerrain;
-	igdeTextFieldReference pEditSectorSize;
-	igdeTextFieldReference pEditSectorResolution;
-	igdeTextFieldReference pEditBaseHeight;
-	igdeTextFieldReference pEditHeightScale;
+	igdeActionContextMenu::Ref pActionMenuTexture;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
 	
-	igdeEditPathReference pEditPathHeightImage;
-	igdeEditPathReference pEditPathVisImage;
+	igdeActionContextMenu::Ref pActionMenuNavSpace;
+	igdeAction::Ref pActionNavSpaceAdd;
+	igdeAction::Ref pActionNavSpaceRemove;
 	
-	igdeComboBoxReference pCBTexture;
-	igdeButtonReference pBtnTexture;
-	igdeTextFieldReference pEditTexTypeNum;
-	igdeEditPathReference pEditTexSkin;
-	igdeEditPathReference pEditTexMask;
-	igdeEditVector2Reference pEditTexUVOffset;
-	igdeEditVector2Reference pEditTexUVScale;
-	igdeTextFieldReference pEditTexUVRot;
+	igdeActionContextMenu::Ref pActionMenuNavSpaceType;
+	igdeAction::Ref pActionNavSpaceTypeAdd;
+	igdeAction::Ref pActionNavSpaceTypeRemove;
 	
-	igdeComboBoxReference pCBNavSpace;
-	igdeButtonReference pBtnNavSpace;
-	igdeTextFieldReference pEditNavSpaceLayer;
-	igdeTextFieldReference pEditNavSpaceSnapDist;
-	igdeTextFieldReference pEditNavSpaceSnapAngle;
+	igdeAction::Ref pActionNavSpaceFaceAdd;
+	igdeAction::Ref pActionNavSpaceFaceRemove;
 	
-	igdeComboBoxReference pCBNavSpaceType;
-	igdeButtonReference pBtnNavSpaceType;
-	igdeTextFieldReference pEditNavSpaceTypeName;
-	igdeColorBoxReference pEditNavSpaceTypeColor;
-	igdeTextFieldReference pEditNavSpaceTypeType;
-	igdeButtonReference pBtnNavSpaceFaceAdd;
-	igdeButtonReference pBtnNavSpaceFaceRemove;
+	igdeActionContextMenu::Ref pActionMenuVLayer;
+	igdeAction::Ref pActionVLayerAdd;
+	igdeAction::Ref pActionVLayerRemove;
+	igdeAction::Ref pActionVLayerUp;
+	igdeAction::Ref pActionVLayerDown;
 	
-	igdeToggleButtonReference pBtnHPModeRaise;
-	igdeToggleButtonReference pBtnHPModeLower;
-	igdeToggleButtonReference pBtnHPModeLevel;
-	igdeToggleButtonReference pBtnHPModeSmooth;
-	igdeEditSliderTextReference pSldHPRadius;
-	igdeEditSliderTextReference pSldHPStrength;
+	igdeActionContextMenu::Ref pActionMenuVVariation;
+	igdeAction::Ref pActionVVariationAdd;
+	igdeAction::Ref pActionVVariationRemove;
 	
-	igdeToggleButtonReference pBtnMPModeDraw;
-	igdeToggleButtonReference pBtnMPModeErase;
-	igdeEditSliderTextReference pSldMPRadius;
 	
-	igdeToggleButtonReference pBtnVPModeVisible;
-	igdeToggleButtonReference pBtnVPModeInvisible;
-	igdeEditSliderTextReference pSldVPRadius;
+	igdeEditPath::Ref pEditPathHTerrain;
+	igdeTextField::Ref pEditSectorSize;
+	igdeTextField::Ref pEditSectorResolution;
+	igdeTextField::Ref pEditBaseHeight;
+	igdeTextField::Ref pEditHeightScale;
 	
-	igdeButtonReference pBtnUpdateVegetation;
-	igdeButtonReference pBtnUpdateVegetationAll;
-	igdeButtonReference pBtnClearVegetation;
-	igdeEditPathReference pEditPathPFCache;
-	igdeComboBoxReference pCBVLayer;
-	igdeButtonReference pBtnMenuVLayer;
-	igdeComboBoxReference pCBVVariation;
-	igdeButtonReference pBtnMenuVVariation;
-	igdeEditPathReference pEditVVModel;
-	igdeEditPathReference pEditVVSkin;
-	igdeTextFieldReference pEditVVRotPerForce;
-	igdeTextFieldReference pEditVVRestitution;
+	igdeEditPath::Ref pEditPathHeightImage;
+	igdeEditPath::Ref pEditPathVisImage;
+	
+	igdeComboBox::Ref pCBTexture;
+	igdeButton::Ref pBtnTexture;
+	igdeTextField::Ref pEditTexTypeNum;
+	igdeEditPath::Ref pEditTexSkin;
+	igdeEditPath::Ref pEditTexMask;
+	igdeEditVector2::Ref pEditTexUVOffset;
+	igdeEditVector2::Ref pEditTexUVScale;
+	igdeTextField::Ref pEditTexUVRot;
+	
+	igdeComboBox::Ref pCBNavSpace;
+	igdeButton::Ref pBtnNavSpace;
+	igdeTextField::Ref pEditNavSpaceLayer;
+	igdeTextField::Ref pEditNavSpaceSnapDist;
+	igdeTextField::Ref pEditNavSpaceSnapAngle;
+	
+	igdeComboBox::Ref pCBNavSpaceType;
+	igdeButton::Ref pBtnNavSpaceType;
+	igdeTextField::Ref pEditNavSpaceTypeName;
+	igdeColorBox::Ref pEditNavSpaceTypeColor;
+	igdeTextField::Ref pEditNavSpaceTypeType;
+	igdeButton::Ref pBtnNavSpaceFaceAdd;
+	igdeButton::Ref pBtnNavSpaceFaceRemove;
+	
+	igdeToggleButton::Ref pBtnHPModeRaise;
+	igdeToggleButton::Ref pBtnHPModeLower;
+	igdeToggleButton::Ref pBtnHPModeLevel;
+	igdeToggleButton::Ref pBtnHPModeSmooth;
+	igdeEditSliderText::Ref pSldHPRadius;
+	igdeEditSliderText::Ref pSldHPStrength;
+	
+	igdeToggleButton::Ref pBtnMPModeDraw;
+	igdeToggleButton::Ref pBtnMPModeErase;
+	igdeEditSliderText::Ref pSldMPRadius;
+	
+	igdeToggleButton::Ref pBtnVPModeVisible;
+	igdeToggleButton::Ref pBtnVPModeInvisible;
+	igdeEditSliderText::Ref pSldVPRadius;
+	
+	igdeButton::Ref pBtnUpdateVegetation;
+	igdeButton::Ref pBtnUpdateVegetationAll;
+	igdeButton::Ref pBtnClearVegetation;
+	igdeEditPath::Ref pEditPathPFCache;
+	igdeComboBox::Ref pCBVLayer;
+	igdeButton::Ref pBtnMenuVLayer;
+	igdeComboBox::Ref pCBVVariation;
+	igdeButton::Ref pBtnMenuVVariation;
+	igdeEditPath::Ref pEditVVModel;
+	igdeEditPath::Ref pEditVVSkin;
+	igdeTextField::Ref pEditVVRotPerForce;
+	igdeTextField::Ref pEditVVRestitution;
 	
 	
 	
@@ -162,11 +166,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPHeightTerrain( meWindowProperties &windowProperties );
+	meWPHeightTerrain(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPHeightTerrain();
+	~meWPHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -178,10 +182,10 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief World path changed. */
 	void OnWorldPathChanged();
@@ -190,28 +194,28 @@ public:
 	meHeightTerrainSector *GetSector() const;
 	
 	/** \brief Texture. */
-	inline meHeightTerrainTexture *GetTexture() const{ return pTexture; }
+	inline const meHeightTerrainTexture::Ref &GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture. */
-	void SetTexture( meHeightTerrainTexture *texture );
+	void SetTexture(meHeightTerrainTexture *texture);
 	
-	/** \brief Active navigation space or \em NULL. */
+	/** \brief Active navigation space or \em nullptr. */
 	meHeightTerrainNavSpace *GetActiveNavSpace() const;
 	
-	/** \brief Active navigation space type or \em NULL. */
+	/** \brief Active navigation space type or \em nullptr. */
 	meHeightTerrainNavSpaceType *GetActiveNavSpaceType() const;
 	
 	/** \brief Vegetation layer. */
-	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
+	inline const meHTVegetationLayer::Ref &GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
-	void SetVLayer( meHTVegetationLayer *vlayer );
+	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** \brief Vegetation layer variation. */
-	inline meHTVVariation *GetVVariation() const{ return pVVariation; }
+	inline const meHTVVariation::Ref &GetVVariation() const{ return pVVariation; }
 	
 	/** \brief Set vegetation layer variation. */
-	void SetVVariation( meHTVVariation *vvariation );
+	void SetVVariation(meHTVVariation *vvariation);
 	
 	/** \brief Update height terrain. */
 	void UpdateHeightTerrain();
@@ -268,25 +272,25 @@ public:
 	void UpdateVVariation();
 	
 	
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
 	
-	inline igdeAction *GetActionNavSpaceAdd() const{ return pActionNavSpaceAdd; }
-	inline igdeAction *GetActionNavSpaceRemove() const{ return pActionNavSpaceRemove; }
+	inline const igdeAction::Ref &GetActionNavSpaceAdd() const{ return pActionNavSpaceAdd; }
+	inline const igdeAction::Ref &GetActionNavSpaceRemove() const{ return pActionNavSpaceRemove; }
 	
-	inline igdeAction *GetActionNavSpaceTypeAdd() const{ return pActionNavSpaceTypeAdd; }
-	inline igdeAction *GetActionNavSpaceTypeRemove() const{ return pActionNavSpaceTypeRemove; }
+	inline const igdeAction::Ref &GetActionNavSpaceTypeAdd() const{ return pActionNavSpaceTypeAdd; }
+	inline const igdeAction::Ref &GetActionNavSpaceTypeRemove() const{ return pActionNavSpaceTypeRemove; }
 	
-	inline igdeAction *GetActionNavSpaceFaceAdd() const{ return pActionNavSpaceFaceAdd; }
-	inline igdeAction *GetActionNavSpaceFaceRemove() const{ return pActionNavSpaceFaceRemove; }
+	inline const igdeAction::Ref &GetActionNavSpaceFaceAdd() const{ return pActionNavSpaceFaceAdd; }
+	inline const igdeAction::Ref &GetActionNavSpaceFaceRemove() const{ return pActionNavSpaceFaceRemove; }
 	
-	inline igdeAction *GetActionVLayerAdd() const{ return pActionVLayerAdd; }
-	inline igdeAction *GetActionVLayerRemove() const{ return pActionVLayerRemove; }
-	inline igdeAction *GetActionVLayerUp() const{ return pActionVLayerUp; }
-	inline igdeAction *GetActionVLayerDown() const{ return pActionVLayerDown; }
+	inline const igdeAction::Ref &GetActionVLayerAdd() const{ return pActionVLayerAdd; }
+	inline const igdeAction::Ref &GetActionVLayerRemove() const{ return pActionVLayerRemove; }
+	inline const igdeAction::Ref &GetActionVLayerUp() const{ return pActionVLayerUp; }
+	inline const igdeAction::Ref &GetActionVLayerDown() const{ return pActionVLayerDown; }
 	
-	inline igdeAction *GetActionVVariationAdd() const{ return pActionVVariationAdd; }
-	inline igdeAction *GetActionVVariationRemove() const{ return pActionVVariationRemove; }
+	inline const igdeAction::Ref &GetActionVVariationAdd() const{ return pActionVVariationAdd; }
+	inline const igdeAction::Ref &GetActionVVariationRemove() const{ return pActionVVariationRemove; }
 	/*@}*/
 };
 

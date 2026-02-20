@@ -49,10 +49,10 @@ public:
 	 *                    Faces are in the order X+, X-, Y-, Y+, Z+, Z- as suitable
 	 *                    for special render parameter blocks.
 	 */
-	static void CalcFaceVisibility( const decDVector &boxMin,
-		const decDVector &boxMax, bool *result );
+	static void CalcFaceVisibility(const decDVector &boxMin,
+		const decDVector &boxMax, bool *result);
 	
-	static int CalcFaceVisibility( const decDVector &boxMin, const decDVector &boxMax );
+	static int CalcFaceVisibility(const decDVector &boxMin, const decDVector &boxMax);
 	/*@}*/
 };
 

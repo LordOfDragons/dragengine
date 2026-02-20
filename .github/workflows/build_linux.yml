@@ -34,6 +34,10 @@ on:
         required: false
         default: false
         type: boolean
+      sconscache:
+        required: false
+        default: true
+        type: boolean
   
   workflow_dispatch:
     inputs:
@@ -79,6 +83,10 @@ on:
       codeql:
         required: false
         default: false
+        type: boolean
+      sconscache:
+        required: false
+        default: true
         type: boolean
       
 jobs:
@@ -135,12 +143,29 @@ jobs:
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
           sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild }}/g' custom.py
       
+      - name: Cache external
+        uses: actions/cache@v4
+        id: external-cache
+        with:
+          path: ./extern
+          key: external-cache-linux-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-linux-
+      
+      # - name: Cache SCons
+      #   uses: actions/cache@v4
+      #   id: scons-cache
+      #   if: ${{ inputs.sconscache }}
+      #   with:
+      #     path: .scons_cache
+      #     key: ${{ runner.os }}-scons-cache-linux-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+      #     restore-keys: ${{ runner.os }}-scons-cache-linux-
+      
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 \
+          scons --config=force -j 1 \
             lib_openxr \
             lib_openvr \
             lib_libjpeg \
@@ -165,7 +190,7 @@ jobs:
         # lib_sndio
       
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         if: ${{ inputs.codeql }}
         with:
           languages: c-cpp
@@ -178,7 +203,7 @@ jobs:
           scons -j 4 srv_modio_build
           
           # the rest can be build full throttle
-          scons -j 14 archive installer
+          scons -j 14 archive installer detests_build
       
       - name: Debug Symbols
         if: ${{ ! inputs.debugBuild }}
@@ -192,11 +217,16 @@ jobs:
             archive/build/deigde-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
       
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         if: ${{ inputs.codeql }}
         with:
           category: "/language:c-cpp"
       
+      - name: Run Low Level Tests
+        run: |
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`realpath ./src/dragengine/build`
+          ./src/tests/build/detests
+        
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
@@ -233,3 +263,10 @@ jobs:
           path: |
             src/tools/blender/build/blender-addon-dragengine-${{ inputs.buildVersion }}.zip
           if-no-files-found: error
+      
+      # - name: Prune Cache
+      #   if: success()
+      #   run: |
+      #     if [ -d ".scons_cache" ]; then
+      #       find .scons_cache -type f -atime +7 -delete
+      #     fi

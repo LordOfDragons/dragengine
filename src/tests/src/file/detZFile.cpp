@@ -20,7 +20,9 @@
 // Constructors, Destructor
 /////////////////////////////
 
-detZFile::detZFile(){
+detZFile::detZFile() :
+pTestBuffer(nullptr)
+{
 	Prepare();
 }
 
@@ -34,17 +36,22 @@ detZFile::~detZFile(){
 ////////////
 
 void detZFile::Prepare(){
-	pMemoryFileCompressed = NULL;
-	pTestBuffer = NULL;
+	if(pTestBuffer){
+		delete [] pTestBuffer;
+		pTestBuffer = nullptr;
+	}
 	
-	pMemoryFileWriter = NULL;
-	pZWriter = NULL;
+	pMemoryFileCompressed = nullptr;
+	pTestBuffer = nullptr;
 	
-	pMemoryFileReader = NULL;
-	pZReader = NULL;
+	pMemoryFileWriter = nullptr;
+	pZWriter = nullptr;
 	
-	pMemoryFileCompressed = new decMemoryFile( "compressed" );
-	pTestBuffer = new char[ 16000 ];
+	pMemoryFileReader = nullptr;
+	pZReader = nullptr;
+	
+	pMemoryFileCompressed = decMemoryFile::Ref::New("compressed");
+	pTestBuffer = new char[16000];
 }
 
 void detZFile::Run(){
@@ -54,15 +61,11 @@ void detZFile::Run(){
 void detZFile::CleanUp(){
 	pDestroyZReader();
 	pDestroyZWriter();
+	pMemoryFileCompressed = nullptr;
 	
-	if( pTestBuffer ){
+	if(pTestBuffer){
 		delete [] pTestBuffer;
-		pTestBuffer = NULL;
-	}
-	
-	if( pMemoryFileCompressed ){
-		pMemoryFileCompressed->FreeReference();
-		pMemoryFileCompressed = NULL;
+		pTestBuffer = nullptr;
 	}
 }
 
@@ -201,164 +204,127 @@ static const char * const vLorumIpsum12000 =
 
 void detZFile::pTestZFile(){
 	// in chunks of 10 bytes
-	SetSubTestNum( 0 );
+	SetSubTestNum(0);
 	int i, count;
 	
 	pCreateZWriter();
-	count = strlen( vLorumIpsum12000 );
-	for( i=0; i<count; i+=10 ){
-		pZWriter->Write( vLorumIpsum12000+i, (i+10>count) ? (count-i) : 10 );
+	count = strlen(vLorumIpsum12000);
+	for(i=0; i<count; i+=10){
+		pZWriter->Write(vLorumIpsum12000+i, (i+10>count) ? (count-i) : 10);
 	}
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	count = strlen( vLorumIpsum12000 );
-	for( i=0; i<count; i+=10 ){
-		pZReader->Read( pTestBuffer+i, (i+10>count) ? (count-i) : 10 );
+	count = strlen(vLorumIpsum12000);
+	for(i=0; i<count; i+=10){
+		pZReader->Read(pTestBuffer+i, (i+10>count) ? (count-i) : 10);
 	}
 	pDestroyZReader();
-	ASSERT_EQUAL( strncmp( vLorumIpsum12000, pTestBuffer, count ), 0 );
+	ASSERT_EQUAL(strncmp(vLorumIpsum12000, pTestBuffer, count), 0);
 	
 	// all in once
-	SetSubTestNum( 1 );
+	SetSubTestNum(1);
 	pCreateZWriter();
-	pZWriter->Write( vLorumIpsum12000, count );
+	pZWriter->Write(vLorumIpsum12000, count);
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	pZReader->Read( pTestBuffer, count );
+	pZReader->Read(pTestBuffer, count);
 	pDestroyZReader();
-	ASSERT_EQUAL( strncmp( vLorumIpsum12000, pTestBuffer, count ), 0 );
+	ASSERT_EQUAL(strncmp(vLorumIpsum12000, pTestBuffer, count), 0);
 	
 	// seeking to read
-	SetSubTestNum( 2 );
+	SetSubTestNum(2);
 	pCreateZWriter();
-	pZWriter->Write( vLorumIpsum12000, count );
+	pZWriter->Write(vLorumIpsum12000, count);
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	pZReader->SetPosition( 2500 );
-	pZReader->Read( pTestBuffer, 100 );
+	pZReader->SetPosition(2500);
+	pZReader->Read(pTestBuffer, 100);
 	pDestroyZReader();
-	ASSERT_EQUAL( strncmp( vLorumIpsum12000 + 2500, pTestBuffer, 100 ), 0 );
+	ASSERT_EQUAL(strncmp(vLorumIpsum12000 + 2500, pTestBuffer, 100), 0);
 	
 	// seeking back to read
-	SetSubTestNum( 3 );
+	SetSubTestNum(3);
 	pCreateZWriter();
-	pZWriter->Write( vLorumIpsum12000, count );
+	pZWriter->Write(vLorumIpsum12000, count);
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	pZReader->Read( pTestBuffer, count );
-	pZReader->SetPosition( 2500 );
-	pZReader->Read( pTestBuffer, 100 );
+	pZReader->Read(pTestBuffer, count);
+	pZReader->SetPosition(2500);
+	pZReader->Read(pTestBuffer, 100);
 	pDestroyZReader();
-	ASSERT_EQUAL( strncmp( vLorumIpsum12000 + 2500, pTestBuffer, 100 ), 0 );
+	ASSERT_EQUAL(strncmp(vLorumIpsum12000 + 2500, pTestBuffer, 100), 0);
 	
 	// seek move to read
-	SetSubTestNum( 4 );
+	SetSubTestNum(4);
 	pCreateZWriter();
-	pZWriter->Write( vLorumIpsum12000, count );
+	pZWriter->Write(vLorumIpsum12000, count);
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	pZReader->Read( pTestBuffer, 3000 );
-	pZReader->MovePosition( -500 );
-	pZReader->Read( pTestBuffer, 100 );
+	pZReader->Read(pTestBuffer, 3000);
+	pZReader->MovePosition(-500);
+	pZReader->Read(pTestBuffer, 100);
 	pDestroyZReader();
-	ASSERT_EQUAL( strncmp( vLorumIpsum12000 + 2500, pTestBuffer, 100 ), 0 );
+	ASSERT_EQUAL(strncmp(vLorumIpsum12000 + 2500, pTestBuffer, 100), 0);
 	
 	// seek to end
-	SetSubTestNum( 5 );
+	SetSubTestNum(5);
 	pCreateZWriter();
-	pZWriter->Write( vLorumIpsum12000, count );
+	pZWriter->Write(vLorumIpsum12000, count);
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	pZReader->SetPositionEnd( 100 );
-	pZReader->Read( pTestBuffer, 100 );
+	pZReader->SetPositionEnd(100);
+	pZReader->Read(pTestBuffer, 100);
 	pDestroyZReader();
-	ASSERT_EQUAL( strncmp( vLorumIpsum12000 + ( count - 100 ), pTestBuffer, 100 ), 0 );
+	ASSERT_EQUAL(strncmp(vLorumIpsum12000 + (count - 100), pTestBuffer, 100), 0);
 	
 	// find real size
-	SetSubTestNum( 6 );
+	SetSubTestNum(6);
 	pCreateZWriter();
-	pZWriter->Write( vLorumIpsum12000, count );
+	pZWriter->Write(vLorumIpsum12000, count);
 	pDestroyZWriter();
 	
 	pCreateZReader();
-	ASSERT_EQUAL( pZReader->GetLength(), count );
+	ASSERT_EQUAL(pZReader->GetLength(), count);
 	pDestroyZReader();
 }
 
 
 
 void detZFile::pOutputCompressedToFile(){
-	decDiskFileWriter *writer = NULL;
-	
-	try{
-		writer = new decDiskFileWriter( "detests_ztest_compressed", false );
-		writer->Write( pMemoryFileCompressed->GetPointer(), pMemoryFileCompressed->GetLength() );
-		writer->FreeReference();
-		
-	}catch( const deException & ){
-		if( writer ){
-			writer->FreeReference();
-		}
-		throw;
-	}
+	decDiskFileWriter::Ref::New("detests_ztest_compressed", false)->Write(
+		pMemoryFileCompressed->GetPointer(), pMemoryFileCompressed->GetLength());
 }
 
-void detZFile::pOutputTestBufferToFile( int size ){
-	decDiskFileWriter *reader = NULL;
-	
-	try{
-		reader = new decDiskFileWriter( "detests_ztest_uncompressed", false );
-		reader->Write( pTestBuffer, size );
-		reader->FreeReference();
-		
-	}catch( const deException & ){
-		if( reader ){
-			reader->FreeReference();
-		}
-		throw;
-	}
+void detZFile::pOutputTestBufferToFile(int size){
+	decDiskFileWriter::Ref::New("detests_ztest_uncompressed", false)->Write(pTestBuffer, size);
 }
 
 
 
 void detZFile::pCreateZWriter(){
-	pMemoryFileWriter = new decMemoryFileWriter( pMemoryFileCompressed, false );
-	pZWriter = new decZFileWriter( pMemoryFileWriter );
-	pMemoryFileWriter = NULL;
+	pZWriter = decZFileWriter::Ref::New(decMemoryFileWriter::Ref::New(pMemoryFileCompressed, false));
+	pMemoryFileWriter = nullptr;
 }
 
 void detZFile::pDestroyZWriter(){
-	if( pZWriter ){
-		pZWriter->FreeReference();
-		pZWriter = NULL;
-	}
-	if( pMemoryFileWriter ){
-		pMemoryFileWriter->FreeReference();
-		pMemoryFileWriter = NULL;
-	}
+	pZWriter = nullptr;
+	pMemoryFileWriter = nullptr;
 }
 
 
 
 void detZFile::pCreateZReader(){
-	pMemoryFileReader = new decMemoryFileReader( pMemoryFileCompressed );
-	pZReader = new decZFileReader( pMemoryFileReader );
-	pMemoryFileReader = NULL;
+	pZReader = decZFileReader::Ref::New(decMemoryFileReader::Ref::New(pMemoryFileCompressed));
+	pMemoryFileReader = nullptr;
 }
 
 void detZFile::pDestroyZReader(){
-	if( pZReader ){
-		pZReader->FreeReference();
-		pZReader = NULL;
-	}
-	if( pMemoryFileReader ){
-		pMemoryFileReader->FreeReference();
-		pMemoryFileReader = NULL;
-	}
+	pZReader = nullptr;
+	pMemoryFileReader = nullptr;
 }

@@ -46,17 +46,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasVideoPlayer::deoglCanvasVideoPlayer( deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasVideoPlayer( canvas ),
-pRCanvasVideoPlayer( NULL ),
-pVideoPlayer( NULL ),
-pDirty( true ){
+deoglCanvasVideoPlayer::deoglCanvasVideoPlayer(deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasVideoPlayer(canvas),
+pVideoPlayer(nullptr),
+pDirty(true){
 }
 
 deoglCanvasVideoPlayer::~deoglCanvasVideoPlayer(){
-	if( pVideoPlayer ){
-		pVideoPlayer->GetNotifyCanvas().Remove( this );
+	if(pVideoPlayer){
+		pVideoPlayer->GetNotifyCanvas().Remove(this);
 	}
 }
 
@@ -66,29 +65,29 @@ deoglCanvasVideoPlayer::~deoglCanvasVideoPlayer(){
 ///////////////
 
 void deoglCanvasVideoPlayer::DropRCanvas(){
-	pRCanvasVideoPlayer = NULL;
+	pRCanvasVideoPlayer = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
 void deoglCanvasVideoPlayer::SyncContentToRender(){
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->SyncToRender();
 	}
 	
-	if( pDirty ){
+	if(pDirty){
 		pDirty = false;
 		
-		if( pVideoPlayer ){
-			pRCanvasVideoPlayer->SetVideoPlayer( pVideoPlayer->GetRVideoPlayer() );
+		if(pVideoPlayer){
+			pRCanvasVideoPlayer->SetVideoPlayer(pVideoPlayer->GetRVideoPlayer());
 			
 		}else{
-			pRCanvasVideoPlayer->SetVideoPlayer( NULL );
+			pRCanvasVideoPlayer->SetVideoPlayer(nullptr);
 		}
 		
-		const float repeatScaleU = ( float )pCanvasVideoPlayer.GetRepeatX();
-		const float repeatScaleV = ( float )pCanvasVideoPlayer.GetRepeatY();
-		pRCanvasVideoPlayer->SetTCTransform( decTexMatrix2::CreateScale( repeatScaleU, repeatScaleV ) );
-		pRCanvasVideoPlayer->SetTCClampMaximum( decVector2( repeatScaleU, repeatScaleV ) );
+		const float repeatScaleU = (float)pCanvasVideoPlayer.GetRepeatX();
+		const float repeatScaleV = (float)pCanvasVideoPlayer.GetRepeatY();
+		pRCanvasVideoPlayer->SetTCTransform(decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV));
+		pRCanvasVideoPlayer->SetTCClampMaximum(decVector2(repeatScaleU, repeatScaleV));
 	}
 }
 
@@ -97,7 +96,7 @@ void deoglCanvasVideoPlayer::VideoPlayerRequiresSync(){
 }
 
 void deoglCanvasVideoPlayer::DropVideoPlayer(){
-	pVideoPlayer = NULL;
+	pVideoPlayer = nullptr;
 }
 
 
@@ -105,16 +104,16 @@ void deoglCanvasVideoPlayer::DropVideoPlayer(){
 void deoglCanvasVideoPlayer::ContentChanged(){
 	deoglCanvas::ContentChanged();
 	
-	if( pVideoPlayer ){
-		pVideoPlayer->GetNotifyCanvas().Remove( this );
+	if(pVideoPlayer){
+		pVideoPlayer->GetNotifyCanvas().Remove(this);
 	}
 	
-	if( pCanvasVideoPlayer.GetVideoPlayer() ){
-		pVideoPlayer = ( deoglVideoPlayer* )pCanvasVideoPlayer.GetVideoPlayer()->GetPeerGraphic();
-		pVideoPlayer->GetNotifyCanvas().Add( this );
+	if(pCanvasVideoPlayer.GetVideoPlayer()){
+		pVideoPlayer = (deoglVideoPlayer*)pCanvasVideoPlayer.GetVideoPlayer()->GetPeerGraphic();
+		pVideoPlayer->GetNotifyCanvas().Add(this);
 		
 	}else{
-		pVideoPlayer = NULL;
+		pVideoPlayer = nullptr;
 	}
 	
 	pDirty = true;
@@ -126,6 +125,6 @@ void deoglCanvasVideoPlayer::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasVideoPlayer::CreateRCanvas(){
-	pRCanvasVideoPlayer = new deoglRCanvasVideoPlayer( GetOgl().GetRenderThread() );
+	pRCanvasVideoPlayer = deoglRCanvasVideoPlayer::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasVideoPlayer;
 }

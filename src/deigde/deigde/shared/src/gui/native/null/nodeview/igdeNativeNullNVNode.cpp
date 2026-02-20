@@ -36,7 +36,8 @@ igdeNativeNullNVNode::igdeNativeNullNVNode(){
 igdeNativeNullNVNode::~igdeNativeNullNVNode(){
 }
 
-igdeNativeNullNVNode *igdeNativeNullNVNode::CreateNativeWidget( igdeNVNode& ){
+igdeNativeNullNVNode *igdeNativeNullNVNode::CreateNativeWidget(igdeNVNode&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullNVNode;
 }
 
@@ -74,7 +75,7 @@ void igdeNativeNullNVNode::FitSizeToContent(){
 }
 
 decPoint igdeNativeNullNVNode::GetSize(){
-	return decPoint( 32, 32 );
+	return decPoint(32, 32);
 }
 
 #endif

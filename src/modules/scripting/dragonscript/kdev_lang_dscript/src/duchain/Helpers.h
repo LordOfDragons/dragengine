@@ -132,94 +132,94 @@ public:
 	 * \brief Byte type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeByte( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeByte(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	/**
 	 * \brief Bool type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeBool( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeBool(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	/**
 	 * \brief Int type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeInt( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeInt(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	/**
 	 * \brief Float type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeFloat( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeFloat(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	/**
 	 * \brief String type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeString( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeString(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	/**
 	 * \brief Object type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeObject( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeObject(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	/**
 	 * \brief Block type.
 	 * \note DUChainReadLocker required.
 	 */
-	static void getTypeBlock( DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type );
+	static void getTypeBlock(DeclarationPointer &declaration, KDevelop::AbstractType::Ptr &type);
 	
 	
 	
 	/** \brief Internal class context for type or null-context if not found. */
-	static DUChainPointer<const DUContext> contextForType( const TopDUContext *top,
-		const KDevelop::AbstractType::Ptr &type );
+	static DUChainPointer<const DUContext> contextForType(const TopDUContext *top,
+		const KDevelop::AbstractType::Ptr &type);
 	
 	/** \brief This class declaration for context or nullptr if not found. */
-	static ClassDeclaration *thisClassDeclFor( DUChainPointer<const DUContext> context );
+	static ClassDeclaration *thisClassDeclFor(DUChainPointer<const DUContext> context);
 	
 	/** \brief Super class declaration for context or nullptr if not found. */
-	static ClassDeclaration *superClassDeclFor( DUChainPointer<const DUContext> context );
+	static ClassDeclaration *superClassDeclFor(DUChainPointer<const DUContext> context);
 	
 	/** \brief Class declaration for context or nullptr if not found. */
-	static ClassDeclaration *classDeclFor( DUChainPointer<const DUContext> context );
+	static ClassDeclaration *classDeclFor(DUChainPointer<const DUContext> context);
 	
 	/** \brief Class declaration for type or nullptr if not found. */
-	static ClassDeclaration *classDeclFor( const TopDUContext *top,
-		const KDevelop::AbstractType::Ptr &type );
+	static ClassDeclaration *classDeclFor(const TopDUContext *top,
+		const KDevelop::AbstractType::Ptr &type);
 	
 	/** \brief Super class of class declaration or nullptr if not set. */
-	static ClassDeclaration *superClassOf( const TopDUContext *top,
-		const ClassDeclaration *declaration );
+	static ClassDeclaration *superClassOf(const TopDUContext *top,
+		const ClassDeclaration *declaration);
 	
 	/** \brief Implementation classes of class declaration. */
-	static QVector<ClassDeclaration*> implementsOf( const TopDUContext *top,
-		const ClassDeclaration *declaration );
+	static QVector<ClassDeclaration*> implementsOf(const TopDUContext *top,
+		const ClassDeclaration *declaration);
 	
 	/** \brief All base classes of class declaration. */
-	static QVector<ClassDeclaration*> baseClassesOf( const TopDUContext *top,
-		const ClassDeclaration *declaration );
+	static QVector<ClassDeclaration*> baseClassesOf(const TopDUContext *top,
+		const ClassDeclaration *declaration);
 	
 	/** \brief Two type points are the same. */
-	static bool equals( const TopDUContext *top, const KDevelop::AbstractType::Ptr &type1,
-		const KDevelop::AbstractType::Ptr &type2 );
+	static bool equals(const TopDUContext *top, const KDevelop::AbstractType::Ptr &type1,
+		const KDevelop::AbstractType::Ptr &type2);
 	
 	/** \brief Type is castable to another. */
-	static bool castable( const TopDUContext *top, const KDevelop::AbstractType::Ptr &type,
-		const KDevelop::AbstractType::Ptr &targetType );
+	static bool castable(const TopDUContext *top, const KDevelop::AbstractType::Ptr &type,
+		const KDevelop::AbstractType::Ptr &targetType);
 	
 	/** \brief Functions have the same signature. */
-	static bool sameSignature( const TopDUContext *top, const KDevelop::FunctionType::Ptr &func1,
-		const KDevelop::FunctionType::Ptr &func2 );
+	static bool sameSignature(const TopDUContext *top, const KDevelop::FunctionType::Ptr &func1,
+		const KDevelop::FunctionType::Ptr &func2);
 	
 	/** \brief Functions have the same signature but potentially different return type. */
-	static bool sameSignatureAnyReturnType( const TopDUContext *top,
-		const KDevelop::FunctionType::Ptr &func1, const KDevelop::FunctionType::Ptr &func2 );
+	static bool sameSignatureAnyReturnType(const TopDUContext *top,
+		const KDevelop::FunctionType::Ptr &func1, const KDevelop::FunctionType::Ptr &func2);
 	
 	/** \brief Function overrides another. */
-	static bool overrides( const TopDUContext *top, const ClassFunctionDeclaration *func1,
-		const ClassFunctionDeclaration *func2 );
+	static bool overrides(const TopDUContext *top, const ClassFunctionDeclaration *func1,
+		const ClassFunctionDeclaration *func2);
 	
 	static QStringList getDataDirs();
 	
@@ -242,7 +242,7 @@ public:
 	 * \retval false Lanugage documentation is not fully parse yet. Cancel parsing of
 	 *               document and schedule it again with a low priority.
 	 */
-	static bool addImportsDocumentationFileContexts( TopDUContext *top );
+	static bool addImportsDocumentationFileContexts(TopDUContext *top);
 	
 	/** \brief Get documentation file for Object class. */
 	static IndexedString getDocumentationFileObject();
@@ -251,11 +251,11 @@ public:
 	 * \brief Get internal type declaration if loaded.
 	 * \note DUChainReadLocker required.
 	 */
-	static Declaration *getInternalTypeDeclaration( const QString &name );
+	static Declaration *getInternalTypeDeclaration(const QString &name);
 	
-	static KDevelop::AbstractType::Ptr resolveAliasType( const KDevelop::AbstractType::Ptr eventualAlias );
+	static KDevelop::AbstractType::Ptr resolveAliasType(const KDevelop::AbstractType::Ptr eventualAlias);
 	
-	static IndexedDeclaration declarationUnderCursor( bool allowUse = true );
+	static IndexedDeclaration declarationUnderCursor(bool allowUse = true);
 	
 	enum ContextSearchFlags {
 		NoFlags,
@@ -268,7 +268,7 @@ public:
 	/**
 	 * \brief Remove cached include files context for include directory.
 	 */
-	static void dropIncludeFileContexts( const QString &includeDir );
+	static void dropIncludeFileContexts(const QString &includeDir);
 	
 	/**
 	 * \brief Add include directory file contexts as includes to a top context.
@@ -278,14 +278,14 @@ public:
 	 * 
 	 * \note DUChainWriteLocker required.
 	 */
-	static bool addImportsIncludePath( TopDUContext *top, const QString &includeDir );
+	static bool addImportsIncludePath(TopDUContext *top, const QString &includeDir);
 	
 	/**
 	 * \brief Get list with include directory contexts.
 	 * 
 	 * \note DUChainReadLocker required.
 	 */
-	static QVector<ReferencedTopDUContext> getImportsIncludeContexts( const QString &includeDir );
+	static QVector<ReferencedTopDUContext> getImportsIncludeContexts(const QString &includeDir);
 	
 	/**
 	 * \brief Find all internal contexts for this class and its base classes recursively
@@ -296,7 +296,7 @@ public:
 	 **/
 	static QVector<DUContext*> internalContextsForClass(
 		const KDevelop::StructureType::Ptr classType, const TopDUContext* context,
-		ContextSearchFlags flags = NoFlags, int depth = 0 );
+		ContextSearchFlags flags = NoFlags, int depth = 0);
 	
 	/**
 	 * \brief Resolve the given declaration if it is an alias declaration.
@@ -305,57 +305,57 @@ public:
 	 * \return :Declaration* decl if not an alias declaration, decl->aliasedDeclaration().data otherwise
 	 * DUChain must be read locked
 	 **/
-	static Declaration *resolveAliasDeclaration( Declaration *decl );
+	static Declaration *resolveAliasDeclaration(Declaration *decl);
 	
 	/**
 	 * \brief Find first matching declaration.
 	 * \note DUChainReadLocker required.
 	 **/
-	static Declaration *declarationForName( const QString& name,
-		const CursorInRevision& location, DUChainPointer<const DUContext> context );
+	static Declaration *declarationForName(const QString& name,
+		const CursorInRevision& location, DUChainPointer<const DUContext> context);
 	
 	/**
 	 * \brief Find first matching declaration.
 	 * \note DUChainReadLocker required.
 	 **/
-	static Declaration *declarationForName( const QString& name,
+	static Declaration *declarationForName(const QString& name,
 		const CursorInRevision& location, DUChainPointer<const DUContext> context,
-		const QVector<DUChainPointer<const DUContext>> &pinned );
+		const QVector<DUChainPointer<const DUContext>> &pinned);
 	
 	/**
 	 * \brief Find first matching declaration in base classes only.
 	 * \note DUChainReadLocker required.
 	 **/
-	static Declaration *declarationForNameInBase( const QString& name,
-		DUChainPointer<const DUContext> context );
+	static Declaration *declarationForNameInBase(const QString& name,
+		DUChainPointer<const DUContext> context);
 	
 	/**
 	 * \brief Find all matching declarations.
 	 * \note DUChainReadLocker required.
 	 **/
-	static QVector<Declaration*> declarationsForName( const QString& name,
-		const CursorInRevision& location, DUChainPointer<const DUContext> context );
+	static QVector<Declaration*> declarationsForName(const QString& name,
+		const CursorInRevision& location, DUChainPointer<const DUContext> context);
 	
 	/**
 	 * \brief Find all matching declarations.
 	 * \note DUChainReadLocker required.
 	 **/
-	static QVector<Declaration*> declarationsForName( const QString& name,
+	static QVector<Declaration*> declarationsForName(const QString& name,
 		const CursorInRevision& location, DUChainPointer<const DUContext> context,
-		const QVector<DUChainPointer<const DUContext>> &pinned );
+		const QVector<DUChainPointer<const DUContext>> &pinned);
 	
 	/**
 	 * \brief Find all matching declarations in base classes only.
 	 * \note DUChainReadLocker required.
 	 **/
-	static QVector<Declaration*> declarationsForNameInBase( const QString& name,
-		DUChainPointer<const DUContext> context );
+	static QVector<Declaration*> declarationsForNameInBase(const QString& name,
+		DUChainPointer<const DUContext> context);
 	
 	/**
 	 * \brief Find all constructor declarations in class.
 	 * \note DUChainReadLocker required.
 	 **/
-	static QVector<Declaration*> constructorsInClass( DUChainPointer<const DUContext> context );
+	static QVector<Declaration*> constructorsInClass(DUChainPointer<const DUContext> context);
 	
 	/**
 	 * \brief Find best matching function.
@@ -368,9 +368,9 @@ public:
 	 * \param[in] signature Signature to match.
 	 * \param[in] declarations Declarations to match against.
 	 */
-	static ClassFunctionDeclaration *bestMatchingFunction( const TopDUContext *top,
+	static ClassFunctionDeclaration *bestMatchingFunction(const TopDUContext *top,
 		const QVector<KDevelop::AbstractType::Ptr> &signature,
-		const QVector<Declaration*> &declarations );
+		const QVector<Declaration*> &declarations);
 	
 	/**
 	 * \brief Find suitable functions requiring auto-casting.
@@ -384,9 +384,9 @@ public:
 	 * \param[in] signature Signature to match.
 	 * \param[in] declarations Declarations to match against.
 	 */
-	static QVector<ClassFunctionDeclaration*> autoCastableFunctions( const TopDUContext *top,
+	static QVector<ClassFunctionDeclaration*> autoCastableFunctions(const TopDUContext *top,
 		const QVector<KDevelop::AbstractType::Ptr> &signature,
-		const QVector<Declaration*> &declarations );
+		const QVector<Declaration*> &declarations);
 };
 
 }

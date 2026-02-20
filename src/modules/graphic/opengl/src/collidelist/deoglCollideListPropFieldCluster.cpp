@@ -41,9 +41,37 @@
 ////////////////////////////
 
 deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster() :
-pCluster( NULL ),
-pCulled( false ),
-pCascadeMask( 0 ){
+pCluster(nullptr),
+pCulled(false),
+pCascadeMask(0){
+}
+
+deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster(deoglPropFieldCluster *cluster) :
+pCluster(cluster),
+pCulled(false),
+pCascadeMask(0){
+}
+
+deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster(deoglCollideListPropFieldCluster &&other) noexcept :
+pCluster(other.pCluster),
+pCulled(other.pCulled),
+pCascadeMask(other.pCascadeMask){
+	other.pCluster = nullptr;
+	other.pCulled = false;
+	other.pCascadeMask = 0;
+}
+
+deoglCollideListPropFieldCluster &deoglCollideListPropFieldCluster::operator=(deoglCollideListPropFieldCluster &&other) noexcept{
+	if(this != &other){
+		pCluster = other.pCluster;
+		pCulled = other.pCulled;
+		pCascadeMask = other.pCascadeMask;
+		
+		other.pCluster = nullptr;
+		other.pCulled = false;
+		other.pCascadeMask = 0;
+	}
+	return *this;
 }
 
 deoglCollideListPropFieldCluster::~deoglCollideListPropFieldCluster(){
@@ -60,23 +88,23 @@ void deoglCollideListPropFieldCluster::Clear(){
 	pCascadeMask = 0;
 }
 
-void deoglCollideListPropFieldCluster::SetCluster( deoglPropFieldCluster *cluster ){
+void deoglCollideListPropFieldCluster::SetCluster(deoglPropFieldCluster *cluster){
 	pCluster = cluster;
 }
 
-void deoglCollideListPropFieldCluster::SetCulled( bool culled ){
+void deoglCollideListPropFieldCluster::SetCulled(bool culled){
 	pCulled = culled;
 }
 
-void deoglCollideListPropFieldCluster::SetCascadeMask( int mask ){
+void deoglCollideListPropFieldCluster::SetCascadeMask(int mask){
 	pCascadeMask = mask;
 }
 
-void deoglCollideListPropFieldCluster::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset ){
-	DEASSERT_NOTNULL( pCluster )
+void deoglCollideListPropFieldCluster::StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset){
+	DEASSERT_NOTNULL(pCluster)
 	
 	pCulled = false;
-	occlusionTest.AddInputData( offset - pCluster->GetMinimumExtend(), offset + pCluster->GetMaximumExtend(), this );
+	occlusionTest.AddInputData(offset - pCluster->GetMinimumExtend(), offset + pCluster->GetMaximumExtend(), this);
 	pCulled = false;
 }
 

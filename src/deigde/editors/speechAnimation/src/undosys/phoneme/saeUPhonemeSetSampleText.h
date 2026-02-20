@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 
@@ -35,8 +35,12 @@ class saePhoneme;
  * Undo Action Phoneme Set Sample Text.
  */
 class saeUPhonemeSetSampleText : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUPhonemeSetSampleText>;
+	
+	
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldText;
 	decString pNewText;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetSampleText( saePhoneme *phoneme, const char *newText );
+	saeUPhonemeSetSampleText(saePhoneme *phoneme, const char *newText);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUPhonemeSetSampleText();
+	~saeUPhonemeSetSampleText() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

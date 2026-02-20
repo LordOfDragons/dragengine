@@ -38,10 +38,13 @@
 #include "../rig/bone/reRigBone.h"
 #include "../rig/constraint/reTemporaryConstraint.h"
 #include "../rig/shape/reRigShape.h"
-#include "../rig/shape/reRigShapeList.h"
 #include "../rig/shape/reSelectionShapes.h"
+#include "../rig/push/reRigPush.h"
+#include "../rig/push/reSelectionPushes.h"
 #include "../undosys/gui/shape/reUMoveShape.h"
 #include "../undosys/gui/shape/reURotateShape.h"
+#include "../undosys/gui/push/reUMovePush.h"
+#include "../undosys/gui/push/reURotatePush.h"
 #include "../undosys/gui/reBaseUndoScale.h"
 
 #include <deigde/engine/igdeEngineController.h>
@@ -70,7 +73,7 @@
 // Definitions
 ////////////////
 
-#define RE_DRAG_MOVE	( 1.0f / 50.0f )
+#define RE_DRAG_MOVE	(1.0f / 50.0f)
 
 
 
@@ -80,25 +83,26 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	reView3D &pView;
 	
 public:
-	cCameraInteraction( reView3D &view ) : pView( view ){ }
+	typedef deTObjectReference<cCameraInteraction> Ref;
+	cCameraInteraction(reView3D &view) : pView(view){}
 	
 public:
 	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
-		if( ! pView.GetRig() || pView.GetRig()->GetCamera()->GetAttachToBone() ){
+		if(!pView.GetRig() || pView.GetRig()->GetCamera()->GetAttachToBone()){
 			return eiNone;
 		}
 		return igdeMouseCameraListener::ChooseInteraction();
 	}
 	
 	virtual void OnCameraChanged(){
-		if( ! pView.GetRig() ){
+		if(!pView.GetRig()){
 			return;
 		}
 		
 		reCamera &camera = *pView.GetRig()->GetCamera();
-		camera.SetFreePosition( camera.GetPosition() );
-		camera.SetFreeOrientation( camera.GetOrientation() );
-		camera.SetFreeDistance( camera.GetDistance() );
+		camera.SetFreePosition(camera.GetPosition());
+		camera.SetFreeOrientation(camera.GetOrientation());
+		camera.SetFreeDistance(camera.GetDistance());
 		
 // 		pView.GetRig()->NotifyCameraChanged();
 		pView.GetRig()->NotifyCameraViewChanged();
@@ -112,134 +116,127 @@ protected:
 	reView3D &pView;
 	
 public:
-	cBaseInteraction( reView3D &view ) : pView( view ){ }
+	cBaseInteraction(reView3D &view) : pView(view){}
 	
 	decVector ViewDirection() const{
-		if( ! pView.GetRig() ){
-			return decVector( 0.0f, 0.0f, 1.0f );
+		if(!pView.GetRig()){
+			return decVector(0.0f, 0.0f, 1.0f);
 		}
 		
 		const decPoint &dragOrigin = GetDragPosition();
-		const decPoint viewSize( pView.GetRenderAreaSize() );
+		const decPoint viewSize(pView.GetRenderAreaSize());
 		return pView.GetRig()->GetCamera()->GetDirectionFor(
-			viewSize.x, viewSize.y, dragOrigin.x, dragOrigin.y );
+			viewSize.x, viewSize.y, dragOrigin.x, dragOrigin.y);
 	}
 	
-	void TestCollisionWith( deBaseScriptingCollider &listener, const decDVector &position,
-	const decVector &direction, decLayerMask &layerMask ){
-		if( ! pView.GetRig() ){
+	void TestCollisionWith(deBaseScriptingCollider &listener, const decDVector &position,
+	const decVector &direction, decLayerMask &layerMask){
+		if(!pView.GetRig()){
 			return;
 		}
 		
 		deBasePhysicsWorld * const phyWorld = pView.GetRig()->GetEngineWorld()->GetPeerPhysics();
-		if( ! phyWorld ){
+		if(!phyWorld){
 			return;
 		}
 		
-		phyWorld->RayHits( position, direction, &listener, layerMask );
+		phyWorld->RayHits(position, direction, &listener, layerMask);
 	}
 	
-	virtual bool OnDragBegin(){
+	bool OnDragBegin() override{
 		return GetDragState() == edsLeft && pView.GetRig() && pView.GetCanRender()
-			&& OnDragBegin( *pView.GetRig() );
+			&& OnDragBegin(*pView.GetRig());
 	}
 	
-	virtual bool OnDragBegin( reRig &rig ) = 0;
+	virtual bool OnDragBegin(reRig &rig) = 0;
 };
 
 
 
 class cSimulationInteraction : public cBaseInteraction {
-	reTemporaryConstraint *pConstraint;
+	reTemporaryConstraint::Ref pConstraint;
 	float pGrabDistance;
 	
 public:
-	cSimulationInteraction( reView3D &view ) : cBaseInteraction( view ), pConstraint( NULL ){
+	typedef deTObjectReference<cSimulationInteraction> Ref;
+	cSimulationInteraction(reView3D &view) : cBaseInteraction(view), pConstraint(nullptr){
 	}
 	
-	virtual ~cSimulationInteraction(){
-		if( pConstraint ){
-			delete pConstraint;
-		}
-	}
+protected:
+	virtual ~cSimulationInteraction() = default;
 	
-	virtual bool OnDragBegin( reRig &rig ){
-		if( ! rig.GetSimulationRunning() ){
+public:
+	bool OnDragBegin(reRig &rig) override{
+		if(!rig.GetSimulationRunning()){
 			return false;
 		}
 		
 		// no interaction while camera is attached to a bone as this would
 		// cause serious problems with the physics
 		reCamera &camera = *rig.GetCamera();
-		if( camera.GetAttachToBone() ){
+		if(camera.GetAttachToBone()){
 			return false;
 		}
 		
-		const decDVector position( camera.GetViewMatrix().GetPosition() );
-		const decVector view( ViewDirection() );
+		const decDVector position(camera.GetViewMatrix().GetPosition());
+		const decVector view(ViewDirection());
 		decLayerMask layerMask;
 		
 		const float rayLength = 200.0f;
 		const float pushStrength = 100.0f; // velocity, make this a variable somehow
 		
 		// apply push if shift is pressed. no interaction starts in this case
-		if( GetShiftOrigin() ){
-			reCLApplyPush applyPush( &rig );
-			applyPush.SetCollider( rig.GetEngineSimulationCollider() );
-			applyPush.SetRay( position, view * rayLength );
-			applyPush.SetPush( view * pushStrength );
+		if(GetShiftOrigin()){
+			reCLApplyPush applyPush(rig);
+			applyPush.SetCollider(rig.GetEngineSimulationCollider());
+			applyPush.SetRay(position, view * rayLength);
+			applyPush.SetPush(view * pushStrength);
 			
-			layerMask.SetBit( reRig::eclmSimulation );
+			layerMask.SetBit(reRig::eclmSimulation);
 			
-			TestCollisionWith( applyPush, applyPush.GetRayPosition(),
-				applyPush.GetRayDirection().ToVector(), layerMask );
+			TestCollisionWith(applyPush, applyPush.GetRayPosition(),
+				applyPush.GetRayDirection().ToVector(), layerMask);
 			return false;
 		}
 		
 		// apply regular interaction by grabbing object
-		const decVector rayDirection( view * rayLength );
-		reCLClosestElement closestElement( rig );
+		const decVector rayDirection(view * rayLength);
+		reCLClosestElement closestElement(rig);
 		
-		closestElement.SetTestSimRig( true );
-		closestElement.SetTestBones( false );
-		closestElement.SetTestShapes( false );
-		closestElement.SetTestConstraints( false );
-		closestElement.SetTestPushes( false );
+		closestElement.SetTestSimRig(true);
+		closestElement.SetTestBones(false);
+		closestElement.SetTestShapes(false);
+		closestElement.SetTestConstraints(false);
+		closestElement.SetTestPushes(false);
 		
-		layerMask.SetBit( reRig::eclmSimulation );
+		layerMask.SetBit(reRig::eclmSimulation);
 		
-		TestCollisionWith( closestElement, position, rayDirection, layerMask );
+		TestCollisionWith(closestElement, position, rayDirection, layerMask);
 		
-		if( ! closestElement.GetHasHit() ){
+		if(!closestElement.GetHasHit()){
 			return false; // nothing to grab
 		}
 		
 		// clicked on something we can grab
-		if( pConstraint ){
-			delete pConstraint;
-			pConstraint = NULL;
-		}
+		pConstraint = nullptr;
 		
 		pGrabDistance = rayLength * closestElement.GetHitDistance();
-		pConstraint = new reTemporaryConstraint( &rig, closestElement.GetHitSimBone(),
-			position + decDVector( view * pGrabDistance ), decQuaternion() );
+		pConstraint = reTemporaryConstraint::Ref::New(&rig, closestElement.GetHitSimBone(),
+			position + decDVector(view * pGrabDistance), decQuaternion());
 		return true;
 	}
 	
 	virtual void OnDragUpdate(){
-		if( ! pConstraint ){
+		if(!pConstraint){
 			return;
 		}
 		
-		pConstraint->SetPosition( pView.GetRig()->GetCamera()->GetViewMatrix().GetPosition()
-			+ decDVector( ViewDirection() * pGrabDistance ) );
+		pConstraint->SetPosition(pView.GetRig()->GetCamera()->GetViewMatrix().GetPosition()
+			+ decDVector(ViewDirection() * pGrabDistance));
 	}
 	
-	virtual void OnDragFinish( bool cancelled ){
-		if( pConstraint ){
-			delete pConstraint;
-			pConstraint = NULL;
-		}
+	virtual void OnDragFinish(bool cancelled){
+		pConstraint = nullptr;
 	}
 };
 
@@ -247,42 +244,43 @@ public:
 
 class cSelectInteraction : public cBaseInteraction {
 public:
-	cSelectInteraction( reView3D &view ) : cBaseInteraction( view ){ }
+	typedef deTObjectReference<cSelectInteraction> Ref;
+	cSelectInteraction(reView3D &view) : cBaseInteraction(view){}
 	
-	virtual bool OnDragBegin( reRig &rig ){
-		if( rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmSelect ){
+	bool OnDragBegin(reRig &rig) override{
+		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmSelect){
 			return false;
 		}
 		
-		reCLSelect clSelect( &rig );
-		clSelect.SetToggleSelection( GetShiftOrigin() );
+		reCLSelect clSelect(rig);
+		clSelect.SetToggleSelection(GetShiftOrigin());
 		
 		decLayerMask layerMask;
 		
-		switch( rig.GetElementMode() ){
+		switch(rig.GetElementMode()){
 		case reRig::eemBone:
-			layerMask.SetBit( reRig::eclmBones );
-			clSelect.SetCanSelectBones( true );
+			layerMask.SetBit(reRig::eclmBones);
+			clSelect.SetCanSelectBones(true);
 			break;
 			
 		case reRig::eemShape:
-			layerMask.SetBit( reRig::eclmShapes );
-			clSelect.SetCanSelectShapes( true );
+			layerMask.SetBit(reRig::eclmShapes);
+			clSelect.SetCanSelectShapes(true);
 			break;
 			
 		case reRig::eemConstraint:
-			layerMask.SetBit( reRig::eclmConstraints );
-			clSelect.SetCanSelectConstraints( true );
+			layerMask.SetBit(reRig::eclmConstraints);
+			clSelect.SetCanSelectConstraints(true);
 			break;
 			
 		default:
-			layerMask.SetBit( reRig::eclmPushes );
-			clSelect.SetCanSelectPushes( true );
+			layerMask.SetBit(reRig::eclmPushes);
+			clSelect.SetCanSelectPushes(true);
 		}
 		
 		clSelect.Reset();
-		TestCollisionWith( clSelect, rig.GetCamera()->GetViewMatrix().GetPosition(),
-			ViewDirection() * 50.0f, layerMask );
+		TestCollisionWith(clSelect, rig.GetCamera()->GetViewMatrix().GetPosition(),
+			ViewDirection() * 50.0f, layerMask);
 		clSelect.RunAction();
 		return true;
 	}
@@ -290,7 +288,7 @@ public:
 	virtual void OnDragUpdate(){
 	}
 	
-	virtual void OnDragFinish( bool cancelled ){
+	virtual void OnDragFinish(bool cancelled){
 	}
 };
 
@@ -298,23 +296,42 @@ public:
 
 class cMoveInteraction : public cBaseInteraction {
 private:
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	decMatrix pViewMatrix;
 	decMatrix pRotationMatrix;
 	decMatrix pInvRotationMatrix;
 	
 public:
-	cMoveInteraction( reView3D &view ) : cBaseInteraction( view ){ }
+	typedef deTObjectReference<cMoveInteraction> Ref;
+	cMoveInteraction(reView3D &view) : cBaseInteraction(view){}
 	
-	virtual bool OnDragBegin( reRig &rig ){
-		if( rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmMove ){
+	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
+		if(!pUndo || !pView.GetRig()){
+			return;
+		}
+		
+		reRig &rig = *pView.GetRig();
+		
+		if(keyCode == deInputEvent::ekcX){
+			rig.SetLockAxisX(!rig.GetLockAxisX());
+			
+		}else if(keyCode == deInputEvent::ekcY){
+			rig.SetLockAxisY(!rig.GetLockAxisY());
+			
+		}else if(keyCode == deInputEvent::ekcZ){
+			rig.SetLockAxisZ(!rig.GetLockAxisZ());
+		}
+	}
+	
+	bool OnDragBegin(reRig &rig) override{
+		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmMove){
 			return false;
 		}
 		
 		pRotationMatrix.SetIdentity();
-		pUndo = NULL;
+		pUndo = nullptr;
 		
-		switch( rig.GetElementMode() ){
+		switch(rig.GetElementMode()){
 		case reRig::eemBone:
 			return false;
 			
@@ -322,21 +339,38 @@ public:
 			const reSelectionShapes &selection = *rig.GetSelectionShapes();
 			const reRigShape * const activeShape = selection.GetActiveShape();
 			
-			reRigShapeList list;
-			selection.AddVisibleShapesTo( list );
-			if( list.GetShapeCount() == 0 ){
+			reRigShape::List list;
+			selection.AddVisibleShapesTo(list);
+			if(list.IsEmpty()){
 				return false;
 			}
 			
-			pUndo.TakeOver( new reUMoveShape( list ) );
+			pUndo = reUMoveShape::Ref::New(*rig.GetEnvironment(), list);
 			
-			if( activeShape ){
-				pRotationMatrix.SetRotation( activeShape->GetOrientation() * DEG2RAD );
+			if(activeShape){
+				pRotationMatrix.SetRotation(activeShape->GetOrientation() * DEG2RAD);
 				
 				const reRigBone * const bone = activeShape->GetRigBone();
-				if( bone ){
+				if(bone){
 					pRotationMatrix *= bone->GetPoseMatrix().GetRotationMatrix();
 				}
+			}
+			}break;
+			
+		case reRig::eemPush:{
+			const reSelectionPushes &selection = *rig.GetSelectionPushes();
+			const reRigPush * const activePush = selection.GetActivePush();
+			
+			reRigPush::List list;
+			selection.AddVisiblePushesTo(list);
+			if(list.IsEmpty()){
+				return false;
+			}
+			
+			pUndo = reUMovePush::Ref::New(*rig.GetEnvironment(), list);
+			
+			if(activePush){
+				pRotationMatrix.SetRotation(activePush->GetOrientation() * DEG2RAD);
 			}
 			}break;
 			
@@ -349,64 +383,64 @@ public:
 		return true;
 	}
 	
-	virtual void OnDragUpdate(){
-		if( ! pUndo || ! pView.GetRig() ){
+	void OnDragUpdate() override{
+		if(!pUndo || !pView.GetRig()){
 			return;
 		}
 		
 		// determine new movement vector
 		const reConfiguration &configuration = pView.GetWindowMain().GetConfiguration();
 		float sensitivity = configuration.GetSensitivity();
-		const decPoint distance( GetDragDistance() );
+		const decPoint distance(GetDragDistance());
 		reRig &rig = *pView.GetRig();
 		
 		decVector vector(
-			pViewMatrix.TransformRight() * ( RE_DRAG_MOVE * ( float )distance.x * sensitivity )
-			+ pViewMatrix.TransformUp() * ( RE_DRAG_MOVE * ( float )distance.y * sensitivity ) );
+			pViewMatrix.TransformRight() * (RE_DRAG_MOVE * (float)distance.x * sensitivity)
+			+ pViewMatrix.TransformUp() * (RE_DRAG_MOVE * (float)-distance.y * sensitivity));
 		
-		if( rig.GetUseLocal() ){
+		if(rig.GetUseLocal()){
 			vector = pInvRotationMatrix * vector;
 		}
 		
-		if( rig.GetLockAxisX() ){
+		if(rig.GetLockAxisX()){
 			vector.x = 0.0f;
 		}
-		if( rig.GetLockAxisY() ){
+		if(rig.GetLockAxisY()){
 			vector.y = 0.0f;
 		}
-		if( rig.GetLockAxisZ() ){
+		if(rig.GetLockAxisZ()){
 			vector.z = 0.0f;
 		}
 		
-		if( rig.GetUseLocal() ){
+		if(rig.GetUseLocal()){
 			vector = pRotationMatrix * vector;
 		}
 		
-		if( configuration.GetSnapToGrid() != GetShiftNow() ){
-			vector.Snap( configuration.GetGridSize() );
+		if(configuration.GetSnapToGrid() != GetShiftNow()){
+			vector.Snap(configuration.GetGridSize());
 		}
 		
 		// update undo object and redo the movement
-		reUMoveShape &undo = ( reUMoveShape& )( igdeUndo& )pUndo;
-		undo.SetDistance( vector );
+		reBaseUndoMove &undo = pUndo.DynamicCast<reBaseUndoMove>();
+		undo.SetDistance(vector);
 		undo.ProgressiveRedo();
 	}
 	
-	virtual void OnDragFinish( bool cancelled ){
-		if( ! pUndo ){
+	void OnDragFinish(bool cancelled) override{
+		if(!pUndo){
 			return;
 		}
 		
-		if( cancelled || ! pView.GetRig() ){
-			pUndo = NULL;
+		if(cancelled || !pView.GetRig()){
+			pUndo = nullptr;
 			return;
 		}
 		
-		reUMoveShape &undo = ( reUMoveShape& )( igdeUndo& )pUndo;
-		if( undo.GetDistance().Length() > 1e-5f ){
-			pView.GetRig()->GetUndoSystem()->Add( pUndo );
+		reBaseUndoMove &undo = pUndo.DynamicCast<reBaseUndoMove>();
+		if(undo.GetDistance().Length() > 1e-5f){
+			pView.GetRig()->GetUndoSystem()->Add(pUndo);
 		}
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 };
 
@@ -414,10 +448,11 @@ public:
 
 class cScaleInteraction : public cBaseInteraction {
 public:
-	cScaleInteraction( reView3D &view ) : cBaseInteraction( view ){ }
+	typedef deTObjectReference<cScaleInteraction> Ref;
+	cScaleInteraction(reView3D &view) : cBaseInteraction(view){}
 	
-	virtual bool OnDragBegin( reRig &rig ){
-		if( rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmScale ){
+	bool OnDragBegin(reRig &rig) override{
+		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmScale){
 			return false;
 		}
 		
@@ -429,7 +464,7 @@ public:
 	virtual void OnDragUpdate(){
 	}
 	
-	virtual void OnDragFinish( bool cancelled ){
+	virtual void OnDragFinish(bool cancelled){
 	}
 };
 
@@ -437,39 +472,66 @@ public:
 
 class cRotateInteraction : public cBaseInteraction {
 private:
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	decMatrix pRotationMatrix;
 	decMatrix pInvRotationMatrix;
 	float pNullAngle;
 	
 public:
-	cRotateInteraction( reView3D &view ) : cBaseInteraction( view ), pNullAngle( 0.0f ){ }
+	typedef deTObjectReference<cRotateInteraction> Ref;
+	cRotateInteraction(reView3D &view) : cBaseInteraction(view), pNullAngle(0.0f){}
 	
-	virtual bool OnDragBegin( reRig &rig ){
-		if( rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmRotate ){
+	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
+		if(!pUndo || !pView.GetRig()){
+			return;
+		}
+		
+		reRig &rig = *pView.GetRig();
+		
+		if(keyCode == deInputEvent::ekcX){
+			rig.SetLockAxisX(!rig.GetLockAxisX());
+			
+		}else if(keyCode == deInputEvent::ekcY){
+			rig.SetLockAxisY(!rig.GetLockAxisY());
+			
+		}else if(keyCode == deInputEvent::ekcZ){
+			rig.SetLockAxisZ(!rig.GetLockAxisZ());
+		}
+	}
+	
+	bool OnDragBegin(reRig &rig) override{
+		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmRotate){
 			return false;
 		}
 		
 		const reSelectionShapes &selectionShapes = *rig.GetSelectionShapes();
 		const reRigShape * const activeShape = selectionShapes.GetActiveShape();
+		const reSelectionPushes &selectionPushes = *rig.GetSelectionPushes();
+		const reRigPush * const activePush = selectionPushes.GetActivePush();
 		
-		pUndo = NULL;
+		pUndo = nullptr;
 		
 		// determine rotation axis
 		pRotationMatrix.SetIdentity();
 		
-		switch( rig.GetElementMode() ){
+		switch(rig.GetElementMode()){
 		case reRig::eemBone:
 			break;
 			
 		case reRig::eemShape:
-			if( activeShape ){
-				pRotationMatrix.SetRotation( activeShape->GetOrientation() * DEG2RAD );
+			if(activeShape){
+				pRotationMatrix.SetRotation(activeShape->GetOrientation() * DEG2RAD);
 				
 				const reRigBone * bone = activeShape->GetRigBone();
-				if( bone ){
+				if(bone){
 					pRotationMatrix *= bone->GetPoseMatrix().GetRotationMatrix();
 				}
+			}
+			break;
+			
+		case reRig::eemPush:
+			if(activePush){
+				pRotationMatrix.SetRotation(activePush->GetOrientation() * DEG2RAD);
 			}
 			break;
 			
@@ -481,62 +543,75 @@ public:
 		
 		decVector axis;
 		
-		if( rig.GetUseLocal() ){
+		if(rig.GetUseLocal()){
 			axis = pInvRotationMatrix * ViewDirection();
 			
 		}else{
 			axis = ViewDirection();
 		}
 		
-		if( rig.GetLockAxisX() ){
+		if(rig.GetLockAxisX()){
 			axis.x = 0.0f;
 		}
-		if( rig.GetLockAxisY() ){
+		if(rig.GetLockAxisY()){
 			axis.y = 0.0f;
 		}
-		if( rig.GetLockAxisZ() ){
+		if(rig.GetLockAxisZ()){
 			axis.z = 0.0f;
 		}
-		if( rig.GetUseLocal() ){
+		if(rig.GetUseLocal()){
 			axis = pRotationMatrix * axis;
 		}
 		
 		decDVector center;
 		
-		if( axis.Length() > 1e-5f ){
+		if(axis.Length() > 1e-5f){
 			axis.Normalize();
 			center.SetZero();
 			
-			switch( rig.GetElementMode() ){
+			switch(rig.GetElementMode()){
 			case reRig::eemBone:
 				break;
 				
 			case reRig::eemShape:{
-				reRigShapeList list;
-				selectionShapes.AddVisibleShapesTo( list );
+				reRigShape::List list;
+				selectionShapes.AddVisibleShapesTo(list);
 				
-				const int shapeCount = list.GetShapeCount();
-				if( shapeCount == 0 ){
+				if(list.IsEmpty()){
 					return false;
 				}
 				
 				center.SetZero();
-				int i;
-				for( i=0; i<shapeCount; i++ ){
-					const reRigShape &shape = *list.GetShapeAt( i );
+				list.Visit([&](const reRigShape &shape){
 					const reRigBone * const bone = shape.GetRigBone();
 					
-					if( bone ){
+					if(bone){
 						center += bone->GetPoseMatrix() * shape.GetPosition();
 						
 					}else{
 						center += shape.GetPosition();
 					}
-				}
-				center /= ( float )shapeCount;
+				});
+				center /= (float)list.GetCount();
 				
-				pUndo.TakeOver( new reURotateShape( list ) );
-				( ( reURotateShape& )( igdeUndo& )pUndo ).SetModifyPosition( shapeCount > 1 );
+				pUndo = reURotateShape::Ref::New(*rig.GetEnvironment(), list);
+				pUndo.DynamicCast<reURotateShape>()->SetModifyPosition(list.GetCount() > 1);
+				}break;
+				
+			case reRig::eemPush:{
+				reRigPush::List list;
+				selectionPushes.AddVisiblePushesTo(list);
+				
+				if(list.IsEmpty()){
+					return false;
+				}
+				
+				center = list.Inject(decVector(), [&](const decVector &acc, const reRigPush &push){
+					return acc + push.GetPosition();
+				}) / (float)list.GetCount();
+				
+				pUndo = reURotatePush::Ref::New(*rig.GetEnvironment(), list);
+				pUndo.DynamicCast<reURotatePush>()->SetModifyPosition(list.GetCount() > 1);
 				}break;
 				
 			default:
@@ -544,57 +619,57 @@ public:
 			}
 		}
 		
-		if( ! pUndo ){
+		if(!pUndo){
 			return false;
 		}
 		
-		const decPoint scrDir( GetDragOrigin() - ( pView.GetRenderAreaSize() / 2 ) );
-		pNullAngle = atan2f( ( float )-scrDir.y, ( float )scrDir.x );
+		const decPoint scrDir(GetDragOrigin() - (pView.GetRenderAreaSize() / 2));
+		pNullAngle = atan2f((float)-scrDir.y, (float)scrDir.x);
 		
-		reURotateShape &undo = ( reURotateShape& )( igdeUndo& )pUndo;
-		undo.SetCenterPosition( center );
-		undo.SetAxis( axis );
+		reBaseUndoRotate &undo = pUndo.DynamicCast<reBaseUndoRotate>();
+		undo.SetCenterPosition(center);
+		undo.SetAxis(axis);
 		
 		return true;
 	}
 	
 	virtual void OnDragUpdate(){
-		if( ! pUndo || ! pView.GetRig() ){
+		if(!pUndo || !pView.GetRig()){
 			return;
 		}
 		
 		// determine new rotation
 		const reConfiguration &configuration = pView.GetWindowMain().GetConfiguration();
-		const decPoint scrDir( GetDragPosition() - ( pView.GetRenderAreaSize() / 2 ) );
-		float angle = atan2f( ( float )-scrDir.y, ( float )scrDir.x ) - pNullAngle;
+		const decPoint scrDir(GetDragPosition() - (pView.GetRenderAreaSize() / 2));
+		float angle = atan2f((float)-scrDir.y, (float)scrDir.x) - pNullAngle;
 		
-		if( GetShiftNow() ){
+		if(GetShiftNow()){
 			const float grid = configuration.GetRotSnapAngle() * DEG2RAD;
-			angle = grid * ceilf( angle / grid - 0.5f );
+			angle = grid * ceilf(angle / grid - 0.5f);
 		}
 		
 		// update undo object and redo the movement
-		reURotateShape &undo = ( reURotateShape& )( igdeUndo& )pUndo;
-		undo.SetAngle( angle );
-		undo.SetModifyPosition( ! GetControlNow() );
+		reBaseUndoRotate &undo = pUndo.DynamicCast<reBaseUndoRotate>();
+		undo.SetAngle(angle);
+		undo.SetModifyPosition(!GetControlNow());
 		undo.ProgressiveRedo();
 	}
 	
-	virtual void OnDragFinish( bool cancelled ){
-		if( ! pUndo ){
+	virtual void OnDragFinish(bool cancelled){
+		if(!pUndo){
 			return;
 		}
 		
-		if( cancelled || ! pView.GetRig() ){
-			pUndo = NULL;
+		if(cancelled || !pView.GetRig()){
+			pUndo = nullptr;
 			return;
 		}
 		
-		reURotateShape &undo = ( reURotateShape& )( igdeUndo& )pUndo;
-		if( undo.GetAngle() > 1e-5 ){
-			pView.GetRig()->GetUndoSystem()->Add( pUndo );
+		reBaseUndoRotate &undo = pUndo.DynamicCast<reBaseUndoRotate>();
+		if(undo.GetAngle() > 1e-5){
+			pView.GetRig()->GetUndoSystem()->Add(pUndo);
 		}
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 };
 
@@ -608,28 +683,27 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reView3D::reView3D( reWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pRig( NULL )
+reView3D::reView3D(reWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
-	pSimulationInteraction.TakeOver( new cSimulationInteraction( *this ) );
-	pSelectInteraction.TakeOver( new cSelectInteraction( *this ) );
-	pMoveInteraction.TakeOver( new cMoveInteraction( *this ) );
-	pScaleInteraction.TakeOver( new cScaleInteraction( *this ) );
-	pRotateInteraction.TakeOver( new cRotateInteraction( *this ) );
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pSimulationInteraction = cSimulationInteraction::Ref::New(*this);
+	pSelectInteraction = cSelectInteraction::Ref::New(*this);
+	pMoveInteraction = cMoveInteraction::Ref::New(*this);
+	pScaleInteraction = cScaleInteraction::Ref::New(*this);
+	pRotateInteraction = cRotateInteraction::Ref::New(*this);
 	
-	AddListener( pCameraInteraction );
-	AddListener( pSimulationInteraction );
-	AddListener( pSelectInteraction );
-	AddListener( pMoveInteraction );
-	AddListener( pScaleInteraction );
-	AddListener( pRotateInteraction );
+	AddListener(pCameraInteraction);
+	AddListener(pSimulationInteraction);
+	AddListener(pSelectInteraction);
+	AddListener(pMoveInteraction);
+	AddListener(pScaleInteraction);
+	AddListener(pRotateInteraction);
 }
 
 reView3D::~reView3D(){
-	SetRig( NULL );
+	SetRig(nullptr);
 }
 
 
@@ -640,48 +714,41 @@ reView3D::~reView3D(){
 void reView3D::ResetView(){
 }
 
-void reView3D::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reView3D::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera( NULL );
+	pCameraInteraction->SetCamera(nullptr);
 	pSimulationInteraction->Cancel();
 	pSelectInteraction->Cancel();
 	pMoveInteraction->Cancel();
 	pScaleInteraction->Cancel();
 	pRotateInteraction->Cancel();
 	
-	SetRenderWorld( NULL );
-	
-	if( pRig ){
-		pRig->FreeReference();
-	}
-	
+	SetRenderWorld(nullptr);
 	pRig = rig;
 	
-	if( rig ){
-		rig->AddReference();
-		
-		if( rig->GetCamera() ){
-			SetRenderWorld( rig->GetCamera()->GetEngineCamera() );
-			pCameraInteraction->SetCamera( rig->GetCamera() );
+	if(rig){
+		if(rig->GetCamera()){
+			SetRenderWorld(rig->GetCamera()->GetEngineCamera());
+			pCameraInteraction->SetCamera(rig->GetCamera());
 		}
 	}
 }
 
-void reView3D::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void reView3D::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pRig ){
-		pRig->UpdateWorld( elapsed );
+	if(pRig){
+		pRig->UpdateWorld(elapsed);
 	}
 }
 
 void reView3D::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( pRig ){
-		SetRenderWorld( pRig->GetCamera()->GetEngineCamera() );
+	if(pRig){
+		SetRenderWorld(pRig->GetCamera()->GetEngineCamera());
 	}
 }

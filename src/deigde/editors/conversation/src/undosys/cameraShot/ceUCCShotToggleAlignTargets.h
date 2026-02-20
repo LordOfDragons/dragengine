@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,26 +35,30 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Toggle Billboard Targets.
  */
 class ceUCCShotToggleAlignTargets : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotToggleAlignTargets>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotToggleAlignTargets( ceCameraShot *cameraShot );
+	ceUCCShotToggleAlignTargets(ceCameraShot *cameraShot);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotToggleAlignTargets();
+	~ceUCCShotToggleAlignTargets() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCSnapPoint;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class remove snap point.
  */
 class gdeUOCRemoveSnapPoint : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCRemoveSnapPoint> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSnapPoint *pSnapPoint;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveSnapPoint( gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint );
+	gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint);
 	
 protected:
 	/** \brief Clean up undo action. */

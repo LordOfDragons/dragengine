@@ -38,6 +38,10 @@
  */
 class DE_DLL_EXPORT igdeGuiThemeProperty : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGuiThemeProperty>;
+	
+	
 	/** \brief Type. */
 	enum eType{
 		/** \brief Integer value. */
@@ -73,11 +77,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui theme property. */
-	igdeGuiThemeProperty( const char *name, int value );
-	igdeGuiThemeProperty( const char *name, float value );
-	igdeGuiThemeProperty( const char *name, const decPoint &value );
-	igdeGuiThemeProperty( const char *name, const decColor &value );
-	igdeGuiThemeProperty( const char *name, const decString &value );
+	igdeGuiThemeProperty(const char *name, int value);
+	igdeGuiThemeProperty(const char *name, float value);
+	igdeGuiThemeProperty(const char *name, const decPoint &value);
+	igdeGuiThemeProperty(const char *name, const decColor &value);
+	igdeGuiThemeProperty(const char *name, const decString &value);
 	
 	
 	
@@ -88,7 +92,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGuiThemeProperty();
+	~igdeGuiThemeProperty() override;
 	/*@}*/
 	
 	

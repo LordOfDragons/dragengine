@@ -46,7 +46,7 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -63,19 +63,19 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCHasActor &pPanel;
 	
 public:
-	cComboActor( ceWPCHasActor &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboActor>;
+	cComboActor(ceWPCHasActor &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionHasActor * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor() ){
+		if(!topic || !action || !condition || comboBox->GetText() == condition->GetActor()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCHasActorSetActor( topic, action, condition, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCHasActorSetActor::Ref::New(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -83,20 +83,20 @@ class cActionNegate : public igdeAction {
 	ceWPCHasActor &pPanel;
 	
 public:
-	cActionNegate( ceWPCHasActor &panel ) : igdeAction( "Negate", NULL,
-		"True if the information is missing instead of existing" ), pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionNegate>;
+	cActionNegate(ceWPCHasActor &panel) : igdeAction("@Conversation.WPConditionHasActor.Negate", nullptr,
+		"@Conversation.Condition.HasActorNegate.ToolTip"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionHasActor * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCHasActorToggleNegate( topic, action, condition ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCHasActorToggleNegate::Ref::New(topic, action, condition));
 	}
 };
 
@@ -110,13 +110,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCHasActor::ceWPCHasActor( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCHasActor::ceWPCHasActor(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.ComboBox( *this, "Actor ID:", true, "Actor ID to test", pCBActor, new cComboActor( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPConditionHasActor.ActorID", true, "@Conversation.ActorIDToTest.ToolTip", pCBActor, cComboActor::Ref::New(*this));
 	pCBActor->SetDefaultSorter();
 		
-	helper.CheckBox( *this, pChkNegate, new cActionNegate( *this ), true );
+	helper.CheckBox(*this, pChkNegate, cActionNegate::Ref::New(*this));
 }
 
 ceWPCHasActor::~ceWPCHasActor(){
@@ -130,27 +130,27 @@ ceWPCHasActor::~ceWPCHasActor(){
 ceCConditionHasActor *ceWPCHasActor::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectHasActor ){
-		return ( ceCConditionHasActor* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectHasActor){
+		return (ceCConditionHasActor*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 void ceWPCHasActor::UpdateCondition(){
 	const ceCConditionHasActor * const condition = GetCondition();
 	
-	if( condition ){
-		pCBActor->SetText( condition->GetActor() );
-		pChkNegate->SetChecked( condition->GetNegate() );
+	if(condition){
+		pCBActor->SetText(condition->GetActor());
+		pChkNegate->SetChecked(condition->GetNegate());
 		
 	}else{
 		pCBActor->ClearText();
-		pChkNegate->SetChecked( false );
+		pChkNegate->SetChecked(false);
 	}
 }
 
 void ceWPCHasActor::UpdateActorList(){
-	UpdateComboBoxWithActorIDList( pCBActor );
+	UpdateComboBoxWithActorIDList(pCBActor);
 }

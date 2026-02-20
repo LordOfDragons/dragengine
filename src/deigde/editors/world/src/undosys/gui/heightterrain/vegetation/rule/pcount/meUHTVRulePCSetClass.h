@@ -32,8 +32,8 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRulePropCount;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRulePropCount.h"
 
 
 
@@ -43,9 +43,15 @@ class meHTVRulePropCount;
  * Undo action to set the prop class of a height terrain vegetation rule prop count.
  */
 class meUHTVRulePCSetClass : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRulePCSetClass>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRulePropCount *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRulePropCount::Ref pRule;
 	
 	decString pOldPropClass;
 	decString pNewPropClass;
@@ -54,17 +60,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRulePCSetClass( meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass );
+	meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRulePCSetClass();
+
+protected:
+	~meUHTVRulePCSetClass() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

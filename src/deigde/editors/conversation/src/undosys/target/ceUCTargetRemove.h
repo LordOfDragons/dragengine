@@ -25,10 +25,11 @@
 #ifndef _CEUCTARGETREMOVE_H_
 #define _CEUCTARGETREMOVE_H_
 
+#include "../../conversation/target/ceTarget.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceTarget;
 
 
 
@@ -36,27 +37,31 @@ class ceTarget;
  * \brief Undo Action Remove Target.
  */
 class ceUCTargetRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCTargetRemove>;
+	
+	
 private:
 	ceConversation *pConversation;
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetRemove( ceTarget *target );
+	ceUCTargetRemove(ceTarget *target);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCTargetRemove();
+	~ceUCTargetRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

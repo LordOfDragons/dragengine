@@ -41,14 +41,17 @@ private:
 	decString pAliasID;
 	
 public:
+	using Ref = deTObjectReference<ceCAActorAdd>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */
 	ceCAActorAdd();
 	/** \brief Creates a new conversation action. */
-	ceCAActorAdd( const ceCAActorAdd &action );
+	ceCAActorAdd(const ceCAActorAdd &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCAActorAdd();
+protected:
+	~ceCAActorAdd() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -56,14 +59,14 @@ public:
 	/** \brief Retrieves the actor id. */
 	inline const decString &GetID() const{ return pID; }
 	/** \brief Sets the actor id. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	/** \brief Retrieves the alias id or an empty string if not used. */
 	inline const decString &GetAliasID() const{ return pAliasID; }
 	/** \brief Sets the alias id or an empty string if not used. */
-	void SetAliasID( const char *id );
+	void SetAliasID(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

@@ -25,28 +25,36 @@
 #ifndef _IGDEGDSKY_H_
 #define _IGDEGDSKY_H_
 
+#include "igdeGDSkyController.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
-
-class igdeGDSkyController;
-
+#include <dragengine/resources/image/deImage.h>
 
 
 /**
  * \brief Game sky.
  */
 class DE_DLL_EXPORT igdeGDSky : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDSky>;
+	
+	/** \brief List of skies. */
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<igdeGDSky>,igdeGDSky>;
+	
+	
 private:
 	decString pPath;
 	decString pName;
 	decString pDescription;
 	decString pCategory;
 	
-	decObjectOrderedSet pControllers;
+	igdeGDSkyController::List pControllers;
 	
-	deImageReference pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	
@@ -54,14 +62,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky. */
-	igdeGDSky( const char *path, const char *name );
+	igdeGDSky(const char *path, const char *name);
 	
 	/** \brief Create copy of game definition sky. */
-	igdeGDSky( const igdeGDSky &sky );
+	igdeGDSky(const igdeGDSky &sky);
 	
 protected:
 	/** \brief Clean up sky. */
-	virtual ~igdeGDSky();
+	~igdeGDSky() override;
 	/*@}*/
 	
 	
@@ -73,45 +81,42 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Category. */
 	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set category. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
-	/** \brief Preview image or NULL if not loaded yet. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	/** \brief Preview image or nullptr if not loaded yet. */
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
-	/** \brief Set preview image or NULL if not loaded yet. */
-	void SetPreviewImage( deImage *image );
+	/** \brief Set preview image or nullptr if not loaded yet. */
+	void SetPreviewImage(deImage *image);
 	/*@}*/
 	
 	
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/** \brief Controller at index. */
-	igdeGDSkyController *GetControllerAt( int index ) const;
+	/** \brief Controllers. */
+	inline const igdeGDSkyController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
-	void AddController( igdeGDSkyController *controller );
+	void AddController(igdeGDSkyController *controller);
 	
 	/** \brief Remove controllers. */
 	void RemoveAllControllers();

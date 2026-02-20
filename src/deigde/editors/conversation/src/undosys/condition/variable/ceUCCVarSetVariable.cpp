@@ -42,38 +42,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCVarSetVariable::ceUCCVarSetVariable( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionVariable *condition, const char *newVariable ){
-	if( ! topic || ! action || ! condition ) DETHROW( deeInvalidParam );
+ceUCCVarSetVariable::ceUCCVarSetVariable(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionVariable *condition, const char *newVariable){
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldVariable = condition->GetVariable();
 	pNewVariable = newVariable;
 	
-	SetShortInfo( "Condition Variable: Set Variable" );
+	SetShortInfo("@Conversation.Undo.ConditionVariableSetVariable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetVariable::~ceUCCVarSetVariable(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -82,11 +68,11 @@ ceUCCVarSetVariable::~ceUCCVarSetVariable(){
 ///////////////
 
 void ceUCCVarSetVariable::Undo(){
-	pCondition->SetVariable( pOldVariable );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetVariable(pOldVariable);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCVarSetVariable::Redo(){
-	pCondition->SetVariable( pNewVariable );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetVariable(pNewVariable);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

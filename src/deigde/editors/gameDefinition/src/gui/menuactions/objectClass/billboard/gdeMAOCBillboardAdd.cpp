@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardAdd::gdeMAOCBillboardAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Billboard...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class billboard" )
+gdeMAOCBillboardAdd::gdeMAOCBillboardAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCBillboardAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Billboard...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference billboard;
-	billboard.TakeOver( new gdeOCBillboard );
-	return new gdeUOCAddBillboard( &objectClass, ( gdeOCBillboard* )( deObject* )billboard );
+igdeUndo::Ref gdeMAOCBillboardAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddBillboard::Ref::New(&objectClass, gdeOCBillboard::Ref::New());
 }
 
 void gdeMAOCBillboardAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

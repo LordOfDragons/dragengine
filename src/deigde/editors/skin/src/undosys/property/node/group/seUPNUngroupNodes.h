@@ -25,13 +25,13 @@
 #ifndef _SEUPNUNGROUPNODES_H_
 #define _SEUPNUNGROUPNODES_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeGroup;
 
 
 
@@ -39,20 +39,31 @@ class sePropertyNodeGroup;
  * \brief Undo action undgroup property nodes.
  */
 class seUPNUngroupNodes : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPNUngroupNodes>;
+	
+	
 private:
-	struct sNode {
-		sePropertyNode *node;
+	class cNode : public deObject{
+	public:
+		using Ref = deTObjectReference<cNode>;
+		using List = decTObjectOrderedSet<cNode>;
+		
+		sePropertyNode::Ref node;
 		decPoint3 position;
 		decPoint3 size;
-		float rotation;
-		float shearing;
+		float rotation = 0.0f;
+		float shearing = 0.0f;
+		
+		cNode() = default;
+	protected:
+		~cNode() override = default;
 	};
 	
-	sePropertyNodeGroup *pParentGroup;
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pParentGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	int pIndex;
-	int pNodeCount;
-	sNode *pNodes;
+	cNode::List pNodes;
 	
 	
 	
@@ -60,11 +71,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNUngroupNodes( sePropertyNodeGroup *nodeGroup );
+	seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNUngroupNodes();
+	~seUPNUngroupNodes() override;
 	/*@}*/
 	
 	
@@ -73,10 +84,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

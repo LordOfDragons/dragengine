@@ -46,11 +46,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCLIdentify::meCLIdentify( meWorld &world ) :
-pWorld( world ),
-pObject( nullptr ),
-pDecal( nullptr ),
-pBestDistance( 0.0f ){
+meCLIdentify::meCLIdentify(meWorld &world) :
+pWorld(world),
+pObject(nullptr),
+pDecal(nullptr),
+pBestDistance(0.0f){
 }
 
 meCLIdentify::~meCLIdentify(){
@@ -80,25 +80,25 @@ bool meCLIdentify::HasDecal() const{
 // Notifications
 //////////////////
 
-void meCLIdentify::CollisionResponse( deCollider*, deCollisionInfo *info ){
-	if( info->IsCollider() ){
-		meObject * const object = pGetObjectForCollider( info->GetCollider() );
-		if( ! object ){
+void meCLIdentify::CollisionResponse(deCollider*, deCollisionInfo *info){
+	if(info->IsCollider()){
+		meObject * const object = pGetObjectForCollider(info->GetCollider());
+		if(!object){
 			return;
 		}
 		
-		if( ! pObject || info->GetDistance() < pBestDistance ){
+		if(!pObject || info->GetDistance() < pBestDistance){
 			pObject = object;
 		}
 	}
 }
 
-bool meCLIdentify::CanHitCollider( deCollider*, deCollider *collider ){
-	const meObject * const object = pGetObjectForCollider( collider );
+bool meCLIdentify::CanHitCollider(deCollider*, deCollider *collider){
+	const meObject * const object = pGetObjectForCollider(collider);
 	return object && object->GetVisible();
 }
 
-void meCLIdentify::ColliderChanged( deCollider* ){
+void meCLIdentify::ColliderChanged(deCollider*){
 }
 
 
@@ -106,8 +106,8 @@ void meCLIdentify::ColliderChanged( deCollider* ){
 // Private Functions
 //////////////////////
 
-meObject *meCLIdentify::pGetObjectForCollider( deCollider *collider ) const{
+meObject *meCLIdentify::pGetObjectForCollider(deCollider *collider) const{
 	const meColliderOwner * const colliderOwner =
-		meColliderOwner::GetColliderOwner( *pWorld.GetEnvironment(), collider );
+		meColliderOwner::GetColliderOwner(*pWorld.GetEnvironment(), collider);
 	return colliderOwner ? colliderOwner->GetObject() : nullptr;
 }

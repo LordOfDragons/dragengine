@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	desynParameterFloat( deDESynthesizer &synthesizer );
+	desynParameterFloat(deDESynthesizer &synthesizer);
 	/*@}*/
 	
 	
@@ -47,16 +47,16 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** \brief Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	
 	/** \brief Current value. */
 	virtual float GetParameterFloat() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterFloat( float value ) = 0;
+	virtual void SetParameterFloat(float value) = 0;
 	/*@}*/
 };
 

@@ -49,7 +49,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -62,33 +61,35 @@ class igdeWOSOBillboardResLoadComponent : public igdeResourceLoaderListener{
 private:
 	igdeWOSOBillboard *pOwner;
 	decString pPathSkin;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	int pCounter;
 	bool pSuccess;
 	
 public:
-	igdeWOSOBillboardResLoadComponent( igdeWOSOBillboard &owner ) :
-	pOwner( &owner ), pCounter( 0 ), pSuccess( true ){
+	typedef deTObjectReference<igdeWOSOBillboardResLoadComponent> Ref;
+	
+	igdeWOSOBillboardResLoadComponent(igdeWOSOBillboard &owner) :
+	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
 	
 	virtual ~igdeWOSOBillboardResLoadComponent(){
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
-	void LoadSkin( const char *path ){
+	void LoadSkin(const char *path){
 // 		pOwner->GetWrapper().GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 // 			"igdeWOSOBillboardResLoadComponent.LoadSkin: %p %s [%d]", &pOwner->GetWrapper(), path, pCounter );
 		pPathSkin = path;
-		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource( path, deResourceLoader::ertSkin, this );
+		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
-	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource){
-		if( ! pOwner ){
+	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
+		if(!pOwner){
 			return;
 		}
 		
@@ -98,16 +99,16 @@ public:
 // 			"igdeWOSOBillboardResLoadComponent.LoadingFinished: %p %s (%d)[%d,%d]", &pOwner->GetWrapper(),
 // 			filename.GetString(), type, pCounter, pSuccess );
 		
-		if( type == deResourceLoader::ertSkin && pPathSkin == filename ){
-			pSkin = ( deSkin* )resource;
+		if(type == deResourceLoader::ertSkin && pPathSkin == filename){
+			pSkin = (deSkin*)resource;
 			pCounter--;
 		}
 		
 		CheckFinished();
 	}
 	
-	virtual void LoadingFailed( const igdeResourceLoaderTask &task ){
-		if( ! pOwner ){
+	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
+		if(!pOwner){
 			return;
 		}
 		
@@ -117,7 +118,7 @@ public:
 // 			"igdeWOSOBillboardResLoadComponent.LoadingFailed: %p %s (%d)[%d,%d]", &pOwner->GetWrapper(),
 // 			filename.GetString(), type, pCounter, pSuccess );
 		
-		if( type == deResourceLoader::ertSkin && pPathSkin == filename ){
+		if(type == deResourceLoader::ertSkin && pPathSkin == filename){
 			pCounter--;
 			pSuccess = false;
 		}
@@ -126,8 +127,8 @@ public:
 	}
 	
 	void CheckFinished(){
-		if( pOwner && pCounter == 0 ){
-			pOwner->AsyncLoadFinished( pSuccess );
+		if(pOwner && pCounter == 0){
+			pOwner->AsyncLoadFinished(pSuccess);
 		}
 	}
 };
@@ -139,21 +140,21 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSOBillboard::igdeWOSOBillboard( igdeWObject &wrapper,
-	const igdeGDCBillboard &gdBillboard, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDBillboard( gdBillboard ),
-pAddedToWorld( false ),
-pAttachment( NULL ),
-pRenderEnvMap( false )
+igdeWOSOBillboard::igdeWOSOBillboard(igdeWObject &wrapper,
+	const igdeGDCBillboard &gdBillboard, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDBillboard(gdBillboard),
+pAddedToWorld(false),
+pAttachment(nullptr),
+pRenderEnvMap(false)
 {
 	pLoadResources();
 }
 
 igdeWOSOBillboard::~igdeWOSOBillboard(){
-	if( pResLoad ){
-		( ( igdeWOSOBillboardResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
-		pResLoad = NULL;
+	if(pResLoad){
+		pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>()->Drop();
+		pResLoad = nullptr;
 	}
 	pDestroyBillboard();
 }
@@ -172,71 +173,71 @@ void igdeWOSOBillboard::OnAllSubObjectsFinishedLoading(){
 }
 
 void igdeWOSOBillboard::UpdateGeometry(){
-	if( ! pBillboard ){
+	if(!pBillboard){
 		return;
 	}
 	
-	if( pGDBillboard.GetDoNotScale() ){
-		pBillboard->SetSize( pGDBillboard.GetSize() );
-		pBillboard->SetOffset( pBaseOffset );
+	if(pGDBillboard.GetDoNotScale()){
+		pBillboard->SetSize(pGDBillboard.GetSize());
+		pBillboard->SetOffset(pBaseOffset);
 		
 	}else{
 		const decVector &scaling = GetWrapper().GetScaling();
 		const decVector2 &size = pGDBillboard.GetSize();
-		pBillboard->SetSize( decVector2( size.x * scaling.x, size.y * scaling.y ) );
-		pBillboard->SetOffset( decVector2( pBaseOffset.x * scaling.x, pBaseOffset.y * scaling.y ) );
+		pBillboard->SetSize(decVector2(size.x * scaling.x, size.y * scaling.y));
+		pBillboard->SetOffset(decVector2(pBaseOffset.x * scaling.x, pBaseOffset.y * scaling.y));
 	}
 }
 
 void igdeWOSOBillboard::UpdateVisibility(){
-	if( ! pBillboard ){
+	if(!pBillboard){
 		return;
 	}
 	
 	bool visible = GetWrapper().GetVisible();
-	const bool partiallyVisible = visible && ! GetWrapper().GetPartiallyHidden();
+	const bool partiallyVisible = visible && !GetWrapper().GetPartiallyHidden();
 	
-	if( pGDBillboard.GetPartialHide() ){
+	if(pGDBillboard.GetPartialHide()){
 		visible = partiallyVisible;
 	}
 	
-	pBillboard->SetVisible( visible );
+	pBillboard->SetVisible(visible);
 }
 
 void igdeWOSOBillboard::UpdateLayerMasks(){
-	if( ! pBillboard ){
+	if(!pBillboard){
 		return;
 	}
 	
 	int mask = GetWrapper().GetRenderLayerMask();
-	if( pRenderEnvMap ){
+	if(pRenderEnvMap){
 		mask |= GetWrapper().GetRenderEnvMapMask();
 	}
 	
-	pBillboard->SetLayerMask( LayerMaskFromInt( mask ) );
+	pBillboard->SetLayerMask(LayerMaskFromInt(mask));
 }
 
 void igdeWOSOBillboard::CameraChanged(){
 }
 
-void igdeWOSOBillboard::Update( float ){
+void igdeWOSOBillboard::Update(float){
 	pUpdateExtends();
 }
 
-void igdeWOSOBillboard::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitBillboard( *this );
+void igdeWOSOBillboard::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitBillboard(*this);
 }
 
-void igdeWOSOBillboard::AsyncLoadFinished( bool success ){
-	if( ! pResLoad ){
+void igdeWOSOBillboard::AsyncLoadFinished(bool success){
+	if(!pResLoad){
 		return;
 	}
 	
-	( ( igdeWOSOBillboardResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
+	pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>()->Drop();
 	
 // 	GetWrapper().GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 // 		"igdeWOSOBillboard.AsyncLoadFinished: %p %d", &GetWrapper(), success );
-	GetWrapper().SubObjectFinishedLoading( *this, success );
+	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
 
 bool igdeWOSOBillboard::IsContentVisible(){
@@ -248,166 +249,156 @@ bool igdeWOSOBillboard::IsContentVisible(){
 //////////////////////
 
 void igdeWOSOBillboard::pLoadResources(){
-	if( pResLoad ){
-		( ( igdeWOSOBillboardResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
-		pResLoad = NULL;
+	if(pResLoad){
+		pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>()->Drop();
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver( new igdeWOSOBillboardResLoadComponent( *this ) );
-	igdeWOSOBillboardResLoadComponent &rl =
-		( igdeWOSOBillboardResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+	pResLoad = igdeWOSOBillboardResLoadComponent::Ref::New(*this);
+	igdeWOSOBillboardResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>();
 	
-	const decString pathSkin( GetStringProperty(
-		pGDBillboard.GetPropertyName( igdeGDCBillboard::epSkin ), pGDBillboard.GetSkinPath() ) );
-	if( ! pathSkin.IsEmpty() ){
-		rl.LoadSkin( pathSkin );
+	const decString pathSkin(GetStringProperty(
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epSkin), pGDBillboard.GetSkinPath()));
+	if(!pathSkin.IsEmpty()){
+		rl.LoadSkin(pathSkin);
 	}
 	
 	rl.CheckFinished();
 }
 
 void igdeWOSOBillboard::pUpdateBillboard(){
-	const igdeWOSOBillboardResLoadComponent &rl =
-		( igdeWOSOBillboardResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+	const igdeWOSOBillboardResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>();
 	
-	deSkin::Ref skin( rl.GetSkin() );
-	if( ! skin && GetWrapper().GetGDClass() ){
-		skin = GetEnvironment().GetStockSkin( igdeEnvironment::essError );
+	deSkin::Ref skin(rl.GetSkin());
+	if(!skin && GetWrapper().GetGDClass()){
+		skin = GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 	}
 	
-	if( ! skin ){
-		pResLoad = NULL;
+	if(!skin){
+		pResLoad = nullptr;
 		pDestroyBillboard();
 		return;
 	}
 	
-	if( ! pBillboard ){
-		pBillboard.TakeOver( GetEngine().GetBillboardManager()->CreateBillboard() );
+	if(!pBillboard){
+		pBillboard = GetEngine().GetBillboardManager()->CreateBillboard();
 		
-		pBillboard->SetSizeFixedToScreen( pGDBillboard.GetSizeFixedToScreen() );
+		pBillboard->SetSizeFixedToScreen(pGDBillboard.GetSizeFixedToScreen());
 		
 		UpdateLayerMasks();
 		UpdateVisibility();
 	}
 	
-	pBillboard->SetSkin( skin );
+	pBillboard->SetSkin(skin);
 	
-	pBillboard->SetAxis( GetVectorProperty(
-		pGDBillboard.GetPropertyName( igdeGDCBillboard::epAxis ),
-		pGDBillboard.GetAxis() ) );
+	pBillboard->SetAxis(GetVectorProperty(
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epAxis),
+		pGDBillboard.GetAxis()));
 	pBaseOffset = GetVector2Property(
-		pGDBillboard.GetPropertyName( igdeGDCBillboard::epOffset ),
-		pGDBillboard.GetOffset() );
-	pBillboard->SetLocked( GetBoolProperty(
-		pGDBillboard.GetPropertyName( igdeGDCBillboard::epLocked ),
-		pGDBillboard.GetLocked() ) );
-	pBillboard->SetSpherical( GetBoolProperty(
-		pGDBillboard.GetPropertyName( igdeGDCBillboard::epSpherical ),
-		pGDBillboard.GetSpherical() ) );
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epOffset),
+		pGDBillboard.GetOffset());
+	pBillboard->SetLocked(GetBoolProperty(
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epLocked),
+		pGDBillboard.GetLocked()));
+	pBillboard->SetSpherical(GetBoolProperty(
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epSpherical),
+		pGDBillboard.GetSpherical()));
 	
 	pRenderEnvMap = GetBoolProperty(
-		pGDBillboard.GetPropertyName( igdeGDCBillboard::epRenderEnvMap ),
-		pGDBillboard.GetRenderEnvMap() );
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epRenderEnvMap),
+		pGDBillboard.GetRenderEnvMap());
 	
 	UpdateGeometry();
 	pUpdateExtends();
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddBillboard( pBillboard );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddBillboard(pBillboard);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOBillboard::pDestroyBillboard(){
-	if( ! pBillboard ){
+	if(!pBillboard){
 		return;
 	}
 	
 	DetachFromCollider();
 	ClearBoxExtends();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveBillboard( pBillboard );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveBillboard(pBillboard);
 	}
 	
-	pBillboard = NULL;
+	pBillboard = nullptr;
 	pAddedToWorld = false;
 }
 
 void igdeWOSOBillboard::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pBillboard ){
+	if(!pBillboard){
 		return;
 	}
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
 	
-	try{
-		attachment = new deColliderAttachment( pBillboard );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDBillboard.GetPropertyName( igdeGDCBillboard::epAttachPosition ),
-			pGDBillboard.GetPosition() ) );
-		attachment->SetNoScaling( true );
-		
-		if( colliderComponent ){
-			if( ! pGDBillboard.GetBoneName().IsEmpty() ){
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( pGDBillboard.GetBoneName() );
-			}
-			colliderComponent->AddAttachment( attachment );
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment( attachment );
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pBillboard);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epAttachPosition),
+		pGDBillboard.GetPosition()));
+	attachment->SetNoScaling(true);
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDBillboard.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDBillboard.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch( const deException & ){
-		if( attachment ){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOBillboard::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachedToCollider->RemoveAttachment(pAttachment);
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }
 
 void igdeWOSOBillboard::pUpdateExtends(){
-	if( ! pBillboard || pGDBillboard.GetDoNotScale() ){
+	if(!pBillboard || pGDBillboard.GetDoNotScale()){
 		ClearBoxExtends();
 		return;
 	}
 	
-	decVector2 boxMinExtend( pBaseOffset - pGDBillboard.GetSize() * 0.5f );
-	decVector2 boxMaxExtend( pBaseOffset + pGDBillboard.GetSize() * 0.5f );
+	decVector2 boxMinExtend(pBaseOffset - pGDBillboard.GetSize() * 0.5f);
+	decVector2 boxMaxExtend(pBaseOffset + pGDBillboard.GetSize() * 0.5f);
 	
-	if( pGDBillboard.GetSizeFixedToScreen() && GetWrapper().GetCamera() ){
+	if(pGDBillboard.GetSizeFixedToScreen() && GetWrapper().GetCamera()){
 		const deCamera &camera = *GetWrapper().GetCamera();
-		const float distance = ( float )( pBillboard->GetPosition() - camera.GetPosition() ).Length();
-		const float scale = distance * tanf( camera.GetFov() * 0.5f );
+		const float distance = (float)(pBillboard->GetPosition() - camera.GetPosition()).Length();
+		const float scale = distance * tanf(camera.GetFov() * 0.5f);
 		boxMinExtend *= scale;
 		boxMaxExtend *= scale;
 	}
 	
-	SetBoxExtends( decVector( boxMinExtend.x, boxMinExtend.y, boxMinExtend.x ),
-		decVector( boxMaxExtend.x, boxMaxExtend.y, boxMaxExtend.x ) );
+	SetBoxExtends(decVector(boxMinExtend.x, boxMinExtend.y, boxMinExtend.x),
+		decVector(boxMaxExtend.x, boxMaxExtend.y, boxMaxExtend.x));
 }

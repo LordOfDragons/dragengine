@@ -50,18 +50,18 @@ dePropFieldInstance::~dePropFieldInstance(){
 // Management
 ///////////////
 
-void dePropFieldInstance::SetPosition( const decVector &position ){
+void dePropFieldInstance::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void dePropFieldInstance::SetRotation( const decVector &rotation ){
+void dePropFieldInstance::SetRotation(const decVector &rotation){
 	pRotation = rotation;
 }
 
-void dePropFieldInstance::SetScaling( float scaling ){
+void dePropFieldInstance::SetScaling(float scaling){
 	pScaling = scaling;
 }
 
-void dePropFieldInstance::SetBendState( int state ){
+void dePropFieldInstance::SetBendState(int state){
 	pBendState = state;
 }

@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleDoNotScale::gdeUOCBillboardToggleDoNotScale(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+
+pBillboard(nullptr)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle do not scale" );
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleDoNotScale");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardToggleDoNotScale::~gdeUOCBillboardToggleDoNotScale(){
-	if( pBillboard ){
-		pBillboard->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCBillboardToggleDoNotScale::~gdeUOCBillboardToggleDoNotScale(){
 ///////////////
 
 void gdeUOCBillboardToggleDoNotScale::Undo(){
-	pBillboard->SetDoNotScale( ! pBillboard->GetDoNotScale() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetDoNotScale(!pBillboard->GetDoNotScale());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardToggleDoNotScale::Redo(){

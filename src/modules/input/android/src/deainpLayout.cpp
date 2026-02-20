@@ -37,14 +37,14 @@
 deainpLayout::deainpLayout(){
 }
 
-deainpLayout::deainpLayout( const decPoint &position, const decPoint &size ) :
-pPosition( position ),
-pSize( decPoint().Largest( size ) ){
+deainpLayout::deainpLayout(const decPoint &position, const decPoint &size) :
+pPosition(position),
+pSize(decPoint().Largest(size)){
 }
 
-deainpLayout::deainpLayout( const deainpLayout &copy ) :
-pPosition( copy.pPosition ),
-pSize( copy.pSize ){
+deainpLayout::deainpLayout(const deainpLayout &copy) :
+pPosition(copy.pPosition),
+pSize(copy.pSize){
 }
 
 deainpLayout::~deainpLayout(){
@@ -55,12 +55,12 @@ deainpLayout::~deainpLayout(){
 // Management
 ///////////////
 
-void deainpLayout::SetPosition( const decPoint &position ){
+void deainpLayout::SetPosition(const decPoint &position){
 	pPosition = position;
 }
 
-void deainpLayout::SetSize( const decPoint &size ){
-	pSize = decPoint().Largest( size );
+void deainpLayout::SetSize(const decPoint &size){
+	pSize = decPoint().Largest(size);
 }
 
 
@@ -68,11 +68,11 @@ void deainpLayout::SetSize( const decPoint &size ){
 // Operators
 //////////////
 
-bool deainpLayout::operator==( const deainpLayout &layout ) const{
+bool deainpLayout::operator==(const deainpLayout &layout) const{
 	return pPosition == layout.pPosition && pSize == layout.pSize;
 }
 
-deainpLayout &deainpLayout::operator=( const deainpLayout &layout ){
+deainpLayout &deainpLayout::operator=(const deainpLayout &layout){
 	pPosition = layout.pPosition;
 	pSize = layout.pSize;
 	return *this;

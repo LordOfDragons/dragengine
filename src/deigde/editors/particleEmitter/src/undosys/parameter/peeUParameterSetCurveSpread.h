@@ -34,15 +34,18 @@
  */
 class peeUParameterSetCurveSpread : public peeUParameterSetCurve{
 public:
+	using Ref = deTObjectReference<peeUParameterSetCurveSpread>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	peeUParameterSetCurveSpread( peeType *type, peeParameter *parameter,
-		const decCurveBezier &newCurve );
+	peeUParameterSetCurveSpread(peeType *type, peeParameter *parameter,
+		const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~peeUParameterSetCurveSpread();
+	~peeUParameterSetCurveSpread() override;
 	/*@}*/
 	
 	
@@ -51,10 +54,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

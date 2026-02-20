@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetRotation::seUPropertyNodeSetRotation( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode *node, float newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set rotation" );
+	SetShortInfo("@Skin.Undo.NodeSetRotation");
 	
 	pOldValue = node->GetRotation();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
 ///////////////
 
 void seUPropertyNodeSetRotation::Undo(){
-	pNode->SetRotation( pOldValue );
+	pNode->SetRotation(pOldValue);
 }
 
 void seUPropertyNodeSetRotation::Redo(){
-	pNode->SetRotation( pNewValue );
+	pNode->SetRotation(pNewValue);
 }

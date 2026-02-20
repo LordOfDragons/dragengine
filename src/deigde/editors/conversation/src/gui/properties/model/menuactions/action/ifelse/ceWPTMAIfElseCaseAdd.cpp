@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,12 +50,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseAdd::ceWPTMAIfElseCaseAdd( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse ) :
-ceWPTMenuAction( windowMain, "Add If-Case", windowMain.GetIconActionIfElseCaseIf() ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ){
+ceWPTMAIfElseCaseAdd::ceWPTMAIfElseCaseAdd(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.IfElseCaseAdd", windowMain.GetIconActionIfElseCaseIf()),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse){
 }
 
 
@@ -64,39 +64,23 @@ pIfElse( &ifElse ){
 ///////////////
 
 void ceWPTMAIfElseCaseAdd::OnAction(){
-	ceCAIfElseCase *selectIfCase = NULL;
-	ceCAIfElseCase *ifCase = NULL;
-	igdeUndoReference undo;
-	
-	try{
-		ifCase = new ceCAIfElseCase;
-		undo.TakeOver( new ceUCAIfElseCaseAdd( pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount() ) );
-		selectIfCase = ifCase;
-		ifCase->FreeReference();
-		ifCase = NULL;
-		
-		pConversation->GetUndoSystem()->Add( undo );
-		
-	}catch( const deException & ){
-		if( ifCase ){
-			ifCase->FreeReference();
-		}
-		throw;
-	}
+	const ceCAIfElseCase::Ref ifCase(ceCAIfElseCase::Ref::New());
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseCaseAdd::Ref::New(
+		pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount()));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAIfElse * const modelIfElse = ( ceWPTTIMAIfElse* )model.DeepFindAction( pIfElse );
-	if( ! modelIfElse ){
+	ceWPTTIMAIfElse * const modelIfElse = static_cast<ceWPTTIMAIfElse*>(model.DeepFindAction(pIfElse));
+	if(!modelIfElse){
 		return;
 	}
 	
-	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild( selectIfCase );
-	if( ! modelIfCase ){
+	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild(ifCase);
+	if(!modelIfCase){
 		return;
 	}
 	

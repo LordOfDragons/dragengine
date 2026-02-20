@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPViewListener::ceWPViewListener( ceWPView &panel ) :
-pPanel( panel ){
+ceWPViewListener::ceWPViewListener(ceWPView &panel) :
+pPanel(panel){
 }
 
 ceWPViewListener::~ceWPViewListener(){
@@ -52,8 +52,8 @@ ceWPViewListener::~ceWPViewListener(){
 // Management
 ///////////////
 
-void ceWPViewListener::ConversationChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::ConversationChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -64,24 +64,24 @@ void ceWPViewListener::ConversationChanged( ceConversation *conversation ){
 	pPanel.UpdatePlaybackTopicList();
 }
 
-void ceWPViewListener::SkyChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::SkyChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateSky();
 }
 
-void ceWPViewListener::EnvObjectChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::EnvObjectChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateEnvObject();
 }
 
-void ceWPViewListener::CameraChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::CameraChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -90,16 +90,16 @@ void ceWPViewListener::CameraChanged( ceConversation *conversation ){
 
 
 
-void ceWPViewListener::FileStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::FileStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePlaybackFileList();
 }
 
-void ceWPViewListener::FileChanged( ceConversation *conversation, ceConversationFile* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::FileChanged(ceConversation *conversation, ceConversationFile*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -108,16 +108,16 @@ void ceWPViewListener::FileChanged( ceConversation *conversation, ceConversation
 
 
 
-void ceWPViewListener::TopicStructureChanged( ceConversation *conversation, ceConversationFile *file ){
-	if( conversation != pPanel.GetConversation() || file != pPanel.GetSelectedPlaybackFile() ){
+void ceWPViewListener::TopicStructureChanged(ceConversation *conversation, ceConversationFile *file){
+	if(conversation != pPanel.GetConversation() || file != pPanel.GetSelectedPlaybackFile()){
 		return;
 	}
 	
 	pPanel.UpdatePlaybackTopicList();
 }
 
-void ceWPViewListener::TopicChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic* ){
-	if( conversation != pPanel.GetConversation() || file != pPanel.GetSelectedPlaybackFile() ){
+void ceWPViewListener::TopicChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic*){
+	if(conversation != pPanel.GetConversation() || file != pPanel.GetSelectedPlaybackFile()){
 		return;
 	}
 	
@@ -126,61 +126,61 @@ void ceWPViewListener::TopicChanged( ceConversation *conversation, ceConversatio
 
 
 
-void ceWPViewListener::ActorStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::ActorStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateActors();
 }
 
-void ceWPViewListener::ActorChanged( ceConversation *conversation, ceConversationActor* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::ActorChanged(ceConversation *conversation, ceConversationActor*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateActors();
 }
 
-void ceWPViewListener::ActorActivePoseChanged( ceConversation *conversation, ceConversationActor *actor ){
-	if( conversation != pPanel.GetConversation() || actor != pPanel.GetActor() ){
+void ceWPViewListener::ActorActivePoseChanged(ceConversation *conversation, ceConversationActor *actor){
+	if(conversation != pPanel.GetConversation() || actor != pPanel.GetActor()){
 		return;
 	}
 	
 	pPanel.SelectActiveActorPose();
 }
 
-void ceWPViewListener::ActorPosesChanged( ceConversation *conversation, ceConversationActor *actor ){
-	if( conversation != pPanel.GetConversation() || actor != pPanel.GetActor() ){
+void ceWPViewListener::ActorPosesChanged(ceConversation *conversation, ceConversationActor *actor){
+	if(conversation != pPanel.GetConversation() || actor != pPanel.GetActor()){
 		return;
 	}
 	
 	pPanel.UpdateActorPoses();
 }
 
-void ceWPViewListener::ActorPoseGesturesChanged( ceConversation *conversation,
-ceConversationActor *actor, ceActorPose *pose ){
-	if( conversation != pPanel.GetConversation() || actor != pPanel.GetActor() || pose != actor->GetActivePose() ){
+void ceWPViewListener::ActorPoseGesturesChanged(ceConversation *conversation,
+ceConversationActor *actor, ceActorPose *pose){
+	if(conversation != pPanel.GetConversation() || actor != pPanel.GetActor() || pose != actor->GetActivePose()){
 		return;
 	}
 	
 	pPanel.UpdateActorGestures();
 }
 
-void ceWPViewListener::ActorCommandsChanged( ceConversation *conversation, ceConversationActor *actor ){
-	if( conversation != pPanel.GetConversation() || actor == pPanel.GetActor() ){
+void ceWPViewListener::ActorCommandsChanged(ceConversation *conversation, ceConversationActor *actor){
+	if(conversation != pPanel.GetConversation() || actor == pPanel.GetActor()){
 		pPanel.UpdateActorCommands();
 	}
 }
 
-void ceWPViewListener::ActorParametersChanged( ceConversation *conversation, ceConversationActor *actor ){
-	if( conversation != pPanel.GetConversation() || actor == pPanel.GetActor() ){
+void ceWPViewListener::ActorParametersChanged(ceConversation *conversation, ceConversationActor *actor){
+	if(conversation != pPanel.GetConversation() || actor == pPanel.GetActor()){
 		pPanel.UpdateActorParameters();
 	}
 }
 
-void ceWPViewListener::ActiveActorChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::ActiveActorChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -189,24 +189,24 @@ void ceWPViewListener::ActiveActorChanged( ceConversation *conversation ){
 
 
 
-void ceWPViewListener::CoordSystemStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::CoordSystemStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateCoordSystems();
 }
 
-void ceWPViewListener::CoordSystemChanged( ceConversation *conversation, ceCoordSystem* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::CoordSystemChanged(ceConversation *conversation, ceCoordSystem*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateCoordSystems();
 }
 
-void ceWPViewListener::ActiveCoordSystemChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::ActiveCoordSystemChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -215,24 +215,24 @@ void ceWPViewListener::ActiveCoordSystemChanged( ceConversation *conversation ){
 
 
 
-void ceWPViewListener::PropStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PropStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePropList();
 }
 
-void ceWPViewListener::PropChanged( ceConversation *conversation, ceProp* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PropChanged(ceConversation *conversation, ceProp*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePropList();
 }
 
-void ceWPViewListener::ActivePropChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::ActivePropChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -241,40 +241,40 @@ void ceWPViewListener::ActivePropChanged( ceConversation *conversation ){
 
 
 
-void ceWPViewListener::PlaybackChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PlaybackChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePlayback();
 }
 
-void ceWPViewListener::PlaybackCommandListChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PlaybackCommandListChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePlaybackCommands();
 }
 
-void ceWPViewListener::PlaybackVarListChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PlaybackVarListChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePlaybackVariables();
 }
 
-void ceWPViewListener::PlaybackTriggerTableChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PlaybackTriggerTableChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdatePlaybackTriggerTable();
 }
 
-void ceWPViewListener::PlaybackMissingWordsChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPViewListener::PlaybackMissingWordsChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	

@@ -290,6 +290,19 @@
 		<xs:simpleContent>
 			<xs:extension base='xs:string'>
 				<xs:attribute type='id' name='id' use='optional'/>
+				<xs:attribute type='doNotFail' name='doNotFail' use='optional'/>
+				
+				<xs:attribute type='xs:boolean' name='loop' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							If <code>true</code> restarts at the beginning if all subtree actions returns <code>BTResult.success</code>.
+							This allows to keep looping a subtree until the first time any subtree action returns
+							<code>BTResult.failure</code>.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>

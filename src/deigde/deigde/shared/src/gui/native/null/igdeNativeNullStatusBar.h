@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLSTATUSBAR_H_
 #define _IGDENATIVENULLSTATUSBAR_H_
 
+#include "../../igdeStatusBar.h"
+
 class igdeStatusBar;
 
 
 /**
  * Null Text Area.
  */
-class igdeNativeNullStatusBar{
+class igdeNativeNullStatusBar : public igdeStatusBar::cNativeStatusBar{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullStatusBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullStatusBar* CreateNativeWidget( igdeStatusBar &owner );
+	static igdeNativeNullStatusBar* CreateNativeWidget(igdeStatusBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,7 +57,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
+	void UpdateText() override;
 	/*@}*/
 };
 

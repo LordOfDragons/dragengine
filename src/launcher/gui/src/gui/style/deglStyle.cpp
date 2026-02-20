@@ -49,10 +49,10 @@ deglStyle::~deglStyle(){
 // Management
 ///////////////
 
-void deglStyle::SetColorBackground( const decColor &color ){
+void deglStyle::SetColorBackground(const decColor &color){
 	pColorBackground = color;
 }
 
-void deglStyle::SetColorText( const decColor &color ){
+void deglStyle::SetColorText(const decColor &color){
 	pColorText = color;
 }

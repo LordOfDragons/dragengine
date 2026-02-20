@@ -25,11 +25,11 @@
 #ifndef _DEOGLRVIDEOPLAYER_H_
 #define _DEOGLRVIDEOPLAYER_H_
 
+#include "deoglRVideo.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
 
-class deoglRVideo;
 class deoglRenderThread;
 class deoglTexture;
 
@@ -42,7 +42,7 @@ class deoglRVideoPlayer : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRVideo *pVideo;
+	deoglRVideo::Ref pVideo;
 	deoglTexture *pCachedFrameTexture;
 	int pUpdateCachedFrameTexture;
 	
@@ -55,33 +55,38 @@ private:
 	bool pDirtyTexture;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRVideoPlayer>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create video player target. */
-	deoglRVideoPlayer( deoglRenderThread &renderThread );
+	deoglRVideoPlayer(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up video player target. */
-	virtual ~deoglRVideoPlayer();
+	~deoglRVideoPlayer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render video or \em NULL if not set. */
-	inline deoglRVideo *GetVideo() const{ return pVideo; }
+	inline const deoglRVideo::Ref &GetVideo() const{ return pVideo; }
 	
 	/** Set render video or \em NULL if not set. */
-	void SetVideo( deoglRVideo *video );
+	void SetVideo(deoglRVideo *video);
 	
 	/** Cached frame or -1 if not set. */
 	inline deoglTexture *GetCachedFrameTexture() const{ return pCachedFrameTexture; }
 	
 	/** Set cached frame or -1 if not set. */
-	void SetCachedFrameTexture( deoglTexture *texture );
+	void SetCachedFrameTexture(deoglTexture *texture);
 	
 	/** Set update cached frame texture. */
-	void SetUpdateCachedFrameTexture( int updateCachedFrameTexture );
+	void SetUpdateCachedFrameTexture(int updateCachedFrameTexture);
 	
 	/** Has cached frame texture or update cached frame. */
 	bool HasCachedFrameTexture() const;
@@ -101,13 +106,13 @@ public:
 	 * Set video size.
 	 * \details Deletes the texture and pixel buffer if set.
 	 */
-	void SetVideoSize( int width, int height, int componentCount );
+	void SetVideoSize(int width, int height, int componentCount);
 	
 	/**
 	 * Set pixel buffer to update texture with.
 	 * \returns Previously set pixel buffer.
 	 */
-	deoglPixelBuffer::Ref SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer(deoglPixelBuffer *pixelBuffer);
 	
 	/** Texture or \em NULL if not existing. */
 	deoglTexture *GetTexture() const;

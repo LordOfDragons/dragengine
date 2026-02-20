@@ -25,12 +25,10 @@
 #ifndef _CEUCFILEPASTE_H_
 #define _CEUCFILEPASTE_H_
 
-#include "../../conversation/file/ceConversationFileList.h"
+#include "../../conversation/file/ceConversationFile.h"
+#include "../../conversation/ceConversation.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class ceConversation;
-class ceConversationFile;
 
 
 
@@ -38,9 +36,13 @@ class ceConversationFile;
  * \brief Undo action paste conversation file.
  */
 class ceUCFilePaste : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCFilePaste>;
+	
+	
 private:
 	ceConversation *pConversation;
-	ceConversationFileList pFiles;
+	ceConversationFile::List pFiles;
 	
 	
 	
@@ -48,10 +50,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCFilePaste( ceConversation *conversation, const ceConversationFileList &files );
+	ceUCFilePaste(ceConversation *conversation, const ceConversationFile::List &files);
 	
 	/** \brief Clean up undo action. */
-	virtual ~ceUCFilePaste();
+protected:
+	~ceUCFilePaste() override;
+public:
 	/*@}*/
 	
 	
@@ -60,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of files. */
-	inline const ceConversationFileList &GetFiles() const{ return pFiles; }
+	inline const ceConversationFile::List &GetFiles() const{ return pFiles; }
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

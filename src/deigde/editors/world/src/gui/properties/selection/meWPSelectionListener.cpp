@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSelectionListener::meWPSelectionListener( meWPSelection &panel ) :
-pPanel( panel ){
+meWPSelectionListener::meWPSelectionListener(meWPSelection &panel) :
+pPanel(panel){
 }
 
 meWPSelectionListener::~meWPSelectionListener(){
@@ -52,6 +52,6 @@ meWPSelectionListener::~meWPSelectionListener(){
 // Management
 ///////////////
 
-void meWPSelectionListener::ModeChanged( meWorld* ){
+void meWPSelectionListener::ModeChanged(meWorld*){
 	pPanel.ElementModeChanged();
 }

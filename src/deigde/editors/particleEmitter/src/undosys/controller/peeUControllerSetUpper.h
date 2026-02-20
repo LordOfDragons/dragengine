@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 /**
  * \brief Undo action set controller upper value.
  */
 class peeUControllerSetUpper : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUControllerSetUpper>;
+	
+	
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	float pOldLower;
 	float pOldUpper;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUControllerSetUpper( peeController *controller, float newValue );
+	peeUControllerSetUpper(peeController *controller, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~peeUControllerSetUpper();
+	~peeUControllerSetUpper() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

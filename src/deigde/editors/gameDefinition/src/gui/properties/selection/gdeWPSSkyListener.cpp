@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSSkyListener::gdeWPSSkyListener( gdeWPSSky &panel ) :
-pPanel( panel ){
+gdeWPSSkyListener::gdeWPSSkyListener(gdeWPSSky &panel) :
+pPanel(panel){
 }
 
 gdeWPSSkyListener::~gdeWPSSkyListener(){
@@ -52,18 +52,18 @@ gdeWPSSkyListener::~gdeWPSSkyListener(){
 // Management
 ///////////////
 
-void gdeWPSSkyListener::SkyCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSSkyListener::SkyCategoriesChanged(gdeGameDefinition*){
 	pPanel.UpdateCategoryList();
 }
 
 
 
-void gdeWPSSkyListener::SkyChanged( gdeGameDefinition*, gdeSky *sky ){
-	if( pPanel.GetSky() == sky ){
+void gdeWPSSkyListener::SkyChanged(gdeGameDefinition*, gdeSky *sky){
+	if(pPanel.GetSky() == sky){
 		pPanel.UpdateSky();
 	}
 }
 
-void gdeWPSSkyListener::ActiveSkyChanged( gdeGameDefinition* ){
+void gdeWPSSkyListener::ActiveSkyChanged(gdeGameDefinition*){
 	pPanel.UpdateSky();
 }

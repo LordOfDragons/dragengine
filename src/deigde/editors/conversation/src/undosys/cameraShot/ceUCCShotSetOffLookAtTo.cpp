@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetOffLookAtTo::ceUCCShotSetOffLookAtTo( ceCameraShot *cameraShot, const decVector &newPos ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetOffLookAtTo::ceUCCShotSetOffLookAtTo(ceCameraShot *cameraShot, const decVector &newPos){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set End Look-At Position" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndLookAtPosition");
 	
 	pOldPos = cameraShot->GetOffsetLookAtTo();
 	pNewPos = newPos;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetOffLookAtTo::~ceUCCShotSetOffLookAtTo(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetOffLookAtTo::~ceUCCShotSetOffLookAtTo(){
 ///////////////
 
 void ceUCCShotSetOffLookAtTo::Undo(){
-	pCameraShot->SetOffsetLookAtTo( pOldPos );
+	pCameraShot->SetOffsetLookAtTo(pOldPos);
 }
 
 void ceUCCShotSetOffLookAtTo::Redo(){
-	pCameraShot->SetOffsetLookAtTo( pNewPos );
+	pCameraShot->SetOffsetLookAtTo(pNewPos);
 }

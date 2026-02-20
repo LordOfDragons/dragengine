@@ -44,9 +44,9 @@
 // Constructor
 ////////////////
 
-gdeBaseMAOCSubObject::gdeBaseMAOCSubObject( gdeWindowMain &windowMain,
-	const char *text, igdeIcon *icon, const char *description ) :
-gdeBaseAction( windowMain, text, icon, description ){
+gdeBaseMAOCSubObject::gdeBaseMAOCSubObject(gdeWindowMain &windowMain,
+	const char *text, igdeIcon *icon, const char *description) :
+gdeBaseAction(windowMain, text, icon, description){
 }
 
 
@@ -54,26 +54,26 @@ gdeBaseAction( windowMain, text, icon, description ){
 // Management
 ///////////////
 
-igdeUndo *gdeBaseMAOCSubObject::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeBaseMAOCSubObject::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
-		return NULL;
+	if(!objectClass){
+		return {};
 	}
 	
-	return OnActionSubObject( gameDefinition, *objectClass );
+	return OnActionSubObject(gameDefinition, *objectClass);
 }
 
 void gdeBaseMAOCSubObject::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }
 
 gdeObjectClass *gdeBaseMAOCSubObject::GetActiveObjectClass() const{
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		return NULL;
+	if(!gameDefinition){
+		return {};
 	}
 	
-	switch( gameDefinition->GetSelectedObjectType() ){
+	switch(gameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotObjectClass:
 	case gdeGameDefinition::eotOCBillboard:
 	case gdeGameDefinition::eotOCCamera:
@@ -90,6 +90,6 @@ gdeObjectClass *gdeBaseMAOCSubObject::GetActiveObjectClass() const{
 		return gameDefinition->GetActiveObjectClass();
 		
 	default:
-		return NULL;
+		return {};
 	}
 }

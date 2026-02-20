@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeListItemSorter::igdeListItemSorter( bool ascending ) :
-pAscending( ascending ){
+igdeListItemSorter::igdeListItemSorter(bool ascending) :
+pAscending(ascending){
 }
 
 igdeListItemSorter::~igdeListItemSorter(){
@@ -51,14 +51,14 @@ igdeListItemSorter::~igdeListItemSorter(){
 // Management
 ///////////////
 
-void igdeListItemSorter::SetAscending( bool ascending ){
+void igdeListItemSorter::SetAscending(bool ascending){
 	pAscending = ascending;
 }
 
 
 
-bool igdeListItemSorter::Precedes( const igdeListItem &item1, const igdeListItem &item2 ){
-	if( pAscending ){
+bool igdeListItemSorter::Precedes(const igdeListItem &item1, const igdeListItem &item2){
+	if(pAscending){
 		return item1.GetText() <= item2.GetText();
 		
 	}else{

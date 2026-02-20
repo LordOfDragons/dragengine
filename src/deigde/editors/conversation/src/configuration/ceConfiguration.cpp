@@ -36,9 +36,7 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
@@ -61,9 +59,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceConfiguration::ceConfiguration( ceWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false )
+ceConfiguration::ceConfiguration(ceWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false)
 {
 	pReset();
 }
@@ -76,7 +74,7 @@ ceConfiguration::~ceConfiguration(){
 // Management
 ///////////////
 
-void ceConfiguration::SetPreventSaving( bool preventSaving ){
+void ceConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -88,42 +86,40 @@ void ceConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/conversationEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/conversationEditor.xml"));
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
 		
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
-		ceConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		ceConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).
+			ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void ceConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/conversationEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/conversationEditor.xml"));
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
-	decBaseFileWriterReference writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		ceConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		ceConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
+			vfs.OpenFileForWriting(pathFile), *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 

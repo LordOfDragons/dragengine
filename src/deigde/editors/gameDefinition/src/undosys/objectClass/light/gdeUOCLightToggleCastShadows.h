@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCLight;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class light toggle cast shadows.
  */
 class gdeUOCLightToggleCastShadows : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCLightToggleCastShadows>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightToggleCastShadows( gdeObjectClass *objectClass, gdeOCLight *light );
+	gdeUOCLightToggleCastShadows(gdeObjectClass *objectClass, gdeOCLight *light);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCLightToggleCastShadows();
+	~gdeUOCLightToggleCastShadows() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

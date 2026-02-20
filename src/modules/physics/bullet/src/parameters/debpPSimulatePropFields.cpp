@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpPSimulatePropFields::debpPSimulatePropFields( dePhysicsBullet &bullet ) : debpParameter( bullet )
+debpPSimulatePropFields::debpPSimulatePropFields(dePhysicsBullet &bullet) : debpParameter(bullet)
 {
-	SetName( "simulatePropFields" );
-	SetType( deModuleParameter::eptBoolean );
-	SetDescription( "Enables simulation of prop fields under the influence of force fields and colliders" );
-	SetCategory( ecBasic );
-	SetDisplayName( "Simulate Prop Fields" );
-	SetDefaultValue( "1" );
+	SetName("simulatePropFields");
+	SetType(deModuleParameter::eptBoolean);
+	SetDescription("Enables simulation of prop fields under the influence of force fields and colliders");
+	SetCategory(ecBasic);
+	SetDisplayName("Simulate Prop Fields");
+	SetDefaultValue("1");
 }
 
 debpPSimulatePropFields::~debpPSimulatePropFields(){
@@ -61,6 +61,6 @@ decString debpPSimulatePropFields::GetParameterValue(){
 	return pBullet.GetConfiguration()->GetSimulatePropFields() ? "1" : "0";
 }
 
-void debpPSimulatePropFields::SetParameterValue( const char *value ){
-	pBullet.GetConfiguration()->SetSimulatePropFields( decString( value ) == "1" );
+void debpPSimulatePropFields::SetParameterValue(const char *value){
+	pBullet.GetConfiguration()->SetSimulatePropFields(decString(value) == "1");
 }

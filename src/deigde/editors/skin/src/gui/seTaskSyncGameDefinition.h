@@ -35,6 +35,9 @@ class seWindowMain;
  * \brief Synchronize game definition task.
  */
 class seTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<seTaskSyncGameDefinition> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	seTaskSyncGameDefinition( seWindowMain &windowMain );
+	seTaskSyncGameDefinition(seWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~seTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

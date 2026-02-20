@@ -41,33 +41,24 @@
 ////////////////////////////
 
 gdeUGDDPSetIdentifierGroup::gdeUGDDPSetIdentifierGroup(
-gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set identifier group" );
+	SetShortInfo("@GameDefinition.Undo.GDDPSetIdentifierGroup");
 	
 	pOldValue = property->GetIdentifierGroup();
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetIdentifierGroup::~gdeUGDDPSetIdentifierGroup(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUGDDPSetIdentifierGroup::~gdeUGDDPSetIdentifierGroup(){
 ///////////////
 
 void gdeUGDDPSetIdentifierGroup::Undo(){
-	pProperty->SetIdentifierGroup( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPSetIdentifierGroup::Redo(){
-	pProperty->SetIdentifierGroup( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

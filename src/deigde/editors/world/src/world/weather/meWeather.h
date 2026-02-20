@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new weather object. */
-	meWeather( meWorld *world );
+	meWeather(meWorld *world);
 	/** Cleans up the weather object. */
 	~meWeather();
 	/*@}*/
@@ -59,7 +59,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Updates the weather. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

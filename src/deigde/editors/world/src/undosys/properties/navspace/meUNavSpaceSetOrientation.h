@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meNavigationSpace;
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 
@@ -37,8 +37,12 @@ class meNavigationSpace;
  * \brief Undo Action Navigation Space Set Orientation.
  */
 class meUNavSpaceSetOrientation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUNavSpaceSetOrientation>;
+	
+	
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -47,20 +51,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUNavSpaceSetOrientation( meNavigationSpace *navspace, const decVector &newOrientation );
+	meUNavSpaceSetOrientation(meNavigationSpace *navspace, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUNavSpaceSetOrientation();
+
+protected:
+	~meUNavSpaceSetOrientation() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

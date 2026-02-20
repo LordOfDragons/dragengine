@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPConversationListener::ceWPConversationListener( ceWPConversation &panel ) :
-pPanel( panel ){
+ceWPConversationListener::ceWPConversationListener(ceWPConversation &panel) :
+pPanel(panel){
 }
 
 ceWPConversationListener::~ceWPConversationListener(){
@@ -53,8 +53,8 @@ ceWPConversationListener::~ceWPConversationListener(){
 // Management
 ///////////////
 
-void ceWPConversationListener::ConversationChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ConversationChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -63,24 +63,24 @@ void ceWPConversationListener::ConversationChanged( ceConversation *conversation
 
 
 
-void ceWPConversationListener::TargetStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::TargetStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateTargetList();
 }
 
-void ceWPConversationListener::TargetChanged( ceConversation *conversation, ceTarget* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::TargetChanged(ceConversation *conversation, ceTarget*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateTargetList();
 }
 
-void ceWPConversationListener::ActiveTargetChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ActiveTargetChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -89,24 +89,24 @@ void ceWPConversationListener::ActiveTargetChanged( ceConversation *conversation
 
 
 
-void ceWPConversationListener::CameraShotStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::CameraShotStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateCameraShotList();
 }
 
-void ceWPConversationListener::CameraShotChanged( ceConversation *conversation, ceCameraShot* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::CameraShotChanged(ceConversation *conversation, ceCameraShot*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateCameraShotList();
 }
 
-void ceWPConversationListener::ActiveCameraShotChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ActiveCameraShotChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -115,24 +115,24 @@ void ceWPConversationListener::ActiveCameraShotChanged( ceConversation *conversa
 
 
 
-void ceWPConversationListener::GestureStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::GestureStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateGestureList();
 }
 
-void ceWPConversationListener::GestureChanged( ceConversation *conversation, ceGesture* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::GestureChanged(ceConversation *conversation, ceGesture*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateGestureList();
 }
 
-void ceWPConversationListener::ActiveGestureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ActiveGestureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -141,32 +141,32 @@ void ceWPConversationListener::ActiveGestureChanged( ceConversation *conversatio
 
 
 
-void ceWPConversationListener::FacePoseControllerNamesChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::FacePoseControllerNamesChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateFPControllerList();
 }
 
-void ceWPConversationListener::FacePoseStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::FacePoseStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateFacePoseList();
 }
 
-void ceWPConversationListener::FacePoseChanged( ceConversation *conversation, ceFacePose* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::FacePoseChanged(ceConversation *conversation, ceFacePose*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateFacePoseList();
 }
 
-void ceWPConversationListener::ActiveFacePoseChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ActiveFacePoseChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
@@ -175,16 +175,16 @@ void ceWPConversationListener::ActiveFacePoseChanged( ceConversation *conversati
 
 
 
-void ceWPConversationListener::ActorStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ActorStructureChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	
 	pPanel.UpdateActorIDLists();
 }
 
-void ceWPConversationListener::ActorChanged( ceConversation *conversation, ceConversationActor* ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPConversationListener::ActorChanged(ceConversation *conversation, ceConversationActor*){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	

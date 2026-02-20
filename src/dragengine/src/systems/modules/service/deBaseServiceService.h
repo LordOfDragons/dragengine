@@ -69,19 +69,19 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	virtual void StartRequest( const decUniqueID &id, const deServiceObject &request ) = 0;
+	virtual void StartRequest(const decUniqueID &id, const deServiceObject &request) = 0;
 	
 	/**
 	 * \brief Cancel service request if running.
 	 */
-	virtual void CancelRequest( const decUniqueID &id ) = 0;
+	virtual void CancelRequest(const decUniqueID &id) = 0;
 	
 	/**
 	 * \brief Run action returning result immediately.
 	 * 
 	 * Can return nullptr if action has no return value.
 	 */
-	virtual deServiceObject::Ref RunAction( const deServiceObject &action ) = 0;
+	virtual deServiceObject::Ref RunAction(const deServiceObject &action) = 0;
 	/*@}*/
 };
 

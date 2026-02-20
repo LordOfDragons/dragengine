@@ -29,10 +29,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -42,8 +42,12 @@ class aeRuleInverseKinematic;
  * Undo to set the local position of a inverse kinematic rule.
  */
 class aeURuleIKSetLocalPosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleIKSetLocalPosition>;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldPos;
 	decVector pNewPos;
@@ -52,19 +56,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetLocalPosition( aeRuleInverseKinematic *rule, const decVector &newPos );
+	aeURuleIKSetLocalPosition(aeRuleInverseKinematic *rule, const decVector &newPos);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleIKSetLocalPosition();
+	~aeURuleIKSetLocalPosition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

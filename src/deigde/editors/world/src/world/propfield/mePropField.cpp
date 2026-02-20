@@ -22,20 +22,15 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "mePropField.h"
-#include "mePropFieldType.h"
 #include "../meWorld.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/propfield/dePropField.h>
 #include <dragengine/resources/propfield/dePropFieldManager.h>
 #include <dragengine/resources/propfield/dePropFieldType.h>
 #include <dragengine/resources/world/deWorld.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -45,41 +40,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-mePropField::mePropField( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+mePropField::mePropField(deEngine *engine){
+	DEASSERT_NOTNULL(engine)
 	
 	pEngine = engine;
-	pWorld = NULL;
-	pEngPF = NULL;
-	
-	pTypes = NULL;
-	pTypeCount = 0;
-	pTypeSize = 0;
+	pWorld = nullptr;
+	pEngPF = nullptr;
 	
 	try{
 		pEngPF = engine->GetPropFieldManager()->CreatePropField();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
 	// TEMPORARY
-	mePropFieldType *pftype = NULL;
-	try{
-		pftype = new mePropFieldType( engine );
-		pftype->SetPathModel( "/epsylon/models/vegetation/bush1/bush1.demodel" );
-		pftype->SetPathSkin( "/epsylon/models/vegetation/bush1/512/bush1.deskin" );
-		pftype->RebuildInstances();
-		AddType( pftype );
-		pftype->FreeReference();
-		pftype = NULL;
-		
-	}catch( const deException & ){
-		if( pftype ) pftype->FreeReference();
-		pCleanUp();
-		throw;
-	}
+	const mePropFieldType::Ref pftype(mePropFieldType::Ref::New(engine));
+	pftype->SetPathModel("/epsylon/models/vegetation/bush1/bush1.demodel");
+	pftype->SetPathSkin("/epsylon/models/vegetation/bush1/512/bush1.deskin");
+	pftype->RebuildInstances();
+	AddType(pftype);
 }
 
 mePropField::~mePropField(){
@@ -91,35 +72,39 @@ mePropField::~mePropField(){
 // Management
 ///////////////
 
-void mePropField::SetWorld( meWorld *world ){
-	if( world != pWorld ){
-		if( pWorld ){
-			pWorld->GetEngineWorld()->RemovePropField( pEngPF );
-		}
-		
-		pWorld = world;
-		
-		if( world ){
-			world->GetEngineWorld()->AddPropField( pEngPF );
-		}
+void mePropField::SetWorld(meWorld *world){
+	if(world == pWorld){
+		return;
+	}
+	
+	if(pWorld){
+		pWorld->GetEngineWorld()->RemovePropField(pEngPF);
+	}
+	
+	pWorld = world;
+	
+	if(world){
+		world->GetEngineWorld()->AddPropField(pEngPF);
 	}
 }
 
 
 
-void mePropField::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void mePropField::SetPosition(const decDVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		pEngPF->SetPosition( position );
+		pEngPF->SetPosition(position);
 		
 		SetWorldChanged();
-		if( pWorld ) pWorld->NotifyPFChanged( this );
+		if(pWorld) pWorld->NotifyPFChanged(this);
 	}
 }
 
 void mePropField::SetWorldChanged(){
-	if( pWorld ) pWorld->SetChanged( true );
+	if(pWorld){
+		pWorld->SetChanged(true);
+	}
 }
 
 
@@ -127,91 +112,40 @@ void mePropField::SetWorldChanged(){
 // Types
 //////////
 
-mePropFieldType *mePropField::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ) DETHROW( deeOutOfBoundary );
+void mePropField::AddType(mePropFieldType *type){
+	DEASSERT_NOTNULL(type)
 	
-	return pTypes[ index ];
-}
-
-int mePropField::IndexOfType( mePropFieldType *type ) const{
-	if( ! type ) DETHROW( deeInvalidParam );
-	int t;
-	
-	for( t=0; t<pTypeCount; t++ ){
-		if( pTypes[ t ] == type ){
-			return t;
-		}
-	}
-	
-	return -1;
-}
-
-void mePropField::AddType( mePropFieldType *type ){
-	if( ! type ) DETHROW( deeInvalidParam );
-	
-	if( pTypeCount == pTypeSize ){
-		int newSize = pTypeSize * 3 / 2 + 1;
-		mePropFieldType **newArray = new mePropFieldType*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pTypes ){
-			memcpy( newArray, pTypes, sizeof( mePropFieldType* ) * pTypeSize );
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeSize = newSize;
-	}
-	
-	pTypes[ pTypeCount ] = type;
-	pTypeCount++;
-	
-	type->SetPropField( this );
-	type->AddReference();
-	
+	pTypes.AddOrThrow(type);
+	type->SetPropField(this);
 	SetWorldChanged();
 	
 	// engine object
-	dePropFieldType *engPFType = NULL;
-	
-	try{
-		engPFType = type->CreateEnginePFType();
-		if( engPFType ) pEngPF->AddType( engPFType );
-		type->SetEnginePFType( engPFType );
-		
-	}catch( const deException & ){
-		if( engPFType ) delete engPFType;
-		throw;
+	auto engPFType = type->CreateEnginePFType();
+	if(engPFType){
+		pEngPF->AddType(std::move(engPFType));
 	}
+	type->SetEnginePFType(engPFType);
 }
 
-void mePropField::RemoveType( mePropFieldType *type ){
-	int t, index = IndexOfType( type );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void mePropField::RemoveType(mePropFieldType *type){
+	const mePropFieldType::Ref guard(type);
+	pTypes.RemoveOrThrow(type);
 	
-	for( t=index+1; t<pTypeCount; t++ ){
-		pTypes[ t - 1 ] = pTypes[ t ];
+	if(pEngPF && type->GetEnginePFType()){
+		pEngPF->RemoveType(type->GetEnginePFType());
+		type->SetEnginePFType(nullptr);
 	}
-	pTypeCount--;
-	
-	if( pEngPF && type->GetEnginePFType() ){
-		pEngPF->RemoveType( type->GetEnginePFType() );
-		type->SetEnginePFType( NULL );
-	}
-	type->SetPropField( NULL );
-	type->FreeReference();
-	
+	type->SetPropField(nullptr);
 	SetWorldChanged();
 }
 
 void mePropField::RemoveAllTypes(){
-	while( pTypeCount > 0 ){
-		pTypeCount--;
-		pTypes[ pTypeCount ]->SetEnginePFType( NULL );
-		pTypes[ pTypeCount ]->SetPropField( NULL );
-		pTypes[ pTypeCount ]->FreeReference();
+	if(pTypes.IsEmpty()){
+		return;
 	}
 	
+	pTypes.RemoveAll();
 	pEngPF->RemoveAllTypes();
-	
 	SetWorldChanged();
 }
 
@@ -221,11 +155,6 @@ void mePropField::RemoveAllTypes(){
 //////////////////////
 
 void mePropField::pCleanUp(){
-	SetWorld( NULL );
-	
-	RemoveAllTypes();
-	if( pTypes ) delete [] pTypes;
-	
-	if( pEngPF ) pEngPF->FreeReference();
+	SetWorld(nullptr);
 }
 

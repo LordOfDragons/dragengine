@@ -25,34 +25,37 @@
 #ifndef _REWPPUSH_H_
 #define _REWPPUSH_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include "reWPPushListener.h"
+#include "../../rig/reRig.h"
+#include "../../rig/push/reRigPush.h"
+
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
-class reRig;
-class reRigPush;
-class reWPPushListener;
-
 
 
 /**
  * \brief Push panel
  */
 class reWPPush : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<reWPPush>;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigPush *pPush;
-	reWPPushListener *pListener;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
+	reWPPushListener::Ref pListener;
 	
-	igdeComboBoxReference pCBType;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditImpuls;
-	igdeTextFieldReference pEditRayCount;
-	igdeTextFieldReference pEditConeAngle;
+	igdeComboBox::Ref pCBType;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditImpuls;
+	igdeTextField::Ref pEditRayCount;
+	igdeTextField::Ref pEditConeAngle;
 	
 	
 	
@@ -60,11 +63,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPush( reWindowProperties &windowProperties );
+	reWPPush(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPush();
+	~reWPPush() override;
 	/*@}*/
 	
 	
@@ -73,16 +76,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Push. */
-	inline reRigPush *GetPush() const{ return pPush; }
+	inline const reRigPush::Ref &GetPush() const{ return pPush; }
 	
 	/** \brief Set push. */
-	void SetPush( reRigPush *push );
+	void SetPush(reRigPush *push);
 	
 	/** \brief Update push. */
 	void UpdatePush();

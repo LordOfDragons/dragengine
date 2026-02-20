@@ -38,9 +38,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxMenuCheck ) igdeNativeFoxMenuCheckMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxMenuCheck::ID_SELF, igdeNativeFoxMenuCheck::onMenuAction ),
-	FXMAPFUNC( SEL_UPDATE, igdeNativeFoxMenuCheck::ID_SELF, igdeNativeFoxMenuCheck::updateMenuAction )
+FXDEFMAP(igdeNativeFoxMenuCheck) igdeNativeFoxMenuCheckMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxMenuCheck::ID_SELF, igdeNativeFoxMenuCheck::onMenuAction),
+	FXMAPFUNC(SEL_UPDATE, igdeNativeFoxMenuCheck::ID_SELF, igdeNativeFoxMenuCheck::updateMenuAction)
 };
 
 
@@ -48,44 +48,45 @@ FXDEFMAP( igdeNativeFoxMenuCheck ) igdeNativeFoxMenuCheckMap[] = {
 // Class igdeNativeFoxMenuCheck
 /////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxMenuCheck, FXMenuCheck,
-	igdeNativeFoxMenuCheckMap, ARRAYNUMBER( igdeNativeFoxMenuCheckMap ) )
+FXIMPLEMENT(igdeNativeFoxMenuCheck, FXMenuCheck,
+	igdeNativeFoxMenuCheckMap, ARRAYNUMBER(igdeNativeFoxMenuCheckMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxMenuCheck::igdeNativeFoxMenuCheck(){ }
+igdeNativeFoxMenuCheck::igdeNativeFoxMenuCheck(){}
 
-igdeNativeFoxMenuCheck::igdeNativeFoxMenuCheck( igdeMenuCheck &powner, FXComposite *pparent ) :
-FXMenuCheck( pparent, BuildConstrText( powner ), this, ID_SELF ),
-pOwner( &powner )
+igdeNativeFoxMenuCheck::igdeNativeFoxMenuCheck(igdeMenuCheck &powner, FXComposite *pparent) :
+FXMenuCheck(pparent, BuildConstrText(powner), this, ID_SELF),
+pOwner(&powner)
 {
-	if( ! powner.GetEnabled() ){
+	setCheck(powner.GetChecked());
+	UpdateHotKey();
+	
+	if(!powner.GetEnabled()){
 		disable();
 	}
-	
-	setCheck( powner.GetChecked() );
 }
 
 igdeNativeFoxMenuCheck::~igdeNativeFoxMenuCheck(){
 }
 
-igdeNativeFoxMenuCheck *igdeNativeFoxMenuCheck::CreateNativeWidget( igdeMenuCheck &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxMenuCheck *igdeNativeFoxMenuCheck::CreateNativeWidget(igdeMenuCheck &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxMenuCheck( powner, pparent );
+	return new igdeNativeFoxMenuCheck(powner, pparent);
 }
 
 void igdeNativeFoxMenuCheck::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -99,15 +100,54 @@ void igdeNativeFoxMenuCheck::DestroyNativeWidget(){
 // Management
 ///////////////
 
-void igdeNativeFoxMenuCheck::UpdateChecked(){
-	setCheck( pOwner->GetChecked() );
+void igdeNativeFoxMenuCheck::UpdateText(){
+	setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText().GetString()));
+}
+
+void igdeNativeFoxMenuCheck::UpdateDescription(){
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription().GetString()));
+	setTipText(description);
+	setHelpText(description);
+}
+
+void igdeNativeFoxMenuCheck::UpdateHotKey(){
+	// this here is annoying. since the accel text also sets the hotkey it has to be in English
+	// or it breaks. but for display display we want the user language. to solve this we have
+	// to set the accel text twice, once in English to set the hotkey and once in the user
+	// language to show the correct text
+	setAccelText(igdeUIFoxHelper::AccelStringSystem(pOwner->GetHotKey()), true);
+	setAccelText(igdeUIFoxHelper::AccelStringTranslated(*pOwner, pOwner->GetHotKey()), false);
+}
+
+void igdeNativeFoxMenuCheck::UpdateIcon(){
+	FXIcon *iicon = nullptr;
+	if(pOwner->GetIcon()){
+		iicon = (FXIcon*)pOwner->GetIcon()->GetNativeIcon();
+	}
+	
+	setIcon(iicon);
+}
+
+void igdeNativeFoxMenuCheck::UpdateEnabled(){
+	if(pOwner->GetEnabled()){
+		enable();
+		
+	}else{
+		disable();
+	}
 }
 
 
-FXString igdeNativeFoxMenuCheck::BuildConstrText( igdeMenuCheck &powner ){
-	return igdeUIFoxHelper::MnemonizeString( powner.GetText(), powner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( powner.GetHotKey() )
-		+ "\t" + powner.GetDescription().GetString();
+void igdeNativeFoxMenuCheck::UpdateChecked(){
+	setCheck(pOwner->GetChecked());
+}
+
+
+FXString igdeNativeFoxMenuCheck::BuildConstrText(igdeMenuCheck &powner){
+	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
+	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
+		+ "\t" + igdeUIFoxHelper::AccelStringSystem(powner.GetHotKey())
+		+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription());
 }
 
 
@@ -115,36 +155,36 @@ FXString igdeNativeFoxMenuCheck::BuildConstrText( igdeMenuCheck &powner ){
 // Events
 ///////////
 
-long igdeNativeFoxMenuCheck::onMenuAction( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxMenuCheck::onMenuAction(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
-	pOwner->SetChecked( getCheck() );
+	pOwner->SetChecked(getCheck());
 	
 	try{
 		pOwner->OnAction();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxMenuCheck::updateMenuAction( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMenuCheck::updateMenuAction(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
+	if(!action){
 		return 0;
 	}
 	
 	try{
 		action->Update();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
 	}
 	
 	return 0;

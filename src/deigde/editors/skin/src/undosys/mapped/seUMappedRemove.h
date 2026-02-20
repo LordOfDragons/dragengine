@@ -31,7 +31,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -39,28 +39,31 @@
  */
 class seUMappedRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedRemove> Ref;
-	
+	using Ref = deTObjectReference<seUMappedRemove>;
 	
 	
 private:
-	class sDependency : public deObject{
+	class cDependency : public deObject{
 	public:
-		typedef deTObjectReference<sDependency> Ref;
+		using Ref = deTObjectReference<cDependency>;
+		using List = decTObjectOrderedSet<cDependency>;
+		
 		
 		const seProperty::Ref property;
 		const int mappedComponent;
 		
-		sDependency( seProperty *aproperty, int amappedComponent ) :
-		property( aproperty ),
-		mappedComponent( amappedComponent ){ };
+		cDependency(seProperty *aproperty, int amappedComponent) :
+		property(aproperty),
+		mappedComponent(amappedComponent){};
+	protected:
+		~cDependency() override = default;
 	};
 	
 	
 	const seMapped::Ref pMapped;
 	const seSkin::Ref pSkin;
 	
-	decObjectList pDependencies;
+	cDependency::List pDependencies;
 	
 	
 	
@@ -68,11 +71,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedRemove( seMapped *mapped );
+	seUMappedRemove(seMapped *mapped);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedRemove();
+	~seUMappedRemove() override;
 	/*@}*/
 	
 	
@@ -84,10 +87,10 @@ public:
 	int GetDependencyCount() const;
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -1,0 +1,49 @@
+name: Pre-Release Checks
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      version:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: true
+        type: string
+        default: 'master'
+      version:
+        description: 'Version'
+        required: true
+        type: string
+        default: 'X.Y{.Z}'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          ref: ${{ inputs.branch }}
+      
+      - name: Verify Metainfo
+        run: python3 .github/workflows/prerelease_checks.py verify_metainfo_versions "${{ inputs.version }}"
+      
+      - name: "Prohibited 'new' usage"
+        run: python3 find_prohibited_new.py src
+      
+      - name: "'::Ref' usage with missing 'using'/'typedef'"
+        run: python3 find_missing_using_ref.py src
+      
+      - name: "Unprotected destructors in ref count classes"
+        run: python3 find_refcount_public_destructor.py src
+      
+      - name: "Check for missing translations"
+        run: python3 find_missing_translations_igde.py src/deigde

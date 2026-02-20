@@ -30,12 +30,13 @@
 #include <deigde/gui/igdeStepableTask.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/filesystem/dePathList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 class projWindowMain;
@@ -51,15 +52,21 @@ class decXmlWriter;
  * \brief Distribute game task.
  */
 class projTaskDistribute : public igdeStepableTask{
+public:
+	typedef deTObjectReference<projTaskDistribute> Ref;
+	
 private:
 	class cProcessDirectory : public deObject{
 	public:
+		typedef deTObjectReference<cProcessDirectory> Ref;
+		
 		decString path;
-		dePathList directories;
-		dePathList files;
-		int nextDirectory;
-		int nextFile;
+		decPath::List directories, files;
+		int nextDirectory, nextFile;
 		bool hasCountedDir;
+		
+	protected:
+		~cProcessDirectory() override = default;
 	};
 	
 	enum eStates{
@@ -74,24 +81,23 @@ private:
 	const projProject &pProject;
 	const projProfile &pProfile;
 	
-	deVirtualFileSystemReference pVFS;
-	decObjectList pStackDirectories;
+	deVirtualFileSystem::Ref pVFS;
+	decTObjectOrderedSet<cProcessDirectory> pStackDirectories;
 	eStates pState;
 	decStringSet pUsedFileExtensions;
 	decStringSet pExcludePatterns;
-	dePathList pExcludeBaseGameDefPath;
+	decPath::List pExcludeBaseGameDefPath;
 	
 	zipFile pZipFile;
 	decString pDelgaPath;
-	decBaseFileWriterReference pDelgaWriter;
+	decBaseFileWriter::Ref pDelgaWriter;
 	
 	long pDelgaSize;
 	long pDelgaPosition;
 	int pDelgaDirectoryCount;
 	int pDelgaFileCount;
 	
-	char *pReadBuffer;
-	const int pReadBufferSize;
+	decTList<char> pReadBuffer;
 	
 	
 	
@@ -99,11 +105,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	projTaskDistribute( projWindowMain &windowMain,
-		const projProject &project, const projProfile &profile );
+	projTaskDistribute(projWindowMain &windowMain,
+		const projProject &project, const projProfile &profile);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~projTaskDistribute();
+public:
 	/*@}*/
 	
 	
@@ -146,38 +154,38 @@ public:
 	
 	
 	/** \brief Write data to delga file for internal use only. */
-	void WriteToDelga( const void *buffer, long length );
+	void WriteToDelga(const void *buffer, long length);
 	
 	/** \brief Get delga file position for internal use only. */
 	inline long GetDelgaPosition() const{ return pDelgaPosition; }
 	
 	/** \brief Seek delga file for internal use only. */
-	void SeekDelgaFile( long offset, int zlibOrigin );
+	void SeekDelgaFile(long offset, int zlibOrigin);
 	/*@}*/
 	
 	
 	
 private:
-	bool pExcludedByBaseGameDefPath( const decPath &path );
-	bool pExcludedByPattern( const decPath &path );
+	bool pExcludedByBaseGameDefPath(const decPath &path);
+	bool pExcludedByPattern(const decPath &path);
 	void pBuildExcludeBaseGameDefPath();
 	void pCreateDelgaWriter();
 	void pCloseDelgaWriter();
-	void pScanDirectory( const decPath &path );
+	void pScanDirectory(const decPath &path);
 	void pProcessFiles();
-	void pProcessFile( const decPath &path );
-	decString pGetFileExtension( const decPath &path ) const;
-	deLoadableModule *pGetMatchingModule( const decString &extension ) const;
-	const char *pGetModuleTypeName( deModuleSystem::eModuleTypes type ) const;
-	void pCopyFile( const decPath &path );
-	void pZipBeginFile( const decPath &path, bool compress );
-	void pZipWriteFile( const void *buffer, long size );
+	void pProcessFile(const decPath &path);
+	decString pGetFileExtension(const decPath &path) const;
+	deLoadableModule *pGetMatchingModule(const decString &extension) const;
+	const char *pGetModuleTypeName(deModuleSystem::eModuleTypes type) const;
+	void pCopyFile(const decPath &path);
+	void pZipBeginFile(const decPath &path, bool compress);
+	void pZipWriteFile(const void *buffer, long size);
 	void pZipCloseFile();
-	void pZipWriteMemoryFile( const decMemoryFile &memoryFile );
+	void pZipWriteMemoryFile(const decMemoryFile &memoryFile);
 	void pCloseDirectory();
 	void pWriteGameXml();
-	void pWriteGameXml( decXmlWriter &writer );
-	void pWriteGameXmlRequiredFormats( decXmlWriter &writer );
+	void pWriteGameXml(decXmlWriter &writer);
+	void pWriteGameXmlRequiredFormats(decXmlWriter &writer);
 	cProcessDirectory *GetProcessDirectory();
 };
 

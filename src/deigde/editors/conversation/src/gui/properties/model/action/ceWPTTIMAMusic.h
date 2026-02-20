@@ -34,15 +34,16 @@
  */
 class ceWPTTIMAMusic : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAMusic>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAMusic( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAMusic *action );
+	ceWPTTIMAMusic(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAMusic *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAMusic();
+	~ceWPTTIMAMusic() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAMusic *GetActionMusic() const{ return ( ceCAMusic* )GetAction(); }
+	inline ceCAMusic *GetActionMusic() const{ return (ceCAMusic*)GetAction().Pointer(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -36,6 +36,12 @@ class igdeComboBox;
  * \brief IGDE UI ComboBox Listener.
  */
 class DE_DLL_EXPORT igdeComboBoxListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeComboBoxListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeComboBoxListener();
+	~igdeComboBoxListener() override;
 	/*@}*/
 	
 	
@@ -65,7 +71,7 @@ public:
 	 * This can be because the user selected an item from the drop down list or because
 	 * he entered text into the text field and accepted it.
 	 */
-	virtual void OnTextChanged( igdeComboBox *comboBox );
+	virtual void OnTextChanged(igdeComboBox *comboBox);
 	
 	/**
 	 * \brief ComboBox text is changing.
@@ -75,7 +81,7 @@ public:
 	 * send if the combo box is editable. While editing the current text can be obtained
 	 * using GetText(). Once accepted OnTextChanged() is called.
 	 */
-	virtual void OnTextChanging( igdeComboBox *comboBox );
+	virtual void OnTextChanging(igdeComboBox *comboBox);
 	/*@}*/
 };
 

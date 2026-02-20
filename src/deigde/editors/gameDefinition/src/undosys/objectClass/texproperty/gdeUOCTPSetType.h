@@ -27,12 +27,12 @@
 #define _GDEUOCTPSETTYPE_H_
 
 #include "../../../gamedef/property/gdeProperty.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
 
 
 
@@ -40,9 +40,13 @@ class gdeObjectClass;
  * \brief Undo action object class texture property set description.
  */
 class gdeUOCTPSetType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCTPSetType>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePropertyTypes pOldValue;
 	gdeProperty::ePropertyTypes pNewValue;
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetType( gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePropertyTypes newValue );
+	gdeUOCTPSetType(gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePropertyTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCTPSetType();
+	~gdeUOCTPSetType() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

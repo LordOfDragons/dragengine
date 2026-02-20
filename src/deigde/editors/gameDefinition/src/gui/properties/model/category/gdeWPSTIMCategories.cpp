@@ -39,7 +39,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -48,15 +48,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategories::gdeWPSTIMCategories( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etCategories ),
-pObjectClass( NULL ),
-pSkin( NULL ),
-pSky( NULL ),
-pParticleEmitter( NULL )
+gdeWPSTIMCategories::gdeWPSTIMCategories(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etCategories),
+pObjectClass(nullptr),
+pSkin(nullptr),
+pSky(nullptr),
+pParticleEmitter(nullptr)
 {
-	SetText( "Categories" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Categories").ToUTF8());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMCategories::~gdeWPSTIMCategories(){
@@ -69,31 +69,31 @@ gdeWPSTIMCategories::~gdeWPSTIMCategories(){
 
 void gdeWPSTIMCategories::OnAddedToTree(){
 	gdeWPSTreeModel &treeModel = GetTree();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	
-	item.TakeOver( new gdeWPSTIMCategoriesObjectClass( treeModel ) );
-	AppendModel( item );
-	pObjectClass = ( gdeWPSTIMCategoriesObjectClass* )( igdeTreeItem* )item;
+	item = gdeWPSTIMCategoriesObjectClass::Ref::New(treeModel);
+	AppendModel(item);
+	pObjectClass = (gdeWPSTIMCategoriesObjectClass*)(igdeTreeItem*)item;
 	
-	item.TakeOver( new gdeWPSTIMCategoriesParticleEmitter( treeModel ) );
-	AppendModel( item );
-	pParticleEmitter = ( gdeWPSTIMCategoriesParticleEmitter* )( igdeTreeItem* )item;
+	item = gdeWPSTIMCategoriesParticleEmitter::Ref::New(treeModel);
+	AppendModel(item);
+	pParticleEmitter = (gdeWPSTIMCategoriesParticleEmitter*)(igdeTreeItem*)item;
 	
-	item.TakeOver( new gdeWPSTIMCategoriesSkin( treeModel ) );
-	AppendModel( item );
-	pSkin = ( gdeWPSTIMCategoriesSkin* )( igdeTreeItem* )item;
+	item = gdeWPSTIMCategoriesSkin::Ref::New(treeModel);
+	AppendModel(item);
+	pSkin = (gdeWPSTIMCategoriesSkin*)(igdeTreeItem*)item;
 	
-	item.TakeOver( new gdeWPSTIMCategoriesSky( treeModel ) );
-	AppendModel( item );
-	pSky = ( gdeWPSTIMCategoriesSky* )( igdeTreeItem* )item;
+	item = gdeWPSTIMCategoriesSky::Ref::New(treeModel);
+	AppendModel(item);
+	pSky = (gdeWPSTIMCategoriesSky*)(igdeTreeItem*)item;
 }
 
-void gdeWPSTIMCategories::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMCategories::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategoryObjectClassAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategoryParticleEmitterAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategorySkinAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategorySkyAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategoryObjectClassAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategoryParticleEmitterAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategorySkinAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategorySkyAdd());
 }

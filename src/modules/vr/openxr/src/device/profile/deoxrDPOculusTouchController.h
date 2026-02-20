@@ -33,20 +33,22 @@
  */
 class deoxrDPOculusTouchController : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPOculusTouchController>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPOculusTouchController( deoxrInstance &instance );
+	deoxrDPOculusTouchController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPOculusTouchController();
+	~deoxrDPOculusTouchController() override;
 	/*@}*/
 	
 	
 protected:
-	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

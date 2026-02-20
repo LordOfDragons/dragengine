@@ -38,19 +38,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deResource::deResource( deResourceManager *resourceManager ) :
-pResourceManager( resourceManager ),
-pLLManagerPrev( NULL ),
-pLLManagerNext( NULL )
+deResource::deResource(deResourceManager *resourceManager) :
+pResourceManager(resourceManager),
+pLLManager(this)
 {
-	if( ! resourceManager ){
-		DETHROW( deeInvalidParam );
+	if(!resourceManager){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deResource::~deResource(){
-	if( pResourceManager ){
-		pResourceManager->RemoveResource( this );
+	if(pResourceManager){
+		pResourceManager->RemoveResource(this);
 	}
 }
 
@@ -60,8 +59,8 @@ deResource::~deResource(){
 ///////////////
 
 deEngine *deResource::GetEngine() const{
-	if( ! pResourceManager ){
-		DETHROW( deeInvalidAction );
+	if(!pResourceManager){
+		DETHROW(deeInvalidAction);
 	}
 	
 	return pResourceManager->GetEngine();
@@ -72,16 +71,6 @@ deEngine *deResource::GetEngine() const{
 // Resource manager linked list
 /////////////////////////////////
 
-void deResource::SetLLManagerNext( deResource *resource ){
-	pLLManagerNext = resource;
-}
-
-void deResource::SetLLManagerPrev( deResource *resource ){
-	pLLManagerPrev = resource;
-}
-
 void deResource::MarkLeaking(){
-	pResourceManager = NULL;
-	pLLManagerNext = NULL;
-	pLLManagerPrev = NULL;
+	pResourceManager = nullptr;
 }

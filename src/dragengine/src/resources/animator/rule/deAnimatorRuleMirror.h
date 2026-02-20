@@ -27,6 +27,7 @@
 
 #include "deAnimatorRule.h"
 #include "../../../common/string/decString.h"
+#include "../../../common/collection/decTList.h"
 
 
 /**
@@ -42,8 +43,7 @@
 class DE_DLL_EXPORT deAnimatorRuleMirror : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleMirror> Ref;
-	
+	using Ref = deTObjectReference<deAnimatorRuleMirror>;
 	
 	
 public:
@@ -88,8 +88,7 @@ public:
 private:
 	eMirrorAxis pMirrorAxis;
 	decString pMirrorBone;
-	sMatchName *pMatchNames;
-	int pMatchNameCount;
+	decTList<sMatchName> pMatchNames;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
@@ -110,7 +109,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimatorRuleMirror();
+	~deAnimatorRuleMirror() override;
 	/*@}*/
 	
 	
@@ -122,22 +121,25 @@ public:
 	inline eMirrorAxis GetMirrorAxis() const{ return pMirrorAxis; }
 	
 	/** \brief Set mirror axis. */
-	void SetMirrorAxis( eMirrorAxis axis );
+	void SetMirrorAxis(eMirrorAxis axis);
 	
 	/** \brief Name of mirror bone or empty string to use component. */
 	inline const decString &GetMirrorBone() const{ return pMirrorBone; }
 	
 	/** \brief Set name of mirror bone or empty string to use component. */
-	void SetMirrorBone( const char *boneName );
+	void SetMirrorBone(const char *boneName);
+	
+	/** \brief Match names. */
+	inline const decTList<sMatchName> &GetMatchNames() const{ return pMatchNames; }
 	
 	/** \brief Count of match names. */
-	inline int GetMatchNameCount() const{ return pMatchNameCount; }
+	inline int GetMatchNameCount() const{ return pMatchNames.GetCount(); }
 	
 	/** \brief Match name at index. */
-	const sMatchName &GetMatchNameAt( int index ) const;
+	const sMatchName &GetMatchNameAt(int index) const;
 	
 	/** \brief Add match name. */
-	void AddMatchName( const char *first, const char *second, eMatchNameType type );
+	void AddMatchName(const char *first, const char *second, eMatchNameType type);
 	
 	/** \brief Remove all match names. */
 	void RemoveAllMatchNames();
@@ -146,25 +148,25 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	/*@}*/
 	
 	
@@ -172,7 +174,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	void Visit(deAnimatorRuleVisitor &visitor) override;
 	/*@}*/
 };
 

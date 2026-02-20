@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPOcclusionReduction::deoglPOcclusionReduction( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "occlusionReduction" );
-	SetDescription( "Occlusion map reduction factor.." );
-	SetCategory( ecExpert );
+deoglPOcclusionReduction::deoglPOcclusionReduction(deGraphicOpenGl &ogl) : deoglParameterInt(ogl){
+	SetName("occlusionReduction");
+	SetDescription("Occlusion map reduction factor..");
+	SetCategory(ecExpert);
 }
 
 deoglPOcclusionReduction::~deoglPOcclusionReduction(){
@@ -58,6 +58,6 @@ int deoglPOcclusionReduction::GetParameterInt(){
 	return pOgl.GetConfiguration().GetOcclusionReduction();
 }
 
-void deoglPOcclusionReduction::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetOcclusionReduction( value );
+void deoglPOcclusionReduction::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetOcclusionReduction(value);
 }

@@ -42,8 +42,7 @@
 class DE_DLL_EXPORT deEffectColorMatrix : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffectColorMatrix> Ref;
-	
+	using Ref = deTObjectReference<deEffectColorMatrix>;
 	
 	
 private:
@@ -55,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new color matrix effect. */
-	deEffectColorMatrix( deEffectManager *manager );
+	deEffectColorMatrix(deEffectManager *manager);
 	
 protected:
 	/**
@@ -64,7 +63,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deEffectColorMatrix();
+	~deEffectColorMatrix() override;
 	/*@}*/
 	
 	
@@ -76,7 +75,7 @@ public:
 	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
 	
 	/** \brief Set color matrix. */
-	void SetColorMatrix( const decColorMatrix &colorMatrix );
+	void SetColorMatrix(const decColorMatrix &colorMatrix);
 	/*@}*/
 	
 	
@@ -84,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	void Visit(deEffectVisitor &visitor) override;
 	/*@}*/
 };
 

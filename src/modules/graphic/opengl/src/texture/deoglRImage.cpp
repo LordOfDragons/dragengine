@@ -48,15 +48,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRImage::deoglRImage( deoglRenderThread &renderThread, const deImage &image ) :
-pRenderThread( renderThread ),
+deoglRImage::deoglRImage(deoglRenderThread &renderThread, const deImage &image) :
+pRenderThread(renderThread),
 
-pFilename( image.GetFilename() ),
-pWidth( image.GetWidth() ),
-pHeight( image.GetHeight() ),
-pDepth( image.GetDepth() ),
-pComponentCount( image.GetComponentCount() ),
-pBitCount( image.GetBitCount() ),
+pFilename(image.GetFilename()),
+pWidth(image.GetWidth()),
+pHeight(image.GetHeight()),
+pDepth(image.GetDepth()),
+pComponentCount(image.GetComponentCount()),
+pBitCount(image.GetBitCount()),
 
 pTexture(nullptr),
 pCubeMap(nullptr),
@@ -64,15 +64,15 @@ pArrayTexture(nullptr),
 pSkinUseTexture(false),
 pSkinUseCubeMap(false),
 pSkinUseArrayTexture(false),
-pScaleU( 1.0f ),
-pScaleV( 1.0f ),
+pScaleU(1.0f),
+pScaleV(1.0f),
 
-pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin ){
-	LEAK_CHECK_CREATE( renderThread, Image );
+pSkinMemUse(renderThread.GetMemoryManager().GetConsumption().skin){
+	LEAK_CHECK_CREATE(renderThread, Image);
 }
 
 deoglRImage::~deoglRImage(){
-	LEAK_CHECK_FREE( pRenderThread, Image );
+	LEAK_CHECK_FREE(pRenderThread, Image);
 	pCleanUp();
 }
 
@@ -250,7 +250,7 @@ void deoglRImage::pCleanUp(){
 }
 
 void deoglRImage::pReleaseTextures(){
-	pRenderThread.GetDelayedOperations().RemoveInitImage( this );
+	pRenderThread.GetDelayedOperations().RemoveInitImage(this);
 	pDirectReleaseTextures();
 }
 

@@ -53,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deoalWOVFindSpeakers( const decDVector &position, const decLayerMask &layerMask,
-		deoalSpeakerList &speakerList );
+	deoalWOVFindSpeakers(const decDVector &position, const decLayerMask &layerMask,
+		deoalSpeakerList &speakerList);
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVFindSpeakers();
+	~deoalWOVFindSpeakers() override;
 	/*@}*/
 	
 	
@@ -76,13 +76,13 @@ public:
 	
 	
 	/** \brief Convenience function to visit speakers  in world. */
-	static void FindSpeakers( deoalAWorld &world, const decDVector &position,
-		const decLayerMask &layerMask, deoalSpeakerList &speakerList );
+	static void FindSpeakers(deoalAWorld &world, const decDVector &position,
+		const decLayerMask &layerMask, deoalSpeakerList &speakerList);
 	
 	
 	
 	/** \brief Visit speaker. */
-	virtual void VisitSpeaker( deoalASpeaker *speaker );
+	void VisitSpeaker(deoalASpeaker *speaker) override;
 	/*@}*/
 };
 

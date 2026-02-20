@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTCOLORMATRIX_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectColorMatrix.h"
 
-class deoglREffectColorMatrix;
 class deEffectColorMatrix;
 
 
@@ -39,7 +39,7 @@ class deoglEffectColorMatrix : public deoglEffect{
 private:
 	const deEffectColorMatrix &pEffectColorMatrix;
 	
-	deoglREffectColorMatrix *pREffectColorMatrix;
+	deoglREffectColorMatrix::Ref pREffectColorMatrix;
 	
 	bool pDirtyColorMatrix;
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectColorMatrix( deGraphicOpenGl &ogl, const deEffectColorMatrix &effect );
+	deoglEffectColorMatrix(deGraphicOpenGl &ogl, const deEffectColorMatrix &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectColorMatrix();
+	~deoglEffectColorMatrix() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Color matrix changed. */
-	virtual void ColorMatrixChanged();
+	void ColorMatrixChanged() override;
 	/*@}*/
 };
 

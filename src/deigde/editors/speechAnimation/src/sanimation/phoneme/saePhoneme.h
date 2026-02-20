@@ -26,7 +26,7 @@
 #define _SAEPHONEME_H_
 
 #include <dragengine/deObject.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class saeSAnimation;
@@ -50,17 +50,24 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<saePhoneme>;
+
+	/** \brief List of objects. */
+	using List = decTOrderedSet<deTObjectReference<saePhoneme>, saePhoneme*>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create phoneme. */
 	saePhoneme();
 	
 	/** Create phoneme. */
-	saePhoneme( int ipa );
+	explicit saePhoneme(int ipa);
 	
 protected:
 	/** Clean up phoneme. */
-	virtual ~saePhoneme();
+	~saePhoneme() override;
 	/*@}*/
 	
 	
@@ -72,49 +79,49 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set parent speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Engine controller or -1 if not used. */
 	inline int GetEngineController() const{ return pEngController; }
 	
 	/** Set engine controller or -1 if not used. */
-	void SetEngineController( int controller );
+	void SetEngineController(int controller);
 	
 	/** IPA symbol. */
 	inline int GetIPA() const{ return pIPA; }
 	
 	/** Set IPA symbol. */
-	void SetIPA( int ipa );
+	void SetIPA(int ipa);
 	
 	/** Length of phoneme. */
 	inline float GetLength() const{ return pLength; }
 	
 	/** Set length of phoneme. */
-	void SetLength( float length );
+	void SetLength(float length);
 	
 	/** Sample text. */
 	inline const decString &GetSampleText() const{ return pSampleText; }
 	
 	/** Set sample text. */
-	void SetSampleText( const char *sampleText );
+	void SetSampleText(const char *sampleText);
 	
 	/** Move name. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
 	
 	/** Set move name. */
-	void SetMoveName( const char *name );
+	void SetMoveName(const char *name);
 	
 	/** Vertex position set. */
 	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
 	
 	/** Set vertex position set. */
-	void SetVertexPositionSet( const char *name );
+	void SetVertexPositionSet(const char *name);
 	
 	/** Active phoneme. */
 	inline bool GetActive() const{ return pActive; }
 	
 	/** Set if active phoneme. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	/*@}*/
 };
 

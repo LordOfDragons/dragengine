@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLCOMBOBOX_H_
 #define _IGDENATIVENULLCOMBOBOX_H_
 
+#include "../../igdeComboBox.h"
+
 class igdeComboBox;
 class igdeListItem;
 
@@ -32,7 +34,7 @@ class igdeListItem;
 /**
  * FOX Native comboBox.
  */
-class igdeNativeNullComboBox{
+class igdeNativeNullComboBox : public igdeComboBox::cNativeComboBox{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -43,7 +45,7 @@ public:
 	virtual ~igdeNativeNullComboBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullComboBox* CreateNativeWidget( igdeComboBox &owner );
+	static igdeNativeNullComboBox* CreateNativeWidget(igdeComboBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -56,20 +58,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void BuildList();
-	virtual void UpdateItem( int index );
-	virtual void SyncSelection( bool changing );
-	virtual void OnInvalidValueChanged();
-	virtual void UpdateText();
-	virtual void InsertItem( int index, const igdeListItem &item );
-	virtual void RemoveItem( int index );
-	virtual void RemoveAllItems();
-	virtual void MoveItem( int fromIndex, int toIndex );
-	virtual void Focus();
-	virtual void UpdateRowCount();
-	virtual void UpdateEnabled();
-	virtual void UpdateEditable();
-	virtual void UpdateDescription();
+	void BuildList() override;
+	void UpdateItem(int index) override;
+	void SyncSelection(bool changing) override;
+	void OnInvalidValueChanged() override;
+	void UpdateText() override;
+	void InsertItem(int index, const igdeListItem &item) override;
+	void RemoveItem(int index) override;
+	void RemoveAllItems() override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void Focus() override;
+	void UpdateRowCount() override;
+	void UpdateEnabled() override;
+	void UpdateEditable() override;
+	void UpdateDescription() override;
 	/*@}*/
 };
 

@@ -33,13 +33,17 @@
  * Group rule panel.
  */
 class aeWPAPanelRuleGroup : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleGroup>;
+	
+	
 private:
-	igdeComboBoxReference pCBApplicationType;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
-	igdeCheckBoxReference pChkUseCurrentState;
+	igdeComboBox::Ref pCBApplicationType;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
+	igdeCheckBox::Ref pChkUseCurrentState;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleGroup( aeWPRule &wpRule );
+	aeWPAPanelRuleGroup(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleGroup();
+	~aeWPAPanelRuleGroup() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

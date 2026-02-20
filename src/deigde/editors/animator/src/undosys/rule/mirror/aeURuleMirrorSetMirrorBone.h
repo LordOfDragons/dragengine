@@ -35,6 +35,10 @@
  * Undo set rule mirror mirror bone.
  */
 class aeURuleMirrorSetMirrorBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorSetMirrorBone>;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetMirrorBone( aeRuleMirror *rule, const char *newValue );
+	aeURuleMirrorSetMirrorBone(aeRuleMirror *rule, const char *newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorSetMirrorBone();
+	~aeURuleMirrorSetMirrorBone() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

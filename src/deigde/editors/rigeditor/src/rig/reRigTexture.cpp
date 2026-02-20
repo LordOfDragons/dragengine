@@ -45,13 +45,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigTexture::reRigTexture( deEngine *engine, const char *name ){
-	if( ! engine || ! name ) DETHROW( deeInvalidParam );
+reRigTexture::reRigTexture(deEngine *engine, const char *name){
+	if(!engine || !name) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	
 	pName = name;
-	pEngSkin = NULL;
 }
 
 reRigTexture::~reRigTexture(){
@@ -63,32 +62,25 @@ reRigTexture::~reRigTexture(){
 // Management
 ///////////////
 
-void reRigTexture::SetSkinPath( const char *skinPath ){
-	if( ! skinPath ) DETHROW( deeInvalidParam );
+void reRigTexture::SetSkinPath(const char *skinPath){
+	DEASSERT_NOTNULL(skinPath)
 	
-	if( ! pSkinPath.Equals( skinPath ) ){
+	if(!pSkinPath.Equals(skinPath)){
 		pSkinPath = skinPath;
 		LoadSkin();
 	}
 }
 
 void reRigTexture::LoadSkin(){
-	deSkin *engSkin = NULL;
+	deSkin::Ref engSkin;
 	
-	if( ! pSkinPath.IsEmpty() ){
-		deSkinManager &skinMgr = *pEngine->GetSkinManager();
-		
+	if(!pSkinPath.IsEmpty()){
 		try{
-			engSkin = skinMgr.LoadSkin( pSkinPath.GetString(), "/" );
+			engSkin = pEngine->GetSkinManager()->LoadSkin(pSkinPath, "/");
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			// TODO needs access to igdeEnvironment to call GetErrorSkin()
 		}
-	}
-	
-	
-	if( pEngSkin ){
-		pEngSkin->FreeReference();
 	}
 	pEngSkin = engSkin;
 }
@@ -99,7 +91,4 @@ void reRigTexture::LoadSkin(){
 //////////////////////
 
 void reRigTexture::pCleanUp(){
-	if( pEngSkin ){
-		pEngSkin->FreeReference();
-	}
 }

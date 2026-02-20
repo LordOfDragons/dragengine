@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupSetApplicationType::aeURuleGroupSetApplicationType( aeRuleGroup *rule,
-deAnimatorRuleGroup::eApplicationTypes newType ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupSetApplicationType::aeURuleGroupSetApplicationType(aeRuleGroup *rule,
+deAnimatorRuleGroup::eApplicationTypes newType){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldType = rule->GetApplicationType();
 	pNewType = newType;
 	
-	SetShortInfo( "Group rule set application type" );
+	SetShortInfo("@Animator.Undo.RuleGroupSetApplicationType");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleGroupSetApplicationType::~aeURuleGroupSetApplicationType(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ aeURuleGroupSetApplicationType::~aeURuleGroupSetApplicationType(){
 ///////////////
 
 void aeURuleGroupSetApplicationType::Undo(){
-	pRule->SetApplicationType( pOldType );
+	pRule->SetApplicationType(pOldType);
 }
 
 void aeURuleGroupSetApplicationType::Redo(){
-	pRule->SetApplicationType( pNewType );
+	pRule->SetApplicationType(pNewType);
 }

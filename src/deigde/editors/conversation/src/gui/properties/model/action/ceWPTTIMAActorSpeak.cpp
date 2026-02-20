@@ -31,7 +31,6 @@
 #include "../../../ceWindowMain.h"
 #include "../../../../conversation/ceConversation.h"
 #include "../../../../conversation/action/ceCAActorSpeak.h"
-#include "../../../../langpack/ceLangPackEntry.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 
@@ -42,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAActorSpeak::ceWPTTIMAActorSpeak( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAActorSpeak *action ) :
-ceWPTTIMAction( windowMain, etActionActorSpeak, conversation, action )
+ceWPTTIMAActorSpeak::ceWPTTIMAActorSpeak(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAActorSpeak *action) :
+ceWPTTIMAction(windowMain, etActionActorSpeak, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionActorSpeak() );
+	SetIcon(windowMain.GetIconActionActorSpeak());
 	Update();
 }
 
@@ -62,33 +61,33 @@ void ceWPTTIMAActorSpeak::Update(){
 	const ceCAActorSpeak &action = *GetActionActorSpeak();
 	decString text, description, tbtext;
 	
-	text.Format( "%s: ", action.GetActor().GetString() );
+	text.Format("%s: ", action.GetActor().GetString());
 	description = text;
 	
-	if( ! action.GetTextBoxTextTranslate().IsEmpty() ){
+	if(!action.GetTextBoxTextTranslate().IsEmpty()){
 		const ceLangPack * const langpack = GetConversation().GetLanguagePack();
-		ceLangPackEntry::Ref entry;
+		const decUnicodeString *foundText = nullptr;
 		
-		if( langpack ){
-			entry = langpack->GetEntryNamed( action.GetTextBoxTextTranslate() );
+		if(langpack){
+			langpack->GetEntries().GetAt(action.GetTextBoxTextTranslate(), foundText);
 		}
 		
-		if( entry ){
-			tbtext.Format( "%s", entry->GetText().ToUTF8().GetString() );
+		if(foundText){
+			tbtext.Format("%s", foundText->ToUTF8().GetString());
 			
 		}else{
-			tbtext.Format( "{%s}", action.GetTextBoxTextTranslate().GetString() );
+			tbtext.Format("{%s}", action.GetTextBoxTextTranslate().GetString());
 		}
 		
 	}else{
 		tbtext = action.GetTextBoxText().ToUTF8();
 	}
 	
-	if( ! tbtext.IsEmpty() ){
-		const decString lineTBText( tbtext.Split( '\n' ).GetAt( 0 ) );
+	if(!tbtext.IsEmpty()){
+		const decString lineTBText(tbtext.Split('\n').GetAt(0));
 		
-		if( lineTBText.GetLength() > 40 ){
-			text += lineTBText.GetLeft( 40 ) + "...";
+		if(lineTBText.GetLength() > 40){
+			text += lineTBText.GetLeft(40) + "...";
 			
 		}else{
 			text += lineTBText;
@@ -97,6 +96,6 @@ void ceWPTTIMAActorSpeak::Update(){
 		description += tbtext;
 	}
 	
-	SetText( text );
-	SetDescription( description );
+	SetText(text);
+	SetDescription(description);
 }

@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 
@@ -36,26 +36,30 @@ class aeRuleStateSnapshot;
  * Undo rule state snapshot set enable rotation.
  */
 class aeURuleSnapToggleEnableRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleSnapToggleEnableRotation>;
+	
+	
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSnapToggleEnableRotation( aeRuleStateSnapshot *rule );
+	aeURuleSnapToggleEnableRotation(aeRuleStateSnapshot *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleSnapToggleEnableRotation();
+	~aeURuleSnapToggleEnableRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

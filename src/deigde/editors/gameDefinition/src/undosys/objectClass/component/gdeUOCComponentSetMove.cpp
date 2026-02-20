@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetMove::gdeUOCComponentSetMove( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetMove::gdeUOCComponentSetMove(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set move" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetMove");
 	
 	pOldValue = component->GetMove();
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetMove::~gdeUOCComponentSetMove(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCComponentSetMove::~gdeUOCComponentSetMove(){
 ///////////////
 
 void gdeUOCComponentSetMove::Undo(){
-	pComponent->SetMove( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetMove(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetMove::Redo(){
-	pComponent->SetMove( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetMove(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

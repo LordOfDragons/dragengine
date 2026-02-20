@@ -27,13 +27,14 @@
 
 #include "deoglLightShader.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
 class deoglLightShaderConfig;
 class deoglShaderUnitSourceCode;
+class deoglSkinShader;
 
 
 
@@ -68,7 +69,7 @@ private:
 	private:
 		deoglLightShaderManager &pManager;
 		deoglLightShader::Ref pShader;
-		decPointerList pListeners;
+		decTList<cGetShaderListener*> pListeners;
 		
 	public:
 		cPrepareShader(deoglLightShaderManager &manager, const deoglLightShader::Ref &shader);
@@ -85,17 +86,17 @@ private:
 	
 	
 	deoglRenderThread &pRenderThread;
-	decObjectOrderedSet pShaderList;
+	decTObjectOrderedSet<deoglLightShader> pShaderList;
 	int pMaintananceInterval;
 	deMutex pMutex;
-	decPointerList pPrepareShaders;
+	decTList<cPrepareShader*> pPrepareShaders;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglLightShaderManager( deoglRenderThread &renderThread );
+	deoglLightShaderManager(deoglRenderThread &renderThread);
 	/** Cleans up the shader manager object. */
 	~deoglLightShaderManager();
 	/*@}*/
@@ -106,10 +107,10 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves a unit source code path. */
-	const char *GetUnitSourceCodePath( int unitSourceCodePath ) const;
+	const char *GetUnitSourceCodePath(int unitSourceCodePath) const;
 	
 	/** Retrieves the shader with the given configuration creating it if not existing. */
-	deoglLightShader *GetShaderWith( deoglLightShaderConfig &configuration );
+	deoglLightShader *GetShaderWith(deoglLightShaderConfig &configuration);
 	
 	/** Asynchonous shader with configuration creating it if absent. */
 	void GetShaderWithAsync(deoglLightShaderConfig &configuration, cGetShaderListener *listener);

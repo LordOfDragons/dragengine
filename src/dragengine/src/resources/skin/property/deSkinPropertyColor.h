@@ -35,6 +35,9 @@
  * Defines a color property of a skin texture.
  */
 class DE_DLL_EXPORT deSkinPropertyColor : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyColor>;
+	
 private:
 	decColor pColor;
 	
@@ -48,10 +51,10 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinPropertyColor( const char *type );
+	deSkinPropertyColor(const char *type);
 	
 	/** \brief Clean up skin property color. */
-	virtual ~deSkinPropertyColor();
+	~deSkinPropertyColor() override;
 	/*@}*/
 	
 	
@@ -62,7 +65,7 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set static color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	/*@}*/
 	
 	
@@ -70,7 +73,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	void Visit(deSkinPropertyVisitor &visitor) override;
 	/*@}*/
 };
 

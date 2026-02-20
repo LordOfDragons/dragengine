@@ -25,6 +25,7 @@
 #ifndef _DEJPEGIMAGEINFO_H_
 #define _DEJPEGIMAGEINFO_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/image/deBaseImageInfo.h>
@@ -54,7 +55,7 @@ private:
 	jpeg_error_mgr pErrorMgr;
 	jpeg_source_mgr pSourceMgr;
 	
-	JOCTET *pDataBuffer;
+	decTList<JOCTET> pDataBuffer;
 	int pDataBufferPosition;
 	decBaseFileReader *pReader;
 	
@@ -62,9 +63,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new information object. */
-	deJpegImageInfo( deJpegModule *module, const char *filename );
+	deJpegImageInfo(deJpegModule *module, const char *filename);
 	/** Cleans up the information object. */
-	virtual ~deJpegImageInfo();
+	~deJpegImageInfo() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -91,18 +92,18 @@ public:
 	/** @name Data Buffer */
 	/*@{*/
 	/** Retrieves the data buffer. */
-	inline JOCTET *GetDataBuffer() const{ return pDataBuffer; }
+	inline const decTList<JOCTET> &GetDataBuffer() const{ return pDataBuffer; }
 	/** Retrieves the file size. */
 	inline int GetFileSize() const{ return pFileSize; }
 	/** Retrieves the file position. */
 	inline int GetFilePosition() const{ return pFilePosition; }
 	
 	/** Init reading into data buffer. */
-	void InitRead( decBaseFileReader *reader );
+	void InitRead(decBaseFileReader *reader);
 	/** Read data from file into data buffer returning the number of bytes read. */
 	void ReadNext();
 	/** Skip data from file adjusting the source manager accordingly. */
-	void SkipNext( int bytes );
+	void SkipNext(int bytes);
 	/** Close reader. */
 	void CloseReader();
 	/*@}*/
@@ -110,15 +111,15 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Retrieves the width in pixels. */
-	virtual int GetWidth();
+	int GetWidth() override;
 	/** Retrieves the height in pixels. */
-	virtual int GetHeight();
+	int GetHeight() override;
 	/** Retrieves the depth in pixels. */
-	virtual int GetDepth();
+	int GetDepth() override;
 	/** Retrieves the number of components. */
-	virtual int GetComponentCount();
+	int GetComponentCount() override;
 	/** Retrieves the bit count of each component. */
-	virtual int GetBitCount();
+	int GetBitCount() override;
 	/*@}*/
 };
 

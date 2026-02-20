@@ -28,7 +28,7 @@
 #include "deLogger.h"
 #include "../threading/deMutex.h"
 
-class decBaseFileWriter;
+#include "../common/file/decBaseFileWriter.h"
 
 
 /**
@@ -46,12 +46,11 @@ class decBaseFileWriter;
 class DE_DLL_EXPORT deLoggerFile : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerFile> Ref;
-	
+	using Ref = deTObjectReference<deLoggerFile>;
 	
 	
 private:
-	decBaseFileWriter *pWriter;
+	decBaseFileWriter::Ref pWriter;
 	deMutex pMutex;
 	
 	
@@ -60,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file logger. */
-	deLoggerFile( decBaseFileWriter *writer );
+	deLoggerFile(decBaseFileWriter *writer);
 	
 protected:
 	/**
@@ -69,7 +68,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deLoggerFile();
+	~deLoggerFile() override;
 	/*@}*/
 	
 	
@@ -78,25 +77,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File writer. */
-	inline decBaseFileWriter *GetWriter() const{ return pWriter; }
+	inline const decBaseFileWriter::Ref &GetWriter() const{ return pWriter; }
 	
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 	
 	
 	
 protected:
 	inline deMutex &GetMutex(){ return pMutex; }
-	void LogPrefix( const char *source, const char *message, const char *prefix );
+	void LogPrefix(const char *source, const char *message, const char *prefix);
 };
 
 #endif

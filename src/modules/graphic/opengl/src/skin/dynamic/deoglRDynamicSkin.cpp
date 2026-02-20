@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDynamicSkin::deoglRDynamicSkin( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+deoglRDynamicSkin::deoglRDynamicSkin(deoglRenderThread &renderThread) :
+pRenderThread(renderThread)
 {
-	LEAK_CHECK_CREATE( renderThread, DynamicSkin );
+	LEAK_CHECK_CREATE(renderThread, DynamicSkin);
 }
 
 deoglRDynamicSkin::~deoglRDynamicSkin(){
-	LEAK_CHECK_FREE( pRenderThread, DynamicSkin );
+	LEAK_CHECK_FREE(pRenderThread, DynamicSkin);
 }
 
 
@@ -59,30 +59,30 @@ int deoglRDynamicSkin::GetRenderableCount() const{
 	return pRenderables.GetCount();
 }
 
-deoglRDSRenderable *deoglRDynamicSkin::GetRenderableAt( int index ) const{
-	return ( deoglRDSRenderable* )pRenderables.GetAt( index );
+deoglRDSRenderable *deoglRDynamicSkin::GetRenderableAt(int index) const{
+	return pRenderables.GetAt(index);
 }
 
-deoglRDSRenderable *deoglRDynamicSkin::GetRenderableNamed( const char *name ) const{
+deoglRDSRenderable *deoglRDynamicSkin::GetRenderableNamed(const char *name) const{
 	const int count = pRenderables.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglRDSRenderable * const renderable = ( deoglRDSRenderable* )pRenderables.GetAt( i );
-		if( renderable->GetName() == name ){
+	for(i=0; i<count; i++){
+		deoglRDSRenderable * const renderable = pRenderables.GetAt(i);
+		if(renderable->GetName() == name){
 			return renderable;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
-int deoglRDynamicSkin::IndexOfRenderableNamed( const char *name ) const{
+int deoglRDynamicSkin::IndexOfRenderableNamed(const char *name) const{
 	const int count = pRenderables.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deoglRDSRenderable* )pRenderables.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(pRenderables.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}
@@ -90,8 +90,8 @@ int deoglRDynamicSkin::IndexOfRenderableNamed( const char *name ) const{
 	return -1;
 }
 
-void deoglRDynamicSkin::AddRenderable( deoglRDSRenderable *renderable ){
-	pRenderables.Add( renderable );
+void deoglRDynamicSkin::AddRenderable(deoglRDSRenderable *renderable){
+	pRenderables.Add(renderable);
 }
 
 void deoglRDynamicSkin::RemoveAllRenderables(){

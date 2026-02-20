@@ -35,24 +35,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMPLogLevel::deMPLogLevel( deModio &module ) :
-deModioParameter( module ),
-pLogLevel( Modio::LogLevel::Warning )
+deMPLogLevel::deMPLogLevel(deModio &module) :
+deModioParameter(module)
 {
-	SetName( "logLevel" );
-	SetDescription( "Log level." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecAdvanced );
-	SetDisplayName( "Log Level" );
+	SetName("logLevel");
+	SetDescription("Log level.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecAdvanced);
+	SetDisplayName("Log Level");
 	
-	const deModuleParameter::SelectionEntry entries[ 4 ] = {
-		{ "error", "Error", "Log only errors." },
-		{ "warning", "Warning", "Log errors and warnings." },
-		{ "info", "Info", "Log errors, warnings and information." },
-		{ "debug", "Debug", "Log everything" }
-	};
-	AddSelectionEntries( entries, 4 );
-	SetDefaultValue( "warning" );
+	AddSelectionEntry({"error", "Error", "Log only errors."});
+	AddSelectionEntry({"warning", "Warning", "Log errors and warnings."});
+	AddSelectionEntry({"info", "Info", "Log errors, warnings and information."});
+	AddSelectionEntry({"debug", "Debug", "Log everything"});
+	
+	SetDefaultValue("warning");
 }
 
 deMPLogLevel::~deMPLogLevel(){
@@ -64,7 +61,7 @@ deMPLogLevel::~deMPLogLevel(){
 ////////////////////
 
 decString deMPLogLevel::GetParameterValue(){
-	switch( pLogLevel ){
+	switch(pModule.logLevel){
 	case Modio::LogLevel::Error:
 		return "error";
 		
@@ -78,29 +75,29 @@ decString deMPLogLevel::GetParameterValue(){
 		return "debug";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void deMPLogLevel::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
-	if( checkValue == "error" ){
-		pLogLevel = Modio::LogLevel::Error;
+void deMPLogLevel::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	if(checkValue == "error"){
+		pModule.logLevel = Modio::LogLevel::Error;
 		
-	}else if( checkValue == "warning" ){
-		pLogLevel = Modio::LogLevel::Warning;
+	}else if(checkValue == "warning"){
+		pModule.logLevel = Modio::LogLevel::Warning;
 		
-	}else if( checkValue == "info" ){
-		pLogLevel = Modio::LogLevel::Info;
+	}else if(checkValue == "info"){
+		pModule.logLevel = Modio::LogLevel::Info;
 		
-	}else if( checkValue == "debug" ){
-		pLogLevel = Modio::LogLevel::Trace;
+	}else if(checkValue == "debug"){
+		pModule.logLevel = Modio::LogLevel::Trace;
 		
 	}else{
-		pLogLevel = Modio::LogLevel::Warning;
+		pModule.logLevel = Modio::LogLevel::Warning;
 	}
 	
-	if( deModioService::Global() ){
-		Modio::SetLogLevel( pLogLevel );
+	if(deModioService::Global()){
+		Modio::SetLogLevel(pModule.logLevel);
 	}
 }

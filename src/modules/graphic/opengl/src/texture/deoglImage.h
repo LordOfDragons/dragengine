@@ -28,9 +28,11 @@
 #include "deoglRImage.h"
 #include "pixelbuffer/deoglPixelBuffer.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicImage.h>
 #include <dragengine/threading/deMutex.h>
+
+class deoglCanvasImage;
 
 class deGraphicOpenGl;
 class deImage;
@@ -69,7 +71,7 @@ private:
 	deoglPixelBuffer::Ref pPixelBufferRImageTexture;
 	bool pDirtyTexture;
 	
-	decPointerSet pNotifyCanvas;
+	decTOrderedSet<deoglCanvasImage*> pNotifyCanvas;
 	
 	
 	
@@ -77,10 +79,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image. */
-	deoglImage( deGraphicOpenGl &ogl, deImage &image );
+	deoglImage(deGraphicOpenGl &ogl, deImage &image);
 	
 	/** Clean up image. */
-	virtual ~deoglImage();
+	~deoglImage() override;
 	/*@}*/
 	
 	
@@ -103,8 +105,8 @@ public:
 	void MarkTextureDirty();
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decTOrderedSet<deoglCanvasImage*> &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decTOrderedSet<deoglCanvasImage*> &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	
 	
 	
@@ -138,22 +140,22 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Image data changed. */
-	virtual void ImageDataChanged();
+	void ImageDataChanged() override;
 	
 	/** Image data has been restored from original file. */
-	virtual void ImageDataRestored();
+	void ImageDataRestored() override;
 	
 	/**
 	 * Graphic module requires image data to remain loaded.
 	 * 
 	 * Used to optimized memory consumption. Default implementation returns \em false.
 	 */
-	virtual bool RetainImageData();
+	bool RetainImageData() override;
 	/*@}*/
 	
 private:
 	deoglPixelBuffer::Ref pCreatePixelBuffer();
-	void pCreatePixelBufferSafe( deoglPixelBuffer::Ref &pixelBuffer );
+	void pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer);
 	void pRequiresSync();
 };
 

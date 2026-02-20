@@ -35,7 +35,7 @@
  */
 class deoglRFontSize : public deObject{
 public:
-	typedef deTObjectReference<deoglRFontSize> Ref;
+	using Ref = deTObjectReference<deoglRFontSize>;
 	
 	
 private:

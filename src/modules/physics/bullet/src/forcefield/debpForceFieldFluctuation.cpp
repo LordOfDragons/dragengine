@@ -38,7 +38,7 @@
 // Definitions
 ////////////////
 
-static const float vRandomFactor = 1.0f / ( float )RAND_MAX;
+static const float vRandomFactor = 1.0f / (float)RAND_MAX;
 
 
 
@@ -49,9 +49,9 @@ static const float vRandomFactor = 1.0f / ( float )RAND_MAX;
 ////////////////////////////
 
 debpForceFieldFluctuation::debpForceFieldFluctuation() :
-pDirection( 0.0f ),
-pStrength( 0.0f ),
-pTimer( 0.0f ){
+pDirection(0.0f),
+pStrength(0.0f),
+pTimer(0.0f){
 }
 
 debpForceFieldFluctuation::~debpForceFieldFluctuation(){
@@ -68,12 +68,12 @@ void debpForceFieldFluctuation::Reset(){
 	pTimer = 0.0f;
 }
 
-void debpForceFieldFluctuation::Update( float elapsed ){
+void debpForceFieldFluctuation::Update(float elapsed){
 	pTimer += elapsed;
 	
-	while( pTimer > 0.04f ){
+	while(pTimer > 0.04f){
 		pTimer -= 0.04f;
-		pDirection = decMath::clamp( pDirection + ( ( float )random() * vRandomFactor * 2.0f - 1.0f ) * 0.4f, -1.0f, 1.0f );
-		pStrength = decMath::clamp( pStrength + ( ( float )random() * vRandomFactor * 2.0f - 1.0f ) * 0.4f, -1.0f, 1.0f );
+		pDirection = decMath::clamp(pDirection + ((float)random() * vRandomFactor * 2.0f - 1.0f) * 0.4f, -1.0f, 1.0f);
+		pStrength = decMath::clamp(pStrength + ((float)random() * vRandomFactor * 2.0f - 1.0f) * 0.4f, -1.0f, 1.0f);
 	}
 }

@@ -50,7 +50,7 @@ public:
 	virtual void SynthesizerChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	
 	/** \brief Play time changed. */
 	virtual void PlayTimeChanged();
@@ -81,7 +81,7 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	virtual void GenerateSound( void *buffer, int bufferSize, int offset, int samples ) = 0;
+	virtual void GenerateSound(void *buffer, int bufferSize, int offset, int samples) = 0;
 	/*@}*/
 };
 

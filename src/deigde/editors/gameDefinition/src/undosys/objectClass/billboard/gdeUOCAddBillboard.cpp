@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddBillboard::gdeUOCAddBillboard( gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCAddBillboard::gdeUOCAddBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+
+pBillboard(nullptr)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add billboard" );
+	SetShortInfo("@GameDefinition.Undo.OCAddBillboard");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddBillboard::~gdeUOCAddBillboard(){
-	if( pBillboard ){
-		pBillboard->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -74,23 +65,23 @@ gdeUOCAddBillboard::~gdeUOCAddBillboard(){
 
 void gdeUOCAddBillboard::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCBillboard() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCBillboard()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCBillboard( NULL );
+		gameDefinition->SetActiveOCBillboard(nullptr);
 	}
 	
-	pObjectClass->GetBillboards().Remove( pBillboard );
+	pObjectClass->GetBillboards().Remove(pBillboard);
 	pObjectClass->NotifyBillboardsChanged();
 }
 
 void gdeUOCAddBillboard::Redo(){
-	pObjectClass->GetBillboards().Add( pBillboard );
+	pObjectClass->GetBillboards().Add(pBillboard);
 	pObjectClass->NotifyBillboardsChanged();
 	
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	gameDefinition->SetActiveObjectClass( pObjectClass );
-	gameDefinition->SetActiveOCBillboard( pBillboard );
-	gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotOCBillboard );
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCBillboard(pBillboard);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCBillboard);
 }

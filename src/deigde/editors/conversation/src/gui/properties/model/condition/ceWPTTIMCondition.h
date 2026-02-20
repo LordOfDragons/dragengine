@@ -27,7 +27,6 @@
 
 #include "../ceWPTTreeItemModel.h"
 #include "../../../../conversation/condition/ceConversationCondition.h"
-#include "../../../../conversation/condition/ceConversationConditionReference.h"
 
 class ceConversationAction;
 
@@ -36,12 +35,15 @@ class ceConversationAction;
  * \brief Base class for conditions.
  */
 class ceWPTTIMCondition : public ceWPTTreeItemModel{
+public:
+	using Ref = deTObjectReference<ceWPTTIMCondition>;
+	
 private:
 	ceConversationAction *pAction;
-	ceConversationConditionReference pCondition;
+	ceConversationCondition::Ref pCondition;
 	
 public:
-	static const ceConversationCondition::eConditionTypes ListAddMenuConditions[ 8 ];
+	static const ceConversationCondition::eConditionTypes ListAddMenuConditions[8];
 	static const int ListAddMenuConditionsCount;
 	
 	
@@ -50,13 +52,13 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCondition( ceWindowMain &windowMain, eTypes type,
+	ceWPTTIMCondition(ceWindowMain &windowMain, eTypes type,
 		ceConversation &conversation, ceConversationAction &action,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCondition();
+	~ceWPTTIMCondition() override;
 	/*@}*/
 	
 	
@@ -68,19 +70,19 @@ public:
 	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
 	/** \brief Condition. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
 	/** \brief Deep find condition. */
-	virtual ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition );
+	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) override;
 	
 	/** \brief Update condition. */
 	virtual void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Get condition owning this model if any. */
-	virtual ceConversationCondition *GetOwnerCondition() const;
+	ceConversationCondition *GetOwnerCondition() const override;
 	/*@}*/
 };
 

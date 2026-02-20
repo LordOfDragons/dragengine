@@ -25,9 +25,10 @@
 #ifndef _DEOGLSKYINSTANCE_H_
 #define _DEOGLSKYINSTANCE_H_
 
+#include "deoglRSkyInstance.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicSkyInstance.h>
 
-class deoglRSkyInstance;
 class deoglSky;
 
 class deGraphicOpenGl;
@@ -44,7 +45,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSkyInstance &pInstance;
 	
-	deoglRSkyInstance *pRInstance;
+	deoglRSkyInstance::Ref pRInstance;
 	deoglWorld *pParentWorld;
 	
 	deoglSky *pOglSky;
@@ -61,10 +62,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sky. */
-	deoglSkyInstance( deGraphicOpenGl &ogl, const deSkyInstance &instance );
+	deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &instance);
 	
 	/** Cleans up the sky. */
-	virtual ~deoglSkyInstance();
+	~deoglSkyInstance() override;
 	/*@}*/
 	
 	
@@ -80,13 +81,13 @@ public:
 	
 	
 	/** Render instance. */
-	inline deoglRSkyInstance *GetRInstance() const{ return pRInstance; }
+	inline const deoglRSkyInstance::Ref &GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	/** Update sky instance. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -97,7 +98,7 @@ public:
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	/*@}*/
 	
 	
@@ -105,16 +106,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Sky changed. */
-	virtual void SkyChanged();
+	void SkyChanged() override;
 	
 	/** order changed. */
-	virtual void OrderChanged();
+	void OrderChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int index );
+	void ControllerChanged(int index) override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	/*@}*/
 };
 

@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEANIMATION_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../animation/deAnimationReference.h"
+#include "../../animation/deAnimation.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteAnimation : public deResourceLoaderTask {
 private:
-	deAnimationReference pAnimation;
+	deAnimation::Ref pAnimation;
 	bool pSucceeded;
 	
 	
@@ -43,11 +43,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskWriteAnimation( deEngine &engine, deResourceLoader &resourceLoader,
-		deAnimation *animation, deVirtualFileSystem *vfs, const char *path );
+	deRLTaskWriteAnimation(deEngine &engine, deResourceLoader &resourceLoader,
+		deAnimation *animation, deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskWriteAnimation();
+	~deRLTaskWriteAnimation() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

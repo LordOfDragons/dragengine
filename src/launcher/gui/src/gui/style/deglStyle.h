@@ -37,8 +37,7 @@
 class deglStyle : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deglStyle> Ref;
-	
+	using Ref = deTObjectReference<deglStyle>;
 	
 	
 private:
@@ -55,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up style. */
-	virtual ~deglStyle();
+	~deglStyle() override;
 	/*@}*/
 	
 	
@@ -67,13 +66,13 @@ public:
 	inline const decColor &GetColorBackground() const{ return pColorBackground; }
 	
 	/** Set background color. */
-	void SetColorBackground( const decColor &color );
+	void SetColorBackground(const decColor &color);
 	
 	/** Text color. */
 	inline const decColor &GetColorText() const{ return pColorText; }
 	
 	/** Set text color. */
-	void SetColorText( const decColor &color );
+	void SetColorText(const decColor &color);
 	/*@}*/
 };
 

@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement( gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eMovementHints newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eMovementHints newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set hint movement" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetHintMovement");
 	
 	pOldValue = light->GetHintMovement();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetHintMovement::~gdeUOCLightSetHintMovement(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetHintMovement::~gdeUOCLightSetHintMovement(){
 ///////////////
 
 void gdeUOCLightSetHintMovement::Undo(){
-	pLight->SetHintMovement( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintMovement(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetHintMovement::Redo(){
-	pLight->SetHintMovement( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintMovement(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

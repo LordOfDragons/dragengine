@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpConvexFaceClipper.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Definitions
@@ -44,150 +40,101 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-debpConvexFaceClipper::debpConvexFaceClipper(){
-	pVertices = NULL;
-	pVertexCount = 0;
-}
-
-debpConvexFaceClipper::~debpConvexFaceClipper(){
-	if( pVertices ) delete [] pVertices;
-}
-
+debpConvexFaceClipper::debpConvexFaceClipper() = default;
+debpConvexFaceClipper::~debpConvexFaceClipper() = default;
 
 
 // Management
 ///////////////
 
-void debpConvexFaceClipper::SetNormal( const decDVector &normal ){
+void debpConvexFaceClipper::SetNormal(const decDVector &normal){
 	pNormal = normal;
 }
 
-const decDVector &debpConvexFaceClipper::GetVertexAt( int position ) const{
-	if( position < 0 || position >= pVertexCount ) DETHROW( deeInvalidParam );
-	
-	return pVertices[ position ];
+const decDVector &debpConvexFaceClipper::GetVertexAt(int position) const{
+	return pVertices[position];
 }
 
-bool debpConvexFaceClipper::HasVertex( const decDVector &vertex ) const{
-	int i;
-	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex.IsEqualTo( pVertices[ i ] ) ) return true;
-	}
-	
-	return false;
+bool debpConvexFaceClipper::HasVertex(const decDVector &vertex) const{
+	return pVertices.Has(vertex);
 }
 
-int debpConvexFaceClipper::IndexOfVertex( const decDVector &vertex ) const{
-	int i;
-	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex.IsEqualTo( pVertices[ i ] ) ) return i;
-	}
-	
-	return -1;
+int debpConvexFaceClipper::IndexOfVertex(const decDVector &vertex) const{
+	return pVertices.IndexOf(vertex);
 }
 
-void debpConvexFaceClipper::AddVertex( const decDVector &vertex ){
-	decDVector *newArray = new decDVector[ pVertexCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
-	
-	if( pVertices ){
-		int i;
-		for( i=0; i<pVertexCount; i++ ) newArray[ i ] = pVertices[ i ];
-		delete [] pVertices;
-	}
-	pVertices = newArray;
-	
-	pVertices[ pVertexCount ] = vertex;
-	pVertexCount++;
+void debpConvexFaceClipper::AddVertex(const decDVector &vertex){
+	pVertices.Add(vertex);
 }
 
 void debpConvexFaceClipper::RemoveAllVertices(){
-	if( pVertices ){
-		delete [] pVertices;
-		pVertices = NULL;
-	}
-	pVertexCount = 0;
+	pVertices.RemoveAll();
 }
 
 
-
-void debpConvexFaceClipper::ClipByPlane( const decDVector &planeNormal, const decDVector &planePosition ){
+void debpConvexFaceClipper::ClipByPlane(const decDVector &planeNormal, const decDVector &planePosition){
 	double planeDot = planeNormal * planePosition;
 	decDVector edgeDirection, cutVertexPosition;
-	decDVector *oldVertices = pVertices;
-	int oldVertexCount = pVertexCount;
+	const decTList<decDVector> oldVertices(pVertices);
+	int oldVertexCount = pVertices.GetCount();
 	int sideFirst, sideSecond;
 	double dotFirst, dotSecond;
 	int vertexFirst, vertexSecond, v;
 	double lambda;
 	
-	pVertices = NULL;
-	pVertexCount = 0;
+	pVertices.RemoveAll();
 	
-	try{
-		for( v=0; v<oldVertexCount; v++ ){
-			// get the first and second vertex of this edge
-			vertexFirst = v;
-			vertexSecond = ( v + 1 ) % oldVertexCount;
+	for(v=0; v<oldVertexCount; v++){
+		// get the first and second vertex of this edge
+		vertexFirst = v;
+		vertexSecond = (v + 1) % oldVertexCount;
+		
+		// determine if the vertices are in front of the split plane
+		dotFirst = planeNormal * oldVertices[vertexFirst] - planeDot;
+		if(dotFirst > EQUALITY_THRESHOLD){
+			sideFirst = 1;
 			
-			// determine if the vertices are in front of the split plane
-			dotFirst = planeNormal * oldVertices[ vertexFirst ] - planeDot;
-			if( dotFirst > EQUALITY_THRESHOLD ){
-				sideFirst = 1;
-				
-			}else if( dotFirst < -EQUALITY_THRESHOLD ){
-				sideFirst = -1;
-				
-			}else{
-				sideFirst = 0;
-			}
+		}else if(dotFirst < -EQUALITY_THRESHOLD){
+			sideFirst = -1;
 			
-			dotSecond = planeNormal * oldVertices[ vertexSecond ] - planeDot;
-			if( dotSecond > EQUALITY_THRESHOLD ){
-				sideSecond = 1;
-				
-			}else if( dotSecond < -EQUALITY_THRESHOLD ){
-				sideSecond = -1;
-				
-			}else{
-				sideSecond = 0;
-			}
-			
-			// add vertex if front side or on the cut plane
-			if( sideFirst != -1 ){
-				AddVertex( oldVertices[ vertexFirst ] );
-			}
-			
-			// if both are on different sides add cut vertex
-			if( sideFirst != 0 && sideSecond != 0 && sideFirst != sideSecond ){
-				// calculate the cut vertex
-				edgeDirection = oldVertices[ vertexSecond ] - oldVertices[ vertexFirst ];
-				lambda = ( planeDot - planeNormal * oldVertices[ vertexFirst ] )
-					/ ( planeNormal * edgeDirection );
-				cutVertexPosition = oldVertices[ vertexFirst ] + edgeDirection * lambda;
-				
-				// add vertex
-				AddVertex( cutVertexPosition );
-			}
+		}else{
+			sideFirst = 0;
 		}
 		
-		// old vertices no more needed
-		if( oldVertices ) delete [] oldVertices;
+		dotSecond = planeNormal * oldVertices[vertexSecond] - planeDot;
+		if(dotSecond > EQUALITY_THRESHOLD){
+			sideSecond = 1;
+			
+		}else if(dotSecond < -EQUALITY_THRESHOLD){
+			sideSecond = -1;
+			
+		}else{
+			sideSecond = 0;
+		}
 		
-	}catch( const deException & ){
-		if( oldVertices ) delete [] oldVertices;
-		throw;
+		// add vertex if front side or on the cut plane
+		if(sideFirst != -1){
+			AddVertex(oldVertices[vertexFirst]);
+		}
+		
+		// if both are on different sides add cut vertex
+		if(sideFirst != 0 && sideSecond != 0 && sideFirst != sideSecond){
+			// calculate the cut vertex
+			edgeDirection = oldVertices[vertexSecond] - oldVertices[vertexFirst];
+			lambda = (planeDot - planeNormal * oldVertices[vertexFirst])
+				/ (planeNormal * edgeDirection);
+			cutVertexPosition = oldVertices[vertexFirst] + edgeDirection * lambda;
+			
+			// add vertex
+			AddVertex(cutVertexPosition);
+		}
 	}
 }
 
-void debpConvexFaceClipper::Transform( const decDMatrix &matrix ){
-	int v;
+void debpConvexFaceClipper::Transform(const decDMatrix &matrix){
+	pVertices.Visit([&](decDVector &vertex){
+		vertex = matrix * vertex;
+	});
 	
-	for( v=0; v<pVertexCount; v++ ){
-		pVertices[ v ] = matrix * pVertices[ v ];
-	}
-	
-	pNormal = matrix.TransformNormal( pNormal );
+	pNormal = matrix.TransformNormal(pNormal);
 }

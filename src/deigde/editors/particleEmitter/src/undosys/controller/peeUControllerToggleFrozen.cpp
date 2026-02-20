@@ -39,21 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleFrozen::peeUControllerToggleFrozen( peeController *controller ){
-	if( ! controller ) DETHROW( deeInvalidParam );
+peeUControllerToggleFrozen::peeUControllerToggleFrozen(peeController *controller){
+	if(!controller) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
-	SetShortInfo( "Toggle Controller Frozen" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.ToggleFrozen");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleFrozen::~peeUControllerToggleFrozen(){
-	if( pController ){
-		pController->FreeReference();
-	}
 }
 
 
@@ -62,9 +58,9 @@ peeUControllerToggleFrozen::~peeUControllerToggleFrozen(){
 ///////////////
 
 void peeUControllerToggleFrozen::Undo(){
-	pController->SetFrozen( ! pController->GetFrozen() );
+	pController->SetFrozen(!pController->GetFrozen());
 }
 
 void peeUControllerToggleFrozen::Redo(){
-	pController->SetFrozen( ! pController->GetFrozen() );
+	pController->SetFrozen(!pController->GetFrozen());
 }

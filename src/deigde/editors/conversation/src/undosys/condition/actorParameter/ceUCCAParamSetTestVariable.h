@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionActorParameter;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionActorParameter.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,10 +37,14 @@ class ceConversationTopic;
  * \brief Undo actor parameter conversation condition set test variable.
  */
 class ceUCCAParamSetTestVariable : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCAParamSetTestVariable>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorParameter *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorParameter::Ref pCondition;
 	decString pOldVariable;
 	decString pNewVariable;
 	
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \birief Create undo. */
-	ceUCCAParamSetTestVariable( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorParameter *condition, const char *newVariable );
+	ceUCCAParamSetTestVariable(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorParameter *condition, const char *newVariable);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCAParamSetTestVariable();
+	~ceUCCAParamSetTestVariable() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

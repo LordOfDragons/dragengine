@@ -35,6 +35,9 @@ class ceViewConversation;
  * \brief Window Main Listener.
  */
 class ceViewConversationListener : public ceConversationListener{
+public:
+	using Ref = deTObjectReference<ceViewConversationListener>;
+	
 private:
 	ceViewConversation &pView;
 	
@@ -42,10 +45,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceViewConversationListener( ceViewConversation &view );
+	ceViewConversationListener(ceViewConversation &view);
 	
 	/** \brief Clean up listener. */
-	virtual ~ceViewConversationListener();
+protected:
+	~ceViewConversationListener() override;
+public:
 	/*@}*/
 	
 	
@@ -53,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief View properties changed. */
-	virtual void ViewChanged( ceConversation *conversation );
+	void ViewChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

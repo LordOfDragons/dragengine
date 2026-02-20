@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 
 
 
@@ -37,8 +37,12 @@ class ceTarget;
  * \brief Undo Action Target Set Orientation.
  */
 class ceUCTargetSetOrientation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCTargetSetOrientation>;
+	
+	
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -47,19 +51,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetOrientation( ceTarget *target, const decVector &newOrientation );
+	ceUCTargetSetOrientation(ceTarget *target, const decVector &newOrientation);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCTargetSetOrientation();
+	~ceUCTargetSetOrientation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

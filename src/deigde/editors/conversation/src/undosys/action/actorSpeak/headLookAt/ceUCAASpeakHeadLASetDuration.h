@@ -34,12 +34,14 @@
  */
 class ceUCAASpeakHeadLASetDuration : public ceUCAASpeakStripSetDuration{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakHeadLASetDuration>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakHeadLASetDuration( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, float newDuration );
+	ceUCAASpeakHeadLASetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, float newDuration);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakHeadLASetDuration();
+	~ceUCAASpeakHeadLASetDuration() override;
 	/*@}*/
 };
 

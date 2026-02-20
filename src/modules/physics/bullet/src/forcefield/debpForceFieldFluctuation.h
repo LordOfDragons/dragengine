@@ -68,7 +68,7 @@ public:
 	void Reset();
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

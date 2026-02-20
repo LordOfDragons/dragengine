@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 #include "../../../../undosys/objectClass/billboard/gdeUOCAddBillboard.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardPaste::gdeMAOCBillboardPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Billboard",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class billboard" )
+gdeMAOCBillboardPaste::gdeMAOCBillboardPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCBillboardPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCBillboard::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCBillboardPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCBillboard::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCBillboard &clipOCBillboard =
-		( const gdeClipboardDataOCBillboard & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddBillboard::Ref::New(&objectClass,
+		gdeOCBillboard::Ref::New(*clip.DynamicCast<gdeClipboardDataOCBillboard>()->GetBillboard()));
 	
-	deObjectReference billboard;
-	billboard.TakeOver( new gdeOCBillboard( *clipOCBillboard.GetBillboard() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddBillboard( &objectClass,
-		( gdeOCBillboard* )( deObject* )billboard );
-	undo->SetShortInfo( "Paste object class billboard" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCBillboard");
 	return undo;
 }
 
 void gdeMAOCBillboardPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCBillboard::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCBillboard::TYPE_NAME));
 }

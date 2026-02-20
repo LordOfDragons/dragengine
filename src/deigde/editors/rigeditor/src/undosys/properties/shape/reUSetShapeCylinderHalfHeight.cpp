@@ -24,7 +24,7 @@
 
 #include "reUSetShapeCylinderHalfHeight.h"
 #include "../../../rig/shape/reRigShapeCylinder.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,21 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCylinderHalfHeight::reUSetShapeCylinderHalfHeight( reRigShapeCylinder *shape, float halfHeight ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCylinderHalfHeight::reUSetShapeCylinderHalfHeight(reRigShapeCylinder *shape, float halfHeight){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
 	pOldHalfHeight = shape->GetHalfHeight();
 	pNewHalfHeight = halfHeight;
 	
-	SetShortInfo( "Set Cylinder Shape Half Height" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeCylinderSetHalfHeight");
 }
 
 reUSetShapeCylinderHalfHeight::~reUSetShapeCylinderHalfHeight(){
-	pShape->FreeReference();
 }
 
 
@@ -57,9 +54,9 @@ reUSetShapeCylinderHalfHeight::~reUSetShapeCylinderHalfHeight(){
 ///////////////
 
 void reUSetShapeCylinderHalfHeight::Undo(){
-	pShape->SetHalfHeight( pOldHalfHeight );
+	pShape->SetHalfHeight(pOldHalfHeight);
 }
 
 void reUSetShapeCylinderHalfHeight::Redo(){
-	pShape->SetHalfHeight( pNewHalfHeight );
+	pShape->SetHalfHeight(pNewHalfHeight);
 }

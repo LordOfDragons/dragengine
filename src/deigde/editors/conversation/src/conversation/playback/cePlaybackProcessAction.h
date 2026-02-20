@@ -70,55 +70,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Process action. */
-	void ProcessAction( ceConversation &conversation, ceConversationAction *action );
+	void ProcessAction(ceConversation &conversation, ceConversationAction *action);
 	
 	/** \brief Process camera shot action. */
-	void ProcessCameraShot( ceConversation &conversation, const ceCACameraShot &action );
+	void ProcessCameraShot(ceConversation &conversation, const ceCACameraShot &action);
 	/** \brief Process actor speak action. */
-	void ProcessActorSpeak( ceConversation &conversation, ceCAActorSpeak &action );
+	void ProcessActorSpeak(ceConversation &conversation, ceCAActorSpeak &action);
 	/** \brief Process snippet action. */
-	void ProcessSnippet( ceConversation &conversation, ceCASnippet *action );
+	void ProcessSnippet(ceConversation &conversation, ceCASnippet *action);
 	/** \brief Process stop conversation action. */
-	void ProcessStopConversation( ceConversation &conversation );
+	void ProcessStopConversation(ceConversation &conversation);
 	/** \brief Process stop topic action. */
-	void ProcessStopTopic( ceConversation &conversation );
+	void ProcessStopTopic(ceConversation &conversation);
 	/** \brief Process if-else action. */
-	void ProcessIfElse( ceConversation &conversation, ceCAIfElse *action );
+	void ProcessIfElse(ceConversation &conversation, ceCAIfElse *action);
 	/** \brief Process player choice action. */
-	void ProcessPlayerChoice( ceConversation &conversation, ceCAPlayerChoice *action );
+	void ProcessPlayerChoice(ceConversation &conversation, ceCAPlayerChoice *action);
 	/** \brief Process set variable action. */
-	void ProcessSetVariable( ceConversation &conversation, const ceCASetVariable &action );
+	void ProcessSetVariable(ceConversation &conversation, const ceCASetVariable &action);
 	/** \brief Process set actor parameter action. */
-	void ProcessSetActorParameter( ceConversation &conversation, const ceCASetActorParameter &action );
+	void ProcessSetActorParameter(ceConversation &conversation, const ceCASetActorParameter &action);
 	/** \brief Process actor command action. */
-	void ProcessActorCommand( ceConversation &conversation, const ceCAActorCommand &action );
+	void ProcessActorCommand(ceConversation &conversation, const ceCAActorCommand &action);
 	/** \brief Process game command action. */
-	void ProcessGameCommand( ceConversation &conversation, const ceCAGameCommand &action );
+	void ProcessGameCommand(ceConversation &conversation, const ceCAGameCommand &action);
 	/** \brief Process wait action. */
-	void ProcessWait( ceConversation &conversation, ceCAWait *action );
+	void ProcessWait(ceConversation &conversation, ceCAWait *action);
 	/** \brief Process trigger action. */
-	void ProcessTrigger( ceConversation &conversation, const ceCATrigger &action );
+	void ProcessTrigger(ceConversation &conversation, const ceCATrigger &action);
 	/** \brief Process add actor action. */
-	void ProcessActorAdd( ceConversation &conversation, const ceCAActorAdd &action );
+	void ProcessActorAdd(ceConversation &conversation, const ceCAActorAdd &action);
 	/** \brief Process remove actor action. */
-	void ProcessActorRemove( ceConversation &conversation, const ceCAActorRemove &action );
+	void ProcessActorRemove(ceConversation &conversation, const ceCAActorRemove &action);
 	/** \brief Process add coordinate system action. */
-	void ProcessCoordSystemAdd( ceConversation &conversation, const ceCACoordSystemAdd &action );
+	void ProcessCoordSystemAdd(ceConversation &conversation, const ceCACoordSystemAdd &action);
 	/** \brief Process remove coordinate system action. */
-	void ProcessCoordSystemRemove( ceConversation &conversation, const ceCACoordSystemRemove &action );
+	void ProcessCoordSystemRemove(ceConversation &conversation, const ceCACoordSystemRemove &action);
 	
 	/**
 	 * \brief Retrieves the index the actor in the given target if existing or -1.
 	 * \details Triggers an error if an actor by ID is not found or the actor index
 	 *          is outside of boundaries.
 	 */
-	int GetTargetActor( ceConversation &conversation, const decString &targetName );
+	int GetTargetActor(ceConversation &conversation, const decString &targetName);
 	
 	
 	/** \brief Display error than the actor with the given id does not exist and stop playback. */
-	void ErrorNoActorWithID( cePlayback &playback, const char *id );
+	void ErrorNoActorWithID(cePlayback &playback, const char *id);
 	/** \brief Display error than the named target does not exist and stop playback. */
-	void ErrorTargetNotFound( cePlayback &playback, const char *name );
+	void ErrorTargetNotFound(cePlayback &playback, const char *name);
 	/*@}*/
 };
 

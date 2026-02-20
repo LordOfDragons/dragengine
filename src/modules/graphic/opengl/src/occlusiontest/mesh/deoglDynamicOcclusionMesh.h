@@ -25,13 +25,13 @@
 #ifndef _DEOGLDYNAMICOCCLUSIONMESH_H_
 #define _DEOGLDYNAMICOCCLUSIONMESH_H_
 
+#include "deoglROcclusionMesh.h"
 #include "../../deoglBasics.h"
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
-class deoglROcclusionMesh;
 class deoglSharedVBOBlock;
 class deoglRenderThread;
 class deoglVAO;
@@ -46,21 +46,18 @@ class deComponent;
 class deoglDynamicOcclusionMesh{
 public:
 	deoglRenderThread &pRenderThread;
-	deoglROcclusionMesh *pOcclusionMesh;
+	deoglROcclusionMesh::Ref pOcclusionMesh;
 	deoglRComponent *pComponent;
 	
-	decIntList pBoneMappings;
+	decTList<int> pBoneMappings;
 	
-	oglMatrix3x4 *pWeights;
-	int pWeightCount;
+	decTList<oglMatrix3x4> pWeights;
 	
-	decVector *pVertices;
+	decTList<decVector> pVertices;
 	
 	GLuint pVBO;
 	deoglVAO *pVAO;
-	deoglVBOp *pVBOData;
-	int pVBOVertexCount;
-	int pVBOVertexSize;
+	decTList<deoglVBOp> pVBOData;
 	
 	bool pDirtyOccMesh;
 	bool pDirtyVBO;
@@ -73,8 +70,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dynamic occlusion mesh object. */
-	deoglDynamicOcclusionMesh( deoglRenderThread &renderThread,
-		deoglROcclusionMesh *occlusionMesh, deoglRComponent *component );
+	deoglDynamicOcclusionMesh(deoglRenderThread &renderThread,
+		deoglROcclusionMesh *occlusionMesh, deoglRComponent *component);
 	
 	/** Cleans up the peer. */
 	~deoglDynamicOcclusionMesh();
@@ -85,7 +82,7 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the occlusion mesh. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** VBO. */
 	inline GLuint GetVBO() const{ return pVBO; }
@@ -100,13 +97,13 @@ public:
 	void ComponentStateChanged();
 	
 	/** Update bone mappings. */
-	void UpdateBoneMappings( const deComponent &component );
+	void UpdateBoneMappings(const deComponent &component);
 	
 	/** Prepare for rendering. */
 	void PrepareForRender();
 	
-	/** Direct access to vertices. */
-	inline const decVector *GetVertices() const{ return pVertices; }
+	/** Vertices. */
+	inline const decTList<decVector> &GetVertices() const{ return pVertices; }
 	
 	
 	

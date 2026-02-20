@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetRotMin::aeURuleBTransSetRotMin( aeRuleBoneTransformator *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetRotMin::aeURuleBTransSetRotMin(aeRuleBoneTransformator *rule, const decVector &newMin){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Bone transformator set minimum rotation" );
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMinimumRotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleBTransSetRotMin::~aeURuleBTransSetRotMin(){
 ///////////////
 
 void aeURuleBTransSetRotMin::Undo(){
-	pRule->SetMinimumRotation( pOldMin );
+	pRule->SetMinimumRotation(pOldMin);
 }
 
 void aeURuleBTransSetRotMin::Redo(){
-	pRule->SetMinimumRotation( pNewMin );
+	pRule->SetMinimumRotation(pNewMin);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleBTransSetRotMin::Redo(){
 //////////////////////
 
 void aeURuleBTransSetRotMin::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

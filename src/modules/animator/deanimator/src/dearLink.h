@@ -27,11 +27,10 @@
 
 #include <dragengine/common/curve/decCurveBezierEvaluator.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class decIntList;
 class dearAnimatorInstance;
-class deAnimatorLink;
 class dearControllerStates;
 
 
@@ -41,7 +40,7 @@ class dearControllerStates;
 class dearLink{
 private:
 	const dearAnimatorInstance &pInstance;
-	deAnimatorLink pLink;
+	deAnimatorLink::Ref pLink;
 	const decCurveBezierEvaluator pEvaluator;
 	int pBoneIndex;
 	int pVPSIndex;
@@ -53,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create link. */
-	dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
-		const decIntList &controllerMapping );
+	dearLink(dearAnimatorInstance &instance, const deAnimatorLink &link,
+		const decTList<int> &controllerMapping);
 	
 	/** Clean up link. */
 	~dearLink();
@@ -65,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator link. */
-	inline const deAnimatorLink &GetLink() const{ return pLink; }
+	inline const deAnimatorLink::Ref &GetLink() const{ return pLink; }
 	
 	/** Link has valid controller. */
 	bool HasController() const;
@@ -82,13 +81,13 @@ public:
 	
 	
 	/** Value of link. */
-	float GetValue( float defaultValue ) const;
+	float GetValue(float defaultValue) const;
 	
 	/** Vector of link. */
-	void GetVector( decVector &vector ) const;
+	void GetVector(decVector &vector) const;
 	
 	/** Quaternion of link. */
-	void GetQuaternion( decQuaternion &quaternion ) const;
+	void GetQuaternion(decQuaternion &quaternion) const;
 	/*@}*/
 };
 

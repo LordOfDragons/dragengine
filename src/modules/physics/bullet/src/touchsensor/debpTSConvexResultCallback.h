@@ -57,13 +57,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates result callback. */
-	debpTSConvexResultCallback( deCollisionInfo *colinfo, const debpTouchSensor &touchSensor );
+	debpTSConvexResultCallback(deCollisionInfo *colinfo, const debpTouchSensor &touchSensor);
 	/*@}*/
 	
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Collision is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	/*@}*/
 };
 

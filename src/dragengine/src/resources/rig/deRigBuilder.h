@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build rig into the provided rig object. */
-	virtual void BuildRig( deRig *rig ) = 0;
+	virtual void BuildRig(deRig *rig) = 0;
 	/*@}*/
 };
 

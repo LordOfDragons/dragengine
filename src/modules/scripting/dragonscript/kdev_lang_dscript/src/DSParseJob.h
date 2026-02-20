@@ -32,14 +32,14 @@ public:
 		Resheduled = TopDUContext::LastFeature
 	};
 	
-	explicit DSParseJob( const IndexedString &url, ILanguageSupport *languageSupport );
+	explicit DSParseJob(const IndexedString &url, ILanguageSupport *languageSupport);
 	~DSParseJob() override;
 	
-	void setParentJob( DSParseJob *job );
+	void setParentJob(DSParseJob *job);
 	
 protected:
 	DSLanguageSupport* ds() const;
-	void run( ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread ) override;
+	void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override;
 	
 private:
 	DSParseJob *pParentJob; ///< parent job if this one is an include
@@ -52,9 +52,9 @@ private:
 	bool hasParentDocument(const IndexedString &document);
 	
 	/** Create a problem pointer for the current document */
-	ProblemPointer createProblem( const QString &description, AstNode *node,
+	ProblemPointer createProblem(const QString &description, AstNode *node,
 		EditorIntegrator *editor, IProblem::Source source,
-		IProblem::Severity severity = IProblem::Error );
+		IProblem::Severity severity = IProblem::Error);
 };
 
 }

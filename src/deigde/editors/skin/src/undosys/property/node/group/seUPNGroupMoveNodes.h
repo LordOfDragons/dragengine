@@ -25,11 +25,11 @@
 #ifndef _SEUPNGROUPMOVENODES_H_
 #define _SEUPNGROUPMOVENODES_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
 
 
 
@@ -37,15 +37,26 @@ class sePropertyNodeGroup;
  * \brief Base class for undo action property node group move nodes.
  */
 class seUPNGroupMoveNodes : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPNGroupMoveNodes>;
+	
+	
 protected:
-	struct sNode{
-		sePropertyNode *node;
+	class cNode : public deObject{
+	public:
+		using Ref = deTObjectReference<cNode>;
+		using List = decTObjectOrderedSet<cNode>;
+		
+		sePropertyNode::Ref node;
 		int index;
+		
+		cNode() = default;
+	protected:
+		~cNode() override = default;
 	};
 	
-	sePropertyNodeGroup *pNode;
-	sNode *pChildren;
-	int pCount;
+	sePropertyNodeGroup::Ref pNode;
+	cNode::List pChildren;
 	
 	
 	
@@ -53,11 +64,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupMoveNodes( sePropertyNodeGroup *node, const sePropertyNodeList &children );
+	seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNode::List &children);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNGroupMoveNodes();
+	~seUPNGroupMoveNodes() override;
 	/*@}*/
 	
 	
@@ -68,12 +79,6 @@ public:
 	/** \brief Has any effect. */
 	bool HasAnyEffect() const;
 	/*@}*/
-	
-	
-	
-protected:
-	void pCleanUp();
-	void pClearChildNodes();
 };
 
 #endif

@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 #include "../../../../undosys/objectClass/light/gdeUOCRemoveLight.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCLightCut::gdeMAOCLightCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Light",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class light" )
+gdeMAOCLightCut::gdeMAOCLightCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightCut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"@GameDefinition.Menu.OCLightCut.ToolTip")
 {
 }
 
@@ -60,31 +60,27 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight ){
-		return NULL;
+igdeUndo::Ref gdeMAOCLightCut::OnActionSubObject(
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
+		return {};
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
-	if( ! light ){
-		return NULL;
+	if(!light){
+		return {};
 	}
 	
-	deObjectReference clipOCLight;
-	clipOCLight.TakeOver( new gdeOCLight( *light ) );
+	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::New(*light));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCLight( ( gdeOCLight* )( deObject* )clipOCLight ) );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::New(clipOCLight));
 	
-	pWindowMain.GetClipboard().Set( clipData );
-	
-	return new gdeUOCRemoveLight( &objectClass, light );
+	return gdeUOCRemoveLight::Ref::New(&objectClass, light);
 }
 
 void gdeMAOCLightCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL );
+		&& gameDefinition->GetActiveOCLight() != nullptr);
 }

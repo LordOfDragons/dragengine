@@ -36,14 +36,15 @@ class ceCAStopConversation;
  */
 class ceWPAStopConversation : public ceWPAction{
 public:
+	using Ref = deTObjectReference<ceWPAStopConversation>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAStopConversation( ceWPTopic &parentPanel );
+	ceWPAStopConversation(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAStopConversation();
+	~ceWPAStopConversation() override;
 	/*@}*/
 	
 	

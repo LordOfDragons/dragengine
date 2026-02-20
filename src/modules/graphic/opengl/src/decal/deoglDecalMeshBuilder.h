@@ -25,7 +25,9 @@
 #ifndef _DEOGLDECALMESHBUILDER_H_
 #define _DEOGLDECALMESHBUILDER_H_
 
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglRDecal;
 class deoglDMBConvexVolumeList;
@@ -51,21 +53,17 @@ class deoglDecalMeshBuilder{
 public:
 	deoglRenderThread &pRenderThread;
 	
-	deoglDMBConvexVolumeList *pCVolList;
+	deTUniqueReference<deoglDMBConvexVolumeList> pCVolList;
 	decMatrix pDecalMatrix;
 	decVector pDecalView;
 	decVector pOrigin;
 	decVector pProjVector;
 	decVector pSize;
 	float pDistance;
-	deoglDCollisionBox *pDecalBox;
+	deTUniqueReference<deoglDCollisionBox> pDecalBox;
 	
-	decVector *pPoints;
-	int pPointCount;
-	int pPointSize;
-	deoglDecalMeshBuilderFace *pFaces;
-	int pFaceCount;
-	int pFaceSize;
+	decTList<decVector> pPoints;
+	decTList<deoglDecalMeshBuilderFace> pFaces;
 	
 	
 	
@@ -73,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create decal mesh builder. */
-	deoglDecalMeshBuilder( deoglRenderThread &renderThread );
+	deoglDecalMeshBuilder(deoglRenderThread &renderThread);
 	
 	/** Clean up decal mesh builder. */
 	~deoglDecalMeshBuilder();
@@ -84,32 +82,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Initializes the builder. */
-	void Init( const deoglRDecal &decals, float distance );
+	void Init(const deoglRDecal &decals, float distance);
 	
 	/** Cut using the given face. */
-	void CutTriangle( const decVector &v1, const decVector &v2, const decVector &v3 );
+	void CutTriangle(const decVector &v1, const decVector &v2, const decVector &v3);
 	
 	/** Build mesh for component. */
-	void BuildMeshForComponent( const deoglRComponent &oglComponent );
-	void BuildMeshForComponent( const deoglRComponentLOD &lod );
+	void BuildMeshForComponent(const deoglRComponent &oglComponent);
+	void BuildMeshForComponent(const deoglRComponentLOD &lod);
 	
 	/** Debug. */
 	void Debug();
 	
 	
 	
-	/** Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
-	
-	/** Point at index. */
-	const decVector &GetPointAt( int index ) const;
+	/** Points. */
+	inline const decTList<decVector> &GetPoints() const{ return pPoints; }
 	
 	/**
 	 * Add point and return index.
 	 * 
 	 * If the point already exists only the index is returned.
 	 */
-	int AddPoint( const decVector &point );
+	int AddPoint(const decVector &point);
 	
 	/** Remove all points. */
 	void RemoveAllPoints();
@@ -117,13 +112,13 @@ public:
 	
 	
 	/** Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	
 	/** Face at index. */
-	deoglDecalMeshBuilderFace *GetFaceAt( int index ) const;
+	const deoglDecalMeshBuilderFace &GetFaceAt(int index) const;
 	
 	/** Add face. */
-	deoglDecalMeshBuilderFace *AddFace();
+	deoglDecalMeshBuilderFace &AddFace();
 	
 	/** Remove all faces. */
 	void RemoveAllFaces();
@@ -132,11 +127,10 @@ public:
 	
 	
 private:
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3,
-		const decVector &normal, bool decalFace );
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3, int p4,
-		const decVector &normal, bool decalFace );
-	int pIndexOfPoint( const decVector &point ) const;
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3,
+		const decVector &normal, bool decalFace);
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4,
+		const decVector &normal, bool decalFace);
 };
 
 #endif

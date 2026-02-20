@@ -38,8 +38,7 @@
 class DE_DLL_EXPORT deNetworkValuePoint2 : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValuePoint2> Ref;
-	
+	using Ref = deTObjectReference<deNetworkValuePoint2>;
 	
 	
 private:
@@ -52,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValuePoint2( eValueFormats format, const decPoint &value );
+	deNetworkValuePoint2(eValueFormats format, const decPoint &value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValuePoint2();
+	~deNetworkValuePoint2() override;
 	/*@}*/
 	
 	
@@ -69,7 +68,7 @@ public:
 	inline const decPoint &GetPoint() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetPoint( const decPoint &value );
+	void SetPoint(const decPoint &value);
 	/*@}*/
 	
 	
@@ -77,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

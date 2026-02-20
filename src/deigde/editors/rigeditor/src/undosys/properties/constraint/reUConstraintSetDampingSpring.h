@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigConstraint;
  * \brief Set constraint damping spring undo action.
  */
 class reUConstraintSetDampingSpring : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUConstraintSetDampingSpring>;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	float pOldDamping;
 	float pNewDamping;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetDampingSpring( reRigConstraint *constraint, float newDamping );
+	reUConstraintSetDampingSpring(reRigConstraint *constraint, float newDamping);
 	
 protected:
 	/** \brief Clean up the undo. */
-	virtual ~reUConstraintSetDampingSpring();
+	~reUConstraintSetDampingSpring() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

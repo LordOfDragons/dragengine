@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "debpDMBConvexVolumeFace.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -36,8 +36,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpDMBConvexVolumeFace::debpDMBConvexVolumeFace(){
-	pDecalFace = false;
+debpDMBConvexVolumeFace::debpDMBConvexVolumeFace() :
+pDecalFace(false){
+}
+
+debpDMBConvexVolumeFace::debpDMBConvexVolumeFace(bool decalFace) :
+pDecalFace(decalFace){
 }
 
 debpDMBConvexVolumeFace::~debpDMBConvexVolumeFace(){
@@ -48,6 +52,6 @@ debpDMBConvexVolumeFace::~debpDMBConvexVolumeFace(){
 // Management
 ///////////////
 
-void debpDMBConvexVolumeFace::SetDecalFace( bool decalFace ){
+void debpDMBConvexVolumeFace::SetDecalFace(bool decalFace){
 	pDecalFace = decalFace;
 }

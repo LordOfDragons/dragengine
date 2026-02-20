@@ -34,7 +34,6 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -50,7 +49,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-declConfigXML::declConfigXML( deLogger *logger, const char *loggerSource ) : delBaseXML( logger, loggerSource ){
+declConfigXML::declConfigXML(deLogger *logger, const char *loggerSource) : delBaseXML(logger, loggerSource){
 }
 
 declConfigXML::~declConfigXML(){
@@ -61,27 +60,26 @@ declConfigXML::~declConfigXML(){
 // Management
 ///////////////
 
-void declConfigXML::ReadFromFile( decBaseFileReader &reader, declConfiguration &config ){
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+void declConfigXML::ReadFromFile(decBaseFileReader &reader, declConfiguration &config){
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "delauncherconsole" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "delauncherconsole") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void declConfigXML::WriteToFile( decBaseFileWriter &writer, const declConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void declConfigXML::WriteToFile(decBaseFileWriter &writer, const declConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -89,27 +87,27 @@ void declConfigXML::WriteToFile( decBaseFileWriter &writer, const declConfigurat
 // Private Functions
 //////////////////////
 
-void declConfigXML::pWriteConfig( decXmlWriter &writer, const declConfiguration &config ){
-	writer.WriteOpeningTag( "delauncherconsole", false, true );
+void declConfigXML::pWriteConfig(decXmlWriter &writer, const declConfiguration &config){
+	writer.WriteOpeningTag("delauncherconsole", false, true);
 	
-	writer.WriteClosingTag( "delauncherconsole", true );
+	writer.WriteClosingTag("delauncherconsole", true);
 }
 
 
 
-void declConfigXML::pReadConfig( const decXmlElementTag &root, declConfiguration &config ){
+void declConfigXML::pReadConfig(const decXmlElementTag &root, declConfiguration &config){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	int e;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "DUMMY" ) == 0 ){
+		if(tag){
+			if(strcmp(tag->GetName(), "DUMMY") == 0){
 				
 			}else{
-				ErrorUnknownTag( root, *tag );
+				ErrorUnknownTag(root, *tag);
 			}
 		}
 	}

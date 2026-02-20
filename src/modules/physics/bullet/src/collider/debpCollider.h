@@ -25,9 +25,11 @@
 #ifndef _DEBPCOLLIDER_H_
 #define _DEBPCOLLIDER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsCollider.h>
 
 class debpColliderAttachment;
@@ -38,10 +40,11 @@ class debpColliderRig;
 class debpColliderVolume;
 class debpCollisionWorld;
 class debpWorld;
+class debpTouchSensor;
+class debpCollisionTest;
 
 class deCollider;
 class deColliderCollisionTest;
-class deDebugDrawer;
 class deDebugDrawerShape;
 class dePhysicsBullet;
 
@@ -72,18 +75,13 @@ private:
 	decDVector pShapeMinExtend, pShapeMaxExtend;
 	decDMatrix pMatrix, pInvMatrix, pMatrixNormal;
 	
-	debpColliderAttachment **pAttachments;
-	int pAttachmentCount;
-	int pAttachmentSize;
+	decTUniqueList<debpColliderAttachment> pAttachments;
+	decTUniqueList<debpColliderConstraint> pConstraints;
 	
-	debpColliderConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
+	decTList<debpColliderCollisionTest*> pCollisionTests;
 	
-	decPointerList pCollisionTests;
-	
-	decPointerSet pAttachedToList;
-	decPointerSet pTrackingTouchSensors;
+	decTOrderedSet<debpCollider*> pAttachedToList;
+	decTOrderedSet<debpTouchSensor*> pTrackingTouchSensors;
 	
 	int pIndex;
 	bool pIsMoving;
@@ -103,15 +101,15 @@ private:
 	int pPPCTColliderIndex;
 	int pUpdateOctreeIndex;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
 	
 public:
 	// constructor, destructor
-	debpCollider( dePhysicsBullet *bullet, deCollider &collider, int type );
-	~debpCollider();
+	debpCollider(dePhysicsBullet *bullet, deCollider &collider, int type);
+	~debpCollider() override;
 	
 	// physics management
 	/** Retrieves the type. */
@@ -148,26 +146,26 @@ public:
 	void ClearRequiresUpdate();
 	
 	inline bool GetIsMoving() const{ return pIsMoving; }
-	void SetIsMoving( bool isMoving );
+	void SetIsMoving(bool isMoving);
 	const decDMatrix &GetMatrix();
 	const decDMatrix &GetInverseMatrix();
 	const decDMatrix &GetMatrixNormal();
-	void SetIndex( int index );
-	virtual void SetParentWorld( debpWorld *parentWorld );
+	void SetIndex(int index);
+	virtual void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Parent world changed. */
 	void ParentWorldChanged();
 	
-	void SetAddToOctree( bool doAdd );
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetAddToOctree(bool doAdd);
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	void MarkMatrixDirty();
 	void MarkDirtyOctree();
 	
 	/** Two collider can collide. */
-	bool Collides( const debpCollider &collider ) const;
+	bool Collides(const debpCollider &collider) const;
 	
 	/** Two collider can not collide. */
-	bool CollidesNot( const debpCollider &collider ) const;
+	bool CollidesNot(const debpCollider &collider) const;
 	
 	/** Create physics body if not existing already. */
 	virtual void CreateBody();
@@ -182,10 +180,10 @@ public:
 	/** Prepare for a simulation step. */
 	virtual void PrepareForStep();
 	/** Detect collision for a custom collision step. */
-	virtual void DetectCustomCollision( float elapsed );
+	virtual void DetectCustomCollision(float elapsed);
 	
 	/** Prepares the collision detection. */
-	virtual void PrepareDetection( float elapsed );
+	virtual void PrepareDetection(float elapsed);
 	/** Finished the collision detection updating the collider and send notifications. */
 	virtual void FinishDetection();
 	
@@ -198,15 +196,15 @@ public:
 	/** Retrieves the marked flag. */
 	inline bool GetMarked() const{ return pMarked; }
 	/** Sets the marked flag. */
-	inline void SetMarked( bool marked ){ pMarked = marked; }
+	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	inline bool GetTouchSensorMarked() const{ return pTouchSensorMarked; }
-	inline void SetTouchSensorMarked( bool marked ){ pTouchSensorMarked = marked; }
+	inline void SetTouchSensorMarked(bool marked){pTouchSensorMarked = marked;}
 	
 	/** Determines if this collider has to be simulated using kinematics. */
 	inline bool GetUseKinematicSimulation() const{ return pUseKinematicSim; }
 	/** Sets if this collider has to be simulated using kinematics. */
-	void SetUseKinematicSimulation( bool useKinematicSimulation );
+	void SetUseKinematicSimulation(bool useKinematicSimulation);
 	
 	/** Updates the octree position. */
 	virtual void UpdateOctreePosition();
@@ -214,13 +212,13 @@ public:
 	/** Updates shapes with the current matirx. */
 	virtual void UpdateShapes();
 	/** Updates shapes using a transformation matrix. */
-	virtual void UpdateShapesWithMatrix( const decDMatrix &transformation );
+	virtual void UpdateShapesWithMatrix(const decDMatrix &transformation);
 	/** Retrieves the minimum extend of the shapes. */
 	inline const decDVector &GetShapeMinimumExtend() const{ return pShapeMinExtend; }
 	/** Retrieves the maximum extend of the shapes. */
 	inline const decDVector &GetShapeMaximumExtend() const{ return pShapeMaxExtend; }
 	/** Sets the extends of the shapes. */
-	void SetShapeExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetShapeExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/**
 	 * Prepare constraints for next detection step.
@@ -246,13 +244,13 @@ public:
 	inline int GetColDetPrepareIndex() const{ return pColDetPrepareIndex; }
 	
 	/** Set prepare collision detection index or -1 if not registered. */
-	void SetColDetPrepareIndex( int index );
+	void SetColDetPrepareIndex(int index);
 	
 	/** Automatically re-registered for collision detection prepare. */
 	inline bool GetAutoColDetPrepare() const{ return pAutoColDetPrepare; }
 	
 	/** Set automatically re-registered for collision detection prepare. */
-	void SetAutoColDetPrepare( bool autoColDetPrepare );
+	void SetAutoColDetPrepare(bool autoColDetPrepare);
 	
 	/** Calculate auto collision detection re-register value. */
 	virtual bool CalcAutoColDetPrepare();
@@ -269,13 +267,13 @@ public:
 	inline int GetColDetFinishIndex() const{ return pColDetFinishIndex; }
 	
 	/** Set finish collision detection index or -1 if not registered. */
-	void SetColDetFinishIndex( int index );
+	void SetColDetFinishIndex(int index);
 	
 	/** Automatically re-registered for collision detection finish. */
 	inline bool GetAutoColDetFinish() const{ return pAutoColDetFinish; }
 	
 	/** Set automatically re-registered for collision detection finish. */
-	void SetAutoColDetFinish( bool autoColDetFinish );
+	void SetAutoColDetFinish(bool autoColDetFinish);
 	
 	/** Calculate auto collision detection re-register value. */
 	virtual bool CalcAutoColDetFinish();
@@ -292,7 +290,7 @@ public:
 	inline int GetPPCProcessingIndex() const{ return pPPCTColliderIndex; }
 	
 	/** Set post physics collision processing index or -1 if not registered. */
-	void SetPPCProcessingIndex( int index );
+	void SetPPCProcessingIndex(int index);
 	
 	
 	
@@ -306,7 +304,7 @@ public:
 	inline int GetUpdateOctreeIndex() const{ return pUpdateOctreeIndex; }
 	
 	/** Set update octree processing index or -1 if not registered. */
-	void SetUpdateOctreeIndex( int index );
+	void SetUpdateOctreeIndex(int index);
 	
 	/** Prepare for static collsion test. Returns true if ready or false if not usable. */
 	virtual bool PrepareStaticCollisionTest() = 0;
@@ -317,27 +315,27 @@ public:
 	/** @name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	inline int GetAttachmentCount() const{ return pAttachments.GetCount(); }
 	/** Retrieves an attachment. */
-	debpColliderAttachment *GetAttachmentAt( int index ) const;
-	
+	debpColliderAttachment *GetAttachmentAt(int index) const;
+
 	/** Retrieves the list of colliders this collider is attached to. */
-	inline decPointerSet &GetAttachedToList(){ return pAttachedToList; }
-	inline const decPointerSet &GetAttachedToList() const{ return pAttachedToList; }
-	
+	inline decTOrderedSet<debpCollider*> &GetAttachedToList(){ return pAttachedToList; }
+	inline const decTOrderedSet<debpCollider*> &GetAttachedToList() const{ return pAttachedToList; }
+
 	/** List of touch sensors tracking this collider. */
-	inline decPointerSet &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
-	inline const decPointerSet &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
+	inline decTOrderedSet<debpTouchSensor*> &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
+	inline const decTOrderedSet<debpTouchSensor*> &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
 	/*@}*/
-	
-	
-	
+
+
+
 	/** \name Constraints */
 	/*@{*/
 	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	inline int GetConstraintCount() const{ return pConstraints.GetCount(); }
 	/** Retrieves the constraint at the given index. */
-	debpColliderConstraint *GetConstraintAt( int index ) const;
+	debpColliderConstraint *GetConstraintAt(int index) const;
 	/*@}*/
 	
 	
@@ -348,7 +346,7 @@ public:
 	int GetCollisionTestCount() const;
 	
 	/** Post physics collision test at index. */
-	debpColliderCollisionTest *GetCollisionTestAt( int index ) const;
+	debpColliderCollisionTest *GetCollisionTestAt(int index) const;
 	/*@}*/
 	
 	
@@ -356,7 +354,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
@@ -379,73 +377,73 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Scale changed. */
-	virtual void ScaleChanged();
+	void ScaleChanged() override;
 	
 	/** Position or orientation changed. */
-	virtual void GeometryChanged();
+	void GeometryChanged() override;
 	
 	/** Linear velocity changed. */
-	virtual void LinearVelocityChanged();
+	void LinearVelocityChanged() override;
 	/** Angular velocity changed. */
-	virtual void AngularVelocityChanged();
+	void AngularVelocityChanged() override;
 	/** Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	/** Gravity changed. */
-	virtual void GravityChanged();
+	void GravityChanged() override;
 	/** Properties like mass changed. */
-	virtual void PropertiesChanged();
+	void PropertiesChanged() override;
 	/** Response type changed. */
-	virtual void ResponseTypeChanged();
+	void ResponseTypeChanged() override;
 	
 	/** Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** Ignore colliders changed. */
-	virtual void IgnoreCollidersChanged();
+	void IgnoreCollidersChanged() override;
 	
 	/** Force field factor changed. */
-	virtual void ForceFieldChanged();
+	void ForceFieldChanged() override;
 	
 	/** Attachment added. */
-	virtual void AttachmentAdded( int index, deColliderAttachment *attachment );
+	void AttachmentAdded(int index, deColliderAttachment *attachment) override;
 	/** Attachment changed. */
-	virtual void AttachmentChanged( int index, deColliderAttachment *attachment );
+	void AttachmentChanged(int index, deColliderAttachment *attachment) override;
 	/** Attachment removed. */
-	virtual void AttachmentRemoved( int index, deColliderAttachment *attachment );
+	void AttachmentRemoved(int index, deColliderAttachment *attachment) override;
 	/** All attachments removed. */
-	virtual void AllAttachmentsRemoved();
+	void AllAttachmentsRemoved() override;
 	
 	/** Constraint added. */
-	virtual void ConstraintAdded( int index, deColliderConstraint *attachment );
+	void ConstraintAdded(int index, deColliderConstraint *attachment) override;
 	/** Constraint changed. */
-	virtual void ConstraintChanged( int index, deColliderConstraint *attachment );
+	void ConstraintChanged(int index, deColliderConstraint *attachment) override;
 	/** Constraint removed. */
-	virtual void ConstraintRemoved( int index, deColliderConstraint *attachment );
+	void ConstraintRemoved(int index, deColliderConstraint *attachment) override;
 	/** All attachments removed. */
-	virtual void AllConstraintsRemoved();
+	void AllConstraintsRemoved() override;
 	
 	
 	
 	/** Post physics collision test added. */
-	virtual void CollisionTestAdded( int index );
+	void CollisionTestAdded(int index) override;
 	
 	/** Post physics collision test changed. */
-	virtual void CollisionTestChanged( int index );
+	void CollisionTestChanged(int index) override;
 	
 	/** Post physics collision test enabled changed. */
-	virtual void CollisionTestEnabledChanged( int index );
+	void CollisionTestEnabledChanged(int index) override;
 	
 	/** Post physics collision test removed. */
-	virtual void CollisionTestRemoved( int index );
+	void CollisionTestRemoved(int index) override;
 	
 	/** All post physics collision tests removed. */
-	virtual void AllCollisionTestsRemoved();
+	void AllCollisionTestsRemoved() override;
 	/*@}*/
 	
 	

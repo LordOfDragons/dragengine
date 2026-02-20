@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPHEIGHTTERRAIN_H_
 #define _DEBPHEIGHTTERRAIN_H_
 
 // includes
-#include "dragengine/common/math/decMath.h"
-#include "dragengine/systems/modules/physics/deBasePhysicsHeightTerrain.h"
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/physics/deBasePhysicsHeightTerrain.h>
 
 // predefinitions
 class debpWorld;
@@ -51,17 +51,15 @@ private:
 	
 	debpWorld *pParentWorld;
 	
-	debpHTSector **pSectors;
-	int pSectorCount;
-	int pSectorSize;
+	decTUniqueList<debpHTSector> pSectors;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpHeightTerrain( dePhysicsBullet *bullet, deHeightTerrain *heightTerrain );
+	debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *heightTerrain);
 	/** Cleans up the peer. */
-	virtual ~debpHeightTerrain();
+	~debpHeightTerrain() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -74,14 +72,14 @@ public:
 	/** Retrieves the parent world. */
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the number of sectors. */
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{ return pSectors.GetCount(); }
 	/** Retrieves the sector at the given index. */
-	debpHTSector *GetSectorAt( int index ) const;
+	debpHTSector *GetSectorAt(int index) const;
 	/** Retrieves the sector with the given coordinates or NULL if not found. */
-	debpHTSector *GetSectorWith( int x, int y ) const;
+	debpHTSector *GetSectorWith(int x, int y) const;
 	
 	/** Update. */
 	void Update();
@@ -90,29 +88,29 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Parameter changes. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	/** Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates) override;
 	
 	/** Sector has been added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	void SectorAdded(deHeightTerrainSector *sector) override;
 	/** Sector has been removed. */
-	virtual void SectorRemoved( int index );
+	void SectorRemoved(int index) override;
 	/** All sectors have been removed. */
-	virtual void AllSectorsRemoved();
+	void AllSectorsRemoved() override;
 	/** Sector changed. */
-	virtual void SectorChanged( int index );
+	void SectorChanged(int index) override;
 	
 	/** Decal has been added. */
-	virtual void DecalAdded( int sector, deDecal *decal );
+	void DecalAdded(int sector, deDecal *decal) override;
 	/** Decal has been removed. */
-	virtual void DecalRemoved( int sector, deDecal *decal );
+	void DecalRemoved(int sector, deDecal *decal) override;
 	/** All decals have been removed. */
-	virtual void AllDecalsRemoved( int sector );
+	void AllDecalsRemoved(int sector) override;
 	/*@}*/
 	
 	/** @name Collision Detection */
@@ -122,15 +120,12 @@ public:
 	 * list. The point is best taken from an earlier collision test and is in world
 	 * coordinates.
 	 */
-	virtual void FindDecalsAt( const decDVector &point, deDecalList &list );
+	void FindDecalsAt(const decDVector &point, deDecal::List &list) override;
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 */
-	virtual void FindDecalsTouching( const decShape &shape, deDecalList &list );
+	void FindDecalsTouching(const decShape &shape, deDecal::List &list) override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 // end of include only once

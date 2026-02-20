@@ -38,9 +38,9 @@
 ////////////////////////////
 
 deoglDecalMeshBuilderFace::deoglDecalMeshBuilderFace(){
-	pPoints[ 0 ] = 0;
-	pPoints[ 1 ] = 0;
-	pPoints[ 2 ] = 0;
+	pPoints[0] = 0;
+	pPoints[1] = 0;
+	pPoints[2] = 0;
 }
 
 deoglDecalMeshBuilderFace::~deoglDecalMeshBuilderFace(){
@@ -51,25 +51,25 @@ deoglDecalMeshBuilderFace::~deoglDecalMeshBuilderFace(){
 // Management
 ///////////////
 
-int deoglDecalMeshBuilderFace::GetPointAt( int index ) const{
-	if( index < 0 || index > 2 ){
-		DETHROW( deeInvalidParam );
+int deoglDecalMeshBuilderFace::GetPointAt(int index) const{
+	if(index < 0 || index > 2){
+		DETHROW(deeInvalidParam);
 	}
-	return pPoints[ index ];
+	return pPoints[index];
 }
 
-void deoglDecalMeshBuilderFace::SetPoint1( int point ){
-	pPoints[ 0 ] = point;
+void deoglDecalMeshBuilderFace::SetPoint1(int point){
+	pPoints[0] = point;
 }
 
-void deoglDecalMeshBuilderFace::SetPoint2( int point ){
-	pPoints[ 1 ] = point;
+void deoglDecalMeshBuilderFace::SetPoint2(int point){
+	pPoints[1] = point;
 }
 
-void deoglDecalMeshBuilderFace::SetPoint3( int point ){
-	pPoints[ 2 ] = point;
+void deoglDecalMeshBuilderFace::SetPoint3(int point){
+	pPoints[2] = point;
 }
 
-void deoglDecalMeshBuilderFace::SetFaceNormal( const decVector &normal ){
+void deoglDecalMeshBuilderFace::SetFaceNormal(const decVector &normal){
 	pNormal = normal;
 }

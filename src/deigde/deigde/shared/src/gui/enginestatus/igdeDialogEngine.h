@@ -25,7 +25,7 @@
 #ifndef _IGDEDIALOGENGINE_H_
 #define _IGDEDIALOGENGINE_H_
 
-#include "../igdeTabBookReference.h"
+#include "../igdeTabBook.h"
 #include "../dialog/igdeDialog.h"
 
 
@@ -37,9 +37,14 @@ class igdeMainWindow;
  * \brief Engine control dialog.
  */
 class DE_DLL_EXPORT igdeDialogEngine : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDialogEngine>;
+	
+	
 private:
 	igdeMainWindow &pMainWindow;
-	igdeTabBookReference pTabPanels;
+	igdeTabBook::Ref pTabPanels;
 	
 	
 	
@@ -47,13 +52,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	igdeDialogEngine( igdeMainWindow &mainWindow );
+	igdeDialogEngine(igdeMainWindow &mainWindow);
 	
 	
 	
 protected:
 	/** \brief Cleans up view. */
-	virtual ~igdeDialogEngine();
+	~igdeDialogEngine() override;
 	/*@}*/
 	
 	

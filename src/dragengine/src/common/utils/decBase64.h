@@ -44,19 +44,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Encode using Base64. */
-	static decString Encode( const decString &in );
-	static decString Encode( const uint8_t *in, int inLen );
-	static void Encode( const uint8_t *in, int inLen, char *out, int outSize, int &outLen );
+	static decString Encode(const decString &in);
+	static decString Encode(const uint8_t *in, int inLen);
+	static void Encode(const uint8_t *in, int inLen, char *out, int outSize, int &outLen);
 	
 	/** \brief Safe size of buffer required to hold Base64 encoded. */
-	static int EncodeSize( int inLen );
+	static int EncodeSize(int inLen);
 	
 	/** \brief Decode using Base64. */
-	static void Decode( const decString &in, uint8_t *out, int outSize, int &outLen );
-	static void Decode( const char *in, int inLen, uint8_t *out, int outSize, int &outLen );
+	static void Decode(const decString &in, uint8_t *out, int outSize, int &outLen);
+	static void Decode(const char *in, int inLen, uint8_t *out, int outSize, int &outLen);
 	
 	/** \brief Safe size of buffer required to hold Base64 decoded. */
-	static int DecodeSize( int inLen );
+	static int DecodeSize(int inLen);
 	/*@}*/
 };
 

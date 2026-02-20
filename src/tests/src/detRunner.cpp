@@ -3,6 +3,12 @@
 #include <string.h>
 #include "detRunner.h"
 #include "detCase.h"
+#include "collection/detTOrderedSet.h"
+#include "collection/detTList.h"
+#include "collection/detTSet.h"
+#include "collection/detTDictionary.h"
+#include "collection/detTLinkedList.h"
+#include "collection/detHelperFunctions.h"
 #include "curve/detCurve2D.h"
 #include "curve/detCurveBezier3D.h"
 #include "string/detString.h"
@@ -10,9 +16,8 @@
 #include "string/detStringDictionary.h"
 #include "string/detUnicodeString.h"
 #include "string/detUnicodeStringList.h"
+#include "string/detUnicodeLineBuffer.h"
 #include "string/detStringSet.h"
-#include "string/detUnicodeStringSet.h"
-#include "string/detUnicodeStringDictionary.h"
 #include "path/detPath.h"
 #include "math/detMath.h"
 #include "math/detColorMatrix.h"
@@ -23,12 +28,15 @@
 #include "utils/detUuid.h"
 #include "threading/detThreading.h"
 #include "file/detZFile.h"
+#include "detObjectReference.h"
+#include "detWeakObjectReference.h"
+#include "detThreadSafeObjectReference.h"
+#include "detUniqueReference.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLoggerConsoleColor.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlComment.h>
 #include <dragengine/common/xmlparser/decXmlPI.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
@@ -56,96 +64,96 @@ public:
 	
 	// helping functions
 	void PrintIndent(){
-		for( int i=0; i<pIndent; i++ ) printf( "  " );
+		for(int i=0; i<pIndent; i++) printf("  ");
 	}
 	
 	// visiting
-	void VisitDocument( decXmlDocument &doc ){
+	void VisitDocument(decXmlDocument &doc) override{
 		PrintIndent();
-		printf( "%c Document: Encoding(%s) DocType(%s) SysLit(%s) PubLit(%s) Standalone(%c)\n",
+		printf("%c Document: Encoding(%s) DocType(%s) SysLit(%s) PubLit(%s) Standalone(%c)\n",
 			doc.IsEmpty() ? '-' : '+',
 			doc.GetEncoding().GetString(), doc.GetDocType().GetString(),
 			doc.GetSystemLiteral().GetString(), doc.GetPublicLiteral().GetString(),
-			doc.GetStandalone() ? 'T' : 'F' );
+			doc.GetStandalone() ? 'T' : 'F');
 		pIndent++;
-		doc.VisitElements( *this );
+		doc.VisitElements(*this);
 		pIndent--;
 	}
 	
-	void VisitComment( decXmlComment &comment ){
+	void VisitComment(decXmlComment &comment) override{
 		char commentBuf[54];
 		PrintIndent();
-		strncpy( (char*)&commentBuf, comment.GetComment(), 50 );
-		strcpy( &commentBuf[50], "..." );
-		for( int i=0; i<50; i++ ){
-			if( commentBuf[ i ] == '\n' ) commentBuf[ i ] = ' ';
+		strncpy((char*)&commentBuf, comment.GetComment(), 50);
+		strcpy(&commentBuf[50], "...");
+		for(int i=0; i<50; i++){
+			if(commentBuf[i] == '\n') commentBuf[i] = ' ';
 		}
-		printf( "- Comment: \"%s\"\n", commentBuf );
+		printf("- Comment: \"%s\"\n", commentBuf);
 	}
 	
-	void VisitPI( decXmlPI &pi ){
+	void VisitPI(decXmlPI &pi) override{
 		PrintIndent();
-		printf( "- Process Instrucion: Target(%s) Command(%s)\n",
-			pi.GetTarget().GetString(), pi.GetCommand().GetString() );
+		printf("- Process Instrucion: Target(%s) Command(%s)\n",
+			pi.GetTarget().GetString(), pi.GetCommand().GetString());
 	}
 	
-	void VisitElementTag( decXmlElementTag &tag ){
+	void VisitElementTag(decXmlElementTag &tag) override{
 		PrintIndent();
-		printf( "%c Element Tag: Name(%s) Namespace(%s) LocalName(%s)\n",
+		printf("%c Element Tag: Name(%s) Namespace(%s) LocalName(%s)\n",
 			tag.IsEmpty() ? '-' : '+', tag.GetName().GetString(),
-			tag.GetNamespace().GetString(), tag.GetLocalName().GetString() );
+			tag.GetNamespace().GetString(), tag.GetLocalName().GetString());
 		pIndent++;
-		tag.VisitElements( *this );
+		tag.VisitElements(*this);
 		pIndent--;
 	}
 	
-	void VisitCharacterData( decXmlCharacterData &data ){
+	void VisitCharacterData(decXmlCharacterData &data) override{
 		char dataBuf[54];
 		PrintIndent();
-		strncpy( (char*)&dataBuf, data.GetData(), 50 );
-		strcpy( &dataBuf[50], "..." );
-		printf( "- Character Data: \"%s\"\n", dataBuf );
+		strncpy((char*)&dataBuf, data.GetData(), 50);
+		strcpy(&dataBuf[50], "...");
+		printf("- Character Data: \"%s\"\n", dataBuf);
 	}
 	
-	void VisitEntityReference( decXmlEntityReference &ref ){
+	void VisitEntityReference(decXmlEntityReference &ref) override{
 		char dataBuf[54];
 		PrintIndent();
-		strncpy( (char*)&dataBuf, ref.GetName(), 50 );
-		strcpy( &dataBuf[50], "..." );
-		printf( "- Entity Reference: \"%s\"\n", dataBuf );
+		strncpy((char*)&dataBuf, ref.GetName(), 50);
+		strcpy(&dataBuf[50], "...");
+		printf("- Entity Reference: \"%s\"\n", dataBuf);
 	}
 	
-	void VisitCharReference( decXmlCharReference &ref ){
+	void VisitCharReference(decXmlCharReference &ref) override{
 		char dataBuf[54];
 		PrintIndent();
-		strncpy( (char*)&dataBuf, ref.GetData(), 50 );
-		strcpy( &dataBuf[50], "..." );
-		if( ref.IsDecimal() ){
-			printf( "- Char Reference Decimal: \"%s\"\n", dataBuf );
-		}else if( ref.IsHexadecimal() ){
-			printf( "- Char Reference Hexa-Decimal: \"%s\"\n", dataBuf );
+		strncpy((char*)&dataBuf, ref.GetData(), 50);
+		strcpy(&dataBuf[50], "...");
+		if(ref.IsDecimal()){
+			printf("- Char Reference Decimal: \"%s\"\n", dataBuf);
+		}else if(ref.IsHexadecimal()){
+			printf("- Char Reference Hexa-Decimal: \"%s\"\n", dataBuf);
 		}
 	}
 	
-	void VisitCDSect( decXmlCDSect &cdsect ){
+	void VisitCDSect(decXmlCDSect &cdsect) override{
 		char dataBuf[54];
 		PrintIndent();
-		strncpy( (char*)&dataBuf, cdsect.GetData(), 50 );
-		strcpy( &dataBuf[50], "..." );
-		printf( "- CDSect: \"%s\"\n", dataBuf );
+		strncpy((char*)&dataBuf, cdsect.GetData(), 50);
+		strcpy(&dataBuf[50], "...");
+		printf("- CDSect: \"%s\"\n", dataBuf);
 	}
 	
-	void VisitAttValue( decXmlAttValue &value ){
+	void VisitAttValue(decXmlAttValue &value) override{
 		PrintIndent();
-		printf( "- Attribute Value: Name(%s) Namespace(%s) LocalName(%s) Value(\"%s\")\n",
+		printf("- Attribute Value: Name(%s) Namespace(%s) LocalName(%s) Value(\"%s\")\n",
 			value.GetName().GetString(), value.GetNamespace().GetString(),
-			value.GetLocalName().GetString(), value.GetValue().GetString() );
+			value.GetLocalName().GetString(), value.GetValue().GetString());
 	}
 	
-	void VisitNamespace( decXmlNamespace &ns ){
+	void VisitNamespace(decXmlNamespace &ns) override{
 		PrintIndent();
-		printf( "- Namespace: Name(%s) URL(\"%s\")\n",
-			ns.GetName().GetString(), ns.GetURL().GetString() );
+		printf("- Namespace: Name(%s) URL(\"%s\")\n",
+			ns.GetName().GetString(), ns.GetURL().GetString());
 	}
 };
 
@@ -154,9 +162,7 @@ public:
 // entry point
 ////////////////
 int main(int argc, char **args){
-	detRunner runner;
-	runner.Run();
-	return 0;
+	return detRunner().Run() ? 0 : 1;
 }
 
 
@@ -173,27 +179,36 @@ detRunner::detRunner(){
 	#endif
 	
 	pCount = 0;
-	pCases = NULL;
-	pAddTest( new detString );
-	pAddTest( new detStringList );
-	pAddTest( new detStringSet );
-	pAddTest( new detStringDictionary );
-	pAddTest( new detUnicodeString );
-	pAddTest( new detUnicodeStringList );
-	pAddTest( new detUnicodeStringSet );
-	pAddTest( new detUnicodeStringDictionary );
-	pAddTest( new detPath );
-	pAddTest( new detZFile );
-	pAddTest( new detMath );
-	pAddTest( new detCurve2D );
-	pAddTest( new detCurveBezier3D );
-	pAddTest( new detConvexVolume );
-	pAddTest( new detColorMatrix );
-	pAddTest( new detTexMatrix2 );
-	pAddTest( new detUniqueID );
-	pAddTest( new detPRNG );
-	pAddTest( new detUuid );
-	pAddTest( new detThreading );
+	pCases = nullptr;
+	pAddTest(new detString);
+	pAddTest(new detStringList);
+	pAddTest(new detStringSet);
+	pAddTest(new detStringDictionary);
+	pAddTest(new detUnicodeString);
+	pAddTest(new detUnicodeStringList);
+	pAddTest(new detUnicodeLineBuffer);
+	pAddTest(new detTOrderedSet);
+	pAddTest(new detTList);
+	pAddTest(new detTSet);
+	pAddTest(new detTDictionary);
+	pAddTest(new detTLinkedList);
+	pAddTest(new detHelperFunctions);
+	pAddTest(new detPath);
+	pAddTest(new detZFile);
+	pAddTest(new detMath);
+	pAddTest(new detCurve2D);
+	pAddTest(new detCurveBezier3D);
+	pAddTest(new detConvexVolume);
+	pAddTest(new detColorMatrix);
+	pAddTest(new detTexMatrix2);
+	pAddTest(new detUniqueID);
+	pAddTest(new detPRNG);
+	pAddTest(new detUuid);
+	pAddTest(new detThreading);
+	pAddTest(new detObjectReference);
+	pAddTest(new detWeakObjectReference);
+	pAddTest(new detThreadSafeObjectReference);
+	pAddTest(new detUniqueReference);
 }
 detRunner::~detRunner(){
 	if(pCases){
@@ -201,35 +216,36 @@ detRunner::~detRunner(){
 		delete [] pCases;
 	}
 }
-void detRunner::Run(){
+bool detRunner::Run(){
 	int i, errorCount = 0;
-	detCase *curTest;
 	
-	setvbuf( stdout, NULL, _IONBF, 0 );
+	setvbuf(stdout, nullptr, _IONBF, 0);
 	
-	printf( "Ready to start engine tests. Some of the tests can take quite\n" );
-	printf( "some time so do not panic if the progress counters gets stuck\n" );
-	printf( "for a longer period of time.\n\n" );
-	printf( "*** Start Testing ( %i Tests ) ***", pCount);
-	for( i=0; i<pCount; i++ ){
-		curTest = pCases[i];
+	printf("Ready to start engine tests. Some of the tests can take quite\n");
+	printf("some time so do not panic if the progress counters gets stuck\n");
+	printf("for a longer period of time.\n\n");
+	printf("*** Start Testing (%i Tests) ***", pCount);
+	for(i=0; i<pCount; i++){
+		detCase * const curTest = pCases[i];
 		printf("\n- Test %s: P", curTest->GetTestName());
 		try{
 			curTest->Prepare();
 			printf(",R");
 			curTest->Run();
 			curTest->CleanUp();
-		}catch( const deException &e ){
+		}catch(const deException &e){
 			curTest->CleanUp();
 			e.PrintError();
 			errorCount++;
 		}
 	}
 	
-	if( errorCount > 0 ){
-		printf( "*** %i tests failed ***\n", errorCount );
+	if(errorCount > 0){
+		printf("*** %i tests failed ***\n", errorCount);
+		return false;
 	}else{
-		printf( "\n*** All tests passed successfully ***\n" );
+		printf("\n*** All tests passed successfully ***\n");
+		return true;
 	}
 }
 

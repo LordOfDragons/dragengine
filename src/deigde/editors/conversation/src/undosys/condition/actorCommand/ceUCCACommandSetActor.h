@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionActorCommand;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionActorCommand.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,10 +37,14 @@ class ceConversationTopic;
  * \brief Undo conversation condition actor command set actor.
  */
 class ceUCCACommandSetActor : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCACommandSetActor>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorCommand *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorCommand::Ref pCondition;
 	decString pOldActor;
 	decString pNewActor;
 	
@@ -48,19 +52,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCACommandSetActor( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorCommand *condition, const char *newActor );
+	ceUCCACommandSetActor(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorCommand *condition, const char *newActor);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCCACommandSetActor();
+protected:
+	~ceUCCACommandSetActor() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml project. */
-	projProjectLocalXml( deLogger *logger, const char *loggerSource );
+	projProjectLocalXml(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up xml project. */
-	virtual ~projProjectLocalXml();
+	~projProjectLocalXml() override;
 	/*@}*/
 	
 	
@@ -57,18 +57,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read configuration from xml file. */
-	void ReadFromFile( decBaseFileReader &reader, projProject &project );
+	void ReadFromFile(decBaseFileReader &reader, projProject &project);
 	
 	/** \brief Write configuration to xml file. */
-	void WriteToFile( decBaseFileWriter &writer, const projProject &project );
+	void WriteToFile(decBaseFileWriter &writer, const projProject &project);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteProjectLocal( decXmlWriter &writer, const projProject &project );
+	void pWriteProjectLocal(decXmlWriter &writer, const projProject &project);
 	
-	void pReadProjectLocal( const decXmlElementTag &root, projProject &project );
+	void pReadProjectLocal(const decXmlElementTag &root, projProject &project);
 };
 
 #endif

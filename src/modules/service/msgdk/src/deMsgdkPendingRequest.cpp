@@ -31,8 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMsgdkPendingRequest::deMsgdkPendingRequest( const deServiceObject::Ref &ndata ) :
-data( ndata ? ndata : deServiceObject::Ref::New( new deServiceObject ) ){
+deMsgdkPendingRequest::deMsgdkPendingRequest(const deServiceObject::Ref &ndata) :
+data(ndata ? ndata : deServiceObject::Ref::New()){
 }
 
 deMsgdkPendingRequest::~deMsgdkPendingRequest(){

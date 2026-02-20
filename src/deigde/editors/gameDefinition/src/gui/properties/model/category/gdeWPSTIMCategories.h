@@ -46,14 +46,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMCategories> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategories( gdeWPSTreeModel &tree );
+	gdeWPSTIMCategories(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMCategories();
+	~gdeWPSTIMCategories() override;
 	/*@}*/
 	
 	
@@ -76,10 +78,10 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

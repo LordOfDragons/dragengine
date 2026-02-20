@@ -39,18 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPTranspLayerLimit::deoglPTranspLayerLimit( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "transpLayerLimit" );
-	SetDescription( "Limits transparency rendering to N layers. Lower values increase performance"
+deoglPTranspLayerLimit::deoglPTranspLayerLimit(deGraphicOpenGl &ogl) : deoglParameterInt(ogl){
+	SetName("transpLayerLimit");
+	SetDescription("Limits transparency rendering to N layers. Lower values increase performance"
 		" but can introduce visual errors. Higher values are more accurate but more expensive."
-		" Values ranges from 1 to 15 with good values between 4 to 12. Default is 8." );
-	SetType( deModuleParameter::eptRanged );
-	SetMinimumValue( 1.0f );
-	SetMaximumValue( 15.0f );
-	SetValueStepSize( 1.0f );
-	SetCategory( ecBasic );
-	SetDisplayName( "Transparency Layer Limit" );
-	SetDefaultValue( "8" );
+		" Values ranges from 1 to 15 with good values between 4 to 12. Default is 8.");
+	SetType(deModuleParameter::eptRanged);
+	SetMinimumValue(1.0f);
+	SetMaximumValue(15.0f);
+	SetValueStepSize(1.0f);
+	SetCategory(ecBasic);
+	SetDisplayName("Transparency Layer Limit");
+	SetDefaultValue("8");
 }
 
 deoglPTranspLayerLimit::~deoglPTranspLayerLimit(){
@@ -65,6 +65,6 @@ int deoglPTranspLayerLimit::GetParameterInt(){
 	return pOgl.GetConfiguration().GetTranspLayerLimit();
 }
 
-void deoglPTranspLayerLimit::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetTranspLayerLimit( value );
+void deoglPTranspLayerLimit::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetTranspLayerLimit(value);
 }

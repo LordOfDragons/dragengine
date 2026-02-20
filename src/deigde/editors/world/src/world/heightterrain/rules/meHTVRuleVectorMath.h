@@ -45,6 +45,10 @@
  */
 class meHTVRuleVectorMath : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleVectorMath>;
+	
+	
 	/** Operators. */
 	enum eOperators{
 		/** A + B, component wise. */
@@ -85,10 +89,13 @@ public:
 	meHTVRuleVectorMath();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleVectorMath( const meHTVRuleVectorMath &rule );
+	meHTVRuleVectorMath(const meHTVRuleVectorMath &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleVectorMath();
+	~meHTVRuleVectorMath() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -96,23 +103,23 @@ public:
 	/** Retrieves the vector-A to use if there is no input vector-A. */
 	inline const decVector &GetVectorA() const{ return pVectorA; }
 	/** Sets the vector-A to use if there is no input vector-A. */
-	void SetVectorA( const decVector &value );
+	void SetVectorA(const decVector &value);
 	/** Retrieves the vector-B to use if there is no input vector-B. */
 	inline const decVector &GetVectorB() const{ return pVectorB; }
 	/** Sets the vector-B to use if there is no input vector-B. */
-	void SetVectorB( const decVector &value );
+	void SetVectorB(const decVector &value);
 	/** Retrieves the operator. */
 	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
-	void SetOperator( eOperators oper );
+	void SetOperator(eOperators oper);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

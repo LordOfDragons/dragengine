@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT decXmlComment : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlComment> Ref;
-	
+	using Ref = deTObjectReference<decXmlComment>;
 	
 	
 private:
@@ -48,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml comment. */
-	decXmlComment( const char *comment );
+	decXmlComment(const char *comment);
 	
 protected:
 	/** \brief Clean up xml comment. */
-	virtual ~decXmlComment();
+	~decXmlComment() override;
 	/*@}*/
 	
 	
@@ -64,22 +63,22 @@ public:
 	inline const decString &GetComment() const{ return pComment; }
 	
 	/** \brief Set comment. */
-	void SetComment( const char *comment );
+	void SetComment(const char *comment);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToComment() const;
-	virtual decXmlComment *CastToComment();
+	bool CanCastToComment() const override;
+	decXmlComment *CastToComment() override;
 	/*@}*/
 };
 

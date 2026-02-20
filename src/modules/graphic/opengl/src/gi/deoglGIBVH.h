@@ -29,9 +29,13 @@
 #include "../collidelist/deoglCollideList.h"
 #include "../rendering/task/deoglRenderTask.h"
 #include "../utils/bvh/deoglBVH.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglGIBVHLocal;
 class deoglGIInstance;
@@ -47,9 +51,6 @@ class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt32;
-class deoglDynamicTBOUInt16;
 
 
 /**
@@ -182,25 +183,21 @@ private:
 	
 	deoglRenderThread &pRenderThread;
 	
-	sComponent *pComponents;
-	int pComponentCount;
-	int pComponentSize;
+	decTList<sComponent> pComponents;
 	
 	deoglBVH pBVH;
-	deoglBVH::sBuildPrimitive *pPrimitives;
-	int pPrimitiveSize;
-	deoglBVHNode *pRecalcNodes;
-	int pRecalcNodeSize;
+	decTList<deoglBVH::sBuildPrimitive> pPrimitives;
+	decTList<deoglBVHNode> pRecalcNodes;
 	decDVector pPosition;
 	
 	int pIndexRootNode;
 	
-	deoglDynamicTBOUInt32 *pTBOInstance;
-	deoglDynamicTBOFloat32 *pTBOMatrix;
+	deoglDynamicTBOUInt32::Ref pTBOInstance;
+	deoglDynamicTBOFloat32::Ref pTBOMatrix;
 	
-	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
-	deoglDynamicTBOUInt16 *pBVHTBOIndex;
-	deObjectReference pBlockBVH;
+	deoglDynamicTBOFloat32::Ref pBVHTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pBVHTBOIndex;
+	deoglDynamicTBOBlock::Ref pBlockBVH;
 	
 	deoglRenderTask pRenderTaskMaterial;
 	bool pDirty;
@@ -211,7 +208,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination BVH. */
-	deoglGIBVH( deoglRenderThread &renderThread );
+	deoglGIBVH(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination BVH. */
 	~deoglGIBVH();
@@ -231,7 +228,7 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. If changed marks BVH dirty. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	
 	
@@ -245,27 +242,27 @@ public:
 	void Clear();
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances );
+	void AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances);
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic );
+	void AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic);
 	
 	/** Add component. */
-	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance );
+	void AddComponent(deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance);
 	
 	/** Build BVH. */
 	void BuildBVH();
 	
 	/** Debug print BVH. */
-	void DebugPrint( const decDVector &position );
+	void DebugPrint(const decDVector &position);
 	
 	
 	
 	/** TBO for instance data. */
-	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
+	inline const deoglDynamicTBOUInt32::Ref &GetTBOInstance() const{ return pTBOInstance; }
 	
 	/** TBO for instance matrices. */
-	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** Render materials render task. */
 	inline deoglRenderTask &GetRenderTaskMaterial(){ return pRenderTaskMaterial; }
@@ -275,20 +272,18 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pDropBlockBVH();
-	sComponent &pAddComponent( const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix );
+	sComponent &pAddComponent(const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix);
 	
-	void pAddMaterial( deoglGIInstance &instance, int index,
-		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc );
+	void pAddMaterial(deoglGIInstance &instance, int index,
+		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc);
 	
-	void pAddMaterial( deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
+	void pAddMaterial(deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
 		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
-		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
+		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix);
 	
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );
-	void pEnsureRecalcNodeSize( int size );
 };
 
 #endif

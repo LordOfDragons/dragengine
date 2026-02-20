@@ -25,13 +25,13 @@
 #ifndef _IGDEXMLELEMENTCLASS_H_
 #define _IGDEXMLELEMENTCLASS_H_
 
+#include "class/igdeGDClass.h"
 #include "../utils/igdeBaseXML.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 
 class igdeGameDefinition;
-class igdeGDClass;
 class igdeGDClassManager;
 class igdeGDCComponent;
 
@@ -40,7 +40,6 @@ class decPath;
 class decBaseFileReader;
 class decBaseFileWriter;
 class decXmlElementTag;
-class decStringDictionary;
 class deVirtualFileSystem;
 
 
@@ -55,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	igdeXMLElementClass( deLogger *logger );
+	igdeXMLElementClass(deLogger *logger);
 	
 	/** \brief Clean up loader. */
 	virtual ~igdeXMLElementClass();
@@ -66,7 +65,7 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Load XML Element Class. */
-	igdeGDClass *LoadElementClass(decBaseFileReader &reader, const char *filename);
+	igdeGDClass::Ref LoadElementClass(decBaseFileReader &reader, const char *filename);
 	
 	/** \brief Load XML Element Classes from directory and add them to game definition. */
 	void LoadElementClasses(igdeGDClassManager &classes, deVirtualFileSystem &vfs,
@@ -78,31 +77,32 @@ protected:
 	class DE_DLL_EXPORT cMap : public deObject{
 	public:
 		typedef deTObjectReference<cMap> Ref;
-		
+	
+	
 		decString value;
-		decObjectDictionary map;
+		decTObjectDictionary<cMap> map;
 		cMap();
 		
 	protected:
 		virtual ~cMap();
 	};
 	
-	decBoundary ReadBorderSize( const decXmlElementTag &root );
-	decBoundary ReadRectArea( const decXmlElementTag &root );
-	decVector4 ReadFloatRectArea( const decXmlElementTag &root );
-	void pReadECColor( const decXmlElementTag &root, decColor &color, const char *filename );
+	decBoundary ReadBorderSize(const decXmlElementTag &root);
+	decBoundary ReadRectArea(const decXmlElementTag &root);
+	decVector4 ReadFloatRectArea(const decXmlElementTag &root);
+	void pReadECColor(const decXmlElementTag &root, decColor &color, const char *filename);
 	
 	
 	
 private:
-	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
+	igdeGDClass::Ref pReadElementClass(const decXmlElementTag &root, const char *filename);
 	void pReadBehavior(const decXmlElementTag &root, igdeGDClass &gdClass,
 		const char *filename, const decString &basePathStr);
-	bool pReadPropertyValue( const decXmlElementTag &root, decString &value,
-		cMap *map, const char *filename );
-	void pReadList( const decXmlElementTag &root, decStringList &list, const char *filename );
-	void pReadMap( const decXmlElementTag &root, cMap &map, const char *filename );
-	void pProcessTextureReplacements( const cMap &map, igdeGDClass &gdClass, const char *basePath );
+	bool pReadPropertyValue(const decXmlElementTag &root, decString &value,
+		cMap *map, const char *filename);
+	void pReadList(const decXmlElementTag &root, decStringList &list, const char *filename);
+	void pReadMap(const decXmlElementTag &root, cMap &map, const char *filename);
+	void pProcessTextureReplacements(const cMap &map, igdeGDClass &gdClass, const char *basePath);
 	//igdeGDCComponent &pGetLoadedComponent( igdeGDClass &gdClass );
 };
 

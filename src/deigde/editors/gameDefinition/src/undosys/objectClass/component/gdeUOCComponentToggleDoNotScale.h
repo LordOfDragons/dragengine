@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCComponent;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class component toggle do not scale.
  */
 class gdeUOCComponentToggleDoNotScale : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCComponentToggleDoNotScale>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleDoNotScale( gdeObjectClass *objectClass, gdeOCComponent *component );
+	gdeUOCComponentToggleDoNotScale(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCComponentToggleDoNotScale();
+	~gdeUOCComponentToggleDoNotScale() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

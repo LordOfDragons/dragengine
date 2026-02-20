@@ -27,6 +27,7 @@
 #define _GDEUCATEGORYADD_H_
 
 #include "gdeUCategoryBase.h"
+#include "../../gamedef/category/gdeCategory.h"
 
 
 
@@ -34,9 +35,12 @@
  * \brief Undo action add category.
  */
 class gdeUCategoryAdd : public gdeUCategoryBase{
+public:
+	typedef deTObjectReference<gdeUCategoryAdd> Ref;
+	
 private:
-	gdeCategory *pParent;
-	gdeCategory *pCategory;
+	gdeCategory::Ref pParent;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -44,12 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategoryAdd( gdeGameDefinition *gameDefintiion, gdeCategory *parent,
-		gdeCategory *category, eCategoryType type );
+	gdeUCategoryAdd(gdeGameDefinition *gameDefintiion, gdeCategory *parent,
+		gdeCategory *category, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategoryAdd();
+	~gdeUCategoryAdd() override;
 	/*@}*/
 	
 	

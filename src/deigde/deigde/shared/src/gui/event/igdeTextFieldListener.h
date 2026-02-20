@@ -36,6 +36,12 @@ class igdeTextField;
  * \brief IGDE UI TextField Listener.
  */
 class DE_DLL_EXPORT igdeTextFieldListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTextFieldListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTextFieldListener();
+	~igdeTextFieldListener() override;
 	/*@}*/
 	
 	
@@ -64,7 +70,7 @@ public:
 	 * 
 	 * User entered text and accepted it.
 	 */
-	virtual void OnTextChanged( igdeTextField *textField );
+	virtual void OnTextChanged(igdeTextField *textField);
 	
 	/**
 	 * \brief TextField text is changing.
@@ -72,14 +78,14 @@ public:
 	 * User is entering text but has not yet accepted the input. This event is send each
 	 * time the user changes the text. Once accepted OnTextChanged() is called.
 	 */
-	virtual void OnTextChanging( igdeTextField *textField );
+	virtual void OnTextChanging(igdeTextField *textField);
 	
 	/**
 	 * \brief Enter key has been pressed.
 	 * 
 	 * Send after OnTextChanged() has been send.
 	 */
-	virtual void OnEnterKey( igdeTextField *textField );
+	virtual void OnEnterKey(igdeTextField *textField);
 	/*@}*/
 };
 

@@ -39,13 +39,13 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deParticleEmitterController::deParticleEmitterController( const char *name ) :
-pName( name ),
-pLower( 0.0f ),
-pUpper( 1.0f ),
-pValue( 0.0f ),
-pClamp( true ),
-pFrozen( false ){
+deParticleEmitterController::deParticleEmitterController(const char *name) :
+pName(name),
+pLower(0.0f),
+pUpper(1.0f),
+pValue(0.0f),
+pClamp(true),
+pFrozen(false){
 }
 
 deParticleEmitterController::~deParticleEmitterController(){
@@ -56,12 +56,12 @@ deParticleEmitterController::~deParticleEmitterController(){
 // Management
 ///////////////
 
-void deParticleEmitterController::SetName( const char *name ){
+void deParticleEmitterController::SetName(const char *name){
 	pName = name;
 }
 
-void deParticleEmitterController::SetRange( float lower, float upper ){
-	if( pFrozen ){
+void deParticleEmitterController::SetRange(float lower, float upper){
+	if(pFrozen){
 		return;
 	}
 	
@@ -71,8 +71,8 @@ void deParticleEmitterController::SetRange( float lower, float upper ){
 	pUpdateValue();
 }
 
-void deParticleEmitterController::SetValue( float value ){
-	if( pFrozen ){
+void deParticleEmitterController::SetValue(float value){
+	if(pFrozen){
 		return;
 	}
 	
@@ -81,8 +81,8 @@ void deParticleEmitterController::SetValue( float value ){
 	pUpdateValue();
 }
 
-void deParticleEmitterController::Increment( float amount ){
-	if( pFrozen ){
+void deParticleEmitterController::Increment(float amount){
+	if(pFrozen){
 		return;
 	}
 	
@@ -91,11 +91,11 @@ void deParticleEmitterController::Increment( float amount ){
 	pUpdateValue();
 }
 
-void deParticleEmitterController::SetFrozen( bool frozen ){
+void deParticleEmitterController::SetFrozen(bool frozen){
 	pFrozen = frozen;
 }
 
-void deParticleEmitterController::SetClamp( bool clamp ){
+void deParticleEmitterController::SetClamp(bool clamp){
 	pClamp = clamp;
 }
 
@@ -104,7 +104,7 @@ void deParticleEmitterController::SetClamp( bool clamp ){
 // Operators
 //////////////
 
-deParticleEmitterController &deParticleEmitterController::operator=( const deParticleEmitterController &controller ){
+deParticleEmitterController &deParticleEmitterController::operator=(const deParticleEmitterController &controller){
 	pName = controller.pName;
 	pLower = controller.pLower;
 	pUpper = controller.pUpper;
@@ -124,18 +124,18 @@ void deParticleEmitterController::pUpdateValue(){
 	const bool hasRange = range > 1e-5f;
 	
 	// make sure the current value is in the correct range
-	if( pClamp ){
-		if( pValue < pLower ){
+	if(pClamp){
+		if(pValue < pLower){
 			pValue = pLower;
 			
-		}else if( pValue > pUpper ){
+		}else if(pValue > pUpper){
 			pValue = pUpper;
 		}
 		
 	}else{
-		if( hasRange ){
-			pValue = fmodf( pValue - pLower, range );
-			if( pValue < 0 ){
+		if(hasRange){
+			pValue = fmodf(pValue - pLower, range);
+			if(pValue < 0){
 				pValue += pLower + range;
 				
 			}else{

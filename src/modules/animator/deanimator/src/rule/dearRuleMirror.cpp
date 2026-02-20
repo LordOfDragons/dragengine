@@ -52,7 +52,7 @@
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS	timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat( "Rule Mirror = %iys", ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat("Rule Mirror = %iys", (int)(timer.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER
@@ -63,35 +63,23 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleMirror::dearRuleMirror( dearAnimatorInstance &instance, const dearAnimator &animator,
-	int firstLink, const deAnimatorRuleMirror &rule ) :
-dearRule( instance, animator, firstLink, rule ),
+dearRuleMirror::dearRuleMirror(dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleMirror &rule) :
+dearRule(instance, animator, firstLink, rule),
 
-pMirror( rule ),
-pMirrorBone( -1 ),
+pMirror(rule),
+pMirrorBone(-1),
 
-pBonePairs( nullptr ),
-pBonePairCount( 0 ),
-
-pVPSPairs( nullptr ),
-pVPSPairCount( 0 ),
-
-pMirrorAxis( rule.GetMirrorAxis() ),
-pEnablePosition( rule.GetEnablePosition() ),
-pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() ),
-pEnableVPS( rule.GetEnableVertexPositionSet() )
+pMirrorAxis(rule.GetMirrorAxis()),
+pEnablePosition(rule.GetEnablePosition()),
+pEnableOrientation(rule.GetEnableOrientation()),
+pEnableSize(rule.GetEnableSize()),
+pEnableVPS(rule.GetEnableVertexPositionSet())
 {
 	RuleChanged();
 }
 
 dearRuleMirror::~dearRuleMirror(){
-	if( pVPSPairs ){
-		delete [] pVPSPairs;
-	}
-	if( pBonePairs ){
-		delete [] pBonePairs;
-	}
 }
 
 
@@ -99,14 +87,14 @@ dearRuleMirror::~dearRuleMirror(){
 // Management
 ///////////////
 
-void dearRuleMirror::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
+void dearRuleMirror::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() || pBonePairCount == 0 ){
+	if(!GetEnabled() || pBonePairs.IsEmpty()){
 		return;
 	}
 	
 	const float blendFactor = GetBlendFactor();
-	if( blendFactor < FLOAT_SAFE_EPSILON ){
+	if(blendFactor < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -115,85 +103,81 @@ DEBUG_RESET_TIMERS;
 	const int mappingCount = GetBoneMappingCount();
 	int i;
 	
-	for( i=0; i<mappingCount; i++ ){
-		stalist.GetStateAt( GetBoneMappingFor( i ) )->UpdateMatrices();
+	for(i=0; i<mappingCount; i++){
+		stalist.GetStateAt(GetBoneMappingFor(i)).UpdateMatrices();
 	}
 	
 	
 	// prepare transformation matrix
-	decMatrix transformMatrix( pMirrorMatrix );
+	decMatrix transformMatrix(pMirrorMatrix);
 	
-	if( pMirrorBone != -1 ){
-		dearBoneState &bstate = *stalist.GetStateAt( pMirrorBone );
+	if(pMirrorBone != -1){
+		dearBoneState &bstate = stalist.GetStateAt(pMirrorBone);
 		bstate.UpdateMatrices();
-		transformMatrix = bstate.GetInverseGlobalMatrix().QuickMultiply( transformMatrix )
-			.QuickMultiply( bstate.GetGlobalMatrix() );
+		transformMatrix = bstate.GetInverseGlobalMatrix().QuickMultiply(transformMatrix)
+			.QuickMultiply(bstate.GetGlobalMatrix());
 	}
 	
 	
 	// mirror global matrices of all bone pairs and single bones
-	for( i=0; i<pBonePairCount; i++ ){
-		const sBonePair &pair = pBonePairs[ i ];
-		
+	pBonePairs.Visit([&](const sBonePair &pair){
 		// bone pair
-		if( pair.first != pair.second ){
+		if(pair.first != pair.second){
 			// store first bone global matrix
-			dearBoneState &bstate1 = *stalist.GetStateAt( pair.first );
-			const decMatrix orgMatrix1( bstate1.GetGlobalMatrix() );
+			dearBoneState &bstate1 = stalist.GetStateAt(pair.first);
+			const decMatrix orgMatrix1(bstate1.GetGlobalMatrix());
 			
 			// store second bone global matrix
-			dearBoneState &bstate2 = *stalist.GetStateAt( pair.second );
-			const decMatrix orgMatrix2( bstate2.GetGlobalMatrix() );
+			dearBoneState &bstate2 = stalist.GetStateAt(pair.second);
+			const decMatrix orgMatrix2(bstate2.GetGlobalMatrix());
 			
 			// mirror first bone
-			bstate1.SetGlobalMatrix( orgMatrix2.QuickMultiply( transformMatrix ).Normalized() );
-			bstate1.SetInverseGlobalMatrix( bstate1.GetGlobalMatrix().QuickInvert() );
+			bstate1.SetGlobalMatrix(orgMatrix2.QuickMultiply(transformMatrix).Normalized());
+			bstate1.SetInverseGlobalMatrix(bstate1.GetGlobalMatrix().QuickInvert());
 			
 			// mirror second bone
-			bstate2.SetGlobalMatrix( orgMatrix1.QuickMultiply( transformMatrix ).Normalized() );
-			bstate2.SetInverseGlobalMatrix( bstate2.GetGlobalMatrix().QuickInvert() );
+			bstate2.SetGlobalMatrix(orgMatrix1.QuickMultiply(transformMatrix).Normalized());
+			bstate2.SetInverseGlobalMatrix(bstate2.GetGlobalMatrix().QuickInvert());
 			
 		// single bone
 		}else{
-			dearBoneState &bstate = *stalist.GetStateAt( pair.first );
+			dearBoneState &bstate = stalist.GetStateAt(pair.first);
 			
-			bstate.SetGlobalMatrix( bstate.GetGlobalMatrix().QuickMultiply( transformMatrix ).Normalized() );
-			bstate.SetInverseGlobalMatrix( bstate.GetGlobalMatrix().QuickInvert() );
+			bstate.SetGlobalMatrix(bstate.GetGlobalMatrix().QuickMultiply(transformMatrix).Normalized());
+			bstate.SetInverseGlobalMatrix(bstate.GetGlobalMatrix().QuickInvert());
 		}
-	}
+	});
 	
 	
 	// apply changes to state. by doing this in a separate step it is not necessary to sort
 	// bones up front to process them in the correct order (from children to parents)
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	
-	for( i=0; i<mappingCount; i++ ){
-		dearBoneState &bstate = *stalist.GetStateAt( GetBoneMappingFor( i ) );
+	for(i=0; i<mappingCount; i++){
+		dearBoneState &bstate = stalist.GetStateAt(GetBoneMappingFor(i));
 		
-		decMatrix matrix( bstate.GetGlobalMatrix() );
-		if( bstate.GetParentState() ){
-			matrix = matrix.QuickMultiply( bstate.GetParentState()->GetInverseGlobalMatrix() );
+		decMatrix matrix(bstate.GetGlobalMatrix());
+		if(bstate.GetParentState()){
+			matrix = matrix.QuickMultiply(bstate.GetParentState()->GetInverseGlobalMatrix());
 		}
-		matrix = matrix.QuickMultiply( bstate.GetInverseRigLocalMatrix() );
+		matrix = matrix.QuickMultiply(bstate.GetInverseRigLocalMatrix());
 		
-		bstate.BlendWith( matrix.GetPosition(), matrix.ToQuaternion(), matrix.GetScale(),
-			blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+		bstate.BlendWith(matrix.GetPosition(), matrix.ToQuaternion(), matrix.GetScale(),
+			blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 	}
 	
 	
 	// step through all vertex position set pairs and apply transformation
-	for( i=0; i<pVPSPairCount; i++ ){
-		const sVPSPair &pair = pVPSPairs[ i ];
-		
-		dearVPSState &vpsState1 = vpsstalist.GetStateAt( pair.first );
+	pVPSPairs.Visit([&](const sVPSPair &pair){
+		dearVPSState &vpsState1 = vpsstalist.GetStateAt(pair.first);
 		const float weight1 = vpsState1.GetWeight();
 		
-		dearVPSState &vpsState2 = vpsstalist.GetStateAt( pair.second );
+		dearVPSState &vpsState2 = vpsstalist.GetStateAt(pair.second);
 		const float weight2 = vpsState2.GetWeight();
 		
-		vpsState1.BlendWith( weight2, blendMode, blendFactor, pEnableVPS );
-		vpsState2.BlendWith( weight1, blendMode, blendFactor, pEnableVPS );
-	}
+		vpsState1.BlendWith(weight2, blendMode, blendFactor, pEnableVPS);
+		vpsState2.BlendWith(weight1, blendMode, blendFactor, pEnableVPS);
+	});
 DEBUG_PRINT_TIMER;
 }
 
@@ -205,17 +189,17 @@ void dearRuleMirror::RuleChanged(){
 	pUpdateBones();
 	pUpdateVPS();
 	
-	switch( pMirrorAxis ){
+	switch(pMirrorAxis){
 	case deAnimatorRuleMirror::emaX:
-		pMirrorMatrix.SetScale( -1.0f, 1.0f, 1.0f );
+		pMirrorMatrix.SetScale(-1.0f, 1.0f, 1.0f);
 		break;
 		
 	case deAnimatorRuleMirror::emaY:
-		pMirrorMatrix.SetScale( 1.0f, -1.0f, 1.0f );
+		pMirrorMatrix.SetScale(1.0f, -1.0f, 1.0f);
 		break;
 		
 	case deAnimatorRuleMirror::emaZ:
-		pMirrorMatrix.SetScale( 1.0f, 1.0f, -1.0f );
+		pMirrorMatrix.SetScale(1.0f, 1.0f, -1.0f);
 		break;
 		
 	default:
@@ -231,16 +215,12 @@ void dearRuleMirror::RuleChanged(){
 void dearRuleMirror::pUpdateBones(){
 	const dearBoneStateList &slist = GetInstance().GetBoneStateList();
 	
-	pMirrorBone = slist.IndexOfStateNamed( pMirror.GetMirrorBone() );
+	pMirrorBone = slist.IndexOfStateNamed(pMirror.GetMirrorBone());
 	
-	if( pBonePairs ){
-		delete [] pBonePairs;
-		pBonePairs = nullptr;
-	}
-	pBonePairCount = 0;
+	pBonePairs.RemoveAll();
 	
 	const int mappingCount = GetBoneMappingCount();
-	if( mappingCount == 0 ){
+	if(mappingCount == 0){
 		return;
 	}
 	
@@ -251,13 +231,12 @@ void dearRuleMirror::pUpdateBones(){
 		decString name;
 		bool paired;
 	};
-	sBone * const bones = new sBone[ mappingCount ];
+	decTList<sBone> bones(mappingCount);
 	
 	int i;
-	for( i=0; i<mappingCount; i++ ){
-		bones[ i ].index = GetBoneMappingFor( i );
-		bones[ i ].name = slist.GetStateAt( bones[ i ].index )->GetRigBoneName();
-		bones[ i ].paired = false;
+	for(i=0; i<mappingCount; i++){
+		const int index = GetBoneMappingFor(i);
+		bones.Add({index, slist.GetStateAt(index).GetRigBoneName(), false});
 	}
 	
 	
@@ -269,7 +248,7 @@ void dearRuleMirror::pUpdateBones(){
 		int lenBefore;
 		int lenAfter;
 		
-		void Set( sBone *pbone, const char *pbefore, int plenBefore, const char *pafter, int plenAfter ){
+		void Set(sBone *pbone, const char *pbefore, int plenBefore, const char *pafter, int plenAfter){
 			bone = pbone;
 			before = pbefore;
 			lenBefore = plenBefore;
@@ -277,17 +256,15 @@ void dearRuleMirror::pUpdateBones(){
 			lenAfter = plenAfter;
 		}
 	};
-	sMatch * const matchesFirst = new sMatch[ mappingCount ];
-	sMatch * const matchesSecond = new sMatch[ mappingCount ];
+	decTList<sMatch> matchesFirst(mappingCount, sMatch{});
+	decTList<sMatch> matchesSecond(mappingCount, sMatch{});
 	int matchFirstCount, matchSecondCount;
 	
-	pBonePairs = new sBonePair[ mappingCount ];
+	pBonePairs.EnlargeCapacity(mappingCount);
 	
-	const int count = pMirror.GetMatchNameCount();
 	int j, k, index;
 	
-	for( i=0; i<count; i++ ){
-		const deAnimatorRuleMirror::sMatchName &matchName = pMirror.GetMatchNameAt( i );
+	pMirror.GetMatchNames().Visit([&](const deAnimatorRuleMirror::sMatchName &matchName){
 		const int lenFirst = matchName.first.GetLength();
 		const int lenSecond = matchName.second.GetLength();
 		
@@ -295,63 +272,63 @@ void dearRuleMirror::pUpdateBones(){
 		matchSecondCount = 0;
 		matchFirstCount = 0;
 		
-		switch( matchName.type ){
+		switch(matchName.type){
 		case deAnimatorRuleMirror::emntFirst:
-			for( j=0; j<mappingCount; j++ ){
-				if( bones[ j ].paired ){
+			for(j=0; j<mappingCount; j++){
+				if(bones[j].paired){
 					continue;
 				}
 				
-				if( bones[ j ].name.BeginsWith( matchName.first ) ){
-					matchesFirst[ matchFirstCount++ ].Set( bones + j, "", 0,
-						bones[ j ].name.GetString() + lenFirst,
-						bones[ j ].name.GetLength() - lenFirst );
+				if(bones[j].name.BeginsWith(matchName.first)){
+					matchesFirst[matchFirstCount++].Set(&bones[j], "", 0,
+						bones[j].name.GetString() + lenFirst,
+						bones[j].name.GetLength() - lenFirst);
 					
-				}else if( bones[ j ].name.BeginsWith( matchName.second ) ){
-					matchesSecond[ matchSecondCount++ ].Set( bones + j, "", 0,
-						bones[ j ].name.GetString() + lenSecond,
-						bones[ j ].name.GetLength() - lenSecond );
+				}else if(bones[j].name.BeginsWith(matchName.second)){
+					matchesSecond[matchSecondCount++].Set(&bones[j], "", 0,
+						bones[j].name.GetString() + lenSecond,
+						bones[j].name.GetLength() - lenSecond);
 				}
 			}
 			break;
 			
 		case deAnimatorRuleMirror::emntLast:
-			for( j=0; j<mappingCount; j++ ){
-				if( bones[ j ].paired ){
+			for(j=0; j<mappingCount; j++){
+				if(bones[j].paired){
 					continue;
 				}
 				
-				if( bones[ j ].name.EndsWith( matchName.first ) ){
-					matchesFirst[ matchFirstCount++ ].Set( bones + j,
-						bones[ j ].name.GetString(), bones[ j ].name.GetLength() - lenFirst, "", 0 );
+				if(bones[j].name.EndsWith(matchName.first)){
+					matchesFirst[matchFirstCount++].Set(&bones[j],
+						bones[j].name.GetString(), bones[j].name.GetLength() - lenFirst, "", 0);
 					
-				}else if( bones[ j ].name.EndsWith( matchName.second ) ){
-					matchesSecond[ matchSecondCount++ ].Set( bones + j,
-						bones[ j ].name.GetString(), bones[ j ].name.GetLength() - lenSecond, "", 0 );
+				}else if(bones[j].name.EndsWith(matchName.second)){
+					matchesSecond[matchSecondCount++].Set(&bones[j],
+						bones[j].name.GetString(), bones[j].name.GetLength() - lenSecond, "", 0);
 				}
 			}
 			break;
 			
 		case deAnimatorRuleMirror::emntMiddle:
-			for( j=0; j<mappingCount; j++ ){
-				if( bones[ j ].paired ){
+			for(j=0; j<mappingCount; j++){
+				if(bones[j].paired){
 					continue;
 				}
 				
-				index = bones[ j ].name.FindString( matchName.first );
-				if( index != -1 ){
-					matchesFirst[ matchFirstCount++ ].Set( bones + j,
-						bones[ j ].name.GetString(), index,
-						bones[ j ].name.GetString() + index + lenFirst,
-						bones[ j ].name.GetLength() - lenFirst - index );
+				index = bones[j].name.FindString(matchName.first);
+				if(index != -1){
+					matchesFirst[matchFirstCount++].Set(&bones[j],
+						bones[j].name.GetString(), index,
+						bones[j].name.GetString() + index + lenFirst,
+						bones[j].name.GetLength() - lenFirst - index);
 					
 				}else{
-					index = bones[ j ].name.FindString( matchName.second );
-					if( index != -1 ){
-						matchesSecond[ matchSecondCount++ ].Set( bones + j,
-							bones[ j ].name.GetString(), index,
-							bones[ j ].name.GetString() + index + lenSecond,
-							bones[ j ].name.GetLength() - lenSecond - index );
+					index = bones[j].name.FindString(matchName.second);
+					if(index != -1){
+						matchesSecond[matchSecondCount++].Set(&bones[j],
+							bones[j].name.GetString(), index,
+							bones[j].name.GetString() + index + lenSecond,
+							bones[j].name.GetLength() - lenSecond - index);
 					}
 				}
 			}
@@ -361,27 +338,25 @@ void dearRuleMirror::pUpdateBones(){
 			break;
 		}
 		
-		if( matchFirstCount == 0 || matchSecondCount == 0 ){
-			continue;
+		if(matchFirstCount == 0 || matchSecondCount == 0){
+			return;
 		}
 		
 		// find pairs
-		for( j=0; j<matchFirstCount; j++ ){
-			const sMatch &first = matchesFirst[ j ];
+		for(j=0; j<matchFirstCount; j++){
+			const sMatch &first = matchesFirst[j];
 			
-			for( k=0; k<matchSecondCount; k++ ){
-				const sMatch &second = matchesSecond[ k ];
-				if( second.bone->paired ){
+			for(k=0; k<matchSecondCount; k++){
+				const sMatch &second = matchesSecond[k];
+				if(second.bone->paired){
 					continue;
 				}
 				
-				if( first.lenAfter == second.lenAfter && first.lenBefore == second.lenBefore
-				&& strncmp( first.before, second.before, first.lenBefore ) == 0
-				&& strncmp( first.after, second.after, first.lenAfter ) == 0 ){
+				if(first.lenAfter == second.lenAfter && first.lenBefore == second.lenBefore
+				&& strncmp(first.before, second.before, first.lenBefore) == 0
+				&& strncmp(first.after, second.after, first.lenAfter) == 0){
 					// pair found
-					pBonePairs[ pBonePairCount ].first = first.bone->index;
-					pBonePairs[ pBonePairCount ].second = second.bone->index;
-					pBonePairCount++;
+					pBonePairs.Add({first.bone->index, second.bone->index});
 					
 					first.bone->paired = true;
 					second.bone->paired = true;
@@ -389,64 +364,51 @@ void dearRuleMirror::pUpdateBones(){
 				}
 			}
 		}
-	}
+	});
 	
 	
 	// add all non-paired bones
-	for( i=0; i<mappingCount; i++ ){
-		if( bones[ i ].paired ){
-			continue;
+	for(i=0; i<mappingCount; i++){
+		if(!bones[i].paired){
+			pBonePairs.Add({bones[i].index, bones[i].index});
 		}
-		
-		pBonePairs[ pBonePairCount ].first = bones[ i ].index;
-		pBonePairs[ pBonePairCount ].second = bones[ i ].index;
-		pBonePairCount++;
 	}
-	
-	
-	delete [] bones;
-	delete [] matchesFirst;
-	delete [] matchesSecond;
 	
 	
 #if 0
 	// debug
-	GetModule().LogInfoFormat( "Mirror: matchNames %d:", pMirror.GetMatchNameCount() );
-	for( i=0; i<pRootParentCount; i++ ){
-		const deAnimatorRuleMirror::sMatchName &m = pMirror.GetMatchNameAt( i );
-		GetModule().LogInfoFormat( "- '%s' -> '%s' (%d)", m.first.GetString(), m.second.GetString(), m.type );
+	GetModule().LogInfoFormat("Mirror: matchNames %d:", pMirror.GetMatchNameCount());
+	for(i=0; i<pRootParentCount; i++){
+		const deAnimatorRuleMirror::sMatchName &m = pMirror.GetMatchNameAt(i);
+		GetModule().LogInfoFormat("- '%s' -> '%s' (%d)", m.first.GetString(), m.second.GetString(), m.type);
 	}
 	
-	GetModule().LogInfoFormat( "Mirror: bonePairs %d:", pBonePairCount );
-	for( i=0; i<pBonePairCount; i++ ){
-		const dearBoneState &s1 = *slist.GetStateAt( pBonePairs[ i ].first );
-		if( pBonePairs[ i ].first != pBonePairs[ i ].second ){
-			const dearBoneState &s2 = *slist.GetStateAt( pBonePairs[ i ].second );
-			GetModule().LogInfoFormat( "- %d (%s) -> %d (%s)", pBonePairs[ i ].first,
-				s1.GetRigBoneName(), pBonePairs[ i ].second, s2.GetRigBoneName() );
+	GetModule().LogInfoFormat("Mirror: bonePairs %d:", pBonePairs.GetCount());
+	pBonePairs.Visit([&](const sBonePair &pair){
+		const dearBoneState &s1 = *slist.GetStateAt(pair.first);
+		if(pair.first != pair.second){
+			const dearBoneState &s2 = *slist.GetStateAt(pair.second);
+			GetModule().LogInfoFormat("- %d (%s) -> %d (%s)", pair.first,
+				s1.GetRigBoneName(), pair.second, s2.GetRigBoneName());
 			
 		}else{
-			GetModule().LogInfoFormat( "- %d (%s)", pBonePairs[ i ].first, s1.GetRigBoneName() );
+			GetModule().LogInfoFormat("- %d (%s)", pair.first, s1.GetRigBoneName());
 		}
-	}
+	});
 	
-	GetModule().LogInfoFormat( "Mirror: rootParents %d:", pRootParentCount );
-	for( i=0; i<pRootParentCount; i++ ){
-		const dearBoneState &s = *slist.GetStateAt( pRootParents[ i ] );
-		GetModule().LogInfoFormat( "- %d (%s)", pRootParents[ i ], s.GetRigBoneName() );
+	GetModule().LogInfoFormat("Mirror: rootParents %d:", pRootParentCount);
+	for(i=0; i<pRootParentCount; i++){
+		const dearBoneState &s = *slist.GetStateAt(pRootParents[i]);
+		GetModule().LogInfoFormat("- %d (%s)", pRootParents[i], s.GetRigBoneName());
 	}
 #endif
 }
 
 void dearRuleMirror::pUpdateVPS(){
-	if( pVPSPairs ){
-		delete [] pVPSPairs;
-		pVPSPairs = nullptr;
-	}
-	pVPSPairCount = 0;
+	pVPSPairs.RemoveAll();
 	
 	const int mappingCount = GetVPSMappingCount();
-	if( mappingCount == 0 ){
+	if(mappingCount == 0){
 		return;
 	}
 	
@@ -455,13 +417,12 @@ void dearRuleMirror::pUpdateVPS(){
 		decString name;
 		bool paired;
 	};
-	sVPS * const vpsList = new sVPS[ mappingCount ];
+	decTList<sVPS> vpsList(mappingCount);
 	
 	int i;
-	for( i=0; i<mappingCount; i++ ){
-		vpsList[ i ].index = GetVPSMappingFor( i );
-		vpsList[ i ].name = GetInstance().GetVPSStateList().GetStateAt( vpsList[ i ].index ).GetName();
-		vpsList[ i ].paired = false;
+	for(i=0; i<mappingCount; i++){
+		const int index = GetVPSMappingFor(i);
+		vpsList.Add({index, GetInstance().GetVPSStateList().GetStateAt(index).GetName(), false});
 	}
 	
 	struct sMatch{
@@ -471,7 +432,7 @@ void dearRuleMirror::pUpdateVPS(){
 		int lenBefore;
 		int lenAfter;
 		
-		void Set( sVPS *pvps, const char *pbefore, int plenBefore, const char *pafter, int plenAfter ){
+		void Set(sVPS *pvps, const char *pbefore, int plenBefore, const char *pafter, int plenAfter){
 			vps = pvps;
 			before = pbefore;
 			lenBefore = plenBefore;
@@ -479,17 +440,17 @@ void dearRuleMirror::pUpdateVPS(){
 			lenAfter = plenAfter;
 		}
 	};
-	sMatch * const matchesFirst = new sMatch[ mappingCount ];
-	sMatch * const matchesSecond = new sMatch[ mappingCount ];
+	decTList<sMatch> matchesFirst(mappingCount, sMatch{});
+	decTList<sMatch> matchesSecond(mappingCount, sMatch{});
 	int matchFirstCount, matchSecondCount;
 	
-	pVPSPairs = new sVPSPair[ mappingCount ];
+	pVPSPairs.EnlargeCapacity(mappingCount);
 	
 	const int count = pMirror.GetMatchNameCount();
 	int j, k, index;
 	
-	for( i=0; i<count; i++ ){
-		const deAnimatorRuleMirror::sMatchName &matchName = pMirror.GetMatchNameAt( i );
+	for(i=0; i<count; i++){
+		const deAnimatorRuleMirror::sMatchName &matchName = pMirror.GetMatchNameAt(i);
 		const int lenFirst = matchName.first.GetLength();
 		const int lenSecond = matchName.second.GetLength();
 		
@@ -497,63 +458,63 @@ void dearRuleMirror::pUpdateVPS(){
 		matchSecondCount = 0;
 		matchFirstCount = 0;
 		
-		switch( matchName.type ){
+		switch(matchName.type){
 		case deAnimatorRuleMirror::emntFirst:
-			for( j=0; j<mappingCount; j++ ){
-				if( vpsList[ j ].paired ){
+			for(j=0; j<mappingCount; j++){
+				if(vpsList[j].paired){
 					continue;
 				}
 				
-				if( vpsList[ j ].name.BeginsWith( matchName.first ) ){
-					matchesFirst[ matchFirstCount++ ].Set( vpsList + j, "", 0,
-						vpsList[ j ].name.GetString() + lenFirst,
-						vpsList[ j ].name.GetLength() - lenFirst );
+				if(vpsList[j].name.BeginsWith(matchName.first)){
+					matchesFirst[matchFirstCount++].Set(&vpsList[j], "", 0,
+						vpsList[j].name.GetString() + lenFirst,
+						vpsList[j].name.GetLength() - lenFirst);
 					
-				}else if( vpsList[ j ].name.BeginsWith( matchName.second ) ){
-					matchesSecond[ matchSecondCount++ ].Set( vpsList + j, "", 0,
-						vpsList[ j ].name.GetString() + lenSecond,
-						vpsList[ j ].name.GetLength() - lenSecond );
+				}else if(vpsList[j].name.BeginsWith(matchName.second)){
+					matchesSecond[matchSecondCount++].Set(&vpsList[j], "", 0,
+						vpsList[j].name.GetString() + lenSecond,
+						vpsList[j].name.GetLength() - lenSecond);
 				}
 			}
 			break;
 			
 		case deAnimatorRuleMirror::emntLast:
-			for( j=0; j<mappingCount; j++ ){
-				if( vpsList[ j ].paired ){
+			for(j=0; j<mappingCount; j++){
+				if(vpsList[j].paired){
 					continue;
 				}
 				
-				if( vpsList[ j ].name.EndsWith( matchName.first ) ){
-					matchesFirst[ matchFirstCount++ ].Set( vpsList + j,
-						vpsList[ j ].name.GetString(), vpsList[ j ].name.GetLength() - lenFirst, "", 0 );
+				if(vpsList[j].name.EndsWith(matchName.first)){
+					matchesFirst[matchFirstCount++].Set(&vpsList[j],
+						vpsList[j].name.GetString(), vpsList[j].name.GetLength() - lenFirst, "", 0);
 					
-				}else if( vpsList[ j ].name.EndsWith( matchName.second ) ){
-					matchesSecond[ matchSecondCount++ ].Set( vpsList + j,
-						vpsList[ j ].name.GetString(), vpsList[ j ].name.GetLength() - lenSecond, "", 0 );
+				}else if(vpsList[j].name.EndsWith(matchName.second)){
+					matchesSecond[matchSecondCount++].Set(&vpsList[j],
+						vpsList[j].name.GetString(), vpsList[j].name.GetLength() - lenSecond, "", 0);
 				}
 			}
 			break;
 			
 		case deAnimatorRuleMirror::emntMiddle:
-			for( j=0; j<mappingCount; j++ ){
-				if( vpsList[ j ].paired ){
+			for(j=0; j<mappingCount; j++){
+				if(vpsList[j].paired){
 					continue;
 				}
 				
-				index = vpsList[ j ].name.FindString( matchName.first );
-				if( index != -1 ){
-					matchesFirst[ matchFirstCount++ ].Set( vpsList + j,
-						vpsList[ j ].name.GetString(), index,
-						vpsList[ j ].name.GetString() + index + lenFirst,
-						vpsList[ j ].name.GetLength() - lenFirst - index );
+				index = vpsList[j].name.FindString(matchName.first);
+				if(index != -1){
+					matchesFirst[matchFirstCount++].Set(&vpsList[j],
+						vpsList[j].name.GetString(), index,
+						vpsList[j].name.GetString() + index + lenFirst,
+						vpsList[j].name.GetLength() - lenFirst - index);
 					
 				}else{
-					index = vpsList[ j ].name.FindString( matchName.second );
-					if( index != -1 ){
-						matchesSecond[ matchSecondCount++ ].Set( vpsList + j,
-							vpsList[ j ].name.GetString(), index,
-							vpsList[ j ].name.GetString() + index + lenSecond,
-							vpsList[ j ].name.GetLength() - lenSecond - index );
+					index = vpsList[j].name.FindString(matchName.second);
+					if(index != -1){
+						matchesSecond[matchSecondCount++].Set(&vpsList[j],
+							vpsList[j].name.GetString(), index,
+							vpsList[j].name.GetString() + index + lenSecond,
+							vpsList[j].name.GetLength() - lenSecond - index);
 					}
 				}
 			}
@@ -563,27 +524,25 @@ void dearRuleMirror::pUpdateVPS(){
 			break;
 		}
 		
-		if( matchFirstCount == 0 || matchSecondCount == 0 ){
+		if(matchFirstCount == 0 || matchSecondCount == 0){
 			continue;
 		}
 		
 		// find pairs
-		for( j=0; j<matchFirstCount; j++ ){
-			const sMatch &first = matchesFirst[ j ];
+		for(j=0; j<matchFirstCount; j++){
+			const sMatch &first = matchesFirst[j];
 			
-			for( k=0; k<matchSecondCount; k++ ){
-				const sMatch &second = matchesSecond[ k ];
-				if( second.vps->paired ){
+			for(k=0; k<matchSecondCount; k++){
+				const sMatch &second = matchesSecond[k];
+				if(second.vps->paired){
 					continue;
 				}
 				
-				if( first.lenAfter == second.lenAfter && first.lenBefore == second.lenBefore
-				&& strncmp( first.before, second.before, first.lenBefore ) == 0
-				&& strncmp( first.after, second.after, first.lenAfter ) == 0 ){
+				if(first.lenAfter == second.lenAfter && first.lenBefore == second.lenBefore
+				&& strncmp(first.before, second.before, first.lenBefore) == 0
+				&& strncmp(first.after, second.after, first.lenAfter) == 0){
 					// pair found
-					pVPSPairs[ pVPSPairCount ].first = first.vps->index;
-					pVPSPairs[ pVPSPairCount ].second = second.vps->index;
-					pVPSPairCount++;
+					pVPSPairs.Add({first.vps->index, second.vps->index});
 					
 					first.vps->paired = true;
 					second.vps->paired = true;
@@ -596,8 +555,4 @@ void dearRuleMirror::pUpdateVPS(){
 	// ignore non-paired
 	
 	// sorting is not required for vertex position sets
-	
-	delete [] vpsList;
-	delete [] matchesFirst;
-	delete [] matchesSecond;
 }

@@ -28,9 +28,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,10 +38,14 @@ class gdeObjectClass;
  * \brief Undo action object class component add texture.
  */
 class gdeUOCCAddTexture : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCCAddTexture>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	
 	
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCAddTexture( gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture );
+	gdeUOCCAddTexture(gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCCAddTexture();
+	~gdeUOCCAddTexture() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

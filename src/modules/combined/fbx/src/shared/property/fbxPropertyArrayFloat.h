@@ -28,14 +28,19 @@
 
 #include "../fbxProperty.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * \brief FBX property array integer.
  */
 class fbxPropertyArrayFloat : public fbxProperty{
+public:
+	using Ref = deTObjectReference<fbxPropertyArrayFloat>;
+	
+	
 private:
-	float *pValues;
-	int pCount;
+	decTList<float> pValues;
 	
 	
 	
@@ -46,11 +51,11 @@ public:
 	fbxPropertyArrayFloat();
 	
 	/** \brief Load property. */
-	fbxPropertyArrayFloat( decBaseFileReader &reader );
+	explicit fbxPropertyArrayFloat(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyArrayFloat();
+	~fbxPropertyArrayFloat() override;
 	/*@}*/
 	
 	
@@ -58,38 +63,32 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Value count. */
-	inline int GetCount() const{ return pCount; }
-	
-	/** \brief Value at index. */
-	float GetValueAt( int index ) const;
-	
-	/** \brief Add value. */
-	void AddValue( float value );
+	/** \brief Values. */
+	inline const decTList<float> &GetValues() const{ return pValues; }
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyArrayFloat &CastArrayFloat();
+	fbxPropertyArrayFloat &CastArrayFloat() override;
 	
 	/** \brief Get values as specific type if possible. */
-	virtual int GetValueCount() const;
-	virtual bool GetValueAtAsBool( int index ) const;
-	virtual int GetValueAtAsInt( int index ) const;
-	virtual int64_t GetValueAtAsLong( int index ) const;
-	virtual float GetValueAtAsFloat( int index ) const;
-	virtual double GetValueAtAsDouble( int index ) const;
+	int GetValueCount() const override;
+	bool GetValueAtAsBool(int index) const override;
+	int GetValueAtAsInt(int index) const override;
+	int64_t GetValueAtAsLong(int index) const override;
+	float GetValueAtAsFloat(int index) const override;
+	double GetValueAtAsDouble(int index) const override;
 	
 	/** \brief Read sequence of values as composed type. */
-	virtual decVector2 GetValueAtAsVector2( int index ) const;
-	virtual decVector GetValueAtAsVector( int index ) const;
-	virtual decMatrix GetValueAtAsMatrix( int index ) const;
+	decVector2 GetValueAtAsVector2(int index) const override;
+	decVector GetValueAtAsVector(int index) const override;
+	decMatrix GetValueAtAsMatrix(int index) const override;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const override;
 	/*@}*/
 };
 

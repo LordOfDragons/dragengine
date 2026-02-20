@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorAdd;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorAdd.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo action actor add conversation action set alias id.
  */
 class ceUCAActorAddSetAliasID : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAActorAddSetAliasID>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorAdd::Ref pAction;
 	decString pOldAliasID;
 	decString pNewAliasID;
 	
@@ -46,18 +50,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAActorAddSetAliasID( ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID );
+	ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAActorAddSetAliasID();
+protected:
+	~ceUCAActorAddSetAliasID() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

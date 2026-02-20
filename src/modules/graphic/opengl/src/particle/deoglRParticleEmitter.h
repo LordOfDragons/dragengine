@@ -25,8 +25,10 @@
 #ifndef _DEOGLRPARTICLEEMITTER_H_
 #define _DEOGLRPARTICLEEMITTER_H_
 
+#include "../deoglBasics.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
@@ -41,23 +43,28 @@ class deoglRParticleEmitter : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decObjectList pTypes;
+	decTObjectList<deoglRParticleEmitterType> pTypes;
 	
 	deoglVBOLayout *pVBOLayoutShared;
 	deoglVBOLayout *pVBOLayoutLocal;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRParticleEmitter>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render emitter. */
-	deoglRParticleEmitter( deoglRenderThread &renderThread );
+	deoglRParticleEmitter(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render emitter. */
-	virtual ~deoglRParticleEmitter();
+	~deoglRParticleEmitter() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render threaf. */
@@ -78,13 +85,13 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type at index. */
-	deoglRParticleEmitterType &GetTypeAt( int index ) const;
+	deoglRParticleEmitterType &GetTypeAt(int index) const;
 	
 	/** Remove all types. */
 	void RemoveAllTypes();
 	
 	/** Add type. */
-	void AddType( deoglRParticleEmitterType *type );
+	void AddType(deoglRParticleEmitterType *type);
 	/*@}*/
 };
 

@@ -38,7 +38,8 @@ igdeNativeNullToggleButton::igdeNativeNullToggleButton(){
 igdeNativeNullToggleButton::~igdeNativeNullToggleButton(){
 }
 
-igdeNativeNullToggleButton *igdeNativeNullToggleButton::CreateNativeWidget( igdeToggleButton& ){
+igdeNativeNullToggleButton *igdeNativeNullToggleButton::CreateNativeWidget(igdeToggleButton&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullToggleButton;
 }
 
@@ -54,6 +55,9 @@ void igdeNativeNullToggleButton::DestroyNativeWidget(){
 // Management
 ///////////////
 
+void igdeNativeNullToggleButton::Focus(){
+}
+
 void igdeNativeNullToggleButton::UpdateStyle(){
 }
 
@@ -63,7 +67,7 @@ void igdeNativeNullToggleButton::UpdateText(){
 void igdeNativeNullToggleButton::UpdateDescription(){
 }
 
-void igdeNativeNullToggleButton::UpdateIcons(){
+void igdeNativeNullToggleButton::UpdateIcon(){
 }
 
 void igdeNativeNullToggleButton::UpdateEnabled(){

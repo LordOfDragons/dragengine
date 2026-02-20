@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableRotYMax::aeURuleLimitSetEnableRotYMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableRotYMax::aeURuleLimitSetEnableRotYMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum y rotation" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumYRotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotYMax::~aeURuleLimitSetEnableRotYMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableRotYMax::Undo(){
 }
 
 void aeURuleLimitSetEnableRotYMax::Redo(){
-	pRule->SetEnableRotationYMax( ! pRule->GetEnableRotationYMax() );
+	pRule->SetEnableRotationYMax(!pRule->GetEnableRotationYMax());
 }

@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetPropertyValues::gdeUOCSetPropertyValues( gdeObjectClass *objectClass,
-const decStringDictionary &newValues ) :
-pObjectClass( NULL )
+gdeUOCSetPropertyValues::gdeUOCSetPropertyValues(gdeObjectClass *objectClass,
+const decStringDictionary &newValues) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set property values" );
+	SetShortInfo("@GameDefinition.Undo.OCSetPropertyValues");
 	
 	pOldValues = objectClass->GetPropertyValues();
 	pNewValues = newValues;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetPropertyValues::~gdeUOCSetPropertyValues(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 

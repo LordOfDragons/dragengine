@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleYMax::aeURuleLimitSetEnableScaleYMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleYMax::aeURuleLimitSetEnableScaleYMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum y scaling" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumYScaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleYMax::~aeURuleLimitSetEnableScaleYMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableScaleYMax::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleYMax::Redo(){
-	pRule->SetEnableScalingYMax( ! pRule->GetEnableScalingYMax() );
+	pRule->SetEnableScalingYMax(!pRule->GetEnableScalingYMax());
 }

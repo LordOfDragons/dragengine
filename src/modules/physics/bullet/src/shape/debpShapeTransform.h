@@ -71,27 +71,27 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Transforms a shape relative to the base state. */
-	const debpDCollisionVolume &TransformBase( const debpShape *shape, const decDMatrix &transformation );
+	const debpDCollisionVolume &TransformBase(const debpShape *shape, const decDMatrix &transformation);
 	/** Transforms a shape relative to the current state. */
-	const debpDCollisionVolume &TransformCurrent( const debpShape *shape, const decDMatrix &transformation );
+	const debpDCollisionVolume &TransformCurrent(const debpShape *shape, const decDMatrix &transformation);
 	
 	/** Transforms an engine sphere shape. */
-	const debpDCollisionSphere &TransformShapeSphere( const decShapeSphere &sphere, const decDMatrix &transformation );
+	const debpDCollisionSphere &TransformShapeSphere(const decShapeSphere &sphere, const decDMatrix &transformation);
 	/** Transforms an engine box shape. */
-	const debpDCollisionBox &TransformShapeBox( const decShapeBox &box, const decDMatrix &transformation );
+	const debpDCollisionBox &TransformShapeBox(const decShapeBox &box, const decDMatrix &transformation);
 	/** Transforms an engine cylinder shape. */
-	const debpDCollisionCylinder &TransformShapeCylinder( const decShapeCylinder &cylinder, const decDMatrix &transformation );
+	const debpDCollisionCylinder &TransformShapeCylinder(const decShapeCylinder &cylinder, const decDMatrix &transformation);
 	/** Transforms an engine capsule shape. */
-	const debpDCollisionCapsule &TransformShapeCapsule( const decShapeCapsule &capsule, const decDMatrix &transformation );
+	const debpDCollisionCapsule &TransformShapeCapsule(const decShapeCapsule &capsule, const decDMatrix &transformation);
 	
 	/** Transforms an engine collision sphere. */
-	const debpDCollisionSphere &TransformCollisionSphere( const debpDCollisionSphere &sphere, const decDMatrix &transformation );
+	const debpDCollisionSphere &TransformCollisionSphere(const debpDCollisionSphere &sphere, const decDMatrix &transformation);
 	/** Transforms an engine collision box. */
-	const debpDCollisionBox &TransformCollisionBox( const debpDCollisionBox &box, const decDMatrix &transformation );
+	const debpDCollisionBox &TransformCollisionBox(const debpDCollisionBox &box, const decDMatrix &transformation);
 	/** Transforms an engine collision cylinder. */
-	const debpDCollisionCylinder &TransformCollisionCylinder( const debpDCollisionCylinder &cylinder, const decDMatrix &transformation );
+	const debpDCollisionCylinder &TransformCollisionCylinder(const debpDCollisionCylinder &cylinder, const decDMatrix &transformation);
 	/** Transforms an engine collision capsule. */
-	const debpDCollisionCapsule &TransformCollisionCapsule( const debpDCollisionCapsule &capsule, const decDMatrix &transformation );
+	const debpDCollisionCapsule &TransformCollisionCapsule(const debpDCollisionCapsule &capsule, const decDMatrix &transformation);
 	/*@}*/
 };
 

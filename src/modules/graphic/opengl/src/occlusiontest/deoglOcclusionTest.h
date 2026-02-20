@@ -22,13 +22,16 @@
  * SOFTWARE.
  */
 
+// include only once
 #ifndef _DEOGLOCCLUSIONTEST_H_
 #define _DEOGLOCCLUSIONTEST_H_
 
 #include "../deoglBasics.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglRenderThread;
 class deoglOcclusionMap;
@@ -43,8 +46,7 @@ class deoglVBOLayout;
 class deoglOcclusionTest{
 private:
 	struct sInputData{
-		oglVector3 minExtend;
-		oglVector3 maxExtend;
+		oglVector3 minExtend, maxExtend;
 	};
 	
 	
@@ -52,10 +54,8 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOInput;
 	deoglSPBlockSSBO::Ref pSSBOResult;
 
-	deoglOcclusionTestListener **pInputListeners;
-	sInputData *pInputData;
-	int pInputDataCount;
-	int pInputDataSize;
+	decTOrderedSet<deoglOcclusionTestListener*> pInputListeners;
+	decTList<sInputData> pInputData;
 	
 	
 	
@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion test. */
-	deoglOcclusionTest( deoglRenderThread &renderThread );
+	deoglOcclusionTest(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion test. */
 	~deoglOcclusionTest();
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of input data. */
-	inline int GetInputDataCount() const{ return pInputDataCount; }
+	inline int GetInputDataCount() const{ return pInputData.GetCount(); }
 	
 	/**
 	 * Add input data returning the index to fetch the result later. The test box is
@@ -83,8 +83,8 @@ public:
 	 * to be applied to the world box extends before using them as input data.
 	 * The rotation and projection is handled on the shader side.
 	 */
-	int AddInputData( const decVector &minExtend, const decVector &maxExtend,
-		deoglOcclusionTestListener *listener );
+	int AddInputData(const decVector &minExtend, const decVector &maxExtend,
+		deoglOcclusionTestListener *listener);
 	
 	/** Remove all input data. */
 	void RemoveAllInputData();
@@ -101,13 +101,6 @@ public:
 	/** Update results from SSBO. */
 	void UpdateResults();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
-	
-	void pResizeInputData( int size );
 };
 
 #endif

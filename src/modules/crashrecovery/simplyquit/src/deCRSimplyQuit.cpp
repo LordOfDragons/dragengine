@@ -42,7 +42,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *SQCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *SQCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -52,14 +52,14 @@ MOD_ENTRY_POINT_ATTR deBaseModule *SQCreateModule( deLoadableModule *loadableMod
 // Entry Point
 ////////////////
 
-deBaseModule *SQCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *SQCreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deCRSimplyQuit( *loadableModule );
+		module = new deCRSimplyQuit(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 	
 	return module;
@@ -73,9 +73,9 @@ deBaseModule *SQCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deCRSimplyQuit::deCRSimplyQuit( deLoadableModule &loadableModule ) :
-deBaseCrashRecoveryModule( loadableModule ),
-pCoreFault( NULL ){
+deCRSimplyQuit::deCRSimplyQuit(deLoadableModule &loadableModule) :
+deBaseCrashRecoveryModule(loadableModule),
+pCoreFault(nullptr){
 }
 
 deCRSimplyQuit::~deCRSimplyQuit(){
@@ -87,14 +87,14 @@ deCRSimplyQuit::~deCRSimplyQuit(){
 ///////////////
 
 bool deCRSimplyQuit::Init(){
-	pCoreFault = new decrsqCoreFault( *this );
+	pCoreFault = new decrsqCoreFault(*this);
 	return true;
 }
 
 void deCRSimplyQuit::CleanUp(){
-	if( pCoreFault ){
+	if(pCoreFault){
 		delete pCoreFault;
-		pCoreFault = NULL;
+		pCoreFault = nullptr;
 	}
 }
 
@@ -118,41 +118,41 @@ void deCRSimplyQuit::pPrintTrace(){
 	deErrorTrace *trace = GetGameEngine()->GetErrorTrace();
 	int i, count;
 	
-	LogError( "Error Trace:" );
+	LogError("Error Trace:");
 	
 	count = trace->GetPointCount();
-	for( i=0; i<count; i++ ){
-		pPrintTracePoint( i + 1, trace->GetPoint( i ) );
+	for(i=0; i<count; i++){
+		pPrintTracePoint(i + 1, trace->GetPoint(i));
 	}
 }
 
-void deCRSimplyQuit::pPrintTracePoint(int number, deErrorTracePoint *point ){
+void deCRSimplyQuit::pPrintTracePoint(int number, deErrorTracePoint *point){
 	int i, count = point->GetValueCount();
 	
-	if( point->GetSourceModule() ){
-		LogErrorFormat( "%i) %s %s at %i\n", number, point->GetSourceModule()->GetName().GetString(),
-			point->GetSourceFunction().GetString(), point->GetSourceLine() );
+	if(point->GetSourceModule()){
+		LogErrorFormat("%i) %s %s at %i\n", number, point->GetSourceModule()->GetName().GetString(),
+			point->GetSourceFunction().GetString(), point->GetSourceLine());
 		
 	}else{
-		LogErrorFormat( "%i) game engine %s at %i\n", number,
-			point->GetSourceFunction().GetString(), point->GetSourceLine() );
+		LogErrorFormat("%i) game engine %s at %i\n", number,
+			point->GetSourceFunction().GetString(), point->GetSourceLine());
 	}
 	
-	for( i=0; i<count; i++ ){
-		pPrintTraceValue( 1, point->GetValue( i ) );
+	for(i=0; i<count; i++){
+		pPrintTraceValue(1, point->GetValue(i));
 	}
 }
 
-void deCRSimplyQuit::pPrintTraceValue( int level, deErrorTraceValue *value ){
+void deCRSimplyQuit::pPrintTraceValue(int level, deErrorTraceValue *value){
 	int i, count = value->GetSubValueCount();
 	decString text;
 	
-	for( i=0; i<level; i++ ) text.Append( "  " );
-	LogErrorFormat( "%s- %s = '%s'", text.GetString(),
-		value->GetName().GetString(), value->GetValue().GetString() );
+	for(i=0; i<level; i++) text.Append("  ");
+	LogErrorFormat("%s- %s = '%s'", text.GetString(),
+		value->GetName().GetString(), value->GetValue().GetString());
 	
-	for( i=0; i<count; i++ ){
-		pPrintTraceValue( level + 1, value->GetSubValue( i ) );
+	for(i=0; i<count; i++){
+		pPrintTraceValue(level + 1, value->GetSubValue(i));
 	}
 }
 
@@ -165,6 +165,8 @@ void deCRSimplyQuit::pPrintTraceValue( int level, deErrorTraceValue *value ){
 
 class deCRModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<deCRModuleInternal>;
+	
 	deCRModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("SimplyQuit");
 		SetDescription("Simply quits the engine gracefully on system failures.");
@@ -185,7 +187,7 @@ public:
 	}
 };
 
-deInternalModule *deCRRegisterInternalModule(deModuleSystem *system){
-	return new deCRModuleInternal(system);
+deTObjectReference<deInternalModule> deCRRegisterInternalModule(deModuleSystem *system){
+	return deCRModuleInternal::Ref::New(system);
 }
 #endif

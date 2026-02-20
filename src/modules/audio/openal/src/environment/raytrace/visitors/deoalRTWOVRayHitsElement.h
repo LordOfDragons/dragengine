@@ -67,7 +67,7 @@ public:
 	int timingFacesCount;
 	void StartTiming();
 	void EndTiming();
-	void VisitBVH( const deoalRTWorldBVH &bvh );
+	void VisitBVH(const deoalRTWorldBVH &bvh);
 #endif
 	
 	
@@ -79,7 +79,7 @@ public:
 	deoalRTWOVRayHitsElement();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalRTWOVRayHitsElement();
+	~deoalRTWOVRayHitsElement() override;
 	/*@}*/
 	
 	
@@ -90,7 +90,7 @@ public:
 	inline deoalRayTraceResult *GetResult() const{ return pResult; }
 	
 	/** \brief Set result or NULL if not set. */
-	void SetResult( deoalRayTraceResult *result );
+	void SetResult(deoalRayTraceResult *result);
 	
 	/** \brief Component result. */
 	inline deoalRayTraceResult &GetComponentResult(){ return pComponentResult; }
@@ -99,13 +99,13 @@ public:
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( const deoalRTWorldBVH::sVisitComponent &rtcomponent );
+	void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent) override;
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node );
+	void pVisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node);
 };
 
 #endif

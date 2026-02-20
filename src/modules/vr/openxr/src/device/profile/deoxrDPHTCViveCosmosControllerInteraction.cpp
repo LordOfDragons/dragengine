@@ -43,10 +43,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPHTCViveCosmosControllerInteraction::deoxrDPHTCViveCosmosControllerInteraction( deoxrInstance &instance ) :
-deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/htc/vive_cosmos_controller" ),
-	"HTC Vive Cosmos Controller" )
+deoxrDPHTCViveCosmosControllerInteraction::deoxrDPHTCViveCosmosControllerInteraction(deoxrInstance &instance) :
+deoxrDPBaseTwoHandController(instance,
+	deoxrPath(instance, "/interaction_profiles/htc/vive_cosmos_controller"),
+	"HTC Vive Cosmos Controller")
 {
 }
 
@@ -87,85 +87,85 @@ void deoxrDPHTCViveCosmosControllerInteraction::pSuggestBindings(){
 	// - /output/haptic
 	
 	const int bindingCount = 10 * 2 + 3 + 3;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const decString basePathList[2] = {"/user/hand/left", "/user/hand/right"};
 	int i;
 	
 	// both hands
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
+	for(i=0; i<2; i++){
+		const decString &basePath = basePathList[i];
 		
-		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
-		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd(b, pPoseAction(i == 0), basePath + "/input/grip/pose");
+		pAdd(b, pPoseAction2(i == 0), basePath + "/input/aim/pose");
 		
-		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
+		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click");
 		
-		pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, basePath + "/input/shoulder/click" );
+		pAdd(b, deVROpenXR::eiaButtonAuxiliary1Press, basePath + "/input/shoulder/click");
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click");
+		pAdd(b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value");
 		
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
-		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
-		pAdd( b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch" );
+		pAdd(b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick");
+		pAdd(b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click");
+		pAdd(b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch");
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	}
 	
 	// left hand
-	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/left/input/x/click" );
-	pAdd( b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/left/input/y/click" );
-	pAdd( b, deVROpenXR::eiaButtonAuxiliary2Press, "/user/hand/left/input/menu/click" );
+	pAdd(b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/left/input/x/click");
+	pAdd(b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/left/input/y/click");
+	pAdd(b, deVROpenXR::eiaButtonAuxiliary2Press, "/user/hand/left/input/menu/click");
 	
 	// right hand
-	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/right/input/a/click" );
-	pAdd( b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/right/input/b/click" );
-	pAdd( b, deVROpenXR::eiaButtonAuxiliary2Press, "/user/hand/right/input/system/click" );
+	pAdd(b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/right/input/a/click");
+	pAdd(b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/right/input/b/click");
+	pAdd(b, deVROpenXR::eiaButtonAuxiliary2Press, "/user/hand/right/input/system/click");
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
 bool deoxrDPHTCViveCosmosControllerInteraction::pProfileEnabled() const{
-	return GetInstance().SupportsExtension( deoxrInstance::extHTCViveCosmosControllerInteraction );
+	return GetInstance().SupportsExtension(deoxrInstance::extHTCViveCosmosControllerInteraction);
 }
 
-void deoxrDPHTCViveCosmosControllerInteraction::pAddDevice( bool left ){
+void deoxrDPHTCViveCosmosControllerInteraction::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( device ){
+	if(device){
 		return;
 	}
 	
-	pCreateDevice( device, left, "htcvcc_", true );
+	pCreateDevice(device, left, "htcvcc_", true);
 	
-	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
-	pAddAxisTrigger( device, trigger );
-	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
+	pAddAxisTrigger(device, trigger);
+	pAddButtonTrigger(device, trigger, false); // has to be button 0
 	
-	if( left ){
-		pAddButton( device, ebaPrimary, eblX, false ); // has to be button 1
-		pAddButton( device, ebaSecondary, eblY, false ); // has to be button 2
-		pAddButton( device, ebaAuxiliary1, eblShoulder, false ); // has to be button 3
-		pAddButton( device, ebaAuxiliary2, eblHome, false ); // has to be button 4
+	if(left){
+		pAddButton(device, ebaPrimary, eblX, false); // has to be button 1
+		pAddButton(device, ebaSecondary, eblY, false); // has to be button 2
+		pAddButton(device, ebaAuxiliary1, eblShoulder, false); // has to be button 3
+		pAddButton(device, ebaAuxiliary2, eblHome, false); // has to be button 4
 		
 	}else{
-		pAddButton( device, ebaPrimary, eblA, false ); // has to be button 1
-		pAddButton( device, ebaSecondary, eblB, false ); // has to be button 2
-		pAddButton( device, ebaAuxiliary1, eblShoulder, false ); // has to be button 3
-		pAddButton( device, ebaAuxiliary2, eblSystem, false ); // has to be button 4
+		pAddButton(device, ebaPrimary, eblA, false); // has to be button 1
+		pAddButton(device, ebaSecondary, eblB, false); // has to be button 2
+		pAddButton(device, ebaAuxiliary1, eblShoulder, false); // has to be button 3
+		pAddButton(device, ebaAuxiliary2, eblSystem, false); // has to be button 4
 	}
 	
-	deoxrDeviceComponent * const joystick = pAddComponentJoystick( device );
-	pAddAxesJoystick( device, joystick );
-	pAddButtonJoystick( device, joystick, true, true );
+	deoxrDeviceComponent * const joystick = pAddComponentJoystick(device);
+	pAddAxesJoystick(device, joystick);
+	pAddButtonJoystick(device, joystick, true, true);
 	
-	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddButtonGrip( device, grip, false );
+	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
+	pAddButtonGrip(device, grip, false);
 	
 	pAddHandTracker(device, left, true);
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	GetInstance().GetOxr().GetDevices().Add(device);
 }

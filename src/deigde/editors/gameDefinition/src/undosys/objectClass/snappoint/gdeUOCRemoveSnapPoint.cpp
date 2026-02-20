@@ -41,34 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint( gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
+
+pSnapPoint(nullptr)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetSnapPoints().Has( snapPoint ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetSnapPoints().Has(snapPoint)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove snap point" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveSnapPoint");
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveSnapPoint::~gdeUOCRemoveSnapPoint(){
-	if( pSnapPoint ){
-		pSnapPoint->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ gdeUOCRemoveSnapPoint::~gdeUOCRemoveSnapPoint(){
 ///////////////
 
 void gdeUOCRemoveSnapPoint::Undo(){
-	pObjectClass->GetSnapPoints().Add( pSnapPoint );
+	pObjectClass->GetSnapPoints().Add(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
 }
 
 void gdeUOCRemoveSnapPoint::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCSnapPoint() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCSnapPoint()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSnapPoint( NULL );
+		gameDefinition->SetActiveOCSnapPoint(nullptr);
 	}
 	
-	pObjectClass->GetSnapPoints().Remove( pSnapPoint );
+	pObjectClass->GetSnapPoints().Remove(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
 }

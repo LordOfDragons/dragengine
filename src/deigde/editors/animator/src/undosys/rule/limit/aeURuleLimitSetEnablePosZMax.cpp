@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnablePosZMax::aeURuleLimitSetEnablePosZMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnablePosZMax::aeURuleLimitSetEnablePosZMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum z position" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumZPosition");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosZMax::~aeURuleLimitSetEnablePosZMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnablePosZMax::Undo(){
 }
 
 void aeURuleLimitSetEnablePosZMax::Redo(){
-	pRule->SetEnablePositionZMax( ! pRule->GetEnablePositionZMax() );
+	pRule->SetEnablePositionZMax(!pRule->GetEnablePositionZMax());
 }

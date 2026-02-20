@@ -36,17 +36,15 @@
 ////////////////////////////
 
 feUGlyphSetHeight::feUGlyphSetHeight(feFontGlyph *glyph, int newValue){
-	SetShortInfo("GLyph set height");
+	SetShortInfo("@Font.Undo.GlyphSetHeight");
 	
 	pOldValue = glyph->GetHeight();
 	pNewValue = newValue;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetHeight::~feUGlyphSetHeight(){
-	if( pGlyph ) pGlyph->FreeReference();
 }
 
 

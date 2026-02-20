@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/collider/deCollider.h>
 
-class gdeOCComponent;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class component set collider response type.
  */
 class gdeUOCComponentSetColRespType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCComponentSetColRespType>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	deCollider::eResponseType pOldValue;
 	deCollider::eResponseType pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetColRespType( gdeObjectClass *objectClass,
-		gdeOCComponent *component, deCollider::eResponseType newValue );
+	gdeUOCComponentSetColRespType(gdeObjectClass *objectClass,
+		gdeOCComponent *component, deCollider::eResponseType newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCComponentSetColRespType();
+	~gdeUOCComponentSetColRespType() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

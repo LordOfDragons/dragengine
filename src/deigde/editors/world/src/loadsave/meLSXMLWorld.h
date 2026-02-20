@@ -26,9 +26,13 @@
 #define _MELSXMLWORLD_H_
 
 #include "meLSWorld.h"
-#include <deigde/utils/igdeBaseXML.h>
 
-class decStringDictionary;
+#include <deigde/utils/igdeBaseXML.h>
+#include <deigde/gui/igdeStepableTask.h>
+
+#include <dragengine/common/string/decStringDictionary.h>
+
+
 class meDecal;
 class meObject;
 class meObjectTexture;
@@ -43,35 +47,42 @@ class decXmlWriter;
  * Load and save world in the Drag[en]gine World XML format.
  */
 class meLSXMLWorld : public meLSWorld, igdeBaseXML{
+public:
+	typedef deTObjectReference<meLSXMLWorld> Ref;
+	
 private:
 	meLoadSaveSystem *pLSSys;
 	
 public:
 	// constructor, destructor
-	meLSXMLWorld( meLoadSaveSystem *lssys );
-	virtual ~meLSXMLWorld();
+	explicit meLSXMLWorld(meLoadSaveSystem *lssys);
+	
+protected:
+	~meLSXMLWorld() override;
+	
+public:
 	// loading and saving
-	virtual void SaveWorld( meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file );
+	void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file) override;
 	
 	/** Creates a stepable loader. */
-	virtual igdeStepableTask *CreateLoadTask( meWorld *world, decBaseFileReader *file );
+	igdeStepableTask::Ref CreateLoadTask(meWorld *world, decBaseFileReader *file) override;
 	
 	
 	
 private:
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name ) const;
-	int pGetAttributeInt( const decXmlElementTag &tag, const char *name ) const;
-	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name ) const;
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name) const;
+	int pGetAttributeInt(const decXmlElementTag &tag, const char *name) const;
+	float pGetAttributeFloat(const decXmlElementTag &tag, const char *name) const;
 	
-	void pWriteWorld( decXmlWriter &writer, const meWorld &world );
-	void pWriteWorldEditor( decXmlWriter &writer, const meWorld &world );
+	void pWriteWorld(decXmlWriter &writer, const meWorld &world);
+	void pWriteWorldEditor(decXmlWriter &writer, const meWorld &world);
 	void pWriteWorldEditorBackgroundObject(decXmlWriter &writer, const meWorld &world);
 	void pWriteWorldEditorLimitBox(decXmlWriter &writer, const meWorld &world);
-	void pWriteObject( decXmlWriter &writer, const meObject &object );
-	void pWriteObjectTexture( decXmlWriter &writer, const meObjectTexture &texture );
-	void pWriteDecal( decXmlWriter &writer, const meDecal &decal );
-	void pWriteNavigationSystem( decXmlWriter &writer, const meNavigationSpace &navspace );
-	void pWriteProperties( decXmlWriter &writer, const decStringDictionary &properties );
+	void pWriteObject(decXmlWriter &writer, const meObject &object);
+	void pWriteObjectTexture(decXmlWriter &writer, const meObjectTexture &texture);
+	void pWriteDecal(decXmlWriter &writer, const meDecal &decal);
+	void pWriteNavigationSystem(decXmlWriter &writer, const meNavigationSpace &navspace);
+	void pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties);
 };
 
 #endif

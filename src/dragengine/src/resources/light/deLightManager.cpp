@@ -37,8 +37,8 @@
 /////////////////////////////
 
 // constructor, destructor
-deLightManager::deLightManager( deEngine *engine ) : deResourceManager( engine, ertLight ){
-	SetLoggingName( "light" );
+deLightManager::deLightManager(deEngine *engine) : deResourceManager(engine, ertLight){
+	SetLoggingName("light");
 }
 deLightManager::~deLightManager(){
 	ReleaseLeakingResources();
@@ -50,32 +50,21 @@ int deLightManager::GetLightCount() const{
 }
 
 deLight *deLightManager::GetRootLight() const{
-	return ( deLight* )pLights.GetRoot();
+	return (deLight*)pLights.GetRoot();
 }
 
-deLight *deLightManager::CreateLight(){
-	deLight *light = NULL;
-	// create and add light
-	try{
-		light = new deLight( this );
-		if( ! light ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadLight( light );
-		pLights.Add( light );
-	}catch( const deException & ){
-		if( light ){
-			light->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deLight::Ref deLightManager::CreateLight(){
+	const deLight::Ref light(deLight::Ref::New(this));
+	GetGraphicSystem()->LoadLight(light);
+	pLights.Add(light);
 	return light;
 }
 
 
 
 void deLightManager::ReleaseLeakingResources(){
-	if( GetLightCount() > 0 ){
-		LogWarnFormat( "%i leaking lights", GetLightCount() );
+	if(GetLightCount() > 0){
+		LogWarnFormat("%i leaking lights", GetLightCount());
 		pLights.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -84,28 +73,22 @@ void deLightManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deLightManager::SystemGraphicLoad(){
-	deLight *light = ( deLight* )pLights.GetRoot();
-	
-	while( light ){
-		if( ! light->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadLight( light );
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pLights.GetResources().Visit([&](deResource *res){
+		deLight *light = static_cast<deLight*>(res);
+		if(!light->GetPeerGraphic()){
+			graSys.LoadLight(light);
 		}
-		
-		light = ( deLight* )light->GetLLManagerNext();
-	}
+	});
 }
 
 void deLightManager::SystemGraphicUnload(){
-	deLight *light = ( deLight* )pLights.GetRoot();
-	
-	while( light ){
-		light->SetPeerGraphic( NULL );
-		light = ( deLight* )light->GetLLManagerNext();
-	}
+	pLights.GetResources().Visit([&](deResource *res){
+		static_cast<deLight*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
-void deLightManager::RemoveResource( deResource *resource ){
-	pLights.RemoveIfPresent( resource );
+void deLightManager::RemoveResource(deResource *resource){
+	pLights.RemoveIfPresent(resource);
 }

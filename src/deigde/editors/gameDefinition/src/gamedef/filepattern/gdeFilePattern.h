@@ -26,6 +26,7 @@
 #define _GDEFILEPATTERN_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -42,19 +43,28 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeFilePattern>;
+
+	/** \brief Type holding list. */
+	using List = decTObjectOrderedSet<gdeFilePattern>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file pattern. */
 	gdeFilePattern();
 	
 	/** \brief Create file pattern. */
-	gdeFilePattern( const char *name, const char *pattern, const char *defaultExtension );
+	gdeFilePattern(const char *name, const char *pattern, const char *defaultExtension);
 	
 	/** \brief Create copy of file pattern. */
-	gdeFilePattern( const gdeFilePattern &filePattern );
+	gdeFilePattern(const gdeFilePattern &filePattern);
 	
 	/** \brief Clean up file pattern. */
-	virtual ~gdeFilePattern();
+protected:
+	~gdeFilePattern() override;
+public:
 	/*@}*/
 	
 	
@@ -65,19 +75,19 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefExtension; }
 	
 	/** \brief Set default extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	/*@}*/
 };
 

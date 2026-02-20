@@ -22,14 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalParameter.h"
-
-#include <dragengine/common/exceptions.h>
-
 
 
 // class deoalParameter
@@ -38,13 +31,5 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalParameter::deoalParameter( deAudioOpenAL &oal ) : pOal( oal ){
+deoalParameter::deoalParameter(deAudioOpenAL &oal) : pOal(oal){
 }
-
-deoalParameter::~deoalParameter(){
-}
-
-
-
-// Management
-///////////////

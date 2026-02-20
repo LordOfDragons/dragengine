@@ -26,8 +26,8 @@
 #define _DERLTASKREADSKININTERNAL_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../skin/deSkinReference.h"
-#include "../../../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../../skin/deSkin.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 class deSkinPropertyImage;
 class deSkinPropertyNodeImage;
@@ -41,6 +41,10 @@ class deSkinPropertyNodeText;
  */
 class DE_DLL_EXPORT deRLTaskReadSkinInternal : public deResourceLoaderTask {
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadSkinInternal>;
+	
+	
 	/**
 	 * \brief For internal use only.
 	 * 
@@ -50,29 +54,34 @@ public:
 	 * for the caller
 	 */
 	class DE_DLL_EXPORT cInternalTask : public deThreadSafeObject{
+	public:
+		/** \brief Type holding strong reference. */
+		using Ref = deTThreadSafeObjectReference<cInternalTask>;
+		
+		
 	private:
 		deSkinPropertyImage *pPropertyImage;
 		deSkinPropertyNodeImage *pNodeImage;
 		deSkinPropertyNodeText *pNodeText;
-		deResourceLoaderTask *pTask;
+		deResourceLoaderTask::Ref pTask;
 		
 	public:
-		cInternalTask( deSkinPropertyImage *propertyImage, deResourceLoaderTask *task );
-		cInternalTask( deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task );
-		cInternalTask( deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task );
-		virtual ~cInternalTask();
+		cInternalTask(deSkinPropertyImage *propertyImage, deResourceLoaderTask *task);
+		cInternalTask(deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task);
+		cInternalTask(deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task);
+		~cInternalTask() override;
 		
 		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }
 		inline deSkinPropertyNodeImage *GetNodeImage() const{ return pNodeImage; }
 		inline deSkinPropertyNodeText *GetNodeText() const{ return pNodeText; }
-		inline deResourceLoaderTask *GetTask() const{ return pTask; }
+		inline const deResourceLoaderTask::Ref &GetTask() const{ return pTask; }
 	};
 	
 	
 	
 private:
-	deSkinReference pSkin;
-	decThreadSafeObjectOrderedSet pInternalTasks;
+	deSkin::Ref pSkin;
+	decTThreadSafeObjectOrderedSet<cInternalTask> pInternalTasks;
 	
 	
 	
@@ -80,11 +89,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadSkinInternal( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path );
+	deRLTaskReadSkinInternal(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadSkinInternal();
+	~deRLTaskReadSkinInternal() override;
 	/*@}*/
 	
 	
@@ -92,20 +101,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/*@}*/
 	
 	
 	
 	/** \name Internal use only */
 	/*@{*/
-	void AddInternalTask( cInternalTask *task );
+	void AddInternalTask(cInternalTask *task);
 	/*@}*/
 	
 	
@@ -113,7 +122,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 	
 	

@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXWINDOW_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeWindow.h"
+#include "../../resources/igdeFont.h"
 
 class igdeWindow;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native window.
  */
-class igdeNativeFoxWindow : public FXTopWindow{
-	FXDECLARE( igdeNativeFoxWindow )
+class igdeNativeFoxWindow : public FXTopWindow, public igdeWindow::cNativeWindow{
+	FXDECLARE(igdeNativeFoxWindow)
 	
 protected:
 	igdeNativeFoxWindow();
@@ -55,13 +56,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxWindow( igdeWindow &owner, const igdeGuiTheme &guitheme );
+	igdeNativeFoxWindow(igdeWindow &owner, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxWindow();
+	~igdeNativeFoxWindow() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxWindow* CreateNativeWidget( igdeWindow &owner );
+	static igdeNativeFoxWindow* CreateNativeWidget(igdeWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -74,30 +75,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void RaiseAndActivate();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
-	static int WindowFlags( const igdeWindow &owner );
-	static int WindowPadLeft( const igdeGuiTheme &guitheme );
-	static int WindowPadRight( const igdeGuiTheme &guitheme );
-	static int WindowPadTop( const igdeGuiTheme &guitheme );
-	static int WindowPadBottom( const igdeGuiTheme &guitheme );
+	static int WindowFlags(const igdeWindow &owner);
+	static int WindowPadLeft(const igdeGuiTheme &guitheme);
+	static int WindowPadRight(const igdeGuiTheme &guitheme);
+	static int WindowPadTop(const igdeGuiTheme &guitheme);
+	static int WindowPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onConfigure( FXObject*, FXSelector, void* );
-	long onClose( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onConfigure(FXObject*, FXSelector, void*);
+	long onClose(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxWindow igdeNativeWindow;
+using igdeNativeWindow = igdeNativeFoxWindow;
 
 #endif

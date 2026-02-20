@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build skin into the provided skin object. */
-	virtual void BuildSkin( deSkin *skin );
+	virtual void BuildSkin(deSkin *skin);
 	/*@}*/
 };
 

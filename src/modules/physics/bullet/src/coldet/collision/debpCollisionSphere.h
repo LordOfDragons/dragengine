@@ -50,46 +50,46 @@ public:
 	 * @param center Center point of sphere
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	debpCollisionSphere( const decVector &center, float radius );
+	debpCollisionSphere(const decVector &center, float radius);
 	/** Cleans up the collision sphere. */
-	~debpCollisionSphere();
+	~debpCollisionSphere() override;
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( debpCollisionVolume *volume );
-	virtual float VolumeMoveHitsVolume( debpCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	bool VolumeHitsVolume(debpCollisionVolume *volume) override;
+	float VolumeMoveHitsVolume(debpCollisionVolume *volume, const decVector &displacement, decVector *normal) override;
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( debpCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( debpCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( debpCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( debpCollisionBox *box );
-	virtual bool TriangleHitsVolume( debpCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( debpCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( debpCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( debpCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( debpCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( debpCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( debpCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	bool SphereHitsVolume(debpCollisionSphere *sphere) override;
+	bool CylinderHitsVolume(debpCollisionCylinder *cylinder) override;
+	bool CapsuleHitsVolume(debpCollisionCapsule *capsule) override;
+	bool BoxHitsVolume(debpCollisionBox *box) override;
+	bool TriangleHitsVolume(debpCollisionTriangle *triangle) override;
+	bool FrustumHitsVolume(debpCollisionFrustum *frustum) override;
+	float SphereMoveHitsVolume(debpCollisionSphere *sphere, const decVector &displacement, decVector *normal) override;
+	float CylinderMoveHitsVolume(debpCollisionCylinder *cylinder, const decVector &displacement, decVector *normal) override;
+	float CapsuleMoveHitsVolume(debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal) override;
+	float BoxMoveHitsVolume(debpCollisionBox *box, const decVector &displacement, decVector *normal) override;
+	float TriangleMoveHitsVolume(debpCollisionTriangle *triangle, const decVector &displacement, decVector *normal) override;
+	float FrustumMoveHitsVolume(debpCollisionFrustum *frustum, const decVector &displacement, decVector *normal) override;
+	float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal) override;
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( debpCollisionSphere *sphere );
-	virtual void GetEnclosingBox( debpCollisionBox *box );
+	void GetEnclosingSphere(debpCollisionSphere *sphere) override;
+	void GetEnclosingBox(debpCollisionBox *box) override;
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	bool IsPointInside(const decVector &point) override;
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	decVector ClosestPointTo(const decVector &point) override;
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -99,7 +99,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint( const decVector &point );
+	decVector NormalAtPoint(const decVector &point) override;
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -108,23 +108,23 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
+	bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance) override;
 	/*@}*/
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit( debpCollisionVolumeVisitor *visitor );
+	void Visit(debpCollisionVolumeVisitor *visitor) override;
 	/*}*/
 	
 	/** @name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere collides with this sphere. */
-	bool SphereHitsSphere( debpCollisionSphere *sphere );
+	bool SphereHitsSphere(debpCollisionSphere *sphere);
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this sphere.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float SphereMoveHitsSphere( debpCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsSphere(debpCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Parameters */
@@ -136,18 +136,18 @@ public:
 	/** Retrieves the sqaured radius of the sphere. */
 	inline float GetSquareRadius() const{ return pSquareRadius; }
 	/** Sets the center point of the sphere. */
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	/**
 	 * Sets the radius of the sphere.
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	/**
 	 * Sets all sphere parameters at once.
 	 * @param center Center point of sphere
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	void SetAll( const decVector &center, float radius );
+	void SetAll(const decVector &center, float radius);
 	/*@}*/
 };
 

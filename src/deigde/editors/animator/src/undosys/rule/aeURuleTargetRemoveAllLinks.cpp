@@ -41,28 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleTargetRemoveAllLinks::aeURuleTargetRemoveAllLinks( aeRule *rule,
-aeControllerTarget *target, const aeLinkList &links ) :
-pRule( NULL ),
-pTarget( NULL ),
-pLinks( links )
+aeURuleTargetRemoveAllLinks::aeURuleTargetRemoveAllLinks(aeRule *rule, aeControllerTarget *target) :
+pTarget(nullptr)
 {
-	if( ! rule || ! target || links.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(target)
+	DEASSERT_TRUE(target->GetLinks().IsNotEmpty())
 	
-	SetShortInfo( "Rule Target Remove All Links" );
+	SetShortInfo("@Animator.Undo.RuleTargetRemoveAllLinks");
 	
 	pRule = rule;
-	pRule->AddReference();
-	
 	pTarget = target;
+	pLinks = target->GetLinks();
 }
 
 aeURuleTargetRemoveAllLinks::~aeURuleTargetRemoveAllLinks(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -71,19 +64,15 @@ aeURuleTargetRemoveAllLinks::~aeURuleTargetRemoveAllLinks(){
 ///////////////
 
 void aeURuleTargetRemoveAllLinks::Undo(){
-	const int count = pLinks.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pTarget->AddLink( pLinks.GetAt( i ) );
-	}
+	pLinks.Visit([&](aeLink *link){
+		pTarget->AddLink(link);
+	});
 	pRule->NotifyRuleChanged();
 }
 
 void aeURuleTargetRemoveAllLinks::Redo(){
-	const int count = pLinks.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pTarget->RemoveLink( pLinks.GetAt( i ) );
-	}
+	pLinks.Visit([&](aeLink *link){
+		pTarget->RemoveLink(link);
+	});
 	pRule->NotifyRuleChanged();
 }

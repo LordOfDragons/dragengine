@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deResource.h"
 #include "deResourceList.h"
 #include "../common/exceptions.h"
@@ -38,10 +34,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deResourceList::deResourceList() :
-pRoot( NULL ),
-pTail( NULL ),
-pCount( 0 ){
+deResourceList::deResourceList(){
 }
 
 deResourceList::~deResourceList(){
@@ -53,126 +46,39 @@ deResourceList::~deResourceList(){
 // Management
 ///////////////
 
-bool deResourceList::Has( deResource *resource ) const{
-	if( ! resource ){
-		DETHROW( deeInvalidParam );
-	}
+bool deResourceList::Has(deResource *resource) const{
+	DEASSERT_NOTNULL(resource)
 	
-	deResource *nextResource = pRoot;
-	while( nextResource ){
-		if( nextResource == resource ){
-			return true;
-		}
-		nextResource = nextResource->GetLLManagerNext();
-	}
-	
-	return false;
+	return pResources.Has(&resource->GetLLManager());
 }
 
-void deResourceList::Add( deResource *resource ){
-	if( ! resource || resource->GetLLManagerPrev() || resource->GetLLManagerNext() ){
-		DETHROW( deeInvalidParam );
-	}
+void deResourceList::Add(deResource *resource){
+	DEASSERT_NOTNULL(resource)
 	
-	if( pTail ){
-		pTail->SetLLManagerNext( resource );
-		resource->SetLLManagerPrev( pTail );
-		pTail = resource;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pRoot = resource;
-		pTail = resource;
-	}
-	
-	pCount++;
+	pResources.Add(&resource->GetLLManager());
 }
 
-void deResourceList::Remove( deResource *resource ){
-	// the test for existence in the list is not valid if the resource has been added to a different
-	// resource list. resource managers use this list correctly hence the only possible problem occurs
-	// if the user messes with the linked list himself. since he is strictly discouraged to do so this
-	// problem situation can be ruled out for normal operation to gain speed by dropping a full check
-	if( ! resource ){
-		DETHROW( deeInvalidParam );
-	}
-	if( resource != pRoot && ! resource->GetLLManagerNext() && ! resource->GetLLManagerPrev() ){
-		DETHROW( deeInvalidParam );
-	}
+void deResourceList::Remove(deResource *resource){
+	DEASSERT_NOTNULL(resource)
+	DEASSERT_TRUE(pResources.Has(&resource->GetLLManager()))
 	
-	pBareRemove( resource );
+	resource->MarkLeaking();
+	pResources.Remove(&resource->GetLLManager());
 }
 
-void deResourceList::RemoveIfPresent( deResource *resource ){
-	// the test for existence in the list is not valid if the resource has been added to a different
-	// resource list. resource managers use this list correctly hence the only possible problem occurs
-	// if the user messes with the linked list himself. since he is strictly discouraged to do so this
-	// problem situation can be ruled out for normal operation to gain speed by dropping a full check
-	if( ! resource ){
-		DETHROW( deeInvalidParam );
+void deResourceList::RemoveIfPresent(deResource *resource){
+	DEASSERT_NOTNULL(resource)
+	if(!pResources.Has(&resource->GetLLManager())){
+		return;
 	}
-	if( resource == pRoot || resource->GetLLManagerNext() || resource->GetLLManagerPrev() ){
-		pBareRemove( resource );
-	}
+	
+	resource->MarkLeaking();
+	pResources.Remove(&resource->GetLLManager());
 }
 
 void deResourceList::RemoveAll(){
-	while( pRoot ){
-		pRoot->MarkLeaking();
-		pRoot = pRoot->GetLLManagerNext();
-	}
-	pTail = NULL;
-	pCount = 0;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deResourceList::pBareRemove( deResource *resource ){
-	if( pCount == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( resource == pTail ){
-		if( resource->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pTail = pTail->GetLLManagerPrev();
-		if( pTail ){
-			pTail->SetLLManagerNext( NULL );
-		}
-		
-	}else{
-		if( ! resource->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		resource->GetLLManagerNext()->SetLLManagerPrev( resource->GetLLManagerPrev() );
-	}
-	
-	if( resource == pRoot ){
-		if( resource->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pRoot = pRoot->GetLLManagerNext();
-		if( pRoot ){
-			pRoot->SetLLManagerPrev( NULL );
-		}
-		
-	}else{
-		if( ! resource->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		resource->GetLLManagerPrev()->SetLLManagerNext( resource->GetLLManagerNext() );
-	}
-	
-	resource->SetLLManagerNext( NULL );
-	resource->SetLLManagerPrev( NULL );
-	pCount--;
-	
-	resource->MarkLeaking();
+	pResources.Visit([](deResource *r){
+		r->MarkLeaking();
+	});
+	pResources.RemoveAll();
 }

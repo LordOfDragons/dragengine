@@ -42,7 +42,7 @@
 #include <dragengine/app/include_windows.h>
 #endif
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -72,7 +72,7 @@ private:
 	HMODULE pLibHandle;
 	#endif
 	
-	decObjectOrderedSet pApiLayers;
+	decTObjectOrderedSet<deoxrApiLayer> pApiLayers;
 	
 	
 	
@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader. */
-	deoxrLoader( deVROpenXR &oxr );
+	deoxrLoader(deVROpenXR &oxr);
 	
 	/** Clean up loader. */
 	~deoxrLoader();
@@ -100,7 +100,7 @@ public:
 	int GetApiLayerCount() const;
 	
 	/** API layer at index. */
-	deoxrApiLayer *GetApiLayerAt( int index ) const;
+	deoxrApiLayer *GetApiLayerAt(int index) const;
 	/*@}*/
 	
 	

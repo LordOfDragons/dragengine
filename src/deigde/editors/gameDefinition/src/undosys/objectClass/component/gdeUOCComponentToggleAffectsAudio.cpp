@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCComponentToggleAffectsAudio::gdeUOCComponentToggleAffectsAudio(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle affects audiomap" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleAffectsAudio");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
 ///////////////
 
 void gdeUOCComponentToggleAffectsAudio::Undo(){
-	pComponent->SetAffectsAudio( ! pComponent->GetAffectsAudio() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAffectsAudio(!pComponent->GetAffectsAudio());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleAffectsAudio::Redo(){

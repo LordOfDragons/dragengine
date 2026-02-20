@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleZMax::aeURuleLimitSetEnableScaleZMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleZMax::aeURuleLimitSetEnableScaleZMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum z scaling" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumZScaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleZMax::~aeURuleLimitSetEnableScaleZMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableScaleZMax::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleZMax::Redo(){
-	pRule->SetEnableScalingZMax( ! pRule->GetEnableScalingZMax() );
+	pRule->SetEnableScalingZMax(!pRule->GetEnableScalingZMax());
 }

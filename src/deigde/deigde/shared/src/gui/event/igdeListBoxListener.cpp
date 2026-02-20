@@ -43,17 +43,17 @@ igdeListBoxListener::~igdeListBoxListener(){
 // Events
 ///////////
 
-void igdeListBoxListener::OnSelectionChanged( igdeListBox* ){
+void igdeListBoxListener::OnSelectionChanged(igdeListBox*){
 }
 
-void igdeListBoxListener::OnItemSelected( igdeListBox*, int ){
+void igdeListBoxListener::OnItemSelected(igdeListBox*, int){
 }
 
-void igdeListBoxListener::OnItemDeselected( igdeListBox*, int ){
+void igdeListBoxListener::OnItemDeselected(igdeListBox*, int){
 }
 
-void igdeListBoxListener::OnDoubleClickItem( igdeListBox*, int ){
+void igdeListBoxListener::OnDoubleClickItem(igdeListBox*, int){
 }
 
-void igdeListBoxListener::AddContextMenuEntries( igdeListBox*, igdeMenuCascade& ){
+void igdeListBoxListener::AddContextMenuEntries(igdeListBox*, igdeMenuCascade&){
 }

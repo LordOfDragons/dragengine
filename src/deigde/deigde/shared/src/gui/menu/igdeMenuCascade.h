@@ -27,7 +27,7 @@
 
 #include "../igdeContainer.h"
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 
 
@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeMenuCascade : public igdeContainer{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuCascade> Ref;
+	using Ref = deTObjectReference<igdeMenuCascade>;
 	
 	
 private:
@@ -47,7 +47,7 @@ private:
 	decString pDescription;
 	igdeHotKey pHotKey;
 	deInputEvent::eKeyCodes pMnemonic;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	
 	
@@ -56,26 +56,26 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuCascade( igdeEnvironment &environment );
+	igdeMenuCascade(igdeEnvironment &environment);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text, igdeIcon *icon );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text, igdeIcon *icon);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text,
-		deInputEvent::eKeyCodes mnemonic );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text,
+		deInputEvent::eKeyCodes mnemonic);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text,
-		igdeIcon *icon, const char *description );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text,
+		igdeIcon *icon, const char *description);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text,
-		igdeIcon *icon, const char *description, const igdeHotKey &hotKey );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text,
+		igdeIcon *icon, const char *description, const igdeHotKey &hotKey);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
 	
 	
@@ -86,7 +86,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMenuCascade();
+	~igdeMenuCascade() override;
 	/*@}*/
 	
 	
@@ -98,48 +98,48 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text shown in the menu entry. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Hot-Key. */
 	const igdeHotKey &GetHotKey() const{ return pHotKey; }
 	
 	/** \brief Set Hot-Key. */
-	void SetHotKey( const igdeHotKey &hotKey );
+	void SetHotKey(const igdeHotKey &hotKey);
 	
 	/** \brief Mnemonic key or ekcUndefined if not used. */
 	inline deInputEvent::eKeyCodes GetMnemonic() const{ return pMnemonic; }
 	
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
-	void SetMnemonic( deInputEvent::eKeyCodes mnemonic );
+	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if menu entry is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
 	/** \brief Show menu as pop-up menu at mouse cursor. */
-	void Popup( igdeWidget &owner );
+	void Popup(igdeWidget &owner);
 	
 	/** \brief Show menu as pop-up menu at widget position. */
-	void Popup( igdeWidget &owner, const decPoint &position );
+	void Popup(igdeWidget &owner, const decPoint &position);
 	
 	/** \brief Show menu as pop-up menu at the bottom wdge of widget. */
-	void PopupBottom( igdeWidget &owner );
+	void PopupBottom(igdeWidget &owner);
 	/*@}*/
 	
 	
@@ -153,19 +153,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	/**
 	 * \brief Get native container widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void *GetNativeContainer() const;
+	void *GetNativeContainer() const override;
 	
 	
 	
@@ -189,7 +189,10 @@ protected:
 	virtual void OnEnabledChanged();
 	
 	/** \brief Show menu as pop-up menu at screen position. */
-	virtual void PopupAt( igdeWidget &owner, const decPoint &position );
+	virtual void PopupAt(igdeWidget &owner, const decPoint &position);
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

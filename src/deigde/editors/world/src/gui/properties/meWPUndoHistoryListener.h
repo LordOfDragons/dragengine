@@ -35,6 +35,9 @@ class meWPUndoHistory;
  * \brief History Panel Listener
  */
 class meWPUndoHistoryListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWPUndoHistoryListener>;
+	
 private:
 	meWPUndoHistory &pPanel;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPUndoHistoryListener( meWPUndoHistory &panel );
+	meWPUndoHistoryListener(meWPUndoHistory &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWPUndoHistoryListener();
+	~meWPUndoHistoryListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,7 +61,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( meWorld *world );
+	void UndoChanged(meWorld *world) override;
 	/*@}*/
 };
 

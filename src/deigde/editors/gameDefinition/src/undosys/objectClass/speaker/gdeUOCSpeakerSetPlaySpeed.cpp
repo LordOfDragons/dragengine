@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPlaySpeed::gdeUOCSpeakerSetPlaySpeed( gdeObjectClass *objectClass,
-	gdeOCSpeaker *speaker, float newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetPlaySpeed::gdeUOCSpeakerSetPlaySpeed(gdeObjectClass *objectClass,
+	gdeOCSpeaker *speaker, float newValue) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set play speed" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetPlaySpeed");
 	
 	pOldValue = speaker->GetPlaySpeed();
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetPlaySpeed::~gdeUOCSpeakerSetPlaySpeed(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCSpeakerSetPlaySpeed::~gdeUOCSpeakerSetPlaySpeed(){
 ///////////////
 
 void gdeUOCSpeakerSetPlaySpeed::Undo(){
-	pSpeaker->SetPlaySpeed( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPlaySpeed(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetPlaySpeed::Redo(){
-	pSpeaker->SetPlaySpeed( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPlaySpeed(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

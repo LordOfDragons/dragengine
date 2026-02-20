@@ -30,7 +30,7 @@
 #include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../../../undosys/objectClass/world/gdeUOCAddWorld.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -45,28 +45,25 @@
 ////////////////
 
 gdeMAOCWorldPaste::gdeMAOCWorldPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class World",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class world"){
+	"@GameDefinition.Menu.OCWorldPaste.ToolTip"){
 }
 
 
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardDataReference clip(pWindowMain.GetClipboard().GetWithTypeName(
+igdeUndo::Ref gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard().GetWithTypeName(
 		gdeClipboardDataOCWorld::TYPE_NAME));
 	if(!clip){
-		return nullptr;
+		return {};
 	}
 	
-	const gdeClipboardDataOCWorld &clipOCWorld =
-		(const gdeClipboardDataOCWorld &)(igdeClipboardData&)clip;
-	
-	igdeUndo * const undo = new gdeUOCAddWorld(&objectClass,
-		gdeOCWorld::Ref::New(new gdeOCWorld(*clipOCWorld.GetWorld())));
-	undo->SetShortInfo("Paste object class world");
+	const igdeUndo::Ref undo = gdeUOCAddWorld::Ref::New(&objectClass,
+		gdeOCWorld::Ref::New(*clip.DynamicCast<gdeClipboardDataOCWorld>()->GetWorld()));
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCWorld");
 	return undo;
 }
 

@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 /**
@@ -35,20 +35,22 @@ class gdeObjectClass;
  */
 class gdeWPSTIMOCSubObject : public gdeWPSTreeItemModel{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	int pIndex;
 	
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCSubObject> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSubObject( gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index );
+	gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCSubObject();
+	~gdeWPSTIMOCSubObject() override;
 	/*@}*/
 	
 	
@@ -57,7 +59,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
@@ -75,10 +77,10 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

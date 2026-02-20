@@ -33,17 +33,21 @@
  * Animation Difference Rule Panel.
  */
 class aeWPAPanelRuleAnimationDifference : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleAnimationDifference>;
+	
+	
 private:
-	igdeComboBoxFilterReference pCBLMoveName;
-	igdeTextFieldReference pEditLMoveTime;
+	igdeComboBoxFilter::Ref pCBLMoveName;
+	igdeTextField::Ref pEditLMoveTime;
 	
-	igdeComboBoxFilterReference pCBRMoveName;
-	igdeTextFieldReference pEditRMoveTime;
+	igdeComboBoxFilter::Ref pCBRMoveName;
+	igdeTextField::Ref pEditRMoveTime;
 	
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -51,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleAnimationDifference( aeWPRule &wpRule );
+	aeWPAPanelRuleAnimationDifference(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleAnimationDifference();
+	~aeWPAPanelRuleAnimationDifference() override;
 	/*@}*/
 	
 	
@@ -64,13 +68,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update animation move list. */
-	virtual void UpdateAnimMoveList();
+	void UpdateAnimMoveList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

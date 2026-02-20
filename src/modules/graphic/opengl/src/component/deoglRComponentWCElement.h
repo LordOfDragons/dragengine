@@ -34,6 +34,10 @@ class deoglRComponent;
  * Render component world compute element.
  */
 class deoglRComponentWCElement : public deoglWorldComputeElement{
+public:
+	using Ref = deTObjectReference<deoglRComponentWCElement>;
+	
+	
 private:
 	deoglRComponent &pComponent;
 	
@@ -43,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render component world compute element. */
-	deoglRComponentWCElement( deoglRComponent &component );
+	deoglRComponentWCElement(deoglRComponent &component);
 	
 protected:
 	/** Clean up render component. */
-	virtual ~deoglRComponentWCElement();
+	~deoglRComponentWCElement() override;
 	/*@}*/
 	
 	
@@ -56,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update element data. */
-	virtual void UpdateData( sDataElement &data ) const;
+	void UpdateData(sDataElement &data) const override;
 	
 	/** Update geometries data. */
-	virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	void UpdateDataGeometries(sDataElementGeometry *data) const override;
 };
 
 #endif

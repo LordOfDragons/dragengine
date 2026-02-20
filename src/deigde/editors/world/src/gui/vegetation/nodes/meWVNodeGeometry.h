@@ -27,7 +27,7 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 
 class meHTVRuleGeometry;
 
@@ -37,10 +37,13 @@ class meHTVRuleGeometry;
  * \brief Vegetation Editing Window Node Geometry.
  */
 class meWVNodeGeometry : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeGeometry>;
+	
 private:
 	meHTVRuleGeometry *pRuleGeometry;
 	
-	igdeContainerReference pFraParameters;
+	igdeContainer::Ref pFraParameters;
 	
 	
 	
@@ -48,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeGeometry( meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule );
+	meWVNodeGeometry(meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeGeometry();
+	~meWVNodeGeometry() override;
 	/*@}*/
 	
 	
@@ -64,7 +67,7 @@ public:
 	inline meHTVRuleGeometry *GetRuleGeometry() const{ return pRuleGeometry; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

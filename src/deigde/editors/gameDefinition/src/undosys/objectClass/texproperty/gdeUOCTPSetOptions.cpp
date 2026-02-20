@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetOptions::gdeUOCTPSetOptions( gdeObjectClass *objectClass,
-gdeProperty *property, const decStringList &newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetOptions::gdeUOCTPSetOptions(gdeObjectClass *objectClass,
+gdeProperty *property, const decStringList &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set options" );
+	SetShortInfo("@GameDefinition.Undo.OCTPSetOptions");
 	
 	pOldValue = property->GetOptions();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPSetOptions::~gdeUOCTPSetOptions(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,10 +67,10 @@ gdeUOCTPSetOptions::~gdeUOCTPSetOptions(){
 
 void gdeUOCTPSetOptions::Undo(){
 	pProperty->GetOptions() = pOldValue;
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetOptions::Redo(){
 	pProperty->GetOptions() = pNewValue;
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

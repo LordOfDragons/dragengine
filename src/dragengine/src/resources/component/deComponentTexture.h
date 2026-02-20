@@ -26,10 +26,10 @@
 #define _DECOMPONENTTEXTURE_H_
 
 #include "../../common/math/decMath.h"
+#include "../skin/deSkin.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 
-class deSkin;
 class deImage;
-class deDynamicSkin;
 
 
 /**
@@ -45,10 +45,10 @@ class deDynamicSkin;
  */
 class DE_DLL_EXPORT deComponentTexture{
 private:
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	int pTexture;
 	decTexMatrix2 pTransform;
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	
 	
@@ -57,6 +57,10 @@ public:
 	/*@{*/
 	/** \brief Create new texture. */
 	deComponentTexture();
+	
+	/** \brief Copy texture. */
+	deComponentTexture(const deComponentTexture &copy);
+	deComponentTexture &operator=(const deComponentTexture &copy);
 	
 	/** \brief Clean up texture. */
 	~deComponentTexture();
@@ -67,28 +71,28 @@ public:
 	/** \name Projection */
 	/*@{*/
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Texture number. */
 	inline int GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture number. */
-	void SetTexture( int texture );
+	void SetTexture(int texture);
 	
 	/** \brief Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** \brief Dynamic skin or NULL if not set. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or NULL if not set. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	/*@}*/
 };
 

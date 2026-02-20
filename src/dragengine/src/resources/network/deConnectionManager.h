@@ -25,11 +25,11 @@
 #ifndef _DECONNECTIONMANAGER_H_
 #define _DECONNECTIONMANAGER_H_ 
 
+#include "deConnection.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deConnection;
 
 
 /**
@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection resource manager linked to the given engine. */
-	deConnectionManager( deEngine *engine );
+	deConnectionManager(deEngine *engine);
 	
 	/** \brief Clean up connection resource manager and reports leaking resources. */
-	~deConnectionManager();
+	~deConnectionManager() override;
 	/*@}*/
 	
 	
@@ -62,10 +62,10 @@ public:
 	deConnection *GetRootConnection() const;
 	
 	/** \brief Create connection. */
-	deConnection *CreateConnection();
+	deConnection::Ref CreateConnection();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,16 +73,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Network System Peers of all stored resources have to be created. */
-	virtual void SystemNetworkLoad();
+	void SystemNetworkLoad() override;
 	
 	/** \brief Network System Peers of all stored resources have to be freed. */
-	virtual void SystemNetworkUnload();
+	void SystemNetworkUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

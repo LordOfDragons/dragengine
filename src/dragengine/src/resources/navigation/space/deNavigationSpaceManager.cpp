@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigationSpaceManager::deNavigationSpaceManager( deEngine *engine ) : deResourceManager( engine, ertNavigationSpace ){
-	SetLoggingName( "navigation space" );
+deNavigationSpaceManager::deNavigationSpaceManager(deEngine *engine) : deResourceManager(engine, ertNavigationSpace){
+	SetLoggingName("navigation space");
 }
 
 deNavigationSpaceManager::~deNavigationSpaceManager(){
@@ -62,29 +62,13 @@ int deNavigationSpaceManager::GetNavigationSpaceCount() const{
 }
 
 deNavigationSpace *deNavigationSpaceManager::GetRootNavigationSpace() const{
-	return ( deNavigationSpace* )pNavSpaces.GetRoot();
+	return (deNavigationSpace*)pNavSpaces.GetRoot();
 }
 
-deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
-	deNavigationSpace *navspace = NULL;
-	
-	try{
-		navspace = new deNavigationSpace( this );
-		if( ! navspace ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		GetAISystem()->LoadNavigationSpace( navspace );
-		
-		pNavSpaces.Add( navspace );
-		
-	}catch( const deException & ){
-		if( navspace ){
-			navspace->FreeReference();
-		}
-		throw;
-	}
-	
+deNavigationSpace::Ref deNavigationSpaceManager::CreateNavigationSpace(){
+	const deNavigationSpace::Ref navspace(deNavigationSpace::Ref::New(this));
+	GetAISystem()->LoadNavigationSpace(navspace);
+	pNavSpaces.Add(navspace);
 	return navspace;
 }
 
@@ -93,8 +77,8 @@ deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
 void deNavigationSpaceManager::ReleaseLeakingResources(){
 	const int count = GetNavigationSpaceCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking navigation spaces", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking navigation spaces", count);
 		pNavSpaces.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -105,27 +89,21 @@ void deNavigationSpaceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigationSpaceManager::SystemAILoad(){
-	deNavigationSpace *navspace = ( deNavigationSpace* )pNavSpaces.GetRoot();
 	deAISystem &aisys = *GetAISystem();
-	
-	while( navspace ){
-		if( ! navspace->GetPeerAI() ){
-			aisys.LoadNavigationSpace( navspace );
+	pNavSpaces.GetResources().Visit([&](deResource *res){
+		deNavigationSpace *navspace = static_cast<deNavigationSpace*>(res);
+		if(!navspace->GetPeerAI()){
+			aisys.LoadNavigationSpace(navspace);
 		}
-		
-		navspace = ( deNavigationSpace* )navspace->GetLLManagerNext();
-	}
+	});
 }
 
 void deNavigationSpaceManager::SystemAIUnload(){
-	deNavigationSpace *navspace = ( deNavigationSpace* )pNavSpaces.GetRoot();
-	
-	while( navspace ){
-		navspace->SetPeerAI( NULL );
-		navspace = ( deNavigationSpace* )navspace->GetLLManagerNext();
-	}
+	pNavSpaces.GetResources().Visit([&](deResource *res){
+		static_cast<deNavigationSpace*>(res)->SetPeerAI(nullptr);
+	});
 }
 
-void deNavigationSpaceManager::RemoveResource( deResource *resource ){
-	pNavSpaces.RemoveIfPresent( resource );
+void deNavigationSpaceManager::RemoveResource(deResource *resource){
+	pNavSpaces.RemoveIfPresent(resource);
 }

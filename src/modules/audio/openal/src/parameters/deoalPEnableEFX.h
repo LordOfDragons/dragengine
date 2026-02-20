@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	deoalPEnableEFX( deAudioOpenAL &oal );
+	deoalPEnableEFX(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
-	virtual ~deoalPEnableEFX();
+	~deoalPEnableEFX() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	virtual bool GetParameterBool();
+	bool GetParameterBool() override;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterBool( bool value );
+	void SetParameterBool(bool value) override;
 	/*@}*/
 };
 

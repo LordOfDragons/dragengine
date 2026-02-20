@@ -25,12 +25,17 @@
 #ifndef _MEWPSELECTION_H_
 #define _MEWPSELECTION_H_
 
-#include <deigde/gui/igdeSwitcher.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include "meWPSelectionListener.h"
+#include "object/meWPSObject.h"
+#include "objectshape/meWPSObjectShape.h"
+#include "decal/meWPSDecal.h"
+#include "navspace/meWPSNavSpace.h"
+#include "../../../world/meWorld.h"
 
-class meWPSelectionListener;
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeWidget.h>
+
 class meWindowProperties;
-class meWorld;
 
 
 
@@ -38,16 +43,19 @@ class meWorld;
  * \brief Selection panel.
  */
 class meWPSelection : public igdeSwitcher{
+public:
+	using Ref = deTObjectReference<meWPSelection>;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPSelectionListener *pListener;
+	meWPSelectionListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	igdeWidgetReference pPanelObject;
-	igdeWidgetReference pPanelObjectShape;
-	igdeWidgetReference pPanelDecal;
-	igdeWidgetReference pPanelNavSpace;
+	meWPSObject::Ref pPanelObject;
+	meWPSObjectShape::Ref pPanelObjectShape;
+	meWPSDecal::Ref pPanelDecal;
+	meWPSNavSpace::Ref pPanelNavSpace;
 	
 	
 	
@@ -55,11 +63,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSelection( meWindowProperties &windowProperties );
+	meWPSelection(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSelection();
+	~meWPSelection() override;
 	/*@}*/
 	
 	
@@ -71,10 +79,10 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Element mode changed. */
 	void ElementModeChanged();

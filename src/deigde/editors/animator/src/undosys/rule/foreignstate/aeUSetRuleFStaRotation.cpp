@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaRotation::aeUSetRuleFStaRotation( aeRuleForeignState *rule, float newScale ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaRotation::aeUSetRuleFStaRotation(aeRuleForeignState *rule, float newScale){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldScale = rule->GetScaleOrientation();
 		pNewScale = newScale;
 		
-		SetShortInfo( "Set foreign state rule rotation scale" );
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateRotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleFStaRotation::~aeUSetRuleFStaRotation(){
 ///////////////
 
 void aeUSetRuleFStaRotation::Undo(){
-	pRule->SetScaleOrientation( pOldScale );
+	pRule->SetScaleOrientation(pOldScale);
 }
 
 void aeUSetRuleFStaRotation::Redo(){
-	pRule->SetScaleOrientation( pNewScale );
+	pRule->SetScaleOrientation(pNewScale);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleFStaRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaRotation::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

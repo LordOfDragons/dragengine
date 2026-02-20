@@ -27,8 +27,8 @@
 
 #include "reWPPanelShape.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 class reRigShapeSphere;
 
@@ -38,9 +38,12 @@ class reRigShapeSphere;
  * \brief Rig shape sphere panel.
  */
 class reWPPanelShapeSphere : public reWPPanelShape{
+public:
+	using Ref = deTObjectReference<reWPPanelShapeSphere>;
+	
 private:
-	igdeEditVectorReference pEditPosition;
-	igdeTextFieldReference pEditRadius;
+	igdeEditVector::Ref pEditPosition;
+	igdeTextField::Ref pEditRadius;
 	
 	
 	
@@ -48,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeSphere( reWPShape &wpShapes );
+	reWPPanelShapeSphere(reWPShape &wpShapes);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShapeSphere();
+	~reWPPanelShapeSphere() override;
 	/*@}*/
 	
 	
@@ -61,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update shape. */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	/*@}*/
 };
 

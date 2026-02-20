@@ -64,7 +64,7 @@ class decString;
  */
 class DE_DLL_EXPORT igdePropertyStringEncodeShapeList : public decShapeVisitor{
 private:
-	decString  *pString;
+	decString &pString;
 	bool pRequiresSeparator;
 	
 	
@@ -73,10 +73,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create analytic shape visitor. */
-	igdePropertyStringEncodeShapeList( decString *string );
+	explicit igdePropertyStringEncodeShapeList(decString &string);
 	
 	/** \brief Clean up analytic shape visitor. */
-	virtual ~igdePropertyStringEncodeShapeList();
+	~igdePropertyStringEncodeShapeList() override;
 	/*@}*/
 	
 	
@@ -92,22 +92,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 	
 	

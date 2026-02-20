@@ -41,34 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter( gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
+
+pParticleEmitter(nullptr)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetParticleEmitters().Has( particleEmitter ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetParticleEmitters().Has(particleEmitter)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove particle emitter" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveParticleEmitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveParticleEmitter::~gdeUOCRemoveParticleEmitter(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ gdeUOCRemoveParticleEmitter::~gdeUOCRemoveParticleEmitter(){
 ///////////////
 
 void gdeUOCRemoveParticleEmitter::Undo(){
-	pObjectClass->GetParticleEmitters().Add( pParticleEmitter );
+	pObjectClass->GetParticleEmitters().Add(pParticleEmitter);
 	pObjectClass->NotifyParticleEmittersChanged();
 }
 
 void gdeUOCRemoveParticleEmitter::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCParticleEmitter() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCParticleEmitter()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCParticleEmitter( NULL );
+		gameDefinition->SetActiveOCParticleEmitter(nullptr);
 	}
 	
-	pObjectClass->GetParticleEmitters().Remove( pParticleEmitter );
+	pObjectClass->GetParticleEmitters().Remove(pParticleEmitter);
 	pObjectClass->NotifyParticleEmittersChanged();
 }

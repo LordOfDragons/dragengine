@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCComponentToggleRenderEnvMap::gdeUOCComponentToggleRenderEnvMap(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle render env-map" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleRenderEnvMap");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleRenderEnvMap::~gdeUOCComponentToggleRenderEnvMap(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCComponentToggleRenderEnvMap::~gdeUOCComponentToggleRenderEnvMap(){
 ///////////////
 
 void gdeUOCComponentToggleRenderEnvMap::Undo(){
-	pComponent->SetRenderEnvMap( ! pComponent->GetRenderEnvMap() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetRenderEnvMap(!pComponent->GetRenderEnvMap());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleRenderEnvMap::Redo(){

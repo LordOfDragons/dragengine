@@ -27,10 +27,9 @@
 
 #include "../devkBasics.h"
 #include "../devkTPoolReference.h"
-#include "../queue/devkCommandPool.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class devkDevice;
@@ -40,6 +39,7 @@ class devkDescriptorSet;
 class devkRenderPass;
 class devkFramebuffer;
 class devkImage;
+class devkCommandPool;
 
 
 /**
@@ -48,7 +48,7 @@ class devkImage;
 class devkCommandBuffer : public deObject{
 public:
 	/** Reference. */
-	typedef devkTPoolReference<devkCommandBuffer> Ref;
+	using Ref = devkTPoolReference<devkCommandBuffer>;
 	
 	
 	
@@ -63,7 +63,7 @@ private:
 	VkFence pFence;
 	bool pFenceActive;
 	
-	decObjectLinkedList::cListEntry pLLPool;
+	decTObjectLinkedList<devkCommandBuffer>::Element pLLPool;
 	
 	
 public:
@@ -174,7 +174,7 @@ public:
 	void ReturnToPool();
 	
 	/** Command pool linked list. */
-	inline decObjectLinkedList::cListEntry &GetLLPool(){ return pLLPool; }
+	inline decTObjectLinkedList<devkCommandBuffer>::Element &GetLLPool(){ return pLLPool; }
 	/*@}*/
 	
 	

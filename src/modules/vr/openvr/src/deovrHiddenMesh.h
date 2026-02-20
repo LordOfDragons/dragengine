@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deovrHiddenMesh> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	
@@ -55,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load hidden mesh. */
-	deovrHiddenMesh( deVROpenVR &ovr, vr::Hmd_Eye eye );
+	deovrHiddenMesh(deVROpenVR &ovr, vr::Hmd_Eye eye);
 	
 protected:
 	/** Clean up hidden mesh. */
@@ -74,7 +73,7 @@ public:
 	inline vr::Hmd_Eye GetEye() const{ return pEye; }
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	/*@}*/
 	
 	

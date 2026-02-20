@@ -27,7 +27,7 @@
 #define _DEBPDMBCONVEXVOLUMELIST_H_
 
 // includes
-#include "dragengine/common/math/decConvexVolumeList.h"
+#include <dragengine/common/math/decConvexVolumeList.h>
 
 
 
@@ -38,12 +38,14 @@
  */
 class debpDMBConvexVolumeList : public decConvexVolumeList{
 public:
+	using Ref = deTUniqueReference<debpDMBConvexVolumeList>;
+	
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new decal mesh builder convex volume list. */
 	debpDMBConvexVolumeList();
 	/** Cleans up the decal mesh builder convex volume list. */
-	virtual ~debpDMBConvexVolumeList();
+	~debpDMBConvexVolumeList() override;
 	/*@}*/
 	
 	/** @name Subclassing */
@@ -56,7 +58,7 @@ public:
 	 * create convex volume face of specialized subclasses. The default
 	 * implementation creates a convex volume face of type decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateVolumeFace( decConvexVolumeFace *face );
+	decConvexVolumeFace::Ref CreateVolumeFace(const decConvexVolumeFace *face) override;
 	/*@}*/
 };
 

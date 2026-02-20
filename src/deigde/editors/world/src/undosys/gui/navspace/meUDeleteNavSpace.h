@@ -25,30 +25,36 @@
 #ifndef _MEUDELETENAVSPACE_H_
 #define _MEUDELETENAVSPACE_H_
 
+#include "meUndoDataNavSpace.h"
+#include "../../../world/meWorld.h"
+
 #include <deigde/undo/igdeUndo.h>
-
-class meUndoDataNavSpace;
-class meWorld;
-
 
 
 /**
  * \brief Undo action delete navigation space.
  */
 class meUDeleteNavSpace : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDeleteNavSpace>;
+	
+	
 private:
 	meWorld *pWorld;
-	meUndoDataNavSpace **pNavSpaces;
-	int pNavSpaceCount;
+	meUndoDataNavSpace::List pNavSpaces;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDeleteNavSpace( meWorld *world );
+	meUDeleteNavSpace(meWorld *world);
 	
 	/** \brief Clean up undo object. */
-	virtual ~meUDeleteNavSpace();
+
+protected:
+	~meUDeleteNavSpace() override;
+
+public:
 	/*@}*/
 	
 	
@@ -56,14 +62,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo the action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo the action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

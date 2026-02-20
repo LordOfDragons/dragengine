@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class environment map probe set scaling.
  */
 class gdeUOCEnvMapProbeSetScaling : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetScaling>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetScaling( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, const decVector &newValue );
+	gdeUOCEnvMapProbeSetScaling(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCEnvMapProbeSetScaling();
+	~gdeUOCEnvMapProbeSetScaling() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

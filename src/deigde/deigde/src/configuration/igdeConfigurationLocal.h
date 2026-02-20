@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create local configuration. */
-	igdeConfigurationLocal( igdeWindowMain &windowMain );
+	igdeConfigurationLocal(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up local configuration. */
 	~igdeConfigurationLocal();
@@ -73,7 +73,7 @@ public:
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/** \brief Load the configuration. */
 	void LoadConfiguration();

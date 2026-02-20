@@ -31,13 +31,11 @@
 #include "../igdeButton.h"
 #include "../igdeListBox.h"
 #include "../igdeGroupBox.h"
-#include "../igdeGroupBoxReference.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeActionUndo.h"
 #include "../event/igdeActionRedo.h"
 #include "../event/igdeActionClearUndo.h"
 #include "../layout/igdeContainerBorder.h"
-#include "../layout/igdeContainerBorderReference.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndo.h"
 #include "../../undo/igdeUndoSystem.h"
@@ -53,48 +51,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWPUndoHistory::igdeWPUndoHistory( igdeEnvironment &environment ) :
-igdeContainerBox( environment, igdeContainerBox::eaY ),
-pUndoSystem( NULL )
+igdeWPUndoHistory::igdeWPUndoHistory(igdeEnvironment &environment) :
+igdeContainerBox(environment, igdeContainerBox::eaY),
+pUndoSystem(nullptr)
 {
 	igdeUIHelper &helper = environment.GetUIHelperProperties();
 	
 	// group box
-	igdeGroupBoxReference groupBoxFrame;
-	groupBoxFrame.TakeOver( new igdeGroupBox( environment, "Undo History:" ) );
-	groupBoxFrame->SetStretchLast( true );
-	AddChild( groupBoxFrame );
+	igdeGroupBox::Ref groupBoxFrame(igdeGroupBox::Ref::New(environment, "@Igde.WPUndoHistory"));
+	groupBoxFrame->SetStretchLast(true);
+	AddChild(groupBoxFrame);
 	
-	igdeContainerBorderReference groupBox;
-	groupBox.TakeOver( new igdeContainerBorder( environment ) );
-	groupBoxFrame->AddChild( groupBox );
+	igdeContainerBorder::Ref groupBox(igdeContainerBorder::Ref::New(environment));
+	groupBoxFrame->AddChild(groupBox);
 	
 	// buttons
-	igdeContainerReference buttons;
-	buttons.TakeOver( new igdeContainerBox( environment, igdeContainerBox::eaY ) );
-	groupBox->AddChild( buttons, igdeContainerBorder::eaTop );
+	igdeContainerBox::Ref buttons(igdeContainerBox::Ref::New(environment, igdeContainerBox::eaY));
+	groupBox->AddChild(buttons, igdeContainerBorder::eaTop);
 	
 	// button row 1
-	igdeContainerReference buttonLine;
-	buttonLine.TakeOver( new igdeContainerBox( environment, igdeContainerBox::eaX ) );
-	buttons->AddChild( buttonLine );
+	igdeContainerBox::Ref buttonLine(igdeContainerBox::Ref::New(
+		environment, igdeContainerBox::eaX));
+	buttons->AddChild(buttonLine);
 	
-	pActionUndo.TakeOver( new igdeActionUndo( environment ) );
-	helper.Button( buttonLine, pActionUndo );
+	pActionUndo = igdeActionUndo::Ref::New(environment);
+	helper.Button(buttonLine, pActionUndo);
 	
-	pActionRedo.TakeOver( new igdeActionRedo( environment ) );
-	helper.Button( buttonLine, pActionRedo );
+	pActionRedo = igdeActionRedo::Ref::New(environment);
+	helper.Button(buttonLine, pActionRedo);
 	
 	// button row 2
-	buttonLine.TakeOver( new igdeContainerBox( environment, igdeContainerBox::eaX ) );
-	buttons->AddChild( buttonLine );
+	buttonLine = igdeContainerBox::Ref::New(environment, igdeContainerBox::eaX);
+	buttons->AddChild(buttonLine);
 	
-	pActionClear.TakeOver( new igdeActionClearUndo( environment ) );
-	helper.Button( buttonLine, pActionClear );
+	pActionClear = igdeActionClearUndo::Ref::New(environment);
+	helper.Button(buttonLine, pActionClear);
 	
 	// undo action list
-	pListUndo.TakeOver( new igdeListBox( environment, 10 ) );
-	groupBox->AddChild( pListUndo, igdeContainerBorder::eaCenter );
+	pListUndo = igdeListBox::Ref::New(environment, 10);
+	pListUndo->SetAutoTranslateItems(true);
+	groupBox->AddChild(pListUndo, igdeContainerBorder::eaCenter);
 }
 
 igdeWPUndoHistory::~igdeWPUndoHistory(){
@@ -105,16 +101,16 @@ igdeWPUndoHistory::~igdeWPUndoHistory(){
 // Management
 ///////////////
 
-void igdeWPUndoHistory::SetUndoSystem( igdeUndoSystem *undoSystem ){
-	if( undoSystem == pUndoSystem ){
+void igdeWPUndoHistory::SetUndoSystem(igdeUndoSystem *undoSystem){
+	if(undoSystem == pUndoSystem){
 		return;
 	}
 	
 	pUndoSystem = undoSystem;
 	
-	pActionUndo->SetUndoSystem( undoSystem );
-	pActionRedo->SetUndoSystem( undoSystem );
-	pActionClear->SetUndoSystem( undoSystem );
+	pActionUndo->SetUndoSystem(undoSystem);
+	pActionRedo->SetUndoSystem(undoSystem);
+	pActionClear->SetUndoSystem(undoSystem);
 	
 	UpdateUndo();
 }
@@ -124,29 +120,24 @@ void igdeWPUndoHistory::SetUndoSystem( igdeUndoSystem *undoSystem ){
 void igdeWPUndoHistory::UpdateUndo(){
 	pListUndo->RemoveAllItems();
 	
-	if( ! pUndoSystem ){
+	if(!pUndoSystem){
 		return;
 	}
 	
 	igdeIcon * const iconUndo = pActionUndo->GetIcon();
 	igdeIcon * const iconRedo = pActionRedo->GetIcon();
 	const int redoCount = pUndoSystem->GetRedoableCount();
-	const int count = pUndoSystem->GetCount();
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeUndo &undo = *pUndoSystem->GetAt( i );
+	pUndoSystem->GetUndos().VisitIndexed([&](int i, const igdeUndo &undo){
 		//undo.GetLongInfo(), undo.GetMemoryConsumption()
-		
-		if( i < redoCount ){
-			pListUndo->AddItem( undo.GetShortInfo(), iconRedo );
-			
-		}else{
-			pListUndo->AddItem( undo.GetShortInfo(), iconUndo );
-		}
-	}
+		pListUndo->AddItem(undo.GetShortInfo(), i < redoCount ? iconRedo : iconUndo);
+	});
 	
-	if( count > 0 ){
-		pListUndo->SetSelection( decMath::min( redoCount, count - 1 ) );
+	if(pUndoSystem->GetUndos().IsNotEmpty()){
+		pListUndo->SetSelection(decMath::min(redoCount, pUndoSystem->GetUndos().GetCount() - 1));
 	}
+}
+
+void igdeWPUndoHistory::OnLanguageChanged(){
+	UpdateUndo();
 }

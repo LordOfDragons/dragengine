@@ -40,33 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetMaxValue::gdeUGDDPSetMaxValue( gdeGameDefinition *gamedef, gdeProperty *property, float newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPSetMaxValue::gdeUGDDPSetMaxValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set maximum value" );
+	SetShortInfo("@GameDefinition.Undo.GDDPSetMaxValue");
 	
 	pOldValue = property->GetMaximumValue();
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetMaxValue::~gdeUGDDPSetMaxValue(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ gdeUGDDPSetMaxValue::~gdeUGDDPSetMaxValue(){
 ///////////////
 
 void gdeUGDDPSetMaxValue::Undo(){
-	pProperty->SetMaximumValue( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetMaximumValue(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPSetMaxValue::Redo(){
-	pProperty->SetMaximumValue( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetMaximumValue(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

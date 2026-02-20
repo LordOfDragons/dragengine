@@ -28,7 +28,7 @@
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
 class ceCAIfElse;
-class ceCAIfElseCase;
+#include "../../../../../conversation/action/ceCAIfElseCase.h"
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
 
@@ -37,8 +37,11 @@ class ceWPTTIMAIfElseIfCase;
  * \brief Condition if-else actions.
  */
 class ceWPTTIMAIfElseIfCaseCondition : public ceWPTTIMConditionContainer{
+public:
+	using Ref = deTObjectReference<ceWPTTIMAIfElseIfCaseCondition>;
+	
 private:
-	ceCAIfElseCase *pIfCase;
+	ceCAIfElseCase::Ref pIfCase;
 	
 	
 	
@@ -46,12 +49,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseIfCaseCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAIfElse&ifElse, ceCAIfElseCase *ifCase );
+	ceWPTTIMAIfElseIfCaseCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceCAIfElse&ifElse, ceCAIfElseCase *ifCase);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAIfElseIfCaseCondition();
+	~ceWPTTIMAIfElseIfCaseCondition() override;
 	/*@}*/
 	
 	
@@ -60,7 +63,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline const ceCAIfElseCase::Ref &GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Parent if-case model. */
 	ceWPTTIMAIfElseIfCase *GetModelIfCase() const;
@@ -72,13 +75,13 @@ public:
 	void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition) override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

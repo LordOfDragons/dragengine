@@ -27,8 +27,12 @@
 
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
+#include "../environment/raytrace/deoalRayTraceHitElement.h"
+#include "../environment/raytrace/deoalSoundRayInteraction.h"
+#include "../microphone/deoalAMicrophone.h"
+#include "../world/deoalAWorld.h"
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
@@ -36,13 +40,11 @@
 #include <dragengine/threading/deMutex.h>
 
 class deAudioOpenAL;
-class deoalAMicrophone;
 class deoalATContext;
 class deoalATDebug;
 class deoalATDelayed;
 class deoalATLogger;
 class deoalATRayTracing;
-class deoalAWorld;
 class deoalCaches;
 class deoalCapabilities;
 class deoalConfiguration;
@@ -51,10 +53,8 @@ class deoalDecodeBuffer;
 class deoalDevMode;
 class deoalExtensions;
 class deoalRTParallelEnvProbe;
-class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalSharedBufferList;
-class deoalSoundRayInteractionList;
 class deoalEffectSlotManager;
 class deoalSharedEffectSlotManager;
 class deoalSourceManager;
@@ -107,16 +107,15 @@ private:
 	
 	deoalRTParallelEnvProbe *pRTParallelEnvProbe;
 	deoalRayTraceResult *pRTResultDirect;
-	deoalRayTraceHitElementList *pRTHitElementList;
-	deoalSoundRayInteractionList *pSRInteractionList;
+	deoalRayTraceHitElement::List pRTHitElementList;
+	deoalSoundRayInteraction::List pSRInteractionList;
 	deoalWOVRayHitsElement *pWOVRayHitsElement;
 	deoalWOVCollectElements *pWOVCollectElements;
 	
-	deoalAMicrophone *pActiveMicrophone;
-	deoalAMicrophone *pDeactiveMicrophone;
-	deoalAWorld *pActiveWorld;
+	deoalAMicrophone::Ref pActiveMicrophone, pDeactiveMicrophone;
+	deoalAWorld::Ref pActiveWorld;
 	
-	decObjectSet pProcessOnceWorld; // audio thread
+	decTObjectOrderedSet<deoalAWorld> pProcessOnceWorld; // audio thread
 	
 	decTimer pTimerElapsed; // audio thread
 	float pElapsed; // audio thread
@@ -150,10 +149,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create audio thread. */
-	deoalAudioThread( deAudioOpenAL &oal );
+	deoalAudioThread(deAudioOpenAL &oal);
 	
+	deoalAudioThread(const deoalAudioThread&) = delete;
+	deoalAudioThread& operator=(const deoalAudioThread&) = delete;
+
 	/** Clean up audio thread. */
-	virtual ~deoalAudioThread();
+	~deoalAudioThread() override;
 	/*@}*/
 	
 	
@@ -169,18 +171,18 @@ public:
 	inline bool GetAsyncAudio() const{ return pAsyncAudio; }
 	
 	/** Set async audio. */
-	void SetAsyncAudio( bool asyncAudio );
+	void SetAsyncAudio(bool asyncAudio);
 	
 	
 	
 	/** Active microphone. */
-	inline deoalAMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
+	inline const deoalAMicrophone::Ref &GetActiveMicrophone() const{ return pActiveMicrophone; }
 	
 	/** Set active microphone. */
-	void SetActiveMicrophone( deoalAMicrophone *microphone );
+	void SetActiveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Active world if a microphone is active and has a parent world. */
-	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
+	inline const deoalAWorld::Ref &GetActiveWorld() const{ return pActiveWorld; }
 	
 	
 	
@@ -236,7 +238,7 @@ public:
 	
 	
 	/** Run audio thread. */
-	virtual void Run();
+	void Run() override;
 	
 	
 	
@@ -303,10 +305,12 @@ public:
 	inline deoalRayTraceResult &GetRTResultDirect() const{ return *pRTResultDirect; }
 	
 	/** Shared ray trace hit element list. */
-	inline deoalRayTraceHitElementList &GetRTHitElementList() const{ return *pRTHitElementList; }
+	inline deoalRayTraceHitElement::List &GetRTHitElementList(){ return pRTHitElementList; }
+	inline const deoalRayTraceHitElement::List &GetRTHitElementList() const{ return pRTHitElementList; }
 	
 	/** Shared sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRInteractionList() const{ return *pSRInteractionList; }
+	inline deoalSoundRayInteraction::List &GetSRInteractionList(){ return pSRInteractionList; }
+	inline const deoalSoundRayInteraction::List &GetSRInteractionList() const{ return pSRInteractionList; }
 	
 	/** Shared ray hits element world octree visitor. */
 	inline deoalWOVRayHitsElement &GetWOVRayHitsElement() const{ return *pWOVRayHitsElement; }
@@ -343,7 +347,7 @@ private:
 	
 	void pInitThreadPhase1();
 	void pCleanUpThread();
-	void pLimitFrameRate( float elapsed );
+	void pLimitFrameRate(float elapsed);
 	
 	void pSyncConfiguration();
 	void pPrepareConfiguration();

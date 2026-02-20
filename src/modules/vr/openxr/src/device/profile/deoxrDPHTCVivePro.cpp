@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPHTCVivePro::deoxrDPHTCVivePro( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/htc/vive_pro" ),
-	"HTC VIVE Pro HMD" )
+deoxrDPHTCVivePro::deoxrDPHTCVivePro(deoxrInstance &instance) :
+deoxrDeviceProfile(instance,
+	deoxrPath(instance, "/interaction_profiles/htc/vive_pro"),
+	"HTC VIVE Pro HMD")
 {
 }
 
@@ -65,15 +65,15 @@ void deoxrDPHTCVivePro::SuggestBindings(){
 	
 #if 0
 	const int bindingCount = 1;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePath( "/user/head" );
+	const decString basePath("/user/head");
 	
-	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/system/click" );
+	pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/system/click");
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 #endif
 }

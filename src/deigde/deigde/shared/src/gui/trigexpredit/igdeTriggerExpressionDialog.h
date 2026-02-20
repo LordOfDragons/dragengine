@@ -25,7 +25,7 @@
 #ifndef _IGDETRIGGEREXPRESSIONDIALOG_H_
 #define _IGDETRIGGEREXPRESSIONDIALOG_H_
 
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 #include "../dialog/igdeDialog.h"
 
 
@@ -38,8 +38,13 @@ class igdeTriggerTargetList;
  * \brief Trigger Expression Dialog.
  */
 class DE_DLL_EXPORT igdeTriggerExpressionDialog : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTriggerExpressionDialog>;
+	
+	
 private:
-	igdeWidgetReference pEditor;
+	igdeWidget::Ref pEditor;
 	
 	
 	
@@ -47,14 +52,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeTriggerExpressionDialog( igdeEnvironment &environment, const igdeTriggerTargetList &targetList,
-		igdeTriggerExpressionParser &parser, const char *title = "Edit Trigger Expression" );
+	igdeTriggerExpressionDialog(igdeEnvironment &environment, const igdeTriggerTargetList &targetList,
+		igdeTriggerExpressionParser &parser, const char *title = "@Igde.TriggerExpressionDialog.DefaultTitle");
 	
 	
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeTriggerExpressionDialog();
+	~igdeTriggerExpressionDialog() override;
 	/*@}*/
 	
 	
@@ -66,7 +71,7 @@ public:
 	const decString &GetExpression() const;
 	
 	/** \brief Set expression. */
-	void SetExpression( const char *expression );
+	void SetExpression(const char *expression);
 	/*@}*/
 };
 

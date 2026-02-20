@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetBoneName::gdeUOCNavBlockerSetBoneName( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navBlocker, const char *newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetBoneName::gdeUOCNavBlockerSetBoneName(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navBlocker, const char *newValue) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navBlocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navBlocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "NavBlocker set bone name" );
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetBoneName");
 	
 	pOldValue = navBlocker->GetBoneName();
 	pNewValue = newValue;
 	
 	pNavBlocker = navBlocker;
-	navBlocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetBoneName::~gdeUOCNavBlockerSetBoneName(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCNavBlockerSetBoneName::~gdeUOCNavBlockerSetBoneName(){
 ///////////////
 
 void gdeUOCNavBlockerSetBoneName::Undo(){
-	pNavBlocker->SetBoneName( pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetBoneName(pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetBoneName::Redo(){
-	pNavBlocker->SetBoneName( pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetBoneName(pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

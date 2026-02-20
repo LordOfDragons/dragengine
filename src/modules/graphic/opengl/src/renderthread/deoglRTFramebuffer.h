@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread framebuffer related object. */
-	deoglRTFramebuffer( deoglRenderThread &renderThread );
+	deoglRTFramebuffer(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread framebuffer related object. */
 	virtual ~deoglRTFramebuffer();

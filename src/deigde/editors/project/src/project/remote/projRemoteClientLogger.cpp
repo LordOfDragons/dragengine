@@ -49,9 +49,8 @@ pLogSource(logSource)
 	filePath.AddComponent(diskPath.GetLastComponent());
 	diskPath.RemoveLastComponent();
 	
-	pContainer.TakeOver(new deVFSDiskDirectory(diskPath));
-	pLogger.TakeOver(new deLoggerFile(decBaseFileWriter::Ref::New(
-		pContainer->OpenFileForWriting(filePath))));
+	pContainer = deVFSDiskDirectory::Ref::New(diskPath);
+	pLogger = deLoggerFile::Ref::New(pContainer->OpenFileForWriting(filePath));
 }
 
 projRemoteClientLogger::~projRemoteClientLogger(){

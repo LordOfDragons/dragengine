@@ -26,14 +26,13 @@
 #define _IGDENATIVENULLRENDERVIEW_H_
 
 #include <dragengine/common/math/decMath.h>
-
-class igdeViewRenderWindow;
+#include "../../igdeViewRenderWindow.h"
 
 
 /**
  * Null Render View.
  */
-class igdeNativeNullRenderView{
+class igdeNativeNullRenderView : public igdeViewRenderWindow::cNativeViewRenderWindow{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -44,7 +43,7 @@ public:
 	virtual ~igdeNativeNullRenderView();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullRenderView* CreateNativeWidget( igdeViewRenderWindow &owner );
+	static igdeNativeNullRenderView* CreateNativeWidget(igdeViewRenderWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -60,15 +59,15 @@ public:
 	inline bool GetCanRender() const{ return true; }
 	inline bool GetRenderWindowAttached() const{ return true; }
 	
-	virtual void DropNativeWindow();
-	virtual bool IsReallyVisible() const;
-	virtual bool IsShown() const;
-	virtual decPoint GetSize() const;
-	virtual void OnFrameUpdate();
-	virtual void AttachRenderWindow();
-	virtual void DetachRenderWindow();
-	virtual void GrabInput();
-	virtual void ReleaseInput();
+	void DropNativeWindow() override;
+	bool IsReallyVisible() const override;
+	bool IsShown() const override;
+	decPoint GetSize() const override;
+	void OnFrameUpdate() override;
+	void AttachRenderWindow() override;
+	void DetachRenderWindow() override;
+	void GrabInput() override;
+	void ReleaseInput() override;
 	/*@}*/
 };
 

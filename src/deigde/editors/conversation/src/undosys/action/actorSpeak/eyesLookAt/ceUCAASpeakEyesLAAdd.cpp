@@ -42,41 +42,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLAAdd::ceUCAASpeakEyesLAAdd( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, int index ){
-	if( ! topic || ! actorSpeak || ! eyesLookAt ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakEyesLAAdd::ceUCAASpeakEyesLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, int index){
+	if(!topic || !actorSpeak || !eyesLookAt){
+		DETHROW(deeInvalidParam);
 	}
-	if( index < 0 || index > actorSpeak->GetEyesLookAtList().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > actorSpeak->GetEyesLookAts().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pEyesLA = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pEyesLA = nullptr;
 	pIndex = index;
 	
-	SetShortInfo( "Actor Speak Add EyesLookAt" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddEyesLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLAAdd::~ceUCAASpeakEyesLAAdd(){
-	if( pEyesLA ){
-		pEyesLA->FreeReference();
-	}
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -85,11 +71,11 @@ ceUCAASpeakEyesLAAdd::~ceUCAASpeakEyesLAAdd(){
 ///////////////
 
 void ceUCAASpeakEyesLAAdd::Undo(){
-	pActorSpeak->GetEyesLookAtList().Remove( pEyesLA );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetEyesLookAts().Remove(pEyesLA);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakEyesLAAdd::Redo(){
-	pActorSpeak->GetEyesLookAtList().InsertAt( pEyesLA, pIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetEyesLookAts().InsertOrThrow(pEyesLA, pIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

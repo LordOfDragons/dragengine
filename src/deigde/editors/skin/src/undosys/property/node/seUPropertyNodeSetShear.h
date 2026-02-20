@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNode;
+#include "../../../skin/property/node/sePropertyNode.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNode;
  * \brief Undo action property node set shear.
  */
 class seUPropertyNodeSetShear : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeSetShear>;
+	
+	
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetShear( sePropertyNode *node, float newValue );
+	seUPropertyNodeSetShear(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeSetShear();
+	~seUPropertyNodeSetShear() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

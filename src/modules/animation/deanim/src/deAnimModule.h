@@ -25,13 +25,11 @@
 #ifndef _DEANIMMODULE_H_
 #define _DEANIMMODULE_H_
 
-#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/animation/deAnimationKeyframe.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
 #include <dragengine/systems/modules/animation/deBaseAnimationModule.h>
 
 class deAnimationMove;
-class deAnimationKeyframeList;
-class deAnimationKeyframe;
-class deAnimationKeyframeVertexPositionSetList;
 class deAnimationKeyframeVertexPositionSet;
 
 
@@ -43,10 +41,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deAnimModule( deLoadableModule &loadableModule );
+	deAnimModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deAnimModule();
+	~deAnimModule() override;
 	/*@}*/
 	
 	
@@ -54,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load animation. */
-	virtual void LoadAnimation( decBaseFileReader &reader, deAnimation &animation );
+	void LoadAnimation(decBaseFileReader &reader, deAnimation &animation) override;
 	
 	/** \brief Save animation. */
-	virtual void SaveAnimation( decBaseFileWriter &writer, const deAnimation &animation );
+	void SaveAnimation(decBaseFileWriter &writer, const deAnimation &animation) override;
 	/*@}*/
 	
 	
@@ -104,36 +102,36 @@ private:
 		bool formatFloat;
 	};
 	
-	void pReadBones( decBaseFileReader &reader, deAnimation &animation, sInfo &info );
-	void pReadVertexPositionSets( decBaseFileReader &reader, deAnimation &animation, sInfo &info );
-	void pReadMoves( decBaseFileReader &reader, deAnimation &animation, sInfo &info );
-	void pReadMoveFps( decBaseFileReader &reader, deAnimationMove &move, sInfo &info );
-	void pReadMoveBones( decBaseFileReader &reader, deAnimationMove &move, sInfo &info );
-	void pReadKeyframes( decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info );
-	void pReadKeyframe( decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info, int frameNumber );
-	void pReadMoveVertexPositionSets( decBaseFileReader &reader, deAnimationMove &move, sInfo &info );
-	void pReadKeyframes( decBaseFileReader &reader, deAnimationKeyframeVertexPositionSetList &list, sInfo &info );
-	void pReadKeyframe( decBaseFileReader &reader, deAnimationKeyframeVertexPositionSetList &list, sInfo &info, int frameNumber );
+	void pReadBones(decBaseFileReader &reader, deAnimation &animation, sInfo &info);
+	void pReadVertexPositionSets(decBaseFileReader &reader, deAnimation &animation, sInfo &info);
+	void pReadMoves(decBaseFileReader &reader, deAnimation &animation, sInfo &info);
+	void pReadMoveFps(decBaseFileReader &reader, deAnimationMove &move, sInfo &info);
+	void pReadMoveBones(decBaseFileReader &reader, deAnimationMove &move, sInfo &info);
+	void pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframe::List &list, sInfo &info);
+	void pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframe::List &list, sInfo &info, int frameNumber);
+	void pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnimationMove &move, sInfo &info);
+	void pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframeVertexPositionSet::List &list, sInfo &info);
+	void pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframeVertexPositionSet::List &list, sInfo &info, int frameNumber);
 	
-	void pWriteKeyframeData( decBaseFileWriter &writer, const sConfig &config,
-		const deAnimationKeyframe &keyframe );
+	void pWriteKeyframeData(decBaseFileWriter &writer, const sConfig &config,
+		const deAnimationKeyframe &keyframe);
 	
-	void pWriteKeyframeDataInterpolate( decBaseFileWriter &writer, const sConfig &config,
+	void pWriteKeyframeDataInterpolate(decBaseFileWriter &writer, const sConfig &config,
 		const deAnimationKeyframe &keyframePrev, const deAnimationKeyframe &keyframeNext,
-		int frameSteps );
+		int frameSteps);
 	
-	void pWriteKeyframePosition( decBaseFileWriter &writer, const sConfig &config, const decVector &position );
-	void pWriteKeyframeRotation( decBaseFileWriter &writer, const sConfig &config, const decVector &rotation );
-	void pWriteKeyframeScale( decBaseFileWriter &writer, const sConfig &config, const decVector &scale );
+	void pWriteKeyframePosition(decBaseFileWriter &writer, const sConfig &config, const decVector &position);
+	void pWriteKeyframeRotation(decBaseFileWriter &writer, const sConfig &config, const decVector &rotation);
+	void pWriteKeyframeScale(decBaseFileWriter &writer, const sConfig &config, const decVector &scale);
 	
-	void pWriteKeyframeData( decBaseFileWriter &writer, const sConfig2 &config,
-		const deAnimationKeyframeVertexPositionSet &keyframe );
+	void pWriteKeyframeData(decBaseFileWriter &writer, const sConfig2 &config,
+		const deAnimationKeyframeVertexPositionSet &keyframe);
 	
-	void pWriteKeyframeDataInterpolate( decBaseFileWriter &writer, const sConfig2 &config,
+	void pWriteKeyframeDataInterpolate(decBaseFileWriter &writer, const sConfig2 &config,
 		const deAnimationKeyframeVertexPositionSet &keyframePrev,
-		const deAnimationKeyframeVertexPositionSet &keyframeNext, int frameSteps );
+		const deAnimationKeyframeVertexPositionSet &keyframeNext, int frameSteps);
 	
-	void pWriteKeyframeWeight( decBaseFileWriter &writer, const sConfig2 &config, float weight );
+	void pWriteKeyframeWeight(decBaseFileWriter &writer, const sConfig2 &config, float weight);
 };
 
 #endif

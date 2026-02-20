@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reader. */
-	dewmWebmReader ( decBaseFileReader &reader );
+	dewmWebmReader (decBaseFileReader &reader);
 	
 	/** Clean up reader. */
-	virtual ~dewmWebmReader();
+	~dewmWebmReader() override;
 	/*@}*/
 	
 	
@@ -56,16 +56,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Read data. */
-	virtual webm::Status Read( std::size_t num_to_read, std::uint8_t *buffer, std::uint64_t *num_actually_read );
+	webm::Status Read(std::size_t num_to_read, std::uint8_t *buffer, std::uint64_t *num_actually_read) override;
 	
 	/** Skip data. */
-	virtual webm::Status Skip( std::uint64_t num_to_skip, std::uint64_t *num_actually_skipped );
+	webm::Status Skip(std::uint64_t num_to_skip, std::uint64_t *num_actually_skipped) override;
 	
 	/** Read position. */
-	virtual std::uint64_t Position() const;
+	std::uint64_t Position() const override;
 	
 	/** Set position from start of file. */
-	void SetPosition( std::uint64_t position );
+	void SetPosition(std::uint64_t position);
 	/*@}*/
 };
 

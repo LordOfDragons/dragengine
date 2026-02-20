@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCCameraAdd::gdeMAOCCameraAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Camera...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class camera" )
+gdeMAOCCameraAdd::gdeMAOCCameraAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCCameraAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Camera...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference camera;
-	camera.TakeOver( new gdeOCCamera );
-	return new gdeUOCAddCamera( &objectClass, ( gdeOCCamera* )( deObject* )camera );
+igdeUndo::Ref gdeMAOCCameraAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddCamera::Ref::New(&objectClass, gdeOCCamera::Ref::New());
 }
 
 void gdeMAOCCameraAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

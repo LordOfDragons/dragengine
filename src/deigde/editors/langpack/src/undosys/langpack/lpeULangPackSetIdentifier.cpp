@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackSetIdentifier::lpeULangPackSetIdentifier( lpeLangPack *langpack, const char *newIdentifier ) :
-pLangPack( NULL ),
-pNewIdentifier( newIdentifier )
+lpeULangPackSetIdentifier::lpeULangPackSetIdentifier(lpeLangPack *langpack, const char *newIdentifier) :
+
+pNewIdentifier(newIdentifier)
 {
-	DEASSERT_NOTNULL( langpack )
+	DEASSERT_NOTNULL(langpack)
 	
-	SetShortInfo( "LangPack set identifier" );
+	SetShortInfo("@LangPack.Undo.LangPackSetIdentifier");
 	
 	pOldIdentifier = langpack->GetIdentifier();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetIdentifier::~lpeULangPackSetIdentifier(){
-	if( pLangPack ){
-		pLangPack->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ lpeULangPackSetIdentifier::~lpeULangPackSetIdentifier(){
 ///////////////
 
 void lpeULangPackSetIdentifier::Undo(){
-	pLangPack->SetIdentifier( pOldIdentifier );
+	pLangPack->SetIdentifier(pOldIdentifier);
 }
 
 void lpeULangPackSetIdentifier::Redo(){
-	pLangPack->SetIdentifier( pNewIdentifier );
+	pLangPack->SetIdentifier(pNewIdentifier);
 }

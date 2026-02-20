@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread choices. */
-	deoglRTChoices( deoglRenderThread &renderThread );
+	deoglRTChoices(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread choices. */
 	~deoglRTChoices();

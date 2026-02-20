@@ -43,23 +43,23 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration xml read/save. */
-	lpeConfigurationXML( deLogger *logger, const char *loggerSource );
+	lpeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
-	virtual ~lpeConfigurationXML();
+	~lpeConfigurationXML() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, lpeConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, lpeConfiguration &config);
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const lpeConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const lpeConfiguration &config);
 	/*@}*/
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const lpeConfiguration &config );
+	void pWriteConfig(decXmlWriter &writer, const lpeConfiguration &config);
 	
-	void pReadConfig( const decXmlElementTag &root, lpeConfiguration &config );
+	void pReadConfig(const decXmlElementTag &root, lpeConfiguration &config);
 };
 
 #endif

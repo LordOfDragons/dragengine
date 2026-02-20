@@ -25,8 +25,9 @@
 #ifndef _DEOALCOMPONENTTEXTURE_H_
 #define _DEOALCOMPONENTTEXTURE_H_
 
+#include "deoalAComponentTexture.h"
+
 class deoalComponent;
-class deoalAComponentTexture;
 class deoalSkin;
 
 class deComponentTexture;
@@ -40,7 +41,7 @@ class deoalComponentTexture{
 private:
 	deoalComponent &pComponent;
 	const int pIndex;
-	deoalAComponentTexture *pATexture;
+	deoalAComponentTexture::Ref pATexture;
 	
 	deoalSkin *pSkin;
 	
@@ -52,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component texture. */
-	deoalComponentTexture( deoalComponent &component, int index );
+	deoalComponentTexture(deoalComponent &component, int index);
 	
 	/** \brief Clean up component texture. */
 	~deoalComponentTexture();
@@ -69,7 +70,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Audio component texture. */
-	inline deoalAComponentTexture *GetATexture() const{ return pATexture; }
+	inline const deoalAComponentTexture::Ref &GetATexture() const{ return pATexture; }
 	
 	/** \brief Synchronize. */
 	void Synchronize();
@@ -80,7 +81,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Texture changed. */
-	void TextureChanged( const deComponentTexture &texture );
+	void TextureChanged(const deComponentTexture &texture);
 	
 	/** \brief Mark texture dirty. */
 	void MarkDirty();

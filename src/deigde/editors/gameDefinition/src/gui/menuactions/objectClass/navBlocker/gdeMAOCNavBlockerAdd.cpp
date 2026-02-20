@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerAdd::gdeMAOCNavBlockerAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Blocker...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class navigation blocker" )
+gdeMAOCNavBlockerAdd::gdeMAOCNavBlockerAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCNavBlockerAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Blocker...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference navBlocker;
-	navBlocker.TakeOver( new gdeOCNavigationBlocker );
-	return new gdeUOCAddNavBlocker( &objectClass, ( gdeOCNavigationBlocker* )( deObject* )navBlocker );
+igdeUndo::Ref gdeMAOCNavBlockerAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddNavBlocker::Ref::New(&objectClass, gdeOCNavigationBlocker::Ref::New());
 }
 
 void gdeMAOCNavBlockerAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

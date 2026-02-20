@@ -27,7 +27,7 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAWait;
+#include "../../../conversation/action/ceCAWait.h"
 
 
 
@@ -35,27 +35,30 @@ class ceCAWait;
  * \brief Undo Action Wait Add Conversation Action.
  */
 class ceUCAWaitPaste : public ceUCActionPaste{
+public:
+	using Ref = deTObjectReference<ceUCAWaitPaste>;
+
 private:
-	ceCAWait *pWait;
+	ceCAWait::Ref pWait;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitPaste( ceConversationTopic *topic, ceCAWait *wait,
-		const ceConversationActionList &actions, int index );
+	ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
+		const ceConversationAction::List &actions, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAWaitPaste();
+	~ceUCAWaitPaste() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

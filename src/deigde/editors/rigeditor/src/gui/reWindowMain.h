@@ -25,26 +25,27 @@
 #ifndef _REWINDOWMAIN_H_
 #define _REWINDOWMAIN_H_
 
+#include "reWindowMainListener.h"
+#include "reView3D.h"
+#include "properties/reWindowProperties.h"
+#include "../rig/reRig.h"
+
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringList.h>
 
-class reWindowMainListener;
 class reConfiguration;
-class reView3D;
-class reRig;
 class reClipboard;
-class reWindowProperties;
 class reEngineController;
 class reLoadSaveSystem;
 class reIGDEModule;
 
-class decStringList;
 class deCmdLineArgs;
 class deEngine;
 class deLogger;
@@ -62,90 +63,96 @@ class igdeEnvironment;
  * \brief Main application window.
  */
 class reWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<reWindowMain>;
+	
+	
 private:
-	reWindowMainListener *pListener;
+	reWindowMainListener::Ref pListener;
 	
-	igdeIconReference pIconEditBone;
-	igdeIconReference pIconEditShape;
-	igdeIconReference pIconEditConstraint;
-	igdeIconReference pIconEditPush;
-	igdeIconReference pIconEditSelect;
-	igdeIconReference pIconEditMove;
-	igdeIconReference pIconEditScale;
-	igdeIconReference pIconEditRotate;
-// 	igdeIconReference pIconEdit3DCursor;
-	igdeIconReference pIconEditLockAxisX;
-	igdeIconReference pIconEditLockAxisY;
-	igdeIconReference pIconEditLockAxisZ;
-	igdeIconReference pIconEditLockLocal;
+	igdeIcon::Ref pIconEditBone;
+	igdeIcon::Ref pIconEditShape;
+	igdeIcon::Ref pIconEditConstraint;
+	igdeIcon::Ref pIconEditPush;
+	igdeIcon::Ref pIconEditSelect;
+	igdeIcon::Ref pIconEditMove;
+	igdeIcon::Ref pIconEditScale;
+	igdeIcon::Ref pIconEditRotate;
+// 	igdeIcon::Ref pIconEdit3DCursor;
+	igdeIcon::Ref pIconEditLockAxisX;
+	igdeIcon::Ref pIconEditLockAxisY;
+	igdeIcon::Ref pIconEditLockAxisZ;
+	igdeIcon::Ref pIconEditLockLocal;
+	igdeIcon::Ref pIconEditLockAxisFlip;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
-	igdeActionReference pActionEditBoneMode;
-	igdeActionReference pActionEditShapeMode;
-	igdeActionReference pActionEditConstraintMode;
-	igdeActionReference pActionEditPushMode;
-	igdeActionReference pActionEditSelectMode;
-	igdeActionReference pActionEditMoveMode;
-	igdeActionReference pActionEditScaleMode;
-	igdeActionReference pActionEditRotateMode;
-// 	igdeActionReference pActionEdit3DCursorMode;
-	igdeActionReference pActionEditSelectAll;
-	igdeActionReference pActionEditSelectAllWithShapes;
-	igdeActionReference pActionEditSelectNone;
-	igdeActionReference pActionEditDelete;
-	igdeActionReference pActionEditLockAxisX;
-	igdeActionReference pActionEditLockAxisY;
-	igdeActionReference pActionEditLockAxisZ;
-	igdeActionReference pActionEditLockLocal;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
+	igdeAction::Ref pActionEditBoneMode;
+	igdeAction::Ref pActionEditShapeMode;
+	igdeAction::Ref pActionEditConstraintMode;
+	igdeAction::Ref pActionEditPushMode;
+	igdeAction::Ref pActionEditSelectMode;
+	igdeAction::Ref pActionEditMoveMode;
+	igdeAction::Ref pActionEditScaleMode;
+	igdeAction::Ref pActionEditRotateMode;
+// 	igdeAction::Ref pActionEdit3DCursorMode;
+	igdeAction::Ref pActionEditSelectAll;
+	igdeAction::Ref pActionEditSelectAllWithShapes;
+	igdeAction::Ref pActionEditSelectNone;
+	igdeAction::Ref pActionEditDelete;
+	igdeAction::Ref pActionEditLockAxisX;
+	igdeAction::Ref pActionEditLockAxisY;
+	igdeAction::Ref pActionEditLockAxisZ;
+	igdeAction::Ref pActionEditLockLocal;
+	igdeAction::Ref pActionEditLockAxisFlip;
 	
-	igdeActionReference pActionRigAddSphere;
-	igdeActionReference pActionRigAddBox;
-	igdeActionReference pActionRigAddCylinder;
-	igdeActionReference pActionRigAddCapsule;
-	igdeActionReference pActionRigAddConstraint;
-	igdeActionReference pActionRigAddPush;
-	igdeActionReference pActionRigShowShapes;
-	igdeActionReference pActionRigShowConstraints;
-	igdeActionReference pActionRigShowPushes;
+	igdeAction::Ref pActionRigAddSphere;
+	igdeAction::Ref pActionRigAddBox;
+	igdeAction::Ref pActionRigAddCylinder;
+	igdeAction::Ref pActionRigAddCapsule;
+	igdeAction::Ref pActionRigAddConstraint;
+	igdeAction::Ref pActionRigAddPush;
+	igdeAction::Ref pActionRigShowShapes;
+	igdeAction::Ref pActionRigShowConstraints;
+	igdeAction::Ref pActionRigShowPushes;
 	
-	igdeActionReference pActionBoneAdd;
-	igdeActionReference pActionBoneAddSphere;
-	igdeActionReference pActionBoneAddBox;
-	igdeActionReference pActionBoneAddCylinder;
-	igdeActionReference pActionBoneAddCapsule;
-	igdeActionReference pActionBoneAddConstraint;
-	igdeActionReference pActionBoneShowBones;
-	igdeActionReference pActionBoneShowAllShapes;
-	igdeActionReference pActionBoneShowAllConstraints;
-	igdeActionReference pActionBoneMirror;
-	igdeActionReference pActionBoneImport;
-	igdeActionReference pActionBoneScaleMass;
-	igdeActionReference pActionBoneMassFromVolume;
+	igdeAction::Ref pActionBoneAdd;
+	igdeAction::Ref pActionBoneAddSphere;
+	igdeAction::Ref pActionBoneAddBox;
+	igdeAction::Ref pActionBoneAddCylinder;
+	igdeAction::Ref pActionBoneAddCapsule;
+	igdeAction::Ref pActionBoneAddConstraint;
+	igdeAction::Ref pActionBoneShowBones;
+	igdeAction::Ref pActionBoneShowAllShapes;
+	igdeAction::Ref pActionBoneShowAllConstraints;
+	igdeAction::Ref pActionBoneMirror;
+	igdeAction::Ref pActionBoneImport;
+	igdeAction::Ref pActionBoneScaleMass;
+	igdeAction::Ref pActionBoneMassFromVolume;
 	
-	igdeActionReference pActionViewShapeXRay;
+	igdeAction::Ref pActionViewShapeXRay;
 	
-	igdeActionReference pActionSimulationRun;
+	igdeAction::Ref pActionSimulationRun;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	reConfiguration *pConfiguration;
 	reClipboard *pClipboard;
 	reLoadSaveSystem *pLoadSaveSystem;
 	
-	reView3D *pView3D;
-	reWindowProperties *pWindowProperties;
+	reView3D::Ref pView3D;
+	reWindowProperties::Ref pWindowProperties;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	
@@ -153,11 +160,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	reWindowMain( reIGDEModule &module );
+	reWindowMain(reIGDEModule &module);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~reWindowMain();
+	~reWindowMain() override;
 	/*@}*/
 	
 	
@@ -186,56 +193,57 @@ public:
 	
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Create new rig. */
 	void CreateNewRig();
 	
 	/** \brief Save rig under the given file. */
-	void SaveRig( const char *filename );
+	void SaveRig(const char *filename);
 	
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconEditBone() const{ return pIconEditBone; }
-	inline igdeIcon *GetIconEditShape() const{ return pIconEditShape; }
-	inline igdeIcon *GetIconEditConstraint() const{ return pIconEditConstraint; }
-	inline igdeIcon *GetIconEditPush() const{ return pIconEditPush; }
-	inline igdeIcon *GetIconEditSelect() const{ return pIconEditSelect; }
-	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
-	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
-	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
-// 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
-	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
-	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
-	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
-	inline igdeIcon *GetIconEditLockLocal() const{ return pIconEditLockLocal; }
+	inline const igdeIcon::Ref &GetIconEditBone() const{ return pIconEditBone; }
+	inline const igdeIcon::Ref &GetIconEditShape() const{ return pIconEditShape; }
+	inline const igdeIcon::Ref &GetIconEditConstraint() const{ return pIconEditConstraint; }
+	inline const igdeIcon::Ref &GetIconEditPush() const{ return pIconEditPush; }
+	inline const igdeIcon::Ref &GetIconEditSelect() const{ return pIconEditSelect; }
+	inline const igdeIcon::Ref &GetIconEditMove() const{ return pIconEditMove; }
+	inline const igdeIcon::Ref &GetIconEditScale() const{ return pIconEditScale; }
+	inline const igdeIcon::Ref &GetIconEditRotate() const{ return pIconEditRotate; }
+// 	inline const igdeIcon::Ref &GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
+	inline const igdeIcon::Ref &GetIconEditLockLocal() const{ return pIconEditLockLocal; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisFlip() const{ return pIconEditLockAxisFlip; }
 	
 	
 	
 	/** \brief Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** \brief Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** \brief Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** \brief Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** \brief Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -246,12 +254,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -261,12 +269,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * \brief Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * \brief The game project has changed.
@@ -276,7 +284,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * \brief Project game definition changed.
@@ -285,12 +293,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	
@@ -301,12 +309,12 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuRig( igdeMenuCascade &menu );
-	void pCreateMenuBone( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
-	void pCreateMenuSimulation( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuRig(igdeMenuCascade &menu);
+	void pCreateMenuBone(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
+	void pCreateMenuSimulation(igdeMenuCascade &menu);
 };
 
 #endif

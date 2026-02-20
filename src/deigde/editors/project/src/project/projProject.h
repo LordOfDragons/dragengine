@@ -25,15 +25,14 @@
 #ifndef _PROJDISTRIBUTOR_H_
 #define _PROJDISTRIBUTOR_H_
 
-#include "profile/projProfileList.h"
+#include "projProjectListener.h"
+#include "profile/projProfile.h"
 #include "remote/projRemoteClient.h"
 #include "remote/projRemoteServer.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
-
-class projProjectListener;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEnvironment;
 
@@ -43,18 +42,22 @@ class igdeEnvironment;
  * \brief Project.
  */
 class projProject : public igdeEditableEntity{
+public:
+	using Ref = deTObjectReference<projProject>;
+	
+	
 private:
 	decString pScriptDirectory;
 	decString pGameObject;
 	decString pPathConfig;
 	decString pPathCapture;
 	
-	projProfileList pProfiles;
-	projProfile *pActiveProfile;
+	projProfile::List pProfiles;
+	projProfile::Ref pActiveProfile;
 	
 	decString pActiveLaunchProfile;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<projProjectListener> pListeners;
 	
 	projRemoteServer::Ref pRemoteServer;
 	
@@ -63,10 +66,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project. */
-	projProject( igdeEnvironment *environment );
+	projProject(igdeEnvironment *environment);
 	
 	/** \brief Clean up project. */
-	virtual ~projProject();
+protected:
+	~projProject() override;
+public:
 	/*@}*/
 	
 	
@@ -77,25 +82,25 @@ public:
 	inline const decString &GetScriptDirectory() const{ return pScriptDirectory; }
 	
 	/** \brief Set script directory. */
-	void SetScriptDirectory( const char *directory );
+	void SetScriptDirectory(const char *directory);
 	
 	/** \brief Game object. */
 	inline const decString &GetGameObject() const{ return pGameObject; }
 	
 	/** \brief Set game object. */
-	void SetGameObject( const char *gameObject );
+	void SetGameObject(const char *gameObject);
 	
 	/** \brief Config path. */
 	inline const decString &GetPathConfig() const{ return pPathConfig; }
 	
 	/** \brief Set config path. */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	
 	/** \brief Capture path. */
 	inline const decString &GetPathCapture() const{ return pPathCapture; }
 	
 	/** \brief Set capture path. */
-	void SetPathCapture( const char *path );
+	void SetPathCapture(const char *path);
 	
 	/** \brief Remote server. */
 	inline const projRemoteServer::Ref &GetRemoteServer() const{ return pRemoteServer; }
@@ -106,13 +111,13 @@ public:
 	/** \name Profiles */
 	/*@{*/
 	/** \brief Profiles. */
-	const projProfileList &GetProfiles() const{ return pProfiles; }
+	const projProfile::List &GetProfiles() const{ return pProfiles; }
 	
 	/** \brief Add profile. */
-	void AddProfile( projProfile *profile );
+	void AddProfile(projProfile *profile);
 	
 	/** \brief Remove profile. */
-	void RemoveProfile( projProfile *profile );
+	void RemoveProfile(projProfile *profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAllProfiles();
@@ -120,10 +125,10 @@ public:
 	
 	
 	/** \brief Active profile. */
-	inline projProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline const projProfile::Ref &GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile. */
-	void SetActiveProfile( projProfile *profile );
+	void SetActiveProfile(projProfile *profile);
 	
 	
 	
@@ -131,10 +136,10 @@ public:
 	void NotifyProfileStructureChanged();
 	
 	/** \brief Notify listeners profile changed. */
-	void NotifyProfileChanged( projProfile *profile );
+	void NotifyProfileChanged(projProfile *profile);
 	
 	/** \brief Notify listeners profile name changed. */
-	void NotifyProfileNameChanged( projProfile *profile );
+	void NotifyProfileNameChanged(projProfile *profile);
 	
 	/** \brief Notify listeners active profile changed. */
 	void NotifyActiveProfileChanged();
@@ -151,7 +156,7 @@ public:
 	inline const decString &GetActiveLaunchProfile() const{ return pActiveLaunchProfile; }
 	
 	/** \brief Set active launch profile. */
-	void SetActiveLaunchProfile( const char *profile );
+	void SetActiveLaunchProfile(const char *profile);
 	
 	
 	
@@ -164,18 +169,18 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** \brief Add listener. */
-	void AddListener( projProjectListener *listener );
+	void AddListener(projProjectListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( projProjectListener *listener );
+	void RemoveListener(projProjectListener *listener);
 	
 	
 	
 	/** \brief Notify listeners the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	
 	/** \brief Notify listeners undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** \brief Notify listeners project changed. */
 	void NotifyProjectChanged();

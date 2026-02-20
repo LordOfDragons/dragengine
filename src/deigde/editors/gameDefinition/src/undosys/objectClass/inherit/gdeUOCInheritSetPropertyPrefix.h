@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCInherit;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/inherit/gdeOCInherit.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class inherit set property prefix.
  */
 class gdeUOCInheritSetPropertyPrefix : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCInheritSetPropertyPrefix>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCInherit *pInherit;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCInherit::Ref pInherit;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCInheritSetPropertyPrefix( gdeObjectClass *objectClass, gdeOCInherit *inherit, const char *newValue );
+	gdeUOCInheritSetPropertyPrefix(gdeObjectClass *objectClass, gdeOCInherit *inherit, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCInheritSetPropertyPrefix();
+	~gdeUOCInheritSetPropertyPrefix() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -33,7 +33,6 @@
 #include "event/igdeAction.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -48,23 +47,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeCheckBox::igdeCheckBox( igdeEnvironment &environment, const char *text,
-	igdeIcon *icon, eButtonStyle style ) :
-igdeButton( environment, text, icon, style ),
-pChecked( false ){
+igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, const char *text,
+	igdeIcon *icon, eButtonStyle style) :
+igdeButton(environment, text, icon, style),
+pChecked(false),
+pNativeCheckBox(nullptr){
 }
 
-igdeCheckBox::igdeCheckBox( igdeEnvironment &environment, const char *text,
-	const char *description, igdeIcon *icon, eButtonStyle style ) :
-igdeButton( environment, text, description, icon, style ),
-pChecked( false ){
+igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, const char *text,
+	const char *description, igdeIcon *icon, eButtonStyle style) :
+igdeButton(environment, text, description, icon, style),
+pChecked(false),
+pNativeCheckBox(nullptr){
 }
 
-igdeCheckBox::igdeCheckBox( igdeEnvironment &environment, igdeAction *action, eButtonStyle style ) :
-igdeButton( environment, action, style ),
-pChecked( false )
+igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, igdeAction *action, eButtonStyle style) :
+igdeButton(environment, action, style),
+pChecked(false),
+pNativeCheckBox(nullptr)
 {
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeCheckBox::~igdeCheckBox(){
@@ -75,8 +77,8 @@ igdeCheckBox::~igdeCheckBox(){
 // Management
 ///////////////
 
-void igdeCheckBox::SetChecked( bool checked ){
-	if( pChecked == checked ){
+void igdeCheckBox::SetChecked(bool checked){
+	if(pChecked == checked){
 		return;
 	}
 	
@@ -86,79 +88,43 @@ void igdeCheckBox::SetChecked( bool checked ){
 
 
 
-void igdeCheckBox::OnParameterChanged( igdeAction *action ){
-	igdeButton::OnParameterChanged( action );
+void igdeCheckBox::OnParameterChanged(igdeAction *action){
+	igdeButton::OnParameterChanged(action);
 	
-	SetChecked( action->GetSelected() );
+	SetChecked(action->GetSelected());
 }
 
 
 
 void igdeCheckBox::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeCheckBox * const native = igdeNativeCheckBox::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeCheckBox * const native = igdeNativeCheckBox::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeCheckBox = native;
+	pNativeButton = native;
 	native->PostCreateNativeWidget();
 }
 
 void igdeCheckBox::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeCheckBox*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
+void igdeCheckBox::DropNativeWidget(){
+	pNativeCheckBox = nullptr;
+	igdeButton::DropNativeWidget();
+}
 
 
 void igdeCheckBox::OnCheckedChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if(pNativeCheckBox){
+		pNativeCheckBox->UpdateChecked();
 	}
-	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->UpdateChecked();
-}
-
-void igdeCheckBox::OnStyleChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->UpdateStyle();
-}
-
-void igdeCheckBox::OnTextChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->UpdateText();
-}
-
-void igdeCheckBox::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->UpdateDescription();
-}
-
-void igdeCheckBox::OnIconChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->UpdateIcon();
-}
-
-void igdeCheckBox::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	( ( igdeNativeCheckBox* )GetNativeWidget() )->UpdateEnabled();
 }

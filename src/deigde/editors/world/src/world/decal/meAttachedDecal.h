@@ -25,26 +25,33 @@
 #ifndef _MEATTACHEDDECAL_H_
 #define _MEATTACHEDDECAL_H_
 
-#include <dragengine/resources/decal/deDecalReference.h>
+#include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/decal/deDecal.h>
 
 class meDecal;
 class meObject;
 
 class deEngine;
-class deSkin;
 
 
 
 /**
  * \brief Attached Decal.
  */
-class meAttachedDecal{
+class meAttachedDecal : public deObject{
+public:
+	using Ref = deTObjectReference<meAttachedDecal>;
+	using List = decTObjectOrderedSet<meAttachedDecal>;
+	
+	
 private:
 	deEngine *pEngine;
-	deDecalReference pEngDecal;
+	deTObjectReference<deDecal> pEngDecal;
 	
 	meDecal *pDecal;
-	meObject *pParentObject;
+	deTObjectReference<meObject> pParentObject;
 	
 	
 	
@@ -52,10 +59,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create attached decal. */
-	meAttachedDecal( deEngine *engine, meDecal *decal );
+	meAttachedDecal(deEngine *engine, meDecal *decal);
 	
+protected:
 	/** \brief Clean up attached decal. */
-	~meAttachedDecal();
+	~meAttachedDecal() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -65,14 +75,14 @@ public:
 	/** \brief Engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
-	/** \brief Engine decal or NULL. */
-	inline deDecal *GetEngineDecal() const{ return pEngDecal; }
+	/** \brief Engine decal or nullptr. */
+	inline const deDecal::Ref &GetEngineDecal() const{ return pEngDecal; }
 	
-	/** \brief Parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	/** \brief Parent object or nullptr. */
+	inline const deTObjectReference<meObject> &GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
-	void SetParentObject( meObject *object );
+	void SetParentObject(meObject *object);
 	
 	/** \brief Attach decal to parent. */
 	void AttachToParent();

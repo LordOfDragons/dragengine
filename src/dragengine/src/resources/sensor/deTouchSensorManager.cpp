@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deTouchSensorManager::deTouchSensorManager( deEngine *engine ) : deResourceManager( engine, ertTouchSensor ){
-	SetLoggingName( "touch sensor" );
+deTouchSensorManager::deTouchSensorManager(deEngine *engine) : deResourceManager(engine, ertTouchSensor){
+	SetLoggingName("touch sensor");
 }
 
 deTouchSensorManager::~deTouchSensorManager(){
@@ -59,28 +59,14 @@ int deTouchSensorManager::GetTouchSensorCount() const{
 }
 
 deTouchSensor *deTouchSensorManager::GetRootTouchSensor() const{
-	return ( deTouchSensor* )pTouchSensors.GetRoot();
+	return (deTouchSensor*)pTouchSensors.GetRoot();
 }
 
-deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
-	deTouchSensor *touchSensor = NULL;
-	
-	try{
-		touchSensor = new deTouchSensor( this );
-		if( ! touchSensor ) DETHROW( deeOutOfMemory );
-		
-		GetPhysicsSystem()->LoadTouchSensor( touchSensor );
-		GetScriptingSystem()->LoadTouchSensor( touchSensor );
-		
-		pTouchSensors.Add( touchSensor );
-		
-	}catch( const deException & ){
-		if( touchSensor ){
-			touchSensor->FreeReference();
-		}
-		throw;
-	}
-	
+deTouchSensor::Ref deTouchSensorManager::CreateTouchSensor(){
+	const deTouchSensor::Ref touchSensor(deTouchSensor::Ref::New(this));
+	GetPhysicsSystem()->LoadTouchSensor(touchSensor);
+	GetScriptingSystem()->LoadTouchSensor(touchSensor);
+	pTouchSensors.Add(touchSensor);
 	return touchSensor;
 }
 
@@ -89,8 +75,8 @@ deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
 void deTouchSensorManager::ReleaseLeakingResources(){
 	int count = GetTouchSensorCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking touch sensor", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking touch sensor", count);
 		pTouchSensors.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -101,51 +87,39 @@ void deTouchSensorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deTouchSensorManager::SystemPhysicsLoad(){
-	deTouchSensor *touchSensor = ( deTouchSensor* )pTouchSensors.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
-	
-	while( touchSensor ){
-		if( ! touchSensor->GetPeerPhysics() ){
-			phySys.LoadTouchSensor( touchSensor );
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		deTouchSensor *touchSensor = static_cast<deTouchSensor*>(res);
+		if(!touchSensor->GetPeerPhysics()){
+			phySys.LoadTouchSensor(touchSensor);
 		}
-		
-		touchSensor = ( deTouchSensor* )touchSensor->GetLLManagerNext();
-	}
+	});
 }
 
 void deTouchSensorManager::SystemPhysicsUnload(){
-	deTouchSensor *touchSensor = ( deTouchSensor* )pTouchSensors.GetRoot();
-	
-	while( touchSensor ){
-		touchSensor->SetPeerPhysics( NULL );
-		touchSensor = ( deTouchSensor* )touchSensor->GetLLManagerNext();
-	}
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		static_cast<deTouchSensor*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deTouchSensorManager::SystemScriptingLoad(){
-	deTouchSensor *touchSensor = ( deTouchSensor* )pTouchSensors.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
-	
-	while( touchSensor ){
-		if( ! touchSensor->GetPeerScripting() ){
-			scrSys.LoadTouchSensor( touchSensor );
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		deTouchSensor *touchSensor = static_cast<deTouchSensor*>(res);
+		if(!touchSensor->GetPeerScripting()){
+			scrSys.LoadTouchSensor(touchSensor);
 		}
-		
-		touchSensor = ( deTouchSensor* )touchSensor->GetLLManagerNext();
-	}
+	});
 }
 
 void deTouchSensorManager::SystemScriptingUnload(){
-	deTouchSensor *touchSensor = ( deTouchSensor* )pTouchSensors.GetRoot();
-	
-	while( touchSensor ){
-		touchSensor->SetPeerScripting( NULL );
-		touchSensor = ( deTouchSensor* )touchSensor->GetLLManagerNext();
-	}
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		static_cast<deTouchSensor*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 
 
-void deTouchSensorManager::RemoveResource( deResource *resource ){
-	pTouchSensors.RemoveIfPresent( resource );
+void deTouchSensorManager::RemoveResource(deResource *resource){
+	pTouchSensors.RemoveIfPresent(resource);
 }

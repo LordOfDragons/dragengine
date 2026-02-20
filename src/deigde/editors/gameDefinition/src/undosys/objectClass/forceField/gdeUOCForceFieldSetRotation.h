@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class force field set rotation.
  */
 class gdeUOCForceFieldSetRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCForceFieldSetRotation>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetRotation( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decVector &newValue );
+	gdeUOCForceFieldSetRotation(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCForceFieldSetRotation();
+	~gdeUOCForceFieldSetRotation() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

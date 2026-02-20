@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableRotXMin::aeURuleLimitSetEnableRotXMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableRotXMin::aeURuleLimitSetEnableRotXMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum x rotation" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumXRotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotXMin::~aeURuleLimitSetEnableRotXMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableRotXMin::Undo(){
 }
 
 void aeURuleLimitSetEnableRotXMin::Redo(){
-	pRule->SetEnableRotationXMin( ! pRule->GetEnableRotationXMin() );
+	pRule->SetEnableRotationXMin(!pRule->GetEnableRotationXMin());
 }

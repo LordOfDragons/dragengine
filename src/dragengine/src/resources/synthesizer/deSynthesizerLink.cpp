@@ -38,14 +38,14 @@
 /////////////////////////////////
 
 deSynthesizerLink::deSynthesizerLink() :
-pController( -1 ),
-pRepeat( 1 ){
+pController(-1),
+pRepeat(1){
 }
 
-deSynthesizerLink::deSynthesizerLink( const deSynthesizerLink &copy ) :
-pController( copy.pController ),
-pCurve( copy.pCurve ),
-pRepeat( copy.pRepeat ){
+deSynthesizerLink::deSynthesizerLink(const deSynthesizerLink &copy) :
+pController(copy.pController),
+pCurve(copy.pCurve),
+pRepeat(copy.pRepeat){
 }
 
 deSynthesizerLink::~deSynthesizerLink(){
@@ -56,16 +56,16 @@ deSynthesizerLink::~deSynthesizerLink(){
 // Management
 ///////////////
 
-void deSynthesizerLink::SetController( int controller ){
-	if( controller < -1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerLink::SetController(int controller){
+	if(controller < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pController = controller;
 }
 
-void deSynthesizerLink::SetRepeat( int repeat ){
-	if( repeat < 1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerLink::SetRepeat(int repeat){
+	if(repeat < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pRepeat = repeat;
 }
@@ -75,7 +75,7 @@ void deSynthesizerLink::SetRepeat( int repeat ){
 // Operators
 //////////////
 
-deSynthesizerLink &deSynthesizerLink::operator=( const deSynthesizerLink &copy ){
+deSynthesizerLink &deSynthesizerLink::operator=(const deSynthesizerLink &copy){
 	pController = copy.pController;
 	pCurve = copy.pCurve;
 	pRepeat = copy.pRepeat;

@@ -29,6 +29,7 @@
 #include "deoglRTLogger.h"
 #include "../window/deoglRRenderWindow.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/threading/deMutexGuard.h>
 
 
@@ -36,6 +37,10 @@
 ////////////////////////
 
 class cWaitableTask : public deoglLoaderThreadTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<cWaitableTask>;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	const deoglLoaderThreadTask::Ref pTask;
@@ -43,22 +48,22 @@ private:
 	bool pSuccess;
 	
 public:
-	cWaitableTask( deoglRenderThread &renderThread, deoglLoaderThreadTask *task ) :
-	pRenderThread( renderThread ),
-	pTask( task ),
-	pSuccess( true ){
+	cWaitableTask(deoglRenderThread &renderThread, deoglLoaderThreadTask *task) :
+	pRenderThread(renderThread),
+	pTask(task),
+	pSuccess(true){
 	}
 	
 	inline deSemaphore &Semaphore(){ return pSemaphore; }
 	inline bool GetSuccess() const{ return pSuccess; }
 	
-	virtual void Run(){
+	void Run() override{
 		try{
 			pTask->Run();
 			
-		}catch( const deException &e ){
+		}catch(const deException &e){
 			pSuccess = false;
-			pRenderThread.GetLogger().LogException( e );
+			pRenderThread.GetLogger().LogException(e);
 		}
 		pSemaphore.Signal();
 	}
@@ -72,22 +77,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-deoglLoaderThread::deoglLoaderThread( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pShutdown( true ),
-pContextEnabled( false )
+deoglLoaderThread::deoglLoaderThread(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pShutdown(true),
+pContextEnabled(false)
 {
 	#ifdef OS_BEOS
-	SetName( "OpenGL-LoaderThread" );
+	SetName("OpenGL-LoaderThread");
 	#endif
 }
 
 deoglLoaderThread::~deoglLoaderThread(){
-	const int count = pTasks.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglLoaderThreadTask* )pTasks.GetAt( i ) )->FreeReference();
-	}
 }
 
 
@@ -108,50 +108,48 @@ void deoglLoaderThread::Run(){
 		pShutdown = true;
 	}
 	
-	deoglLoaderThreadTask *task = nullptr;
+	deoglLoaderThreadTask::Ref task;
 	
-	while( ! pShutdown ){
+	while(!pShutdown){
 		{
-		const deMutexGuard guard( pMutex );
-		if( pTasks.GetCount() > 0 ){
-			task = ( deoglLoaderThreadTask* )pTasks.GetAt( 0 );
-			pTasks.RemoveFrom( 0 );
+		const deMutexGuard guard(pMutex);
+		if(pTasks.IsNotEmpty()){
+			task = pTasks.First();
+			pTasks.RemoveFrom(0);
 		}
 		}
 		
-		if( task ){
+		if(task){
 			#ifdef DO_DEBUG_LOG
-			pRenderThread.GetLogger().LogInfoFormat( "LoaderThread: Run: Process task %p", task );
+			pRenderThread.GetLogger().LogInfoFormat("LoaderThread: Run: Process task %p", task);
 			#endif
 			
 			try{
 				task->Run();
 				
-			}catch( const deException &e ){
-				pRenderThread.GetLogger().LogException( e );
+			}catch(const deException &e){
+				pRenderThread.GetLogger().LogException(e);
 			}
 			
 			#ifdef DO_DEBUG_LOG
-			pRenderThread.GetLogger().LogInfoFormat( "LoaderThread: Run: Done task %p", task );
+			pRenderThread.GetLogger().LogInfoFormat("LoaderThread: Run: Done task %p", task);
 			#endif
-			
-			task->FreeReference();
 			task = nullptr;
 			
 		}else{
 			try{
 				#ifdef DO_DEBUG_LOG
-				pRenderThread.GetLogger().LogInfo( "LoaderThread: Run: Wait on semaphore" );
+				pRenderThread.GetLogger().LogInfo("LoaderThread: Run: Wait on semaphore");
 				#endif
 				
 				pSemaphore.Wait();
 				
 				#ifdef DO_DEBUG_LOG
-				pRenderThread.GetLogger().LogInfo( "LoaderThread: Run: Woke up from semaphore" );
+				pRenderThread.GetLogger().LogInfo("LoaderThread: Run: Woke up from semaphore");
 				#endif
 				
-			}catch( const deException &e ){
-				pRenderThread.GetLogger().LogException( e );
+			}catch(const deException &e){
+				pRenderThread.GetLogger().LogException(e);
 			}
 		}
 	}
@@ -159,30 +157,30 @@ void deoglLoaderThread::Run(){
 	try{
 		pCleanUp();
 		
-	}catch( const deException &e ){
-		pRenderThread.GetLogger().LogException( e );
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
 	}
-	pRenderThread.GetLogger().LogInfo( "LoaderThread: Exiting" );
+	pRenderThread.GetLogger().LogInfo("LoaderThread: Exiting");
 	OGL_EXIT_LOADER_THREAD_CHECK
 }
 
 bool deoglLoaderThread::IsEnabled(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	return pContextEnabled;
 }
 
-void deoglLoaderThread::EnableContext( bool enable ){
+void deoglLoaderThread::EnableContext(bool enable){
 	#ifdef OS_BEOS
 	return; // no context so far
 	#endif
 	
-	if( enable == pContextEnabled ){
+	if(enable == pContextEnabled){
 		return;
 	}
 	
-	if( enable ){
+	if(enable){
 		{
-		const deMutexGuard guard( pMutex );
+		const deMutexGuard guard(pMutex);
 		pContextEnabled = true;
 		}
 		pShutdown = false;
@@ -190,57 +188,54 @@ void deoglLoaderThread::EnableContext( bool enable ){
 		Start();
 		
 	}else{
-		if( IsRunning() ){
+		if(IsRunning()){
 			pShutdown = true;
 			pSemaphore.Signal();
 		}
 		WaitForExit();
 		pShutdown = true;
 		
-		const deMutexGuard guard( pMutex );
+		const deMutexGuard guard(pMutex);
 		pContextEnabled = false;
 	}
 }
 
-bool deoglLoaderThread::AddTask( deoglLoaderThreadTask *task ){
-	DEASSERT_NOTNULL( task );
+bool deoglLoaderThread::AddTask(const deoglLoaderThreadTask::Ref &task){
+	DEASSERT_NOTNULL(task);
 	
-	const deMutexGuard guard( pMutex );
-	if( ! pContextEnabled ){
+	const deMutexGuard guard(pMutex);
+	if(!pContextEnabled){
 		return false;
 	}
 	
 	#ifdef DO_DEBUG_LOG
-	pRenderThread.GetLogger().LogInfoFormat( "LoaderThread: AddTask %p", task );
+	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AddTask %p", task);
 	#endif
 	
-	pTasks.Add( task );
-	task->AddReference();
+	pTasks.AddOrThrow(task);
 	pSemaphore.Signal();
 	return true;
 }
 
-bool deoglLoaderThread::AwaitTask( deoglLoaderThreadTask *task ){
-	DEASSERT_NOTNULL( task )
+bool deoglLoaderThread::AwaitTask(const deoglLoaderThreadTask::Ref &task){
+	DEASSERT_NOTNULL(task)
 	
-	const deTObjectReference<cWaitableTask> waitableTask( deTObjectReference<cWaitableTask>::New(
-		new cWaitableTask( pRenderThread, task ) ) );
+	const cWaitableTask::Ref waitableTask(cWaitableTask::Ref::New(pRenderThread, task));
 	
 	#ifdef DO_DEBUG_LOG
-	pRenderThread.GetLogger().LogInfoFormat( "LoaderThread: AwaitTask: Add task %p", task );
+	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AwaitTask: Add task %p", task);
 	#endif
 	
-	deSemaphore &semaphore = waitableTask->Semaphore();
-	if( ! AddTask( waitableTask ) ){
+	if(!AddTask(waitableTask)){
 		return false;
 	}
 	
 	#ifdef DO_DEBUG_LOG
-	pRenderThread.GetLogger().LogInfoFormat( "LoaderThread: AwaitTask: Finished task %p", task );
+	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AwaitTask: Finished task %p", task);
 	#endif
-	semaphore.Wait();
+	waitableTask->Semaphore().Wait();
 	
-	DEASSERT_TRUE( waitableTask->GetSuccess() )
+	DEASSERT_TRUE(waitableTask->GetSuccess())
 	return true;
 }
 
@@ -250,13 +245,15 @@ bool deoglLoaderThread::AwaitTask( deoglLoaderThreadTask *task ){
 //////////////////////
 
 void deoglLoaderThread::pInit(){
-	#ifndef OS_BEOS
+#ifdef OS_WEBWASM
 	deoglRTContext &context = pRenderThread.GetContext();
-	#endif
+#elif ! defined OS_BEOS
+	const deoglRTContext &context = pRenderThread.GetContext();
+#endif
 	
 	#ifdef OS_UNIX_X11
-	OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(),
-		context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext() ) );
+	OGLX_CHECK(pRenderThread, glXMakeCurrent(context.GetDisplay(),
+		context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext()));
 	
 #elif defined OS_ANDROID
 	DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(), context.GetLoaderSurface(),
@@ -267,20 +264,20 @@ void deoglLoaderThread::pInit(){
 		context.GetLoaderContext()) == EMSCRIPTEN_RESULT_SUCCESS)
 	
 #elif defined OS_MACOS
-	pGLContextMakeCurrent( context.GetActiveRRenderWindow()->GetView() );
+	pGLContextMakeCurrent(context.GetActiveRRenderWindow()->GetView());
 	
 #elif defined OS_W32
-	if( ! wglMakeCurrent( context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext() ) ){
-		pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
-			__FILE__, __LINE__, GetLastError() );
-		DETHROW_INFO( deeInvalidAction, "wglMakeCurrent failed" );
+	if(!wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext())){
+		pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
+			__FILE__, __LINE__, GetLastError());
+		DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
 	}
 #endif
 }
 
 void deoglLoaderThread::pCleanUp(){
 #ifdef OS_UNIX_X11
-	OGLX_CHECK( pRenderThread, glXMakeCurrent( pRenderThread.GetContext().GetDisplay(), None, nullptr ) );
+	OGLX_CHECK(pRenderThread, glXMakeCurrent(pRenderThread.GetContext().GetDisplay(), None, nullptr));
 	
 #elif defined OS_ANDROID
 	eglMakeCurrent(pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -289,9 +286,9 @@ void deoglLoaderThread::pCleanUp(){
 	emscripten_webgl_make_context_current(0);
 	
 #elif defined OS_MACOS
-	pGLContextMakeCurrent( nullptr );
+	pGLContextMakeCurrent(nullptr);
 	
 #elif defined OS_W32
-	wglMakeCurrent( NULL, NULL );
+	wglMakeCurrent(NULL, NULL);
 #endif
 }

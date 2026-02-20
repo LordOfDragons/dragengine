@@ -29,10 +29,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -42,8 +42,12 @@ class aeRuleStateManipulator;
  * Undo to set the minimum size of a state modifier rule.
  */
 class aeUSetRuleSModMinSize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleSModMinSize>;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;
@@ -52,19 +56,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMinSize( aeRuleStateManipulator *rule, const decVector &newMin );
+	aeUSetRuleSModMinSize(aeRuleStateManipulator *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModMinSize();
+	~aeUSetRuleSModMinSize() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

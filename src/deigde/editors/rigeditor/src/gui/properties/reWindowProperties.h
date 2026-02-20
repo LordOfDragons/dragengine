@@ -25,9 +25,17 @@
 #ifndef _REWINDOWPROPERTIES_H_
 #define _REWINDOWPROPERTIES_H_
 
+#include "reWPRig.h"
+#include "reWPBone.h"
+#include "reWPShape.h"
+#include "reWPConstraint.h"
+#include "reWPPush.h"
+#include "reWPView.h"
+#include "reWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class reWindowMain;
 
@@ -40,16 +48,19 @@ class reRigConstraint;
  * \brief Shows Properties.
  */
 class reWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<reWindowProperties>;
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelRig;
-	igdeWidgetReference pPanelBone;
-	igdeWidgetReference pPanelShape;
-	igdeWidgetReference pPanelConstraint;
-	igdeWidgetReference pPanelPush;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	reWPRig::Ref pPanelRig;
+	reWPBone::Ref pPanelBone;
+	reWPShape::Ref pPanelShape;
+	reWPConstraint::Ref pPanelConstraint;
+	reWPPush::Ref pPanelPush;
+	reWPView::Ref pPanelView;
+	reWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -57,11 +68,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	reWindowProperties( reWindowMain &windowMain );
+	reWindowProperties(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~reWindowProperties();
+	~reWindowProperties() override;
 	/*@}*/
 	
 	
@@ -73,7 +84,7 @@ public:
 	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	/*@}*/
 };
 

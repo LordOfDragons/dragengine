@@ -25,9 +25,9 @@
 #ifndef _CEWPCGAMECOMMAND_H_
 #define _CEWPCGAMECOMMAND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -40,10 +40,13 @@ class ceWPTopic;
  * \brief Game command conversation condition property window.
  */
 class ceWPCGameCommand : public ceWPCondition{
+public:
+	using Ref = deTObjectReference<ceWPCGameCommand>;
+
 private:
-	igdeTextFieldReference pEditCommand;
-	igdeButtonReference pBtnCommand;
-	igdeCheckBoxReference pChkNegate;
+	igdeTextField::Ref pEditCommand;
+	igdeButton::Ref pBtnCommand;
+	igdeCheckBox::Ref pChkNegate;
 	
 	
 	
@@ -51,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new panel. */
-	ceWPCGameCommand( ceWPTopic &parentPanel );
+	ceWPCGameCommand(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCGameCommand();
+	~ceWPCGameCommand() override;
 	/*@}*/
 	
 	

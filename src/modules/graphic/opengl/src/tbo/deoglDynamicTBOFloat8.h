@@ -37,14 +37,18 @@
  */
 class deoglDynamicTBOFloat8 : public deoglDynamicTBO{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglDynamicTBOFloat8>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dynamic tbo. */
-	deoglDynamicTBOFloat8( deoglRenderThread &renderThread, int componentCount );
+	deoglDynamicTBOFloat8(deoglRenderThread &renderThread, int componentCount);
 	
 protected:
 	/** Clean up dynamic tbo. */
-	virtual ~deoglDynamicTBOFloat8();
+	~deoglDynamicTBOFloat8() override;
 	/*@}*/
 	
 	
@@ -53,56 +57,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline uint8_t *GetDataFloat(){ return ( uint8_t* )pData; }
-	inline const uint8_t *GetDataFloat() const{ return ( const uint8_t* )pData; }
+	inline uint8_t *GetDataFloat(){ return (uint8_t*)pData.GetArrayPointer(); }
+	inline const uint8_t *GetDataFloat() const{ return (const uint8_t*)pData.GetArrayPointer(); }
 	
 	/** Add boolean value. True adds 1 and False 0. */
-	void AddBool( bool value );
+	void AddBool(bool value);
 	
 	/** Add float value. */
-	void AddFloat( float value );
+	void AddFloat(float value);
 	
 	/** Add two float values. */
-	void AddVec2( float value1, float value2 );
-	void AddVec2( const decVector2 &value );
+	void AddVec2(float value1, float value2);
+	void AddVec2(const decVector2 &value);
 	
 	/** Add three float values. */
-	void AddVec3( float value1, float value2, float value3 );
-	void AddVec3( const decVector &value );
-	void AddVec3( const decColor &value );
+	void AddVec3(float value1, float value2, float value3);
+	void AddVec3(const decVector &value);
+	void AddVec3(const decColor &value);
 	
 	/** Add four float values. */
-	void AddVec4( float value1, float value2, float value3, float value4 );
-	void AddVec4( const decVector &value, float value4 );
-	void AddVec4( const decVector4 &value );
-	void AddVec4( const decColor &value );
+	void AddVec4(float value1, float value2, float value3, float value4);
+	void AddVec4(const decVector &value, float value4);
+	void AddVec4(const decVector4 &value);
+	void AddVec4(const decColor &value);
 	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
-	void SetBoolAt( int offset, bool value );
+	void SetBoolAt(int offset, bool value);
 	
 	/** Set float value at offset in components. */
-	void SetFloatAt( int offset, float value );
+	void SetFloatAt(int offset, float value);
 	
 	/** Set two float values at offset in components. */
-	void SetVec2At( int offset, float value1, float value2 );
-	void SetVec2At( int offset, const decVector2 &value );
+	void SetVec2At(int offset, float value1, float value2);
+	void SetVec2At(int offset, const decVector2 &value);
 	
 	/** Set three float values at offset in components. */
-	void SetVec3At( int offset, float value1, float value2, float value3 );
-	void SetVec3At( int offset, const decVector &value );
-	void SetVec3At( int offset, const decColor &value );
+	void SetVec3At(int offset, float value1, float value2, float value3);
+	void SetVec3At(int offset, const decVector &value);
+	void SetVec3At(int offset, const decColor &value);
 	
 	/** Set four float values at offset in components. */
-	void SetVec4At( int offset, float value1, float value2, float value3, float value4 );
-	void SetVec4At( int offset, const decVector &value, float value4 );
-	void SetVec4At( int offset, const decVector4 &value );
-	void SetVec4At( int offset, const decColor &value );
+	void SetVec4At(int offset, float value1, float value2, float value3, float value4);
+	void SetVec4At(int offset, const decVector &value, float value4);
+	void SetVec4At(int offset, const decVector4 &value);
+	void SetVec4At(int offset, const decColor &value);
 	
 	/** Debug print. */
-	virtual void DebugPrint();
+	void DebugPrint() override;
 	
 	/** TBO format. */
-	virtual GLenum GetTBOFormat();
+	GLenum GetTBOFormat() override;
 	/*@}*/
 };
 

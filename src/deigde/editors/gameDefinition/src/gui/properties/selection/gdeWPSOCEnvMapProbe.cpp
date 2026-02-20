@@ -49,7 +49,7 @@
 #include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
@@ -60,7 +60,7 @@
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -80,23 +80,24 @@ protected:
 	gdeWPSOCEnvMapProbe &pPanel;
 	
 public:
-	cBaseTextFieldListener( gdeWPSOCEnvMapProbe &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	cBaseTextFieldListener(gdeWPSOCEnvMapProbe &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCEnvMapProbe * const envprobe = pPanel.GetEnvMapProbe();
-		if( ! envprobe ){
+		if(!envprobe){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), envprobe ) );
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), envprobe));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField,
-		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envprobe ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
+		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envprobe) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -104,181 +105,189 @@ protected:
 	gdeWPSOCEnvMapProbe &pPanel;
 	
 public:
-	cBaseEditVectorListener( gdeWPSOCEnvMapProbe &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	cBaseEditVectorListener(gdeWPSOCEnvMapProbe &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCEnvMapProbe * const envprobe = pPanel.GetEnvMapProbe();
-		if( ! envprobe ){
+		if(!envprobe){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), envprobe ) );
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), envprobe));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *envprobe ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *envprobe) = 0;
 };
 
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
-	cEditPosition( gdeWPSOCEnvMapProbe &panel ) : cBaseEditVectorListener( panel ){ }
+	typedef deTObjectReference<cEditPosition> Ref;
+	cEditPosition(gdeWPSOCEnvMapProbe &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
-		if( envprobe->GetPosition().IsEqualTo( vector ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe) override{
+		if(envprobe->GetPosition().IsEqualTo(vector)){
+			return {};
 		}
-		return new gdeUOCEnvMapProbeSetPosition( objectClass, envprobe, vector );
+		return gdeUOCEnvMapProbeSetPosition::Ref::New(objectClass, envprobe, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
-	cEditRotation( gdeWPSOCEnvMapProbe &panel ) : cBaseEditVectorListener( panel ){ }
+	typedef deTObjectReference<cEditRotation> Ref;
+	cEditRotation(gdeWPSOCEnvMapProbe &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
-		if( envprobe->GetRotation().IsEqualTo( vector ) ){
-			return NULL;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
+		if(envprobe->GetRotation().IsEqualTo(vector)){
+			return {};
 		}
-		return new gdeUOCEnvMapProbeSetRotation( objectClass, envprobe, vector );
+		return gdeUOCEnvMapProbeSetRotation::Ref::New(objectClass, envprobe, vector);
 	}
 };
 
-class cEditScaling : public cBaseEditVectorListener {
+class cEditScaling : public cBaseEditVectorListener{
 public:
-	cEditScaling( gdeWPSOCEnvMapProbe &panel ) : cBaseEditVectorListener( panel ){ }
+	typedef deTObjectReference<cEditScaling> Ref;
+	cEditScaling(gdeWPSOCEnvMapProbe &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
-		if( envprobe->GetScaling().IsEqualTo( vector ) ){
-			return NULL;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
+		if(envprobe->GetScaling().IsEqualTo(vector)){
+			return {};
 		}
-		return new gdeUOCEnvMapProbeSetScaling( objectClass, envprobe, vector );
+		return gdeUOCEnvMapProbeSetScaling::Ref::New(objectClass, envprobe, vector);
 	}
 };
 
 class cTextShapeInfluence : public cBaseTextFieldListener{
 public:
-	cTextShapeInfluence( gdeWPSOCEnvMapProbe &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextShapeInfluence> Ref;
+	cTextShapeInfluence(gdeWPSOCEnvMapProbe &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
 		igdeCodecPropertyString codec;
 		decString oldEncoded;
-		codec.EncodeShapeList( envprobe->GetShapeListInfluence(), oldEncoded );
-		const decString encoded( textField.GetText() );
-		if( encoded == oldEncoded ){
-			return NULL;
+		codec.EncodeShapeList(envprobe->GetShapeListInfluence(), oldEncoded);
+		const decString encoded(textField.GetText());
+		if(encoded == oldEncoded){
+			return {};
 		}
 		
-		decShapeList shapeList;
 		try{
-			codec.DecodeShapeList( encoded, shapeList );
+			decShape::List shapeList;
+			codec.DecodeShapeList(encoded, shapeList);
+			return gdeUOCEnvMapProbeSetShapeInfluence::Ref::New(objectClass, envprobe, shapeList);
 			
-		}catch( const deException & ){
-			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list" );
+		}catch(const deException &){
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCEnvMapProbe.InvalidInput.Error",
+				"@GameDefinition.OCEnvMapProbe.ShapeDecodeInvalidValue.Error");
 			textField.Focus();
-			return NULL;
+			return {};
 		}
-		
-		return new gdeUOCEnvMapProbeSetShapeInfluence( objectClass, envprobe, shapeList );
 	}
 };
 
 class cTextShapeReflection : public cBaseTextFieldListener{
 public:
-	cTextShapeReflection( gdeWPSOCEnvMapProbe &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextShapeReflection> Ref;
+	cTextShapeReflection(gdeWPSOCEnvMapProbe &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
 		igdeCodecPropertyString codec;
-		decShapeList shapeList;
-		if( envprobe->GetShapeReflection() ){
-			shapeList.Add( envprobe->GetShapeReflection()->Copy() );
+		decShape::List shapeList;
+		if(envprobe->GetShapeReflection()){
+			shapeList.Add(envprobe->GetShapeReflection()->Copy());
 		}
 		decString oldEncoded;
-		codec.EncodeShapeList( shapeList, oldEncoded );
-		const decString encoded( textField.GetText() );
-		if( encoded == oldEncoded ){
-			return NULL;
+		codec.EncodeShapeList(shapeList, oldEncoded);
+		const decString encoded(textField.GetText());
+		if(encoded == oldEncoded){
+			return {};
 		}
 		
 		try{
-			codec.DecodeShapeList( encoded, shapeList );
-			
-		}catch( const deException & ){
-			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list" );
-			textField.Focus();
-			return NULL;
-		}
+			codec.DecodeShapeList(encoded, shapeList);
 		
-		return new gdeUOCEnvMapProbeSetShapeReflection(
-			objectClass, envprobe, shapeList.GetAt( 0 )->Copy() );
+		}catch(const deException &){
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCEnvMapProbe.InvalidInput.Error",
+				"@GameDefinition.OCEnvMapProbe.ShapeDecodeInvalidValue.Error");
+			textField.Focus();
+			return {};
+		}
+	
+		return gdeUOCEnvMapProbeSetShapeReflection::Ref::New(
+			objectClass, envprobe, shapeList.First());
 	}
 };
 
 class cTextShapeReflectionMask : public cBaseTextFieldListener{
 public:
-	cTextShapeReflectionMask( gdeWPSOCEnvMapProbe &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextShapeReflectionMask> Ref;
+	cTextShapeReflectionMask(gdeWPSOCEnvMapProbe &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
 		igdeCodecPropertyString codec;
 		decString oldEncoded;
-		codec.EncodeShapeList( envprobe->GetShapeListReflectionMask(), oldEncoded );
-		const decString encoded( textField.GetText() );
-		if( encoded == oldEncoded ){
-			return NULL;
+		codec.EncodeShapeList(envprobe->GetShapeListReflectionMask(), oldEncoded);
+		const decString encoded(textField.GetText());
+		if(encoded == oldEncoded){
+			return {};
 		}
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		try{
-			codec.DecodeShapeList( encoded, shapeList );
-			
-		}catch( const deException & ){
-			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list" );
-			textField.Focus();
-			return NULL;
-		}
+			codec.DecodeShapeList(encoded, shapeList);
 		
-		return new gdeUOCEnvMapProbeSetShapeReflectionMask( objectClass, envprobe, shapeList );
+		}catch(const deException &){
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCEnvMapProbe.InvalidInput.Error",
+				"@GameDefinition.OCEnvMapProbe.ShapeDecodeInvalidValue.Error");
+			textField.Focus();
+			return {};
+		}
+	
+		return gdeUOCEnvMapProbeSetShapeReflectionMask::Ref::New(objectClass, envprobe, shapeList);
 	}
 };
 
 class cTextInfluenceBorderSize : public cBaseTextFieldListener{
 public:
-	cTextInfluenceBorderSize( gdeWPSOCEnvMapProbe &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextInfluenceBorderSize> Ref;
+	cTextInfluenceBorderSize(gdeWPSOCEnvMapProbe &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
 		const float value = textField.GetFloat();
-		if( fabsf( envprobe->GetInfluenceBorderSize() - value ) < FLOAT_SAFE_EPSILON ){
-			return NULL;
+		if(fabsf(envprobe->GetInfluenceBorderSize() - value) < FLOAT_SAFE_EPSILON){
+			return {};
 		}
-		return new gdeUOCEnvMapProbeSetInfluenceBorderSize( objectClass, envprobe, value );
+		return gdeUOCEnvMapProbeSetInfluenceBorderSize::Ref::New(objectClass, envprobe, value);
 	}
 };
 
 class cTextInfluencePriority : public cBaseTextFieldListener{
 public:
-	cTextInfluencePriority( gdeWPSOCEnvMapProbe &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextInfluencePriority> Ref;
+	cTextInfluencePriority(gdeWPSOCEnvMapProbe &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCEnvMapProbe *envprobe ){
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCEnvMapProbe *envprobe){
 		const int value = textField.GetInteger();
-		if( envprobe->GetInfluencePriority() == value ){
-			return NULL;
+		if(envprobe->GetInfluencePriority() == value){
+			return {};
 		}
-		return new gdeUOCEnvMapProbeSetInfluencePriority( objectClass, envprobe, value );
+		return gdeUOCEnvMapProbeSetInfluencePriority::Ref::New(objectClass, envprobe, value);
 	}
 };
 
@@ -287,10 +296,11 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCEnvMapProbe &pPanel;
 	
 public:
-	cComboPropertyNames( gdeWPSOCEnvMapProbe &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cComboPropertyNames> Ref;
+	cComboPropertyNames(gdeWPSOCEnvMapProbe &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( pPanel.GetEnvMapProbe() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(pPanel.GetEnvMapProbe()){
 			pPanel.UpdatePropertyName();
 		}
 	}
@@ -300,23 +310,23 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCEnvMapProbe &pPanel;
 	
 public:
-	cComboPropertyNameTarget( gdeWPSOCEnvMapProbe &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
+	cComboPropertyNameTarget(gdeWPSOCEnvMapProbe &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCEnvMapProbe * const envprobe = pPanel.GetEnvMapProbe();
-		if( ! envprobe ){
+		if(!envprobe){
 			return;
 		}
 		
 		const gdeOCEnvMapProbe::eProperties propertyName = pPanel.GetPropertyName();
-		if( envprobe->GetPropertyName( propertyName ) == comboBox->GetText() ){
+		if(envprobe->GetPropertyName(propertyName) == comboBox->GetText()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new gdeUOCEnvMapProbeSetPropertyName(
-			pPanel.GetObjectClass(), envprobe, propertyName, comboBox->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCEnvMapProbeSetPropertyName::Ref::New(pPanel.GetObjectClass(),
+				envprobe, propertyName, comboBox->GetText()));
 	}
 };
 
@@ -330,71 +340,66 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCEnvMapProbe::gdeWPSOCEnvMapProbe( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSOCEnvMapProbe::gdeWPSOCEnvMapProbe(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
-	pListener = new gdeWPSOCEnvMapProbeListener( *this );
+	pListener = gdeWPSOCEnvMapProbeListener::Ref::New(*this);
 	
-	helper.GroupBox( content, groupBox, "Object Class Environment Map Probe:" );
-	helper.EditVector( groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation in degrees relative to object class",
-		pEditRotation, new cEditRotation( *this ) );
-	helper.EditVector( groupBox, "Scaling:", "Scaling in degrees relative to object class",
-		pEditScaling, new cEditScaling( *this ) );
-	helper.EditString( groupBox, "Influence Shape:", "Influence shape",
-		pEditShapeInfluence, new cTextShapeInfluence( *this ) );
-	helper.EditString( groupBox, "Reflection Shape:", "Reflection shape",
-		pEditShapeReflection, new cTextShapeReflection( *this ) );
-	helper.EditString( groupBox, "Reflection Shape Mask:", "Reflection shape mask",
-		pEditShapeReflectionMask, new cTextShapeReflectionMask( *this ) );
-	helper.EditFloat( groupBox, "Influence Border Size:", "Influence border size",
-		pEditInfluenceBorderSize, new cTextInfluenceBorderSize( *this ) );
-	helper.EditInteger( groupBox, "Influence Priority:", "Influence priority",
-		pEditInfluencePriority, new cTextInfluencePriority( *this ) );
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCEnvMapProbe.GroupEnvMapProbe");
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Position", "@GameDefinition.WPSOCEnvMapProbe.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Rotation", "@GameDefinition.WPSOCEnvMapProbe.Rotation.ToolTip",
+		pEditRotation, cEditRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Scaling", "@GameDefinition.WPSOCEnvMapProbe.Scaling.ToolTip",
+		pEditScaling, cEditScaling::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluenceShape", "@GameDefinition.WPSOCEnvMapProbe.InfluenceShape.ToolTip",
+		pEditShapeInfluence, cTextShapeInfluence::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.ReflectionShape", "@GameDefinition.WPSOCEnvMapProbe.ReflectionShape.ToolTip",
+		pEditShapeReflection, cTextShapeReflection::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask", "@GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask.ToolTip",
+		pEditShapeReflectionMask, cTextShapeReflectionMask::Ref::New(*this));
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize", "@GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.ToolTip",
+		pEditInfluenceBorderSize, cTextInfluenceBorderSize::Ref::New(*this));
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluencePriority", "@GameDefinition.WPSOCEnvMapProbe.InfluencePriority.ToolTip",
+		pEditInfluencePriority, cTextInfluencePriority::Ref::New(*this));
 	
 	// properties targets
-	helper.GroupBox( content, groupBox, "Properties:" );
-	helper.ComboBox( groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames( *this ) );
-	pCBPropertyNames->AddItem( "Influence area", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epInfluenceArea );
-	pCBPropertyNames->AddItem( "Influence border size", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epInfluenceBorderSize );
-	pCBPropertyNames->AddItem( "Influence priority", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epInfluencePriority );
-	pCBPropertyNames->AddItem( "Reflection shape", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epReflectionShape );
-	pCBPropertyNames->AddItem( "Reflection mask", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epReflectionMask );
-	pCBPropertyNames->AddItem( "Attach position", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epAttachPosition );
-	pCBPropertyNames->AddItem( "Attach rotation", NULL,
-		( void* )( intptr_t )gdeOCEnvMapProbe::epAttachRotation );
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCEnvMapProbe.GroupProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Property", "@GameDefinition.WPSOCEnvMapProbe.Property.ToolTip",
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.InfluenceArea", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epInfluenceArea);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.InfluenceBorderSize", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epInfluenceBorderSize);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.InfluencePriority", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epInfluencePriority);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.ReflectionShape", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epReflectionShape);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.ReflectionMask", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epReflectionMask);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachPosition", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr,
+		(void*)(intptr_t)gdeOCEnvMapProbe::epAttachRotation);
 	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget( *this ) );
-	pCBPropertyNameTarget->SetEditable( true );
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Target", true, "@GameDefinition.WPSOCEnvMapProbe.Target.ToolTip",
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
+	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
-	pCBPropertyNameTarget->SetFilterCaseInsentive( true );
+	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCEnvMapProbe::~gdeWPSOCEnvMapProbe(){
-	SetGameDefinition( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -402,21 +407,19 @@ gdeWPSOCEnvMapProbe::~gdeWPSOCEnvMapProbe(){
 // Management
 ///////////////
 
-void gdeWPSOCEnvMapProbe::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSOCEnvMapProbe::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
-		pGameDefinition->FreeReference();
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
-		gameDefinition->AddReference();
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 	}
 	
 	UpdatePropertyList();
@@ -426,16 +429,16 @@ void gdeWPSOCEnvMapProbe::SetGameDefinition( gdeGameDefinition *gameDefinition )
 
 
 gdeObjectClass *gdeWPSOCEnvMapProbe::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCEnvMapProbe *gdeWPSOCEnvMapProbe::GetEnvMapProbe() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCEnvMapProbe() : NULL;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCEnvMapProbe().Pointer() : nullptr;
 }
 
-const gdeOCEnvMapProbe::eProperties gdeWPSOCEnvMapProbe::GetPropertyName() const{
-	return ( gdeOCEnvMapProbe::eProperties )( intptr_t )pCBPropertyNames->GetSelectedItem()->GetData();
+gdeOCEnvMapProbe::eProperties gdeWPSOCEnvMapProbe::GetPropertyName() const{
+	return (gdeOCEnvMapProbe::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
 
@@ -443,54 +446,54 @@ const gdeOCEnvMapProbe::eProperties gdeWPSOCEnvMapProbe::GetPropertyName() const
 void gdeWPSOCEnvMapProbe::UpdatePropertyList(){
 	const gdeObjectClass * const objectClass = GetObjectClass();
 	
-	const decString selection( pCBPropertyNameTarget->GetText() );
+	const decString selection(pCBPropertyNameTarget->GetText());
 	pCBPropertyNameTarget->RemoveAllItems();
 	
-	if( objectClass ){
-		const gdePropertyList &properties = objectClass->GetProperties();
+	if(objectClass){
+		const gdeProperty::List &properties = objectClass->GetProperties();
 		const int count = properties.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pCBPropertyNameTarget->AddItem( properties.GetAt( i )->GetName() );
+		for(i=0; i<count; i++){
+			pCBPropertyNameTarget->AddItem(properties.GetAt(i)->GetName());
 		}
 	}
 	
 	pCBPropertyNameTarget->SortItems();
-	pCBPropertyNameTarget->SetText( selection );
+	pCBPropertyNameTarget->SetText(selection);
 }
 
 void gdeWPSOCEnvMapProbe::UpdateEnvMapProbe(){
 	const gdeOCEnvMapProbe * const envprobe = GetEnvMapProbe();
 	
-	if( envprobe ){
+	if(envprobe){
 		igdeCodecPropertyString codec;
 		decString encoded;
 		
-		pEditPosition->SetVector( envprobe->GetPosition() );
-		pEditRotation->SetVector( envprobe->GetRotation() );
-		pEditScaling->SetVector( envprobe->GetScaling() );
+		pEditPosition->SetVector(envprobe->GetPosition());
+		pEditRotation->SetVector(envprobe->GetRotation());
+		pEditScaling->SetVector(envprobe->GetScaling());
 		
-		codec.EncodeShapeList( envprobe->GetShapeListInfluence(), encoded );
-		pEditShapeInfluence->SetText( encoded );
+		codec.EncodeShapeList(envprobe->GetShapeListInfluence(), encoded);
+		pEditShapeInfluence->SetText(encoded);
 		
-		decShapeList shapeList;
-		if( envprobe->GetShapeReflection() ){
-			shapeList.Add( envprobe->GetShapeReflection()->Copy() );
+		decShape::List shapeList;
+		if(envprobe->GetShapeReflection()){
+			shapeList.Add(envprobe->GetShapeReflection()->Copy());
 		}
-		codec.EncodeShapeList( shapeList, encoded );
-		pEditShapeReflection->SetText( encoded );
+		codec.EncodeShapeList(shapeList, encoded);
+		pEditShapeReflection->SetText(encoded);
 		
-		codec.EncodeShapeList( envprobe->GetShapeListReflectionMask(), encoded );
-		pEditShapeReflectionMask->SetText( encoded );
+		codec.EncodeShapeList(envprobe->GetShapeListReflectionMask(), encoded);
+		pEditShapeReflectionMask->SetText(encoded);
 		
-		pEditInfluenceBorderSize->SetFloat( envprobe->GetInfluenceBorderSize() );
-		pEditInfluencePriority->SetInteger( envprobe->GetInfluencePriority() );
+		pEditInfluenceBorderSize->SetFloat(envprobe->GetInfluenceBorderSize());
+		pEditInfluencePriority->SetInteger(envprobe->GetInfluencePriority());
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
-		pEditScaling->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
+		pEditScaling->SetVector(decVector());
 		pEditShapeInfluence->ClearText();
 		pEditShapeReflection->ClearText();
 		pEditShapeReflectionMask->ClearText();
@@ -499,14 +502,14 @@ void gdeWPSOCEnvMapProbe::UpdateEnvMapProbe(){
 	}
 	
 	const bool enabled = envprobe;
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditScaling->SetEnabled( enabled );
-	pEditShapeInfluence->SetEnabled( enabled );
-	pEditShapeReflection->SetEnabled( enabled );
-	pEditShapeReflectionMask->SetEnabled( enabled );
-	pEditInfluenceBorderSize->SetEnabled( enabled );
-	pEditInfluencePriority->SetEnabled( enabled );
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditScaling->SetEnabled(enabled);
+	pEditShapeInfluence->SetEnabled(enabled);
+	pEditShapeReflection->SetEnabled(enabled);
+	pEditShapeReflectionMask->SetEnabled(enabled);
+	pEditInfluenceBorderSize->SetEnabled(enabled);
+	pEditInfluencePriority->SetEnabled(enabled);
 	
 	UpdatePropertyName();
 }
@@ -514,12 +517,12 @@ void gdeWPSOCEnvMapProbe::UpdateEnvMapProbe(){
 void gdeWPSOCEnvMapProbe::UpdatePropertyName(){
 	const gdeOCEnvMapProbe * const envprobe = GetEnvMapProbe();
 	
-	if( envprobe ){
-		pCBPropertyNameTarget->SetText( envprobe->GetPropertyName( GetPropertyName() ) );
+	if(envprobe){
+		pCBPropertyNameTarget->SetText(envprobe->GetPropertyName(GetPropertyName()));
 		
 	}else{
 		pCBPropertyNameTarget->ClearText();
 	}
 	
-	pCBPropertyNameTarget->SetEnabled( envprobe );
+	pCBPropertyNameTarget->SetEnabled(envprobe);
 }

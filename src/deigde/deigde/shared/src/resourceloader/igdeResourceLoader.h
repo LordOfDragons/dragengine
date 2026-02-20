@@ -25,11 +25,12 @@
 #ifndef _IGDERESOURCELOADER_H_
 #define _IGDERESOURCELOADER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "igdeResourceLoaderTask.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 
 class igdeEnvironment;
-class igdeResourceLoaderTask;
 class igdeResourceLoaderListener;
 
 
@@ -46,7 +47,7 @@ class igdeResourceLoaderListener;
  */
 class DE_DLL_EXPORT igdeResourceLoader{
 	igdeEnvironment &pEnvironment;
-	decObjectOrderedSet pTasks;
+	decTObjectOrderedSet<igdeResourceLoaderTask> pTasks;
 	
 	
 	
@@ -54,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource loader. */
-	igdeResourceLoader( igdeEnvironment &environment );
+	igdeResourceLoader(igdeEnvironment &environment);
 	
 	/** \brief Clean up resource loader. */
 	~igdeResourceLoader();
@@ -81,15 +82,15 @@ public:
 	 * expects a resource of the given type since the resource is handed over to the
 	 * listener as a deFileResource object which has to be cast to the correct type.
 	 */
-	void RequestResource( const char *filename, deResourceLoader::eResourceType resourceType,
-		igdeResourceLoaderListener *listener );
+	void RequestResource(const char *filename, deResourceLoader::eResourceType resourceType,
+		igdeResourceLoaderListener *listener);
 	/*@}*/
 	
 	
 	
 private:
-	int pIndexOfTaskWith( const char *filename, deResourceLoader::eResourceType resourceType );
-	void pAddTask( const char *filename, deResourceLoader::eResourceType resourceType );
+	int pIndexOfTaskWith(const char *filename, deResourceLoader::eResourceType resourceType);
+	void pAddTask(const char *filename, deResourceLoader::eResourceType resourceType);
 };
 
 #endif

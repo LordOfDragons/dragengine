@@ -31,6 +31,8 @@
 #include "../ceConversation.h"
 #include "../playback/cePlayback.h"
 
+#include <deigde/gui/igdeApplication.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUTF8Decoder.h>
@@ -58,24 +60,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceConversationInfoBox::ceConversationInfoBox( ceConversation &conversation ) :
-pConversation( conversation ),
-pBackgroundColor( 1.0f, 1.0f, 0.0f, 0.5f ),
-pTextColor( 1.0f, 1.0f, 1.0f, 1.0f ),
-pTextSize( 18 ),
-pPadding( 10 ),
-pWidth( 0 ),
-pHeight( 0 ),
-
-pCanvasView( NULL )
+ceConversationInfoBox::ceConversationInfoBox(ceConversation &conversation) :
+pConversation(conversation),
+pBackgroundColor(1.0f, 1.0f, 0.0f, 0.5f),
+pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
+pTextSize(18),
+pPadding(10),
+pWidth(0),
+pHeight(0)
 {
 	try{
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
-		pCanvasView->SetOrder( 12.0f );
+		pCanvasView->SetOrder(12.0f);
 		
-		SetPathFont( "/igde/fonts/sans_9_border.defont" );
+		SetPathFont("/igde/fonts/sans_9_border.defont");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -101,8 +101,8 @@ void ceConversationInfoBox::SetPathFont(const char *path){
 	UpdateCanvas();
 }
 
-void ceConversationInfoBox::SetBackgroundColor( const decColor &color ){
-	if( color.IsEqualTo( pBackgroundColor ) ){
+void ceConversationInfoBox::SetBackgroundColor(const decColor &color){
+	if(color.IsEqualTo(pBackgroundColor)){
 		return;
 	}
 	
@@ -110,8 +110,8 @@ void ceConversationInfoBox::SetBackgroundColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void ceConversationInfoBox::SetTextColor( const decColor &color ){
-	if( color.IsEqualTo( pTextColor ) ){
+void ceConversationInfoBox::SetTextColor(const decColor &color){
+	if(color.IsEqualTo(pTextColor)){
 		return;
 	}
 	
@@ -119,7 +119,7 @@ void ceConversationInfoBox::SetTextColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void ceConversationInfoBox::SetTextSize( int size ){
+void ceConversationInfoBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
 	if(size == pTextSize){
@@ -131,12 +131,12 @@ void ceConversationInfoBox::SetTextSize( int size ){
 	UpdateCanvas();
 }
 
-void ceConversationInfoBox::SetPadding( int padding ){
-	if( padding < 0 ){
+void ceConversationInfoBox::SetPadding(int padding){
+	if(padding < 0){
 		padding = 0;
 	}
 	
-	if( padding == pPadding ){
+	if(padding == pPadding){
 		return;
 	}
 	
@@ -146,12 +146,12 @@ void ceConversationInfoBox::SetPadding( int padding ){
 
 
 
-void ceConversationInfoBox::SetText( const char *text ){
-	if( ! text ){
-		DETHROW( deeInvalidParam );
+void ceConversationInfoBox::SetText(const char *text){
+	if(!text){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pText.Equals( text ) ){
+	if(pText.Equals(text)){
 		return;
 	}
 	
@@ -162,7 +162,7 @@ void ceConversationInfoBox::SetText( const char *text ){
 
 
 void ceConversationInfoBox::Clear(){
-	SetText( "" );
+	SetText("");
 }
 
 
@@ -170,7 +170,7 @@ void ceConversationInfoBox::Clear(){
 void ceConversationInfoBox::UpdateCanvas(){
 	// if there is no parent canvas there is no use in updating anything
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if( ! parentView ){
+	if(!parentView){
 		return;
 	}
 	
@@ -181,65 +181,47 @@ void ceConversationInfoBox::UpdateCanvas(){
 	pCanvasView->RemoveAllCanvas();
 	
 	// resize canvas
-	pCanvasView->SetSize( decPoint( pWidth, pHeight ) );
-	pCanvasView->SetPosition( decPoint( ( parentView->GetSize().x - pWidth ) / 2, 10 ) );
+	pCanvasView->SetSize(decPoint(pWidth, pHeight));
+	pCanvasView->SetPosition(decPoint((parentView->GetSize().x - pWidth) / 2, 10));
 	
 	// make canvas visible if any text is inside
-	pCanvasView->SetVisible( pLayoutTexts.GetCount() > 0 );
+	pCanvasView->SetVisible(pLayoutTexts.IsNotEmpty());
 	
 	// add background color canvas
 	deCanvasManager &canvasManager = *pConversation.GetEngine()->GetCanvasManager();
-	deCanvasPaint *canvasBackground = NULL;
-	try{
-		canvasBackground = canvasManager.CreateCanvasPaint();
-		canvasBackground->SetShapeType( deCanvasPaint::estRectangle );
-		canvasBackground->SetFillColor( pBackgroundColor );
-		canvasBackground->SetLineColor( decColor( pBackgroundColor * 0.25f, pBackgroundColor.a ) );
-		canvasBackground->SetThickness( 1.0f );
-		canvasBackground->SetOrder( 0.0f );
-		canvasBackground->SetSize( pCanvasView->GetSize() );
-		pCanvasView->AddCanvas( canvasBackground );
-		canvasBackground->FreeReference();
-		
-	}catch( const deException & ){
-		if( canvasBackground ){
-			canvasBackground->FreeReference();
-		}
-		throw;
-	}
+	deCanvasPaint::Ref canvasBackground;
+	canvasBackground = canvasManager.CreateCanvasPaint();
+	canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
+	canvasBackground->SetFillColor(pBackgroundColor);
+	canvasBackground->SetLineColor(decColor(pBackgroundColor * 0.25f, pBackgroundColor.a));
+	canvasBackground->SetThickness(1.0f);
+	canvasBackground->SetOrder(0.0f);
+	canvasBackground->SetSize(pCanvasView->GetSize());
+	pCanvasView->AddCanvas(canvasBackground);
 	
 	// add text canvas
-	if( pEngFont ){
+	if(pEngFont){
+		const int fontSize = igdeApplication::app().DisplayScaled(pTextSize);
+		const int padding = igdeApplication::app().DisplayScaled(pPadding);
 		const int textCount = pLayoutTexts.GetCount();
-		deCanvasText *canvasText = NULL;
-		int y = pPadding;
+		int y = padding;
 		int i;
 		
-		try{
-			for( i=0; i<textCount; i++ ){
-				const decString &text = pLayoutTexts.GetAt( i );
-				const int lineWidth = pLayoutWidths.GetAt( i );
-				
-				canvasText = canvasManager.CreateCanvasText();
-				canvasText->SetColor( pTextColor );
-				canvasText->SetFont( pEngFont );
-				canvasText->SetFontSize( ( float )pTextSize );
-				canvasText->SetText( text );
-				canvasText->SetOrder( ( float )( 1 + i ) );
-				canvasText->SetPosition( decPoint( ( pWidth - lineWidth ) / 2, y ) );
-				canvasText->SetSize( decPoint( lineWidth, pTextSize ) );
-				pCanvasView->AddCanvas( canvasText );
-				canvasText->FreeReference();
-				canvasText = NULL;
-				
-				y += pTextSize;
-			}
+		for(i=0; i<textCount; i++){
+			const decString &text = pLayoutTexts.GetAt(i);
+			const int lineWidth = pLayoutWidths.GetAt(i);
 			
-		}catch( const deException & ){
-			if( canvasText ){
-				canvasText->FreeReference();
-			}
-			throw;
+			const deCanvasText::Ref canvasText(canvasManager.CreateCanvasText());
+			canvasText->SetColor(pTextColor);
+			canvasText->SetFont(pEngFont);
+			canvasText->SetFontSize((float)fontSize);
+			canvasText->SetText(text);
+			canvasText->SetOrder((float)(1 + i));
+			canvasText->SetPosition(decPoint((pWidth - lineWidth) / 2, y));
+			canvasText->SetSize(decPoint(lineWidth, fontSize));
+			pCanvasView->AddCanvas(canvasText);
+			
+			y += fontSize;
 		}
 	}
 }
@@ -250,9 +232,6 @@ void ceConversationInfoBox::UpdateCanvas(){
 //////////////////////
 
 void ceConversationInfoBox::pCleanUp(){
-	if( pCanvasView ){
-		pCanvasView->FreeReference();
-	}
 }
 
 
@@ -262,7 +241,7 @@ void ceConversationInfoBox::pUpdateFont(){
 	
 	try{
 		if(!pPathFont.IsEmpty()){
-			pEngFont.TakeOver(pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/"));
+			pEngFont = pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/");
 			
 		}else{
 			pEngFont = nullptr;
@@ -280,7 +259,7 @@ void ceConversationInfoBox::pUpdateFontSize(){
 	}
 	
 	try{
-		pEngFontSize = pEngFont->PrepareSize(pTextSize);
+		pEngFontSize = pEngFont->PrepareSize(igdeApplication::app().DisplayScaled(pTextSize));
 		
 	}catch(const deException &e){
 		pConversation.GetLogger()->LogException(LOGSOURCE, e);
@@ -291,8 +270,9 @@ void ceConversationInfoBox::pUpdateText(){
 	pLayoutTexts.RemoveAll();
 	pLayoutWidths.RemoveAll();
 	
-	pWidth = pPadding * 2;
-	pHeight = pPadding * 2;
+	const int padding = igdeApplication::app().DisplayScaled(pPadding);
+	pWidth = padding * 2;
+	pHeight = padding * 2;
 	
 	if(pText.IsEmpty() || !pEngFont){
 		return;
@@ -301,7 +281,8 @@ void ceConversationInfoBox::pUpdateText(){
 	decUTF8Decoder utf8Decoder;
 	utf8Decoder.SetString(pText);
 	
-	const float scale = (float)pTextSize / (float)(pEngFontSize
+	const int fontSize = igdeApplication::app().DisplayScaled(pTextSize);
+	const float scale = (float)fontSize / (float)(pEngFontSize
 		? pEngFontSize->GetLineHeight() : pEngFont->GetLineHeight());
 	const int textLength = utf8Decoder.GetLength();
 	int textHeight = 0;
@@ -319,7 +300,7 @@ void ceConversationInfoBox::pUpdateText(){
 		if(character == '\n'){
 			pLayoutTexts.Add(pText.GetMiddle(lineStart, position));
 			pLayoutWidths.Add(lineWidth);
-			textHeight += pTextSize;
+			textHeight += fontSize;
 			lineWidth = 0;
 			lineStart = utf8Decoder.GetPosition();
 			
@@ -334,7 +315,7 @@ void ceConversationInfoBox::pUpdateText(){
 	if(lineStart < textLength){
 		pLayoutTexts.Add(pText.GetMiddle(lineStart, textLength));
 		pLayoutWidths.Add(lineWidth);
-		textHeight += pTextSize;
+		textHeight += fontSize;
 	}
 	
 	pWidth += textWidth;

@@ -33,18 +33,19 @@
  */
 class gdeMAObjectClassAdd : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeMAObjectClassAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMAObjectClassAdd( gdeWindowMain &windowMain );
+	gdeMAObjectClassAdd(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	/*@}*/
 };
 

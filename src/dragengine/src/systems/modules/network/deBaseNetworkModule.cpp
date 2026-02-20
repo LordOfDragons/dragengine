@@ -27,8 +27,8 @@
 // Class deBaseNetworkModule
 //////////////////////////////
 
-deBaseNetworkModule::deBaseNetworkModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseNetworkModule::deBaseNetworkModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseNetworkModule::~deBaseNetworkModule(){

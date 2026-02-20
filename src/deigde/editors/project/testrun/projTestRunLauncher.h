@@ -28,7 +28,7 @@
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #endif
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 class projTestRunProcess;
 
@@ -47,7 +47,7 @@ private:
 	decString pPathConfigUser;
 	decString pPathShares;
 	
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create launcher simulation. */
-	projTestRunLauncher( projTestRunProcess &process );
+	projTestRunLauncher(projTestRunProcess &process);
 	
 	/** \brief Clean up launcher simulation. */
 	~projTestRunLauncher();
@@ -75,7 +75,7 @@ public:
 	inline const decString &GetPathShares() const{ return pPathShares; }
 	
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem* GetVFS() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
 	/** \brief Locate path. */
 	void LocatePath();

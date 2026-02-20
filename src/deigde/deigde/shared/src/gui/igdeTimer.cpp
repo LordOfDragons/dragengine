@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeTimer.h"
 #include "native/toolkit.h"
 #include "../environment/igdeEnvironment.h"
@@ -41,21 +37,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTimer::igdeTimer( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pNativeTimer( NULL ),
-pTimeout( 0 ),
-pRepeating( false ),
-pRunning( false )
+igdeTimer::igdeTimer(igdeEnvironment &environment) :
+pEnvironment(environment),
+pNativeTimer(nullptr),
+pTimeout(0),
+pRepeating(false),
+pRunning(false),
+pNativeTimerInterface(nullptr)
 {
-	pNativeTimer = igdeNativeTimer::CreateNativeTimer( *this );
+	igdeNativeTimer * const native = igdeNativeTimer::CreateNativeTimer(*this);
+	pNativeTimer = native;
+	pNativeTimerInterface = native;
 }
 
 igdeTimer::~igdeTimer(){
 	Stop();
 	
-	if( pNativeTimer ){
-		( ( igdeNativeTimer* )pNativeTimer )->DestroyNativeTimer();
+	pNativeTimerInterface = nullptr;
+	if(pNativeTimer){
+		((igdeNativeTimer*)pNativeTimer)->DestroyNativeTimer();
 	}
 }
 
@@ -64,25 +64,31 @@ igdeTimer::~igdeTimer(){
 // Management
 ///////////////
 
-void igdeTimer::Start( int timeoutMS, bool repeating ){
+void igdeTimer::Start(int timeoutMS, bool repeating){
 	Stop();
 	
-	pTimeout = decMath::max( timeoutMS, 0 );
+	DEASSERT_NOTNULL(pNativeTimerInterface)
+	
+	pTimeout = decMath::max(timeoutMS, 0);
 	pRepeating = repeating;
 	pRunning = true;
 	
-	( ( igdeNativeTimer* )pNativeTimer )->StartTimer();
+	pNativeTimerInterface->StartTimer();
 }
 
-void igdeTimer::Start( double timeout, bool repeating ){
-	Start( ( int )( timeout * 1000.0 + 0.5 ), repeating );
+void igdeTimer::Start(double timeout, bool repeating){
+	Start((int)(timeout * 1000.0 + 0.5), repeating);
 }
 
 void igdeTimer::Stop(){
-	if( pRunning ){
-		( ( igdeNativeTimer* )pNativeTimer )->StopTimer();
-		pRunning = false;
+	if(!pRunning){
+		return;
 	}
+	
+	if(pNativeTimerInterface){
+		pNativeTimerInterface->StopTimer();
+	}
+	pRunning = false;
 }
 
 void igdeTimer::OnTimeout(){
@@ -93,6 +99,6 @@ void igdeTimer::OnTimeout(){
 // Protected Functions
 ////////////////////////
 
-void igdeTimer::SetNativeTimer( void *nativeTimer ){
+void igdeTimer::SetNativeTimer(void *nativeTimer){
 	pNativeTimer = nativeTimer;
 }

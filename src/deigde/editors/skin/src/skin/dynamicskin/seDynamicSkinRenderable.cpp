@@ -54,28 +54,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-seDynamicSkinRenderable::seDynamicSkinRenderable( deEngine *engine, const char *name ) :
-pEngine( engine ),
-pDynamicSkin( NULL ),
-pName( name ),
-pRenderableType( ertValue ),
-pActive( false ),
-pDirty( true ),
-pValue( 0.0f ),
-pSliderValueLower( 0.0f ),
-pSliderValueUpper( 1.0f ),
-pColor( 1.0f, 1.0f, 1.0f )
+seDynamicSkinRenderable::seDynamicSkinRenderable(deEngine *engine, const char *name) :
+pEngine(engine),
+pDynamicSkin(nullptr),
+pName(name),
+pRenderableType(ertValue),
+pActive(false),
+pDirty(true),
+pValue(0.0f),
+pSliderValueLower(0.0f),
+pSliderValueUpper(1.0f),
+pColor(1.0f, 1.0f, 1.0f)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pEngVideoPlayer.TakeOver( engine->GetVideoPlayerManager()->CreateVideoPlayer() );
-	pEngVideoPlayer->SetLooping( true );
+	pEngVideoPlayer = engine->GetVideoPlayerManager()->CreateVideoPlayer();
+	pEngVideoPlayer->SetLooping(true);
 }
 
 seDynamicSkinRenderable::~seDynamicSkinRenderable(){
-	SetDynamicSkin( NULL );
+	SetDynamicSkin(nullptr);
 }
 
 
@@ -83,13 +83,13 @@ seDynamicSkinRenderable::~seDynamicSkinRenderable(){
 // Management
 ///////////////
 
-void seDynamicSkinRenderable::SetDynamicSkin( seDynamicSkin *dynamicSkin ){
-	if( dynamicSkin == pDynamicSkin ){
+void seDynamicSkinRenderable::SetDynamicSkin(seDynamicSkin *dynamicSkin){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
 	
-	if( pDynamicSkin ){
-		pDynamicSkin->GetEngineDynamicSkin()->RemoveRenderableNamed( pName );
+	if(pDynamicSkin){
+		pDynamicSkin->GetEngineDynamicSkin()->RemoveRenderableNamed(pName);
 	}
 	
 	pDynamicSkin = dynamicSkin;
@@ -99,23 +99,23 @@ void seDynamicSkinRenderable::SetDynamicSkin( seDynamicSkin *dynamicSkin ){
 
 
 
-void seDynamicSkinRenderable::SetName( const char *name ){
-	if( pName == name ){
+void seDynamicSkinRenderable::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	pDirty = true;
 	
-	if( pDynamicSkin ){
-		pDynamicSkin->GetParentSkin()->NotifyDynamicSkinRenderableNameChanged( this );
+	if(pDynamicSkin){
+		pDynamicSkin->GetParentSkin()->NotifyDynamicSkinRenderableNameChanged(this);
 	}
 	
 	NotifyEngineDynamicSkinChanged();
 }
 
-void seDynamicSkinRenderable::SetRenderableType( eRenderableTypes type ){
-	if( type == pRenderableType ){
+void seDynamicSkinRenderable::SetRenderableType(eRenderableTypes type){
+	if(type == pRenderableType){
 		return;
 	}
 	
@@ -127,60 +127,60 @@ void seDynamicSkinRenderable::SetRenderableType( eRenderableTypes type ){
 
 
 
-void seDynamicSkinRenderable::SetActive( bool active ){
+void seDynamicSkinRenderable::SetActive(bool active){
 	pActive = active;
 }
 
 void seDynamicSkinRenderable::NotifyChanged(){
-	if( pDynamicSkin ){
-		pDynamicSkin->GetParentSkin()->NotifyDynamicSkinRenderableChanged( this );
+	if(pDynamicSkin){
+		pDynamicSkin->GetParentSkin()->NotifyDynamicSkinRenderableChanged(this);
 	}
 	
 	NotifyEngineDynamicSkinChanged();
 }
 
 void seDynamicSkinRenderable::NotifyEngineDynamicSkinChanged(){
-	if( ! pDynamicSkin ){
+	if(!pDynamicSkin){
 		return;
 	}
 	
 	deDynamicSkin &engDynamicSkin = *pDynamicSkin->GetEngineDynamicSkin();
-	const int index = engDynamicSkin.IndexOfRenderableNamed( pName );
+	const int index = engDynamicSkin.IndexOfRenderableNamed(pName);
 	
-	if( index != -1 ){
-		pDynamicSkin->GetEngineDynamicSkin()->NotifyRenderableChanged( index );
+	if(index != -1){
+		pDynamicSkin->GetEngineDynamicSkin()->NotifyRenderableChanged(index);
 	}
 }
 
 
 
-void seDynamicSkinRenderable::Update( float elapsed ){
-	if( pEngVideoPlayer ){
-		pEngVideoPlayer->Update( elapsed );
+void seDynamicSkinRenderable::Update(float elapsed){
+	if(pEngVideoPlayer){
+		pEngVideoPlayer->Update(elapsed);
 	}
 	
-	if( ! pDirty ){
+	if(!pDirty){
 		return;
 	}
 	
-	pDynamicSkin->GetEngineDynamicSkin()->RemoveRenderableNamed( pName );
+	pDynamicSkin->GetEngineDynamicSkin()->RemoveRenderableNamed(pName);
 	
-	if( pRenderableType == ertValue ){
+	if(pRenderableType == ertValue){
 		CreateRenderableValue();
 		
-	}else if( pRenderableType == ertColor ){
+	}else if(pRenderableType == ertColor){
 		CreateRenderableColor();
 		
-	}else if( pRenderableType == ertImage ){
+	}else if(pRenderableType == ertImage){
 		CreateRenderableImage();
 		
-	}else if( pRenderableType == ertCanvas ){
+	}else if(pRenderableType == ertCanvas){
 		CreateRenderableCanvas();
 		
-	}else if( pRenderableType == ertVideoFrame ){
+	}else if(pRenderableType == ertVideoFrame){
 		CreateRenderableVideoFrame();
 		
-	}else if( pRenderableType == ertCamera ){
+	}else if(pRenderableType == ertCamera){
 		CreateRenderableCamera();
 	}
 	
@@ -190,51 +190,21 @@ void seDynamicSkinRenderable::Update( float elapsed ){
 
 
 void seDynamicSkinRenderable::CreateRenderableValue(){
-	deDSRenderableValue *engRenderable = NULL;
-	
-	try{
-		engRenderable = new deDSRenderableValue( pName );
-		engRenderable->SetValue( pValue );
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable( engRenderable );
-		
-	}catch( const deException & ){
-		if( engRenderable ){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableValue::Ref::New(pName);
+	engRenderable->SetValue(pValue);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableColor(){
-	deDSRenderableColor *engRenderable = NULL;
-	
-	try{
-		engRenderable = new deDSRenderableColor( pName );
-		engRenderable->SetColor( pColor );
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable( engRenderable );
-		
-	}catch( const deException & ){
-		if( engRenderable ){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableColor::Ref::New(pName);
+	engRenderable->SetColor(pColor);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableImage(){
-	deDSRenderableImage *engRenderable = NULL;
-	
-	try{
-		engRenderable = new deDSRenderableImage( pName );
-		engRenderable->SetImage( pEngImage );
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable( engRenderable );
-		
-	}catch( const deException & ){
-		if( engRenderable ){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableImage::Ref::New(pName);
+	engRenderable->SetImage(pEngImage);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableCanvas(){
@@ -242,19 +212,9 @@ void seDynamicSkinRenderable::CreateRenderableCanvas(){
 }
 
 void seDynamicSkinRenderable::CreateRenderableVideoFrame(){
-	deDSRenderableVideoFrame *engRenderable = NULL;
-	
-	try{
-		engRenderable = new deDSRenderableVideoFrame( pName );
-		engRenderable->SetVideoPlayer( pEngVideoPlayer );
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable( engRenderable );
-		
-	}catch( const deException & ){
-		if( engRenderable ){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableVideoFrame::Ref::New(pName);
+	engRenderable->SetVideoPlayer(pEngVideoPlayer);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableCamera(){
@@ -266,8 +226,8 @@ void seDynamicSkinRenderable::CreateRenderableCamera(){
 // Renderable Value
 /////////////////////
 
-void seDynamicSkinRenderable::SetValue( float value ){
-	if( fabsf( value - pValue ) < FLOAT_SAFE_EPSILON ){
+void seDynamicSkinRenderable::SetValue(float value){
+	if(fabsf(value - pValue) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -277,9 +237,9 @@ void seDynamicSkinRenderable::SetValue( float value ){
 	NotifyChanged();
 }
 
-void seDynamicSkinRenderable::SetSliderLowerRange( float lower ){
-	lower = decMath::max( lower, 0.0f );
-	if( fabs( lower - pSliderValueLower ) < FLOAT_SAFE_EPSILON ){
+void seDynamicSkinRenderable::SetSliderLowerRange(float lower){
+	lower = decMath::max(lower, 0.0f);
+	if(fabs(lower - pSliderValueLower) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -287,9 +247,9 @@ void seDynamicSkinRenderable::SetSliderLowerRange( float lower ){
 	NotifyChanged();
 }
 
-void seDynamicSkinRenderable::SetSliderUpperRange( float upper ){
-	upper = decMath::max( upper, 0.0f );
-	if( fabs( upper - pSliderValueUpper ) < FLOAT_SAFE_EPSILON ){
+void seDynamicSkinRenderable::SetSliderUpperRange(float upper){
+	upper = decMath::max(upper, 0.0f);
+	if(fabs(upper - pSliderValueUpper) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -302,8 +262,8 @@ void seDynamicSkinRenderable::SetSliderUpperRange( float upper ){
 // Renderable Color
 /////////////////////
 
-void seDynamicSkinRenderable::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void seDynamicSkinRenderable::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
@@ -318,8 +278,8 @@ void seDynamicSkinRenderable::SetColor( const decColor &color ){
 // Renderable Image
 /////////////////////
 
-void seDynamicSkinRenderable::SetImagePath( const char *imagePath ){
-	if( pPathImage.Equals( imagePath ) ){
+void seDynamicSkinRenderable::SetImagePath(const char *imagePath){
+	if(pPathImage.Equals(imagePath)){
 		return;
 	}
 	
@@ -331,15 +291,15 @@ void seDynamicSkinRenderable::SetImagePath( const char *imagePath ){
 }
 
 void seDynamicSkinRenderable::UpdateImage(){
-	deImageReference image;
+	deImage::Ref image;
 	
-	if( ! pPathImage.IsEmpty() ){
+	if(!pPathImage.IsEmpty()){
 		try{
-			image.TakeOver( pEngine->GetImageManager()->LoadImage( pPathImage, "/" ) );
+			image = pEngine->GetImageManager()->LoadImage(pPathImage, "/");
 			
-		}catch( const deException &e ){
-			if( pDynamicSkin ){
-				pDynamicSkin->GetParentSkin()->GetLogger()->LogException( "Skin Editor", e );
+		}catch(const deException &e){
+			if(pDynamicSkin){
+				pDynamicSkin->GetParentSkin()->GetLogger()->LogException("Skin Editor", e);
 			}
 		}
 	}
@@ -357,8 +317,8 @@ void seDynamicSkinRenderable::UpdateImage(){
 // Renderable Video Frame
 ///////////////////////////
 
-void seDynamicSkinRenderable::SetVideoPath( const char *videoPath ){
-	if( pPathVideo.Equals( videoPath ) ){
+void seDynamicSkinRenderable::SetVideoPath(const char *videoPath){
+	if(pPathVideo.Equals(videoPath)){
 		return;
 	}
 	
@@ -370,23 +330,23 @@ void seDynamicSkinRenderable::SetVideoPath( const char *videoPath ){
 }
 
 void seDynamicSkinRenderable::UpdateVideo(){
-	deVideoReference video;
+	deVideo::Ref video;
 	
-	if( ! pPathVideo.IsEmpty() ){
+	if(!pPathVideo.IsEmpty()){
 		try{
-			video.TakeOver( pEngine->GetVideoManager()->LoadVideo( pPathVideo, "/", false ) );
+			video = pEngine->GetVideoManager()->LoadVideo(pPathVideo, "/", false);
 			
-		}catch( const deException &e ){
-			if( pDynamicSkin ){
-				pDynamicSkin->GetParentSkin()->GetLogger()->LogException( "Skin Editor", e );
+		}catch(const deException &e){
+			if(pDynamicSkin){
+				pDynamicSkin->GetParentSkin()->GetLogger()->LogException("Skin Editor", e);
 			}
 		}
 	}
 	
 	pEngVideo = video;
-	pEngVideoPlayer->SetVideo( video );
+	pEngVideoPlayer->SetVideo(video);
 	
-	if( video ){
+	if(video){
 		pEngVideoPlayer->Play();
 		
 	}else{

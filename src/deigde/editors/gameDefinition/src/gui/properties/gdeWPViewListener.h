@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPViewListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPViewListener( gdeWPView &panel );
+	gdeWPViewListener(gdeWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPViewListener();
+protected:
+	~gdeWPViewListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition changed. */
-	virtual void GameDefinitionChanged( gdeGameDefinition *gameDefinition );
+	void GameDefinitionChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Sky changed. */
-	virtual void SkyChanged( gdeGameDefinition *gameDefinition );
+	void SkyChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged( gdeGameDefinition *gameDefinition );
+	void CameraChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

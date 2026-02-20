@@ -27,8 +27,8 @@
 #define _DEBNVISITORVALUETYPE_H_
 
 // includes
-#include <dragengine/common/file/decBaseFileWriterReference.h>
-#include <dragengine/resources/network/deNetworkMessageReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/resources/network/value/deNetworkValueVisitor.h>
 
 // predefinitions
@@ -45,8 +45,8 @@ class debnVisitorValueType : public deNetworkValueVisitor{
 private:
 	int pType;
 	
-	deNetworkMessageReference pMessage;
-	decBaseFileWriterReference pWriter;
+	deNetworkMessage::Ref pMessage;
+	decBaseFileWriter::Ref pWriter;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -54,7 +54,7 @@ public:
 	/** Creates a new visitor. */
 	debnVisitorValueType();
 	/** Cleans up the visitor. */
-	virtual ~debnVisitorValueType();
+	~debnVisitorValueType() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -62,31 +62,31 @@ public:
 	/** Retrieves the type. */
 	inline int GetType() const{ return pType; }
 	/** \brief Message. */
-	inline deNetworkMessage *GetMessage() const{ return pMessage; }
+	inline const deNetworkMessage::Ref &GetMessage() const{ return pMessage; }
 	/*@}*/
 	
 	/** @name Visiting */
 	/*@{*/
 	/** Visits a network value. */
-	virtual void VisitValue( deNetworkValue *value );
+	void VisitValue(deNetworkValue *value) override;
 	/** Visits an integer network value. */
-	virtual void VisitInteger( deNetworkValueInteger *value );
+	void VisitInteger(deNetworkValueInteger *value) override;
 	/** Visits a float network value. */
-	virtual void VisitFloat( deNetworkValueFloat *value );
+	void VisitFloat(deNetworkValueFloat *value) override;
 	/** Visits a string network value. */
-	virtual void VisitString( deNetworkValueString *value );
+	void VisitString(deNetworkValueString *value) override;
 	/** Visits a data network value. */
-	virtual void VisitData( deNetworkValueData *value );
+	void VisitData(deNetworkValueData *value) override;
 	/** Visits a point-2 network value. */
-	virtual void VisitPoint2( deNetworkValuePoint2 *value );
+	void VisitPoint2(deNetworkValuePoint2 *value) override;
 	/** Visits a point-3 network value. */
-	virtual void VisitPoint3( deNetworkValuePoint3 *value );
+	void VisitPoint3(deNetworkValuePoint3 *value) override;
 	/** Visits a vector-2 network value. */
-	virtual void VisitVector2( deNetworkValueVector2 *value );
+	void VisitVector2(deNetworkValueVector2 *value) override;
 	/** Visits a vector-3 network value. */
-	virtual void VisitVector3( deNetworkValueVector3 *value );
+	void VisitVector3(deNetworkValueVector3 *value) override;
 	/** Visits a quaternion network value. */
-	virtual void VisitQuaternion( deNetworkValueQuaternion *value );
+	void VisitQuaternion(deNetworkValueQuaternion *value) override;
 	/*@}*/
 };
 

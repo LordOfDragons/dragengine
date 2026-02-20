@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAWait;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/action/ceCAWait.h"
 
 
 
@@ -37,29 +37,33 @@ class ceCAWait;
  * \brief Undo Action Wait Remove Conversation Action.
  */
 class ceUCAWaitRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAWaitRemove>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitRemove( ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action );
+	ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAWaitRemove();
+	~ceUCAWaitRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

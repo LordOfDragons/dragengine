@@ -26,9 +26,10 @@
 #define _DEPARTICLEEMITTERTYPE_H_
 
 #include "deParticleEmitterParameter.h"
-#include "deParticleEmitterReference.h"
-#include "../model/deModelReference.h"
-#include "../skin/deSkinReference.h"
+#include "deParticleEmitter.h"
+#include "../model/deModel.h"
+#include "../skin/deSkin.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/string/decString.h"
@@ -51,8 +52,15 @@
  * particle bounces off the surface if it is not set to be destroyed. Values in between blend
  * linear between these two directions. The default value is 0 hence along the collision normal.
  */
-class DE_DLL_EXPORT deParticleEmitterType{
+class DE_DLL_EXPORT deParticleEmitterType : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deParticleEmitterType>;
+	
+	/** \brief Particle emitter type list. */
+	using List = decTObjectOrderedSet<deParticleEmitterType>;
+	
+	
 	/** \brief Particle parameters. */
 	enum eParameters{
 		epTimeToLive,
@@ -135,24 +143,24 @@ public:
 	
 	
 private:
-	deParticleEmitterParameter pParameters[ epBeamEnd + 1 ];
+	deParticleEmitterParameter pParameters[epBeamEnd + 1];
 	
-	deSkinReference pSkin;
-	deModelReference pModel;
-	deSkinReference pModelSkin;
+	deSkin::Ref pSkin;
+	deModel::Ref pModel;
+	deSkin::Ref pModelSkin;
 	eCastFrom pCastFrom;
 	eSimulationTypes pSimulationType;
 	bool pIntervalAsDistance;
 	
-	deParticleEmitterReference pTrailEmitter;
-	int pTrailControllers[ eecAngularVelocity + 1 ];
+	deParticleEmitter::Ref pTrailEmitter;
+	int pTrailControllers[eecAngularVelocity + 1];
 	
 	float pPhysicsSize;
 	
 	eCollisionResponses pCollisionResponse;
-	deParticleEmitterReference pCollisionEmitter;
+	deParticleEmitter::Ref pCollisionEmitter;
 	float pEmitMinImpulse;
-	int pEmitControllers[ eecAngularVelocity + 1 ];
+	int pEmitControllers[eecAngularVelocity + 1];
 	
 	float pMaxLinearVelocity;
 	float pMaxAngularVelocity;
@@ -166,63 +174,67 @@ public:
 	/** \brief Create particle emitter type. */
 	deParticleEmitterType();
 	
+	/** \brief Create copy of particle emitter type. */
+	deParticleEmitterType(const deParticleEmitterType &other);
+	
+protected:
 	/** \brief Clean up particle emitter type. */
-	~deParticleEmitterType();
+	~deParticleEmitterType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Model used for casting or NULL. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Set model used for casting or NULL. */
-	void SetModel( deModel *model );
+	void SetModel(deModel *model);
 	
 	/** \brief Skin for the model used for casting or NULL. */
-	inline deSkin *GetModelSkin() const{ return pModelSkin; }
+	inline const deSkin::Ref &GetModelSkin() const{ return pModelSkin; }
 	
 	/** \brief Set skin for the model used for casting or NULL. */
-	void SetModelSkin( deSkin *skin );
+	void SetModelSkin(deSkin *skin);
 	
 	/** \brief What part of the model to cast particles from. */
 	inline eCastFrom GetCastFrom() const{ return pCastFrom; }
 	
 	/** \brief Set what part of the model to cast particles from. */
-	void SetCastFrom( eCastFrom castFrom );
+	void SetCastFrom(eCastFrom castFrom);
 	
 	/** \brief Simulation type. */
 	inline eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
 	/** \brief Set simulation type. */
-	void SetSimulationType( eSimulationTypes simulationType );
+	void SetSimulationType(eSimulationTypes simulationType);
 	
 	/** \brief Interval parameter is used as distance not time. */
 	inline bool GetIntervalAsDistance() const{ return pIntervalAsDistance; }
 	
 	/** \brief Set if interval parameter is used as distance not time. */
-	void SetIntervalAsDistance( bool intervalAsDistance );
+	void SetIntervalAsDistance(bool intervalAsDistance);
 	
 	
 	
 	/** \brief Particle emitter for trails behind particles or NULL. */
-	inline deParticleEmitter *GetTrailEmitter() const{ return pTrailEmitter; }
+	inline const deParticleEmitter::Ref &GetTrailEmitter() const{ return pTrailEmitter; }
 	
 	/** \brief Set particle emitter for trails behind particles or NULL. */
-	void SetTrailEmitter( deParticleEmitter *emitter );
+	void SetTrailEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Trail controller index or -1 if not set. */
-	int GetTrailController( eEmitControllers controller ) const;
+	int GetTrailController(eEmitControllers controller) const;
 	
 	/** \brief Set trail controller index or -1 if not set. */
-	void SetTrailController( eEmitControllers controller, int targetController );
+	void SetTrailController(eEmitControllers controller, int targetController);
 	
 	
 	
@@ -230,7 +242,7 @@ public:
 	inline float GetPhysicsSize() const{ return pPhysicsSize; }
 	
 	/** \brief Set physics size. */
-	void SetPhysicsSize( float size );
+	void SetPhysicsSize(float size);
 	
 	
 	
@@ -238,25 +250,25 @@ public:
 	inline eCollisionResponses GetCollisionResponse() const{ return pCollisionResponse; }
 	
 	/** \brief Set collision response. */
-	void SetCollisionResponse( eCollisionResponses response );
+	void SetCollisionResponse(eCollisionResponses response);
 	
 	/** \brief Particle emitter for colliding particles or NULL. */
-	inline deParticleEmitter *GetCollisionEmitter() const{ return pCollisionEmitter; }
+	inline const deParticleEmitter::Ref &GetCollisionEmitter() const{ return pCollisionEmitter; }
 	
 	/** \brief Set particle emitter for colliding particles or NULL. */
-	void SetCollisionEmitter( deParticleEmitter *emitter );
+	void SetCollisionEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Minimum impulse required for colliding particles to emit instances. */
 	inline float GetEmitMinImpulse() const{ return pEmitMinImpulse; }
 	
 	/** \brief Set minimum impulse required for colliding particles to emit instances. */
-	void SetEmitMinImpulse( float impulse );
+	void SetEmitMinImpulse(float impulse);
 	
 	/** \brief Emit controller index or -1 if not set. */
-	int GetEmitController( eEmitControllers controller ) const;
+	int GetEmitController(eEmitControllers controller) const;
 	
 	/** \brief Set emit controller index or -1 if not set. */
-	void SetEmitController( eEmitControllers controller, int targetController );
+	void SetEmitController(eEmitControllers controller, int targetController);
 	
 	
 	
@@ -264,25 +276,25 @@ public:
 	inline float GetMaxLinearVelocity() const{ return pMaxLinearVelocity; }
 	
 	/** \brief Set maximum linear velocity for mapping as requested by the graphic module. */
-	void SetMaxLinearVelocity( float maxLinearVelocity );
+	void SetMaxLinearVelocity(float maxLinearVelocity);
 	
 	/** \brief Maximum angular velocity for mapping as requested by the graphic module. */
 	inline float GetMaxAngularVelocity() const{ return pMaxAngularVelocity; }
 	
 	/** \brief Set maximum angular velocity for mapping as requested by the graphic module. */
-	void SetMaxAngularVelocity( float maxAngularVelocity );
+	void SetMaxAngularVelocity(float maxAngularVelocity);
 	
 	/** \brief Velocities have to be squared as requested by the graphic module. */
 	inline bool GetSquareVelocities() const{ return pSquaredVelocities; }
 	
 	/** \brief Set if velocities have to be squared as requested by the graphic module. */
-	void SetSquareVelocities( bool squareVelocities );
+	void SetSquareVelocities(bool squareVelocities);
 	
 	
 	
 	/** \brief Parameter. */
-	deParticleEmitterParameter &GetParameter( eParameters parameter );
-	const deParticleEmitterParameter &GetParameter( eParameters parameter ) const;
+	deParticleEmitterParameter &GetParameter(eParameters parameter);
+	const deParticleEmitterParameter &GetParameter(eParameters parameter) const;
 	/*@}*/
 };
 

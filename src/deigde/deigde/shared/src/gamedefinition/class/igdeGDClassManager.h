@@ -25,14 +25,14 @@
 #ifndef _IGDEGDCLASSMANAGER_H_
 #define _IGDEGDCLASSMANAGER_H_
 
+#include "igdeGDClass.h"
 #include "../igdeTagManager.h"
-#include "../igdeGDCategoryReference.h"
+#include "../igdeGDCategory.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
-class igdeGDClass;
 class igdeGDVisitor;
 class deLogger;
 
@@ -47,9 +47,9 @@ class deLogger;
  */
 class DE_DLL_EXPORT igdeGDClassManager{
 private:
-	decObjectOrderedSet pClasses;
+	igdeGDClass::List pClasses;
 	
-	igdeGDCategoryReference pCategories;
+	igdeGDCategory::Ref pCategories;
 	
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;
@@ -74,34 +74,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
-	/** \brief Number of game classes. */
-	int GetCount() const;
-	
-	/** \brief Determines if the given class exists. */
-	bool Has( igdeGDClass *gdClass ) const;
-	
-	/** \brief Determines if a class with the given name exists. */
-	bool HasNamed( const char *name ) const;
-	
-	/** \brief Index of the given class or -1 if not found. */
-	int IndexOf( igdeGDClass *gdClass ) const;
-	
-	/** \brief Index of the class with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
-	
-	/** \brief Game class at the given index. */
-	igdeGDClass *GetAt( int index ) const;
-	
-	/** \brief Game class with the given name or NULL if not found. */
-	igdeGDClass *GetNamed( const char *name ) const;
+	/** \brief Classes list. */
+	inline const igdeGDClass::List &GetClasses() const{ return pClasses; }
 	
 	/** \brief Adds a new game class. */
-	void Add( igdeGDClass *gdClass );
+	void Add(igdeGDClass *gdClass);
 	
 	/** \brief Removes the given class. */
-	void Remove( igdeGDClass *gdClass );
+	void Remove(igdeGDClass *gdClass);
 	
 	/** \brief Removes all classes. */
 	void RemoveAll();
@@ -121,7 +103,7 @@ public:
 	inline const decString &GetDefaultClassName() const{ return pDefaultClassName; }
 	
 	/** \brief Set name of the default class. */
-	void SetDefaultClassName( const char *defaultClassName );
+	void SetDefaultClassName(const char *defaultClassName);
 	
 	/** \brief Set of path to use to auto-find objects. */
 	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
@@ -131,10 +113,10 @@ public:
 	void ResolveInheritClasses();
 	
 	/** \brief Visit classes matching the given category. */
-	void VisitClassesMatchingCategory( igdeGDVisitor &visitor, const igdeGDCategory *category ) const;
+	void VisitClassesMatchingCategory(igdeGDVisitor &visitor, const igdeGDCategory *category) const;
 	
 	/** \brief Visit classes matching filter. */
-	void VisitMatchingFilter( igdeGDVisitor &visitor, const decString &filter ) const;
+	void VisitMatchingFilter(igdeGDVisitor &visitor, const decString &filter) const;
 	
 	/**
 	 * \brief Updates the class manager using another class manager.
@@ -142,13 +124,13 @@ public:
 	 * Adds copies of classes in the given class manager . If the class exists already it is
 	 * replaced. \ref UpdateTags and \ref ResolveLinks are not called automatically.
 	 */
-	void UpdateWith( const igdeGDClassManager &classManager );
+	void UpdateWith(const igdeGDClassManager &classManager);
 	
 	/**
 	 * \brief Update with element classes.
 	 * \see igdeGameDefinition::UpdateWithElementClasses().
 	 */
-	void UpdateWithElementClasses( const igdeGDClassManager &classManager );
+	void UpdateWithElementClasses(const igdeGDClassManager &classManager);
 	/*@}*/
 };
 

@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUObjectAttachTo.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,69 +40,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAttachTo::meUObjectAttachTo( meWorld *world, const meObjectList &objects, meObject *attachTo ){
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObject::List &objects, meObject *attachTo){
+	DEASSERT_NOTNULL(world)
+	DEASSERT_TRUE(objects.IsNotEmpty())
+	
+	if(attachTo){
+		SetShortInfo("@World.UObjectAttachTo.AttachObjectsTo");
+		
+	}else{
+		SetShortInfo("@World.UObjectAttachTo.DetachObjects");
 	}
 	
-	const int count = objects.GetCount();
-	meObject *object;
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
 	decString text;
-	
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pWorld = NULL;
-	pAttachTo = NULL;
-	pObjects = NULL;
-	pObjectCount = 0;
-	
-	if( attachTo ){
-		SetShortInfo( "Attach Objects To" );
+	if(objects.GetCount() > 1){
+		text.FormatSafe(tm.Translate("World.UObjectAttachTo.CountObjects").ToUTF8(), objects.GetCount());
 		
 	}else{
-		SetShortInfo( "Detach Objects" );
+		text = tm.Translate("World.UObjectAttachTo.OneObject").ToUTF8();
 	}
+	SetLongInfo(text.GetString());
 	
-	if( count > 1 ){
-		text.Format( "%i objects", count );
-		
-	}else{
-		text = "1 object";
-	}
-	SetLongInfo( text.GetString() );
-	
-	try{
-		pObjects = new sObject[ count ];
-		
-		for( pObjectCount=0; pObjectCount<count; pObjectCount++ ){
-			object = objects.GetAt( pObjectCount );
-			
-			pObjects[ pObjectCount ].object = object;
-			object->AddReference();
-			pObjects[ pObjectCount ].oldAttachTo = object->GetAttachedTo();
-			if( pObjects[ pObjectCount ].oldAttachTo ){
-				pObjects[ pObjectCount ].oldAttachTo->AddReference();
-			}
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	objects.Visit([&](meObject *o) {
+		const cObject::Ref udata(cObject::Ref::New());
+		udata->object = o;
+		udata->oldAttachTo = o->GetAttachedTo();
+		pObjects.Add(udata);
+	});
 	
 	pAttachTo = attachTo;
-	if( attachTo ){
-		attachTo->AddReference();
-	}
-	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjectAttachTo::~meUObjectAttachTo(){
-	pCleanUp();
 }
 
 
@@ -112,56 +82,19 @@ meUObjectAttachTo::~meUObjectAttachTo(){
 ///////////////
 
 void meUObjectAttachTo::Undo(){
-	meObject *object;
-	int o;
-	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
-		
-		if( object != pObjects[ o ].oldAttachTo ){
-			object->SetAttachedTo( pObjects[ o ].oldAttachTo );
-			pWorld->NotifyObjectGeometryChanged( object );
+	pObjects.Visit([&](const cObject &data){
+		if(data.object != data.oldAttachTo){
+			data.object->SetAttachedTo(data.oldAttachTo);
+			pWorld->NotifyObjectGeometryChanged(data.object);
 		}
-	}
+	});
 }
 
 void meUObjectAttachTo::Redo(){
-	meObject *object;
-	int o;
-	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
-		
-		if( object != pAttachTo ){
-			object->SetAttachedTo( pAttachTo );
-			pWorld->NotifyObjectGeometryChanged( object );
+	pObjects.Visit([&](const cObject &data){
+		if(data.object != pAttachTo){
+			data.object->SetAttachedTo(pAttachTo);
+			pWorld->NotifyObjectGeometryChanged(data.object);
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectAttachTo::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
-			pObjectCount--;
-			if( pObjects[ pObjectCount ].oldAttachTo ){
-				pObjects[ pObjectCount ].oldAttachTo->FreeReference();
-			}
-			pObjects[ pObjectCount ].object->FreeReference();
-		}
-		
-		delete [] pObjects;
-	}
-	
-	if( pAttachTo ){
-		pAttachTo->FreeReference();
-	}
-	
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
+	});
 }

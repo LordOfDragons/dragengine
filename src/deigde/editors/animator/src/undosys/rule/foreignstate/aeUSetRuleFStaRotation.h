@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleForeignState;
  * Undo to set the rotation scaling of a foreign state rule.
  */
 class aeUSetRuleFStaRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleFStaRotation>;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;
@@ -51,19 +55,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaRotation( aeRuleForeignState *rule, float newScale );
+	aeUSetRuleFStaRotation(aeRuleForeignState *rule, float newScale);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaRotation();
+	~aeUSetRuleFStaRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

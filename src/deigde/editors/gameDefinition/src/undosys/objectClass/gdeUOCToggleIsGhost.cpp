@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleIsGhost::gdeUOCToggleIsGhost( gdeObjectClass *objectClass ) :
-pObjectClass( NULL )
+gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass *objectClass) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class toggle is ghost" );
+	SetShortInfo("@GameDefinition.Undo.OCToggleIsGhost");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -64,7 +60,7 @@ gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
 ///////////////
 
 void gdeUOCToggleIsGhost::Undo(){
-	pObjectClass->SetIsGhost( ! pObjectClass->GetIsGhost() );
+	pObjectClass->SetIsGhost(!pObjectClass->GetIsGhost());
 }
 
 void gdeUOCToggleIsGhost::Redo(){

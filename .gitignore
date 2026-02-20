@@ -9,3 +9,6 @@ custom.py
 /packages/Microsoft.Windows.CppWinRT.2.0.210806.1
 /.vs
 /vs/.vs/vs
+compile_commands.json
+scons_commands.log
+.tidy_fixes

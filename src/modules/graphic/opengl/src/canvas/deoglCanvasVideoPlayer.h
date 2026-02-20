@@ -26,8 +26,8 @@
 #define _DEOGLCANVASVIDEOPLAYER_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasVideoPlayer.h"
 
-class deoglRCanvasVideoPlayer;
 class deoglVideoPlayer;
 
 class deCanvasVideoPlayer;
@@ -40,7 +40,7 @@ class deCanvasVideoPlayer;
 class deoglCanvasVideoPlayer : public deoglCanvas{
 private:
 	deCanvasVideoPlayer &pCanvasVideoPlayer;
-	deoglRCanvasVideoPlayer *pRCanvasVideoPlayer;
+	deoglRCanvasVideoPlayer::Ref pRCanvasVideoPlayer;
 	deoglVideoPlayer *pVideoPlayer;
 	bool pDirty;
 	
@@ -50,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasVideoPlayer( deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas );
+	deoglCanvasVideoPlayer(deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasVideoPlayer();
+	~deoglCanvasVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	
 	/** Video player requires sync. */
 	void VideoPlayerRequiresSync();
@@ -81,14 +81,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 };
 
 #endif

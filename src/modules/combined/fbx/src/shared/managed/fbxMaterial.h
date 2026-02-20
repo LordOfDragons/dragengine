@@ -29,7 +29,6 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -46,8 +45,7 @@ class deBaseModule;
 class fbxMaterial : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxMaterial> Ref;
-	
+	using Ref = deTObjectReference<fbxMaterial>;
 	
 	
 private:
@@ -63,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create connection. */
-	fbxMaterial( fbxScene &scene, fbxNode &nodeMaterial );
+	fbxMaterial(fbxScene &scene, fbxNode &nodeMaterial);
 	
 protected:
 	/** Clean up connection. */
-	virtual ~fbxMaterial();
+	~fbxMaterial() override;
 	/*@}*/
 	
 	
@@ -90,12 +88,12 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
 	/** Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

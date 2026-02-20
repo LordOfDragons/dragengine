@@ -31,6 +31,7 @@
 #include "dePngImageInfos.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/resources/image/deImage.h>
@@ -41,7 +42,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *PNGCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *PNGCreateModule(deLoadableModule *loadableModule);
 #ifdef __cplusplus
 }
 #endif
@@ -50,7 +51,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *PNGCreateModule( deLoadableModule *loadableMo
 // Entry Point
 ////////////////
 
-deBaseModule *PNGCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *PNGCreateModule(deLoadableModule *loadableModule){
 	try{
 		return new dePngModule(*loadableModule);
 		
@@ -64,36 +65,36 @@ deBaseModule *PNGCreateModule( deLoadableModule *loadableModule ){
 // PNG callbacks
 //////////////////
 
-static void depngRead( png_structp readStruct, png_bytep data, png_size_t length ){
-	decBaseFileReader *reader = ( decBaseFileReader* )png_get_io_ptr( readStruct );
+static void depngRead(png_structp readStruct, png_bytep data, png_size_t length){
+	decBaseFileReader *reader = (decBaseFileReader*)png_get_io_ptr(readStruct);
 	
-	reader->Read( data, ( int )length );
+	reader->Read(data, (int)length);
 }
 
-static void depngWrite( png_structp writeStruct, png_bytep data, png_size_t length ){
-	decBaseFileWriter *writer = ( decBaseFileWriter* )png_get_io_ptr( writeStruct );
+static void depngWrite(png_structp writeStruct, png_bytep data, png_size_t length){
+	decBaseFileWriter *writer = (decBaseFileWriter*)png_get_io_ptr(writeStruct);
 	
-	writer->Write( data, ( int )length );
+	writer->Write(data, (int)length);
 }
 
-static void depngWriteStatus( png_structp writeStruct, png_uint_32 row, int pass ){
+static void depngWriteStatus(png_structp writeStruct, png_uint_32 row, int pass){
 }
 
-static void depngFlush( png_structp writeStruct ){
+static void depngFlush(png_structp writeStruct){
 }
 
-static void depngError( png_structp errorStruct, png_const_charp message ){
-	const dePngImageInfo::sFeedback &feedback = *( ( dePngImageInfo::sFeedback* )png_get_error_ptr( errorStruct ) );
+static void depngError(png_structp errorStruct, png_const_charp message){
+	const dePngImageInfo::sFeedback &feedback = *((dePngImageInfo::sFeedback*)png_get_error_ptr(errorStruct));
 	
-	feedback.module->LogErrorFormat( "Error %s: %s", feedback.filename.GetString(), message );
+	feedback.module->LogErrorFormat("Error %s: %s", feedback.filename.GetString(), message);
 	
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
-static void depngWarning( png_structp errorStruct, png_const_charp message ){
-	const dePngImageInfo::sFeedback &feedback = *( ( dePngImageInfo::sFeedback* )png_get_error_ptr( errorStruct ) );
+static void depngWarning(png_structp errorStruct, png_const_charp message){
+	const dePngImageInfo::sFeedback &feedback = *((dePngImageInfo::sFeedback*)png_get_error_ptr(errorStruct));
 	
-	feedback.module->LogWarnFormat( "Warning %s: %s", feedback.filename.GetString(), message );
+	feedback.module->LogWarnFormat("Warning %s: %s", feedback.filename.GetString(), message);
 }
 
 
@@ -104,8 +105,8 @@ static void depngWarning( png_structp errorStruct, png_const_charp message ){
 // Constructor, destructor
 ////////////////////////////
 
-dePngModule::dePngModule( deLoadableModule &loadableModule ) :
-deBaseImageModule( loadableModule ){
+dePngModule::dePngModule(deLoadableModule &loadableModule) :
+deBaseImageModule(loadableModule){
 }
 
 dePngModule::~dePngModule(){
@@ -116,45 +117,44 @@ dePngModule::~dePngModule(){
 // Loading, Saving
 ////////////////////
 
-deBaseImageInfo *dePngModule::InitLoadImage( decBaseFileReader &file ){
-	dePngImageInfo *infos = NULL;
+deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
+	dePngImageInfo *infos = nullptr;
 	bool troubles = false;
 	int colorType;
 	
 	try{
 		// create infos object
-		infos = new dePngImageInfo( file.GetFilename() );
-		if( ! infos ) DETHROW( deeOutOfMemory );
+		infos = new dePngImageInfo(file.GetFilename());
 		
 		infos->feedback.module = this;
 		infos->feedback.filename = file.GetFilename();
 		
 		// create structures
-		infos->readStruct = png_create_read_struct_2( PNG_LIBPNG_VER_STRING, ( png_voidp )&infos->feedback,
-			( png_error_ptr )depngError, ( png_error_ptr )depngWarning, NULL, NULL, NULL );
-		if( ! infos->readStruct ) DETHROW( deeOutOfMemory );
+		infos->readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&infos->feedback,
+			(png_error_ptr)depngError, (png_error_ptr)depngWarning, nullptr, nullptr, nullptr);
+		if(!infos->readStruct) DETHROW(deeOutOfMemory);
 		
-		infos->infoStruct = png_create_info_struct( infos->readStruct );
-		if( ! infos->infoStruct ) DETHROW( deeOutOfMemory );
+		infos->infoStruct = png_create_info_struct(infos->readStruct);
+		if(!infos->infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
-		png_set_read_fn( infos->readStruct, ( png_voidp )&file, ( png_rw_ptr )depngRead );
+		png_set_read_fn(infos->readStruct, (png_voidp)&file, (png_rw_ptr)depngRead);
 		
 		// read infos
-		png_read_info( infos->readStruct, infos->infoStruct );
-		infos->width = ( int )png_get_image_width( infos->readStruct, infos->infoStruct );
-		infos->height = ( int )png_get_image_height( infos->readStruct, infos->infoStruct );
-		infos->bitCount = ( int )png_get_bit_depth( infos->readStruct, infos->infoStruct );
-		colorType = ( int )png_get_color_type( infos->readStruct, infos->infoStruct );
+		png_read_info(infos->readStruct, infos->infoStruct);
+		infos->width = (int)png_get_image_width(infos->readStruct, infos->infoStruct);
+		infos->height = (int)png_get_image_height(infos->readStruct, infos->infoStruct);
+		infos->bitCount = (int)png_get_bit_depth(infos->readStruct, infos->infoStruct);
+		colorType = (int)png_get_color_type(infos->readStruct, infos->infoStruct);
 		
 		// determine what format we need
-		switch( colorType ){
+		switch(colorType){
 		case PNG_COLOR_TYPE_GRAY:
 			infos->componentCount = 1;
 			break;
 			
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-			png_set_gray_to_rgb( infos->readStruct );
+			png_set_gray_to_rgb(infos->readStruct);
 			infos->componentCount = 4;
 			break;
 			
@@ -174,9 +174,9 @@ deBaseImageInfo *dePngModule::InitLoadImage( decBaseFileReader &file ){
 			troubles = true;
 		}
 		
-		if( troubles ){
+		if(troubles){
 			delete infos;
-			return NULL;
+			return nullptr;
 		}
 		
 		// NOTE libpng has separate function calls all linked to png_set_expand but using
@@ -184,28 +184,28 @@ deBaseImageInfo *dePngModule::InitLoadImage( decBaseFileReader &file ){
 		//      used for all expanding cases letting libpng do the right thing
 		
 		// if there is a palette expand it into real colors
-		if( colorType == PNG_COLOR_TYPE_PALETTE ){
-			png_set_expand( infos->readStruct );
+		if(colorType == PNG_COLOR_TYPE_PALETTE){
+			png_set_expand(infos->readStruct);
 		}
 		
 		// bit count below 8 have to be expanded up to 8
-		if( infos->bitCount < 8 ){
-			png_set_expand( infos->readStruct );
+		if(infos->bitCount < 8){
+			png_set_expand(infos->readStruct);
 			infos->bitCount = 8;
 		}
 		
 		// expand transparency values
-		if( png_get_valid( infos->readStruct, infos->infoStruct, PNG_INFO_tRNS ) ){
-			png_set_expand( infos->readStruct );
+		if(png_get_valid(infos->readStruct, infos->infoStruct, PNG_INFO_tRNS)){
+			png_set_expand(infos->readStruct);
 			
-			switch( colorType ){
+			switch(colorType){
 			case PNG_COLOR_TYPE_PALETTE:
 			case PNG_COLOR_TYPE_RGB:
 				infos->componentCount = 4;
 				break;
 				
 			case PNG_COLOR_TYPE_GRAY:
-				png_set_gray_to_rgb( infos->readStruct );
+				png_set_gray_to_rgb(infos->readStruct);
 				infos->componentCount = 4;
 				break;
 				
@@ -215,78 +215,65 @@ deBaseImageInfo *dePngModule::InitLoadImage( decBaseFileReader &file ){
 		}
 		
 		// 16 bit is stored in network byte order but we need it the other way round
-		if( infos->bitCount == 16 ){
-			png_set_swap( infos->readStruct );
+		if(infos->bitCount == 16){
+			png_set_swap(infos->readStruct);
 		}
 		
 		// and now the big update... we are ready to go
-		png_read_update_info( infos->readStruct, infos->infoStruct );
+		png_read_update_info(infos->readStruct, infos->infoStruct);
 		
-	}catch( const deException & ){
-		if( infos ) delete infos;
+	}catch(const deException &){
+		if(infos) delete infos;
 		throw;
 	}
 	
 	return infos;
 }
 
-void dePngModule::LoadImage( decBaseFileReader &file, deImage &image, deBaseImageInfo &infos ){
-	dePngImageInfo &pngInfos = ( dePngImageInfo& )infos;
+void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
+	dePngImageInfo &pngInfos = (dePngImageInfo&)infos;
 	int componentCount = pngInfos.componentCount;
-	char *imageData = ( char* )image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int bitCount = pngInfos.bitCount;
 	int height = pngInfos.height;
 	int width = pngInfos.width;
 	int r, rowLength;
-	png_bytep *rows = NULL;
 	
 	// determine the length of a row in bytes
-	if( bitCount == 8 ){
-		rowLength = sizeof( unsigned char ) * componentCount * width;
+	if(bitCount == 8){
+		rowLength = sizeof(unsigned char) * componentCount * width;
 		
-	}else if( bitCount == 16 ){
-		rowLength = sizeof( unsigned short ) * componentCount * width;
+	}else if(bitCount == 16){
+		rowLength = sizeof(unsigned short) * componentCount * width;
 		
 	}else{
-		rowLength = sizeof( float ) * componentCount * width;
+		rowLength = sizeof(float) * componentCount * width;
 	}
 	
 	// read the image
-	try{
-		// build rows array
-		rows = new png_bytep[ height ];
-		if( ! rows ) DETHROW( deeOutOfMemory );
-		
-		for( r=0; r<height; r++ ){
-			rows[ r ] = ( png_bytep )( imageData + rowLength * r );
-		}
-		
-		// read the image
-		png_read_image( pngInfos.readStruct, rows );
-		
-		// finish file
-		png_read_end( pngInfos.readStruct, NULL );
-		
-		// free rows array
-		delete [] rows;
-		
-	}catch( const deException & ){
-		if( rows ) delete [] rows;
-		throw;
+	// build rows array
+	decTList<png_bytep> rows(height);
+	for(r=0; r<height; r++){
+		rows.Add((png_bytep)(imageData + rowLength * r));
 	}
+	
+	// read the image
+	png_read_image(pngInfos.readStruct, rows.GetArrayPointer());
+	
+	// finish file
+	png_read_end(pngInfos.readStruct, nullptr);
 }
 
-void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
-	png_structp writeStruct = NULL;
-	png_infop infoStruct = NULL;
-	char *imageData = ( char* )image.GetData();
+void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
+	png_structp writeStruct = nullptr;
+	png_infop infoStruct = nullptr;
+	const char *imageData = reinterpret_cast<const char*>(image.GetData());
 	int componentCount = image.GetComponentCount();
 	int bitCount = image.GetBitCount();
 	dePngImageInfo::sFeedback feedback;
 	int height = image.GetHeight();
 	int width = image.GetWidth();
 	int r, rowLength;
-	png_bytep *rows = NULL;
 	int pngBitCount;
 	int pngColorType;
 	
@@ -294,57 +281,57 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 	feedback.filename = file.GetFilename();
 	
 	// determine the length of a row in bytes
-	if( bitCount == 8 ){
-		rowLength = sizeof( unsigned char ) * componentCount * width;
+	if(bitCount == 8){
+		rowLength = sizeof(unsigned char) * componentCount * width;
 		
-	}else if( bitCount == 16 ){
-		rowLength = sizeof( unsigned short ) * componentCount * width;
+	}else if(bitCount == 16){
+		rowLength = sizeof(unsigned short) * componentCount * width;
 		
 	}else{
-		rowLength = sizeof( float ) * componentCount * width;
+		rowLength = sizeof(float) * componentCount * width;
 	}
 	
 	// determine the bit count and color type to save
-	if( bitCount == 8 ){
+	if(bitCount == 8){
 		pngBitCount = 8;
 		
 	}else{
 		pngBitCount = 16;
 	}
 	
-	if( componentCount == 1 ){
+	if(componentCount == 1){
 		pngColorType = PNG_COLOR_TYPE_GRAY;
 		
-	}else if( componentCount == 2 ){
+	}else if(componentCount == 2){
 		pngColorType = PNG_COLOR_TYPE_RGB;
 		// not supported. needs re-parking data into RGB to feed it to PNG. problem is
 		// that 2-component images have to be red-green not grayscale-alpha which is the
 		// only format PNG supports. the final solution needs to write them as red-green-0.
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 		
-	}else if( componentCount == 3 ){
+	}else if(componentCount == 3){
 		pngColorType = PNG_COLOR_TYPE_RGB;
 		
-	}else if( componentCount == 4 ){
+	}else if(componentCount == 4){
 		pngColorType = PNG_COLOR_TYPE_RGB_ALPHA;
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	// write the png file
 	try{
 		// create structures
-		writeStruct = png_create_write_struct_2( PNG_LIBPNG_VER_STRING, ( png_voidp )&feedback,
-			( png_error_ptr )depngError, ( png_error_ptr )depngWarning, NULL, NULL, NULL );
-		if( ! writeStruct ) DETHROW( deeOutOfMemory );
+		writeStruct = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
+			(png_error_ptr)depngError, (png_error_ptr)depngWarning, nullptr, nullptr, nullptr);
+		if(!writeStruct) DETHROW(deeOutOfMemory);
 		
-		infoStruct = png_create_info_struct( writeStruct );
-		if( ! infoStruct ) DETHROW( deeOutOfMemory );
+		infoStruct = png_create_info_struct(writeStruct);
+		if(!infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
-		png_set_write_fn( writeStruct, ( png_voidp )&file, ( png_rw_ptr )depngWrite, ( png_flush_ptr )depngFlush );
-		png_set_write_status_fn ( writeStruct, ( png_write_status_ptr )depngWriteStatus );
+		png_set_write_fn(writeStruct, (png_voidp)&file, (png_rw_ptr)depngWrite, (png_flush_ptr)depngFlush);
+		png_set_write_status_fn (writeStruct, (png_write_status_ptr)depngWriteStatus);
 		
 		// filters ( options, TODO )
 		/* turn on or off filtering, and/or choose specific filters. You can use either a single
@@ -358,7 +345,7 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 			PNG_ALL_FILTERS);*/
 		
 		// compression options ( TODO )
-		png_set_compression_level( writeStruct, 6 );
+		png_set_compression_level(writeStruct, 6);
 		
 		/* set other zlib parameters */
 		/*png_set_compression_mem_level(png_ptr, 8);
@@ -369,21 +356,19 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		png_set_compression_buffer_size(png_ptr, 8192)*/
 		
 		// fill in the infos
-		png_set_IHDR( writeStruct, infoStruct, width, height, pngBitCount, pngColorType,
-			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT );
+		png_set_IHDR(writeStruct, infoStruct, width, height, pngBitCount, pngColorType,
+			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 		
 		//png_set_tIME( writeStruct, infoStruct, PNG_VALID_tIME );
 		
 		// build rows array
-		rows = new png_bytep[ height ];
-		if( ! rows ) DETHROW( deeOutOfMemory );
-		
-		for( r=0; r<height; r++ ){
-			rows[ r ] = ( png_bytep )( imageData + rowLength * r );
+		decTList<png_bytep> rows(height);
+		for(r=0; r<height; r++){
+			rows.Add((png_bytep)(imageData + rowLength * r));
 		}
 		
 		// make image data available to the library
-		png_set_rows( writeStruct, infoStruct, rows );
+		png_set_rows(writeStruct, infoStruct, rows.GetArrayPointer());
 		
 		// write the image to the file
 		/*
@@ -398,17 +383,13 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		PNG_TRANSFORM_SWAP_ENDIAN   Byte-swap 16-bit samples
 		PNG_TRANSFORM_STRIP_FILLER  Strip out filler bytes.
 		*/
-		png_write_png( writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, NULL );
-		
-		// free rows array
-		delete [] rows;
-		rows = NULL;
+		png_write_png(writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, nullptr);
 		
 		// clean up
-		png_destroy_write_struct( &writeStruct, &infoStruct );
+		png_destroy_write_struct(&writeStruct, &infoStruct);
 		
-	}catch( const deException & ){
-		if( writeStruct || infoStruct ) png_destroy_write_struct( &writeStruct, &infoStruct );
+	}catch(const deException &){
+		if(writeStruct || infoStruct) png_destroy_write_struct(&writeStruct, &infoStruct);
 		throw;
 	}
 }
@@ -422,6 +403,8 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 
 class dePngModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<dePngModuleInternal>;
+	
 	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG");
 		SetDescription("Handles images saved in the PNG format (lossless compression).");
@@ -444,7 +427,7 @@ public:
 	}
 };
 
-deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
-	return new dePngModuleInternal(system);
+deTObjectReference<deInternalModule> depngRegisterInternalModule(deModuleSystem *system){
+	return dePngModuleInternal::Ref::New(system);
 }
 #endif

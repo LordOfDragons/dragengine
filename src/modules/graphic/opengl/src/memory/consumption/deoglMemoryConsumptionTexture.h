@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create memory consumption. */
-	deoglMemoryConsumptionTexture( const decString &baseName );
+	deoglMemoryConsumptionTexture(const decString &baseName);
 	
 	/** Clean up memory consumption. */
 	~deoglMemoryConsumptionTexture();

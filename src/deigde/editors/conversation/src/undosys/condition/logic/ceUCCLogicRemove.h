@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionLogic;
+#include "../../../conversation/condition/ceCConditionLogic.h"
 class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,30 +38,34 @@ class ceConversationTopic;
  * \brief Undo Logic Conversation Condition Remove Condition.
  */
 class ceUCCLogicRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCLogicRemove>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationCondition *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::Ref pCondition;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicRemove( ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition );
+	ceUCCLogicRemove(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCLogicRemove();
+	~ceUCCLogicRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

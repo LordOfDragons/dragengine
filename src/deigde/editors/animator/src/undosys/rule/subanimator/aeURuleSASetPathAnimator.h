@@ -26,10 +26,9 @@
 #define _AEURULESASETPATHANIMATOR_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/collection/decObjectList.h>
 
-class aeRuleSubAnimator;
-class aeController;
+#include "../../../animator/controller/aeController.h"
+#include "../../../animator/rule/aeRuleSubAnimator.h"
 
 
 
@@ -37,13 +36,16 @@ class aeController;
  * Undo rule sub animator set path animator.
  */
 class aeURuleSASetPathAnimator : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleSASetPathAnimator>;
+	
+	
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
-	decString pOldPath;
-	decString pNewPath;
+	decString pOldPath, pNewPath;
 	
-	decObjectList pOldConnections;
+	aeRuleSubAnimator::ConnectionList pOldConnections;
 	
 	
 	
@@ -51,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSASetPathAnimator( aeRuleSubAnimator *rule, const char *newPath );
+	aeURuleSASetPathAnimator(aeRuleSubAnimator *rule, const char *newPath);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleSASetPathAnimator();
+	~aeURuleSASetPathAnimator() override;
 	/*@}*/
 	
 	
@@ -64,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -35,6 +35,10 @@ class aeAnimator;
  * Undo action animator set bones.
  */
 class aeUAnimatorSetBones : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAnimatorSetBones>;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pOldValue;
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeUAnimatorSetBones( aeAnimator *animator, const decStringSet &newValue );
+	aeUAnimatorSetBones(aeAnimator *animator, const decStringSet &newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorSetBones();
+	~aeUAnimatorSetBones() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -98,7 +98,6 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 	}
 	
 	XrXDevListMNDX list = XR_NULL_HANDLE;
-	XrXDevIdMNDX *xdevs = nullptr;
 	
 	try{
 		XrCreateXDevListInfoMNDX createInfo = {XR_TYPE_CREATE_XDEV_LIST_INFO_MNDX};
@@ -118,10 +117,10 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 		uint32_t i, count = 0;
 		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, 0, &count, nullptr));
 		
-		xdevs = new XrXDevIdMNDX[count];
-		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, count, &count, xdevs));
+		decTList<XrXDevIdMNDX> xdevs((int)count, XrXDevIdMNDX{});
+		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, count, &count, xdevs.GetArrayPointer()));
 		
-		const decObjectOrderedSet oldDevices(pDevices);
+		const decTObjectOrderedSet<Device> oldDevices(pDevices);
 		pDevices.RemoveAll();
 		
 		oxr.LogInfoFormat("XDevSpace: %d devices:", (int)count);
@@ -145,7 +144,7 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 				continue;
 			}
 			
-			const Device::Ref device(Device::Ref::NewWith(*this, props, xdevs[i]));
+			auto device = Device::Ref::New(*this, props, xdevs[i]);
 			const decString serialLower(device->serial.GetLower());
 			const decString nameLower(device->name.GetLower());
 			
@@ -157,9 +156,6 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 		instance.xrDestroyXDevListMNDX(list);
 		
 	}catch(const deException &e){
-		if(xdevs){
-			delete[] xdevs;
-		}
 		if(list != XR_NULL_HANDLE){
 			instance.xrDestroyXDevListMNDX(list);
 		}
@@ -183,33 +179,17 @@ deoxrDPMndxDevSpace::Device *deoxrDPMndxDevSpace::pFindDeviceById(XrXDevIdMNDX i
 }
 
 deoxrDPMndxDevSpace::Device *deoxrDPMndxDevSpace::pFindDeviceById(
-const decObjectOrderedSet & list, XrXDevIdMNDX id) const{
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		Device * const device = (Device*)list.GetAt(i);
-		if(device->id == id){
-			return device;
-		}
-	}
-	
-	return nullptr;
+const decTObjectOrderedSet<Device> & list, XrXDevIdMNDX id) const{
+	return list.FindOrDefault([&](const Device &device){
+		return device.id == id;
+	});
 }
 
 deoxrDPMndxDevSpace::Device *deoxrDPMndxDevSpace::pFindDeviceBySerial(
-const decObjectOrderedSet &list, const char *serial) const{
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		Device * const device = (Device*)list.GetAt(i);
-		if(device->serial == serial){
-			return device;
-		}
-	}
-	
-	return nullptr;
+const decTObjectOrderedSet<Device> &list, const char *serial) const{
+	return list.FindOrDefault([&](const Device &device){
+		return device.serial == serial;
+	});
 }
 
 decString deoxrDPMndxDevSpace::pSanitizedSerial(const decString &serial) const{
@@ -219,7 +199,7 @@ decString deoxrDPMndxDevSpace::pSanitizedSerial(const decString &serial) const{
 	
 	sanitized.Set(0, len);
 	const char * const a = serial.GetString();
-	char * const b = (char*)sanitized.GetString();
+	char * const b = sanitized.GetMutableString();
 	
 	for(i=0; i<len; i++){
 		const char c = a[i];
@@ -239,13 +219,13 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	deoxrSession &session = *pGetSession();
 	deVROpenXR &oxr = instance.GetOxr();
 	
-	device->device.TakeOverWith(oxr, *this);
+	device->device = deoxrDevice::Ref::New(oxr, *this);
 	
 	device->device->SetType(deInputDevice::edtVRTracker);
 	device->device->SetName(device->name);
 	
 	decString id;
-	id.Format("%sxds_%s", OXR_DEVID_PREFIX, pSanitizedSerial(device->serial).GetString() );
+	id.Format("%sxds_%s", OXR_DEVID_PREFIX, pSanitizedSerial(device->serial).GetString());
 	device->device->SetID(id);
 	
 	XrCreateXDevSpaceInfoMNDX createSpaceInfo{XR_TYPE_CREATE_XDEV_SPACE_INFO_MNDX};
@@ -255,7 +235,7 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	
 	XrSpace space = XR_NULL_HANDLE;
 	OXR_CHECK(instance.xrCreateXDevSpaceMNDX(session.GetSession(), &createSpaceInfo, &space));
-	device->device->SetSpacePose(deoxrSpace::Ref::NewWith(session, space));
+	device->device->SetSpacePose(deoxrSpace::Ref::New(session, space));
 	
 	oxr.GetDevices().Add(device->device);
 	pDevices.Add(device);

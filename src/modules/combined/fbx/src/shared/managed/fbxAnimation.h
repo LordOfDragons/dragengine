@@ -25,12 +25,11 @@
 #ifndef _FBXANIMATION_H_
 #define _FBXANIMATION_H_
 
-
-#include <stdint.h>
+#include "fbxAnimationMove.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -38,7 +37,6 @@
 class fbxNode;
 class fbxScene;
 class fbxRig;
-class fbxAnimationMove;
 
 class deBaseModule;
 
@@ -49,13 +47,12 @@ class deBaseModule;
 class fbxAnimation : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimation> Ref;
-	
+	using Ref = deTObjectReference<fbxAnimation>;
 	
 	
 private:
 	fbxScene &pScene;
-	decObjectOrderedSet pMoves;
+	fbxAnimationMove::List pMoves;
 	
 	
 	
@@ -63,11 +60,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create animation. */
-	fbxAnimation( fbxScene &scene );
+	explicit fbxAnimation(fbxScene &scene);
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxAnimation();
+	~fbxAnimation() override;
 	/*@}*/
 	
 	
@@ -80,26 +77,20 @@ public:
 	
 	
 	
-	/** \brief Count of moves. */
-	int GetMoveCount() const;
-	
-	/** \brief Move at index. */
-	fbxAnimationMove *GetMoveAt( int index ) const;
-	
-	/** \brief Named move or NULL if absent. */
-	fbxAnimationMove *GetMoveNamed( const char *name ) const;
+	/** \brief Moves. */
+	inline const fbxAnimationMove::List &GetMoves() const{ return pMoves; }
 	
 	/** \brief Match moves against rig. */
-	void MatchRig( const fbxRig &rig );
+	void MatchRig(const fbxRig &rig);
 	
 	/** \brief Convert FBX time to seconds. */
-	static float ConvTime( int64_t time );
+	static float ConvTime(int64_t time);
 	
 	
 	
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

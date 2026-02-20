@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringSet.h>
 
 class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,8 +39,12 @@ class gdeObjectClass;
  * \brief Undo action object class set hide tags.
  */
 class gdeUOCSetHideTags : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCSetHideTags> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -51,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetHideTags( gdeObjectClass *objectClass, const decStringSet &newValue );
+	gdeUOCSetHideTags(gdeObjectClass *objectClass, const decStringSet &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

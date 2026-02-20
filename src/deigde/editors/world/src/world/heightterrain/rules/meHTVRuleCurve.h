@@ -36,6 +36,10 @@
  */
 class meHTVRuleCurve : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleCurve>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Mapped value. */
@@ -56,11 +60,11 @@ public:
 	meHTVRuleCurve();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleCurve( const meHTVRuleCurve &rule );
+	meHTVRuleCurve(const meHTVRuleCurve &rule);
 	
 protected:
 	/** \brief Clean up rule. */
-	virtual ~meHTVRuleCurve();
+	~meHTVRuleCurve() override;
 	/*@}*/
 	
 	
@@ -72,16 +76,16 @@ public:
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** \brief Value of output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Vector of output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -48,25 +47,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadLanguagePack::deRLTaskReadLanguagePack( deEngine &engine,
+deRLTaskReadLanguagePack::deRLTaskReadLanguagePack(deEngine &engine,
 deResourceLoader &resourceLoader, deVirtualFileSystem *vfs, const char *path,
-deLanguagePack *languagePack ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertLanguagePack ),
-pSucceeded( false )
+deLanguagePack *languagePack) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertLanguagePack),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	
 	// if already loaded set finished
-	if( languagePack ){
+	if(languagePack){
 		pLanguagePack = languagePack;
-		SetResource( languagePack );
-		SetState( esSucceeded );
+		SetResource(languagePack);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pLanguagePack.TakeOver( new deLanguagePack( engine.GetLanguagePackManager(), vfs, path, 0 ) );
+	pLanguagePack = deLanguagePack::Ref::New(engine.GetLanguagePackManager(), vfs, path, 0);
 	
 	LogCreateExit();
 }
@@ -82,24 +81,20 @@ deRLTaskReadLanguagePack::~deRLTaskReadLanguagePack(){
 void deRLTaskReadLanguagePack::Run(){
 	LogRunEnter();
 	
-	deBaseLanguagePackModule * const module = ( deBaseLanguagePackModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtLanguagePack, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseLanguagePackModule * const module = (deBaseLanguagePackModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtLanguagePack, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
-	decBaseFileReaderReference reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+	pLanguagePack->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pLanguagePack->SetAsynchron(true);
+	module->LoadLanguagePack(GetVFS()->OpenFileForReading(vfsPath), pLanguagePack);
 	
-	pLanguagePack->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pLanguagePack->SetAsynchron( true );
-	module->LoadLanguagePack( reader, pLanguagePack );
-	reader = NULL;
-	
-	if( ! pLanguagePack->Verify() ){
-		DETHROW( deeInvalidParam );
+	if(!pLanguagePack->Verify()){
+		DETHROW(deeInvalidParam);
 	}
 	pLanguagePack->BuildLookupTable();
 	
@@ -110,29 +105,29 @@ void deRLTaskReadLanguagePack::Run(){
 void deRLTaskReadLanguagePack::Finished(){
 	LogFinishedEnter();
 	
-	if( ! pSucceeded ){
-		SetState( esFailed );
-		pLanguagePack = NULL;
+	if(!pSucceeded){
+		SetState(esFailed);
+		pLanguagePack = nullptr;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deLanguagePackManager &manager = *GetEngine().GetLanguagePackManager();
-	deLanguagePack * const checkLangPack = manager.GetLanguagePackWith( GetPath() );
+	deLanguagePack * const checkLangPack = manager.GetLanguagePackWith(GetPath());
 	
-	if( checkLangPack ){
-		SetResource( checkLangPack );
+	if(checkLangPack){
+		SetResource(checkLangPack);
 		
 	}else{
-		pLanguagePack->SetAsynchron( false );
-		manager.AddLoadedLanguagePack( pLanguagePack );
-		SetResource( pLanguagePack );
+		pLanguagePack->SetAsynchron(false);
+		manager.AddLoadedLanguagePack(pLanguagePack);
+		SetResource(pLanguagePack);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

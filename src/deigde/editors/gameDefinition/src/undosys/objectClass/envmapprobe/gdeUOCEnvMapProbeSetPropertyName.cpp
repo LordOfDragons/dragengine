@@ -39,35 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetPropertyName::gdeUOCEnvMapProbeSetPropertyName( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, gdeOCEnvMapProbe::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL ),
-pProperty( property )
+gdeUOCEnvMapProbeSetPropertyName::gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, gdeOCEnvMapProbe::eProperties property, const char *newValue) :
+
+
+pProperty(property)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set property name" );
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetPropertyName");
 	
-	pOldValue = envMapProbe->GetPropertyName( property );
+	pOldValue = envMapProbe->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetPropertyName::~gdeUOCEnvMapProbeSetPropertyName(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCEnvMapProbeSetPropertyName::~gdeUOCEnvMapProbeSetPropertyName(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetPropertyName::Undo(){
-	pEnvMapProbe->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetPropertyName::Redo(){
-	pEnvMapProbe->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

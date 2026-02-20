@@ -36,7 +36,8 @@ igdeNativeNullTreeList::igdeNativeNullTreeList(){
 igdeNativeNullTreeList::~igdeNativeNullTreeList(){
 }
 
-igdeNativeNullTreeList *igdeNativeNullTreeList::CreateNativeWidget( igdeTreeList& ){
+igdeNativeNullTreeList *igdeNativeNullTreeList::CreateNativeWidget(igdeTreeList&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTreeList;
 }
 
@@ -55,31 +56,31 @@ void igdeNativeNullTreeList::DestroyNativeWidget(){
 void igdeNativeNullTreeList::BuildTree(){
 }
 
-void igdeNativeNullTreeList::UpdateItem( igdeTreeItem* ){
+void igdeNativeNullTreeList::UpdateItem(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::MakeItemVisible( igdeTreeItem* ){
+void igdeNativeNullTreeList::MakeItemVisible(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::CreateAndInsertItem( igdeTreeItem* ){
+void igdeNativeNullTreeList::CreateAndInsertItem(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::CreateAndAppendItem( igdeTreeItem* ){
+void igdeNativeNullTreeList::CreateAndAppendItem(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::RemoveItem( igdeTreeItem* ){
+void igdeNativeNullTreeList::RemoveItem(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::RemoveAllItems( igdeTreeItem* ){
+void igdeNativeNullTreeList::RemoveAllItems(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::ItemMoved( igdeTreeItem* ){
+void igdeNativeNullTreeList::ItemMoved(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::SelectItem( igdeTreeItem* ){
+void igdeNativeNullTreeList::SelectItem(igdeTreeItem*){
 }
 
-void igdeNativeNullTreeList::ItemsSortedIn( igdeTreeItem* ){
+void igdeNativeNullTreeList::ItemsSortedIn(igdeTreeItem*){
 }
 
 void igdeNativeNullTreeList::Focus(){

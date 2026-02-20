@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -35,8 +35,12 @@ class meDecal;
  * \brief Undo Action Decal TexCoord Rotation.
  */
 class meUDecalTCRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalTCRotation>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	float pOldRotation;
 	float pNewRotation;
 	
@@ -44,20 +48,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCRotation( meDecal *decal, float newRotation );
+	meUDecalTCRotation(meDecal *decal, float newRotation);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUDecalTCRotation();
+
+protected:
+	~meUDecalTCRotation() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

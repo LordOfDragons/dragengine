@@ -82,7 +82,7 @@ public:
 	 * \brief Create barrier with initial threshold.
 	 * \throws deeInvalidParam \em threshold is less than 1.
 	 */
-	deBarrier( int threshold );
+	deBarrier(int threshold);
 	
 	/** \brief Clean up barrier. */
 	~deBarrier();
@@ -104,7 +104,7 @@ public:
 	 * 
 	 * \param[in] timeout Timeout in milli-seconds.
 	 */
-	bool TryWait( int timeout );
+	bool TryWait(int timeout);
 	
 	/** \brief Forcefully open barrier if counter is not 0. */
 	void Open();
@@ -116,7 +116,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em threshold is less than 1.
 	 */
-	void SetThreshold( int threshold );
+	void SetThreshold(int threshold);
 	/*@}*/
 };
 

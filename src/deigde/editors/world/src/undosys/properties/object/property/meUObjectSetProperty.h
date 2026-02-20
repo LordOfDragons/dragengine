@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -35,8 +35,12 @@ class meObject;
  * \brief Undo Action Set Object Property.
  */
 class meUObjectSetProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectSetProperty>;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pOldValue;
@@ -46,29 +50,30 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectSetProperty( meObject *object, const char *key, const char *oldValue, const char *newValue );
+	meUObjectSetProperty(meObject *object, const char *key, const char *oldValue, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectSetProperty();
+
+protected:
+	~meUObjectSetProperty() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Sets the new value. */
-	void SetNewValue( const char *value );
+	void SetNewValue(const char *value);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/** Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

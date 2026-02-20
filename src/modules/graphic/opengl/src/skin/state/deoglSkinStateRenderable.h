@@ -25,11 +25,13 @@
 #ifndef _DEOGLSKINSTATERENDERABLE_H_
 #define _DEOGLSKINSTATERENDERABLE_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglTexture;
 class deoglRSkin;
-class deoalSkinState;
+class deoglSkinState;
 class deoglRDynamicSkin;
 
 
@@ -40,6 +42,9 @@ class deoglRDynamicSkin;
  * objects required for masked rendering if required.
  */
 class deoglSkinStateRenderable{
+public:
+	using Ref = deTUniqueReference<deoglSkinStateRenderable>;
+	
 private:
 	deoglSkinState &pSkinState;
 	int pIndex;
@@ -53,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state renderable. */
-	deoglSkinStateRenderable( deoglSkinState &skinState, int index );
+	deoglSkinStateRenderable(deoglSkinState &skinState, int index);
 	
 	/** Clean up skin state renderable. */
 	~deoglSkinStateRenderable();
@@ -67,19 +72,19 @@ public:
 	inline int GetHostRenderable() const{ return pHostRenderable; }
 	
 	/** Set host renderable index or -1 if not used. */
-	void SetHostRenderable( int hostRenderable );
+	void SetHostRenderable(int hostRenderable);
 	
 	/** Render plan or NULL if not using masked rendering. */
 	inline deoglRenderPlan *GetPlan() const{ return pPlan; }
 	
 	/** Set render plan or NULL if not using masked rendering. */
-	void SetPlan( deoglRenderPlan *plan );
+	void SetPlan(deoglRenderPlan *plan);
 	
 	/** Temporary texture or NULL if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set temporary texture or NULL if not existing. */
-	void SetTexture( deoglTexture *texture );
+	void SetTexture(deoglTexture *texture);
 	
 	/** Clear renderable to be used for another one. */
 	void Clear();
@@ -87,7 +92,7 @@ public:
 	
 	
 	/** Add render plans. */
-	void AddRenderPlans( deoglRenderPlan &plan );
+	void AddRenderPlans(deoglRenderPlan &plan);
 	/*@}*/
 };
 

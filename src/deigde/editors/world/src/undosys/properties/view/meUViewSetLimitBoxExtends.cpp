@@ -41,7 +41,7 @@ pNewMax(newMax)
 {
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("View set limit box extends");
+	SetShortInfo("@World.UViewSetLimitBoxExtends.ViewSetLimitBoxExtends");
 	
 	pOldMin = world->GetLimitBoxMinExtend();
 	pOldMax = world->GetLimitBoxMaxExtend();

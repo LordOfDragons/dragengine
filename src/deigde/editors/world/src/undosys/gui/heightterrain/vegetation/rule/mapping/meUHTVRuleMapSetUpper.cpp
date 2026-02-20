@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper( meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nupper ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nupper){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
-	SetShortInfo( "Vegetation Layer Rule Mapping Set Upper" );
-	SetMemoryConsumption( sizeof( meUHTVRuleMapSetUpper ) );
+	SetShortInfo("@World.UHTVRuleMapSetUpper.VegetationLayerRuleMappingSetUpper");
+	SetMemoryConsumption(sizeof(meUHTVRuleMapSetUpper));
 	
 	pOldUpper = rule->GetUpper();
 	pNewUpper = nupper;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetUpper::~meUHTVRuleMapSetUpper(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +65,11 @@ meUHTVRuleMapSetUpper::~meUHTVRuleMapSetUpper(){
 ///////////////
 
 void meUHTVRuleMapSetUpper::Undo(){
-	pRule->SetUpper( pOldUpper );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetUpper(pOldUpper);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleMapSetUpper::Redo(){
-	pRule->SetUpper( pNewUpper );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetUpper(pNewUpper);
+	pVLayer->NotifyRuleChanged(pRule);
 }

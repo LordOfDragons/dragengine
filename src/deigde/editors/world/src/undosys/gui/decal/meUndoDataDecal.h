@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUNDODATADECAL_H_
 #define _MEUNDODATADECAL_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include "../../../world/decal/meDecal.h"
+#include "../../../world/object/meObject.h"
 
-// predefinitions
-class meDecal;
-class meObject;
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -39,10 +37,14 @@ class meObject;
  * \brief Decal data for undo actions.
  * Stores information about a decal suitable for undo actions.
  */
-class meUndoDataDecal{
+class meUndoDataDecal : public deObject{
+public:
+	using Ref = deTObjectReference<meUndoDataDecal>;
+	using List = decTObjectOrderedSet<meUndoDataDecal>;
+	
 private:
-	meDecal *pDecal;
-	meObject *pParentObject;
+	meDecal::Ref pDecal;
+	meObject::Ref pParentObject;
 	int pIndex;
 	
 	decDVector pOldPosition;
@@ -53,17 +55,22 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataDecal( meDecal *decal );
+	meUndoDataDecal(meDecal *decal);
+	
+protected:
 	/** \brief Clean up data object. */
-	virtual ~meUndoDataDecal();
+	~meUndoDataDecal() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the decal pointer. */
-	inline meDecal *GetDecal() const{ return pDecal; }
-	/** Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
+	
+	/** Retrieves the parent object or nullptr. */
+	inline const meObject::Ref &GetParentObject() const{ return pParentObject; }
+	
 	/** Retrieves the index. */
 	inline int GetIndex() const{ return pIndex; }
 	
@@ -76,5 +83,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif

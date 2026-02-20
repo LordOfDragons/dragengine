@@ -47,11 +47,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deResourceManager::deResourceManager( deEngine *engine, eResourceType type ) :
-pEngine( engine ),
-pResourceType( type )
+deResourceManager::deResourceManager(deEngine *engine, eResourceType type) :
+pEngine(engine),
+pResourceType(type)
 {
-	DEASSERT_NOTNULL( engine )
+	DEASSERT_NOTNULL(engine)
 }
 
 deResourceManager::~deResourceManager(){
@@ -62,7 +62,7 @@ deResourceManager::~deResourceManager(){
 // Management
 ///////////////
 
-void deResourceManager::SetLoggingName( const char *name ){
+void deResourceManager::SetLoggingName(const char *name){
 	pLoggingName = name;
 }
 
@@ -180,51 +180,51 @@ void deResourceManager::SystemSynthesizerUnload(){
 // Debugging
 //////////////
 
-void deResourceManager::LogInfo( const char *message ){
-	pEngine->GetLogger()->LogInfo( LOGSOURCE, message );
+void deResourceManager::LogInfo(const char *message){
+	pEngine->GetLogger()->LogInfo(LOGSOURCE, message);
 }
 
-void deResourceManager::LogInfoFormat( const char *message, ... ){
+void deResourceManager::LogInfoFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	pEngine->GetLogger()->LogInfoFormatUsing( LOGSOURCE, message, list );
-	va_end( list );
+	va_start(list, message);
+	pEngine->GetLogger()->LogInfoFormatUsing(LOGSOURCE, message, list);
+	va_end(list);
 }
 
-void deResourceManager::LogInfoFormatUsing( const char *message, va_list args ){
-	pEngine->GetLogger()->LogInfoFormatUsing( LOGSOURCE, message, args );
+void deResourceManager::LogInfoFormatUsing(const char *message, va_list args){
+	pEngine->GetLogger()->LogInfoFormatUsing(LOGSOURCE, message, args);
 }
 
-void deResourceManager::LogWarn( const char *message ){
-	pEngine->GetLogger()->LogWarn( LOGSOURCE, message );
+void deResourceManager::LogWarn(const char *message){
+	pEngine->GetLogger()->LogWarn(LOGSOURCE, message);
 }
 
-void deResourceManager::LogWarnFormat( const char *message, ... ){
+void deResourceManager::LogWarnFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	pEngine->GetLogger()->LogWarnFormatUsing( LOGSOURCE, message, list );
-	va_end( list );
+	va_start(list, message);
+	pEngine->GetLogger()->LogWarnFormatUsing(LOGSOURCE, message, list);
+	va_end(list);
 }
 
-void deResourceManager::LogWarnFormatUsing( const char *message, va_list args ){
-	pEngine->GetLogger()->LogWarnFormatUsing( LOGSOURCE, message, args );
+void deResourceManager::LogWarnFormatUsing(const char *message, va_list args){
+	pEngine->GetLogger()->LogWarnFormatUsing(LOGSOURCE, message, args);
 }
 
-void deResourceManager::LogError( const char *message ){
-	pEngine->GetLogger()->LogError( LOGSOURCE, message );
+void deResourceManager::LogError(const char *message){
+	pEngine->GetLogger()->LogError(LOGSOURCE, message);
 }
 
-void deResourceManager::LogErrorFormat( const char *message, ... ){
+void deResourceManager::LogErrorFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	pEngine->GetLogger()->LogErrorFormatUsing( LOGSOURCE, message, list );
-	va_end( list );
+	va_start(list, message);
+	pEngine->GetLogger()->LogErrorFormatUsing(LOGSOURCE, message, list);
+	va_end(list);
 }
 
-void deResourceManager::LogErrorFormatUsing( const char *message, va_list args ){
-	pEngine->GetLogger()->LogErrorFormatUsing( LOGSOURCE, message, args );
+void deResourceManager::LogErrorFormatUsing(const char *message, va_list args){
+	pEngine->GetLogger()->LogErrorFormatUsing(LOGSOURCE, message, args);
 }
 
-void deResourceManager::LogException( const deException &exception ){
-	pEngine->GetLogger()->LogException( LOGSOURCE, exception );
+void deResourceManager::LogException(const deException &exception){
+	pEngine->GetLogger()->LogException(LOGSOURCE, exception);
 }

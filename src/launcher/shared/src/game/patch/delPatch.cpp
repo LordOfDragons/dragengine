@@ -22,14 +22,29 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "delPatch.h"
 
 #include <dragengine/common/exceptions.h>
 
+
+// class delPatch::List
+/////////////////////////
+
+bool delPatch::List::HasWithId(const decUuid &id) const{
+	DEASSERT_NOTNULL(id)
+	
+	return HasMatching([&](const delPatch &patch){
+		return patch.GetIdentifier() == id;
+	});
+}
+
+delPatch::Ref delPatch::List::FindWithId(const decUuid &id) const{
+	DEASSERT_NOTNULL(id)
+	
+	return FindOrDefault([&](const delPatch &patch){
+		return patch.GetIdentifier() == id;
+	});
+}
 
 
 // Class delPatch
@@ -49,38 +64,38 @@ delPatch::~delPatch(){
 // Management
 ///////////////
 
-void delPatch::SetIdentifier( const decUuid &identifier ){
+void delPatch::SetIdentifier(const decUuid &identifier){
 	pIdentifier = identifier;
 }
 
-void delPatch::SetName( const decUnicodeString &name ){
+void delPatch::SetName(const decUnicodeString &name){
 	pName = name;
 }
 
-void delPatch::SetDescription( const decUnicodeString &description ){
+void delPatch::SetDescription(const decUnicodeString &description){
 	pDescription = description;
 }
 
-void delPatch::SetCreator( const decUnicodeString &creator ){
+void delPatch::SetCreator(const decUnicodeString &creator){
 	pCreator = creator;
 }
 
-void delPatch::SetHomepage( const char *homepage ){
+void delPatch::SetHomepage(const char *homepage){
 	pHomepage = homepage;
 }
 
-void delPatch::SetPatchDirectory( const char *directory ){
+void delPatch::SetPatchDirectory(const char *directory){
 	pPatchDirectory = directory;
 }
 
-void delPatch::SetDataDirectory( const char *directory ){
+void delPatch::SetDataDirectory(const char *directory){
 	pDataDirectory = directory;
 }
 
-void delPatch::SetGameID( const decUuid &id ){
+void delPatch::SetGameID(const decUuid &id){
 	pGameID = id;
 }
 
-void delPatch::SetDelgaFile( const char *file ){
+void delPatch::SetDelgaFile(const char *file){
 	pDelgaFile = file;
 }

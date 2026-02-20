@@ -40,31 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordRemove::saeUWordRemove( saeWord *word ){
-	if( ! word ) DETHROW( deeInvalidParam );
+saeUWordRemove::saeUWordRemove(saeWord *word){
+	DEASSERT_NOTNULL(word)
 	
-	saeSAnimation *sanimation = word->GetSAnimation();
-	if( ! sanimation ) DETHROW( deeInvalidParam );
+	saeSAnimation * const sanimation = word->GetSAnimation();
+	DEASSERT_NOTNULL(sanimation)
 	
-	pSAnimation = NULL;
-	pWord = NULL;
+	pSAnimation = nullptr;
+	pWord = nullptr;
 	
-	SetShortInfo( "Remove Word" );
+	SetShortInfo("@SpeechAnimation.Undo.WordRemove");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordRemove::~saeUWordRemove(){
-	if( pWord ){
-		pWord->FreeReference();
-	}
-	if( pSAnimation ){
-		pSAnimation->FreeReference();
-	}
 }
 
 
@@ -73,9 +64,9 @@ saeUWordRemove::~saeUWordRemove(){
 ///////////////
 
 void saeUWordRemove::Undo(){
-	pSAnimation->AddWord( pWord );
+	pSAnimation->AddWord(pWord);
 }
 
 void saeUWordRemove::Redo(){
-	pSAnimation->RemoveWord( pWord );
+	pSAnimation->RemoveWord(pWord);
 }

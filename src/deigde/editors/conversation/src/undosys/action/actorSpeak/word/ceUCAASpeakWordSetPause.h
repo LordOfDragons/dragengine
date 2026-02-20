@@ -34,12 +34,14 @@
  */
 class ceUCAASpeakWordSetPause : public ceUCAASpeakStripSetPause{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakWordSetPause>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakWordSetPause( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, float newPause );
+	ceUCAASpeakWordSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, float newPause);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakWordSetPause();
+	~ceUCAASpeakWordSetPause() override;
 	/*@}*/
 };
 

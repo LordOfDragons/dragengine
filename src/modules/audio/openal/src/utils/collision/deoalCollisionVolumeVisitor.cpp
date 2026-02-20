@@ -44,20 +44,20 @@ deoalCollisionVolumeVisitor::~deoalCollisionVolumeVisitor(){
 // Visiting
 /////////////
 
-void deoalCollisionVolumeVisitor::VisitSphere( deoalCollisionSphere *sphere ){
+void deoalCollisionVolumeVisitor::VisitSphere(deoalCollisionSphere *sphere){
 }
 
-void deoalCollisionVolumeVisitor::VisitCylinder( deoalCollisionCylinder *cylinder ){
+void deoalCollisionVolumeVisitor::VisitCylinder(deoalCollisionCylinder *cylinder){
 }
 
-void deoalCollisionVolumeVisitor::VisitCapsule( deoalCollisionCapsule *capsule ){
+void deoalCollisionVolumeVisitor::VisitCapsule(deoalCollisionCapsule *capsule){
 }
 
-void deoalCollisionVolumeVisitor::VisitBox( deoalCollisionBox *box ){
+void deoalCollisionVolumeVisitor::VisitBox(deoalCollisionBox *box){
 }
 
-void deoalCollisionVolumeVisitor::VisitTriangle( deoalCollisionTriangle *triangle ){
+void deoalCollisionVolumeVisitor::VisitTriangle(deoalCollisionTriangle *triangle){
 }
 
-void deoalCollisionVolumeVisitor::VisitFrustum( deoalCollisionFrustum *frustum ){
+void deoalCollisionVolumeVisitor::VisitFrustum(deoalCollisionFrustum *frustum){
 }

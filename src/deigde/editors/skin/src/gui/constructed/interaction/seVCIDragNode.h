@@ -26,7 +26,7 @@
 #define _SEVCIDRAGNODE_H_
 
 #include <deigde/gui/event/igdeMouseDragListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 class seViewConstructedView;
 class deCanvas;
@@ -65,18 +65,21 @@ private:
 	seViewConstructedView &pView;
 	eDragAction pDragAction;
 	decTexMatrix2 pDragMatrix;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<seVCIDragNode>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seVCIDragNode( seViewConstructedView &view );
+	seVCIDragNode(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
-	virtual ~seVCIDragNode();
+protected:
+	~seVCIDragNode() override;
+public:
 	/*@}*/
 	
 	
@@ -87,23 +90,23 @@ public:
 	 * \brief Dragging begins.
 	 * \returns true to start drag operation or false to abort without calling OnDragFinish.
 	 */
-	virtual bool OnDragBegin();
+	bool OnDragBegin() override;
 	
 	/**
 	 * \brief Update dragging.
 	 */
-	virtual void OnDragUpdate();
+	void OnDragUpdate() override;
 	
 	/**
 	 * \brief Dragging ends.
 	 */
-	virtual void OnDragFinish( bool cancelled );
+	void OnDragFinish(bool cancelled) override;
 	/*@}*/
 	
 	
 	
 protected:
-	bool pInsideMarker( const deCanvas &canvas, const decPoint &position ) const;
+	bool pInsideMarker(const deCanvas &canvas, const decPoint &position) const;
 	void pMove();
 	void pRotate();
 	void pResize();

@@ -36,6 +36,12 @@ class igdeSpinTextField;
  * \brief IGDE UI SpinTextField Listener.
  */
 class DE_DLL_EXPORT igdeSpinTextFieldListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeSpinTextFieldListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeSpinTextFieldListener();
+	~igdeSpinTextFieldListener() override;
 	/*@}*/
 	
 	
@@ -60,7 +66,7 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief SpinTextField value changed. */
-	virtual void OnValueChanged( igdeSpinTextField *textField );
+	virtual void OnValueChanged(igdeSpinTextField *textField);
 	/*@}*/
 };
 

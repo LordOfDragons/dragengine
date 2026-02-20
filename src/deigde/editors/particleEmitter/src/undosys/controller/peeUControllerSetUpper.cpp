@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetUpper::peeUControllerSetUpper( peeController *controller, float newValue ) :
-pController( NULL ),
-pNewUpper( newValue )
+peeUControllerSetUpper::peeUControllerSetUpper(peeController *controller, float newValue) :
+
+pNewUpper(newValue)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Controller Upper" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.SetUpper");
 	
 	pOldUpper = controller->GetUpper();
 	pOldLower = controller->GetLower();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetUpper::~peeUControllerSetUpper(){
-	if( pController ){
-		pController->FreeReference();
-	}
 }
 
 
@@ -68,10 +64,10 @@ peeUControllerSetUpper::~peeUControllerSetUpper(){
 ///////////////
 
 void peeUControllerSetUpper::Undo(){
-	pController->SetUpper( pOldUpper );
-	pController->SetLower( pOldLower );
+	pController->SetUpper(pOldUpper);
+	pController->SetLower(pOldLower);
 }
 
 void peeUControllerSetUpper::Redo(){
-	pController->SetUpper( pNewUpper );
+	pController->SetUpper(pNewUpper);
 }

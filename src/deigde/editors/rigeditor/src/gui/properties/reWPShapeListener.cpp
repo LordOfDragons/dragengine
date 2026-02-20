@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPShapeListener::reWPShapeListener( reWPShape &panel ) :
-pPanel( panel ){
+reWPShapeListener::reWPShapeListener(reWPShape &panel) :
+pPanel(panel){
 }
 
 reWPShapeListener::~reWPShapeListener(){
@@ -51,20 +51,20 @@ reWPShapeListener::~reWPShapeListener(){
 // Management
 ///////////////
 
-void reWPShapeListener::ShapeChanged( reRig *rig, reRigShape *shape ){
-	if( shape == pPanel.GetShape() ){
+void reWPShapeListener::ShapeChanged(reRig *rig, reRigShape *shape){
+	if(shape == pPanel.GetShape()){
 		pPanel.UpdateShape();
 	}
 }
 
-void reWPShapeListener::ShapeSelectedChanged( reRig *rig, reRigShape *shape ){
+void reWPShapeListener::ShapeSelectedChanged(reRig *rig, reRigShape *shape){
 }
 
-void reWPShapeListener::AllShapesDeselected( reRig *rig ){
+void reWPShapeListener::AllShapesDeselected(reRig *rig){
 }
 
-void reWPShapeListener::ActiveShapeChanged( reRig *rig ){
-	if( rig == pPanel.GetRig() ){
-		pPanel.SetShape( rig->GetSelectionShapes()->GetActiveShape() );
+void reWPShapeListener::ActiveShapeChanged(reRig *rig){
+	if(rig == pPanel.GetRig()){
+		pPanel.SetShape(rig->GetSelectionShapes()->GetActiveShape());
 	}
 }

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNode;
+#include "../../../skin/property/node/sePropertyNode.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNode;
  * \brief Undo action property node set colorize.
  */
 class seUPropertyNodeSetColorize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeSetColorize>;
+	
+	
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetColorize( sePropertyNode *node, const decColor &newValue );
+	seUPropertyNodeSetColorize(sePropertyNode *node, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeSetColorize();
+	~seUPropertyNodeSetColorize() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

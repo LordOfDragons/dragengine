@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 class gdeOCBillboard;
 class gdeOCCamera;
 class gdeOCComponent;
@@ -59,18 +59,20 @@ class gdeWPSTIMOCWorld;
  */
 class gdeWPSTIMObjectClass : public gdeWPSTreeItemModel{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMObjectClass> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMObjectClass( gdeWPSTreeModel &tree, gdeObjectClass *objectClass );
+	gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMObjectClass();
+	~gdeWPSTIMObjectClass() override;
 	/*@}*/
 	
 	
@@ -79,42 +81,42 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	
 	
-	/** \brief Model with billboard or \em NULL. */
-	gdeWPSTIMOCBillboard *GetChildWith( gdeOCBillboard *billboard ) const;
+	/** \brief Model with billboard or \em nullptr. */
+	gdeWPSTIMOCBillboard *GetChildWith(gdeOCBillboard *billboard) const;
 	
-	/** \brief Model with camera or \em NULL. */
-	gdeWPSTIMOCCamera *GetChildWith( gdeOCCamera *camera ) const;
+	/** \brief Model with camera or \em nullptr. */
+	gdeWPSTIMOCCamera *GetChildWith(gdeOCCamera *camera) const;
 	
-	/** \brief Model with component or \em NULL. */
-	gdeWPSTIMOCComponent *GetChildWith( gdeOCComponent *component ) const;
+	/** \brief Model with component or \em nullptr. */
+	gdeWPSTIMOCComponent *GetChildWith(gdeOCComponent *component) const;
 	
-	/** \brief Model with envmap probe or \em NULL. */
-	gdeWPSTIMOCEnvMapProbe *GetChildWith( gdeOCEnvMapProbe *envMapProbe ) const;
+	/** \brief Model with envmap probe or \em nullptr. */
+	gdeWPSTIMOCEnvMapProbe *GetChildWith(gdeOCEnvMapProbe *envMapProbe) const;
 	
-	/** \brief Model with light or \em NULL. */
-	gdeWPSTIMOCLight *GetChildWith( gdeOCLight *light ) const;
+	/** \brief Model with light or \em nullptr. */
+	gdeWPSTIMOCLight *GetChildWith(gdeOCLight *light) const;
 	
-	/** \brief Model with navblocker or \em NULL. */
-	gdeWPSTIMOCNavBlocker *GetChildWith( gdeOCNavigationBlocker *navblocker ) const;
+	/** \brief Model with navblocker or \em nullptr. */
+	gdeWPSTIMOCNavBlocker *GetChildWith(gdeOCNavigationBlocker *navblocker) const;
 	
-	/** \brief Model with navspace or \em NULL. */
-	gdeWPSTIMOCNavSpace *GetChildWith( gdeOCNavigationSpace *navspace ) const;
+	/** \brief Model with navspace or \em nullptr. */
+	gdeWPSTIMOCNavSpace *GetChildWith(gdeOCNavigationSpace *navspace) const;
 	
-	/** \brief Model with particle emitter or \em NULL. */
-	gdeWPSTIMOCParticleEmitter *GetChildWith( gdeOCParticleEmitter *particleEmitter ) const;
+	/** \brief Model with particle emitter or \em nullptr. */
+	gdeWPSTIMOCParticleEmitter *GetChildWith(gdeOCParticleEmitter *particleEmitter) const;
 	
-	/** \brief Model with force field or \em NULL. */
-	gdeWPSTIMOCForceField *GetChildWith( gdeOCForceField *forceField ) const;
+	/** \brief Model with force field or \em nullptr. */
+	gdeWPSTIMOCForceField *GetChildWith(gdeOCForceField *forceField) const;
 	
-	/** \brief Model with snap point or \em NULL. */
-	gdeWPSTIMOCSnapPoint *GetChildWith( gdeOCSnapPoint *snapPoint ) const;
+	/** \brief Model with snap point or \em nullptr. */
+	gdeWPSTIMOCSnapPoint *GetChildWith(gdeOCSnapPoint *snapPoint) const;
 	
-	/** \brief Model with speaker or \em NULL. */
-	gdeWPSTIMOCSpeaker *GetChildWith( gdeOCSpeaker *speaker ) const;
+	/** \brief Model with speaker or \em nullptr. */
+	gdeWPSTIMOCSpeaker *GetChildWith(gdeOCSpeaker *speaker) const;
 	
 	/** \brief Model with world or nullptr. */
 	gdeWPSTIMOCWorld *GetChildWith(gdeOCWorld *world) const;
@@ -142,19 +144,19 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief Compare this item with another for sorting. */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 	
 	

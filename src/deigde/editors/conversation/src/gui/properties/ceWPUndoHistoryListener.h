@@ -35,6 +35,9 @@ class ceWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class ceWPUndoHistoryListener : public ceConversationListener{
+public:
+	using Ref = deTObjectReference<ceWPUndoHistoryListener>;
+	
 private:
 	ceWPUndoHistory &pPanel;
 	
@@ -44,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceWPUndoHistoryListener( ceWPUndoHistory &panel );
+	ceWPUndoHistoryListener(ceWPUndoHistory &panel);
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~ceWPUndoHistoryListener();
+	~ceWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -57,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( ceConversation *conversation );
+	void UndoChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

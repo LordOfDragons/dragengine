@@ -25,12 +25,13 @@
 #ifndef _DEMODELMODULE_H_
 #define _DEMODELMODULE_H_
 
+#include "demdlWeightSet.h"
+
 #include <dragengine/systems/modules/model/deBaseModelModule.h>
 #include <dragengine/threading/deMutex.h>
 
 class deCacheHelper;
 class demdlTexCoordSorter;
-class demdlWeightSetList;
 class deModelLOD;
 
 struct sModelInfos{
@@ -47,7 +48,7 @@ struct sModelInfos{
 	int triangleCount;
 	int quadCount;
 	int faceCount;
-	demdlWeightSetList *weightSetList;
+	demdlWeightSet::List *weightSetList;
 	demdlTexCoordSorter *texCoordSorter;
 	bool isLargeModel;
 	const char *filename;
@@ -69,10 +70,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deModelModule( deLoadableModule &loadableModule );
+	deModelModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deModelModule();
+	~deModelModule() override;
 	/*@}*/
 	
 	
@@ -80,42 +81,42 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load model. */
-	virtual void LoadModel( decBaseFileReader &reader, deModel &model );
+	void LoadModel(decBaseFileReader &reader, deModel &model) override;
 	
 	/** \brief Save model. */
-	virtual void SaveModel( decBaseFileWriter &writer, const deModel &model );
+	void SaveModel(decBaseFileWriter &writer, const deModel &model) override;
 	/*@}*/
 	
 private:
-	void pLoadVersion0( decBaseFileReader &reader, deModel &model );
+	void pLoadVersion0(decBaseFileReader &reader, deModel &model);
 	
-	void pLoadModel( decBaseFileReader &reader, deModel &model );
-	void pLoadBones( decBaseFileReader &reader, deModel &model, sModelInfos &infos );
-	void pLoadTextures( decBaseFileReader &reader, deModel &model, sModelInfos &infos );
-	void pLoadTexCoordSetsOld( decBaseFileReader &reader, deModel &model, sModelInfos &infos );
-	void pLoadTexCoordSets( decBaseFileReader &reader, deModel &model, sModelInfos &infos );
-	void pLoadVertPosSets( decBaseFileReader &reader, deModel &model, sModelInfos &infos );
-	void pLoadWeights( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
-	void pLoadVertices( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
-	void pLoadTexCoords(decBaseFileReader &reader, sModelInfos& infos, deModelLOD& lodMesh );
-	void pLoadVertPosSets(decBaseFileReader &reader, sModelInfos& infos, deModelLOD& lodMesh );
-	void pLoadTrianglesOld( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
-	void pLoadQuadsOld( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
-	void pLoadTriangles( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
-	void pLoadQuads( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
-	void pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &infos, deModelLOD &lodMesh );
+	void pLoadModel(decBaseFileReader &reader, deModel &model);
+	void pLoadBones(decBaseFileReader &reader, deModel &model, sModelInfos &infos);
+	void pLoadTextures(decBaseFileReader &reader, deModel &model, sModelInfos &infos);
+	void pLoadTexCoordSetsOld(decBaseFileReader &reader, deModel &model, sModelInfos &infos);
+	void pLoadTexCoordSets(decBaseFileReader &reader, deModel &model, sModelInfos &infos);
+	void pLoadVertPosSets(decBaseFileReader &reader, deModel &model, sModelInfos &infos);
+	void pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh);
+	void pLoadVertices(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh);
+	void pLoadTexCoords(decBaseFileReader &reader, sModelInfos& infos, deModelLOD& lodMesh);
+	void pLoadVertPosSets(decBaseFileReader &reader, sModelInfos& infos, deModelLOD& lodMesh);
+	void pLoadTrianglesOld(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh);
+	void pLoadQuadsOld(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh);
+	void pLoadTriangles(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh);
+	void pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh);
+	void pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &infos, deModelLOD &lodMesh);
 	
-	void pSaveModel( decBaseFileWriter &writer, const deModel &model );
-	void pSaveBones( decBaseFileWriter &writer, const deModel &model );
-	void pSaveTextures( decBaseFileWriter &writer, const deModel &model );
-	void pSaveTexCoordSets( decBaseFileWriter &writer, const deModel &model );
-	void pSaveVertPosSets( decBaseFileWriter &writer, const deModel &model );
-	void pSaveLods( decBaseFileWriter &writer, const deModel &model );
-	void pSaveWeights( decBaseFileWriter &writer, const deModelLOD &lodMesh );
-	void pSaveVertices( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel );
-	void pSaveTexCoords(decBaseFileWriter &writer, const deModelLOD& lodMesh, bool largeModel );
-	void pSaveVertPosSets(decBaseFileWriter &writer, const deModelLOD& lodMesh, bool largeModel );
-	void pSaveTriangles( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel );
+	void pSaveModel(decBaseFileWriter &writer, const deModel &model);
+	void pSaveBones(decBaseFileWriter &writer, const deModel &model);
+	void pSaveTextures(decBaseFileWriter &writer, const deModel &model);
+	void pSaveTexCoordSets(decBaseFileWriter &writer, const deModel &model);
+	void pSaveVertPosSets(decBaseFileWriter &writer, const deModel &model);
+	void pSaveLods(decBaseFileWriter &writer, const deModel &model);
+	void pSaveWeights(decBaseFileWriter &writer, const deModelLOD &lodMesh);
+	void pSaveVertices(decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel);
+	void pSaveTexCoords(decBaseFileWriter &writer, const deModelLOD& lodMesh, bool largeModel);
+	void pSaveVertPosSets(decBaseFileWriter &writer, const deModelLOD& lodMesh, bool largeModel);
+	void pSaveTriangles(decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel);
 };
 
 #endif

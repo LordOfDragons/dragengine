@@ -32,7 +32,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -49,10 +49,10 @@ pWorld(world)
 	DEASSERT_NOTNULL(world)
 	
 	decString text;
-	text.Format("World #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.WorldNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
-	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ));
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 

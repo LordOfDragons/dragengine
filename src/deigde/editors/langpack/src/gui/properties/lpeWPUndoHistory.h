@@ -25,10 +25,10 @@
 #ifndef _LPEWPUNDOHISTORY_H_
 #define _LPEWPUNDOHISTORY_H_
 
-#include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "lpeWPUndoHistoryListener.h"
+#include "../../langpack/lpeLangPack.h"
 
-class lpeLangPack;
-class lpeWPUndoHistoryListener;
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 
 
@@ -36,9 +36,13 @@ class lpeWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class lpeWPUndoHistory : public igdeWPUndoHistory{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<lpeWPUndoHistory>;
+	
 private:
-	lpeWPUndoHistoryListener *pListener;
-	lpeLangPack *pLangPack;
+	lpeWPUndoHistoryListener::Ref pListener;
+	lpeLangPack::Ref pLangPack;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	lpeWPUndoHistory( igdeEnvironment &environment );
+	lpeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~lpeWPUndoHistory();
+	~lpeWPUndoHistory() override;
 	/*@}*/
 	
 	
@@ -58,11 +62,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	/** \brief Language pack or nullptr. */
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
-	/** \brief Set language pack or NULL. */
-	void SetLangPack( lpeLangPack *langpack );
+	/** \brief Set language pack or nullptr. */
+	void SetLangPack(lpeLangPack *langpack);
 	/*@}*/
 };
 

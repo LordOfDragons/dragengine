@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deAnimatorSystem.h"
@@ -49,23 +48,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadAnimation::deRLTaskReadAnimation( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deAnimation *animation ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertAnimation ),
-pSucceeded( false )
+deRLTaskReadAnimation::deRLTaskReadAnimation(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deAnimation *animation) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertAnimation),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( animation ){
+	if(animation){
 		pAnimation = animation;
-		SetResource( animation );
-		SetState( esSucceeded );
+		SetResource(animation);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pAnimation.TakeOver( new deAnimation( engine.GetAnimationManager(), vfs, path, 0 ) );
+	pAnimation = deAnimation::Ref::New(engine.GetAnimationManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -79,23 +78,19 @@ deRLTaskReadAnimation::~deRLTaskReadAnimation(){
 
 void deRLTaskReadAnimation::Run(){
 	LogRunEnter();
-	deBaseAnimationModule * const module = ( deBaseAnimationModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtAnimation, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseAnimationModule * const module = (deBaseAnimationModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtAnimation, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
-	decBaseFileReaderReference reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+	pAnimation->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pAnimation->SetAsynchron(true);
+	module->LoadAnimation(GetVFS()->OpenFileForReading(vfsPath), pAnimation);
 	
-	pAnimation->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pAnimation->SetAsynchron( true );
-	module->LoadAnimation( reader, pAnimation );
-	reader = NULL;
-	
-	GetEngine().GetAnimatorSystem()->LoadAnimation( pAnimation );
+	GetEngine().GetAnimatorSystem()->LoadAnimation(pAnimation);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -103,29 +98,29 @@ void deRLTaskReadAnimation::Run(){
 
 void deRLTaskReadAnimation::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded ){
-		SetState( esFailed );
-		pAnimation = NULL;
+	if(!pSucceeded){
+		SetState(esFailed);
+		pAnimation = nullptr;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deAnimationManager &animationManager = *GetEngine().GetAnimationManager();
-	deAnimation * const checkAnimation = animationManager.GetAnimationWith( GetPath() );
+	deAnimation * const checkAnimation = animationManager.GetAnimationWith(GetPath());
 	
-	if( checkAnimation ){
-		SetResource( checkAnimation );
+	if(checkAnimation){
+		SetResource(checkAnimation);
 		
 	}else{
-		pAnimation->SetAsynchron( false );
-		animationManager.AddLoadedAnimation( pAnimation );
-		SetResource( pAnimation );
+		pAnimation->SetAsynchron(false);
+		animationManager.AddLoadedAnimation(pAnimation);
+		SetResource(pAnimation);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

@@ -28,6 +28,7 @@
 class deNetworkValueVisitor;
 
 #include "../../../deObject.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -45,8 +46,10 @@ class deNetworkValueVisitor;
 class DE_DLL_EXPORT deNetworkValue : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValue> Ref;
+	using Ref = deTObjectReference<deNetworkValue>;
 	
+	/** \brief Value list. */
+	using List = decTObjectOrderedSet<deNetworkValue>;
 	
 	
 public:
@@ -101,7 +104,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deNetworkValue();
+	~deNetworkValue() override;
 	/*@}*/
 	
 	
@@ -110,7 +113,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

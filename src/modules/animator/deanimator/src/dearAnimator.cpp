@@ -42,14 +42,14 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearAnimator::dearAnimator( deDEAnimator &module, deAnimator &animator ) :
-pModule( module ),
-pAnimator( animator ),
-pAnimation( nullptr ),
-pUpdateTracker( 0 )
+dearAnimator::dearAnimator(deDEAnimator &module, deAnimator &animator) :
+pModule(module),
+pAnimator(animator),
+pAnimation(nullptr),
+pUpdateTracker(0)
 {
-	if( animator.GetAnimation() ){
-		pAnimation = ( dearAnimation* )animator.GetAnimation()->GetPeerAnimator();
+	if(animator.GetAnimation()){
+		pAnimation = (dearAnimation*)animator.GetAnimation()->GetPeerAnimator();
 	}
 }
 
@@ -75,8 +75,8 @@ void dearAnimator::AnimationChanged(){
 	pUpdateTracker++;
 	
 	pAnimation = nullptr;
-	if( pAnimator.GetAnimation() ){
-		pAnimation = ( dearAnimation* )pAnimator.GetAnimation()->GetPeerAnimator();
+	if(pAnimator.GetAnimation()){
+		pAnimation = (dearAnimation*)pAnimator.GetAnimation()->GetPeerAnimator();
 	}
 }
 

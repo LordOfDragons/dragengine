@@ -25,8 +25,8 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
 #define _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/collection/decTDictionary.h>
 
 class deoglPersistentRenderTask;
 class deoglPersistentRenderTaskPool;
@@ -42,15 +42,15 @@ class deoglTexUnitsConfig;
 class deoglPersistentRenderTaskPipeline{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLTask;
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element pLLTask;
 	
 	deoglPersistentRenderTask *pParentTask;
 	const deoglPipeline *pPipeline;
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
 	int pDrawIDOffset;
-	decPointerLinkedList pTextures;
-	decPointerDictionaryExt pTexturesMap;
+	decTLinkedList<deoglPersistentRenderTaskTexture> pTextures;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskTexture*> pTexturesMap;
 	
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task pipeline. */
-	deoglPersistentRenderTaskPipeline( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskPipeline(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up persistent render task pipeline. */
 	~deoglPersistentRenderTaskPipeline();
@@ -84,48 +84,51 @@ public:
 	inline deoglPersistentRenderTask *GetParentTask() const{ return pParentTask; }
 	
 	/** Set parent task. */
-	void SetParentTask( deoglPersistentRenderTask *task );
+	void SetParentTask(deoglPersistentRenderTask *task);
 	
 	/** Pipeline. */
 	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
-	void SetPipeline( const deoglPipeline *pipeline );
+	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Pipeline parameter block or \em NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set pipeline parameter block or \em NULL if not used. */
-	void SetParameterBlock( deoglSPBlockUBO *block );
+	void SetParameterBlock(deoglSPBlockUBO *block);
 	
 	/** Pipeline parameter index of pSPBInstanceIndexBase or -1. */
 	inline int GetSPBInstanceIndexBase() const{ return pSPBInstanceIndexBase; }
 	
 	/** Set pipeline parameter index of pSPBInstanceIndexBase or -1. */
-	void SetSPBInstanceIndexBase( int parameter );
+	void SetSPBInstanceIndexBase(int parameter);
 	
 	/** Pipeline parameter index of pDrawIDOffset or -1. */
 	inline int GetDrawIDOffset() const{ return pDrawIDOffset; }
 	
 	/** Set pipeline parameter index of pDrawIDOffset or -1. */
-	void SetDrawIDOffset( int parameter );
+	void SetDrawIDOffset(int parameter);
 	
 	
+	
+	/** Textures. */
+	inline const decTLinkedList<deoglPersistentRenderTaskTexture> &GetTextures() const{ return pTextures; }
 	
 	/** Number of textures. */
 	int GetTextureCount() const;
 	
 	/** Root texture. */
-	decPointerLinkedList::cListEntry *GetRootTexture() const;
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *GetRootTexture() const;
 	
 	/** Texture with TUC or NULL. */
-	deoglPersistentRenderTaskTexture *GetTextureWith( const deoglTexUnitsConfig *tuc ) const;
+	deoglPersistentRenderTaskTexture *GetTextureWith(const deoglTexUnitsConfig *tuc) const;
 	
 	/** Add texture. */
-	deoglPersistentRenderTaskTexture *AddTexture( const deoglTexUnitsConfig *tuc );
+	deoglPersistentRenderTaskTexture *AddTexture(const deoglTexUnitsConfig *tuc);
 	
 	/** Remove texture. */
-	void RemoveTexture( deoglPersistentRenderTaskTexture *texture );
+	void RemoveTexture(deoglPersistentRenderTaskTexture *texture);
 	
 	/** Remove all textuures. */
 	void RemoveAllTextures();
@@ -141,8 +144,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
+	inline decTLinkedList<deoglPersistentRenderTaskPipeline>::Element &GetLLTask(){ return pLLTask; }
+	inline const decTLinkedList<deoglPersistentRenderTaskPipeline>::Element &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

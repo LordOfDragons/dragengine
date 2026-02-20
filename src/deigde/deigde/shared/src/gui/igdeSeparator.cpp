@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeSeparator::igdeSeparator( igdeEnvironment &environment, eOrientation orientation ) :
-igdeWidget( environment ),
-pOrientation( orientation ){
+igdeSeparator::igdeSeparator(igdeEnvironment &environment, eOrientation orientation) :
+igdeWidget(environment),
+pOrientation(orientation){
 }
 
 igdeSeparator::~igdeSeparator(){
@@ -55,20 +55,20 @@ igdeSeparator::~igdeSeparator(){
 ///////////////
 
 void igdeSeparator::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	void * const native = igdeNativeSeparator::CreateNativeWidget( *this );
-	SetNativeWidget( native );
-	igdeNativeSeparator::PostCreateNativeWidget( *this, native );
+	void * const native = igdeNativeSeparator::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	igdeNativeSeparator::PostCreateNativeWidget(*this, native);
 }
 
 void igdeSeparator::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeSeparator::DestroyNativeWidget( *this, GetNativeWidget() );
+	igdeNativeSeparator::DestroyNativeWidget(*this, GetNativeWidget());
 	DropNativeWidget();
 }

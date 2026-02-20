@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWPViewListener::peeWPViewListener( peeWPView &panel ) :
-pPanel( panel ){
+peeWPViewListener::peeWPViewListener(peeWPView &panel) :
+pPanel(panel){
 }
 
 peeWPViewListener::~peeWPViewListener(){
@@ -51,22 +51,22 @@ peeWPViewListener::~peeWPViewListener(){
 // Management
 ///////////////
 
-void peeWPViewListener::EmitterChanged( peeEmitter* ){
+void peeWPViewListener::EmitterChanged(peeEmitter*){
 	pPanel.UpdateView();
 }
 
-void peeWPViewListener::SkyChanged( peeEmitter* ){
+void peeWPViewListener::SkyChanged(peeEmitter*){
 	pPanel.UpdateSky();
 }
 
-void peeWPViewListener::EnvObjectChanged( peeEmitter* ){
+void peeWPViewListener::EnvObjectChanged(peeEmitter*){
 	pPanel.UpdateEnvObject();
 }
 
-void peeWPViewListener::ViewChanged( peeEmitter* ){
+void peeWPViewListener::ViewChanged(peeEmitter*){
 	pPanel.UpdateView();
 }
 
-void peeWPViewListener::CameraChanged( peeEmitter* ){
+void peeWPViewListener::CameraChanged(peeEmitter*){
 	pPanel.UpdateCamera();
 }

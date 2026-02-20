@@ -35,23 +35,26 @@
  * Line breaks are honored.
  */
 class dedsSTNText : public dedsStyledTextNode{
+public:
+	using Ref = deTObjectReference<dedsSTNText>;
+	
+	
 private:
 	decString pText;
 	
-
-
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create text node. */
 	dedsSTNText();
-
+	
 	/** Create text node with text. */
-	dedsSTNText( const char *text );
+	dedsSTNText(const char *text);
 	
 protected:
 	/** Cleans up the text node. */
-	virtual ~dedsSTNText();
+	~dedsSTNText() override;
 	/*@}*/
 	
 
@@ -63,7 +66,7 @@ public:
 	inline const decString &GetText() const{ return pText; }
 
 	/** Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	/*@}*/
 };
 

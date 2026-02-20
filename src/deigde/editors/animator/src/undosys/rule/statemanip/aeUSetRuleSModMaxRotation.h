@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -42,8 +42,12 @@ class aeRuleStateManipulator;
  * Undo to set the maximum rotation of a state modifier rule.
  */
 class aeUSetRuleSModMaxRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleSModMaxRotation>;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;
@@ -52,19 +56,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMaxRotation( aeRuleStateManipulator *rule, const decVector &newMax );
+	aeUSetRuleSModMaxRotation(aeRuleStateManipulator *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModMaxRotation();
+	~aeUSetRuleSModMaxRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

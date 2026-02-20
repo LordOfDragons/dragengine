@@ -26,10 +26,10 @@
 #define _DELLOGGERHISTORY_H_
 
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/threading/deMutex.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class delLoggerHistoryEntry;
 class delLoggerHistoryListener;
@@ -41,17 +41,15 @@ class delLoggerHistoryListener;
 class DE_DLL_EXPORT delLoggerHistory : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delLoggerHistory> Ref;
-	
+	using Ref = deTObjectReference<delLoggerHistory>;
 	
 	
 private:
-	int pHistorySize;
-	delLoggerHistoryEntry *pEntries;
+	decTList<delLoggerHistoryEntry> pEntries;
 	int pEntryCount;
 	int pEntryOffset;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<delLoggerHistoryListener> pListeners;
 	
 	bool pLogInfo;
 	bool pLogWarn;
@@ -66,11 +64,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger history. */
-	delLoggerHistory( int size = 250 );
+	explicit delLoggerHistory(int size = 250);
 	
+	delLoggerHistory(const delLoggerHistory&) = delete;
+	delLoggerHistory& operator=(const delLoggerHistory&) = delete;
+
 protected:
 	/** \brief Clean up logger history. */
-	virtual ~delLoggerHistory();
+	~delLoggerHistory() override;
 	/*@}*/
 	
 	
@@ -82,7 +83,7 @@ public:
 	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** \brief Size of history. */
-	int GetHistorySize() const{ return pHistorySize; }
+	int GetHistorySize() const{ return pEntries.GetCount(); }
 	
 	/**
 	 * \brief Set size of history.
@@ -91,14 +92,14 @@ public:
 	 * 
 	 * \note This call does an implicit mutex lock.
 	 */
-	void SetHistorySize( int size );
+	void SetHistorySize(int size);
 	
 	/** \brief Count of history entries. */
 	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/** \brief Entry at index. */
-	delLoggerHistoryEntry &GetEntryAt( int index );
-	const delLoggerHistoryEntry &GetEntryAt( int index ) const;
+	delLoggerHistoryEntry &GetEntryAt(int index);
+	const delLoggerHistoryEntry &GetEntryAt(int index) const;
 	
 	/**
 	 * \brief Add entry to history.
@@ -114,33 +115,33 @@ public:
 	void Clear();
 	
 	/** \brief Message can be added. */
-	bool CanAddMessage( int type, const char *source );
+	bool CanAddMessage(int type, const char *source);
 	
 	/**
 	 * \brief Add listener.
 	 * \note Mutex is internally locked.
 	 */
-	void AddListener( delLoggerHistoryListener *listener );
+	void AddListener(delLoggerHistoryListener *listener);
 	
 	/**
 	 * \brief Remove listener.
 	 * \note Mutex is internally locked.
 	 */
-	void RemoveListener( delLoggerHistoryListener *listener );
+	void RemoveListener(delLoggerHistoryListener *listener);
 	
 	/** \brief Notify listeners message has been added. */
-	void NotifyMessageAdded( const delLoggerHistoryEntry &entry );
+	void NotifyMessageAdded(const delLoggerHistoryEntry &entry);
 	
 	
 	
 	/** \brief Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 };
 

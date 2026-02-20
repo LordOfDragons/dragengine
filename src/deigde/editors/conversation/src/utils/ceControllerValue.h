@@ -25,9 +25,9 @@
 #ifndef _CECONTROLLERVALUE_H_
 #define _CECONTROLLERVALUE_H_
 
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 
 /**
@@ -40,14 +40,20 @@ private:
 	float pValue;
 	
 public:
+	using Ref = deTObjectReference<ceControllerValue>;
+	using List = decTObjectOrderedSet<ceControllerValue>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller value. */
-	ceControllerValue( int controller, float value );
-	ceControllerValue( const char *controller, float value );
+	ceControllerValue(int controller, float value);
+	ceControllerValue(const char *controller, float value);
 	
 	/** Cleans up the controller value. */
-	virtual ~ceControllerValue();
+protected:
+	~ceControllerValue() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -56,19 +62,19 @@ public:
 	inline int GetControllerIndex() const{ return pControllerIndex; }
 	
 	/** Set controller. */
-	void SetControllerIndex( int controller );
+	void SetControllerIndex(int controller);
 	
 	/** Controller. */
 	inline const decString &GetController() const{ return pController; }
 	
 	/** Set controller. */
-	void SetController( const char *controller );
+	void SetController(const char *controller);
 	
 	/** Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 };
 

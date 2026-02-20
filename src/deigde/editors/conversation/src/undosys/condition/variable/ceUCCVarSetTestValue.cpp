@@ -42,38 +42,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCVarSetTestValue::ceUCCVarSetTestValue( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionVariable *condition, int newValue ){
-	if( ! topic || ! action || ! condition ) DETHROW( deeInvalidParam );
+ceUCCVarSetTestValue::ceUCCVarSetTestValue(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionVariable *condition, int newValue){
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldValue = condition->GetTestValue();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Condition Variable: Set Test Value" );
+	SetShortInfo("@Conversation.Undo.ConditionVariableSetTestValue");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetTestValue::~ceUCCVarSetTestValue(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -82,11 +68,11 @@ ceUCCVarSetTestValue::~ceUCCVarSetTestValue(){
 ///////////////
 
 void ceUCCVarSetTestValue::Undo(){
-	pCondition->SetTestValue( pOldValue );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTestValue(pOldValue);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCVarSetTestValue::Redo(){
-	pCondition->SetTestValue( pNewValue );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTestValue(pNewValue);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

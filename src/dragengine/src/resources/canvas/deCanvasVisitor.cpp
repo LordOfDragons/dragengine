@@ -56,33 +56,33 @@ deCanvasVisitor::~deCanvasVisitor(){
 // Visiting
 /////////////
 
-void deCanvasVisitor::VisitCanvas( deCanvas &canvas ){
+void deCanvasVisitor::VisitCanvas(deCanvas &canvas){
 }
 
-void deCanvasVisitor::VisitImage( deCanvasImage &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitImage(deCanvasImage &canvas){
+	VisitCanvas(canvas);
 }
 
-void deCanvasVisitor::VisitPaint( deCanvasPaint &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitPaint(deCanvasPaint &canvas){
+	VisitCanvas(canvas);
 }
 
-void deCanvasVisitor::VisitCanvasView( deCanvasCanvasView &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitCanvasView(deCanvasCanvasView &canvas){
+	VisitCanvas(canvas);
 }
 
-void deCanvasVisitor::VisitRenderWorld( deCanvasRenderWorld &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitRenderWorld(deCanvasRenderWorld &canvas){
+	VisitCanvas(canvas);
 }
 
-void deCanvasVisitor::VisitText( deCanvasText &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitText(deCanvasText &canvas){
+	VisitCanvas(canvas);
 }
 
-void deCanvasVisitor::VisitVideoPlayer( deCanvasVideoPlayer &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitVideoPlayer(deCanvasVideoPlayer &canvas){
+	VisitCanvas(canvas);
 }
 
-void deCanvasVisitor::VisitView( deCanvasView &canvas ){
-	VisitCanvas( canvas );
+void deCanvasVisitor::VisitView(deCanvasView &canvas){
+	VisitCanvas(canvas);
 }

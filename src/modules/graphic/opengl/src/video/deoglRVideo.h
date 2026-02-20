@@ -28,6 +28,7 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/video/deVideo.h>
 
 class deVideo;
@@ -59,8 +60,7 @@ private:
 	const int pHeight;
 	const int pComponentCount;
 	
-	deoglTexture **pFrames;
-	int pFrameCount;
+	decTUniqueList<deoglTexture> pFrames;
 	int pFrameCountToCache;
 	
 	deoglPixelBuffer::Ref pPixelBuffer;
@@ -69,24 +69,29 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRVideo>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render video. */
-	deoglRVideo( deoglRenderThread &renderThread, int width, int height, int componentCount, int frameCount );
+	deoglRVideo(deoglRenderThread &renderThread, int width, int height, int componentCount, int frameCount);
 	
+protected:
 	/** Clean up render video. */
-	virtual ~deoglRVideo();
+	~deoglRVideo() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Frame texture or \em NULL if not ready. */
-	deoglTexture *GetTexture( int frame ) const;
+	deoglTexture *GetTexture(int frame) const;
 	
 	/** Number of frames. */
-	inline int GetFrameCount() const{ return pFrameCount; }
+	inline int GetFrameCount() const{ return pFrames.GetCount(); }
 	
 	/** Remaining number of frames to cache or -1 if no caching is used. */
 	inline int GetFrameCountToCache() const{ return pFrameCountToCache; }
@@ -96,7 +101,7 @@ public:
 	 * Set pixel buffer to update frame texture with.
 	 * \returns Previously set pixel buffer or nullptr.
 	 */
-	deoglPixelBuffer::Ref SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer(int frame, deoglPixelBuffer *pixelBuffer);
 	
 	/** Frame to update or -1 if not set to update a frame. */
 	inline int GetUpdateFrame() const{ return pUpdateFrame; }

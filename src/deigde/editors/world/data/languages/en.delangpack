@@ -1,0 +1,1682 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English</description>
+
+	<!-- ASubclassAsEClass -->
+	<translation name="World.ASubclassAsEClass.Action.SubclassAsEclass">Subclass As EClass...</translation>
+	<translation name="World.ASubclassAsEClass.Dialog.ObjectClass">Object Class:</translation>
+	<translation name="World.ASubclassAsEClass.Dialog.ObjectClassExistsAlready">Object class exists already</translation>
+
+	<!-- BaseUndoMove -->
+	<translation name="World.BaseUndoMove.Distance">distance ({0},{1},{2})</translation>
+	<translation name="World.BaseUndoMove.DistanceRotation">distance({0},{1},{2}) rotation=({3},{4},{5})</translation>
+
+	<!-- BaseUndoRotate -->
+	<translation name="World.BaseUndoRotate.Rotate">Rotate ?</translation>
+	<translation name="World.BaseUndoRotate.AxisCenterAngle">axis({0},{1},{2}) center({3},{4},{5}) angle={6}</translation>
+
+	<!-- BaseUndoScale -->
+	<translation name="World.BaseUndoScale.FactorsPivot">factors({0},{1},{2};{3}) pivot({4},{5},{6})</translation>
+
+	<!-- SaveSupport -->
+	<translation name="World.SaveSupport.Dialog.SaveHeightTerrainHeightImage">Save Height Terrain Height Image</translation>
+	<translation name="World.SaveSupport.Dialog.SaveHeightTerrainNavigationSpace">Save height terrain navigation space</translation>
+	<translation name="World.SaveSupport.Dialog.SaveHeightTerrainPropFieldCache">Save Height Terrain Prop Field Cache</translation>
+	<translation name="World.SaveSupport.Dialog.SaveHeightTerrainSector">Save Height Terrain Sector</translation>
+	<translation name="World.SaveSupport.Dialog.SaveHeightTerrainTextureMaskImage">Save Height Terrain Texture Mask Image</translation>
+	<translation name="World.SaveSupport.Dialog.SaveHeightTerrainVisibilityImage">Save Height Terrain Visibility Image</translation>
+	<translation name="World.SaveSupport.Dialog.SaveNavigationSpace">Save Navigation Space</translation>
+	<translation name="World.SaveSupport.Dialog.SaveWorld">Save World</translation>
+
+	<!-- UAddDecal -->
+	<translation name="World.UAddDecal.AddDecal">Add Decal</translation>
+
+	<!-- UAddNavSpace -->
+	<translation name="World.UAddNavSpace.AddNavigationSpace">Add Navigation Space</translation>
+
+	<!-- UAddObject -->
+	<translation name="World.UAddObject.AddObject">Add Object</translation>
+	<translation name="World.UAddObject.PositionClass">position({0},{1},{2}) class({3})</translation>
+
+	<!-- UAddObjectDecal -->
+	<translation name="World.UAddObjectDecal.AddObjectDecal">Add Object Decal</translation>
+
+	<!-- UCameraMoveObject -->
+	<translation name="World.UCameraMoveObject.MoveCameraObject">Move Camera Object</translation>
+
+	<!-- UCameraRotateObject -->
+	<translation name="World.UCameraRotateObject.RotateCameraObject">Rotate Camera Object</translation>
+
+	<!-- UDecalAddProperty -->
+	<translation name="World.UDecalAddProperty.AddDecalProperty">Add decal property</translation>
+
+	<!-- UDecalClonePropertiesToSelected -->
+	<translation name="World.UDecalClonePropertiesToSelected.CloneDecalPropertiesToSelected">Clone decal properties to selected</translation>
+
+	<!-- UDecalColorTint -->
+	<translation name="World.UDecalColorTint.DecalTextureColorTint">Decal Texture Color Tint</translation>
+
+	<!-- UDecalDuplicate -->
+	<translation name="World.UDecalDuplicate.DuplicateDecals">Duplicate decals</translation>
+
+	<!-- UDecalMove -->
+	<translation name="World.UDecalMove.MoveDecals">Move Decals</translation>
+
+	<!-- UDecalPosition -->
+	<translation name="World.UDecalPosition.SetDecalPosition">Set decal position</translation>
+
+	<!-- UDecalPropertyCopyToSelected -->
+	<translation name="World.UDecalPropertyCopyToSelected.CopyDecalPropertyToSelected">Copy decal property to selected</translation>
+
+	<!-- UDecalPropertyRemoveFromSelected -->
+	<translation name="World.UDecalPropertyRemoveFromSelected.RemoveDecalPropertyFromSelected">Remove decal property from selected</translation>
+
+	<!-- UDecalRemoveProperty -->
+	<translation name="World.UDecalRemoveProperty.RemoveDecalProperty">Remove decal property</translation>
+
+	<!-- UDecalRotate -->
+	<translation name="World.UDecalRotate.RotateDecals">Rotate Decals</translation>
+
+	<!-- UDecalRotation -->
+	<translation name="World.UDecalRotation.SetDecalOrientation">Set decal orientation</translation>
+
+	<!-- UDecalScale -->
+	<translation name="World.UDecalScale.ScaleDecals">Scale Decals</translation>
+
+	<!-- UDecalSetProperties -->
+	<translation name="World.UDecalSetProperties.ChangeDecalProperties">Change decal properties</translation>
+
+	<!-- UDecalSetProperty -->
+	<translation name="World.UDecalSetProperty.ChangeDecalProperty">Change decal property</translation>
+
+	<!-- UDecalSize -->
+	<translation name="World.UDecalSize.SetDecalSize">Set decal size</translation>
+
+	<!-- UDecalSkin -->
+	<translation name="World.UDecalSkin.SetDecalSkin">Set Decal Skin</translation>
+	<translation name="World.UDecalSkin.SetDecalSkins">Set Decal Skins</translation>
+
+	<!-- UDecalTCOffset -->
+	<translation name="World.UDecalTCOffset.DecalTextureOffset">Decal Texture Offset</translation>
+
+	<!-- UDecalTCRotation -->
+	<translation name="World.UDecalTCRotation.DecalTextureRotation">Decal Texture Rotation</translation>
+
+	<!-- UDecalTCScaling -->
+	<translation name="World.UDecalTCScaling.DecalTextureScaling">Decal Texture Scaling</translation>
+
+	<!-- UDecalVisible -->
+	<translation name="World.UDecalVisible.SetDecalVisible">Set decal visible</translation>
+
+	<!-- UDeleteDecal -->
+	<translation name="World.UDeleteDecal.DeleteDecals">Delete Decals</translation>
+
+	<!-- UDeleteNavSpace -->
+
+	<!-- UDeleteObject -->
+	<translation name="World.UDeleteObject.DeleteObjects">Delete Objects</translation>
+
+	<!-- UHTAddTexture -->
+
+	<!-- UHTImportHeightImage -->
+
+	<!-- UHTImportVisibilityImage -->
+
+	<!-- UHTNavSpaceAdd -->
+	<translation name="World.UHTNavSpaceAdd.HeightTerrainAddNavSpace">Height terrain add nav-space</translation>
+
+	<!-- UHTNavSpaceFaceAdd -->
+	<translation name="World.UHTNavSpaceFaceAdd.HeightTerrainNavSpaceAddFace">Height terrain nav-space add face</translation>
+
+	<!-- UHTNavSpaceFaceRemove -->
+	<translation name="World.UHTNavSpaceFaceRemove.HeightTerrainNavSpaceRemoveFace">Height terrain nav-space remove face</translation>
+	<translation name="World.UHTNavSpaceFaceRemove.HeightTerrainNavSpaceRemoveFaces">Height terrain nav-space remove faces</translation>
+
+	<!-- UHTNavSpaceRemove -->
+	<translation name="World.UHTNavSpaceRemove.HeightTerrainRemoveNavSpace">Height terrain remove nav-space</translation>
+
+	<!-- UHTNavSpaceSetLayer -->
+	<translation name="World.UHTNavSpaceSetLayer.HeightTerrainNavSpaceSetLayer">Height terrain nav-space set layer</translation>
+
+	<!-- UHTNavSpaceSetSnapAngle -->
+	<translation name="World.UHTNavSpaceSetSnapAngle.HeightTerrainNavSpaceSetSnapAngle">Height terrain nav-space set snap angle</translation>
+
+	<!-- UHTNavSpaceSetSnapDist -->
+	<translation name="World.UHTNavSpaceSetSnapDist.HeightTerrainNavSpaceSetSnapDistance">Height terrain nav-space set snap distance</translation>
+
+	<!-- UHTNavSpaceTypeAdd -->
+	<translation name="World.UHTNavSpaceTypeAdd.HeightTerrainNavSpaceAddType">Height terrain nav-space add type</translation>
+
+	<!-- UHTNavSpaceTypeRemove -->
+	<translation name="World.UHTNavSpaceTypeRemove.HeightTerrainNavSpaceRemoveType">Height terrain nav-space remove type</translation>
+
+	<!-- UHTNavSpaceTypeSetColor -->
+	<translation name="World.UHTNavSpaceTypeSetColor.HeightTerrainNavSpaceTypeSetColor">Height terrain nav-space type set color</translation>
+
+	<!-- UHTNavSpaceTypeSetName -->
+	<translation name="World.UHTNavSpaceTypeSetName.HeightTerrainNavSpaceTypeSetName">Height terrain nav-space type set name</translation>
+
+	<!-- UHTNavSpaceTypeSetType -->
+	<translation name="World.UHTNavSpaceTypeSetType.HeightTerrainNavSpaceTypeSetType">Height terrain nav-space type set type</translation>
+
+	<!-- UHTPaintHeight -->
+	<translation name="World.UHTPaintHeight.LevelTerrain">Level Terrain</translation>
+	<translation name="World.UHTPaintHeight.LowerTerrain">Lower Terrain</translation>
+	<translation name="World.UHTPaintHeight.RaiseTerrain">Raise Terrain</translation>
+	<translation name="World.UHTPaintHeight.SmoothTerrain">Smooth Terrain</translation>
+
+	<!-- UHTPaintMask -->
+	<translation name="World.UHTPaintMask.DrawMask">Draw Mask</translation>
+	<translation name="World.UHTPaintMask.EraseMask">Erase Mask</translation>
+
+	<!-- UHTPaintVisibility -->
+	<translation name="World.UHTPaintVisibility.FaceInvisible">Face Invisible</translation>
+	<translation name="World.UHTPaintVisibility.FaceVisibible">Face Visibible</translation>
+
+	<!-- UHTRemoveTexture -->
+	<translation name="World.UHTRemoveTexture.HeightTerrainAddTexture">Height Terrain Add Texture</translation>
+
+	<!-- UHTSetBaseHeight -->
+	<translation name="World.UHTSetBaseHeight.SetHeightTerrainBaseHeight">Set Height Terrain Base Height</translation>
+
+	<!-- UHTSetHeightScaling -->
+	<translation name="World.UHTSetHeightScaling.SetHeightTerrainHeightScaling">Set Height Terrain Height Scaling</translation>
+
+	<!-- UHTSetPathHI -->
+	<translation name="World.UHTSetPathHI.SetHeightTerrainHeightImagePath">Set Height Terrain Height Image Path</translation>
+
+	<!-- UHTSetPathHT -->
+	<translation name="World.UHTSetPathHT.SetHeightTerrainPath">Set Height Terrain Path</translation>
+
+	<!-- UHTSetPathPFCache -->
+	<translation name="World.UHTSetPathPFCache.SetHeightTerrainPropFieldCachePath">Set Height Terrain Prop Field Cache Path</translation>
+
+	<!-- UHTSetPathVI -->
+	<translation name="World.UHTSetPathVI.SetHeightTerrainVisibilityImagePath">Set Height Terrain Visibility Image Path</translation>
+
+	<!-- UHTSetSectorResolution -->
+	<translation name="World.UHTSetSectorResolution.SetHeightTerrainSectorResolution">Set Height Terrain Sector Resolution</translation>
+
+	<!-- UHTSetSectorSize -->
+	<translation name="World.UHTSetSectorSize.SetHeightTerrainSectorSize">Set Height Terrain Sector Size</translation>
+
+	<!-- UHTSetTexMask -->
+	<translation name="World.UHTSetTexMask.SetHeightTerrainTextureMask">Set Height Terrain Texture Mask</translation>
+
+	<!-- UHTSetTexSkin -->
+	<translation name="World.UHTSetTexSkin.SetHeightTerrainTextureSkin">Set Height Terrain Texture Skin</translation>
+
+	<!-- UHTSetTexUVOffset -->
+	<translation name="World.UHTSetTexUVOffset.SetHeightTerrainTextureUvOffset">Set Height Terrain Texture UV Offset</translation>
+
+	<!-- UHTSetTexUVRotation -->
+	<translation name="World.UHTSetTexUVRotation.SetHeightTerrainTextureUvRotation">Set Height Terrain Texture UV Rotation</translation>
+
+	<!-- UHTSetTexUVScaling -->
+	<translation name="World.UHTSetTexUVScaling.SetHeightTerrainTextureUvScaling">Set Height Terrain Texture UV Scaling</translation>
+
+	<!-- UHTTexSetTypeNum -->
+	<translation name="World.UHTTexSetTypeNum.SetHeightTerrainTextureTypeNumber">Set Height Terrain Texture Type Number</translation>
+
+	<!-- UHTVLayerAdd -->
+	<translation name="World.UHTVLayerAdd.AddHeightTerrainVegetationLayer">Add Height Terrain Vegetation Layer</translation>
+
+	<!-- UHTVLayerDown -->
+	<translation name="World.UHTVLayerDown.MoveHeightTerrainVegetationLayerDown">Move Height Terrain Vegetation Layer Down</translation>
+
+	<!-- UHTVLayerRemove -->
+	<translation name="World.UHTVLayerRemove.RemoveHeightTerrainVegetationLayer">Remove Height Terrain Vegetation Layer</translation>
+
+	<!-- UHTVLayerUp -->
+	<translation name="World.UHTVLayerUp.MoveHeightTerrainVegetationLayerUp">Move Height Terrain Vegetation Layer Up</translation>
+
+	<!-- UHTVLinkAdd -->
+	<translation name="World.UHTVLinkAdd.AddVegetationLayerLink">Add Vegetation Layer Link</translation>
+
+	<!-- UHTVLinkCut -->
+	<translation name="World.UHTVLinkCut.CutVegetationLayerLinks">Cut Vegetation Layer Links</translation>
+
+	<!-- UHTVRuleAdd -->
+	<translation name="World.UHTVRuleAdd.AddVegetationLayerRule">Add Vegetation Layer Rule</translation>
+
+	<!-- UHTVRuleCPSetClass -->
+
+	<!-- UHTVRuleCPSetRadius -->
+	<translation name="World.UHTVRuleCPSetRadius.VegetationLayerRuleClosestPropSetClass">Vegetation Layer Rule Closest Prop Set Class</translation>
+
+	<!-- UHTVRuleCombineSetX -->
+	<translation name="World.UHTVRuleCombineSetX.VegetationLayerRuleCombineSetX">Vegetation Layer Rule Combine Set X</translation>
+
+	<!-- UHTVRuleCombineSetY -->
+	<translation name="World.UHTVRuleCombineSetY.VegetationLayerRuleCombineSetY">Vegetation Layer Rule Combine Set Y</translation>
+
+	<!-- UHTVRuleCombineSetZ -->
+	<translation name="World.UHTVRuleCombineSetZ.VegetationLayerRuleCombineSetZ">Vegetation Layer Rule Combine Set Z</translation>
+
+	<!-- UHTVRuleCompSetVector -->
+	<translation name="World.UHTVRuleCompSetVector.VegetationLayerRuleCombineSetVector">Vegetation Layer Rule Combine Set Vector</translation>
+
+	<!-- UHTVRuleConstSetVector -->
+	<translation name="World.UHTVRuleConstSetVector.VegetationLayerRuleConstantSetVector">Vegetation Layer Rule Constant Set Vector</translation>
+
+	<!-- UHTVRuleCurveSetCurve -->
+	<translation name="World.UHTVRuleCurveSetCurve.VegetationLayerRuleCurveSetCurve">Vegetation Layer Rule Curve Set Curve</translation>
+
+	<!-- UHTVRuleMapSetLower -->
+	<translation name="World.UHTVRuleMapSetLower.VegetationLayerRuleMappingSetLower">Vegetation Layer Rule Mapping Set Lower</translation>
+
+	<!-- UHTVRuleMapSetUpper -->
+	<translation name="World.UHTVRuleMapSetUpper.VegetationLayerRuleMappingSetUpper">Vegetation Layer Rule Mapping Set Upper</translation>
+
+	<!-- UHTVRuleMapSetValue -->
+	<translation name="World.UHTVRuleMapSetValue.VegetationLayerRuleMappingSetValue">Vegetation Layer Rule Mapping Set Value</translation>
+
+	<!-- UHTVRuleMapToggleInversed -->
+	<translation name="World.UHTVRuleMapToggleInversed.VegetationLayerRuleMappingToggleInversed">Vegetation Layer Rule Mapping Toggle Inversed</translation>
+
+	<!-- UHTVRuleMathSetOp -->
+	<translation name="World.UHTVRuleMathSetOp.VegetationLayerRuleMathSetOperator">Vegetation Layer Rule Math Set Operator</translation>
+
+	<!-- UHTVRuleMathSetValueA -->
+	<translation name="World.UHTVRuleMathSetValueA.VegetationLayerRuleMathSetValueA">Vegetation Layer Rule Math Set Value A</translation>
+
+	<!-- UHTVRuleMathSetValueB -->
+	<translation name="World.UHTVRuleMathSetValueB.VegetationLayerRuleMathSetValueB">Vegetation Layer Rule Math Set Value B</translation>
+
+	<!-- UHTVRuleMove -->
+	<translation name="World.UHTVRuleMove.MoveVegetationLayerRule">Move Vegetation Layer Rule</translation>
+
+	<!-- UHTVRuleMultiMathSetOp -->
+	<translation name="World.UHTVRuleMultiMathSetOp.VegetationLayerRuleMultiMathSetOperator">Vegetation Layer Rule Multi-Math Set Operator</translation>
+
+	<!-- UHTVRulePCSetClass -->
+
+	<!-- UHTVRulePCSetRadius -->
+	<translation name="World.UHTVRulePCSetRadius.VegetationLayerRulePropCountSetClass">Vegetation Layer Rule Prop Count Set Class</translation>
+
+	<!-- UHTVRuleRemove -->
+	<translation name="World.UHTVRuleRemove.VegetationLayerRemoveRule">Vegetation layer remove rule</translation>
+
+	<!-- UHTVRuleResultSetProb -->
+	<translation name="World.UHTVRuleResultSetProb.VegetationLayerRuleResultSetProbability">Vegetation Layer Rule Result Set Probability</translation>
+
+	<!-- UHTVRuleResultSetVar -->
+	<translation name="World.UHTVRuleResultSetVar.VegetationLayerRuleResultSetVariation">Vegetation Layer Rule Result Set Variation</translation>
+
+	<!-- UHTVRuleVecMathSetOp -->
+	<translation name="World.UHTVRuleVecMathSetOp.VegetationLayerRuleVectorMathSetOperator">Vegetation Layer Rule Vector Math Set Operator</translation>
+
+	<!-- UHTVRuleVecMathSetVectorA -->
+
+	<!-- UHTVRuleVecMathSetVectorB -->
+	<translation name="World.UHTVRuleVecMathSetVectorA">Vegetation Layer Rule Math Set Vector A</translation>
+	<translation name="World.UHTVRuleVecMathSetVectorB">Vegetation Layer Rule Math Set Vector B</translation>
+
+	<!-- UHTVVarSetModel -->
+	<translation name="World.UHTVVarSetModel.VegetationLayerVariationSetModel">Vegetation Layer Variation Set Model</translation>
+
+	<!-- UHTVVarSetRestitution -->
+	<translation name="World.UHTVVarSetRestitution.VegetationLayerVariationSetRestitution">Vegetation Layer Variation Set Restitution</translation>
+
+	<!-- UHTVVarSetRotPerForce -->
+	<translation name="World.UHTVVarSetRotPerForce.VegetationLayerVariationSetRotationPerForce">Vegetation Layer Variation Set Rotation Per Force</translation>
+
+	<!-- UHTVVarSetSkin -->
+	<translation name="World.UHTVVarSetSkin.VegetationLayerVariationSetSkin">Vegetation Layer Variation Set Skin</translation>
+
+	<!-- UHTVVariationAdd -->
+	<translation name="World.UHTVVariationAdd.AddVegetationLayerVariation">Add Vegetation Layer Variation</translation>
+
+	<!-- UHTVVariationRemove -->
+	<translation name="World.UHTVVariationRemove.RemoveVegetationLayerVariation">Remove Vegetation Layer Variation</translation>
+
+	<!-- ULowerDecalBottom -->
+	<translation name="World.ULowerDecalBottom.LowerDecalToBottom">Lower decal to the bottom.</translation>
+
+	<!-- ULowerDecalOne -->
+	<translation name="World.ULowerDecalOne.LowerDecalOneLevel">Lower decal one level.</translation>
+
+	<!-- UMoveObject -->
+	<translation name="World.UMoveObject.MoveObject">Move Object</translation>
+
+	<!-- UNavSpaceSetOrientation -->
+	<translation name="World.UNavSpaceSetOrientation.NavspaceSetOrientation">NavSpace Set Orientation</translation>
+
+	<!-- UNavSpaceSetPath -->
+	<translation name="World.UNavSpaceSetPath.NavspaceSetPath">NavSpace Set Path</translation>
+
+	<!-- UNavSpaceSetPosition -->
+	<translation name="World.UNavSpaceSetPosition.NavspaceSetPosition">NavSpace Set Position</translation>
+
+	<!-- UObjDuplicate -->
+	<translation name="World.UObjDuplicate.DuplicateObjects">Duplicate Objects</translation>
+
+	<!-- UObjTexAddProperty -->
+	<translation name="World.UObjTexAddProperty.ObjectTextureAddProperty">Object texture add property</translation>
+
+	<!-- UObjTexRemoveProperty -->
+	<translation name="World.UObjTexRemoveProperty.ObjectTextureRemoveProperty">Object texture remove property</translation>
+
+	<!-- UObjTexSetProperties -->
+	<translation name="World.UObjTexSetProperties.ObjectTextureSetProperties">Object texture set properties</translation>
+
+	<!-- UObjTexSetProperty -->
+	<translation name="World.UObjTexSetProperty.ObjectTextureSetProperty">Object texture set property</translation>
+
+	<!-- UObjectAddProperty -->
+	<translation name="World.UObjectAddProperty.AddObjectProperty">Add object property</translation>
+
+	<!-- UObjectAddTexture -->
+	<translation name="World.UObjectAddTexture.AddObjectTexture">Add Object Texture</translation>
+
+	<!-- UObjectAddUsedTextures -->
+	<translation name="World.UObjectAddUsedTextures.AddUsedObjectTextures">Add Used Object Textures</translation>
+
+	<!-- UObjectAttachTo -->
+	<translation name="World.UObjectAttachTo.AttachObjectsTo">Attach Objects To</translation>
+	<translation name="World.UObjectAttachTo.DetachObjects">Detach Objects</translation>
+
+	<!-- UObjectClonePropertiesToSelected -->
+	<translation name="World.UObjectClonePropertiesToSelected.CloneObjectPropertiesToSelected">Clone object properties to selected</translation>
+
+	<!-- UObjectCloneTexturesToSelected -->
+	<translation name="World.UObjectCloneTexturesToSelected.CloneObjectTexturesToSelected">Clone object textures to selected</translation>
+
+	<!-- UObjectCopyPosition -->
+	<translation name="World.UObjectCopyPosition.CopyObjectPosition">Copy Object Position</translation>
+
+	<!-- UObjectCopyRotation -->
+	<translation name="World.UObjectCopyRotation.CopyObjectRotation">Copy Object Rotation</translation>
+
+	<!-- UObjectCopyScale -->
+	<translation name="World.UObjectCopyScale.CopyObjectScale">Copy Object Scale</translation>
+
+	<!-- UObjectDropToGround -->
+	<translation name="World.UObjectDropToGround.DropObjectsToGround">Drop objects to ground</translation>
+
+	<!-- UObjectPropertyCopyToSelected -->
+	<translation name="World.UObjectPropertyCopyToSelected.CopyObjectPropertyToSelected">Copy object property to selected</translation>
+
+	<!-- UObjectPropertyRemoveFromSelected -->
+	<translation name="World.UObjectPropertyRemoveFromSelected.RemoveObjectPropertyFromSelected">Remove object property from selected</translation>
+
+	<!-- UObjectRandomRotation -->
+	<translation name="World.UObjectRandomRotation.RandomizeObjectRotation">Randomize Object Rotation</translation>
+
+	<!-- UObjectRemoveAllTextures -->
+	<translation name="World.UObjectRemoveAllTextures.RemoveAllObjectTextures">Remove All Object Textures</translation>
+
+	<!-- UObjectRemoveProperty -->
+	<translation name="World.UObjectRemoveProperty.RemoveObjectProperty">Remove object property</translation>
+
+	<!-- UObjectRemoveTexture -->
+	<translation name="World.UObjectRemoveTexture.RemoveObjectTexture">Remove Object Texture</translation>
+
+	<!-- UObjectRemoveUnusedTextures -->
+	<translation name="World.UObjectRemoveUnusedTextures.RemoveUnusedObjectTextures">Remove Unused Object Textures</translation>
+
+	<!-- UObjectSetAttachBehaviors -->
+	<translation name="World.UObjectSetAttachBehaviors.SetObjectAttachBehaviors">Set object attach behaviors</translation>
+
+	<!-- UObjectSetProperties -->
+	<translation name="World.UObjectSetProperties.SetObjectProperties">Set object properties</translation>
+
+	<!-- UObjectSetProperty -->
+	<translation name="World.UObjectSetProperty.ChangeObjectProperty">Change object property</translation>
+
+	<!-- UObjectSetScaling -->
+	<translation name="World.UObjectSetScaling.ObjectSetScaling">Object Set Scaling</translation>
+
+	<!-- UObjectShapeAdd -->
+	<translation name="World.UObjectShapeAdd.ObjectShapeAdd">Object-Shape add</translation>
+
+	<!-- UObjectShapeDelete -->
+	<translation name="World.UObjectShapeDelete.ObjectShapeDelete">Object-Shape delete</translation>
+
+	<!-- UObjectShapeMove -->
+	<translation name="World.UObjectShapeMove.MoveObjectShapes">Move object shapes</translation>
+
+	<!-- UObjectShapeReplace -->
+	<translation name="World.UObjectShapeReplace.ObjectShapeReplace">Object-Shape replace</translation>
+
+	<!-- UObjectShapeRotate -->
+	<translation name="World.UObjectShapeRotate.RotateObjectShapes">Rotate object shapes</translation>
+
+	<!-- UObjectShapeScale -->
+	<translation name="World.UObjectShapeScale.ScaleObjectShapes">Scale object shapes</translation>
+
+	<!-- UObjectSnapToGrid -->
+	<translation name="World.UObjectSnapToGrid.SnapObjectsToGrid">Snap objects to grid</translation>
+
+	<!-- UObjectTextureColorTint -->
+	<translation name="World.UObjectTextureColorTint.ObjextTextureColorTint">Objext Texture Color Tint</translation>
+
+	<!-- UObjectTextureCopyToSelected -->
+	<translation name="World.UObjectTextureCopyToSelected.CopyObjectTextureToSelected">Copy object texture to selected</translation>
+
+	<!-- UObjectTextureSetSkin -->
+	<translation name="World.UObjectTextureSetSkin.SetObjectTextureSkin">Set object texture skin</translation>
+	<translation name="World.UObjectTextureSetSkin.SetObjectTextureSkins">Set object texture skins</translation>
+
+	<!-- UObjectTextureTCOffset -->
+	<translation name="World.UObjectTextureTCOffset.ObjextTextureOffset">Objext Texture Offset</translation>
+
+	<!-- UObjectTextureTCRotation -->
+	<translation name="World.UObjectTextureTCRotation.ObjextTextureRotation">Objext Texture Rotation</translation>
+
+	<!-- UObjectTextureTCScaling -->
+	<translation name="World.UObjectTextureTCScaling.ObjextTextureScaling">Objext Texture Scaling</translation>
+
+	<!-- UPasteObject -->
+	<translation name="World.UPasteObject.PasteObjects">Paste Objects</translation>
+
+	<!-- URaiseDecalOne -->
+	<translation name="World.URaiseDecalOne.RaiseDecalOneLevel">Raise decal one level.</translation>
+
+	<!-- URaiseDecalTop -->
+	<translation name="World.URaiseDecalTop.RaiseDecalToTop">Raise decal to the top.</translation>
+
+	<!-- URotateObject -->
+	<translation name="World.URotateObject.RotateObject">Rotate Object</translation>
+
+	<!-- UScaleObject -->
+	<translation name="World.UScaleObject.ScaleObject">Scale Object</translation>
+
+	<!-- USetObjectClass -->
+	<translation name="World.USetObjectClass.SetObjectClass">Set Object class</translation>
+	<translation name="World.USetObjectClass.SetObjectClasses">Set Object classes</translation>
+
+	<!-- USetObjectPosition -->
+	<translation name="World.USetObjectPosition.SetObjectPosition">Set Object position</translation>
+
+	<!-- USetObjectRotation -->
+	<translation name="World.USetObjectRotation.SetObjectRotation">Set Object rotation</translation>
+
+	<!-- USetObjectSize -->
+	<translation name="World.USetObjectSize.SetObjectSize">Set Object size</translation>
+
+	<!-- UViewSetLimitBoxExtends -->
+	<translation name="World.UViewSetLimitBoxExtends.ViewSetLimitBoxExtends">View set limit box extends</translation>
+
+	<!-- UWorldAddProperty -->
+	<translation name="World.UWorldAddProperty.AddWorldProperty">Add world property</translation>
+
+	<!-- UWorldRemoveProperty -->
+	<translation name="World.UWorldRemoveProperty.RemoveWorldProperty">Remove world property</translation>
+
+	<!-- UWorldSetGravity -->
+	<translation name="World.UWorldSetGravity.SetWorldGravity">Set world gravity</translation>
+
+	<!-- UWorldSetProperties -->
+	<translation name="World.UWorldSetProperties.SetWorldProperties">Set world properties</translation>
+
+	<!-- UWorldSetProperty -->
+	<translation name="World.UWorldSetProperty.SetWorldProperty">Set world property</translation>
+
+	<!-- UWorldSetSize -->
+	<translation name="World.UWorldSetSize.SetWorldSize">Set world size</translation>
+
+	<!-- ViewEditorSelect -->
+
+	<!-- WPAdd -->
+	<translation name="World.WPAdd.Action.AcceptIfInList">Accept if in list</translation>
+	<translation name="World.WPAdd.Action.EnableObjectFilter">Enable Object Filter</translation>
+	<translation name="World.WPAdd.Action.RandomizeYAxis">Randomize Y Axis</translation>
+	<translation name="World.WPAdd.ListOfObjectClassFilters">List of object class filters</translation>
+	<translation name="World.WPAdd.ObjectFilter">Object Filter:</translation>
+	<translation name="World.WPAdd.ObjectFilter.Label2">Object filter</translation>
+	<translation name="World.WPAdd.Randomize">Randomize:</translation>
+
+	<!-- WPBrowser -->
+	<translation name="World.WPBrowser.Action.DecalsSetSkin">Decals Set Skin</translation>
+	<translation name="World.WPBrowser.Action.ObjectsSetActiveTextureSkin">Objects Set Active Texture Skin</translation>
+	<translation name="World.WPBrowser.Action.SetClass">Set Class</translation>
+	<translation name="World.WPBrowser.Action.SetSky">Set Sky</translation>
+	<translation name="World.WPBrowser.Category">Category</translation>
+	<translation name="World.WPBrowser.Filter">Filter</translation>
+	<translation name="World.WPBrowser.ObjectClass">Object Class</translation>
+	<translation name="World.WPBrowser.SetClass">Set Class</translation>
+	<translation name="World.WPBrowser.Type">Type of items to browse</translation>
+
+	<!-- WPHeightTerrain -->
+	<translation name="World.WPHeightTerrain.BaseHeight">Base Height:</translation>
+	<translation name="World.WPHeightTerrain.Dialog.NavigationSpaceExists">A navigation space type with this name exists already.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.DuplicateTextureName">A texture with this name exists already.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.EnterNameOfNewLayer">Enter name of new layer</translation>
+	<translation name="World.WPHeightTerrain.Dialog.EnterNavigationSpaceName">Enter the name of the new navigation space</translation>
+	<translation name="World.WPHeightTerrain.Dialog.EnterNavigationSpaceType">Enter the name of the new navigation space type</translation>
+	<translation name="World.WPHeightTerrain.Dialog.EnterTextureName">Enter the name of the new texture</translation>
+	<translation name="World.WPHeightTerrain.Dialog.HeightImageRequires1Component">The height image does not have exactly 1 color channel.
+Only images with 1 color channel can be used for height terrains.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.ImageSizeNotMatchHeightImage">The image does not match the height image dimension set in the height terrain.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.ImageSizeNotMatchVisibilityImage">The image does not match the visibility image dimension set in the visibility terrain.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.SaveHeightImageExists">Image to save the height image to exists already.
+Do you want to import image before changing path?
+[YES] Import image then change path (2 undo actions).
+[NO] Change path and while saving image will be overwritten.
+[CANCEL] Do no import image nor change path.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.SaveVisibilityImageExists">Image to save the visibility image to exists already.
+Do you want to import image before changing path?
+[YES] Import image then change path (2 undo actions).
+[NO] Change path and while saving image will be overwritten.
+[CANCEL] Do no import image nor change path.</translation>
+	<translation name="World.WPHeightTerrain.Dialog.ImportHeightImage">Import Height Image</translation>
+	<translation name="World.WPHeightTerrain.Dialog.ImportVisibilityImage">Import Visibility Image</translation>
+	<translation name="World.WPHeightTerrain.Dialog.SetHeightImagePath">Set Height Image Path</translation>
+	<translation name="World.WPHeightTerrain.Dialog.SetVisibilityImagePath">Set Visibility Image Path</translation>
+	<translation name="World.WPHeightTerrain.Dialog.VisibilityImageRequires1Component">The visibility image does not have exactly 1 color channel.
+Only images with 1 color channel can be used for visibility terrains.</translation>
+	<translation name="World.WPHeightTerrain.DragEnGinePropFieldCache">Drag[en]gine Prop Field Cache</translation>
+	<translation name="World.WPHeightTerrain.Draw">Draw</translation>
+	<translation name="World.WPHeightTerrain.Erase">Erase</translation>
+	<translation name="World.WPHeightTerrain.Faces">Faces:</translation>
+	<translation name="World.WPHeightTerrain..ToolTip">File to save height image to</translation>
+	<translation name="World.WPHeightTerrain.HeightTerrain.ToolTip">File to save height terrain to</translation>
+	<translation name="World.WPHeightTerrain.VisibilityImage.ToolTip">File to save visibility image to</translation>
+	<translation name="World.WPHeightTerrain.HeightImage">Height Image:</translation>
+	<translation name="World.WPHeightTerrain.HeightPainting">Height Painting:</translation>
+	<translation name="World.WPHeightTerrain.HeightScaling">Height Scaling:</translation>
+	<translation name="World.WPHeightTerrain.HeightTerrain">Height Terrain:</translation>
+	<translation name="World.WPHeightTerrain.Invisible">Invisible</translation>
+	<translation name="World.WPHeightTerrain.PropFieldCache">Prop Field Cache</translation>
+	<translation name="World.WPHeightTerrain.PropFieldCache.ToolTip">File to save the prop field cache</translation>
+	<translation name="World.WPHeightTerrain.LayerToEdit.ToolTip">Layer to edit</translation>
+	<translation name="World.WPHeightTerrain.Level">Level</translation>
+	<translation name="World.WPHeightTerrain.Lower">Lower</translation>
+	<translation name="World.WPHeightTerrain.Mask">Mask:</translation>
+	<translation name="World.WPHeightTerrain.MaskPainting">Mask Painting:</translation>
+	<translation name="World.WPHeightTerrain.MaskToUseForTexture.ToolTip">Mask to use for the texture.</translation>
+	<translation name="World.WPHeightTerrain.Mode">Mode:</translation>
+	<translation name="World.WPHeightTerrain.Model">Model:</translation>
+	<translation name="World.WPHeightTerrain.Model.ToolTip">Model to use for the variation</translation>
+	<translation name="World.WPHeightTerrain.NavSpace">Nav-Space:</translation>
+	<translation name="World.WPHeightTerrain.NavSpace.ToolTip">Nav-Space</translation>
+	<translation name="World.WPHeightTerrain.NavigationLayer.ToolTip">Navigation layer.</translation>
+	<translation name="World.WPHeightTerrain.NavigationSpace">Navigation-Space:</translation>
+	<translation name="World.WPHeightTerrain.NavigationSpaceFaces.ToolTip">Navigation space faces</translation>
+	<translation name="World.WPHeightTerrain.NavigationSpaceTypeColor.ToolTip">Navigation space type color for visualization purpose.</translation>
+	<translation name="World.WPHeightTerrain.NavigationSpaceTypeName.ToolTip">Navigation space type name.</translation>
+	<translation name="World.WPHeightTerrain.NavigationSpaceTypeNumber.ToolTip">Navigation space type number.</translation>
+	<translation name="World.WPHeightTerrain.NavigationType">Navigation Type:</translation>
+	<translation name="World.WPHeightTerrain.NavigationTypeToEdit.ToolTip">Navigation type to edit</translation>
+	<translation name="World.WPHeightTerrain.Offset">Offset:</translation>
+	<translation name="World.WPHeightTerrain.ProjectedTextureOffset.ToolTip">Offsets the projected texture relative to the world origin.</translation>
+	<translation name="World.WPHeightTerrain.PaintMode.ToolTip">Paint mode</translation>
+	<translation name="World.WPHeightTerrain.Raise">Raise</translation>
+	<translation name="World.WPHeightTerrain.Restition">Restition:</translation>
+	<translation name="World.WPHeightTerrain.Restition.ToolTip">Restition.</translation>
+	<translation name="World.WPHeightTerrain.RotationForce">Rotation/Force:</translation>
+	<translation name="World.WPHeightTerrain.RotationOfProjectedTexture.ToolTip">Rotation of the projected texture.</translation>
+	<translation name="World.WPHeightTerrain.RotationPerForce.ToolTip">Rotation per Force.</translation>
+	<translation name="World.WPHeightTerrain.ScalingOfProjectedTexture.ToolTip">Scaling of the projected texture.</translation>
+	<translation name="World.WPHeightTerrain.Sector">Sector:</translation>
+	<translation name="World.WPHeightTerrain.SectorResolution">Sector Resolution:</translation>
+	<translation name="World.WPHeightTerrain.SectorSize">Sector Size:</translation>
+	<translation name="World.WPHeightTerrain.HeightImageBaseHeight.ToolTip">Set base height of height image values</translation>
+	<translation name="World.WPHeightTerrain.HeightImageHeightScaling.ToolTip">Set height scaling of height image values</translation>
+	<translation name="World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip">Sets the radius of influence.</translation>
+	<translation name="World.WPHeightTerrain.SizeOfSectorsAlongXZAxis.ToolTip">Size of sectors along X and Z axis</translation>
+	<translation name="World.WPHeightTerrain.Skin.ToolTip">Skin to use for the texture.</translation>
+	<translation name="World.WPHeightTerrain.SkinToUseForVariation.ToolTip">Skin to use for the variation</translation>
+	<translation name="World.WPHeightTerrain.Smooth">Smooth</translation>
+	<translation name="World.WPHeightTerrain.SnapAngle">Snap Angle:</translation>
+	<translation name="World.WPHeightTerrain.SnapAngle.ToolTip">Snap angle.</translation>
+	<translation name="World.WPHeightTerrain.SnapDistance">Snap Distance:</translation>
+	<translation name="World.WPHeightTerrain.SnapDistance.ToolTip">Snap distance.</translation>
+	<translation name="World.WPHeightTerrain.StrengthOfInfluence.ToolTip">Strength of the influence.</translation>
+	<translation name="World.WPHeightTerrain.Texture.ToolTip">Texture to edit</translation>
+	<translation name="World.WPHeightTerrain.TypeNumberOfTexture.ToolTip">Type number of the texture.</translation>
+	<translation name="World.WPHeightTerrain.Update">Update:</translation>
+	<translation name="World.WPHeightTerrain.UpdateVegetation.ToolTip">Update vegetation</translation>
+	<translation name="World.WPHeightTerrain.Variation">Variation:</translation>
+	<translation name="World.WPHeightTerrain.Variation.ToolTip">Variation to edit</translation>
+	<translation name="World.WPHeightTerrain.Vegetation">Vegetation:</translation>
+	<translation name="World.WPHeightTerrain.VisibilityImage">Visibility Image:</translation>
+	<translation name="World.WPHeightTerrain.VisibilityPainting">Visibility Painting:</translation>
+
+	<!-- WPPropertyList -->
+	<translation name="World.WPPropertyList.Action.CopyAll">Copy All</translation>
+	<translation name="World.WPPropertyList.Action.ExportAllToText">Export All To Text...</translation>
+	<translation name="World.WPPropertyList.Action.ImportFromText">Import From Text...</translation>
+	<translation name="World.WPPropertyList.Action.Rename">Rename...</translation>
+	<translation name="World.WPPropertyList.Dialog.PropertyExistsAlready">Property exists already</translation>
+	<translation name="World.WPPropertyList.Information">Information</translation>
+	<translation name="World.WPPropertyList.Info.WithIdentifier">Key: "{0}"
+Default Value: "{1}"
+
+{2}</translation>
+	<translation name="World.WPPropertyList.Info.NoIdentifier">Key: "{0}"
+Default Value: "{1}"</translation>
+	<translation name="World.WPPropertyList.PropertyToAdd.ToolTip">Property to add</translation>
+
+	<!-- WPSDecal -->
+	<translation name="World.WPSDecal.ActiveDecalToEdit">Active decal to edit</translation>
+	<translation name="World.WPSDecal.ColorTint.ToolTip">Color tint.</translation>
+	<translation name="World.WPSDecal.DrawingOrderOfDecal.ToolTip">Drawing order of decal.</translation>
+	<translation name="World.WPSDecal.NumberOfSelectedDecals">Number of selected decals</translation>
+	<translation name="World.WPSDecal.Order">Order:</translation>
+	<translation name="World.WPSDecal.PositionOfDecal.ToolTip">Position of decal.</translation>
+	<translation name="World.WPSDecal.RotationOfDecal.ToolTip">Rotation of decal.</translation>
+	<translation name="World.WPSDecal.SizeOfDecal.ToolTip">Size of decal.</translation>
+	<translation name="World.WPSDecal.SkinToUseForDecal.ToolTip">Skin to use for decal</translation>
+	<translation name="World.WPSDecal.TextureCoordinatesRotation.ToolTip">Texture coordinates rotation.</translation>
+	<translation name="World.WPSDecal.UniqueDecalId.ToolTip">Unique decal ID</translation>
+
+	<!-- WPSNavSpace -->
+	<translation name="World.WPSNavSpace.SelectedNavigationSpaceCount">Count of selected navigation spaces</translation>
+	<translation name="World.WPSNavSpace.NavigationSpace">Navigation Space:</translation>
+	<translation name="World.WPSNavSpace.Orientation.ToolTip">Orientation of the navigation space.</translation>
+	<translation name="World.WPSNavSpace.PathToNavigationSpace.ToolTip">Path to the navigation space</translation>
+	<translation name="World.WPSNavSpace.PositionOfNavigationSpace.ToolTip">Position of the navigation space.</translation>
+	<translation name="World.WPSNavSpace.SelectedNavigationSpace">Selected navigation space</translation>
+	<translation name="World.WPSNavSpace.UsedCostTypes">Used Cost Types:</translation>
+	<translation name="World.WPSNavSpace.UsedCostTypes.Label2">Used cost types</translation>
+
+	<!-- WPSObject -->
+	<translation name="World.WPSObject.ActiveObjectToEdit">Active object to edit</translation>
+	<translation name="World.WPSObject.Attach">Attach:</translation>
+	<translation name="World.WPSObject.AttachableBehaviors">Attachable Behaviors:</translation>
+	<translation name="World.WPSObject.AttachableBehaviorsOfObject">Attachable behaviors of the object.</translation>
+	<translation name="World.WPSObject.ColorOfLight.ToolTip">Color of the light.</translation>
+	<translation name="World.WPSObject.Dialog.Behavior">Behavior:</translation>
+	<translation name="World.WPSObject.Dialog.TextureNameExistsAlready">Texture name exists already</translation>
+	<translation name="World.WPSObject.DisplayOptions">Display Options</translation>
+	<translation name="World.WPSObject.DistanceToLight.ToolTip">Distance to the light source to evaluate distance for.</translation>
+	<translation name="World.WPSObject.LightIntensityEvaluateDistance.ToolTip">Evaluated intensity at distance to light source.</translation>
+	<translation name="World.WPSObject.FindId">Find ID...</translation>
+	<translation name="World.WPSObject.Geometry">Geometry:</translation>
+	<translation name="World.WPSObject.HalfIntDist">Half-Int Dist:</translation>
+	<translation name="World.WPSObject.HalfIntensityDistance.ToolTip">Half intensity distance as percentage of light range.</translation>
+	<translation name="World.WPSObject.Id">ID:</translation>
+	<translation name="World.WPSObject.ObjectAttachTo.ToolTip">ID of object to attach to</translation>
+	<translation name="World.WPSObject.LightIntensity.ToolTip">Intensity of the light.</translation>
+	<translation name="World.WPSObject.Light">Light:</translation>
+	<translation name="World.WPSObject.ObjectClass.ToolTip">Name of the active object class.</translation>
+	<translation name="World.WPSObject.None">&lt;none&gt;</translation>
+	<translation name="World.WPSObject.NumberOfSelectedObjects">Number of selected objects</translation>
+	<translation name="World.WPSObject.PositionOfObject.ToolTip">Position of the object.</translation>
+	<translation name="World.WPSObject.Properties">Properties:</translation>
+	<translation name="World.WPSObject.Range">Range:</translation>
+	<translation name="World.WPSObject.Range.ToolTip">Range of the light in meters.</translation>
+	<translation name="World.WPSObject.Rotation.ToolTip">Rotation of the object.</translation>
+	<translation name="World.WPSObject.Scaling.ToolTip">Scaling of the object.</translation>
+	<translation name="World.WPSObject.Selected">Selected:</translation>
+	<translation name="World.WPSObject.Size.ToolTip">Size of the object.</translation>
+	<translation name="World.WPSObject.Skin">Skin:</translation>
+	<translation name="World.WPSObject.Skin.ToolTip">Skin to use for the texture</translation>
+	<translation name="World.WPSObject.Texture">Texture:</translation>
+	<translation name="World.WPSObject.TextureCoordinatesRotation.ToolTip">Texture coordinates rotation.</translation>
+	<translation name="World.WPSObject.TextureCoordinatesScaling.ToolTip">Texture coordinates scaling.</translation>
+	<translation name="World.WPSObject.TextureCoordinatesTranslation.ToolTip">Texture coordinates translation.</translation>
+	<translation name="World.WPSObject.TextureProperties">Texture Properties:</translation>
+	<translation name="World.WPSObject.Texture.ToolTip">Texture to edit.</translation>
+	<translation name="World.WPSObject.TextureTransformation">Texture Transformation:</translation>
+	<translation name="World.WPSObject.Tint">Tint:</translation>
+	<translation name="World.WPSObject.Translation">Translation:</translation>
+	<translation name="World.WPSObject.UniqueObjectId">Unique object ID</translation>
+	<translation name="World.WPSObject.UniqueObjectId.ToolTip">Unique object ID.</translation>
+
+	<!-- WPSObjectShape -->
+	<translation name="World.WPSObjectShape.ActiveShapeToEdit">Active shape to edit</translation>
+	<translation name="World.WPSObjectShape.BottomRadiusOfCapsule.ToolTip">Bottom radius of the capsule.</translation>
+	<translation name="World.WPSObjectShape.BottomRadiusOfCylinder.ToolTip">Bottom radius of the cylinder.</translation>
+	<translation name="World.WPSObjectShape.Box">Box:</translation>
+	<translation name="World.WPSObjectShape.Capsule">Capsule:</translation>
+	<translation name="World.WPSObjectShape.Count">Count:</translation>
+	<translation name="World.WPSObjectShape.CountOfShapes">Count of shapes</translation>
+	<translation name="World.WPSObjectShape.Cylinder">Cylinder:</translation>
+	<translation name="World.WPSObjectShape.Extends">Extends:</translation>
+	<translation name="World.WPSObjectShape.ExtendsOfBox.ToolTip">Extends of the box.</translation>
+	<translation name="World.WPSObjectShape.Height">Height:</translation>
+	<translation name="World.WPSObjectShape.HeightOfCapsule.ToolTip">Height of the capsule.</translation>
+	<translation name="World.WPSObjectShape.HeightOfCylinder.ToolTip">Height of the cylinder.</translation>
+	<translation name="World.WPSObjectShape.ObjectClass.ToolTip">Name of the active object class.</translation>
+	<translation name="World.WPSObjectShape.NameOfActiveObjectProperty.ToolTip">Name of the active object property.</translation>
+	<translation name="World.WPSObjectShape.NoShapeSelected">No Shape Selected</translation>
+	<translation name="World.WPSObjectShape.PositionOfBox.ToolTip">Position of the box.</translation>
+	<translation name="World.WPSObjectShape.PositionOfCapsule.ToolTip">Position of the capsule.</translation>
+	<translation name="World.WPSObjectShape.PositionOfCylinder.ToolTip">Position of the cylinder.</translation>
+	<translation name="World.WPSObjectShape.PositionOfSphere.ToolTip">Position of the sphere.</translation>
+	<translation name="World.WPSObjectShape.Property">Property:</translation>
+	<translation name="World.WPSObjectShape.PropertyInformation">Property information</translation>
+	<translation name="World.WPSObjectShape.RadiusBottom">Radius Bottom:</translation>
+	<translation name="World.WPSObjectShape.RadiusOfSphere.ToolTip">Radius of the sphere.</translation>
+	<translation name="World.WPSObjectShape.RadiusTop">Radius Top:</translation>
+	<translation name="World.WPSObjectShape.RotationOfBox.ToolTip">Rotation of the box.</translation>
+	<translation name="World.WPSObjectShape.RotationOfCapsule.ToolTip">Rotation of the capsule.</translation>
+	<translation name="World.WPSObjectShape.RotationOfCylinder.ToolTip">Rotation of the cylinder.</translation>
+	<translation name="World.WPSObjectShape.Sphere">Sphere:</translation>
+	<translation name="World.WPSObjectShape.TopRadiusOfCapsule.ToolTip">Top radius of the capsule.</translation>
+	<translation name="World.WPSObjectShape.TopRadiusOfCylinder.ToolTip">Top radius of the cylinder.</translation>
+
+	<!-- WPSensors -->
+	<translation name="World.WPSensors.Action.TrackCamera">Track Camera</translation>
+	<translation name="World.WPSensors.ConeExponent.ToolTip">Cone exponent smoothing between inner and outer angle</translation>
+	<translation name="World.WPSensors.ConeInnerAngle.ToolTip">Cone inner angle in degrees</translation>
+	<translation name="World.WPSensors.ConeOuterAngle.ToolTip">Cone outer angle in degrees</translation>
+	<translation name="World.WPSensors.Direction">Direction:</translation>
+	<translation name="World.WPSensors.Direction.ToolTip">Direction</translation>
+	<translation name="World.WPSensors.Exponent">Exponent:</translation>
+	<translation name="World.WPSensors.InnerAngle">Inner Angle:</translation>
+	<translation name="World.WPSensors.Lumimeter">Lumimeter:</translation>
+	<translation name="World.WPSensors.MeasuredColor">Measured Color:</translation>
+	<translation name="World.WPSensors.MeasuredColor.ToolTip">Measured color</translation>
+	<translation name="World.WPSensors.MeasuredLuminance">Measured Luminance:</translation>
+	<translation name="World.WPSensors.MeasuredLuminance.ToolTip">Measured luminance</translation>
+	<translation name="World.WPSensors.OuterAngle">Outer Angle:</translation>
+	<translation name="World.WPSensors.Position.ToolTip">Position</translation>
+
+	<!-- WPView -->
+	<translation name="World.WPView.Active">Active:</translation>
+	<translation name="World.WPView.ActiveCamera.ToolTip">Active camera</translation>
+	<translation name="World.WPView.AutoUpdating">Auto Updating:</translation>
+	<translation name="World.WPView.BackgroundObject">Background Object:</translation>
+	<translation name="World.WPView.Camera">Camera:</translation>
+	<translation name="World.WPView.CameraParameters">Camera Parameters:</translation>
+	<translation name="World.WPView.ClassHideTags">Class Hide Tags:</translation>
+	<translation name="World.WPView.ClassPartialHideTags">Class Partial Hide Tags:</translation>
+	<translation name="World.WPView.Distance">Distance:</translation>
+	<translation name="World.WPView.DistanceRectSelect.ToolTip">Distance for rectangular selection</translation>
+	<translation name="World.WPView.DistanceStep">Distance Step:</translation>
+	<translation name="World.WPView.GridSnapping">Grid/Snapping:</translation>
+	<translation name="World.WPView.LimitBox">Limit Box:</translation>
+	<translation name="World.WPView.MaximumExtend">Maximum Extend:</translation>
+	<translation name="World.WPView.MaximumExtendLimitBox.ToolTip">Maximum extend of limit box</translation>
+	<translation name="World.WPView.Microphone">Microphone:</translation>
+	<translation name="World.WPView.MinimumExtend">Minimum Extend:</translation>
+	<translation name="World.WPView.MinimumExtendLimitBox.ToolTip">Minimum extend of limit box</translation>
+	<translation name="World.WPView.MouseWheelAdjustmentStep.ToolTip">Mouse wheel adjustment step for distance for rectangular selection</translation>
+	<translation name="World.WPView.ObjectCamera">Object:</translation>
+	<translation name="World.WPView.ObjectCamera.ToolTip">Object camera</translation>
+	<translation name="World.WPView.Selection">Selection:</translation>
+	<translation name="World.WPView.Sensitivity">Sensitivity:</translation>
+	<translation name="World.WPView.Sensitivity.ToolTip">Sensitivity of mouse input</translation>
+	<translation name="World.WPView.SetTo001">Set to 0.01</translation>
+	<translation name="World.WPView.SetTo01">Set to 0.1</translation>
+	<translation name="World.WPView.SetTo1">Set to 1</translation>
+	<translation name="World.WPView.SetTo10">Set to 10</translation>
+	<translation name="World.WPView.SnapMovingDistance.ToolTip">Snap moving distance</translation>
+	<translation name="World.WPView.SnapRotationAngle.ToolTip">Snap rotation angle</translation>
+	<translation name="World.WPView.SnapScalingFactor.ToolTip">Snap scaling factor</translation>
+
+	<!-- WPWorld -->
+	<translation name="World.WPWorld.BlockingCost">Blocking Cost:</translation>
+	<translation name="World.WPWorld.BlockingCost.ToolTip">Blocking cost.</translation>
+	<translation name="World.WPWorld.ChangeTypeNumber">Change Type Number</translation>
+	<translation name="World.WPWorld.CostPerMeter">Cost Per Meter:</translation>
+	<translation name="World.WPWorld.CostPerMeter.ToolTip">Cost per meter travelled inside type.</translation>
+	<translation name="World.WPWorld.Dialog.CostTypeExists">A type with this type number exists already.</translation>
+	<translation name="World.WPWorld.FixCost">Fix Cost:</translation>
+	<translation name="World.WPWorld.FixCost.ToolTip">Fix cost to move into type.</translation>
+	<translation name="World.WPWorld.GoalPosition">Goal Position:</translation>
+	<translation name="World.WPWorld.GoalPosition.ToolTip">Goal position of the test path</translation>
+	<translation name="World.WPWorld.Gravity">Gravity</translation>
+	<translation name="World.WPWorld.Grid">Grid</translation>
+	<translation name="World.WPWorld.Layer">Layer:</translation>
+	<translation name="World.WPWorld.Layer.ToolTip">Layer to navigate.</translation>
+	<translation name="World.WPWorld.Mesh">Mesh</translation>
+	<translation name="World.WPWorld.MusicTesting">Music Testing:</translation>
+	<translation name="World.WPWorld.NameOfType.ToolTip">Name of the type.</translation>
+	<translation name="World.WPWorld.Path">Path:</translation>
+	<translation name="World.WPWorld.PathFindTest">Path Find Test:</translation>
+	<translation name="World.WPWorld.PathFindTestTypes">Path Find Test Types:</translation>
+	<translation name="World.WPWorld.PathSoundFile.ToolTip">Path to sound file to play.</translation>
+	<translation name="World.WPWorld.WorldSize.ToolTip">Size of world in meters where modules can expect content</translation>
+	<translation name="World.WPWorld.SpaceType">Space Type:</translation>
+	<translation name="World.WPWorld.SpaceType.ToolTip">Space type to navigate.</translation>
+	<translation name="World.WPWorld.StartPosition">Start Position:</translation>
+	<translation name="World.WPWorld.StartPosition.ToolTip">Start position of the test path</translation>
+	<translation name="World.WPWorld.TypeNumber">Type Number:</translation>
+	<translation name="World.WPWorld.TypeNumber.ToolTip">Type number.</translation>
+	<translation name="World.WPWorld.TypeNumberExists.ToolTip">Type number already exists</translation>
+	<translation name="World.WPWorld.TypeToEdit.ToolTip">Type to edit</translation>
+	<translation name="World.WPWorld.Volume">Volume</translation>
+	<translation name="World.WPWorld.VolumeToPlayMusic.ToolTip">Volume to play music.</translation>
+	<translation name="World.WPWorld.WorldGravity.ToolTip">World gravity</translation>
+	<translation name="World.WPWorld.WorldParameters">World Parameters:</translation>
+	<translation name="World.WPWorld.WorldProperties">World Properties:</translation>
+
+	<!-- WVNode -->
+	<translation name="World.WVNode.Action.DeleteNode">Delete Node</translation>
+	<translation name="World.WVNode.Action.DuplicateNode">Duplicate Node</translation>
+
+	<!-- WVNodeClosestProp -->
+
+	<!-- WVNodeClosestVegetation -->
+	<translation name="World.WVNodeClosestVegetation.Type.ToolTip">Set type of vegetation to search for.</translation>
+
+	<!-- WVNodeCombine -->
+	<translation name="World.WVNodeCombine.XComponent">X component of vector if slot is not connected.</translation>
+	<translation name="World.WVNodeCombine.YComponent">Y component of vector if slot is not connected.</translation>
+	<translation name="World.WVNodeCombine.ZComponent">Z component of vector if slot is not connected.</translation>
+
+	<!-- WVNodeComponents -->
+	<translation name="World.WVNodeComponents.InputVector">Input vector.</translation>
+
+	<!-- WVNodeConstant -->
+	<translation name="World.WVNodeConstant.Vector">Vector:</translation>
+	<translation name="World.WVNodeConstant.VectorValue.ToolTip">Vector value.</translation>
+
+	<!-- WVNodeMapping -->
+	<translation name="World.WVNodeMapping.Action.Inversed">Inversed</translation>
+	<translation name="World.WVNodeMapping.LowerValue">Lower value if slot is not connected.</translation>
+	<translation name="World.WVNodeMapping.UpperValue">Upper value if slot is not connected.</translation>
+	<translation name="World.WVNodeMapping.ValueToMap">Value to map if slot is not connected.</translation>
+
+	<!-- WVNodeMath -->
+
+	<!-- WVNodeMultiMath -->
+
+	<!-- WVNodePropCount -->
+	<translation name="World.WVNodePropCount.Radius">Radius:</translation>
+	<translation name="World.WVNodePropCount.PropClass.ToolTip">Select class name of prop to search for.</translation>
+	<translation name="World.WVNodePropCount.Radius.ToolTip">Set search radius in meters.</translation>
+
+	<!-- WVNodeResult -->
+	<translation name="World.WVNodeResult.Probability">Probability if slot is not connected.</translation>
+	<translation name="World.WVNodeResult.Variation">Variation if slot is not connected.</translation>
+
+	<!-- WVNodeVectorMath -->
+	<translation name="World.WVNodeVectorMath.FirstOperant">First operant if slot is not connected.</translation>
+	<translation name="World.WVNodeVectorMath.Operator">Operator:</translation>
+	<translation name="World.WVNodeVectorMath.Operator.ToolTip">Operator to use.</translation>
+	<translation name="World.WVNodeVectorMath.SecondOperant">Second operant if slot is not connected.</translation>
+
+	<!-- WindowChangelog -->
+	<translation name="World.WindowChangelog.Changes">Changes</translation>
+
+	<!-- WindowMain -->
+	<translation name="World.WindowMain.Action.New">New</translation>
+	<translation name="World.WindowMain.ActiveObject">Active Object</translation>
+	<translation name="World.WindowMain.ChangeLog">Change-Log</translation>
+	<translation name="World.WindowMain.CopyToSelected">Copy To Selected</translation>
+	<translation name="World.WindowMain.CopyToSelected.ToolTip">Copy parameters from active object to selected objects</translation>
+	<translation name="World.WindowMain.Dialog.NewWorld.Message">Creating a new World discarding the current one is that ok?</translation>
+	<translation name="World.WindowMain.Dialog.NewWorld">New World</translation>
+	<translation name="World.WindowMain.Dialog.OpenNavigationTest">Open Navigation Test</translation>
+	<translation name="World.WindowMain.Dialog.OpenWorld">Open World</translation>
+	<translation name="World.WindowMain.Dialog.OpenWorld.Message">Open world discards changes. Is this ok?</translation>
+	<translation name="World.WindowMain.Dialog.ReassignObjectIds">Reassign Object IDs</translation>
+	<translation name="World.WindowMain.Dialog.SaveNavigationTest">Save Navigation Test</translation>
+	<translation name="World.WindowMain.Light">Light</translation>
+	<translation name="World.WindowMain.PropertyShapes">Property Shapes</translation>
+	<translation name="World.WindowMain.Rotate">Rotate</translation>
+	<translation name="World.WindowMain.Vegetation">Vegetation</translation>
+
+	<!-- WindowProperties -->
+	<translation name="World.WindowProperties.Browser">Browser</translation>
+	<translation name="World.WindowProperties.HeightTerrain">Height Terrain</translation>
+	<translation name="World.WindowProperties.History">History</translation>
+	<translation name="World.WindowProperties.Sensors">Sensors</translation>
+	<translation name="World.WindowProperties.View">View</translation>
+
+	<!-- WindowVegetation -->
+	<translation name="World.WindowVegetation.Action.AutoUpdateVegetation">Auto Update Vegetation</translation>
+
+	<!-- WindowMain Missing Translations -->
+	<translation name="World.WindowMain.Menu.File">File</translation>
+	<translation name="World.WindowMain.Menu.Edit">Edit</translation>
+	<translation name="World.WindowMain.Menu.Object">Object</translation>
+	<translation name="World.WindowMain.Menu.Decal">Decal</translation>
+	<translation name="World.WindowMain.Menu.View">View</translation>
+	<translation name="World.WindowMain.Action.FileNew">Create new world</translation>
+	<translation name="World.WindowMain.Action.FileOpen">Open world from file</translation>
+	<translation name="World.WindowMain.Action.FileSave">Save world to file</translation>
+	<translation name="World.WindowMain.Action.FileSaveAs">Save world under a differen file</translation>
+	<translation name="World.WindowMain.Action.EditCut">Cut selected objects</translation>
+	<translation name="World.WindowMain.Action.EditCopy">Copies selected objects</translation>
+	<translation name="World.WindowMain.Action.EditPaste">Paste objects</translation>
+	<translation name="World.WindowMain.Action.EditDuplicate">Duplicate</translation>
+	<translation name="World.WindowMain.Action.EditDuplicate.ToolTip">Duplicate objects</translation>
+	<translation name="World.WindowMain.Action.EditDelete">Delete</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisX">Lock X</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisX.ToolTip">Lock X coordinates during editing</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisY">Lock Y</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisY.ToolTip">Lock Y coordinates during editing</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisZ">Lock Z</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisZ.ToolTip">Lock Z coordinates during editing</translation>
+	<translation name="World.WindowMain.Action.EditUseLocal">Local</translation>
+	<translation name="World.WindowMain.Action.EditUseLocal.ToolTip">Uses local coordinates for editing instead of world coordinates</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisFlip">Flip Lock</translation>
+	<translation name="World.WindowMain.Action.EditLockAxisFlip.ToolTip">Flip lock axes</translation>
+	<translation name="World.WindowMain.Action.EditSnapSnapPoints">Snap</translation>
+	<translation name="World.WindowMain.Action.EditSnapSnapPoints.ToolTip">Snap to Snap Points</translation>
+	<translation name="World.WindowMain.Action.EditUse3DCursor">Use 3D-Cursor</translation>
+	<translation name="World.WindowMain.Action.EditUse3DCursor.ToolTip">Use 3D-Cursor as center for actions</translation>
+	<translation name="World.WindowMain.Action.EditSelectNone">Select none</translation>
+	<translation name="World.WindowMain.Action.EditSelectNone.ToolTip">Select none</translation>
+	<translation name="World.WindowMain.Action.ObjectDropToGround">Drop to ground</translation>
+	<translation name="World.WindowMain.Action.ObjectDropToGround.ToolTip">Drops the selected objects to the ground</translation>
+	<translation name="World.WindowMain.Action.ObjectSnapToGrid">Snap to grid</translation>
+	<translation name="World.WindowMain.Action.ObjectSnapToGrid.ToolTip">Snap objects to grid</translation>
+	<translation name="World.WindowMain.Action.ObjectCopyPositionToSelected">Position</translation>
+	<translation name="World.WindowMain.Action.ObjectCopyPositionToSelected.ToolTip">Copy Position To Selected</translation>
+	<translation name="World.WindowMain.Action.ObjectCopyRotationToSelected">Rotation</translation>
+	<translation name="World.WindowMain.Action.ObjectCopyRotationToSelected.ToolTip">Copy Rotation To Selected</translation>
+	<translation name="World.WindowMain.Action.ObjectCopyScaleToSelected">Scale</translation>
+	<translation name="World.WindowMain.Action.ObjectCopyScaleToSelected.ToolTip">Copy Scale To Selected</translation>
+	<translation name="World.WindowMain.Action.ObjectAttachTo">Attach</translation>
+	<translation name="World.WindowMain.Action.ObjectAttachTo.ToolTip">Attach objects to another object</translation>
+	<translation name="World.WindowMain.Action.ObjectDetach">Detach</translation>
+	<translation name="World.WindowMain.Action.ObjectDetach.ToolTip">Detach objects from their parents</translation>
+	<translation name="World.WindowMain.Action.ObjectSelectAttached">Select attached</translation>
+	<translation name="World.WindowMain.Action.ObjectSelectAttached.ToolTip">Select all objects attached to the active object</translation>
+	<translation name="World.WindowMain.Action.ObjectLightToggle">Toggle</translation>
+	<translation name="World.WindowMain.Action.ObjectLightToggle.ToolTip">Toggle light on and off</translation>
+	<translation name="World.WindowMain.Action.ObjectAddSphereShape">Add Sphere</translation>
+	<translation name="World.WindowMain.Action.ObjectAddSphereShape.ToolTip">Add sphere shape</translation>
+	<translation name="World.WindowMain.Action.ObjectAddBoxShape">Add Box</translation>
+	<translation name="World.WindowMain.Action.ObjectAddBoxShape.ToolTip">Add box shape</translation>
+	<translation name="World.WindowMain.Action.ObjectAddCylinderShape">Add Cylinder</translation>
+	<translation name="World.WindowMain.Action.ObjectAddCylinderShape.ToolTip">Add cylinder shape</translation>
+	<translation name="World.WindowMain.Action.ObjectAddCapsuleShape">Add Capsule</translation>
+	<translation name="World.WindowMain.Action.ObjectAddCapsuleShape.ToolTip">Add capsule shape</translation>
+	<translation name="World.WindowMain.Action.ObjectDeleteShapes">Delete</translation>
+	<translation name="World.WindowMain.Action.ObjectDeleteShapes.ToolTip">Delete selected shapes</translation>
+	<translation name="World.WindowMain.Action.DecalDelete">Delete</translation>
+	<translation name="World.WindowMain.Action.DecalDelete.ToolTip">Deletes the selected decals</translation>
+	<translation name="World.WindowMain.Action.DecalRaiseTop">Raise Top</translation>
+	<translation name="World.WindowMain.Action.DecalRaiseTop.ToolTip">Raise decal to the top</translation>
+	<translation name="World.WindowMain.Action.DecalRaiseOne">Raise</translation>
+	<translation name="World.WindowMain.Action.DecalRaiseOne.ToolTip">Raise decal by one level</translation>
+	<translation name="World.WindowMain.Action.DecalLowerOne">Lower</translation>
+	<translation name="World.WindowMain.Action.DecalLowerOne.ToolTip">Lower decal by one level</translation>
+	<translation name="World.WindowMain.Action.DecalLowerBottom">Lower Bottom</translation>
+	<translation name="World.WindowMain.Action.DecalLowerBottom.ToolTip">Lower decal to the bottom</translation>
+	<translation name="World.WindowMain.Action.ViewShowOcclusionMeshes">Show Occlusion Meshes</translation>
+	<translation name="World.WindowMain.Action.ViewShowOcclusionMeshes.ToolTip">Show occlusion meshes</translation>
+	<translation name="World.WindowMain.Action.ViewShowOcclusionMeshesSelected">Show Selected Occlusion Meshes</translation>
+	<translation name="World.WindowMain.Action.ViewShowOcclusionMeshesSelected.ToolTip">Show occlusion meshes of selected objects</translation>
+	<translation name="World.WindowMain.Action.ViewShowNavigationSpaces">Show Navigation Spaces</translation>
+	<translation name="World.WindowMain.Action.ViewShowNavigationSpaces.ToolTip">Show navigation spaces</translation>
+	<translation name="World.WindowMain.Action.ViewShowNavigationSpacesSelected">Show Selected Navigation Spaces</translation>
+	<translation name="World.WindowMain.Action.ViewShowNavigationSpacesSelected.ToolTip">Show navigation spaces of selected objects</translation>
+	<translation name="World.WindowMain.Action.ViewShowShapes">Show Shapes</translation>
+	<translation name="World.WindowMain.Action.ViewShowShapes.ToolTip">Show shapes</translation>
+	<translation name="World.WindowMain.Action.ViewShowShapesSelected">Show Selected Shapes</translation>
+	<translation name="World.WindowMain.Action.ViewShowShapesSelected.ToolTip">Show shapes of selected objects</translation>
+	<translation name="World.WindowMain.Action.ViewLoadNavigationTest">Load Navigation Test</translation>
+	<translation name="World.WindowMain.Action.ViewSaveNavigationTest">Save Navigation Test</translation>
+	<translation name="World.WindowMain.EditMode.Object">Object</translation>
+	<translation name="World.WindowMain.EditMode.Object.ToolTip">Object mode</translation>
+	<translation name="World.WindowMain.EditMode.Decal">Decal</translation>
+	<translation name="World.WindowMain.EditMode.Decal.ToolTip">Decal mode</translation>
+	<translation name="World.WindowMain.EditMode.NavSpace">Navigation space</translation>
+	<translation name="World.WindowMain.EditMode.NavSpace.ToolTip">Navigation space mode</translation>
+	<translation name="World.WindowMain.EditMode.ObjectShape">Object shape</translation>
+	<translation name="World.WindowMain.EditMode.ObjectShape.ToolTip">Object shape mode</translation>
+	<translation name="World.WindowMain.WorkMode.Select">Select</translation>
+	<translation name="World.WindowMain.WorkMode.Select.ToolTip">Select mode</translation>
+	<translation name="World.WindowMain.WorkMode.Move">Move</translation>
+	<translation name="World.WindowMain.WorkMode.Move.ToolTip">Move mode</translation>
+	<translation name="World.WindowMain.WorkMode.Scale">Scale</translation>
+	<translation name="World.WindowMain.WorkMode.Scale.ToolTip">Scale mode</translation>
+	<translation name="World.WindowMain.WorkMode.Rotate">Rotate</translation>
+	<translation name="World.WindowMain.WorkMode.Rotate.ToolTip">Rotation mode</translation>
+	<translation name="World.WindowMain.WorkMode.AddNew">Add new</translation>
+	<translation name="World.WindowMain.WorkMode.AddNew.ToolTip">Add new mode</translation>
+	<translation name="World.WindowMain.WorkMode.HeightPaint">Height paint</translation>
+	<translation name="World.WindowMain.WorkMode.HeightPaint.ToolTip">Height paint mode</translation>
+	<translation name="World.WindowMain.WorkMode.MaskPaint">Mask paint</translation>
+	<translation name="World.WindowMain.WorkMode.MaskPaint.ToolTip">Mask paint mode</translation>
+	<translation name="World.WindowMain.WorkMode.VisibilityPaint">Visibility paint</translation>
+	<translation name="World.WindowMain.WorkMode.VisibilityPaint.ToolTip">Visibility paint mode</translation>
+	<translation name="World.WindowMain.WorkMode.NavSpaceEdit">Navigation space edit</translation>
+	<translation name="World.WindowMain.WorkMode.NavSpaceEdit.ToolTip">Navigation space edit mode</translation>
+	<translation name="World.WindowMain.Action.RotateLeft45">Left 45°</translation>
+	<translation name="World.WindowMain.Action.RotateLeft45.ToolTip">Rotate object left by 45°</translation>
+	<translation name="World.WindowMain.Action.RotateLeft90">Left 90°</translation>
+	<translation name="World.WindowMain.Action.RotateLeft90.ToolTip">Rotate object left by 90°</translation>
+	<translation name="World.WindowMain.Action.RotateRight45">Right 45°</translation>
+	<translation name="World.WindowMain.Action.RotateRight45.ToolTip">Rotate object right by 45°</translation>
+	<translation name="World.WindowMain.Action.RotateRight90">Right 90°</translation>
+	<translation name="World.WindowMain.Action.RotateRight90.ToolTip">Rotate object right by 90°</translation>
+	<translation name="World.WindowMain.Tab.World">World</translation>
+	<translation name="World.WindowMain.Dialog.ReassignObjectIdsQuestion">This action will assign new IDs starting at ID 1 for all objects.
+This can be used before shipping to compact IDs into a continuous range.
+This should NEVER be done after a production release.
+This WILL break save states and all other linking usage of the Object ID.
+
+Are you REALLY sure you want to reassign object IDs now?</translation>
+
+	<!-- WindowChangelog Missing Translations -->
+	<translation name="World.WindowChangelog.Column.Sector">Sector</translation>
+	<translation name="World.WindowChangelog.Column.What">What</translation>
+	<translation name="World.WindowChangelog.Column.Filename">Filename</translation>
+
+	<!-- WindowProperties Missing Translations -->
+	<translation name="World.WindowProperties.Tab.World">World</translation>
+	<translation name="World.WindowProperties.Tab.Selection">Selection</translation>
+
+	<!-- WPAdd Missing Translations -->
+	<translation name="World.WPAdd.Action.Add">Add</translation>
+	<translation name="World.WPAdd.Action.Remove">Remove selected class</translation>
+	<translation name="World.WPAdd.Action.Clear">Remove all classes</translation>
+
+	<!-- WPBrowser Missing Translations -->
+	<translation name="World.WPBrowser.Menu.View">View</translation>
+	<translation name="World.WPBrowser.Action.RebuildPreview">Rebuild Preview</translation>
+	<translation name="World.WPBrowser.View.SmallPreviewImage">Small Preview Image</translation>
+	<translation name="World.WPBrowser.View.MediumPreviewImage">Medium Preview Image</translation>
+	<translation name="World.WPBrowser.View.LargePreviewImage">Large Preview Image</translation>
+	<translation name="World.WPBrowser.View.ListMode">List Mode</translation>
+	<translation name="World.WPBrowser.View.PreviewMode">Preview Mode</translation>
+	<translation name="World.WPBrowser.BrowserType.Skin">Skin</translation>
+	<translation name="World.WPBrowser.BrowserType.Sky">Sky</translation>
+	<translation name="World.WPBrowser.ItemInformation">Item information</translation>
+	<translation name="World.WPBrowser.Browser.Label2">Browser:</translation>
+	<translation name="World.WPBrowser.Items">Items:</translation>
+	<translation name="World.WPBrowser.Categories">Categories</translation>
+	<translation name="World.WPBrowser.Column.Name">Name</translation>
+	<translation name="World.WPBrowser.Filter.ToolTip">Show items containing filter case insensitive</translation>
+
+	<!-- WPHeightTerrain Missing Translations -->
+	<translation name="World.WPHeightTerrain.Action.TextureMenu">Texture menu</translation>
+	<translation name="World.WPHeightTerrain.Action.TextureAdd">Add texture</translation>
+	<translation name="World.WPHeightTerrain.Action.TextureRemove">Remove texture</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceMenu">Navigation Space menu</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceAdd">Add Navigation Space</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceRemove">Remove Navigation Space</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceTypeMenu">Navigation Space Type menu</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceTypeAdd">Add Navigation Space Type</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceTypeRemove">Remove Navigation Space Type</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceFaceAdd">Add face with selected navigation points</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceFaceRemove">Remove face matching selected navigation points</translation>
+	<translation name="World.WPHeightTerrain.Action.UpdateVegetationVisible">Updates the visible vegetation system (can take some time)</translation>
+	<translation name="World.WPHeightTerrain.Action.UpdateVegetationAll">Updates entire the vegetation system (lengthy operation!)</translation>
+	<translation name="World.WPHeightTerrain.Action.ClearVegetation">Clear vegetation (hides all)</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerMenu">Vegetation Layer menu</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerAdd">Add vegetation layer</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerRemove">Remove vegetation layer</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerUp">Move vegetation layer up</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerDown">Move vegetation layer down</translation>
+	<translation name="World.WPHeightTerrain.Dialog.InvalidTextureNameError">Invalid Texture Name</translation>
+	<translation name="World.WPHeightTerrain.Dialog.InvalidNavigationSpaceNameError">Invalid Navigation Space Name</translation>
+	<translation name="World.WPHeightTerrain.Dialog.InvalidNavigationSpaceTypeNameError">Invalid Navigation Space Type Name</translation>
+	<translation name="World.WPHeightTerrain.Dialog.AddTexture">Add Texture</translation>
+	<translation name="World.WPHeightTerrain.Dialog.AddNavigationSpaceType">Add Navigation Space Type</translation>
+	<translation name="World.WPHeightTerrain.Dialog.AddVegetationLayer">Add Vegetation Layer</translation>
+	<translation name="World.WPHeightTerrain.Action.VVariationMenu">Vegetation Variation menu</translation>
+	<translation name="World.WPHeightTerrain.DragEnGineHeightTerrain">Drag[en]gine Height Terrain</translation>
+	<translation name="World.WPHeightTerrain.Scaling">Scaling:</translation>
+	<translation name="World.WPHeightTerrain.Rotation">Rotation:</translation>
+	<translation name="World.WPHeightTerrain.Type.Label2">Type:</translation>
+	<translation name="World.WPHeightTerrain.Name">Name:</translation>
+	<translation name="World.WPHeightTerrain.Type.Label3">Type:</translation>
+	<translation name="World.WPHeightTerrain.Color">Color:</translation>
+	<translation name="World.WPHeightTerrain.Strength">Strength:</translation>
+	<translation name="World.WPHeightTerrain.PaintModeVisible">Visible</translation>
+
+	<!-- WPAdd Additional -->
+	<translation name="World.WPAdd.Action.FilterObjects">Determines if objects are filtered</translation>
+	<translation name="World.WPAdd.Action.AcceptIfInList.ToolTip">Determines if objects are accepted or rejected if they are in the list.</translation>
+	<translation name="World.WPAdd.Action.RandomizeYAxis.ToolTip">Determines if objects are randomized around the Y axis when added.</translation>
+
+	<!-- WPBrowser Additional -->
+	<translation name="World.WPBrowser.BrowseByCategory">Browse by category</translation>
+	<translation name="World.WPBrowser.BrowseByFiltering">Browse by filtering</translation>
+	<translation name="World.WPBrowser.Filter.Label2">Filter:</translation>
+
+	<!-- WPPropertyList -->
+	<translation name="World.WPPropertyList.Action.Add">Add property</translation>
+	<translation name="World.WPPropertyList.Action.Remove">Remove selected property</translation>
+	<translation name="World.WPPropertyList.Action.Clear">Remove all properties</translation>
+	<translation name="World.WPPropertyList.Action.Copy">Copy selected property</translation>
+	<translation name="World.WPPropertyList.Action.CopyAll.ToolTip">Copy all properties</translation>
+	<translation name="World.WPPropertyList.Action.CutSelectedProperty">Cut selected property</translation>
+	<translation name="World.WPPropertyList.Action.CutAllProperties">Cut all properties</translation>
+	<translation name="World.WPPropertyList.Action.Paste">Paste property</translation>
+	<translation name="World.WPPropertyList.Action.ImportFromText.ToolTip">Show dialog to enter properties to import in text form.</translation>
+	<translation name="World.WPPropertyList.Dialog.ExportToText">Export To Text</translation>
+	<translation name="World.WPPropertyList.Dialog.ImportFromText">Import From Text</translation>
+	<translation name="World.WPPropertyList.Dialog.Properties.ToolTip">Properties. One property per line in the form 'key=value'.</translation>
+	<translation name="World.WPPropertyList.Dialog.ImportFromTextError">Import From Text</translation>
+	<translation name="World.WPPropertyList.Column.Key">Key</translation>
+	<translation name="World.WPPropertyList.Column.Value">Value</translation>
+	<translation name="World.WPPropertyList.Dialog.EditRawPropertyValue">Edit Raw Property Value</translation>
+	<translation name="World.WPPropertyList.Dialog.EditRawPropertyValue.ToolTip">Raw property value. Values entered here can violate the
+property type so be careful what you enter</translation>
+
+	<!-- WPSensors -->
+	<translation name="World.WPSensors.TrackCamera">Track camera.</translation>
+
+	<!-- WPView -->
+	<translation name="World.WPView.Action.SnapMove">Snap Move</translation>
+	<translation name="World.WPView.Action.SnapMove.ToolTip">Snap moving distance</translation>
+	<translation name="World.WPView.Action.SnapRotate">Snap Rotation</translation>
+	<translation name="World.WPView.Action.SnapRotate.ToolTip">Snap rotation angle</translation>
+	<translation name="World.WPView.Action.SnapScale">Snap Scale</translation>
+	<translation name="World.WPView.Action.SnapScale.ToolTip">Snap scaling factor</translation>
+	<translation name="World.WPView.Action.SetSensitivity.ToolTip">Set sensitivity</translation>
+	<translation name="World.WPView.Action.SensitivityMenu">Sensitivity menu</translation>
+	<translation name="World.WPView.Action.EnableAutoUpdating">Automatic Update</translation>
+	<translation name="World.WPView.Action.EnableAutoUpdating.ToolTip">Automatically update the screen</translation>
+	<translation name="World.WPView.Action.HideClassesMatchingTags">Hide classes matching one or more tags</translation>
+	<translation name="World.WPView.Action.PartiallyHideClassesMatchingTags">Partially hide classes matching one or more tags</translation>
+	<translation name="World.WPView.Action.FreeRoaming">Free Roaming</translation>
+	<translation name="World.WPView.Action.FreeRoaming.ToolTip">Select free roaming camera</translation>
+	<translation name="World.WPView.Action.Player">Player</translation>
+	<translation name="World.WPView.Action.Player.ToolTip">Select player camera</translation>
+	<translation name="World.WPView.Action.Object">Object</translation>
+	<translation name="World.WPView.Action.Object.ToolTip">Select object camera</translation>
+	<translation name="World.WPView.Action.EnableAuralization">Enable Auralization</translation>
+	<translation name="World.WPView.Action.EnableAuralization.ToolTip">Enable auralization if supported by audio module</translation>
+	<translation name="World.WPView.Action.LimitBoxClear">Clear</translation>
+	<translation name="World.WPView.Action.LimitBoxClear.ToolTip">Clear limit box</translation>
+	<translation name="World.WPView.Action.LimitBoxDefault">Set Cube</translation>
+	<translation name="World.WPView.Action.LimitBoxDefault.ToolTip">Set limit box to 1m cube</translation>
+	<translation name="World.WPView.Action.LimitBoxDefaultGround">Set Cube Ground</translation>
+	<translation name="World.WPView.Action.LimitBoxDefaultGround.ToolTip">Set limit box to 1m cube sitting on ground</translation>
+	<translation name="World.WPView.Action.LimitBoxMenu">Limit box menu</translation>
+	<translation name="World.WPView.Action.TriggerTable">Trigger table</translation>
+	<translation name="World.WPView.Sky.Label2">Sky:</translation>
+	<translation name="World.WPView.TriggerTable.Label2">Trigger Table:</translation>
+
+	<!-- WPWorld -->
+	<translation name="World.WPWorld.Action.SetStartPosFromCamera">Set</translation>
+	<translation name="World.WPWorld.Action.SetStartPosFromCamera.ToolTip">Set start position from camera position</translation>
+	<translation name="World.WPWorld.Action.SetGoalPosFromCamera">Set</translation>
+	<translation name="World.WPWorld.Action.SetGoalPosFromCamera.ToolTip">Set goal position from camera position</translation>
+	<translation name="World.WPWorld.Action.ShowPath">Show path</translation>
+	<translation name="World.WPWorld.Action.PFTTypeAdd">Add type</translation>
+	<translation name="World.WPWorld.Action.PFTTypeRemove">Remove type</translation>
+	<translation name="World.WPWorld.Action.PFTTypeClear">Remove all types</translation>
+	<translation name="World.WPWorld.Action.Menu">Menu</translation>
+	<translation name="World.WPWorld.Action.MusicPlay">Play</translation>
+	<translation name="World.WPWorld.Action.MusicPause">Pause</translation>
+	<translation name="World.WPWorld.Action.MusicStop">Stop</translation>
+	<translation name="World.WPWorld.Dialog.AddType">Add Type</translation>
+	<translation name="World.WPWorld.Dialog.TypeNumber2">Type Number:</translation>
+
+	<!-- WPSelection -->
+	<translation name="World.WPSelection.NoSelection">No Selection</translation>
+
+	<!-- WPSDecal -->
+	<translation name="World.WPSDecal.Action.Visible">Decal is initially visible</translation>
+	<translation name="World.WPSDecal.Action.PropCopyToSel">Copy property from active decal to all selected decals</translation>
+
+	<!-- WPSNavSpace -->
+
+	<!-- WPSObject -->
+	<translation name="World.WPSObject.Action.BrowseClass">Browse Class</translation>
+	<translation name="World.WPSObject.Action.BrowseClass.ToolTip">Show class in class browser</translation>
+	<translation name="World.WPSObject.Action.EditClass">Edit Class</translation>
+	<translation name="World.WPSObject.Action.EditClass.ToolTip">Edit class in Game Definition Editor</translation>
+	<translation name="World.WPSObject.Action.ResetPosition">Reset Position</translation>
+	<translation name="World.WPSObject.Action.ResetPosition.ToolTip">Reset position to 0</translation>
+	<translation name="World.WPSObject.Action.ResetRotation">Reset Rotation</translation>
+	<translation name="World.WPSObject.Action.ResetRotation.ToolTip">Reset rotation to 0</translation>
+	<translation name="World.WPSObject.Action.ResetScaling">Reset Scaling</translation>
+	<translation name="World.WPSObject.Action.ResetScaling.ToolTip">Reset scaling to 1</translation>
+	<translation name="World.WPSObject.Dialog.AddTexture">Add Texture</translation>
+	<translation name="World.WPSObject.Dialog.AddTextureName">Name:</translation>
+	<translation name="World.WPSObject.Action.TextureRemove">Remove</translation>
+	<translation name="World.WPSObject.Action.TextureRemove.ToolTip">Remove texture</translation>
+	<translation name="World.WPSObject.Action.TextureRemoveAll">Remove All</translation>
+	<translation name="World.WPSObject.Action.TextureRemoveAll.ToolTip">Remove all textures</translation>
+	<translation name="World.WPSObject.Action.TextureCopyToSelected">Copy To Selected</translation>
+	<translation name="World.WPSObject.Action.TextureCopyToSelected.ToolTip">Copy texture from active object to selected objects</translation>
+	<translation name="World.WPSObject.Action.TextureCloneToSelected">Clone To Selected</translation>
+	<translation name="World.WPSObject.Action.TextureCloneToSelected.ToolTip">Clone textures from active object to selected objects</translation>
+
+	<!-- WindowMain -->
+	<translation name="World.WindowMain.Menu.FileOpen">Open...</translation>
+	<translation name="World.WindowMain.Menu.FileSave">Save</translation>
+	<translation name="World.WindowMain.Menu.FileSaveAs">Save As...</translation>
+	<translation name="World.WindowMain.Menu.EditCut">Cut</translation>
+	<translation name="World.WindowMain.Menu.EditCopy">Copy</translation>
+	<translation name="World.WindowMain.Menu.EditPaste">Paste</translation>
+	<translation name="World.WindowMain.Action.EditDelete.ToolTip">Delete objects</translation>
+	<translation name="World.WindowMain.Action.ObjectReassignIds">Reassign Object IDs</translation>
+	<translation name="World.WindowMain.Action.FullBright">Full Bright Mode</translation>
+	<translation name="World.WindowMain.Action.MuteSound">Mute Sound</translation>
+	<translation name="World.WindowMain.RotationPivotCenter.Active">Pivot Active</translation>
+	<translation name="World.WindowMain.RotationPivotCenter.Active.ToolTip">Rotation Pivot Center Active</translation>
+	<translation name="World.WindowMain.RotationPivotCenter.Selected">Pivot Selected</translation>
+	<translation name="World.WindowMain.RotationPivotCenter.Selected.ToolTip">Rotation Pivot Center Selected</translation>
+	<translation name="World.WindowMain.RotationPivotCenter.Individual">Pivot Individual</translation>
+	<translation name="World.WindowMain.RotationPivotCenter.Individual.ToolTip">Rotation Pivot Center Individual</translation>
+	<translation name="World.WindowMain.Action.RotateTurnAround">Turn Around</translation>
+	<translation name="World.WindowMain.Action.RotateTurnAround.ToolTip">Rotate object by 180°</translation>
+	<translation name="World.WindowMain.Action.RandomRotateYAxis">Random Y</translation>
+	<translation name="World.WindowMain.Action.RandomRotateYAxis.ToolTip">Random rotate object around Y axis</translation>
+
+	<!-- WPAdd -->
+	<translation name="World.WPAdd.Menu.ClassRemove">Remove</translation>
+	<translation name="World.WPAdd.Menu.ClassClear">Clear</translation>
+
+	<!-- WPHeightTerrain -->
+	<translation name="World.WPHeightTerrain.Action.TextureAdd2">Add...</translation>
+	<translation name="World.WPHeightTerrain.Action.TextureRemove2">Remove</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceAdd2">Add...</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceRemove2">Remove</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceTypeAdd2">Add...</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceTypeRemove2">Remove</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceFaceAdd2">Add</translation>
+	<translation name="World.WPHeightTerrain.Action.NavSpaceFaceRemove2">Remove</translation>
+	<translation name="World.WPHeightTerrain.Action.UpdateVegetation2">Visible</translation>
+	<translation name="World.WPHeightTerrain.Action.UpdateVegetationAll2">All</translation>
+	<translation name="World.WPHeightTerrain.Action.ClearVegetation2">Clear</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerAdd2">Add...</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerRemove2">Remove</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerUp2">Move Up</translation>
+	<translation name="World.WPHeightTerrain.Action.VLayerDown2">Move Down</translation>
+	<translation name="World.WPHeightTerrain.Action.VVariationAdd2">Add</translation>
+	<translation name="World.WPHeightTerrain.Action.VVariationAdd.ToolTip">Add variation</translation>
+	<translation name="World.WPHeightTerrain.Action.VVariationRemove2">Remove</translation>
+	<translation name="World.WPHeightTerrain.Action.VVariationRemove.ToolTip">Remove variation</translation>
+	<translation name="World.WPHeightTerrain.SectorResolution.ToolTip">Resolution of height images in sectors (width and height)</translation>
+
+	<!-- WPPropertyList -->
+
+	<!-- WPSensors -->
+
+	<!-- WPWorld -->
+	<translation name="World.WPWorld.Dialog.AddTypeNumber">Type Number:</translation>
+
+	<!-- WindowMain View actions -->
+
+	<!-- WPView actions -->
+
+	<!-- WPPropertyList -->
+	<translation name="World.WPPropertyList.Error.InvalidPropertyOnLine">Invalid property on line {0}: '{1}'</translation>
+
+	<!-- WPSDecal -->
+	<translation name="World.WPSDecal.Action.PropertyRemoveFromSelected">Remove From Selected</translation>
+	<translation name="World.WPSDecal.Action.PropertyCloneToSelected">Clone To Selected</translation>
+
+	<!-- WPSNavSpace -->
+
+	<!-- WPSObject -->
+	<translation name="World.WPSObject.Action.AttachableRemoveAll">Remove All Attachable Behaviors</translation>
+	<translation name="World.WPSObject.Action.AttachableRemoveAll.ToolTip">Remove all attachable behaviors</translation>
+	<translation name="World.WPSObject.Action.ShowMissingTextures">Show Missing Textures</translation>
+	<translation name="World.WPSObject.Action.ShowMissingTextures.ToolTip">Show mising textures using placeholder texture</translation>
+	<translation name="World.WPSObject.Tint.ToolTip">Color tint (affects renderable named 'tint').</translation>
+	<translation name="World.WPSObject.Intensity">Intensity:</translation>
+
+	<!-- WPSObjectShape -->
+	<translation name="World.WPSObjectShape.Class">Class:</translation>
+
+	<!-- WindowVegetation -->
+	<translation name="World.WindowVegetation.Action.AddNode">Add Node</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeClosestProp">Closest Prop</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeClosestVegetation">Closest Vegetation</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeCombine">Combine</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeComponents">Components</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeCurve">Curve</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeGeometry">Geometry</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeMapping">Mapping</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeMath">Math</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeMultiMath">Multi-Math</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeVectorMath">Vector Math</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeRandom">Random</translation>
+	<translation name="World.WindowVegetation.Action.AddNodeConstant">Constant</translation>
+	<translation name="World.WindowVegetation.Action.AddNodePropCount">Prop Count</translation>
+	<translation name="World.WindowVegetation.Menu.AddNode">Add Node</translation>
+	<translation name="World.WindowVegetation.Menu.Input">Input</translation>
+	<translation name="World.WindowVegetation.Menu.Proximity">Proximity</translation>
+	<translation name="World.WindowVegetation.Menu.Conversion">Conversion</translation>
+	<translation name="World.WindowVegetation.Menu.Vector">Vector</translation>
+
+	<!-- WVNode -->
+	<translation name="World.WVNode.Title.Rule">Rule</translation>
+
+	<!-- WVNodeClosestProp -->
+	<translation name="World.WVNodeClosestProp.Action.SelectObjectClass">Select Object Class</translation>
+	<translation name="World.WVNodeClosestProp.Menu.Class">Class menu</translation>
+	<translation name="World.WVNodeClosestProp.Title">Closest Prop</translation>
+	<translation name="World.WVNodeClosestProp.Output.Direction">Direction</translation>
+	<translation name="World.WVNodeClosestProp.Output.Direction.ToolTip">Direction (normalized vector) towards closest prop</translation>
+
+	<!-- WVNodeClosestVegetation -->
+	<translation name="World.WVNodeClosestVegetation.Title">Closest Vegetation</translation>
+	<translation name="World.WVNodeClosestVegetation.Output.Direction">Direction</translation>
+	<translation name="World.WVNodeClosestVegetation.Output.Direction.ToolTip">Direction (normalized vector) towards closest vegetation</translation>
+
+	<!-- WVNodeCombine -->
+	<translation name="World.WVNodeCombine.Title">Combine</translation>
+
+	<!-- WVNodeComponents -->
+	<translation name="World.WVNodeComponents.Title">Components</translation>
+
+	<!-- WVNodeConstant -->
+	<translation name="World.WVNodeConstant.Title">Constant</translation>
+
+	<!-- WVNodeCurve -->
+	<translation name="World.WVNodeCurve.Title">Curve</translation>
+
+	<!-- WVNodeGeometry -->
+	<translation name="World.WVNodeGeometry.Title">Geometry</translation>
+	<translation name="World.WVNodeGeometry.Output.TerrainType">Terrain Type</translation>
+	<translation name="World.WVNodeGeometry.Output.TerrainType.ToolTip">Terrain type</translation>
+
+	<!-- WVNodeMapping -->
+	<translation name="World.WVNodeMapping.Title">Mapping</translation>
+	<translation name="World.WVNodeMapping.Output.Lower">Lower</translation>
+	<translation name="World.WVNodeMapping.Output.Lower.ToolTip">Lower value</translation>
+	<translation name="World.WVNodeMapping.Output.Upper">Upper</translation>
+	<translation name="World.WVNodeMapping.Output.Upper.ToolTip">Upper value</translation>
+
+	<!-- WVNodeMath -->
+	<translation name="World.WVNodeMath.Title">Math</translation>
+	<translation name="World.WVNodeMath.Operator.Add">Add</translation>
+	<translation name="World.WVNodeMath.Operator.Subtract">Subtract</translation>
+	<translation name="World.WVNodeMath.Operator.Multiply">Multiply</translation>
+	<translation name="World.WVNodeMath.Operator.Divide">Divide</translation>
+	<translation name="World.WVNodeMath.Operator.Sine">Sine</translation>
+	<translation name="World.WVNodeMath.Operator.Cosine">Cosine</translation>
+	<translation name="World.WVNodeMath.Operator.Tangent">Tangent</translation>
+	<translation name="World.WVNodeMath.Operator.ArcSine">ArcSine</translation>
+	<translation name="World.WVNodeMath.Operator.ArcCosine">ArcCosine</translation>
+	<translation name="World.WVNodeMath.Operator.ArcTangent">ArcTangent</translation>
+	<translation name="World.WVNodeMath.Operator.Power">Power</translation>
+	<translation name="World.WVNodeMath.Operator.Exponential">Exponential</translation>
+	<translation name="World.WVNodeMath.Operator.Logarithm">Logarithm</translation>
+	<translation name="World.WVNodeMath.Operator.Minimum">Minimum</translation>
+	<translation name="World.WVNodeMath.Operator.Maximum">Maximum</translation>
+	<translation name="World.WVNodeMath.Operator.Round">Round</translation>
+	<translation name="World.WVNodeMath.Operator.LessThan">LessThan</translation>
+	<translation name="World.WVNodeMath.Operator.GreaterThan">GreaterThan</translation>
+	<translation name="World.WVNodeMath.Operator.Equal">Equal</translation>
+	<translation name="World.WVNodeMath.Operator.NotEqual">NotEqual</translation>
+	<translation name="World.WVNodeMath.Operator.Average">Average</translation>
+
+	<!-- WVNodeMultiMath -->
+	<translation name="World.WVNodeMultiMath.Title">Multi-Math</translation>
+	<translation name="World.WVNodeMultiMath.Operator.Add">Add</translation>
+	<translation name="World.WVNodeMultiMath.Operator.Multiply">Multiply</translation>
+	<translation name="World.WVNodeMultiMath.Operator.Minimum">Minimum</translation>
+	<translation name="World.WVNodeMultiMath.Operator.Maximum">Maximum</translation>
+	<translation name="World.WVNodeMultiMath.Operator.Average">Average</translation>
+
+	<!-- WVNodePropCount -->
+	<translation name="World.WVNodePropCount.Menu.Class">Class menu</translation>
+	<translation name="World.WVNodePropCount.Title">Prop Count</translation>
+
+	<!-- WVNodeRandom -->
+	<translation name="World.WVNodeRandom.Title">Random</translation>
+
+	<!-- WVNodeResult -->
+	<translation name="World.WVNodeResult.Title">Result</translation>
+
+	<!-- WVNodeVectorMath -->
+	<translation name="World.WVNodeVectorMath.Title">Vector-Math</translation>
+	<translation name="World.WVNodeVectorMath.Operator.Add">Add</translation>
+	<translation name="World.WVNodeVectorMath.Operator.Subtract">Subtract</translation>
+	<translation name="World.WVNodeVectorMath.Operator.Average">Average</translation>
+	<translation name="World.WVNodeVectorMath.Operator.Normalize">Normalize</translation>
+	<translation name="World.WVNodeVectorMath.Operator.Dot">Dot</translation>
+	<translation name="World.WVNodeVectorMath.Operator.Cross">Cross</translation>
+
+	<!-- ViewEditorSelect -->
+	<translation name="World.ViewEditorSelect.Dialog.ChooseElement">Choose Element</translation>
+	<translation name="World.ViewEditorSelect.Dialog.ChooseElement.ToolTip">Choose element to select/deselect:</translation>
+
+	<!-- Missing Translations -->
+	<translation name="World.WPSDecal.TextureCoordinatesRotation">Rotation:</translation>
+	<translation name="World.WPSObject.Class">Class:</translation>
+	<translation name="World.WPSObject.TextureCoordinatesRotation">Rotation:</translation>
+	<translation name="World.WPSObject.LightIntensity">Intensity:</translation>
+	<translation name="World.WVNodeClosestProp.Class">Class:</translation>
+	<translation name="World.WVNodeClosestVegetation.Type">Type:</translation>
+	<translation name="World.WVNodePropCount.Class">Class:</translation>
+
+	<!-- TaskSyncGameDefinition -->
+	<translation name="World.TaskSyncGameDefinition.SyncGameDefinition">World Editor: Synchronize Game Definition</translation>
+	<translation name="World.TaskSyncGameDefinition.SyncGameDefinitionObjects">World Editor: Synchronize Game Definition: Objects ({0}/{1})</translation>
+	<translation name="World.TaskSyncGameDefinition.SyncGameDefinitionDecals">World Editor: Synchronize Game Definition: Decals ({0}/{1})</translation>
+
+	<!-- View3D -->
+	<translation name="World.View3D.Fps">FPS: {0}</translation>
+
+	<!-- WindowMain -->
+	<translation name="World.WindowMain.LoadingWorld">Loading world from '{0}'</translation>
+
+	<!-- WCEntry -->
+	<translation name="World.WCEntry.World">World</translation>
+	<translation name="World.WCEntry.HeightTerrain">Height Terrain</translation>
+	<translation name="World.WCEntry.HeightImage">Height Image</translation>
+	<translation name="World.WCEntry.VisibilityImage">Visibility Image</translation>
+	<translation name="World.WCEntry.TextureMask">Texture Mask</translation>
+	<translation name="World.WCEntry.NavigationSpace">Navigation Space</translation>
+	<translation name="World.WCEntry.PropFieldCache">Prop Field Cache</translation>
+
+	<!-- WPBrowser -->
+	<translation name="World.WPBrowser.Action.ActiveObjectSetTexture">Active Object Set Texture: {0}</translation>
+	<translation name="World.WPBrowser.Action.ActiveObjectSetTexture.ToolTip">Set texture '{0}' of active object</translation>
+	<translation name="World.WPBrowser.Action.ActiveObjectSetProperty">Active Object Set Property: {0}</translation>
+	<translation name="World.WPBrowser.Action.ActiveObjectSetProperty.ToolTip">Set property '{0}' of active object</translation>
+
+	<!-- WPHeightTerrain -->
+	<translation name="World.WPHeightTerrain.DefaultName.Texture">texture</translation>
+	<translation name="World.WPHeightTerrain.DefaultName.NavSpace">navspace</translation>
+	<translation name="World.WPHeightTerrain.DefaultName.Type">type</translation>
+	<translation name="World.WPHeightTerrain.DefaultName.VLayer">vlayer</translation>
+	<translation name="World.WPHeightTerrain.DefaultName.Variation">Variation #{0}</translation>
+
+	<!-- WPSNavSpace -->
+	<translation name="World.WPSNavSpace.CostType">Type #{0}</translation>
+
+	<!-- WPSObjectShape -->
+	<translation name="World.WPSObjectShape.PropertyInfoDescription">Object Class: {0}
+Property: {1}
+Default: '{2}'
+
+{3}</translation>
+	<translation name="World.WPSObjectShape.PropertyInfo">Object Class: {0}
+Property: {1}
+Default: ''</translation>
+
+	<!-- BaseUndoMove -->
+
+	<!-- BaseUndoRotate -->
+
+	<!-- BaseUndoScale -->
+
+	<!-- UAddObject -->
+
+	<!-- WPPropertyList -->
+	<translation name="World.WPPropertyList.Action.PropertyAdd">Add</translation>
+	<translation name="World.WPPropertyList.Action.PropertyClear">Clear All</translation>
+	<translation name="World.WPPropertyList.Action.PropertyCopy">Copy</translation>
+	<translation name="World.WPPropertyList.Action.PropertyCut">Cut</translation>
+	<translation name="World.WPPropertyList.Action.PropertyCutAll">Cut All</translation>
+	<translation name="World.WPPropertyList.Action.PropertyPaste">Paste</translation>
+	<translation name="World.WPPropertyList.Action.PropertyRemove">Remove</translation>
+	<translation name="World.WPPropertyList.Action.PropertyRename">Rename</translation>
+	<translation name="World.WPPropertyList.Dialog.Duplicate">Duplicate</translation>
+	<translation name="World.WPPropertyList.Dialog.Rename">Rename Property</translation>
+	<translation name="World.WPPropertyList.Dialog.RenameName">Name:</translation>
+	<translation name="World.WPPropertyList.Label.Properties">Properties:</translation>
+	<translation name="World.WPPropertyList.PropertyKey.ToolTip">Export all properties to text</translation>
+
+	<!-- WPSDecal -->
+	<translation name="World.WPSDecal.Action.PropertyCopyToSelected">Copy Property to Selected</translation>
+	<translation name="World.WPSDecal.Label.Position">Position:</translation>
+	<translation name="World.WPSDecal.Label.Rotation">Rotation:</translation>
+	<translation name="World.WPSDecal.Label.Scaling">Scaling:</translation>
+	<translation name="World.WPSDecal.Label.Size">Size:</translation>
+
+	<!-- WPSNavSpace -->
+	<translation name="World.WPSNavSpace.Label.Position">Position:</translation>
+	<translation name="World.WPSNavSpace.Orientation">Orientation:</translation>
+
+	<!-- WPSObject -->
+	<translation name="World.WPSObject.Action.AttachableAdd">Add</translation>
+	<translation name="World.WPSObject.Action.AttachableAdd.ToolTip">Add attachable behavior</translation>
+	<translation name="World.WPSObject.Action.AttachableRemove">Remove</translation>
+	<translation name="World.WPSObject.Action.AttachableRemove.ToolTip">Remove attachable behavior</translation>
+	<translation name="World.WPSObject.Action.FindID.ToolTip">Find object by ID</translation>
+	<translation name="World.WPSObject.Action.MTexAdd.ToolTip">Add texture from model</translation>
+	<translation name="World.WPSObject.Action.MTexRemove.ToolTip">Remove texture from model</translation>
+	<translation name="World.WPSObject.Action.PropertyCloneToSelected">Clone Properties to Selected</translation>
+	<translation name="World.WPSObject.Action.PropertyCloneToSelected.ToolTip">Clone all properties to selected objects</translation>
+	<translation name="World.WPSObject.Action.PropertyCopyToSelected">Copy Property to Selected</translation>
+	<translation name="World.WPSObject.Action.PropertyCopyToSelected.ToolTip">Copy property to selected objects</translation>
+	<translation name="World.WPSObject.Action.PropertyRemoveFromSelected">Remove Property from Selected</translation>
+	<translation name="World.WPSObject.Action.PropertyRemoveFromSelected.ToolTip">Remove property from selected objects</translation>
+	<translation name="World.WPSObject.Action.TextureAdd">Add Texture</translation>
+	<translation name="World.WPSObject.Action.TextureAddAllFromModel">Add All from Model</translation>
+	<translation name="World.WPSObject.Action.TextureAddAllFromModel.ToolTip">Add all textures from model</translation>
+	<translation name="World.WPSObject.Action.TextureAdd.ToolTip">Add texture</translation>
+	<translation name="World.WPSObject.Action.TextureAddFromModel">Add from Model</translation>
+	<translation name="World.WPSObject.Action.TextureRemoveAllNotFromModel">Remove All Not from Model</translation>
+	<translation name="World.WPSObject.Action.TextureRemoveAllNotFromModel.ToolTip">Remove all textures not from model</translation>
+	<translation name="World.WPSObject.Action.TextureRemoveFromModel">Remove from Model</translation>
+	<translation name="World.WPSObject.ClassMenu">Class</translation>
+	<translation name="World.WPSObject.Color">Color:</translation>
+	<translation name="World.WPSObject.Dialog.AddAttachable">Add Attachable Behavior</translation>
+	<translation name="World.WPSObject.Dialog.FindID">Find Object by ID</translation>
+	<translation name="World.WPSObject.Dialog.FindIDNumber">Object ID:</translation>
+	<translation name="World.WPSObject.Error.IDNotFound">Object with ID '{0}' not found</translation>
+	<translation name="World.WPSObject.Error.InvalidID">Invalid object ID: {0}</translation>
+	<translation name="World.WPSObject.IDMenu">ID</translation>
+	<translation name="World.WPSObject.Position">Position:</translation>
+	<translation name="World.WPSObject.PositionMenu">Position</translation>
+	<translation name="World.WPSObject.Rotation">Rotation:</translation>
+	<translation name="World.WPSObject.RotationMenu">Rotation</translation>
+	<translation name="World.WPSObject.ScaleMenu">Scale</translation>
+	<translation name="World.WPSObject.Scaling">Scaling:</translation>
+	<translation name="World.WPSObject.Size">Size:</translation>
+	<translation name="World.WPSObject.TextureCoordinatesScaling">Scaling:</translation>
+	<translation name="World.WPSObject.TextureMenu">Texture</translation>
+
+	<!-- WPSObjectShape -->
+	<translation name="World.WPSObjectShape.PositionBox">Position:</translation>
+	<translation name="World.WPSObjectShape.PositionCapsule">Position:</translation>
+	<translation name="World.WPSObjectShape.PositionCylinder">Position:</translation>
+	<translation name="World.WPSObjectShape.PositionSphere">Position:</translation>
+	<translation name="World.WPSObjectShape.RotationBox">Rotation:</translation>
+	<translation name="World.WPSObjectShape.RotationCapsule">Rotation:</translation>
+	<translation name="World.WPSObjectShape.RotationCylinder">Rotation:</translation>
+
+	<!-- WPSensors -->
+	<translation name="World.WPSensors.Label.Position">Position:</translation>
+
+	<!-- WPWorld -->
+	<translation name="World.WPWorld.Action.PathFindTypeAdd">Add</translation>
+	<translation name="World.WPWorld.Action.PathFindTypeClear">Clear All</translation>
+	<translation name="World.WPWorld.Action.PathFindTypeRemove">Remove</translation>
+	<translation name="World.WPWorld.Dialog.Name">Name:</translation>
+	<translation name="World.WPWorld.Label.Size">Size:</translation>
+
+	<!-- WVNodeClosestProp -->
+	<translation name="World.WVNodeClosestProp.Output.Distance">Distance</translation>
+	<translation name="World.WVNodeClosestProp.Output.Distance.ToolTip">Distance to closest prop</translation>
+
+	<!-- WVNodeClosestVegetation -->
+	<translation name="World.WVNodeClosestVegetation.Output.Distance">Distance</translation>
+	<translation name="World.WVNodeClosestVegetation.Output.Distance.ToolTip">Distance to closest vegetation</translation>
+
+	<!-- WVNodeCombine -->
+	<translation name="World.WVNodeCombine.Input.X">X</translation>
+	<translation name="World.WVNodeCombine.Input.X.ToolTip">X component</translation>
+	<translation name="World.WVNodeCombine.Input.Y">Y</translation>
+	<translation name="World.WVNodeCombine.Input.Y.ToolTip">Y component</translation>
+	<translation name="World.WVNodeCombine.Input.Z">Z</translation>
+	<translation name="World.WVNodeCombine.Input.Z.ToolTip">Z component</translation>
+	<translation name="World.WVNodeCombine.Output.Vector">Vector</translation>
+	<translation name="World.WVNodeCombine.Output.Vector.ToolTip">Combined vector</translation>
+
+	<!-- WVNodeComponents -->
+	<translation name="World.WVNodeComponents.Input.Vector">Vector</translation>
+	<translation name="World.WVNodeComponents.Input.Vector.ToolTip">Input vector</translation>
+	<translation name="World.WVNodeComponents.Output.X">X</translation>
+	<translation name="World.WVNodeComponents.Output.X.ToolTip">X component</translation>
+	<translation name="World.WVNodeComponents.Output.Y">Y</translation>
+	<translation name="World.WVNodeComponents.Output.Y.ToolTip">Y component</translation>
+	<translation name="World.WVNodeComponents.Output.Z">Z</translation>
+	<translation name="World.WVNodeComponents.Output.Z.ToolTip">Z component</translation>
+
+	<!-- WVNodeConstant -->
+	<translation name="World.WVNodeConstant.Output.Vector">Vector</translation>
+	<translation name="World.WVNodeConstant.Output.Vector.ToolTip">Vector value</translation>
+	<translation name="World.WVNodeConstant.Output.X">X</translation>
+	<translation name="World.WVNodeConstant.Output.X.ToolTip">X component</translation>
+	<translation name="World.WVNodeConstant.Output.Y">Y</translation>
+	<translation name="World.WVNodeConstant.Output.Y.ToolTip">Y component</translation>
+	<translation name="World.WVNodeConstant.Output.Z">Z</translation>
+	<translation name="World.WVNodeConstant.Output.Z.ToolTip">Z component</translation>
+
+	<!-- WVNodeCurve -->
+	<translation name="World.WVNodeCurve.Input.Value">Value</translation>
+	<translation name="World.WVNodeCurve.Input.Value.ToolTip">Input value</translation>
+	<translation name="World.WVNodeCurve.Output.Result">Result</translation>
+	<translation name="World.WVNodeCurve.Output.Result.ToolTip">Curve result</translation>
+
+	<!-- WVNodeGeometry -->
+	<translation name="World.WVNodeGeometry.Output.Normal">Normal</translation>
+	<translation name="World.WVNodeGeometry.Output.Normal.ToolTip">Surface normal</translation>
+	<translation name="World.WVNodeGeometry.Output.Position">Position</translation>
+	<translation name="World.WVNodeGeometry.Output.Position.ToolTip">Surface position</translation>
+
+	<!-- WVNodeMapping -->
+	<translation name="World.WVNodeMapping.Input.Value">Value</translation>
+	<translation name="World.WVNodeMapping.Input.Value.ToolTip">Value to map</translation>
+	<translation name="World.WVNodeMapping.Output.Result">Result</translation>
+	<translation name="World.WVNodeMapping.Output.Result.ToolTip">Mapped result</translation>
+
+	<!-- WVNodeMath -->
+	<translation name="World.WVNodeMath.Input.A">A</translation>
+	<translation name="World.WVNodeMath.Input.A.ToolTip">First operand</translation>
+	<translation name="World.WVNodeMath.Input.B">B</translation>
+	<translation name="World.WVNodeMath.Input.B.ToolTip">Second operand</translation>
+	<translation name="World.WVNodeMath.Output.Result">Result</translation>
+	<translation name="World.WVNodeMath.Output.Result.ToolTip">Operation result</translation>
+
+	<!-- WVNodeMultiMath -->
+	<translation name="World.WVNodeMultiMath.Input.Value">Value</translation>
+	<translation name="World.WVNodeMultiMath.Input.Value.ToolTip">Input value</translation>
+	<translation name="World.WVNodeMultiMath.Output.Result">Result</translation>
+	<translation name="World.WVNodeMultiMath.Output.Result.ToolTip">Operation result</translation>
+
+	<!-- WVNodePropCount -->
+	<translation name="World.WVNodePropCount.Output.Count">Count</translation>
+	<translation name="World.WVNodePropCount.Output.Count.ToolTip">Number of props</translation>
+
+	<!-- WVNodeRandom -->
+	<translation name="World.WVNodeRandom.Output.Value">Value</translation>
+	<translation name="World.WVNodeRandom.Output.Value.ToolTip">Random value</translation>
+
+	<!-- WVNodeResult -->
+	<translation name="World.WVNodeResult.Input.Probability">Probability</translation>
+	<translation name="World.WVNodeResult.Input.Probability.ToolTip">Spawn probability</translation>
+	<translation name="World.WVNodeResult.Input.Variation">Variation</translation>
+	<translation name="World.WVNodeResult.Input.Variation.ToolTip">Variation index</translation>
+
+	<!-- WVNodeVectorMath -->
+	<translation name="World.WVNodeVectorMath.Input.A">A</translation>
+	<translation name="World.WVNodeVectorMath.Input.A.ToolTip">First operand</translation>
+	<translation name="World.WVNodeVectorMath.Input.B">B</translation>
+	<translation name="World.WVNodeVectorMath.Input.B.ToolTip">Second operand</translation>
+	<translation name="World.WVNodeVectorMath.Output.Result">Result</translation>
+	<translation name="World.WVNodeVectorMath.Output.Result.ToolTip">Operation result</translation>
+	<translation name="World.WVNodeVectorMath.Output.Value">Value</translation>
+	<translation name="World.WVNodeVectorMath.Output.Value.ToolTip">Result value</translation>
+
+	<!-- ViewEditorSelect -->
+	<translation name="World.ViewEditorSelect.AndMore">... and {0} more</translation>
+
+	<!-- UDeleteDecal -->
+	<translation name="World.UDeleteDecal.CountDecals">{0} decals</translation>
+	<translation name="World.UDeleteDecal.OneDecal">1 decal</translation>
+
+	<!-- UDeleteNavSpace -->
+	<translation name="World.UDeleteNavSpace.CountObjects">{0} objects</translation>
+	<translation name="World.UDeleteNavSpace.OneObject">1 object</translation>
+
+	<!-- UDeleteObject -->
+	<translation name="World.UDeleteObject.CountObjects">{0} objects</translation>
+	<translation name="World.UDeleteObject.OneObject">1 object</translation>
+
+	<!-- UObjectAttachTo -->
+	<translation name="World.UObjectAttachTo.CountObjects">{0} objects</translation>
+	<translation name="World.UObjectAttachTo.OneObject">1 object</translation>
+
+	<!-- UObjectDropToGround -->
+	<translation name="World.UObjectDropToGround.CountObjects">{0} objects</translation>
+	<translation name="World.UObjectDropToGround.OneObject">1 object</translation>
+</languagePack>

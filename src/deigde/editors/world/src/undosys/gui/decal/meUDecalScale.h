@@ -22,17 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUDECALSCALE_H_
 #define _MEUDECALSCALE_H_
 
-// includes
+#include "meUndoDataDecal.h"
 #include "../meBaseUndoScale.h"
-
-// predefinitions
-class meUndoDataDecal;
-class meWorld;
-
+#include "../../../world/meWorld.h"
 
 
 /**
@@ -41,31 +36,33 @@ class meWorld;
  * Undo Action for interactively scaling decals.
  */
 class meUDecalScale : public meBaseUndoScale{
+public:
+	using Ref = deTObjectReference<meUDecalScale>;
+	
 private:
 	meWorld *pWorld;
 	
-	meUndoDataDecal **pDecals;
-	int pDecalCount;
+	meUndoDataDecal::List pDecals;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalScale( meWorld *world );
+	meUDecalScale(meWorld *world);
 	/** \brief Clean up undo. */
-	virtual ~meUDecalScale();
+
+protected:
+	~meUDecalScale() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Undo();
-	virtual void Redo();
-	virtual void ProgressiveRedo();
+	void Undo() override;
+	void Redo() override;
+	void ProgressiveRedo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

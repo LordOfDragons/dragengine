@@ -47,11 +47,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -68,18 +68,18 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorAdd &pPanel;
 	
 public:
-	cComboActorID( ceWPAActorAdd &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboActorID>;
+	cComboActorID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorAdd * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetID()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAActorAddSetActor( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAActorAddSetActor::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -87,18 +87,18 @@ class cComboAliasID : public igdeComboBoxListener {
 	ceWPAActorAdd &pPanel;
 	
 public:
-	cComboAliasID( ceWPAActorAdd &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboAliasID>;
+	cComboAliasID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorAdd * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetAliasID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetAliasID()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAActorAddSetAliasID( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAActorAddSetAliasID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -112,17 +112,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorAdd::ceWPAActorAdd( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorAdd::ceWPAActorAdd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor:", true, "ID of the actor to add to conversation",
-		pCBActorID, new cComboActorID( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Actor", true, "@Conversation.ActorToAdd.ToolTip",
+		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.ComboBox( *this, "Alias:", true, "Optional alias ID to set for the added actor",
-		pCBAliasID, new cComboAliasID( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Alias", true, "@Conversation.ActorAliasToSet.ToolTip",
+		pCBAliasID, cComboAliasID::Ref::New(*this));
 	pCBAliasID->SetDefaultSorter();
 }
 
@@ -137,11 +137,11 @@ ceWPAActorAdd::~ceWPAActorAdd(){
 ceCAActorAdd *ceWPAActorAdd::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorAdd ){
-		return ( ceCAActorAdd* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorAdd){
+		return (ceCAActorAdd*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -150,9 +150,9 @@ void ceWPAActorAdd::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetID() );
-		pCBAliasID->SetText( action->GetAliasID() );
+	if(action){
+		pCBActorID->SetText(action->GetID());
+		pCBAliasID->SetText(action->GetAliasID());
 		
 	}else{
 		pCBActorID->ClearText();
@@ -164,6 +164,6 @@ void ceWPAActorAdd::UpdateAction(){
 
 void ceWPAActorAdd::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
-	UpdateComboBoxWithActorIDList( pCBAliasID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
+	UpdateComboBoxWithActorIDList(pCBAliasID);
 }

@@ -45,7 +45,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -54,12 +53,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCLogic::ceWPTTIMCLogic( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionLogic *condition ) :
-ceWPTTIMConditions( windowMain, etConditionLogic, conversation, action,
-	condition, condition->GetConditions() )
+ceWPTTIMCLogic::ceWPTTIMCLogic(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionLogic *condition) :
+ceWPTTIMConditions(windowMain, etConditionLogic, conversation, action,
+	condition, condition->GetConditions())
 {
-	SetIcon( windowMain.GetIconConditionLogic() );
+	SetIcon(windowMain.GetIconConditionLogic());
 	Update();
 }
 
@@ -71,19 +70,19 @@ ceWPTTIMCLogic::~ceWPTTIMCLogic(){
 // Management
 ///////////////
 
-const char *ceWPTTIMCLogic::GetOperatorText( ceCConditionLogic::eOperators anOperator ){
-	switch( anOperator ){
+decString ceWPTTIMCLogic::GetOperatorText(ceCConditionLogic::eOperators anOperator) const{
+	switch(anOperator){
 	case ceCConditionLogic::eopNone:
-		return "none";
+		return GetWindowMain().Translate("Conversation.LogicOperator.None").ToUTF8();
 		
 	case ceCConditionLogic::eopAny:
-		return "any";
+		return GetWindowMain().Translate("Conversation.LogicOperator.Any").ToUTF8();
 		
 	case ceCConditionLogic::eopAll:
-		return "all";
+		return GetWindowMain().Translate("Conversation.LogicOperator.All").ToUTF8();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -91,26 +90,27 @@ void ceWPTTIMCLogic::Update(){
 	const ceCConditionLogic &condition = *GetConditionLogic();
 	
 	decString text;
-	text.Format( "Logic (%s)", GetOperatorText( condition.GetOperator() ) );
-	SetText( text );
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.Logic" ).ToUTF8(),
+		GetOperatorText(condition.GetOperator()) );
+	SetText(text);
 	
 	ceWPTTIMConditions::Update();
 	
-	SetExpanded( condition.GetTIMExpanded() );
+	SetExpanded(condition.GetTIMExpanded());
 }
 
-void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
-	ceWPTTIMConditions::OnContextMenu( contextMenu );
+void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
+	ceWPTTIMConditions::OnContextMenu(contextMenu);
 	
-	if( ! GetTreeItem() ){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
+	if(!topic){
 		return;
 	}
 	
@@ -122,34 +122,33 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	int i;
 	
 	// child action specific
-	helper.MenuSeparator( contextMenu );
+	helper.MenuSeparator(contextMenu);
 	
-	igdeMenuCascadeReference subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Logic: Add Condition",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
-	contextMenu.AddChild( subMenu );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
+		environment, "@Conversation.MenuCascade.LogicAddCondition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMACLogicAddCondition( windowMain, conversation, *topic,
-			action, logic, ceWPTTIMCondition::ListAddMenuConditions[ i ] ), true );
+	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
+		helper.MenuCommand(subMenu, ceWPTMACLogicAddCondition::Ref::New(windowMain, conversation, *topic,
+			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]));
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicClearCondition( windowMain, conversation,
-		*topic, action, logic ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicPasteCondition( windowMain, conversation,
-		*topic, action, logic ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACLogicClearCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic));
+	helper.MenuCommand(contextMenu, ceWPTMACLogicPasteCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic));
 }
 
-void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
+	if(!topic){
 		return;
 	}
 	
@@ -161,27 +160,26 @@ void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConve
 	int i;
 	
 	// child action specific
-	igdeMenuCascadeReference subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Condition",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
-	contextMenu.AddChild( subMenu );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
+		environment, "@Conversation.MenuCascade.AddCondition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMACLogicAddCondition( windowMain, conversation, *topic,
-			action, logic, ceWPTTIMCondition::ListAddMenuConditions[ i ] ), true );
+	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
+		helper.MenuCommand(subMenu, ceWPTMACLogicAddCondition::Ref::New(windowMain, conversation, *topic,
+			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]));
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMACopyCondition( windowMain, condition ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicCutCondition( windowMain, conversation,
-		*topic, action, logic, condition ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicPasteCondition( windowMain, conversation,
-		*topic, action, logic ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACopyCondition::Ref::New(windowMain, condition));
+	helper.MenuCommand(contextMenu, ceWPTMACLogicCutCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic, condition));
+	helper.MenuCommand(contextMenu, ceWPTMACLogicPasteCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic));
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicRemoveCondition( windowMain, conversation,
-		*topic, action, logic, condition ), true );
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, ceWPTMACLogicRemoveCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic, condition));
 }
 
 void ceWPTTIMCLogic::OnExpandedChanged(){
-	GetConditionLogic()->SetTIMExpanded( GetExpanded() );
+	GetConditionLogic()->SetTIMExpanded(GetExpanded());
 }

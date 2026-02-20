@@ -114,8 +114,7 @@ class deoglShaderCompiled;
  */
 class deoglPipeline : public deObject{
 public:
-	typedef deTObjectReference<deoglPipeline> Ref;
-	
+	using Ref = deTObjectReference<deoglPipeline>;
 	
 	
 private:
@@ -139,12 +138,13 @@ public:
 	deoglPipeline(deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration);
 #endif
 	
+protected:
 	/** Clean up pipeline. */
 	~deoglPipeline() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -170,7 +170,7 @@ public:
 	inline int GetRTSIndex() const{ return pRTSIndex; }
 	
 	/** Set render task shader pipeline. */
-	void SetRTSIndex( int index );
+	void SetRTSIndex(int index);
 	
 	
 	

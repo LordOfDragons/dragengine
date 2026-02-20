@@ -42,35 +42,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate( ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor ){
-	if( ! topic || ! action || ! hasActor ) DETHROW( deeInvalidParam );
+ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor){
+	if(!topic || !action || !hasActor) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pHasActor = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pHasActor = nullptr;
 	
-	SetShortInfo( "Has Actor Negate" );
+	SetShortInfo("@Conversation.Undo.HasActorNegate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pHasActor = hasActor;
-	hasActor->AddReference();
 }
 
 ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
-	if( pHasActor ){
-		pHasActor->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -79,11 +65,11 @@ ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
 ///////////////
 
 void ceUCCHasActorToggleNegate::Undo(){
-	pHasActor->SetNegate( ! pHasActor->GetNegate() );
-	pTopic->NotifyConditionChanged( pAction, pHasActor );
+	pHasActor->SetNegate(!pHasActor->GetNegate());
+	pTopic->NotifyConditionChanged(pAction, pHasActor);
 }
 
 void ceUCCHasActorToggleNegate::Redo(){
-	pHasActor->SetNegate( ! pHasActor->GetNegate() );
-	pTopic->NotifyConditionChanged( pAction, pHasActor );
+	pHasActor->SetNegate(!pHasActor->GetNegate());
+	pTopic->NotifyConditionChanged(pAction, pHasActor);
 }

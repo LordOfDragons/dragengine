@@ -25,12 +25,13 @@
 #ifndef _DEOGLCOLLIDELISTHTSECTOR_H_
 #define _DEOGLCOLLIDELISTHTSECTOR_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include "deoglCollideListHTSCluster.h"
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHTViewSector;
 class deoglOcclusionTest;
-class deoglCollideListHTSCluster;
 
 
 /**
@@ -40,8 +41,7 @@ class deoglCollideListHTSector{
 private:
 	deoglHTViewSector *pSector;
 	
-	decPointerList pClusters;
-	int pClusterCount;
+	decTList<deoglCollideListHTSCluster> pClusters;
 	
 	
 	
@@ -51,8 +51,15 @@ public:
 	/** Create height terrain sector. */
 	deoglCollideListHTSector();
 	
-	/** Clean up height terrain sector. */
-	~deoglCollideListHTSector();
+	deoglCollideListHTSector(deoglHTViewSector *sector);
+	
+	/** Copy. */
+	deoglCollideListHTSector(const deoglCollideListHTSector &sector) = delete;
+	deoglCollideListHTSector& operator=(const deoglCollideListHTSector &sector) = delete;
+	
+	/** Move. */
+	deoglCollideListHTSector(deoglCollideListHTSector &&other) noexcept;
+	deoglCollideListHTSector& operator=(deoglCollideListHTSector &&other) noexcept;
 	/*@}*/
 	
 	
@@ -63,7 +70,7 @@ public:
 	void Clear();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &referencePosition);
 	
 	
 	
@@ -71,16 +78,17 @@ public:
 	inline deoglHTViewSector *GetSector() const{ return pSector; }
 	
 	/** Set sector. */
-	void SetSector( deoglHTViewSector *sector );
+	void SetSector(deoglHTViewSector *sector);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{ return pClusterCount; }
+	inline int GetClusterCount() const{ return pClusters.GetCount(); }
 	
 	/** Cluster at index. */
-	deoglCollideListHTSCluster &GetClusterAt( int index ) const;
+	deoglCollideListHTSCluster &GetClusterAt(int index);
+	const deoglCollideListHTSCluster &GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	deoglCollideListHTSCluster *AddCluster( const decPoint &coordinates );
+	deoglCollideListHTSCluster &AddCluster(const decPoint &coordinates);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();

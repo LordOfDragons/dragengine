@@ -49,48 +49,48 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Builds a sphere volume. */
-	void BuildSphere( decConvexVolumeList &volumeList, const decVector &position, float radius ) const;
+	void BuildSphere(decConvexVolumeList &volumeList, const decVector &position, float radius) const;
 	/** Builds a cone volume. */
-	void BuildCone( decConvexVolumeList &volumeList, const decMatrix &matrix, float distance, float angle, int resolution ) const;
+	void BuildCone(decConvexVolumeList &volumeList, const decMatrix &matrix, float distance, float angle, int resolution) const;
 	/** Builds a frustum volume. */
-	void BuildFrustum( decConvexVolumeList &volumeList, const decMatrix &matrix, float farDistance, float angleX, float angleY ) const;
+	void BuildFrustum(decConvexVolumeList &volumeList, const decMatrix &matrix, float farDistance, float angleX, float angleY) const;
 	
 	/** Retrieves the minimum and maximum extend of the given volumes. */
-	void GetVolumeExtends( const decConvexVolumeList &volumeList, decVector &minExtend, decVector &maxExtend ) const;
+	void GetVolumeExtends(const decConvexVolumeList &volumeList, decVector &minExtend, decVector &maxExtend) const;
 	/**
 	 * Retrieves the minimum and maximum extend of the given transformed volumes. The minExtend and maxExtend
 	 * are kept untouched if the volume list contains no vertices.
 	 */
-	void GetTransformedVolumeExtends( const decConvexVolumeList &volumeList, const decDMatrix &matrix, decDVector &minExtend, decDVector &maxExtend ) const;
+	void GetTransformedVolumeExtends(const decConvexVolumeList &volumeList, const decDMatrix &matrix, decDVector &minExtend, decDVector &maxExtend) const;
 	
 	/**
 	 * Crops a volume list using a triangles list. The triangles are extruded radially from the origin
 	 * blocked by obstacles. The distance indicates how far triangles are extruded and should be at
 	 * least the radius of the sphere enclosing the hull boundary box.
 	 */
-	void CropByTriangles( decConvexVolumeList &volumeList, const deoglTriangleSorter &triangles,
-	const decVector &origin, float distance ) const;
+	void CropByTriangles(decConvexVolumeList &volumeList, const deoglTriangleSorter &triangles,
+	const decVector &origin, float distance) const;
 	/**
 	 * Crops the volume list using an occlusion mesh. The faces are extruded radially from the origin
 	 * blocked by obstacles. The distance indicates how far faces are extruded and should be at least
 	 * the radius of the sphere enclosing the volumes boundary box.
 	 */
-	void CropByOcclusionMesh( decConvexVolumeList &volumeList, const deoglROcclusionMesh &occlusionMesh,
-	const decMatrix &matrix, const decVector &origin, float distance ) const;
+	void CropByOcclusionMesh(decConvexVolumeList &volumeList, const deoglROcclusionMesh &occlusionMesh,
+	const decMatrix &matrix, const decVector &origin, float distance) const;
 	/**
 	 * Crops the volume list using a bounding box. The faces of the bounding box are used as clip planes
 	 * cropping anything outside the bounding box. The matrix is used to transform the bounding box into
 	 * the volume coordinate frame before cropping.
 	 */
-	void CropByBoundingBox( decConvexVolumeList &volumeList, const decDMatrix &matrix,
-	const decDVector &minExtend, const decDVector &maxExtend ) const;
+	void CropByBoundingBox(decConvexVolumeList &volumeList, const decDMatrix &matrix,
+	const decDVector &minExtend, const decDVector &maxExtend) const;
 	/*@}*/
 	
 private:
-	void pAddTriangle( decConvexVolume *volume, int p1, int p2, int p3 ) const;
-	void pAddTriangle( decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal ) const;
-	void pAddQuad( decConvexVolume *volume, int p1, int p2, int p3, int p4 ) const;
-	void pAddQuad( decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal ) const;
+	void pAddTriangle(decConvexVolume *volume, int p1, int p2, int p3) const;
+	void pAddTriangle(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal) const;
+	void pAddQuad(decConvexVolume *volume, int p1, int p2, int p3, int p4) const;
+	void pAddQuad(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal) const;
 };
 
 #endif

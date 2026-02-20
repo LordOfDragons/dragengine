@@ -25,14 +25,12 @@
 #ifndef _SEUPROPERTYNODESSHEAR_H_
 #define _SEUPROPERTYNODESSHEAR_H_
 
+#include "seUPropertyNodeData.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
-
-class sePropertyNode;
-class sePropertyNodeList;
-class seUPropertyNodeData;
 
 
 
@@ -40,8 +38,12 @@ class seUPropertyNodeData;
  * \brief Undo action property shear nodes.
  */
 class seUPropertyNodesShear : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodesShear>;
+	
+	
 private:
-	decObjectList pNodes;
+	seUPropertyNodeData::List pNodes;
 	
 	decVector2 pPivot;
 	decVector2 pOrigin;
@@ -56,12 +58,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesShear( const sePropertyNodeList &nodes, const decVector2 &pivot,
-		const decVector2 &origin, float rotation, float shearing );
+	seUPropertyNodesShear(const sePropertyNode::List &nodes, const decVector2 &pivot,
+		const decVector2 &origin, float rotation, float shearing);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodesShear();
+	~seUPropertyNodesShear() override;
 	/*@}*/
 	
 	
@@ -70,19 +72,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set distance. */
-	void SetDistance( const decVector2 &distance );
+	void SetDistance(const decVector2 &distance);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	
 	
 private:
-	void pAddNodes( sePropertyNode *node );
+	void pAddNodes(sePropertyNode *node);
 };
 
 #endif

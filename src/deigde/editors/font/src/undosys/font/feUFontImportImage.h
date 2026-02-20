@@ -27,28 +27,31 @@
 
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-class feFontImage;
-class deImage;
+#include "../../font/image/feFontImage.h"
 
+class deImage;
 
 
 /**
  * \brief Font Import Image Undo Action.
  */
 class feUFontImportImage : public igdeUndo{
-private:
-	feFontImage *pImage;
+public:
+	using Ref = deTObjectReference<feUFontImportImage>;
 	
-	int pOldWidth;
-	int pOldHeight;
-	decColor *pOldColor;
+	
+private:
+	feFontImage::Ref pImage;
+	
+	int pOldWidth, pOldHeight;
+	decTList<decColor> pOldColor;
 	decString pOldPath;
 	
-	int pNewWidth;
-	int pNewHeight;
-	decColor *pNewColor;
+	int pNewWidth, pNewHeight;
+	decTList<decColor> pNewColor;
 	decString pNewPath;
 	
 	
@@ -57,11 +60,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontImportImage( feFontImage *fontImage, deImage *newImage, const char *newPath );
+	feUFontImportImage(feFontImage *fontImage, deImage *newImage, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUFontImportImage();
+	~feUFontImportImage() override;
 	/*@}*/
 	
 	
@@ -70,18 +73,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	
-	
 private:
-	void pCleanUp();
-	void pStoreColors( deImage &image, decColor *colors );
-	void pRestoreColors( deImage &image, decColor *colors );
+	void pStoreColors(deImage &image, decColor *colors);
+	void pRestoreColors(deImage &image, decColor *colors);
 };
 
 #endif

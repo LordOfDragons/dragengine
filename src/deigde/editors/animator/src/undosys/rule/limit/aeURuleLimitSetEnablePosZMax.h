@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -35,26 +35,30 @@ class aeRuleLimit;
  * Undo action rule limit toggle enable maximum z position.
  */
 class aeURuleLimitSetEnablePosZMax : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleLimitSetEnablePosZMax>;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetEnablePosZMax( aeRuleLimit *rule );
+	aeURuleLimitSetEnablePosZMax(aeRuleLimit *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetEnablePosZMax();
+	~aeURuleLimitSetEnablePosZMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

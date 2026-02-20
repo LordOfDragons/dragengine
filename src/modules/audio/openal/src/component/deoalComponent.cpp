@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <utility>
 
 #include "deoalAComponent.h"
 #include "deoalComponent.h"
@@ -39,6 +37,7 @@
 #include "../world/deoalWorld.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/model/deModel.h>
@@ -52,47 +51,44 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalComponent::deoalComponent( deAudioOpenAL &oal, deComponent &component ) :
-pOal( oal ),
-pComponent( component ),
-pAComponent( NULL ),
-pTextures( NULL ),
-pTextureCount( 0 ),
-pParentWorld( NULL ),
-pModel( NULL ),
-pSkin( NULL ),
-pAudioModel( NULL ),
+deoalComponent::deoalComponent(deAudioOpenAL &oal, deComponent &component) :
+pOal(oal),
+pComponent(component),
+pParentWorld(nullptr),
+pModel(nullptr),
+pSkin(nullptr),
+pAudioModel(nullptr),
 
-pDirtyComponent( true ),
-pDirtyAffectsSound( true ),
-pDirtyOctreeNode( true ),
-pDirtyGeometry( true ),
-pDirtyModel( true ),
-pDirtySkin( true ),
-pDirtyRig( true ),
-pDirtyDynamicSkin( true ),
-pDirtyLayerMask( true ),
-pDirtyBones( true ),
-pDirtyBonesGeometry( true ),
-pDirtyTextures( true ),
+pDirtyComponent(true),
+pDirtyAffectsSound(true),
+pDirtyOctreeNode(true),
+pDirtyGeometry(true),
+pDirtyModel(true),
+pDirtySkin(true),
+pDirtyRig(true),
+pDirtyDynamicSkin(true),
+pDirtyLayerMask(true),
+pDirtyBones(true),
+pDirtyBonesGeometry(true),
+pDirtyTextures(true),
 
-pDynamicSkinRequiresSync( true ),
-pTextureDynamicSkinRequiresSync( true ),
+pDynamicSkinRequiresSync(true),
+pTextureDynamicSkinRequiresSync(true),
 
-pDebug( NULL ),
+pDebug(nullptr),
 
-pLLSyncWorld( this )
+pLLSyncWorld(this)
 {
 	(void)pDirtyRig; // not used yet
 	(void)pDirtyDynamicSkin; // not used yet
 	
 	try{
-		pAComponent = new deoalAComponent( oal.GetAudioThread() );
+		pAComponent = deoalAComponent::Ref::New(oal.GetAudioThread());
 		
 		ModelAndSkinChanged();
 		AudioModelChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -107,8 +103,8 @@ deoalComponent::~deoalComponent(){
 // Management
 ///////////////
 
-void deoalComponent::SetParentWorld( deoalWorld *world ){
-	if( world == pParentWorld ){
+void deoalComponent::SetParentWorld(deoalWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
@@ -116,7 +112,7 @@ void deoalComponent::SetParentWorld( deoalWorld *world ){
 	
 	pDirtyOctreeNode = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 }
@@ -132,37 +128,37 @@ void deoalComponent::Synchronize(){
 // 	}
 	pSyncTextures();
 	
-	if( pDirtyComponent ){
+	if(pDirtyComponent){
 		pDirtyComponent = false;
 	}
 	
-	if( pDirtyBones ){
-		pAComponent->InitBones( pComponent );
+	if(pDirtyBones){
+		pAComponent->InitBones(pComponent);
 		pDirtyBones = false;
 	}
-	if( pDirtyBonesGeometry ){
+	if(pDirtyBonesGeometry){
 		pComponent.WaitAnimatorTaskFinished();
-		pAComponent->UpdateBoneGeometry( pComponent );
+		pAComponent->UpdateBoneGeometry(pComponent);
 		pDirtyBonesGeometry = false;
 	}
 	
-	if( pDirtyGeometry ){
-		pAComponent->SetGeometry( pComponent.GetPosition(),
-			pComponent.GetOrientation(), pComponent.GetScaling() );
+	if(pDirtyGeometry){
+		pAComponent->SetGeometry(pComponent.GetPosition(),
+			pComponent.GetOrientation(), pComponent.GetScaling());
 		pDirtyGeometry = false;
 	}
 	
-	if( pDirtyLayerMask ){
-		pAComponent->SetLayerMask( pComponent.GetLayerMask() );
+	if(pDirtyLayerMask){
+		pAComponent->SetLayerMask(pComponent.GetLayerMask());
 		pDirtyLayerMask = false;
 	}
 	
-	if( pDirtyAffectsSound ){
+	if(pDirtyAffectsSound){
 		pAComponent->UpdateAffectsSound();
 		pDirtyAffectsSound = false;
 	}
 	
-	if( pDirtyOctreeNode ){
+	if(pDirtyOctreeNode){
 		// depends on affected sound
 		pAComponent->UpdateOctreeNode();
 		pDirtyOctreeNode = false;
@@ -176,7 +172,7 @@ void deoalComponent::SetOctreeDirty(){
 }
 
 void deoalComponent::DevModeChanged(){
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -185,11 +181,8 @@ void deoalComponent::DevModeChanged(){
 
 
 
-deoalComponentTexture &deoalComponent::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return *pTextures[ index ];
+deoalComponentTexture &deoalComponent::GetTextureAt(int index) const{
+	return pTextures.GetAt(index);
 }
 
 
@@ -243,7 +236,7 @@ void deoalComponent::ModelChanged(){
 	
 	pDirtyOctreeNode = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -254,7 +247,7 @@ void deoalComponent::RigChanged(){
 	pDirtyBones = true;
 	pDirtyBonesGeometry = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -262,10 +255,9 @@ void deoalComponent::RigChanged(){
 }
 
 void deoalComponent::SkinChanged(){
-	int i;
-	for( i=0; i<pTextureCount; i++ ){
-		pTextures[ i ]->MarkDirty();
-	}
+	pTextures.Visit([](deoalComponentTexture &t){
+		t.MarkDirty();
+	});
 	
 	pDirtySkin = true;
 	pDirtyAffectsSound = true;
@@ -284,7 +276,7 @@ void deoalComponent::ModelAndSkinChanged(){
 	pDirtyOctreeNode = true;
 	pDirtyAffectsSound = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -294,7 +286,7 @@ void deoalComponent::ModelAndSkinChanged(){
 void deoalComponent::AudioModelChanged(){
 	pDirtyModel = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -310,7 +302,7 @@ void deoalComponent::ExtendsChanged(){
 void deoalComponent::MeshDirty(){
 	pDirtyBonesGeometry = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -322,7 +314,7 @@ void deoalComponent::LayerMaskChanged(){
 	pDirtyAffectsSound = true;
 	pDirtyOctreeNode = true;
 	
-	if( pDebug ){
+	if(pDebug){
 		pDebug->DirtyFaces();
 	}
 	
@@ -335,12 +327,8 @@ void deoalComponent::ParametersChanged(){
 // 	pRequiresSync();
 }
 
-void deoalComponent::TextureChanged( int index, deComponentTexture &texture ){
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTextures[ index ]->TextureChanged( texture );
+void deoalComponent::TextureChanged(int index, deComponentTexture &texture){
+	pTextures.GetAt(index)->TextureChanged(texture);
 	
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtyOctreeNode = true;
@@ -358,96 +346,80 @@ void deoalComponent::DynamicSkinChanged(){
 //////////////////////
 
 void deoalComponent::pCleanUp(){
-	if( pDebug ){
+	if(pDebug){
 		delete pDebug;
-		pDebug = NULL;
+		pDebug = nullptr;
 	}
 	
 	pDropTextures();
-	
-	if( pAComponent ){
-		pAComponent->FreeReference();
-	}
 }
 
 
 
 void deoalComponent::pDropTextures(){
-	if( ! pTextures ){
-		return;
-	}
-	
-	while( pTextureCount > 0 ){
-		pTextureCount--;
-		delete pTextures[ pTextureCount ];
-	}
-	delete [] pTextures;
-	pTextures = NULL;
-	pTextureCount = 0;
+	pTextures.RemoveAll();
 }
 
 void deoalComponent::pCreateTextures(){
 	const deModel * const model = pComponent.GetModel();
-	if( ! model || model->GetTextureCount() == 0 ){
+	if(!model || model->GetTextureCount() == 0){
 		return;
 	}
 	
 	const int textureCount = model->GetTextureCount();
-	
-	pTextures = new deoalComponentTexture*[ textureCount ];
-	
-	for( pTextureCount=0; pTextureCount<textureCount; pTextureCount++ ){
-		pTextures[ pTextureCount ] = new deoalComponentTexture( *this, pTextureCount );
+	int i;
+	for(i=0; i<textureCount; i++){
+		pTextures.Add(deTUniqueReference<deoalComponentTexture>::New(*this, i));
 	}
 }
 
 
 
 void deoalComponent::pSyncModel(){
-	if( ! pDirtyModel ){
+	if(!pDirtyModel){
 		return;
 	}
 	
-	const decStringList *textureNames = NULL;
+	const decStringList *textureNames = nullptr;
 	
-	if( pComponent.GetModel() ){
-		pModel = ( deoalModel* )pComponent.GetModel()->GetPeerAudio();
+	if(pComponent.GetModel()){
+		pModel = (deoalModel*)pComponent.GetModel()->GetPeerAudio();
 		textureNames = &pModel->GetAModel()->GetTextureNames();
 		
 	}else{
-		pModel = NULL;
+		pModel = nullptr;
 	}
 	
-	if( pComponent.GetAudioModel() ){
-		pAudioModel = ( deoalModel* )pComponent.GetAudioModel()->GetPeerAudio();
+	if(pComponent.GetAudioModel()){
+		pAudioModel = (deoalModel*)pComponent.GetAudioModel()->GetPeerAudio();
 		
 	}else{
-		pAudioModel = NULL;
+		pAudioModel = nullptr;
 	}
 	
-	if( pAudioModel ){
-		pAComponent->SetModel( pAudioModel->GetAModel(), textureNames );
+	if(pAudioModel){
+		pAComponent->SetModel(pAudioModel->GetAModel(), textureNames);
 		
 	}else{
 // 		pAComponent->SetModel( pModel->GetAModel(), textureNames );
-		pAComponent->SetModel( NULL, textureNames );
+		pAComponent->SetModel(nullptr, textureNames);
 	}
 	
 	pDirtyModel = false;
 }
 
 void deoalComponent::pSyncSkin(){
-	if( ! pDirtySkin ){
+	if(!pDirtySkin){
 		return;
 	}
 	
-	if( pComponent.GetSkin() ){
-		pSkin = ( deoalSkin* )pComponent.GetSkin()->GetPeerAudio();
-		pAComponent->SetSkin( pSkin->GetASkin() );
+	if(pComponent.GetSkin()){
+		pSkin = (deoalSkin*)pComponent.GetSkin()->GetPeerAudio();
+		pAComponent->SetSkin(pSkin->GetASkin());
 		
 	}else{
-		pSkin = NULL;
-		pAComponent->SetSkin( NULL );
+		pSkin = nullptr;
+		pAComponent->SetSkin(nullptr);
 	}
 	
 	pDirtySkin = false;
@@ -458,20 +430,18 @@ void deoalComponent::pSyncDynamicSkin(){
 }
 
 void deoalComponent::pSyncTextures(){
-	int i;
-	
-	if( pDirtyTextures ){
+	if(pDirtyTextures){
 		pAComponent->RemoveAllTextures();
-		for( i=0; i<pTextureCount; i++ ){
-			pAComponent->AddTexture( pTextures[ i ]->GetATexture() );
-		}
+		pTextures.Visit([&](const deoalComponentTexture &t){
+			pAComponent->AddTexture(t.GetATexture());
+		});
 		
 		pDirtyTextures = false;
 	}
 	
-	for( i=0; i<pTextureCount; i++ ){
-		pTextures[ i ]->Synchronize();
-	}
+	pTextures.Visit([](deoalComponentTexture &t){
+		t.Synchronize();
+	});
 }
 
 
@@ -479,21 +449,21 @@ void deoalComponent::pSyncTextures(){
 void deoalComponent::pSyncDebug(){
 	// NOTE affects sound is updated during synchronization time and during audio thread time
 	
-	if( pOal.GetDevMode()->GetEnabled() && pOal.GetDevMode()->GetShowAudioModels() ){
-		if( ! pDebug ){
-			pDebug = new deoalComponentDebug( *this );
+	if(pOal.GetDevMode()->GetEnabled() && pOal.GetDevMode()->GetShowAudioModels()){
+		if(!pDebug){
+			pDebug = new deoalComponentDebug(*this);
 		}
 		pDebug->Update();
 		
-	}else if( pDebug ){
+	}else if(pDebug){
 		delete pDebug;
-		pDebug = NULL;
+		pDebug = nullptr;
 	}
 }
 
 
 void deoalComponent::pRequiresSync(){
-	if( ! pLLSyncWorld.GetList() && pParentWorld ){
-		pParentWorld->AddSyncComponent( this );
+	if(!pLLSyncWorld.GetList() && pParentWorld){
+		pParentWorld->AddSyncComponent(this);
 	}
 }

@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-dePropFieldManager::dePropFieldManager( deEngine *engine ) : deResourceManager( engine, ertPropField ){
-	SetLoggingName( "prop field" );
+dePropFieldManager::dePropFieldManager(deEngine *engine) : deResourceManager(engine, ertPropField){
+	SetLoggingName("prop field");
 }
 
 dePropFieldManager::~dePropFieldManager(){
@@ -66,36 +66,23 @@ int dePropFieldManager::GetPropFieldCount() const{
 }
 
 dePropField *dePropFieldManager::GetRootPropField() const{
-	return ( dePropField* )pFields.GetRoot();
+	return (dePropField*)pFields.GetRoot();
 }
 
-dePropField *dePropFieldManager::CreatePropField(){
-	dePropField *field = NULL;
-	
-	try{
-		field = new dePropField( this );
-		
-		GetGraphicSystem()->LoadPropField( field );
-		GetPhysicsSystem()->LoadPropField( field );
-		GetScriptingSystem()->LoadPropField( field );
-		
-		pFields.Add( field );
-		
-	}catch( const deException & ){
-		if( field ){
-			field->FreeReference();
-		}
-		throw;
-	}
-	
+dePropField::Ref dePropFieldManager::CreatePropField(){
+	const dePropField::Ref field(dePropField::Ref::New(this));
+	GetGraphicSystem()->LoadPropField(field);
+	GetPhysicsSystem()->LoadPropField(field);
+	GetScriptingSystem()->LoadPropField(field);
+	pFields.Add(field);
 	return field;
 }
 
 
 
 void dePropFieldManager::ReleaseLeakingResources(){
-	if( GetPropFieldCount() > 0 ){
-		LogWarnFormat( "%i leaking prop fields", GetPropFieldCount() );
+	if(GetPropFieldCount() > 0){
+		LogWarnFormat("%i leaking prop fields", GetPropFieldCount());
 		pFields.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -106,70 +93,55 @@ void dePropFieldManager::ReleaseLeakingResources(){
 ////////////////////
 
 void dePropFieldManager::SystemGraphicLoad(){
-	dePropField *field = ( dePropField* )pFields.GetRoot();
-	
-	while( field ){
-		if( ! field->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadPropField( field );
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		dePropField *field = static_cast<dePropField*>(res);
+		if(!field->GetPeerGraphic()){
+			graSys.LoadPropField(field);
 		}
-		
-		field = ( dePropField* )field->GetLLManagerNext();
-	}
+	});
 }
 
 void dePropFieldManager::SystemGraphicUnload(){
-	dePropField *field = ( dePropField* )pFields.GetRoot();
-	
-	while( field ){
-		field->SetPeerGraphic( NULL );
-		field = ( dePropField* )field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<dePropField*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void dePropFieldManager::SystemPhysicsLoad(){
-	dePropField *field = ( dePropField* )pFields.GetRoot();
-	
-	while( field ){
-		if( ! field->GetPeerPhysics() ){
-			GetPhysicsSystem()->LoadPropField( field );
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		dePropField *field = static_cast<dePropField*>(res);
+		if(!field->GetPeerPhysics()){
+			phySys.LoadPropField(field);
 		}
-		
-		field = ( dePropField* )field->GetLLManagerNext();
-	}
+	});
 }
 
 void dePropFieldManager::SystemPhysicsUnload(){
-	dePropField *field = ( dePropField* )pFields.GetRoot();
-	
-	while( field ){
-		field->SetPeerPhysics( NULL );
-		field = ( dePropField* )field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<dePropField*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void dePropFieldManager::SystemScriptingLoad(){
-	dePropField *field = ( dePropField* )pFields.GetRoot();
-	
-	while( field ){
-		if( ! field->GetPeerPhysics() ){
-			GetScriptingSystem()->LoadPropField( field );
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		dePropField *field = static_cast<dePropField*>(res);
+		if(!field->GetPeerPhysics()){
+			scrSys.LoadPropField(field);
 		}
-		
-		field = ( dePropField* )field->GetLLManagerNext();
-	}
+	});
 }
 
 void dePropFieldManager::SystemScriptingUnload(){
-	dePropField *field = ( dePropField* )pFields.GetRoot();
-	
-	while( field ){
-		field->SetPeerScripting( NULL );
-		field = ( dePropField* )field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<dePropField*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 
 
-void dePropFieldManager::RemoveResource( deResource *resource ){
-	pFields.RemoveIfPresent( resource );
+void dePropFieldManager::RemoveResource(deResource *resource){
+	pFields.RemoveIfPresent(resource);
 }

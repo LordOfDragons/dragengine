@@ -39,22 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVideoDecoder::deVideoDecoder( deVideoManager &manager, deVideo *video ) :
-pVideoManager( manager ),
-pVideo( video ),
-pPeerVideo( NULL ),
-pLLManagerPrev( NULL ),
-pLLManagerNext( NULL )
+deVideoDecoder::deVideoDecoder(deVideoManager &manager, deVideo *video) :
+pVideoManager(manager),
+pVideo(video),
+pPeerVideo(nullptr),
+pLLManager(this)
 {
-	if( ! video ){
-		DETHROW( deeInvalidParam );
+	if(!video){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deVideoDecoder::~deVideoDecoder(){
-	SetPeerVideo( NULL );
+	SetPeerVideo(nullptr);
 	
-	pVideoManager.RemoveDecoder( this );
+	pVideoManager.RemoveDecoder(this);
 }
 
 
@@ -63,18 +62,18 @@ deVideoDecoder::~deVideoDecoder(){
 ///////////////
 
 int deVideoDecoder::GetPosition(){
-	DEASSERT_TRUE( pPeerVideo )
+	DEASSERT_TRUE(pPeerVideo)
 	return pPeerVideo->GetPosition();
 }
 
-void deVideoDecoder::SetPosition( int position ){
-	DEASSERT_TRUE( pPeerVideo )
-	pPeerVideo->SetPosition( position );
+void deVideoDecoder::SetPosition(int position){
+	DEASSERT_TRUE(pPeerVideo)
+	pPeerVideo->SetPosition(position);
 }
 
-bool deVideoDecoder::DecodeFrame( void *buffer, int size ){
-	DEASSERT_TRUE( pPeerVideo )
-	return pPeerVideo->DecodeFrame( buffer, size );
+bool deVideoDecoder::DecodeFrame(void *buffer, int size){
+	DEASSERT_TRUE(pPeerVideo)
+	return pPeerVideo->DecodeFrame(buffer, size);
 }
 
 
@@ -82,26 +81,16 @@ bool deVideoDecoder::DecodeFrame( void *buffer, int size ){
 // System Peers
 /////////////////
 
-void deVideoDecoder::SetPeerVideo( deBaseVideoDecoder *peer ){
-	if( peer == pPeerVideo ){
+void deVideoDecoder::SetPeerVideo(deBaseVideoDecoder *peer){
+	if(peer == pPeerVideo){
 		return;
 	}
 	
-	if( pPeerVideo ){
+	if(pPeerVideo){
 		delete pPeerVideo;
 	}
 	pPeerVideo = peer;
 }
 
-void deVideoDecoder::SetLLManagerNext( deVideoDecoder *resource ){
-	pLLManagerNext = resource;
-}
-
-void deVideoDecoder::SetLLManagerPrev( deVideoDecoder *resource ){
-	pLLManagerPrev = resource;
-}
-
 void deVideoDecoder::MarkLeaking(){
-	pLLManagerNext = NULL;
-	pLLManagerPrev = NULL;
 }

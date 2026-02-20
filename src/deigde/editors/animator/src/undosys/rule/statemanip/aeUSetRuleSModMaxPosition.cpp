@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModMaxPosition::aeUSetRuleSModMaxPosition( aeRuleStateManipulator *rule, const decVector &newMax ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModMaxPosition::aeUSetRuleSModMaxPosition(aeRuleStateManipulator *rule, const decVector &newMax){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Set state manipulator rule maximum" );
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMaximum");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleSModMaxPosition::~aeUSetRuleSModMaxPosition(){
 ///////////////
 
 void aeUSetRuleSModMaxPosition::Undo(){
-	pRule->SetMaximumPosition( pOldMax );
+	pRule->SetMaximumPosition(pOldMax);
 }
 
 void aeUSetRuleSModMaxPosition::Redo(){
-	pRule->SetMaximumPosition( pNewMax );
+	pRule->SetMaximumPosition(pNewMax);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleSModMaxPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxPosition::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

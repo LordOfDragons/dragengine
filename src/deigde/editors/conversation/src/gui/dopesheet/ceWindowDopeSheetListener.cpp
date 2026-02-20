@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWindowDopeSheetListener::ceWindowDopeSheetListener( ceWindowDopeSheet &window ) :
-pWindow( window ){
+ceWindowDopeSheetListener::ceWindowDopeSheetListener(ceWindowDopeSheet &window) :
+pWindow(window){
 }
 
 ceWindowDopeSheetListener::~ceWindowDopeSheetListener(){
@@ -53,59 +53,39 @@ ceWindowDopeSheetListener::~ceWindowDopeSheetListener(){
 // Management
 ///////////////
 
-void ceWindowDopeSheetListener::ConversationChanged( ceConversation *conversation ){
-	if( conversation != pWindow.GetConversation() ){
+void ceWindowDopeSheetListener::ConversationChanged(ceConversation *conversation){
+	if(conversation != pWindow.GetConversation()){
 		return;
 	}
 	
 	pWindow.OnActionChanged();
 }
 
-void ceWindowDopeSheetListener::CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot ){
-	if( conversation != pWindow.GetConversation()
-	|| cameraShot != conversation->GetActiveCameraShot() ){
+void ceWindowDopeSheetListener::CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot){
+	if(conversation != pWindow.GetConversation()
+	|| cameraShot != conversation->GetActiveCameraShot()){
 		return;
 	}
 }
 
-void ceWindowDopeSheetListener::ActiveCameraShotChanged( ceConversation *conversation ){
-	if( conversation != pWindow.GetConversation() ){
+void ceWindowDopeSheetListener::ActiveCameraShotChanged(ceConversation *conversation){
+	if(conversation != pWindow.GetConversation()){
 		return;
 	}
 }
 
 
 
-void ceWindowDopeSheetListener::FileStructureChanged( ceConversation *conversation ){
-	if( conversation != pWindow.GetConversation() ){
-		return;
-	}
-	
-	pWindow.OnActionChanged();
-}
-
-void ceWindowDopeSheetListener::ActiveFileChanged( ceConversation *conversation ){
-	if( conversation != pWindow.GetConversation() ){
+void ceWindowDopeSheetListener::FileStructureChanged(ceConversation *conversation){
+	if(conversation != pWindow.GetConversation()){
 		return;
 	}
 	
 	pWindow.OnActionChanged();
 }
 
-
-
-void ceWindowDopeSheetListener::TopicStructureChanged( ceConversation *conversation, ceConversationFile *file ){
-	if( conversation != pWindow.GetConversation()
-	|| file != conversation->GetActiveFile() ){
-		return;
-	}
-	
-	pWindow.OnActionChanged();
-}
-
-void ceWindowDopeSheetListener::ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file ){
-	if( conversation != pWindow.GetConversation()
-	|| file != conversation->GetActiveFile() ){
+void ceWindowDopeSheetListener::ActiveFileChanged(ceConversation *conversation){
+	if(conversation != pWindow.GetConversation()){
 		return;
 	}
 	
@@ -114,23 +94,43 @@ void ceWindowDopeSheetListener::ActiveTopicChanged( ceConversation *conversation
 
 
 
-void ceWindowDopeSheetListener::ActionChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction *action ){
-	if( conversation != pWindow.GetConversation()
+void ceWindowDopeSheetListener::TopicStructureChanged(ceConversation *conversation, ceConversationFile *file){
+	if(conversation != pWindow.GetConversation()
+	|| file != conversation->GetActiveFile()){
+		return;
+	}
+	
+	pWindow.OnActionChanged();
+}
+
+void ceWindowDopeSheetListener::ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file){
+	if(conversation != pWindow.GetConversation()
+	|| file != conversation->GetActiveFile()){
+		return;
+	}
+	
+	pWindow.OnActionChanged();
+}
+
+
+
+void ceWindowDopeSheetListener::ActionChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction *action){
+	if(conversation != pWindow.GetConversation()
 	|| file != conversation->GetActiveFile()
 	|| topic != file->GetActiveTopic()
-	|| action != topic->GetActiveAction() ){
+	|| action != topic->GetActiveAction()){
 		return;
 	}
 	
 	pWindow.OnActionChanged();
 }
 
-void ceWindowDopeSheetListener::ActiveChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic ){
-	if( conversation != pWindow.GetConversation()
+void ceWindowDopeSheetListener::ActiveChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic){
+	if(conversation != pWindow.GetConversation()
 	|| file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
@@ -139,16 +139,16 @@ ceConversationTopic *topic ){
 
 
 
-void ceWindowDopeSheetListener::PlaybackChanged( ceConversation *conversation ){
-	if( conversation != pWindow.GetConversation() ){
+void ceWindowDopeSheetListener::PlaybackChanged(ceConversation *conversation){
+	if(conversation != pWindow.GetConversation()){
 		return;
 	}
 	
 	pWindow.OnPlaybackChanged();
 }
 
-void ceWindowDopeSheetListener::PlaybackActionStackChanged( ceConversation *conversation ){
-	if( conversation != pWindow.GetConversation() ){
+void ceWindowDopeSheetListener::PlaybackActionStackChanged(ceConversation *conversation){
+	if(conversation != pWindow.GetConversation()){
 		return;
 	}
 	

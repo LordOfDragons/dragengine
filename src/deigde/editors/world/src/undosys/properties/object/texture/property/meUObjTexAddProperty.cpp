@@ -41,33 +41,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexAddProperty::meUObjTexAddProperty( meObjectTexture *texture, const char *key, const char *value ) :
-pTexture( texture ),
-pKey( key ),
-pValue( value )
+meUObjTexAddProperty::meUObjTexAddProperty(meObjectTexture *texture, const char *key, const char *value) :
+pTexture(texture),
+pKey(key),
+pValue(value)
 {
-	if( ! texture || strlen( key ) == 0 ){
-		DETHROW( deeInvalidParam );
+	if(!texture || strlen(key) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object texture add property" );
+	SetShortInfo("@World.UObjTexAddProperty.ObjectTextureAddProperty");
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexAddProperty::~meUObjTexAddProperty(){
-	pCleanUp();
 }
 
 
@@ -75,31 +73,20 @@ meUObjTexAddProperty::~meUObjTexAddProperty(){
 // Management
 ///////////////
 
-void meUObjTexAddProperty::SetValue( const char *value ){
+void meUObjTexAddProperty::SetValue(const char *value){
 	pValue = value;
 }
 
 
 
 void meUObjTexAddProperty::Undo(){
-	pTexture->RemoveProperty( pKey );
+	pTexture->RemoveProperty(pKey);
 }
 
 void meUObjTexAddProperty::Redo(){
-	pTexture->SetProperty( pKey, pValue );
+	pTexture->SetProperty(pKey, pValue);
 }
 
 void meUObjTexAddProperty::ProgressiveRedo(){
 	Redo();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjTexAddProperty::pCleanUp(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
 }

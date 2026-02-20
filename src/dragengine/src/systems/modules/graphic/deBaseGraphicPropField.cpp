@@ -32,22 +32,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deBaseGraphicPropField::deBaseGraphicPropField(){ }
-deBaseGraphicPropField::~deBaseGraphicPropField(){ }
+deBaseGraphicPropField::deBaseGraphicPropField(){}
+deBaseGraphicPropField::~deBaseGraphicPropField(){}
 
 
 
 // Management
 ///////////////
 
-void deBaseGraphicPropField::GroundChanged(){ }
+void deBaseGraphicPropField::GroundChanged(){}
 
-void deBaseGraphicPropField::PositionChanged(){ }
+void deBaseGraphicPropField::PositionChanged(){}
 
-void deBaseGraphicPropField::TypeAdded( int index, dePropFieldType *type ){ }
-void deBaseGraphicPropField::TypeRemoved( int index, dePropFieldType *type ){ }
-void deBaseGraphicPropField::AllTypesRemoved(){ }
-void deBaseGraphicPropField::TypeChanged( int index, dePropFieldType *type ){ }
-void deBaseGraphicPropField::InstancesChanged( int index, dePropFieldType *type ){ }
-void deBaseGraphicPropField::AssignmentsChanged( int index, dePropFieldType *type ){ }
-void deBaseGraphicPropField::BendStatesChanged( int index, dePropFieldType *type ){ }
+void deBaseGraphicPropField::TypeAdded(int index, dePropFieldType *type){}
+void deBaseGraphicPropField::TypeRemoved(int index, dePropFieldType *type){}
+void deBaseGraphicPropField::AllTypesRemoved(){}
+void deBaseGraphicPropField::TypeChanged(int index, dePropFieldType *type){}
+void deBaseGraphicPropField::InstancesChanged(int index, dePropFieldType *type){}
+void deBaseGraphicPropField::AssignmentsChanged(int index, dePropFieldType *type){}
+void deBaseGraphicPropField::BendStatesChanged(int index, dePropFieldType *type){}

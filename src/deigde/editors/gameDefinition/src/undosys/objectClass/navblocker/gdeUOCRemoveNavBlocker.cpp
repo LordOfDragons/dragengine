@@ -41,34 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetNavigationBlockers().Has( navblocker ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetNavigationBlockers().Has(navblocker)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove navigation blocker" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveNavBlocker");
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveNavBlocker::~gdeUOCRemoveNavBlocker(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ gdeUOCRemoveNavBlocker::~gdeUOCRemoveNavBlocker(){
 ///////////////
 
 void gdeUOCRemoveNavBlocker::Undo(){
-	pObjectClass->GetNavigationBlockers().Add( pNavBlocker );
+	pObjectClass->GetNavigationBlockers().Add(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
 }
 
 void gdeUOCRemoveNavBlocker::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCNavigationBlocker() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCNavigationBlocker()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCNavigationBlocker( NULL );
+		gameDefinition->SetActiveOCNavigationBlocker(nullptr);
 	}
 	
-	pObjectClass->GetNavigationBlockers().Remove( pNavBlocker );
+	pObjectClass->GetNavigationBlockers().Remove(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
 }

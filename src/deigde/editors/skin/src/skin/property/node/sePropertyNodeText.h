@@ -36,11 +36,15 @@
  */
 class sePropertyNodeText : public sePropertyNode{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<sePropertyNodeText>;
+	
+	
 	enum eTextMapped{
-		etmFontSize = MappedCount, //<! Font size
-		etmColorRed, //<! Color red component
-		etmColorGreen, //<! Color green component
-		etmColorBlue //<! Color blue component
+		etmFontSize = MappedCount, //!< Font size
+		etmColorRed, //!< Color red component
+		etmColorGreen, //!< Color green component
+		etmColorBlue //!< Color blue component
 	};
 	
 	static const int TextMappedCount = etmColorBlue + 1;
@@ -61,13 +65,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeText( deEngine &engine );
+	sePropertyNodeText(const deEngine &engine);
 	
 	/** \brief Create copy of node. */
-	sePropertyNodeText( const sePropertyNodeText &node );
+	sePropertyNodeText(const sePropertyNodeText &node);
 	
 	/** \brief Clean up node. */
-	virtual ~sePropertyNodeText();
+protected:
+	~sePropertyNodeText() override;
+public:
 	/*@}*/
 	
 	
@@ -78,7 +84,7 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set font path or empty path if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Font or nullptr. */
 	inline const deFont::Ref &GetFont() const{ return pFont; }
@@ -93,7 +99,7 @@ public:
 	 * \brief Set text size in canvas units.
 	 * \details Size is clamped to 0 or larger.
 	 */
-	void SetTextSize( float size );
+	void SetTextSize(float size);
 	
 	/** \brief Update font. */
 	void UpdateFont();
@@ -105,21 +111,21 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Text color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	
 	
 	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	sePropertyNode::Ref Copy() const override;
 	
 	/** \brief Update resources. */
-	virtual void UpdateResources();
+	void UpdateResources() override;
 	/*@}*/
 };
 

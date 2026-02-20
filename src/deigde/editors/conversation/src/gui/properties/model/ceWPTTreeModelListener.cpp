@@ -52,8 +52,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTreeModelListener::ceWPTTreeModelListener( ceWPTTreeModel &model ) :
-pModel( model ){
+ceWPTTreeModelListener::ceWPTTreeModelListener(ceWPTTreeModel &model) :
+pModel(model){
 }
 
 ceWPTTreeModelListener::~ceWPTTreeModelListener(){
@@ -64,86 +64,86 @@ ceWPTTreeModelListener::~ceWPTTreeModelListener(){
 // Management
 ///////////////
 
-void ceWPTTreeModelListener::TargetStructureChanged( ceConversation* ){
+void ceWPTTreeModelListener::TargetStructureChanged(ceConversation*){
 }
 
-void ceWPTTreeModelListener::TargetChanged( ceConversation*, ceTarget* ){
-}
-
-
-
-void ceWPTTreeModelListener::CameraShotStructureChanged( ceConversation* ){
-}
-
-void ceWPTTreeModelListener::CameraShotChanged( ceConversation*, ceCameraShot* ){
+void ceWPTTreeModelListener::TargetChanged(ceConversation*, ceTarget*){
 }
 
 
 
-void ceWPTTreeModelListener::GestureStructureChanged( ceConversation* ){
+void ceWPTTreeModelListener::CameraShotStructureChanged(ceConversation*){
 }
 
-void ceWPTTreeModelListener::GestureChanged( ceConversation*, ceGesture* ){
-}
-
-
-
-void ceWPTTreeModelListener::FacePoseStructureChanged( ceConversation* ){
-}
-
-void ceWPTTreeModelListener::FacePoseChanged( ceConversation*, ceFacePose* ){
+void ceWPTTreeModelListener::CameraShotChanged(ceConversation*, ceCameraShot*){
 }
 
 
 
-void ceWPTTreeModelListener::FileStructureChanged( ceConversation* ){
+void ceWPTTreeModelListener::GestureStructureChanged(ceConversation*){
 }
 
-void ceWPTTreeModelListener::FileChanged( ceConversation*, ceConversationFile* ){
+void ceWPTTreeModelListener::GestureChanged(ceConversation*, ceGesture*){
 }
 
-void ceWPTTreeModelListener::ActiveFileChanged( ceConversation *conversation ){
-	if( conversation != pModel.GetConversation() ){
+
+
+void ceWPTTreeModelListener::FacePoseStructureChanged(ceConversation*){
+}
+
+void ceWPTTreeModelListener::FacePoseChanged(ceConversation*, ceFacePose*){
+}
+
+
+
+void ceWPTTreeModelListener::FileStructureChanged(ceConversation*){
+}
+
+void ceWPTTreeModelListener::FileChanged(ceConversation*, ceConversationFile*){
+}
+
+void ceWPTTreeModelListener::ActiveFileChanged(ceConversation *conversation){
+	if(conversation != pModel.GetConversation()){
 		return;
 	}
 	
 	pModel.UpdateActions();
 	pModel.SelectTopicActive();
 	
-	pModel.GetForwardListener().ActiveFileChanged( conversation );
+	pModel.GetForwardListener().ActiveFileChanged(conversation);
 }
 
 
 
-void ceWPTTreeModelListener::TopicStructureChanged( ceConversation*, ceConversationFile* ){
+void ceWPTTreeModelListener::TopicStructureChanged(ceConversation*, ceConversationFile*){
 }
 
-void ceWPTTreeModelListener::TopicChanged( ceConversation*, ceConversationFile*, ceConversationTopic* ){
+void ceWPTTreeModelListener::TopicChanged(ceConversation*, ceConversationFile*, ceConversationTopic*){
 }
 
-void ceWPTTreeModelListener::ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file ){
-	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile() ){
+void ceWPTTreeModelListener::ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file){
+	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()){
 		return;
 	}
 	
 	pModel.UpdateActions();
 	pModel.SelectTopicActive();
 	
-	pModel.GetForwardListener().ActiveTopicChanged( conversation, file );
+	pModel.GetForwardListener().ActiveTopicChanged(conversation, file);
 }
 
 
 
-void ceWPTTreeModelListener::ActionStructureChanged( ceConversation *conversation,
-ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action ){
-	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTTreeModelListener::ActionStructureChanged(ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action){
+	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
-	if( action ){
-		ceWPTTIMAction * const model = pModel.DeepFindAction( action );
-		if( model ){
+	if(action){
+		ceWPTTIMAction * const model = pModel.DeepFindAction(action);
+		if(model){
 			model->Update();
 		}
 		
@@ -155,32 +155,32 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	// tree the listener of the WPTopic is called but no model is yet assigned. this will
 	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
 	// the WPTopic properly updates
-	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic()->SelectActivePanel();
 }
 
-void ceWPTTreeModelListener::ActionChanged( ceConversation *conversation,
-ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action ){
-	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTTreeModelListener::ActionChanged(ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action){
+	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
-	ceWPTTIMAction * const model = pModel.DeepFindAction( action );
-	if( model ){
+	ceWPTTIMAction * const model = pModel.DeepFindAction(action);
+	if(model){
 		model->Update();
 	}
 }
 
-void ceWPTTreeModelListener::ConditionStructureChanged( ceConversation *conversation,
-ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action ){
-	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTTreeModelListener::ConditionStructureChanged(ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action){
+	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
-	if( action ){
-		ceWPTTIMAction * const model = pModel.DeepFindAction( action );
-		if( model ){
+	if(action){
+		ceWPTTIMAction * const model = pModel.DeepFindAction(action);
+		if(model){
 			model->Update();
 		}
 		
@@ -192,58 +192,58 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	// tree the listener of the WPTopic is called but no model is yet assigned. this will
 	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
 	// the WPTopic properly updates
-	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic()->SelectActivePanel();
 }
 
-void ceWPTTreeModelListener::ConditionChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction*, ceConversationCondition *condition ){
-	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() ){
+void ceWPTTreeModelListener::ConditionChanged(ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*, ceConversationCondition *condition){
+	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic()){
 		return;
 	}
 	
-	ceWPTTIMCondition * const model = pModel.DeepFindCondition( condition );
-	if( model ){
+	ceWPTTIMCondition * const model = pModel.DeepFindCondition(condition);
+	if(model){
 		model->Update();
 	}
 }
 
-void ceWPTTreeModelListener::ActiveChanged( ceConversation *conversation,
-ceConversationFile *file, ceConversationTopic *topic ){
-	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() || ! pModel.GetTreeList() || pModel.GetPreventUpdate() ){
+void ceWPTTreeModelListener::ActiveChanged(ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic){
+	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() || !pModel.GetTreeList() || pModel.GetPreventUpdate()){
 		return;
 	}
 	
-	if( topic->GetActiveCondition() ){
-		ceWPTTIMCondition * const condition = pModel.DeepFindCondition( topic->GetActiveCondition() );
-		if( condition ){
+	if(topic->GetActiveCondition()){
+		ceWPTTIMCondition * const condition = pModel.DeepFindCondition(topic->GetActiveCondition());
+		if(condition){
 			condition->SetAsCurrentItem();
 			return;
 		}
 	}
 	
-	if( topic->GetActiveAction() ){
-		ceWPTTIMAction * const action = pModel.DeepFindAction( topic->GetActiveAction() );
-		if( action ){
+	if(topic->GetActiveAction()){
+		ceWPTTIMAction * const action = pModel.DeepFindAction(topic->GetActiveAction());
+		if(action){
 			action->SetAsCurrentItem();
 			return;
 		}
 	}
 	
-	pModel.GetTreeList()->SetSelection( NULL );
+	pModel.GetTreeList()->SetSelection(nullptr);
 }
 
 
 
-void ceWPTTreeModelListener::ActorStructureChanged( ceConversation* ){
+void ceWPTTreeModelListener::ActorStructureChanged(ceConversation*){
 }
 
-void ceWPTTreeModelListener::ActorChanged( ceConversation*, ceConversationActor* ){
+void ceWPTTreeModelListener::ActorChanged(ceConversation*, ceConversationActor*){
 }
 
-void ceWPTTreeModelListener::LanguagePackChanged( ceConversation *conversation ){
-	if( conversation != pModel.GetConversation() ){
+void ceWPTTreeModelListener::LanguagePackChanged(ceConversation *conversation){
+	if(conversation != pModel.GetConversation()){
 		return;
 	}
 	

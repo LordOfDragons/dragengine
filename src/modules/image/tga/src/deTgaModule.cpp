@@ -28,9 +28,9 @@
 #include <string.h>
 #include "deTgaModule.h"
 #include "deTgaImageInfos.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/common/file/decBaseFileReader.h"
-#include "dragengine/common/file/decBaseFileWriter.h"
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -39,7 +39,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -51,12 +51,12 @@ MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule( deLoadableModule *loadableMo
 // has to be named CreateModule returning deBaseModule.
 // returns NULL on error.
 /////////////////////////////////////////////////////////
-deBaseModule *TGACreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *TGACreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	try{
-		module = new deTgaModule( *loadableModule );
-	}catch( const deException & ){
-		return NULL;
+		module = new deTgaModule(*loadableModule);
+	}catch(const deException &){
+		return nullptr;
 	}
 	return module;
 }
@@ -67,20 +67,19 @@ deBaseModule *TGACreateModule( deLoadableModule *loadableModule ){
 //////////////////////
 
 // constructor, destructor
-deTgaModule::deTgaModule( deLoadableModule &loadableModule ) :
-deBaseImageModule( loadableModule ){
+deTgaModule::deTgaModule(deLoadableModule &loadableModule) :
+deBaseImageModule(loadableModule){
 }
 deTgaModule::~deTgaModule(){
 }
 
 // images
 deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
-	deTgaImageInfo *infos = NULL;
+	deTgaImageInfo *infos = nullptr;
 	bool troubles = false;
 	try{
 		// create infos object
 		infos = new deTgaImageInfo;
-		if(!infos) DETHROW(deeOutOfMemory);
 		// read tgaInfos.header
 		file.Read(&infos->header, sizeof(tgaHdr));
 		if(infos->header.imageType!=3 && infos->header.imageType!=2 &&
@@ -90,9 +89,9 @@ deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
 		// finished
 		if(troubles){
 			delete infos;
-			return NULL;
+			return nullptr;
 		}
-	}catch( const deException & ){
+	}catch(const deException &){
 		if(infos) delete infos;
 		throw;
 	}
@@ -146,13 +145,13 @@ void deTgaModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	}
 }
 void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
-	if( image.GetBitCount() != 8 ) DETHROW( deeInvalidParam );
+	if(image.GetBitCount() != 8) DETHROW(deeInvalidParam);
 	int componentCount = image.GetComponentCount();
-	if( componentCount != 1 && componentCount != 3 && componentCount != 4 ) DETHROW( deeInvalidParam );
+	if(componentCount != 1 && componentCount != 3 && componentCount != 4) DETHROW(deeInvalidParam);
 	
-	sRGBA8 *dataRGBA;
-	sRGB8 *dataRGB;
-	sGrayscale8 *dataAlpha;
+	const sRGBA8 *dataRGBA;
+	const sRGB8 *dataRGB;
+	const sGrayscale8 *dataAlpha;
 	tgaHdr header;
 	int p, size;
 	int width = image.GetWidth();
@@ -160,9 +159,9 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	// write header
 	header.idLength = 0;
 	header.clrMapType = 0;
-	if( componentCount == 4 ){
+	if(componentCount == 4){
 		header.imageType = 1;
-	}else if( componentCount == 3 ){
+	}else if(componentCount == 3){
 		header.imageType = 2;
 	}else{
 		header.imageType = 3;
@@ -179,7 +178,7 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	file.Write(&header, sizeof(header));
 	// save pixel data
 	size = width * height;
-	if( componentCount == 4 ){
+	if(componentCount == 4){
 		dataRGBA = image.GetDataRGBA8();
 		for(p=0; p<size; p++){
 			file.WriteByte(dataRGBA[p].blue);
@@ -187,7 +186,7 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 			file.WriteByte(dataRGBA[p].red);
 			file.WriteByte(dataRGBA[p].alpha);
 		}
-	}else if( componentCount == 3 ){
+	}else if(componentCount == 3){
 		dataRGB = image.GetDataRGB8();
 		for(p=0; p<size; p++){
 			file.WriteByte(dataRGB[p].blue);
@@ -211,6 +210,8 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deTgaModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<deTgaModuleInternal>;
+	
 	deTgaModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Targa");
 		SetDescription("Handles images in uncompressed Targe format.");
@@ -232,7 +233,7 @@ public:
 	}
 };
 
-deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
-	return new deTgaModuleInternal(system);
+deTObjectReference<deInternalModule> deTgaRegisterInternalModule(deModuleSystem *system){
+	return deTgaModuleInternal::Ref::New(system);
 }
 #endif

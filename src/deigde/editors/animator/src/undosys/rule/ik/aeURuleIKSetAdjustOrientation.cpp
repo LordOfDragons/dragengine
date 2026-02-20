@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetAdjustOrientation::aeURuleIKSetAdjustOrientation( aeRuleInverseKinematic *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeURuleIKSetAdjustOrientation::aeURuleIKSetAdjustOrientation(aeRuleInverseKinematic *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleInverseKinematicSetAdjustOrientation");
 		
-		SetShortInfo( "Inverse Kinematic set adjust orientation" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeURuleIKSetAdjustOrientation::~aeURuleIKSetAdjustOrientation(){
 ///////////////
 
 void aeURuleIKSetAdjustOrientation::Undo(){
-	pRule->SetAdjustOrientation( ! pRule->GetAdjustOrientation() );
+	pRule->SetAdjustOrientation(!pRule->GetAdjustOrientation());
 }
 
 void aeURuleIKSetAdjustOrientation::Redo(){
-	pRule->SetAdjustOrientation( ! pRule->GetAdjustOrientation() );
+	pRule->SetAdjustOrientation(!pRule->GetAdjustOrientation());
 }
 
 
@@ -79,5 +77,4 @@ void aeURuleIKSetAdjustOrientation::Redo(){
 //////////////////////
 
 void aeURuleIKSetAdjustOrientation::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

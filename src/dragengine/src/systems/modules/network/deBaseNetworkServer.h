@@ -55,7 +55,7 @@ public:
 	 * The format of the address is specific to the network module.
 	 * Returns true if listening or false if something went wrong.
 	 */
-	virtual bool ListenOn( const char *address );
+	virtual bool ListenOn(const char *address);
 	
 	/** \brief Stop listening. */
 	virtual void StopListening();

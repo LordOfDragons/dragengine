@@ -25,12 +25,12 @@
 #ifndef _DEOGLPERSISTENTRENDERTASK_H_
 #define _DEOGLPERSISTENTRENDERTASK_H_
 
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
-#include <dragengine/common/math/decMath.h>
-
 #include "../../../deoglBasics.h"
-#include "../../../shaders/paramblock/deoglShaderParameterBlockList.h"
+#include "../../../shaders/paramblock/deoglShaderParameterBlock.h"
+
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
@@ -58,13 +58,13 @@ private:
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
-	deoglShaderParameterBlockList pSPBInstances;
+	deoglShaderParameterBlock::List pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
-	decPointerLinkedList pOwners;
-	decPointerDictionaryExt pOwnersMap;
-	decPointerLinkedList pPipelines;
-	decPointerDictionaryExt pPipelinesMap;
+	decTLinkedList<deoglPersistentRenderTaskOwner> pOwners;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskOwner*> pOwnersMap;
+	decTLinkedList<deoglPersistentRenderTaskPipeline> pPipelines;
+	decTDictionary<int,deoglPersistentRenderTaskPipeline*> pPipelinesMap;
 	
 	
 	
@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task. */
-	deoglPersistentRenderTask( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTask(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up render task. */
 	~deoglPersistentRenderTask();
@@ -83,62 +83,68 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Prepare persistent render for rendering. */
-	void PrepareForRender( deoglRenderThread &renderThread );
+	void PrepareForRender(deoglRenderThread &renderThread);
 	
 	/** Render parameter shader parameter block or \em NULL. */
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
 	/** Set render parameter shader parameter block or \em NULL to use none. */
-	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
+	void SetRenderParamBlock(deoglSPBlockUBO *paramBlock);
 	
 	/** Instances texture buffer object or \em NULL. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
 	/** Set instances texture buffer object or \em NULL to use none. */
-	void SetTBOInstances( GLuint tbo );
+	void SetTBOInstances(GLuint tbo);
 	
 	/** Use SPB instance flags. */
 	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
 	/** Set use instance flags. */
-	void SetUseSPBInstanceFlags( bool useFlags );
+	void SetUseSPBInstanceFlags(bool useFlags);
 	
 	
+	
+	/** Owners. */
+	inline const decTLinkedList<deoglPersistentRenderTaskOwner> &GetOwners() const{ return pOwners; }
 	
 	/** Number of owners. */
 	int GetOwnerCount() const;
 	
 	/** Get root owner. */
-	decPointerLinkedList::cListEntry *GetRootOwner() const;
+	decTLinkedList<deoglPersistentRenderTaskOwner>::Element *GetRootOwner() const;
 	
 	/** Get matching owner or NULL. */
-	deoglPersistentRenderTaskOwner *GetOwnerWith( deObject *owner, unsigned int hash ) const;
+	deoglPersistentRenderTaskOwner *GetOwnerWith(unsigned int uniqueKey) const;
 	
 	/** Add owner. */
-	deoglPersistentRenderTaskOwner *AddOwner( deObject *owner, unsigned int hash );
+	deoglPersistentRenderTaskOwner *AddOwner(deObject *owner, unsigned int uniqueKey);
 	
 	/** Remove owner. */
-	void RemoveOwner( deoglPersistentRenderTaskOwner *owner );
+	void RemoveOwner(deoglPersistentRenderTaskOwner *owner);
 	
 	/** Remove all owners. */
 	void RemoveAllOwners();
 	
 	
 	
+	/** Pipelines. */
+	inline const decTLinkedList<deoglPersistentRenderTaskPipeline> &GetPipelines() const{ return pPipelines; }
+	
 	/** Number of pipelines. */
 	int GetPipelineCount() const;
 	
 	/** Root pipeline. */
-	decPointerLinkedList::cListEntry *GetRootPipeline() const;
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *GetRootPipeline() const;
 	
 	/** Pipeline with pipeline or nullptr. */
-	deoglPersistentRenderTaskPipeline *GetPipelineWith( const deoglPipeline *pipeline ) const;
+	deoglPersistentRenderTaskPipeline *GetPipelineWith(const deoglPipeline *pipeline) const;
 	
 	/** Add pipeline. */
-	deoglPersistentRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
+	deoglPersistentRenderTaskPipeline *AddPipeline(const deoglPipeline *pipeline);
 	
 	/** Remove pipeline. */
-	void RemovePipeline( deoglPersistentRenderTaskPipeline *pipeline );
+	void RemovePipeline(deoglPersistentRenderTaskPipeline *pipeline);
 	
 	/** Remove all pipelines. */
 	void RemoveAllPipelines();
@@ -164,17 +170,17 @@ public:
 	void Clear();
 	
 	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( deoglPersistentRenderTaskOwner &owner );
+	void RemoveOwnedBy(deoglPersistentRenderTaskOwner &owner);
 	/*@}*/
 
 	
 	
 	
 private:
-	void pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThread );
-	void pAssignSPBInstances( deoglRenderThread &renderThread );
+	void pCalcSPBInstancesMaxEntries(deoglRenderThread &renderThread);
+	void pAssignSPBInstances(deoglRenderThread &renderThread);
 	void pUpdateSPBInstances();
-	void pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread );
+	void pCreateSPBInstanceParamBlock(deoglRenderThread &renderThread);
 };
 
 #endif

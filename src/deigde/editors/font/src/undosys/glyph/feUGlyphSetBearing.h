@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 
@@ -35,8 +35,12 @@ class feFontGlyph;
  * \brief Glyph Set Bearing Undo Action.
  */
 class feUGlyphSetBearing : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUGlyphSetBearing>;
+	
+	
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldBearing;
 	int pNewBearing;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetBearing( feFontGlyph *glyph, int newBearing );
+	feUGlyphSetBearing(feFontGlyph *glyph, int newBearing);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUGlyphSetBearing();
+	~feUGlyphSetBearing() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

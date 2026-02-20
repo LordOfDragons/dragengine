@@ -43,32 +43,22 @@
 ////////////////////////////
 
 ceUCAASpeakBodyLAClear::ceUCAASpeakBodyLAClear(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(nullptr)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak clear body look-at" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearBodyLookAt");
 	
-	pOldStrips = actorSpeak->GetBodyLookAtList();
+	pOldStrips = actorSpeak->GetBodyLookAts();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakBodyLAClear::~ceUCAASpeakBodyLAClear(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -77,11 +67,11 @@ ceUCAASpeakBodyLAClear::~ceUCAASpeakBodyLAClear(){
 ///////////////
 
 void ceUCAASpeakBodyLAClear::Undo(){
-	pActorSpeak->GetBodyLookAtList() = pOldStrips;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetBodyLookAts() = pOldStrips;
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakBodyLAClear::Redo(){
-	pActorSpeak->GetBodyLookAtList().RemoveAll();
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetBodyLookAts().RemoveAll();
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

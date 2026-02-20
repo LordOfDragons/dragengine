@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../../../../undosys/objectClass/forceField/gdeUOCAddForceField.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCForceFieldPaste::gdeMAOCForceFieldPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Force Field",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class force field" )
+gdeMAOCForceFieldPaste::gdeMAOCForceFieldPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCForceFieldPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Force Field",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCForceField::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCForceFieldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCForceField &clipOCForceField =
-		( const gdeClipboardDataOCForceField & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddForceField::Ref::New(&objectClass, 
+		gdeOCForceField::Ref::New(*clip.DynamicCast<gdeClipboardDataOCForceField>()->GetForceField()));
 	
-	deObjectReference forceField;
-	forceField.TakeOver( new gdeOCForceField( *clipOCForceField.GetForceField() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddForceField( &objectClass,
-		( gdeOCForceField* )( deObject* )forceField );
-	undo->SetShortInfo( "Paste object class particle emitter" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCForceField");
 	return undo;
 }
 
 void gdeMAOCForceFieldPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCForceField::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME));
 }

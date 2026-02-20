@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set roll off" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetRollOff");
 	
 	pOldValue = speaker->GetRollOff();
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
 ///////////////
 
 void gdeUOCSpeakerSetRollOff::Undo(){
-	pSpeaker->SetRollOff( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetRollOff(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetRollOff::Redo(){
-	pSpeaker->SetRollOff( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetRollOff(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

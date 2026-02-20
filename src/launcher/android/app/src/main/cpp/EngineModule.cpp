@@ -83,7 +83,7 @@ jobject EngineModule::Convert(const delEngineModule &module) {
     pFldModLibFileHashIs.Set(objMod, module.GetLibFileHashIs());
     pFldModLibFileEntryPoint.Set(objMod, module.GetLibFileEntryPoint());
 
-    const delEMParameterList &params = module.GetParameters();
+    const delEMParameter::List &params = module.GetParameters();
     const int paramCount = params.GetCount();
     int j;
 
@@ -92,11 +92,11 @@ jobject EngineModule::Convert(const delEngineModule &module) {
         const delEMParameter &param = *params.GetAt(j);
         const deModuleParameter &info = param.GetInfo();
 
-        const int entryCount = info.GetSelectionEntryCount();
+        const int entryCount = info.GetSelectionEntries().GetCount();
         int k;
         const JniObjectArray objEntries(pEnv, pClsEntry, entryCount);
         for(k=0; k<entryCount; k++){
-            const deModuleParameter::SelectionEntry &entry = info.GetSelectionEntryAt(k);
+            const deModuleParameter::SelectionEntry &entry = info.GetSelectionEntries()[k];
             const JniObject objEntry(pClsEntry.New());
             pFldEntryValue.Set(objEntry, entry.value);
             pFldEntryDisplayName.Set(objEntry, entry.displayName);

@@ -42,6 +42,10 @@
  */
 class DE_DLL_EXPORT igdeContainerBorder : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeContainerBorder>;
+	
+	
 	/** \brief Area. */
 	enum eArea{
 		/** \brief Top side. */
@@ -76,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerBorder( igdeEnvironment &environment, int spacing = 0 );
+	igdeContainerBorder(igdeEnvironment &environment, int spacing = 0);
 	
 	
 	
@@ -87,7 +91,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainerBorder();
+	~igdeContainerBorder() override;
 	/*@}*/
 	
 	
@@ -99,19 +103,19 @@ public:
 	inline int GetSpacing() const{ return pSpacing; }
 	
 	/** \brief Add child to area. */
-	virtual void AddChild( igdeWidget *child, eArea area );
+	virtual void AddChild(igdeWidget *child, eArea area);
 	
 	/** \brief Add child not possible without specifying an area. */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	void RemoveChild(igdeWidget *child) override;
 	
 	/** \brief Remove all children. */
-	virtual void RemoveAllChildren();
+	void RemoveAllChildren() override;
 	
-	/** \brief Widget in area or NULL. */
-	igdeWidget *GetWidgetIn( eArea area ) const;
+	/** \brief Widget in area or nullptr. */
+	igdeWidget *GetWidgetIn(eArea area) const;
 	/*@}*/
 	
 	
@@ -125,13 +129,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

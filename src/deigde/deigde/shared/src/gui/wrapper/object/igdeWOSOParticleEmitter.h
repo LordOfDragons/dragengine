@@ -26,11 +26,11 @@
 #define _IGDEWOSOPARTICLEEMITTER_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -41,14 +41,19 @@ class igdeGDCParticleEmitter;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOParticleEmitter : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSOParticleEmitter>;
+	
+	
 private:
 	const igdeGDCParticleEmitter &pGDParticleEmitter;
-	deParticleEmitterInstanceReference pParticleEmitter;
-	igdeResourceLoaderListenerReference pResLoad;
+	deParticleEmitterInstance::Ref pParticleEmitter;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerCasting;
+	igdeTriggerExpression::Ref pTriggerCasting;
 	decString pPathEmitter;
 	
 	
@@ -57,10 +62,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOParticleEmitter( igdeWObject &wrapper, const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix );
+	igdeWOSOParticleEmitter(igdeWObject &wrapper, const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOParticleEmitter();
+	~igdeWOSOParticleEmitter() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -68,41 +76,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter resource. */
-	inline deParticleEmitterInstance *GetParticleEmitter() const{ return pParticleEmitter; }
+	inline const deParticleEmitterInstance::Ref &GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief Init triggers. */
-	virtual void InitTriggers();
+	void InitTriggers() override;
 	
 	/** \brief Update trigger. */
-	virtual void UpdateTriggers();
+	void UpdateTriggers() override;
 	
 	/** \brief Update visibility. */
-	virtual void UpdateVisibility();
+	void UpdateVisibility() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief Collision filter changed. */
-	virtual void UpdateCollisionFilter();
+	void UpdateCollisionFilter() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

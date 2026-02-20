@@ -51,9 +51,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new collision world. */
-	debpCollisionWorld( debpWorld &world, btDispatcher *dispatcher, btBroadphaseInterface *pairCache,
+	debpCollisionWorld(debpWorld &world, btDispatcher *dispatcher, btBroadphaseInterface *pairCache,
 		debpConstraintSolver *constraintSolver, btCollisionConfiguration *collisionConfiguration,
-		btSoftBodySolver *softBodySolver );
+		btSoftBodySolver *softBodySolver);
 	/** \brief Cleans up the collision world. */
 	virtual ~debpCollisionWorld();
 	/*@}*/
@@ -75,7 +75,7 @@ public:
 // 	virtual void updateAabbs();
 	
 	/** \brief Check for dynamic collisions after a simulation step. */
-	void CheckDynamicCollisions( btScalar timeStep );
+	void CheckDynamicCollisions(btScalar timeStep);
 	
 	/**
 	 * \brief Script callback safe ray testing.
@@ -88,8 +88,8 @@ public:
 	 * 
 	 * \note no code seems to be using this.
 	 */
-	void safeRayTest( const btVector3 &rayFromWorld, const btVector3 &rayToWorld,
-		RayResultCallback &resultCallback ) const;
+	void safeRayTest(const btVector3 &rayFromWorld, const btVector3 &rayToWorld,
+		RayResultCallback &resultCallback) const;
 	
 	/**
 	 * \brief Script callback safe convex sweep testing.
@@ -102,9 +102,9 @@ public:
 	 * 
 	 * \note used by debpSweepCollisionTest.
 	 */
-	void safeConvexSweepTest( const btConvexShape *castShape, const btTransform &from,
+	void safeConvexSweepTest(const btConvexShape *castShape, const btTransform &from,
 		const btTransform &to, ConvexResultCallback &resultCallback,
-		btScalar allowedCcdPenetration = ( btScalar )0 );
+		btScalar allowedCcdPenetration = (btScalar)0);
 	
 	/**
 	 * \brief Script callback safe contact testing.
@@ -117,7 +117,7 @@ public:
 	 * 
 	 * \note no code seems to be using this.
 	 */
-	void safeContactTest( btCollisionObject *colObj, ContactResultCallback &resultCallback );
+	void safeContactTest(btCollisionObject *colObj, ContactResultCallback &resultCallback);
 	
 	/**
 	 * \brief Script callback safe contact testing.
@@ -130,8 +130,8 @@ public:
 	 * 
 	 * \note used by debpTouchSensor.
 	 */
-	void safeContactPairTest( btCollisionObject *colObjA, btCollisionObject *colObjB,
-		ContactResultCallback& resultCallback );
+	void safeContactPairTest(btCollisionObject *colObjA, btCollisionObject *colObjB,
+		ContactResultCallback& resultCallback);
 	
 	/**
 	 * \brief Script callback safe contact testing.
@@ -141,7 +141,7 @@ public:
 	 * 
 	 * \note used by debpTouchSensor.
 	 */
-	bool safeContactPairTest( btCollisionObject *colObjA, btCollisionObject *colObjB );
+	bool safeContactPairTest(btCollisionObject *colObjA, btCollisionObject *colObjB);
 	
 	
 	
@@ -157,8 +157,8 @@ public:
 	 * 
 	 * \note used by debpParticleEmitterInstanceType
 	 */
-	void convexSweepTest( const btConvexShape *castShape, const btTransform &from, const btTransform &to,
-	ConvexResultCallback &resultCallback,  btScalar allowedCcdPenetration = ( btScalar )0.0 );
+	void convexSweepTest(const btConvexShape *castShape, const btTransform &from, const btTransform &to,
+	ConvexResultCallback &resultCallback,  btScalar allowedCcdPenetration = (btScalar)0.0);
 	
 	
 	
@@ -173,10 +173,10 @@ public:
 	 * 
 	 * \note used by debpSweepCollisionTest.
 	 */
-	void objectQuerySingle( const btConvexShape *castShape, const btTransform &convexFromTrans,
+	void objectQuerySingle(const btConvexShape *castShape, const btTransform &convexFromTrans,
 	const btTransform &convexToTrans, btCollisionObject *collisionObject,
 	const btCollisionShape *collisionShape, const btTransform &colObjWorldTransform,
-	ConvexResultCallback &resultCallback, btScalar allowedPenetration );
+	ConvexResultCallback &resultCallback, btScalar allowedPenetration);
 	
 	
 	
@@ -196,10 +196,10 @@ public:
 	 * 
 	 * \note used by debpCollisionWorld::SingleSweepCallback.
 	 */
-	void contactTest( btCollisionObject *colObj, ContactResultCallback &resultCallback );
+	void contactTest(btCollisionObject *colObj, ContactResultCallback &resultCallback);
 	
 	/** \brief Solve constraints. */
-	virtual void solveConstraints( btContactSolverInfo &solverInfo );
+	virtual void solveConstraints(btContactSolverInfo &solverInfo);
 	
 #if 0
 	/**
@@ -207,15 +207,15 @@ public:
 	 * This allows for several queries: first hit, all hits, any hit, dependent on the value returned by the callback.
 	 * Modified to use own collision tests where possible.
 	 */
-	virtual void rayTest( const btVector3 &rayFromWorld, const btVector3 &rayToWorld, RayResultCallback &resultCallback ) const;
+	virtual void rayTest(const btVector3 &rayFromWorld, const btVector3 &rayToWorld, RayResultCallback &resultCallback) const;
 	
 	/**
 	 * Modified version of btCollisionWorld::rayTestSingle. Uses own collision tests where possible. For all other
 	 * cases uses the original btCollisionWorld::rayTestSingle method.
 	 */
-	void RayTestSingle( const btTransform &rayFromTrans, const btTransform &rayToTrans,
+	void RayTestSingle(const btTransform &rayFromTrans, const btTransform &rayToTrans,
 		btCollisionObject *collisionObject, const btCollisionShape *collisionShape,
-		const btTransform &colObjWorldTransform, RayResultCallback &resultCallback ) const;
+		const btTransform &colObjWorldTransform, RayResultCallback &resultCallback) const;
 #endif
 	/*@}*/
 	
@@ -231,7 +231,7 @@ protected:
 	 * \brief Performs an single simulation step.
 	 * \details Used by btSoftMultiBodyDynamicsWorld. Overloaded to lock the delayed operation while running.
 	 */
-	virtual void internalSingleStepSimulation( btScalar timeStep );
+	virtual void internalSingleStepSimulation(btScalar timeStep);
 };
 
 #endif

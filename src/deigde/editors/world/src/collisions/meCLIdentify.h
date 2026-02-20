@@ -50,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	meCLIdentify( meWorld &world );
+	meCLIdentify(meWorld &world);
 	
 	/** Clean up visitor. */
-	virtual ~meCLIdentify();
+	~meCLIdentify() override;
 	/*@}*/
 	
 	
@@ -80,15 +80,15 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
-	virtual void ColliderChanged( deCollider *owner );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 	
 	
 private:
-	meObject *pGetObjectForCollider( deCollider *collider ) const;
+	meObject *pGetObjectForCollider(deCollider *collider) const;
 };
 
 #endif

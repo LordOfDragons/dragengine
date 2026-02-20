@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbeCopy::gdeMAOCEnvMapProbeCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Environment Map Probe",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class environment map probe" )
+gdeMAOCEnvMapProbeCopy::gdeMAOCEnvMapProbeCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbeCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@GameDefinition.Menu.OCEnvMapProbeCopy.ToolTip")
 {
 }
 
@@ -59,29 +59,25 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Environment Map Probe",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe ){
-		return NULL;
+igdeUndo::Ref gdeMAOCEnvMapProbeCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe){
+		return {};
 	}
 	
 	gdeOCEnvMapProbe * const envMapProbe = gameDefinition.GetActiveOCEnvMapProbe();
-	if( ! envMapProbe ){
-		return NULL;
+	if(!envMapProbe){
+		return {};
 	}
 	
-	deObjectReference clipOCEnvMapProbe;
-	clipOCEnvMapProbe.TakeOver( new gdeOCEnvMapProbe( *envMapProbe ) );
+	const gdeOCEnvMapProbe::Ref clipOCEnvMapProbe(gdeOCEnvMapProbe::Ref::New(*envMapProbe));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCEnvMapProbe( ( gdeOCEnvMapProbe* )( deObject* )clipOCEnvMapProbe ) );
-	
-	pWindowMain.GetClipboard().Set( clipData );
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCEnvMapProbe::Ref::New(clipOCEnvMapProbe));
+	return {};
 }
 
 void gdeMAOCEnvMapProbeCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL );
+		&& gameDefinition->GetActiveOCEnvMapProbe() != nullptr);
 }

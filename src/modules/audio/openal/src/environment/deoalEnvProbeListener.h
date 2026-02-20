@@ -69,7 +69,7 @@ public:
 	deoalEnvProbeListener();
 	
 	/** \brief Create environment probe listener. */
-	deoalEnvProbeListener( const deoalEnvProbeListener &listener );
+	deoalEnvProbeListener(const deoalEnvProbeListener &listener);
 	
 	/** \brief Clean up environment probe listener. */
 	~deoalEnvProbeListener();
@@ -92,13 +92,13 @@ public:
 	inline float GetReflectionDelay() const{ return pReflectionDelay; }
 	
 	/** \brief Set reflected. */
-	void SetReflected( float gainLow, float gainMedium, float gainHigh, float delay );
+	void SetReflected(float gainLow, float gainMedium, float gainHigh, float delay);
 	
 	/** \brief Reflection pan direction. */
 	inline const decVector &GetReflectionPan() const{ return pReflectionPan; }
 	
 	/** \brief Set reflection pan direction. */
-	void SetReflectionPan( const decVector &pan );
+	void SetReflectionPan(const decVector &pan);
 	
 	/** \brief Reverberation gain for low frequencies. */
 	inline float GetReverberationGainLow() const{ return pReverberationGainLow; }
@@ -113,13 +113,13 @@ public:
 	inline float GetReverberationDelay() const{ return pReverberationDelay; }
 	
 	/** \brief Set reverberation. */
-	void SetReverberation( float gainLow, float gainMedium, float gainHigh, float delay );
+	void SetReverberation(float gainLow, float gainMedium, float gainHigh, float delay);
 	
 	/** \brief Reverberation pan direction. */
 	inline const decVector &GetReverberationPan() const{ return pReverberationPan; }
 	
 	/** \brief Set reverberation pan direction. */
-	void SetReverberationPan( const decVector &pan );
+	void SetReverberationPan(const decVector &pan);
 	
 	
 	
@@ -133,13 +133,13 @@ public:
 	inline float GetReverberationTimeHigh() const{ return pReverberationTimeHigh; }
 	
 	/** \brief Set reverberation. */
-	void SetReverberationTime( float timeLow, float timeMedium, float timeHigh );
+	void SetReverberationTime(float timeLow, float timeMedium, float timeHigh);
 	
 	/** \brief Echo delay. */
 	inline float GetEchoDelay() const{ return pEchoDelay; }
 	
 	/** \brief Set echo. */
-	void SetEcho( float delay );
+	void SetEcho(float delay);
 	
 	/** \brief Impulse response. */
 	inline deoalImpulseResponse &GetImpulseResponse(){ return pImpulseResponse; }
@@ -152,10 +152,10 @@ public:
 	
 	
 	/** \brif Apply scaled parameters. */
-	void AddScaled( const deoalEnvProbeListener &listener, float factor );
+	void AddScaled(const deoalEnvProbeListener &listener, float factor);
 	
 	/** \brif Normalize. */
-	void Normalize( float factor );
+	void Normalize(float factor);
 	
 	/** \brif Clear. */
 	void Clear();
@@ -166,10 +166,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalEnvProbeListener &operator=( const deoalEnvProbeListener &listener );
+	deoalEnvProbeListener &operator=(const deoalEnvProbeListener &listener);
 	
 	/** \brief Add. */
-	deoalEnvProbeListener &operator+=( const deoalEnvProbeListener &listener );
+	deoalEnvProbeListener &operator+=(const deoalEnvProbeListener &listener);
 	/*@}*/
 };
 

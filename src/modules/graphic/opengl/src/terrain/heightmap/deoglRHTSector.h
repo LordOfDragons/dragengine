@@ -28,6 +28,8 @@
 #include "../../deoglBasics.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
@@ -50,7 +52,8 @@ class deHeightTerrainSector;
 class deoglRHTSector : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deoglRHTSector> Ref;
+	using Ref = deTObjectReference<deoglRHTSector>;
+	
 	
 private:
 	deoglRHeightTerrain &pHeightTerrain;
@@ -60,29 +63,25 @@ private:
 	float pBaseHeight;
 	float pScaling;
 	
-	deoglHTSTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglHTSTexture> pTextures;
 	bool pValidTextures;
 	bool pDirtyMaskTextures;
 	bool pTexturesRequirePrepareForRender;
 	
-	deoglTexture *pMasks[ OGLHTS_MAX_MASK_TEXTURES ];
-	deoglPixelBuffer::Ref pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
+	deoglTexture *pMasks[OGLHTS_MAX_MASK_TEXTURES];
+	deoglPixelBuffer::Ref pPixBufMasks[OGLHTS_MAX_MASK_TEXTURES];
 	
-	float *pHeights;
+	decTList<float> pHeights;
 	float pMinHeight;
 	float pMaxHeight;
 	
-	GLuint *pVBODataPoints1;
-	int pVBODataPoints1Count;
-	GLuint *pVBODataPoints2;
-	int pVBODataPoints2Count;
-	GLuint *pVBODataFaces;
-	int pVBODataFacesCount;
+	decTList<GLuint> pVBODataPoints1;
+	decTList<GLuint> pVBODataPoints2;
+	decTList<GLuint> pVBODataFaces;
 	
 	bool pDirtyPoints;
 	
-	deoglHTSCluster *pClusters;
+	decTList<deoglHTSCluster> pClusters;
 	int pClusterCount;
 	
 	bool pValid;
@@ -93,11 +92,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain sector. */
-	deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
+	deoglRHTSector(deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector);
 	
 protected:
 	/** Clean up height terrain sector. */
-	virtual ~deoglRHTSector();
+	~deoglRHTSector() override;
 	/*@}*/
 	
 	
@@ -112,7 +111,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Sector coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
@@ -125,14 +124,14 @@ public:
 	
 	/** Calculate world matrix. */
 	decDMatrix CalcWorldMatrix() const;
-	decDMatrix CalcWorldMatrix( const decDVector &referencePosition ) const;
+	decDMatrix CalcWorldMatrix(const decDVector &referencePosition) const;
 	
 	/** Calculate world position. */
 	decDVector CalcWorldPosition() const;
-	decDVector CalcWorldPosition( const decDVector &referencePosition ) const;
+	decDVector CalcWorldPosition(const decDVector &referencePosition) const;
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();
@@ -146,10 +145,10 @@ public:
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
-	deoglHTSTexture &GetTextureAt( int index ) const;
+	deoglHTSTexture &GetTextureAt(int index) const;
 	
 	/** Terrain height map mask textures. */
 	inline deoglTexture **GetMaskTextures(){ return pMasks; }
@@ -166,7 +165,8 @@ public:
 	
 	
 	/** Heights. */
-	inline float *GetHeights() const{ return pHeights; }
+	inline float *GetHeights(){ return pHeights.GetArrayPointer(); }
+	inline const float *GetHeights() const{ return pHeights.GetArrayPointer(); }
 	
 	/** Minimum height. */
 	inline float GetMinHeight() const{ return pMinHeight; }
@@ -175,10 +175,10 @@ public:
 	inline float GetMaxHeight() const{ return pMaxHeight; }
 	
 	/** Height changed. */
-	void HeightChanged( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
+	void HeightChanged(const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to);
 	
 	/** Sector changed. */
-	void SectorChanged( const deHeightTerrainSector &sector );
+	void SectorChanged(const deHeightTerrainSector &sector);
 	
 	
 	
@@ -186,11 +186,15 @@ public:
 	inline int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at location. */
-	deoglHTSCluster &GetClusterAt( int x, int z ) const;
-	deoglHTSCluster &GetClusterAt( const decPoint &coordinate ) const;
+	deoglHTSCluster &GetClusterAt(int x, int z);
+	const deoglHTSCluster &GetClusterAt(int x, int z) const;
+	
+	deoglHTSCluster &GetClusterAt(const decPoint &coordinate);
+	const deoglHTSCluster &GetClusterAt(const decPoint &coordinate) const;
 	
 	/** List of clusters. */
-	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
+	inline deoglHTSCluster *GetClusters(){ return pClusters.GetArrayPointer(); }
+	inline const deoglHTSCluster *GetClusters() const{ return pClusters.GetArrayPointer(); }
 	
 	/** Clusters update world compute element textures. */
 	void ClustersUpdateWorldComputeElementTextures();
@@ -201,17 +205,17 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateArrays( const deHeightTerrainSector &sector );
-	void pCreateHeightMap( const deHeightTerrainSector &sector );
+	void pCreateArrays(const deHeightTerrainSector &sector);
+	void pCreateHeightMap(const deHeightTerrainSector &sector);
 	
-	void pSetTextureCount( int count );
+	void pSetTextureCount(int count);
 	
 	void pDropMaskPixelBuffers();
 	
-	void pSyncSector( const deHeightTerrainSector &sector );
-	void pSyncTextures( const deHeightTerrainSector &sector );
-	void pSyncMaskTextures( const deHeightTerrainSector &sector );
-	void pSyncHeightMap( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
+	void pSyncSector(const deHeightTerrainSector &sector);
+	void pSyncTextures(const deHeightTerrainSector &sector);
+	void pSyncMaskTextures(const deHeightTerrainSector &sector);
+	void pSyncHeightMap(const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to);
 	
 	void pUpdateMaskTextures();
 	void pCreateVBODataPoints1();

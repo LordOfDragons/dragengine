@@ -25,20 +25,23 @@
 #ifndef _CEWPVIEW_H_
 #define _CEWPVIEW_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include "ceWPViewListener.h"
+#include "../../conversation/ceConversation.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
-#include <deigde/gui/properties/igdeWPTriggerTableReference.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
+#include <deigde/gui/properties/igdeWPTriggerTable.h>
 
 
 class ceProp;
@@ -52,8 +55,6 @@ class ceConversationFile;
 class ceConversationTopic;
 
 class saeGameDefinition;
-class ceWPViewListener;
-class ceConversation;
 
 
 
@@ -61,78 +62,81 @@ class ceConversation;
  * View property window.
  */
 class ceWPView : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<ceWPView>;
+	
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPViewListener *pListener;
-	ceConversation *pConversation;
+	ceWPViewListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPEnvObject;
-	igdeWPCameraReference pWPCamera;
-	igdeWPCameraReference pWPCameraFree;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPEnvObject;
+	igdeWPCamera::Ref pWPCamera;
+	igdeWPCamera::Ref pWPCameraFree;
 	
-	igdeComboBoxReference pCBProps;
-	igdeButtonReference pBtnPropMenu;
-	igdeTextFieldReference pEditPropName;
-	igdeTextFieldReference pEditPropClass;
-	igdeButtonReference pBtnPropClass;
-	igdeEditVectorReference pEditPropPos;
-	igdeEditVectorReference pEditPropRot;
-	igdeCheckBoxReference pChkPropVisible;
+	igdeComboBox::Ref pCBProps;
+	igdeButton::Ref pBtnPropMenu;
+	igdeTextField::Ref pEditPropName;
+	igdeTextField::Ref pEditPropClass;
+	igdeButton::Ref pBtnPropClass;
+	igdeEditVector::Ref pEditPropPos;
+	igdeEditVector::Ref pEditPropRot;
+	igdeCheckBox::Ref pChkPropVisible;
 	
-	igdeSpinTextFieldReference pSpinActor;
-	igdeButtonReference pBtnActorMenu;
-	igdeTextFieldReference pEditActorID;
-	igdeTextFieldReference pEditActorAliasID;
-	igdeEditVectorReference pEditActorPos;
-	igdeEditVectorReference pEditActorOri;
-	igdeEditPathReference pEditActorPathModel;
-	igdeEditPathReference pEditActorPathSkin;
-	igdeEditPathReference pEditActorPathRig;
-	igdeEditPathReference pEditActorPathSpeechAnim;
-	igdeEditPathReference pEditActorPathEyeAnimator;
-	igdeEditPathReference pEditActorPathFaceAnimator;
-	igdeTextFieldReference pEditActorBoneHeadRotator;
-	igdeCheckBoxReference pChkActorWaiting;
+	igdeSpinTextField::Ref pSpinActor;
+	igdeButton::Ref pBtnActorMenu;
+	igdeTextField::Ref pEditActorID;
+	igdeTextField::Ref pEditActorAliasID;
+	igdeEditVector::Ref pEditActorPos;
+	igdeEditVector::Ref pEditActorOri;
+	igdeEditPath::Ref pEditActorPathModel;
+	igdeEditPath::Ref pEditActorPathSkin;
+	igdeEditPath::Ref pEditActorPathRig;
+	igdeEditPath::Ref pEditActorPathSpeechAnim;
+	igdeEditPath::Ref pEditActorPathEyeAnimator;
+	igdeEditPath::Ref pEditActorPathFaceAnimator;
+	igdeTextField::Ref pEditActorBoneHeadRotator;
+	igdeCheckBox::Ref pChkActorWaiting;
 	
-	igdeComboBoxReference pCBActorPose;
-	igdeButtonReference pBtnActorPoseMenu;
-	igdeEditPathReference pEditActorPosePathAnimator;
-	igdeComboBoxReference pCBActorPoseController;
-	igdeButtonReference pBtnActorPoseControllerMenu;
-	igdeComboBoxReference pCBActorPoseControllerUpdateType;
-	igdeTextFieldReference pEditActorPoseControllerValue;
-	igdeEditVectorReference pEditActorPoseControllerVector;
+	igdeComboBox::Ref pCBActorPose;
+	igdeButton::Ref pBtnActorPoseMenu;
+	igdeEditPath::Ref pEditActorPosePathAnimator;
+	igdeComboBox::Ref pCBActorPoseController;
+	igdeButton::Ref pBtnActorPoseControllerMenu;
+	igdeComboBox::Ref pCBActorPoseControllerUpdateType;
+	igdeTextField::Ref pEditActorPoseControllerValue;
+	igdeEditVector::Ref pEditActorPoseControllerVector;
 	
-	igdeComboBoxReference pCBActorGesture;
-	igdeButtonReference pBtnActorGestureMenu;
-	igdeEditPathReference pEditActorGesturePathAnimator;
+	igdeComboBox::Ref pCBActorGesture;
+	igdeButton::Ref pBtnActorGestureMenu;
+	igdeEditPath::Ref pEditActorGesturePathAnimator;
 	
-	igdeListBoxReference pListActorCommands;
-	igdeListBoxReference pListActorParameters;
+	igdeListBox::Ref pListActorCommands;
+	igdeListBox::Ref pListActorParameters;
 	
-	igdeSpinTextFieldReference pSpinCoordSys;
-	igdeButtonReference pBtnCoordSysMenu;
-	igdeTextFieldReference pEditCoordSysID;
-	igdeTextFieldReference pEditCoordSysAliasID;
-	igdeEditVectorReference pEditCoordSysPosition;
-	igdeEditVectorReference pEditCoordSysRotation;
+	igdeSpinTextField::Ref pSpinCoordSys;
+	igdeButton::Ref pBtnCoordSysMenu;
+	igdeTextField::Ref pEditCoordSysID;
+	igdeTextField::Ref pEditCoordSysAliasID;
+	igdeEditVector::Ref pEditCoordSysPosition;
+	igdeEditVector::Ref pEditCoordSysRotation;
 	
-	igdeComboBoxFilterReference pCBPlaybackFile;
-	igdeComboBoxFilterReference pCBPlaybackTopic;
-	igdeButtonReference pBtnPlaybackSelectTopic;
-	igdeButtonReference pBtnPlaybackRewind;
-	igdeCheckBoxReference pChkPlaybackRunning;
-	igdeCheckBoxReference pChkPlaybackPaused;
-	igdeCheckBoxReference pChkPlaybackAutoAdvanceCommands;
-	igdeComboBoxReference pCBPlaybackCameraHandling;
-	igdeListBoxReference pListPlaybackCommands;
-	igdeListBoxReference pListPlaybackVars;
+	igdeComboBoxFilter::Ref pCBPlaybackFile;
+	igdeComboBoxFilter::Ref pCBPlaybackTopic;
+	igdeButton::Ref pBtnPlaybackSelectTopic;
+	igdeButton::Ref pBtnPlaybackRewind;
+	igdeCheckBox::Ref pChkPlaybackRunning;
+	igdeCheckBox::Ref pChkPlaybackPaused;
+	igdeCheckBox::Ref pChkPlaybackAutoAdvanceCommands;
+	igdeComboBox::Ref pCBPlaybackCameraHandling;
+	igdeListBox::Ref pListPlaybackCommands;
+	igdeListBox::Ref pListPlaybackVars;
 	
-	igdeWPTriggerTableReference pWPPlaybackTriggerTable;
+	igdeWPTriggerTable::Ref pWPPlaybackTriggerTable;
 	
-	igdeComboBoxReference pCBPlaybackMissingWords;
-	igdeButtonReference pBtnPlaybackMissingWordsMenu;
+	igdeComboBox::Ref pCBPlaybackMissingWords;
+	igdeButton::Ref pBtnPlaybackMissingWordsMenu;
 	
 	
 	
@@ -140,11 +144,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	ceWPView( ceWindowProperties &windowProperties );
+	ceWPView(ceWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPView();
+	~ceWPView() override;
 	/*@}*/
 	
 	
@@ -156,10 +160,10 @@ public:
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Update view. */
 	void UpdateView();
@@ -210,7 +214,7 @@ public:
 	void UpdateActorGestures();
 	
 	/** Select actor pose gesture. */
-	void SelectActorPoseGesture( ceActorGesture *gesture );
+	void SelectActorPoseGesture(ceActorGesture *gesture);
 	
 	/** Update actor gesture. */
 	void UpdateActorGesture();
@@ -222,7 +226,7 @@ public:
 	void UpdateActorController();
 	
 	/** Select active actor pose. */
-	void SelectActorPoseController( ceActorController *controller );
+	void SelectActorPoseController(ceActorController *controller);
 	
 	/** Update actor commands list. */
 	void UpdateActorCommands();

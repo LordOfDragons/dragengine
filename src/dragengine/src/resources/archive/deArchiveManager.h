@@ -25,11 +25,11 @@
 #ifndef _DEARCHIVEMANAGER_H_
 #define _DEARCHIVEMANAGER_H_
 
+#include "deArchive.h"
+#include "deArchiveContainer.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
-
-class deArchive;
-class deArchiveContainer;
+#include "../../common/collection/decTLinkedList.h"
 
 
 /**
@@ -39,9 +39,7 @@ class DE_DLL_EXPORT deArchiveManager : public deFileResourceManager{
 private:
 	deFileResourceList pArchives;
 	
-	deArchiveContainer *pContainerRoot;
-	deArchiveContainer *pContainerTail;
-	int pContainerCount;
+	decTLinkedList<deArchiveContainer> pContainers;
 	
 	
 	
@@ -49,40 +47,37 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive resource manager. */
-	deArchiveManager( deEngine *engine );
+	deArchiveManager(deEngine *engine);
 	
 	/** \brief Clean up archive resource manager and report leaking resources. */
-	virtual ~deArchiveManager();
+	~deArchiveManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Archives. */
+	inline const deFileResourceList &GetArchives() const{ return pArchives; }
+	
 	/** \brief Number of archives. */
 	int GetArchiveCount() const;
 	
 	/** \brief Root archive resource for iteration purpose. */
 	deArchive *GetRootArchive() const;
 	
-	/** \brief Archive with filename or NULL if not loaded yet. */
-	deArchive *GetArchiveWith( const char *filename ) const;
-	
-	/** \brief Archive with filename or NULL if not loaded yet. */
-	deArchive *GetArchiveWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	/** \brief Open archive from file relative to base path. */
+	deArchive::Ref OpenArchive(const char *filename, const char *basePath);
 	
 	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive( const char *filename, const char *basePath );
-	
-	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deArchive::Ref OpenArchive(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Create archive container. */
-	deArchiveContainer *CreateContainer( const decPath &rootPath,
-		deArchive *archive, const decPath &archivePath );
+	deArchiveContainer::Ref CreateContainer(const decPath &rootPath,
+		deArchive *archive, const decPath &archivePath);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -98,8 +93,8 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
-	void RemoveContainer( deArchiveContainer *container );
+	void RemoveResource(deResource *resource) override;
+	void RemoveContainer(deArchiveContainer *container);
 	/*@}*/
 };
 

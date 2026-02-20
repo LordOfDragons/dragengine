@@ -26,9 +26,9 @@
 #define _MEUOBJECTREMOVEUNUSEDTEXTURES_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../../world/object/texture/meObjectTextureList.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -36,32 +36,40 @@ class meObject;
  * \brief Undo Action Object Remove Unused Textures.
  */
 class meUObjectRemoveUnusedTextures : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectRemoveUnusedTextures>;
+	
+	
 private:
-	meObject *pObject;
-	meObjectTextureList pTextureList;
+	meObject::Ref pObject;
+	meObjectTexture::List pTextureList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectRemoveUnusedTextures( meObject *object );
+	meUObjectRemoveUnusedTextures(meObject *object);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectRemoveUnusedTextures();
+
+protected:
+	~meUObjectRemoveUnusedTextures() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of textures to remove. */
-	inline meObjectTextureList &GetTextureList(){ return pTextureList; }
-	inline const meObjectTextureList &GetTextureList() const{ return pTextureList; }
+	inline meObjectTexture::List &GetTextureList(){ return pTextureList; }
+	inline const meObjectTexture::List &GetTextureList() const{ return pTextureList; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

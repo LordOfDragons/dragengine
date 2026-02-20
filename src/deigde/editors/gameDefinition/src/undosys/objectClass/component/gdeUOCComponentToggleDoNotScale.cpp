@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCComponentToggleDoNotScale::gdeUOCComponentToggleDoNotScale(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle do not scale" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleDoNotScale");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleDoNotScale::~gdeUOCComponentToggleDoNotScale(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCComponentToggleDoNotScale::~gdeUOCComponentToggleDoNotScale(){
 ///////////////
 
 void gdeUOCComponentToggleDoNotScale::Undo(){
-	pComponent->SetDoNotScale( ! pComponent->GetDoNotScale() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetDoNotScale(!pComponent->GetDoNotScale());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleDoNotScale::Redo(){

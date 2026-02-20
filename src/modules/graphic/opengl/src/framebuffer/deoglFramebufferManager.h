@@ -25,7 +25,7 @@
 #ifndef _DEOGLFRAMEBUFFERMANAGER_H_
 #define _DEOGLFRAMEBUFFERMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglFramebuffer;
@@ -90,7 +90,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	decObjectList pFBOs;
+	decTObjectList<deoglFramebuffer> pFBOs;
 	
 	
 public:

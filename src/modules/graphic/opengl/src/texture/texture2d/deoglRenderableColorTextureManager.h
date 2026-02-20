@@ -25,6 +25,8 @@
 #ifndef _DEOGLRENDERABLECOLORTEXTUREMANAGER_H_
 #define _DEOGLRENDERABLECOLORTEXTUREMANAGER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
 class deoglRenderableColorTexture;
 
@@ -42,15 +44,13 @@ class deoglRenderableColorTextureManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableColorTexture **pTextures;
-	int pTextureCount;
-	int pTextureSize;
+	decTUniqueList<deoglRenderableColorTexture> pTextures;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture manager. */
-	deoglRenderableColorTextureManager( deoglRenderThread &renderThread );
+	deoglRenderableColorTextureManager(deoglRenderThread &renderThread);
 	/** Cleans up the renderable texture manager. */
 	~deoglRenderableColorTextureManager();
 	/*@}*/
@@ -58,12 +58,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	/** Retrieves the renderable texture for reading only at the given location. */
-	const deoglRenderableColorTexture *GetTextureAt( int index ) const;
+	const deoglRenderableColorTexture *GetTextureAt(int index) const;
 	
 	/** Retrieves the renderable texture for the given format. */
-	deoglRenderableColorTexture *GetTextureWith( int width, int height, int componentCount, bool isFloat );
+	deoglRenderableColorTexture *GetTextureWith(int width, int height, int componentCount, bool isFloat);
 	/*@}*/
 };
 

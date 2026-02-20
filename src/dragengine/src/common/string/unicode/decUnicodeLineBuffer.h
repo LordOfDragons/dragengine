@@ -25,6 +25,7 @@
 #ifndef _DECUNICODELINEBUFFER_H_
 #define _DECUNICODELINEBUFFER_H_
 
+#include "decUnicodeStringList.h"
 #include "../../../dragengine_export.h"
 
 class decUnicodeString;
@@ -41,8 +42,8 @@ class decUnicodeString;
  */
 class DE_DLL_EXPORT decUnicodeLineBuffer{
 private:
-	decUnicodeString **pLines;
-	int pLineCount, pBufferSize;
+	decUnicodeStringList pLines;
+	int pLineCount, pPosition;
 	
 	
 	
@@ -50,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new line buffer object. */
-	decUnicodeLineBuffer( int initialSize );
+	explicit decUnicodeLineBuffer(int initialSize);
 	
 	/** \brief Frees the line buffer object. */
 	~decUnicodeLineBuffer();
@@ -68,20 +69,20 @@ public:
 	 * 
 	 * All lines beyond this limit are discarded automatically.
 	 */
-	inline int GetBufferSize() const{ return pBufferSize; }
+	int GetBufferSize() const;
 	
 	/**
 	 * \brief Set the size of the line buffer.
 	 * 
 	 * All lines beyond this limit are discarded automatically.
 	 */
-	void SetBufferSize( int bufferSize );
+	void SetBufferSize(int bufferSize);
 	
 	/** \brief String at the given line with 0 being the most recent line. */
-	const decUnicodeString *GetLineAt( int line ) const;
+	const decUnicodeString &GetLineAt(int line) const;
 	
 	/** \brief Adds a string to the end of the list and discards lines beyond the buffer size. */
-	void AddLine( const decUnicodeString &line );
+	void AddLine(const decUnicodeString &line);
 	
 	/** \brief Clears the line buffer. */
 	void Clear();
@@ -91,16 +92,11 @@ public:
 	 * 
 	 * Breaks up the provided string into individual lines and adds them.
 	 */
-	void AddMultipleLines( const decUnicodeString &lines );
+	void AddMultipleLines(const decUnicodeString &lines);
 	
 	/** \brief Fills a unicode string with all lines separated by newlines. */
-	void FillLinesInto( decUnicodeString &string );
+	void FillLinesInto(decUnicodeString &string);
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -40,40 +40,40 @@
 /////////////////////
 
 // func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
-deClassServiceListener::nfRequestResponse::nfRequestResponse( const sInitData &init ) :
-dsFunction( init.clsServiceListener, "requestResponse", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsService ); // service
-	p_AddParameter( init.clsUniqueID ); // id
-	p_AddParameter( init.clsServiceObject ); // response
-	p_AddParameter( init.clsBoolean ); // finished
+deClassServiceListener::nfRequestResponse::nfRequestResponse(const sInitData &init) :
+dsFunction(init.clsServiceListener, "requestResponse", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsService); // service
+	p_AddParameter(init.clsUniqueID); // id
+	p_AddParameter(init.clsServiceObject); // response
+	p_AddParameter(init.clsBoolean); // finished
 }
 
-void deClassServiceListener::nfRequestResponse::RunFunction( dsRunTime*, dsValue* ){
+void deClassServiceListener::nfRequestResponse::RunFunction(dsRunTime*, dsValue*){
 }
 
 
 // func void requestFailed(Service service, UniqueID id, ServiceObject error)
-deClassServiceListener::nfRequestFailed::nfRequestFailed( const sInitData &init ) :
-dsFunction( init.clsServiceListener, "requestFailed", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsService ); // service
-	p_AddParameter( init.clsUniqueID ); // id
-	p_AddParameter( init.clsServiceObject ); // error
+deClassServiceListener::nfRequestFailed::nfRequestFailed(const sInitData &init) :
+dsFunction(init.clsServiceListener, "requestFailed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsService); // service
+	p_AddParameter(init.clsUniqueID); // id
+	p_AddParameter(init.clsServiceObject); // error
 }
 
-void deClassServiceListener::nfRequestFailed::RunFunction( dsRunTime*, dsValue* ){
+void deClassServiceListener::nfRequestFailed::RunFunction(dsRunTime*, dsValue*){
 }
 
 
 // func void eventReceived(Service service, ServiceObject event)
-deClassServiceListener::nfEventReceived::nfEventReceived( const sInitData &init ) :
-dsFunction( init.clsServiceListener, "eventReceived", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsService ); // service
-	p_AddParameter( init.clsServiceObject ); // event
+deClassServiceListener::nfEventReceived::nfEventReceived(const sInitData &init) :
+dsFunction(init.clsServiceListener, "eventReceived", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsService); // service
+	p_AddParameter(init.clsServiceObject); // event
 }
-void deClassServiceListener::nfEventReceived::RunFunction( dsRunTime*, dsValue* ){
+void deClassServiceListener::nfEventReceived::RunFunction(dsRunTime*, dsValue*){
 }
 
 
@@ -84,13 +84,13 @@ void deClassServiceListener::nfEventReceived::RunFunction( dsRunTime*, dsValue* 
 // Constructor, destructor
 ////////////////////////////
 
-deClassServiceListener::deClassServiceListener( deScriptingDragonScript &ds ) :
-dsClass( "ServiceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ),
-pDS( ds )
+deClassServiceListener::deClassServiceListener(deScriptingDragonScript &ds) :
+dsClass("ServiceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassServiceListener::~deClassServiceListener(){
@@ -101,7 +101,7 @@ deClassServiceListener::~deClassServiceListener(){
 // Management
 ///////////////
 
-void deClassServiceListener::CreateClassMembers( dsEngine *engine ){
+void deClassServiceListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsServiceListener = this;
@@ -111,15 +111,15 @@ void deClassServiceListener::CreateClassMembers( dsEngine *engine ){
 	init.clsService = pDS.GetClassService();
 	init.clsServiceObject = pDS.GetClassServiceObject();
 	
-	AddFunction( new nfRequestResponse( init ) ); // function 0
-	AddFunction( new nfRequestFailed( init ) ); // function 1
-	AddFunction( new nfEventReceived( init ) ); // function 2
+	AddFunction(new nfRequestResponse(init)); // function 0
+	AddFunction(new nfRequestFailed(init)); // function 1
+	AddFunction(new nfEventReceived(init)); // function 2
 	
 	CalcMemberOffsets();
 	
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexRequestResponse = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexRequestFailed = funcList.GetIndexOf( GetFunction( 1 ) );
-	pFuncIndexEventReceived = funcList.GetIndexOf( GetFunction( 2 ) );
+	pFuncIndexRequestResponse = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexRequestFailed = funcList.GetIndexOf(GetFunction(1));
+	pFuncIndexEventReceived = funcList.GetIndexOf(GetFunction(2));
 }
 

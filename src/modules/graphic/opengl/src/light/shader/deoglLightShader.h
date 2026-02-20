@@ -34,7 +34,6 @@
 #include <dragengine/deObject.h>
 
 class deoglRenderThread;
-class deoglShaderSources;
 class deoglShaderDefines;
 
 
@@ -43,7 +42,8 @@ class deoglShaderDefines;
  */
 class deoglLightShader : public deObject{
 public:
-	typedef deTObjectReference<deoglLightShader> Ref;
+	using Ref = deTObjectReference<deoglLightShader>;
+	
 	
 	/** Texture targets. */
 	enum eTextureTargets{
@@ -165,10 +165,10 @@ private:
 	
 	const deoglLightShaderConfig pConfig;
 	
-	int pTextureTargets[ ETT_COUNT ];
-	int pInstanceUniformTargets[ EIUT_COUNT ];
+	int pTextureTargets[ETT_COUNT];
+	int pInstanceUniformTargets[EIUT_COUNT];
 	int pUsedInstanceUniformTargetCount;
-	int pLightUniformTargets[ ELUT_COUNT ];
+	int pLightUniformTargets[ELUT_COUNT];
 	int pUsedLightUniformTargetCount;
 	
 	deoglShaderSources::Ref pSources;
@@ -179,13 +179,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin shader. */
-	deoglLightShader( deoglRenderThread &renderThread, const deoglLightShaderConfig &config );
+	deoglLightShader(deoglRenderThread &renderThread, const deoglLightShaderConfig &config);
+	
+protected:
 	/** Cleans up the skin shader. */
-	virtual ~deoglLightShader();
+	~deoglLightShader() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -195,28 +197,28 @@ public:
 	inline const deoglLightShaderConfig &GetConfig() const{ return pConfig; }
 	
 	/** Index for texture target or -1 if not used. */
-	int GetTextureTarget( eTextureTargets target ) const;
+	int GetTextureTarget(eTextureTargets target) const;
 	
 	/** Set index for texture target or -1 if not used. */
-	void SetTextureTarget( eTextureTargets target, int index );
+	void SetTextureTarget(eTextureTargets target, int index);
 	
 	/** Index for instance parameter uniform target or -1 if not used. */
-	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
+	int GetInstanceUniformTarget(eInstanceUniformTargets target) const;
 	
 	/** Set index for instance parameter uniform target or -1 if not used. */
-	void SetInstanceUniformTarget( eInstanceUniformTargets target, int index );
+	void SetInstanceUniformTarget(eInstanceUniformTargets target, int index);
 	
 	/** Index for light parameter uniform target or -1 if not used. */
-	int GetLightUniformTarget( eLightUniformTargets target ) const;
+	int GetLightUniformTarget(eLightUniformTargets target) const;
 	
 	/** Prepare shader if not prepared yet. */
 	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader or nullptr if not generated yet. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	inline const deoglShaderProgram::Ref &GetShader() const{ return pShader; }
 	
 	/** Set index for light parameter uniform target or -1 if not used. */
-	void SetLightUniformTarget( eLightUniformTargets target, int index );
+	void SetLightUniformTarget(eLightUniformTargets target, int index);
 	
 	/** Create instance parameter shader parameter block. */
 	deoglSPBlockUBO::Ref CreateSPBInstParam() const;
@@ -225,7 +227,7 @@ public:
 	deoglSPBlockUBO::Ref CreateSPBLightParam() const;
 	
 	/** Create light occlusion query parameter shader parameter block. */
-	static deoglSPBlockUBO::Ref CreateSPBOccQueryParam( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBOccQueryParam(deoglRenderThread &renderThread);
 	/*@}*/
 	
 	

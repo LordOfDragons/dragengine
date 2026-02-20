@@ -27,8 +27,8 @@
 
 #include "../../animator/rule/aeRuleMirror.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 
@@ -37,21 +37,24 @@
  */
 class aeDialogMirrorMatchName : public igdeDialog{
 private:
-	igdeComboBoxReference pCBType;
-	igdeTextFieldReference pEditFirst;
-	igdeTextFieldReference pEditSecond;
+	igdeComboBox::Ref pCBType;
+	igdeTextField::Ref pEditFirst;
+	igdeTextField::Ref pEditSecond;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeDialogMirrorMatchName>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	aeDialogMirrorMatchName( igdeEnvironment &environment, const char *windowTitle );
+	aeDialogMirrorMatchName(igdeEnvironment &environment, const char *windowTitle);
 	
 protected:
 	/** Clean up dialog. */
-	virtual ~aeDialogMirrorMatchName();
+	~aeDialogMirrorMatchName() override;
 	/*@}*/
 	
 	
@@ -60,19 +63,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set from match name. */
-	void Set( const aeRuleMirror::cMatchName &matchName );
+	void Set(const aeRuleMirror::MatchName &matchName);
 	
 	/** Create match name. */
-	aeRuleMirror::cMatchName::Ref CreateMatchName() const;
+	aeRuleMirror::MatchName::Ref CreateMatchName() const;
 	
 	/**
 	 * Init running. Called by Run() after dialog is created. Subclass can implement to
 	 * init controls after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	
 	/** Accept dialog. */
-	virtual bool Accept();
+	bool Accept() override;
 	/*@}*/
 };
 

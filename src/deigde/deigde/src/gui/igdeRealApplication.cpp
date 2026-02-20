@@ -26,8 +26,9 @@
 #include "igdeWindowMain.h"
 
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -53,14 +54,12 @@ igdeRealApplication::~igdeRealApplication(){
 ///////////////
 
 igdeWindowMain &igdeRealApplication::GetWindowMain() const{
-	igdeMainWindow * const mainWindow = GetMainWindow();
-	DEASSERT_NOTNULL( mainWindow )
-	return *( ( igdeWindowMain* )mainWindow );
+	return GetMainWindow().DynamicCast<igdeWindowMain>();
 }
 
-bool igdeRealApplication::Initialize( const decUnicodeStringList &arguments ){
+bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){
 	try{
-		SetMainWindow( new igdeWindowMain( pEnvironment ), true );
+		SetMainWindow(igdeWindowMain::Ref::New(pEnvironment));
 		GetWindowMain().CreateNativeWidget();
 		
 	// 	if( updateWithTimer ){
@@ -68,31 +67,31 @@ bool igdeRealApplication::Initialize( const decUnicodeStringList &arguments ){
 	// 		GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f - 0.001f ); // 100Hz max update speed, 1ms timer granularity
 	// 		
 	// 	}else{
-			GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f ); // 100Hz max update speed
+			GetWindowMain().SetMinUpdateTime(1.0f / 100.0f); // 100Hz max update speed
 	// 	}
 		
 		// process command line. run application only if it succeeded
-		if( ! GetWindowMain().ProcessCommandLine( arguments ) ){
+		if(!GetWindowMain().ProcessCommandLine(arguments)){
 			GetWindowMain().Close();
 			return false;
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		// it is possible creating the window already failed so we have to check
-		if( GetMainWindow() ){
-			GetWindowMain().DisplayException( e );
+		if(GetMainWindow()){
+			GetWindowMain().DisplayException(e);
 			
 		}else{
 			// if is even possible the logger could not be created so check this too
-			if( pEnvironment.GetLogger() ){
-				pEnvironment.GetLogger()->LogException( "IGDE", e );
+			if(pEnvironment.GetLogger()){
+				pEnvironment.GetLogger()->LogException("IGDE", e);
 				
 			}else{
 				e.PrintError();
 			}
 			
-			igdeCommonDialogs::ErrorFormat( nullptr, "Failed starting IGDE",
-				"Please see logs for details:\n%s", e.FormatOutput().Join( "\n" ).GetString() );
+			igdeCommonDialogs::FatalError("Failed starting IGDE",
+				"Please see logs for details:\n%s", DEJoin(e.FormatOutput(), "\n").GetString());
 		}
 		return false;
 	}

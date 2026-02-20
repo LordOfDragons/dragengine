@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/meWorld.h"
+#include "../../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -44,10 +44,14 @@ class meHeightTerrainTexture;
  * Undo action to set the uv offset of a height image texture.
  */
 class meUHTSetTexUVOffset : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetTexUVOffset>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
@@ -56,20 +60,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVOffset( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newOffset );
+	meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector,
+		meHeightTerrainTexture *texture, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetTexUVOffset();
+
+protected:
+	~meUHTSetTexUVOffset() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

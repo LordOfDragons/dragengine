@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -22,16 +22,24 @@
     <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\guilaunch.cpp">
+    <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.cpp">
+    <ClCompile Include="..\..\..\src\launcher\gui\src\deglLauncher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.cpp">
+    <ClCompile Include="..\..\..\src\launcher\gui\src\deglSignalHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\gui\src\engine\deglEngineProcessHelper.cpp">
@@ -61,10 +69,13 @@
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.cpp">
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.cpp">
@@ -73,13 +84,10 @@
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.cpp">
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.cpp">
@@ -115,117 +123,112 @@
     <ClCompile Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\deglLauncher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\gui\src\deglSignalHandler.cpp">
+    <ClCompile Include="..\..\..\src\launcher\gui\src\guilaunch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\guilaunch.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\foxtoolkit.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\gui\src\deglLauncher.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\gui\src\deglSignalHandler.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc">
-      <Filter>Source Files</Filter>
-    </ResourceCompile>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\glconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\foxtoolkit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\guilaunch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

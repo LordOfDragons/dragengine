@@ -41,32 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID( ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID ){
-	if( ! topic || ! newAliasID ){
-		DETHROW( deeInvalidParam );
+ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID){
+	if(!topic || !newAliasID){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldAliasID = action->GetAliasID();
 	pNewAliasID = newAliasID;
 	
-	SetShortInfo( "Actor add set alias id" );
+	SetShortInfo("@Conversation.Undo.ActorAddSetAliasID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorAddSetAliasID::~ceUCAActorAddSetAliasID(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ ceUCAActorAddSetAliasID::~ceUCAActorAddSetAliasID(){
 ///////////////
 
 void ceUCAActorAddSetAliasID::Undo(){
-	pAction->SetAliasID( pOldAliasID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetAliasID(pOldAliasID.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCAActorAddSetAliasID::Redo(){
-	pAction->SetAliasID( pNewAliasID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetAliasID(pNewAliasID.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }

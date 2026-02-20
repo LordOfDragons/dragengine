@@ -44,37 +44,37 @@
 // Class igdeNativeFoxSwitcher
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxSwitcher, FXSwitcher, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxSwitcher, FXSwitcher, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxSwitcher::igdeNativeFoxSwitcher(){ }
+igdeNativeFoxSwitcher::igdeNativeFoxSwitcher(){}
 
-igdeNativeFoxSwitcher::igdeNativeFoxSwitcher( igdeSwitcher &powner, FXComposite *pparent, int layoutFlags ) :
-FXSwitcher( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &powner ){
+igdeNativeFoxSwitcher::igdeNativeFoxSwitcher(igdeSwitcher &powner, FXComposite *pparent, int layoutFlags) :
+FXSwitcher(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0),
+pOwner(&powner){
 }
 
 igdeNativeFoxSwitcher::~igdeNativeFoxSwitcher(){
 }
 
-igdeNativeFoxSwitcher *igdeNativeFoxSwitcher::CreateNativeWidget( igdeSwitcher &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxSwitcher *igdeNativeFoxSwitcher::CreateNativeWidget(igdeSwitcher &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxSwitcher( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxSwitcher(powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxSwitcher::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -89,7 +89,7 @@ void igdeNativeFoxSwitcher::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxSwitcher::UpdateCurrent(){
-	setCurrent( pOwner->GetCurrent() );
+	setCurrent(pOwner->GetCurrent());
 }
 
 #endif

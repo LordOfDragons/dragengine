@@ -42,51 +42,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElsePaste::ceUCAIfElsePaste( ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, const ceConversationActionList &actions, int index ) :
-ceUCActionPaste( topic, actions, index )
+ceUCAIfElsePaste::ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, const ceConversationAction::List &actions, int index) :
+ceUCActionPaste(topic, actions, index)
 {
-	if( ! ifElse || actions.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(!ifElse || actions.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ifcase ){
-		if( index < 0 || index > ifcase->GetActions().GetCount() ){
-			DETHROW( deeInvalidParam );
+	if(ifcase){
+		if(index < 0 || index > ifcase->GetActions().GetCount()){
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		if( index < 0 || index > ifElse->GetElseActions().GetCount() ){
-			DETHROW( deeInvalidParam );
+		if(index < 0 || index > ifElse->GetElseActions().GetCount()){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	pIfElse = NULL;
-	pCase = NULL;
+	pIfElse = nullptr;
+	pCase = nullptr;
 	
-	if( actions.GetCount() == 1 ){
-		SetShortInfo( "IfElse Action" );
+	if(actions.GetCount() == 1){
+		SetShortInfo("@Conversation.Undo.IfElseAction");
 		
 	}else{
-		SetShortInfo( "IfElse Actions" );
+		SetShortInfo("@Conversation.Undo.IfElseActions");
 	}
 	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
-	if( ifcase ){
+	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElsePaste::~ceUCAIfElsePaste(){
-	if( pCase ){
-		pCase->FreeReference();
-	}
-	if( pIfElse ){
-		pIfElse->FreeReference();
-	}
 }
 
 
@@ -95,29 +86,29 @@ ceUCAIfElsePaste::~ceUCAIfElsePaste(){
 ///////////////
 
 void ceUCAIfElsePaste::Undo(){
-	ceConversationAction *activateAction = NULL;
+	ceConversationAction *activateAction = nullptr;
 	
-	if( pCase ){
-		activateAction = ActivateActionAfterRemove( pCase->GetActions() );
-		pRemoveActions( pCase->GetActions() );
+	if(pCase){
+		activateAction = ActivateActionAfterRemove(pCase->GetActions());
+		pRemoveActions(pCase->GetActions());
 		
 	}else{
-		activateAction = ActivateActionAfterRemove( pIfElse->GetElseActions() );
-		pRemoveActions( pIfElse->GetElseActions() );
+		activateAction = ActivateActionAfterRemove(pIfElse->GetElseActions());
+		pRemoveActions(pIfElse->GetElseActions());
 	}
-	GetTopic().NotifyActionStructureChanged( pIfElse );
+	GetTopic().NotifyActionStructureChanged(pIfElse);
 	
-	GetTopic().SetActive( activateAction ? activateAction : pIfElse, NULL );
+	GetTopic().SetActive(activateAction ? activateAction : pIfElse, nullptr);
 }
 
 void ceUCAIfElsePaste::Redo(){
-	if( pCase ){
-		pInsertActions( pCase->GetActions() );
+	if(pCase){
+		pInsertActions(pCase->GetActions());
 		
 	}else{
-		pInsertActions( pIfElse->GetElseActions() );
+		pInsertActions(pIfElse->GetElseActions());
 	}
-	GetTopic().NotifyActionStructureChanged( pIfElse );
+	GetTopic().NotifyActionStructureChanged(pIfElse);
 	
 	pSelectInserted();
 }

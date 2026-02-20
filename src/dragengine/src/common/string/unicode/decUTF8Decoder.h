@@ -68,10 +68,10 @@ public:
 	bool HasReachedEnd() const;
 	
 	/** \brief Set encoder to use the given string and sets the position. */
-	void SetString( const char *string );
+	void SetString(const char *string);
 	
 	/** \brief Set position. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	
 	/**
 	 * \brief Decode next unicode character from the string.

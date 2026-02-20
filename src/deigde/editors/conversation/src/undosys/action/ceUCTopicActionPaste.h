@@ -34,20 +34,23 @@
  */
 class ceUCTopicActionPaste : public ceUCActionPaste{
 public:
+	using Ref = deTObjectReference<ceUCTopicActionPaste>;
+
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTopicActionPaste( ceConversationTopic *topic, const ceConversationActionList &actions, int index );
+	ceUCTopicActionPaste(ceConversationTopic *topic, const ceConversationAction::List &actions, int index);
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 
 #include <stdint.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 class fbxNode;
@@ -40,11 +40,10 @@ class fbxNode;
 class fbxObjectMap{
 private:
 	struct sBucket{
-		decPointerList objects;
+		decTList<fbxNode*> objects;
 	};
 	
-	sBucket *pBuckets;
-	int pBucketCount;
+	decTList<sBucket> pBuckets;
 	
 	
 	
@@ -52,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object id map. */
-	fbxObjectMap( int expectedCount );
+	fbxObjectMap(int expectedCount);
 	
 	/** \brief Clean up object id map. */
 	~fbxObjectMap();
@@ -64,10 +63,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Add object. */
-	void Add( fbxNode *node );
+	void Add(fbxNode *node);
 	
 	/** \brief Object with ID or NULL if absent. */
-	fbxNode *GetAt( int64_t id ) const;
+	fbxNode *GetAt(int64_t id) const;
 	/*@}*/
 };
 

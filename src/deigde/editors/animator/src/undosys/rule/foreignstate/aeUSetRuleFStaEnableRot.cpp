@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot( aeRuleForeignState *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot(aeRuleForeignState *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateEnableRotation");
 		
-		SetShortInfo( "Set bone rotator rule enable rotation" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeUSetRuleFStaEnableRot::~aeUSetRuleFStaEnableRot(){
 ///////////////
 
 void aeUSetRuleFStaEnableRot::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeUSetRuleFStaEnableRot::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 
@@ -79,5 +77,4 @@ void aeUSetRuleFStaEnableRot::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableRot::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

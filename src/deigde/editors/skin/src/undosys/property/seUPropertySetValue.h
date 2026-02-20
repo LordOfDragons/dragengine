@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -35,8 +35,12 @@ class seProperty;
  * \brief Undo Action Property Set Value.
  */
 class seUPropertySetValue : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertySetValue>;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetValue( seProperty *property, float newValue );
+	seUPropertySetValue(seProperty *property, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertySetValue();
+	~seUPropertySetValue() override;
 	/*@}*/
 	
 	
@@ -57,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

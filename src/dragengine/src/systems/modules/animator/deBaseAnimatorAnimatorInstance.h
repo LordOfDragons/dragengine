@@ -58,12 +58,12 @@ public:
 	 * resources take care of waiting for the result to become ready
 	 * if required.
 	 */
-	virtual void Apply( bool direct );
+	virtual void Apply(bool direct);
 	
 	/**
 	 * \brief Capture current state of component into rules matching identifier.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * \brief Store animation frame from animation into rules matching identifier.
@@ -72,7 +72,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em moveName is NULL.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	/*@}*/
 	
 	
@@ -98,7 +98,7 @@ public:
 	virtual void ProtectDynamicBonesChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	/*@}*/
 };
 

@@ -55,16 +55,16 @@ struct csPoint : public csObject{
 // Constructor, destructor
 ////////////////////////////
 
-stClassPoint::stClassPoint( ScriptingSmalltalk &st ) :
-pST( st ){
-	gst_define_cfunc( "DEPoint.new", ( void* )ccNew );
-	gst_define_cfunc( "DEPoint.newXY", ( void* )ccNewXY );
+stClassPoint::stClassPoint(ScriptingSmalltalk &st) :
+pST(st){
+	gst_define_cfunc("DEPoint.new", (void*)ccNew);
+	gst_define_cfunc("DEPoint.newXY", (void*)ccNewXY);
 	
-	gst_define_cfunc( "DEPoint.x", ( void* )ccX );
-	gst_define_cfunc( "DEPoint.y", ( void* )ccY );
+	gst_define_cfunc("DEPoint.x", (void*)ccX);
+	gst_define_cfunc("DEPoint.y", (void*)ccY);
 	
-	gst_define_cfunc( "DEPoint.hash", ( void* )ccHash );
-	gst_define_cfunc( "DEPoint.asString", ( void* )ccAsString );
+	gst_define_cfunc("DEPoint.hash", (void*)ccHash);
+	gst_define_cfunc("DEPoint.asString", (void*)ccAsString);
 }
 
 stClassPoint::~stClassPoint(){
@@ -76,35 +76,35 @@ stClassPoint::~stClassPoint(){
 ///////////////
 
 void stClassPoint::SetUpLinks(){
-	pOOPClass = gst_class_name_to_oop( "DEPoint" );
-	if( ! pOOPClass ){
-		DETHROW( deeInvalidParam );
+	pOOPClass = gst_class_name_to_oop("DEPoint");
+	if(!pOOPClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	csPointClass &csclass = *( ( csPointClass* )OOP_TO_OBJ( pOOPClass ) );
+	csPointClass &csclass = *((csPointClass*)OOP_TO_OBJ(pOOPClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();
 }
 
-const decPoint &stClassPoint::OOPToPoint( OOP object ) const{
-	if( object == pST.GetNil() ){
-		DETHROW( deeNullPointer );
+const decPoint &stClassPoint::OOPToPoint(OOP object) const{
+	if(object == pST.GetNil()){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( gst_get_object_class( object ) != pOOPClass ){
-		DETHROW( deeInvalidAction );
+	if(gst_get_object_class(object) != pOOPClass){
+		DETHROW(deeInvalidAction);
 	}
-	return ( ( csPoint* )OOP_TO_OBJ( object ) )->point;
+	return ((csPoint*)OOP_TO_OBJ(object))->point;
 }
 
-OOP stClassPoint::PointToOOP( const decPoint &vector ){
+OOP stClassPoint::PointToOOP(const decPoint &vector){
 	OOP oopVector = NULL;
 	
-	oopVector = pST.CreateNewObjectWithInit( pOOPClass, sizeof( csPoint ) - sizeof( csObject ) );
-	if( ! oopVector || oopVector == pST.GetNil() ){
-		DETHROW( deeOutOfMemory );
+	oopVector = pST.CreateNewObjectWithInit(pOOPClass, sizeof(csPoint) - sizeof(csObject));
+	if(!oopVector || oopVector == pST.GetNil()){
+		DETHROW(deeOutOfMemory);
 	}
 	
-	csPoint &csobject = *( ( csPoint* )OOP_TO_OBJ( oopVector ) );
+	csPoint &csobject = *((csPoint*)OOP_TO_OBJ(oopVector));
 	csobject.clsPoint = this;
 	csobject.point = vector;
 	
@@ -116,15 +116,15 @@ OOP stClassPoint::PointToOOP( const decPoint &vector ){
 // cCall Methods
 //////////////////
 
-OOP stClassPoint::ccNew( OOP self ){
-	const csPointClass &csclass = *( ( csPointClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassPoint::ccNew(OOP self){
+	const csPointClass &csclass = *((csPointClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	OOP result = NULL;
 	
 	try{
-		result = st.GetClassPoint()->PointToOOP( decPoint() );
+		result = st.GetClassPoint()->PointToOOP(decPoint());
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		result = st.GetNil();
 		e.PrintError();
 	}
@@ -132,15 +132,15 @@ OOP stClassPoint::ccNew( OOP self ){
 	return result;
 }
 
-OOP stClassPoint::ccNewXY( OOP self, int x, int y ){
-	const csPointClass &csclass = *( ( csPointClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassPoint::ccNewXY(OOP self, int x, int y){
+	const csPointClass &csclass = *((csPointClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	OOP result = NULL;
 	
 	try{
-		result = st.GetClassPoint()->PointToOOP( decPoint( x, y ) );
+		result = st.GetClassPoint()->PointToOOP(decPoint(x, y));
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		result = st.GetNil();
 		e.PrintError();
 	}
@@ -150,29 +150,29 @@ OOP stClassPoint::ccNewXY( OOP self, int x, int y ){
 
 
 
-int stClassPoint::ccX( OOP self ){
-	const csPoint &cscanvas = *( ( csPoint* )OOP_TO_OBJ( self ) );
+int stClassPoint::ccX(OOP self){
+	const csPoint &cscanvas = *((csPoint*)OOP_TO_OBJ(self));
 	return cscanvas.point.x;
 }
 
-int stClassPoint::ccY( OOP self ){
-	const csPoint &cscanvas = *( ( csPoint* )OOP_TO_OBJ( self ) );
+int stClassPoint::ccY(OOP self){
+	const csPoint &cscanvas = *((csPoint*)OOP_TO_OBJ(self));
 	return cscanvas.point.y;
 }
 
 
 
-int stClassPoint::ccHash( OOP self ){
-	const csPoint &cscanvas = *( ( csPoint* )OOP_TO_OBJ( self ) );
+int stClassPoint::ccHash(OOP self){
+	const csPoint &cscanvas = *((csPoint*)OOP_TO_OBJ(self));
 	
 	return cscanvas.point.x * 10000 + cscanvas.point.y;
 }
 
-OOP stClassPoint::ccAsString( OOP self ){
-	const csPoint &cscanvas = *( ( csPoint* )OOP_TO_OBJ( self ) );
+OOP stClassPoint::ccAsString(OOP self){
+	const csPoint &cscanvas = *((csPoint*)OOP_TO_OBJ(self));
 	
-	char buffer[ 50 ];
-	sprintf( ( char* )buffer, "(%i,%i)", cscanvas.point.x, cscanvas.point.y );
+	char buffer[50];
+	sprintf((char*)buffer, "(%i,%i)", cscanvas.point.x, cscanvas.point.y);
 	
-	return gst_string_to_oop( buffer );
+	return gst_string_to_oop(buffer);
 }

@@ -35,14 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnPReliableResendInterval::debnPReliableResendInterval( deNetworkBasic &network ) :
-debnParameterFloat( network )
+debnPReliableResendInterval::debnPReliableResendInterval(deNetworkBasic &network) :
+debnParameterFloat(network)
 {
-	SetName( "reliableResendInterval" );
-	SetDescription( "Interval in seconds to keep resending reliable messages until acknowledged or timed out." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Reliable Resend Interval" );
-	SetDefaultValue( "0.5" );
+	SetName("reliableResendInterval");
+	SetDescription("Interval in seconds to keep resending reliable messages until acknowledged or timed out.");
+	SetCategory(ecExpert);
+	SetDisplayName("Reliable Resend Interval");
+	SetDefaultValue("0.5");
 }
 
 
@@ -53,6 +53,6 @@ float debnPReliableResendInterval::GetParameterFloat(){
 	return pNetwork.GetConfiguration().GetReliableResendInterval();
 }
 
-void debnPReliableResendInterval::SetParameterFloat( float value ){
-	pNetwork.GetConfiguration().SetReliableResendInterval( value );
+void debnPReliableResendInterval::SetParameterFloat(float value){
+	pNetwork.GetConfiguration().SetReliableResendInterval(value);
 }

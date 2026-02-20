@@ -40,16 +40,16 @@
 gdeFilePattern::gdeFilePattern(){
 }
 
-gdeFilePattern::gdeFilePattern( const char *name, const char *pattern, const char *defaultExtension ) :
-pName( name ),
-pPattern( pattern ),
-pDefExtension( defaultExtension ){
+gdeFilePattern::gdeFilePattern(const char *name, const char *pattern, const char *defaultExtension) :
+pName(name),
+pPattern(pattern),
+pDefExtension(defaultExtension){
 }
 
-gdeFilePattern::gdeFilePattern( const gdeFilePattern &filePattern ) :
-pName( filePattern.pName ),
-pPattern( filePattern.pPattern ),
-pDefExtension( filePattern.pDefExtension ){
+gdeFilePattern::gdeFilePattern(const gdeFilePattern &filePattern) :
+pName(filePattern.pName),
+pPattern(filePattern.pPattern),
+pDefExtension(filePattern.pDefExtension){
 }
 
 gdeFilePattern::~gdeFilePattern(){
@@ -60,14 +60,14 @@ gdeFilePattern::~gdeFilePattern(){
 // Management
 ///////////////
 
-void gdeFilePattern::SetName( const char *name ){
+void gdeFilePattern::SetName(const char *name){
 	pName = name;
 }
 
-void gdeFilePattern::SetPattern( const char *pattern ){
+void gdeFilePattern::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void gdeFilePattern::SetDefaultExtension( const char *extension ){
+void gdeFilePattern::SetDefaultExtension(const char *extension){
 	pDefExtension = extension;
 }

@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
-class gdeProperty;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
+#include "../../../gamedef/property/gdeProperty.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeProperty;
  * \brief Undo action object class property set identifier group.
  */
 class gdeUOCPSetIdentifierGroup : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCPSetIdentifierGroup> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -52,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPSetIdentifierGroup( gdeObjectClass *objectClass, gdeProperty *property, const char *newValue );
+	gdeUOCPSetIdentifierGroup(gdeObjectClass *objectClass, gdeProperty *property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

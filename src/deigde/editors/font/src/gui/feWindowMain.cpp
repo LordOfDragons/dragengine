@@ -38,17 +38,16 @@
 #include "../clipboard/feClipboard.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -77,32 +76,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWindowMain::feWindowMain( igdeEditorModule &module ) :
-igdeEditorWindow( module )
+feWindowMain::feWindowMain(igdeEditorModule &module) :
+igdeEditorWindow(module)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
-	pListener = NULL;
-	
-	pClipboard = NULL;
-	pLoadSaveSystem = NULL;
+	pClipboard = nullptr;
+	pLoadSaveSystem = nullptr;
 
-	pViewFontImage = NULL;
-	pWndProps = NULL;
-	
-	pFont = NULL;
-	
 	// init the default font
-	env.GetApplicationFont( pGenFontConfig );
+	env.GetApplicationFont(pGenFontConfig);
 	
 	// create the menu definition
 	pLoadIcons();
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new feWindowMainListener( *this );
-	pLoadSaveSystem = new feLoadSaveSystem( this );
-	pConfiguration = new feConfiguration( *this );
+	pListener = feWindowMainListener::Ref::New(*this);
+	pLoadSaveSystem = new feLoadSaveSystem(this);
+	pConfiguration = new feConfiguration(*this);
 	pClipboard = new feClipboard;
 	
 	pConfiguration->LoadConfiguration();
@@ -111,47 +103,38 @@ igdeEditorWindow( module )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 260 ) );
-	AddChild( splitted );
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(260)));
+	AddChild(splitted);
 	
-	pWndProps = new feWindowProperties( *this );
-	splitted->AddChild( pWndProps, igdeContainerSplitted::eaSide );
+	pWndProps = feWindowProperties::Ref::New(*this);
+	splitted->AddChild(pWndProps, igdeContainerSplitted::eaSide);
 	
-	pViewFontImage = new feViewFontImage( *this );
-	splitted->AddChild( pViewFontImage, igdeContainerSplitted::eaCenter );
+	pViewFontImage = feViewFontImage::Ref::New(*this);
+	splitted->AddChild(pViewFontImage, igdeContainerSplitted::eaCenter);
 	
 	CreateNewFont();
 	ResetViews();
 }
 
 feWindowMain::~feWindowMain(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
 	}
-	if( pClipboard ){
+	if(pClipboard){
 		delete pClipboard;
 	}
 	
-	SetFont( NULL );
+	SetFont(nullptr);
 	
-	if( pViewFontImage ){
-		pViewFontImage->FreeReference();
-		pViewFontImage = NULL;
-	}
-	if( pWndProps ){
-		pWndProps->FreeReference();
-		pWndProps = NULL;
-	}
+	pViewFontImage = nullptr;
+	pWndProps = nullptr;
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pLoadSaveSystem ){
+	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if( pListener ){
-		pListener->FreeReference();
 	}
 }
 
@@ -174,63 +157,49 @@ void feWindowMain::ResetViews(){
 
 
 
-void feWindowMain::SetGenFontConfig( const igdeFont::sConfiguration &config ){
+void feWindowMain::SetGenFontConfig(const igdeFont::sConfiguration &config){
 	pGenFontConfig = config;
 }
 
-void feWindowMain::SetFont( feFont *font ){
-	if( font == pFont ){
+void feWindowMain::SetFont(feFont *font){
+	if(font == pFont){
 		return;
 	}
 	
-	pWndProps->SetFont( NULL );
-	pViewFontImage->SetFont( NULL );
-	pActionEditUndo->SetUndoSystem( NULL );
-	pActionEditRedo->SetUndoSystem( NULL );
+	pWndProps->SetFont(nullptr);
+	pViewFontImage->SetFont(nullptr);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
-	if( pFont ){
-		pFont->RemoveNotifier( pListener );
+	if(pFont){
+		pFont->RemoveNotifier(pListener);
 		
 		pFont->Dispose();
-		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
-	if( font ){
-		font->AddReference();
-		font->AddNotifier( pListener );
+	if(font){
+		font->AddNotifier(pListener);
 		
-		pActionEditUndo->SetUndoSystem( font->GetUndoSystem() );
-		pActionEditRedo->SetUndoSystem( font->GetUndoSystem() );
+		pActionEditUndo->SetUndoSystem(font->GetUndoSystem());
+		pActionEditRedo->SetUndoSystem(font->GetUndoSystem());
 	}
 	
-	pViewFontImage->SetFont( font );
-	pWndProps->SetFont( font );
+	pViewFontImage->SetFont(font);
+	pWndProps->SetFont(font);
 }
 
 void feWindowMain::CreateNewFont(){
-	feFont *font = NULL;
-	
-	try{
-		font = new feFont( &GetEnvironment() );
-		SetFont( font );
-		font->FreeReference();
-		
-	}catch( const deException & ){
-		if( font ){
-			font->FreeReference();
-		}
-		throw;
-	}
+	SetFont(feFont::Ref::New(&GetEnvironment()));
 }
 
-void feWindowMain::SaveFont( const char *filename ){
-	pLoadSaveSystem->SaveFont( pFont, filename );
+void feWindowMain::SaveFont(const char *filename){
+	pLoadSaveSystem->SaveFont(pFont, filename);
 	
-	pFont->SetChanged( false );
-	pFont->SetSaved( true );
-	GetRecentFiles().AddFile( filename );
+	pFont->SetChanged(false);
+	pFont->SetSaved(true);
+	GetRecentFiles().AddFile(filename);
 }
 
 
@@ -255,46 +224,44 @@ void feWindowMain::OnAfterEngineStop(){
 
 void feWindowMain::OnActivate(){
 	igdeEditorWindow::OnActivate();
-	pViewFontImage->SetEnableRendering( true );
+	pViewFontImage->SetEnableRendering(true);
 }
 
 void feWindowMain::OnDeactivate(){
-	pViewFontImage->SetEnableRendering( false );
+	pViewFontImage->SetEnableRendering(false);
 	igdeEditorWindow::OnDeactivate();
 }
 
 
 
-void feWindowMain::OnFrameUpdate( float elapsed ){
-	if( ! GetActiveModule() ){
+void feWindowMain::OnFrameUpdate(float elapsed){
+	if(!GetActiveModule()){
 		return;
 	}
 	
-	pViewFontImage->OnFrameUpdate( elapsed );
+	pViewFontImage->OnFrameUpdate(elapsed);
 }
 
 
 
-void feWindowMain::GetChangedDocuments( decStringList &list ){
-	if( pFont && pFont->GetChanged() ){
-		list.Add( pFont->GetFilePath() );
+void feWindowMain::GetChangedDocuments(decStringList &list){
+	if(pFont && pFont->GetChanged()){
+		list.Add(pFont->GetFilePath());
 	}
 }
 
-void feWindowMain::LoadDocument( const char *filename ){
-	feFont *font = pLoadSaveSystem->LoadFont( filename, GetGameDefinition() );
+void feWindowMain::LoadDocument(const char *filename){
+	const feFont::Ref font = pLoadSaveSystem->LoadFont(filename, GetGameDefinition());
 	
-	SetFont( font );
-	font->FreeReference();
-	
-	font->SetFilePath( filename );
-	font->SetChanged( false );
-	font->SetSaved( true );
-	GetRecentFiles().AddFile( filename );
+	SetFont(font);
+	font->SetFilePath(filename);
+	font->SetChanged(false);
+	font->SetSaved(true);
+	GetRecentFiles().AddFile(filename);
 }
 
-bool feWindowMain::SaveDocument( const char *filename ){
-	if( pFont && pFont->GetFilePath().Equals( filename ) ){
+bool feWindowMain::SaveDocument(const char *filename){
+	if(pFont && pFont->GetFilePath().Equals(filename)){
 		pActionFontSave->OnAction();
 		return true; // TODO better implement this so failure can be detected
 	}
@@ -319,32 +286,37 @@ void feWindowMain::OnGameProjectChanged(){
 namespace{
 
 class cActionBase : public igdeAction{
+public:
+	typedef deTObjectReference<cActionBase> Ref;
+	
+private:
 protected:
 	feWindowMain &pWindow;
 	
 public:
-	cActionBase( feWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	cActionBase(feWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	igdeAction( text, icon, description, mnemonic, igdeHotKey( modifiers, keyCode ) ),
-	pWindow( window ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
+	pWindow(window){}
 	
-	cActionBase( feWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	igdeAction( text, icon, description, mnemonic ),
-	pWindow( window ){}
+	cActionBase(feWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	igdeAction(text, icon, description, mnemonic),
+	pWindow(window){}
 };
 
 
 class cActionFontNew : public cActionBase{
 public:
-	cActionFontNew( feWindowMain &window ) : cActionBase( window, "New",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ), "Creates a new font",
-		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN ){}
+	typedef deTObjectReference<cActionFontNew> Ref;
+	cActionFontNew(feWindowMain &window) : cActionBase(window, "@Font.Action.FontNew",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "@Font.Action.FontNew.ToolTip",
+		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
-	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Font",
-		"Creating a new font discarding the current one is that ok?" ) == igdeCommonDialogs::ebYes ){
+	void OnAction() override{
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Font.Dialog.NewFont.Title",
+		"@Font.Dialog.NewFont.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewFont();
 		}
 	}
@@ -353,48 +325,48 @@ public:
 
 class cActionFontOpen : public cActionBase{
 public:
-	cActionFontOpen( feWindowMain &window ) : cActionBase( window, "Open...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Opens a font from file",
-		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO ){}
+	typedef deTObjectReference<cActionFontOpen> Ref;
+	cActionFontOpen(feWindowMain &window) : cActionBase(window, "@Font.Action.FontOpen",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Font.Action.FontOpen.ToolTip",
+		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
-	virtual void OnAction(){
-		decString filename( pWindow.GetFont()->GetFilePath() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Font",
+	void OnAction() override{
+		decString filename(pWindow.GetFont()->GetFilePath());
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Font.Dialog.OpenFont.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			return;
 		}
 		
 		// load font
-		pWindow.GetEditorModule().LogInfoFormat( "Loading font %s", filename.GetString() );
-		feFont *font = pWindow.GetLoadSaveSystem().LoadFont( filename,
-			pWindow.GetGameProject()->GetGameDefinition() );
+		pWindow.GetEditorModule().LogInfoFormat("Loading font %s", filename.GetString());
+		feFont::Ref font = pWindow.GetLoadSaveSystem().LoadFont(filename,
+			pWindow.GetGameProject()->GetGameDefinition());
 		
 		// replace font
-		pWindow.SetFont( font );
-		font->FreeReference();
-		
+		pWindow.SetFont(font);
 		// store information
-		font->SetFilePath( filename );
-		font->SetChanged( false );
-		font->SetSaved( true );
-		pWindow.GetRecentFiles().AddFile( filename );
+		font->SetFilePath(filename);
+		font->SetChanged(false);
+		font->SetSaved(true);
+		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };
 
 
 class cActionFontSaveAs : public cActionBase{
 public:
-	cActionFontSaveAs( feWindowMain &window ) : cActionBase( window, "Save As...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-		"Saves the font under a differen file", deInputEvent::ekcA ){}
+	typedef deTObjectReference<cActionFontSaveAs> Ref;
+	cActionFontSaveAs(feWindowMain &window) : cActionBase(window, "@Font.Action.FontSaveAs",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"@Font.Action.FontSaveAs.ToolTip", deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
-		decString filename( pWindow.GetFont()->GetFilePath() );
-		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Font",
+	void OnAction() override{
+		decString filename(pWindow.GetFont()->GetFilePath());
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Font.Dialog.SaveFont.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
-			pWindow.SaveFont( filename );
+			pWindow.SaveFont(filename);
 		}
 	}
 };
@@ -402,20 +374,18 @@ public:
 
 class cActionFontSave : public cActionFontSaveAs{
 public:
-	cActionFontSave( feWindowMain &window ) : cActionFontSaveAs( window ){
-		SetText( "Save" );
-		SetDescription( "Saves the font to file" );
-		SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
-		SetMnemonic( deInputEvent::ekcS );
-		SetIcon( window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ) );
+	typedef deTObjectReference<cActionFontSave> Ref;
+	cActionFontSave(feWindowMain &window) : cActionFontSaveAs(window){
+			SetText("@Font.Action.FontSave");
+			SetDescription("@Font.Action.FontSave.ToolTip");
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		feFont &font = *pWindow.GetFont();
 		
-		if( font.GetSaved() ){
-			if( font.GetChanged() ){
-				pWindow.SaveFont( font.GetFilePath() );
+		if(font.GetSaved()){
+			if(font.GetChanged()){
+				pWindow.SaveFont(font.GetFilePath());
 			}
 			
 		}else{
@@ -423,87 +393,89 @@ public:
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetFont()->GetChanged() );
+	void Update() override{
+		SetEnabled(pWindow.GetFont()->GetChanged());
 	}
 };
 
 
 class cActionFontGenerate : public cActionBase{
 public:
-	cActionFontGenerate( feWindowMain &window ) : cActionBase( window, "Generate...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ),
-		"Generates a new font from a system font", deInputEvent::ekcG ){}
+	typedef deTObjectReference<cActionFontGenerate> Ref;
+	cActionFontGenerate(feWindowMain &window) : cActionBase(window, "@Font.Action.FontGenerate",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Font.Action.FontGenerate.ToolTip", deInputEvent::ekcG){}
 	
-	virtual void OnAction(){
-		igdeFont::sConfiguration config( pWindow.GetGenFontConfig() );
-		if( ! igdeCommonDialogs::SelectSystemFont( &pWindow, "Select Font", config ) ){
+	void OnAction() override{
+		igdeFont::sConfiguration config(pWindow.GetGenFontConfig());
+		if(!igdeCommonDialogs::SelectSystemFont(pWindow, "@Font.Dialog.SelectFont.Title", config)){
 			return;
 		}
 		
-		pWindow.SetGenFontConfig( config );
+		pWindow.SetGenFontConfig(config);
 		
 		int enlargeGlyph = 0;
-		if( ! igdeCommonDialogs::GetInteger( &pWindow, "Glyph Enlarge", "Enlarge:", enlargeGlyph ) ){
+		if(!igdeCommonDialogs::GetInteger(pWindow, "@Font.Dialog.GlyphEnlarge.Title", "@Font.Dialog.GlyphEnlarge.Message", enlargeGlyph)){
 			return;
 		}
 		
-		feGenerateFont generateFont( pWindow.GetEnvironment() );
-		generateFont.SetEnlargeGlpyh( enlargeGlyph );
-		generateFont.SetCodeRange( 32, 255 );
-		generateFont.SetFontConfig( config );
+		feGenerateFont generateFont(pWindow.GetEnvironment());
+		generateFont.SetEnlargeGlpyh(enlargeGlyph);
+		generateFont.SetCodeRange(32, 255);
+		generateFont.SetFontConfig(config);
 		
-		deObjectReference font;
-		font.TakeOver( generateFont.GenerateFont() );
-		pWindow.SetFont( ( feFont* )( deObject* )font );
+		pWindow.SetFont(generateFont.GenerateFont());
 	}
 };
 
 
 class cActionEditCut : public cActionBase{
 public:
-	cActionEditCut( feWindowMain &window ) : cActionBase( window,
-		"Cut", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-		"Cut selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcX, deInputEvent::ekcT ){}
+	typedef deTObjectReference<cActionEditCut> Ref;
+	cActionEditCut(feWindowMain &window) : cActionBase(window,
+		"@Font.Action.EditCut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Font.Action.EditCut.ToolTip", deInputEvent::esmControl,
+		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled( false );
+	void Update() override{
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditCopy : public cActionBase{
 public:
-	cActionEditCopy( feWindowMain &window ) : cActionBase( window,
-		"Copy", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-		"Copies selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcC, deInputEvent::ekcC ){}
+	typedef deTObjectReference<cActionEditCopy> Ref;
+	cActionEditCopy(feWindowMain &window) : cActionBase(window,
+		"@Font.Action.EditCopy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Font.Action.EditCopy.ToolTip", deInputEvent::esmControl,
+		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled( false );
+	void Update() override{
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditPaste : public cActionBase{
 public:
-	cActionEditPaste( feWindowMain &window ) : cActionBase( window,
-		"Paste", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste objects", deInputEvent::esmControl,
-		deInputEvent::ekcV, deInputEvent::ekcP ){}
+	typedef deTObjectReference<cActionEditPaste> Ref;
+	cActionEditPaste(feWindowMain &window) : cActionBase(window,
+		"@Font.Action.EditPaste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Font.Action.EditPaste.ToolTip", deInputEvent::esmControl,
+		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetClipboard().HasClip() );
+	void Update() override{
+		SetEnabled(pWindow.GetClipboard().HasClip());
 	}
 };
 
@@ -515,97 +487,97 @@ public:
 //////////////////////
 
 void feWindowMain::pLoadIcons(){
-	//pIconFontNew.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/file_new.png" ) );
+	//pIconFontNew = igdeIcon::LoadPNG(GetEditorModule(), "icons/file_new.png");
 }
 
 void feWindowMain::pCreateActions(){
-	pActionFontNew.TakeOver( new cActionFontNew( *this ) );
-	pActionFontOpen.TakeOver( new cActionFontOpen( *this ) );
-	pActionFontSave.TakeOver( new cActionFontSave( *this ) );
-	pActionFontSaveAs.TakeOver( new cActionFontSaveAs( *this ) );
-	pActionFontGenerate.TakeOver( new cActionFontGenerate( *this ) );
-	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
-	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
-	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
-	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
+	pActionFontNew = cActionFontNew::Ref::New(*this);
+	pActionFontOpen = cActionFontOpen::Ref::New(*this);
+	pActionFontSave = cActionFontSave::Ref::New(*this);
+	pActionFontSaveAs = cActionFontSaveAs::Ref::New(*this);
+	pActionFontGenerate = cActionFontGenerate::Ref::New(*this);
+	pActionEditUndo = igdeActionUndo::Ref::New(GetEnvironment());
+	pActionEditRedo = igdeActionRedo::Ref::New(GetEnvironment());
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
 	
 	
 	// register for updating
-	AddUpdateAction( pActionFontNew );
-	AddUpdateAction( pActionFontOpen );
-	AddUpdateAction( pActionFontSave );
-	AddUpdateAction( pActionFontSaveAs );
-	AddUpdateAction( pActionFontGenerate );
-	AddUpdateAction( pActionEditUndo );
-	AddUpdateAction( pActionEditRedo );
-	AddUpdateAction( pActionEditCut );
-	AddUpdateAction( pActionEditCopy );
-	AddUpdateAction( pActionEditPaste );
+	AddUpdateAction(pActionFontNew);
+	AddUpdateAction(pActionFontOpen);
+	AddUpdateAction(pActionFontSave);
+	AddUpdateAction(pActionFontSaveAs);
+	AddUpdateAction(pActionFontGenerate);
+	AddUpdateAction(pActionEditUndo);
+	AddUpdateAction(pActionEditRedo);
+	AddUpdateAction(pActionEditCut);
+	AddUpdateAction(pActionEditCopy);
+	AddUpdateAction(pActionEditPaste);
 }
 
 void feWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
-	helper.ToolBarButton( pTBFile, pActionFontNew );
-	helper.ToolBarButton( pTBFile, pActionFontOpen );
-	helper.ToolBarButton( pTBFile, pActionFontSave );
+	helper.ToolBarButton(pTBFile, pActionFontNew);
+	helper.ToolBarButton(pTBFile, pActionFontOpen);
+	helper.ToolBarButton(pTBFile, pActionFontSave);
 	
-	AddSharedToolBar( pTBFile );
+	AddSharedToolBar(pTBFile);
 }
 
 void feWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
-	helper.ToolBarButton( pTBEdit, pActionEditUndo );
-	helper.ToolBarButton( pTBEdit, pActionEditRedo );
+	helper.ToolBarButton(pTBEdit, pActionEditUndo);
+	helper.ToolBarButton(pTBEdit, pActionEditRedo);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditCut );
-	helper.ToolBarButton( pTBEdit, pActionEditCopy );
-	helper.ToolBarButton( pTBEdit, pActionEditPaste );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditCut);
+	helper.ToolBarButton(pTBEdit, pActionEditCopy);
+	helper.ToolBarButton(pTBEdit, pActionEditPaste);
 	
-	AddSharedToolBar( pTBEdit );
+	AddSharedToolBar(pTBEdit);
 }
 
 void feWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Font", deInputEvent::ekcF ) );
-	pCreateMenuFont( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Font.Menu.Font", deInputEvent::ekcF);
+	pCreateMenuFont(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
-	pCreateMenuEdit( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Font.Menu.Edit", deInputEvent::ekcE);
+	pCreateMenuEdit(cascade);
+	AddSharedMenu(cascade);
 }
 
-void feWindowMain::pCreateMenuFont( igdeMenuCascade &menu ){
+void feWindowMain::pCreateMenuFont(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionFontNew );
-	helper.MenuCommand( menu, pActionFontOpen );
-	helper.MenuRecentFiles( menu, GetRecentFiles() );
-	helper.MenuCommand( menu, pActionFontSave );
-	helper.MenuCommand( menu, pActionFontSaveAs );
+	helper.MenuCommand(menu, pActionFontNew);
+	helper.MenuCommand(menu, pActionFontOpen);
+	helper.MenuRecentFiles(menu, GetRecentFiles());
+	helper.MenuCommand(menu, pActionFontSave);
+	helper.MenuCommand(menu, pActionFontSaveAs);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionFontGenerate );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionFontGenerate);
 }
 
-void feWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
+void feWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEditUndo );
-	helper.MenuCommand( menu, pActionEditRedo );
+	helper.MenuCommand(menu, pActionEditUndo);
+	helper.MenuCommand(menu, pActionEditRedo);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditCut );
-	helper.MenuCommand( menu, pActionEditCopy );
-	helper.MenuCommand( menu, pActionEditPaste );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditCut);
+	helper.MenuCommand(menu, pActionEditCopy);
+	helper.MenuCommand(menu, pActionEditPaste);
 }

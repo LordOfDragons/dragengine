@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCBillboardListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCBillboardListener( gdeWPSOCBillboard &panel );
+	gdeWPSOCBillboardListener(gdeWPSOCBillboard &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCBillboardListener();
+protected:
+	~gdeWPSOCBillboardListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,27 +58,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class billboards changed. */
-	virtual void OCBillboardsChanged( gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass );
+	void OCBillboardsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class billboard changed. */
-	virtual void OCBillboardChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCBillboard *billboard );
+	void OCBillboardChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCBillboard *billboard) override;
 	
 	/** \brief Active object class billboard changed. */
-	virtual void ActiveOCBillboardChanged( gdeGameDefinition *gameDefinition );
+	void ActiveOCBillboardChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

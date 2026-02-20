@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -37,8 +37,12 @@ class meDecal;
  * \brief Undo Action Set Decal Size.
  */
 class meUDecalSize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalSize>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decVector pOldSize;
 	decVector pNewSize;
@@ -47,20 +51,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalSize( meDecal *decal, const decVector &newSize );
+	meUDecalSize(meDecal *decal, const decVector &newSize);
 	
 protected:
 	/** \brief Clean up undo object. */
-	~meUDecalSize();
+	~meUDecalSize() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

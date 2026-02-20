@@ -23,6 +23,10 @@ on:
         required: false
         default: true
         type: boolean
+      sconscache:
+        required: false
+        default: true
+        type: boolean
   
   workflow_dispatch:
     inputs:
@@ -52,6 +56,10 @@ on:
         type: string
         default: "installers-linux"
       lfscache:
+        required: false
+        default: true
+        type: boolean
+      sconscache:
         required: false
         default: true
         type: boolean
@@ -107,11 +115,28 @@ jobs:
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
+      - name: Cache external
+        uses: actions/cache@v4
+        id: external-cache
+        with:
+          path: ./extern
+          key: external-cache-linux_ci-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-linux_ci-
+      
+      # - name: Cache SCons
+      #   uses: actions/cache@v4
+      #   id: scons-cache
+      #   if: ${{ inputs.sconscache }}
+      #   with:
+      #     path: .scons_cache
+      #     key: ${{ runner.os }}-scons-cache-linux_ci-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+      #     restore-keys: ${{ runner.os }}-scons-cache-linux_ci-
+      
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
+          scons --config=force -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
           scons -j 14 archive installer
       
       - name: Debug Symbols
@@ -147,3 +172,10 @@ jobs:
             installer/build/install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh
             installer/build/install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh
           if-no-files-found: error
+      
+      # - name: Prune Cache
+      #   if: success()
+      #   run: |
+      #     if [ -d ".scons_cache" ]; then
+      #       find .scons_cache -type f -atime +7 -delete
+      #     fi

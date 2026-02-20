@@ -92,19 +92,19 @@ public:
 	inline dedaiSpaceMesh *GetMesh() const{ return pMesh; }
 	
 	/** \brief Set parent space mesh. */
-	void SetMesh( dedaiSpaceMesh *mesh );
+	void SetMesh(dedaiSpaceMesh *mesh);
 	
 	/** \brief Type number. */
 	inline unsigned short GetTypeNumber() const{ return pTypeNumber; }
 	
 	/** \brief Set type number. */
-	void SetTypeNumber( unsigned short typeNumber );
+	void SetTypeNumber(unsigned short typeNumber);
 	
 	/** \brief Face index. */
 	inline unsigned short GetIndex() const{ return pIndex; }
 	
 	/** \brief Set face index. */
-	void SetIndex( unsigned short index );
+	void SetIndex(unsigned short index);
 	
 	
 	
@@ -112,19 +112,19 @@ public:
 	inline int GetFirstCorner() const{ return pFirstCorner; }
 	
 	/** \brief Set index of the first corner. */
-	void SetFirstCorner( int first );
+	void SetFirstCorner(int first);
 	
 	/** \brief Number of corners. */
 	inline unsigned short GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
-	void SetCornerCount( unsigned short count );
+	void SetCornerCount(unsigned short count);
 	
 	/** \brief Index of corner with matching edge or -1 if not found. */
-	int IndexOfCornerWithEdge( unsigned short edge ) const;
+	int IndexOfCornerWithEdge(unsigned short edge) const;
 	
 	/** \brief Index of corner with matching vertex or -1 if not found. */
-	int IndexOfCornerWithVertex( unsigned short vertex ) const;
+	int IndexOfCornerWithVertex(unsigned short vertex) const;
 	
 	
 	
@@ -132,25 +132,25 @@ public:
 	inline const decVector &GetCenter() const{ return pCenter; }
 	
 	/** \brief Set face center. */
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	
 	/** \brief Face normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/** \brief Plane distance. */
 	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Set plane distance. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	/** \brief Entry point. */
 	inline const decVector &GetEntryPoint() const{ return pEntryPoint; }
 	
 	/** \brief Set entry point. */
-	void SetEntryPoint( const decVector &entryPoint );
+	void SetEntryPoint(const decVector &entryPoint);
 	
 	
 	
@@ -161,7 +161,7 @@ public:
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** \brief Set extends. */
-	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	
 	
@@ -169,7 +169,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if face is enabled for path finding. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -177,31 +177,31 @@ public:
 	inline dedaiSpaceMeshFace *GetPathParent() const{ return pPathParent; }
 	
 	/** \brief Set path parent face or \em NULL. */
-	void SetPathParent( dedaiSpaceMeshFace *face );
+	void SetPathParent(dedaiSpaceMeshFace *face);
 	
 	/** \brief F path cost. */
 	inline float GetPathCostF() const{ return pPathCostF; }
 	
 	/** \brief Set F path cost. */
-	void SetPathCostF( float cost );
+	void SetPathCostF(float cost);
 	
 	/** \brief G path cost. */
 	inline float GetPathCostG() const{ return pPathCostG; }
 	
 	/** \brief Set G path cost. */
-	void SetPathCostG( float cost );
+	void SetPathCostG(float cost);
 	
 	/** \brief H path cost. */
 	inline float GetPathCostH() const{ return pPathCostH; }
 	
 	/** \brief Set H path cost. */
-	void SetPathCostH( float cost );
+	void SetPathCostH(float cost);
 	
 	/** \brief Path type. */
 	inline ePathFindingTypes GetPathType() const{ return pPathType; }
 	
 	/** \brief Set path type. */
-	void SetPathType( ePathFindingTypes type );
+	void SetPathType(ePathFindingTypes type);
 	
 	/** \brief Clear path information. */
 	void ClearPath();

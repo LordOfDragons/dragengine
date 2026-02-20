@@ -25,8 +25,8 @@
 #ifndef _IGDEBROWSEITEMGDPREVIEWLISTENER_H_
 #define _IGDEBROWSEITEMGDPREVIEWLISTENER_H_
 
-#include "../igdeIconListBoxReference.h"
-#include "../model/igdeListItemReference.h"
+#include "../igdeIconListBox.h"
+#include "../model/igdeListItem.h"
 #include "../../gamedefinition/preview/igdeGDPreviewListener.h"
 
 
@@ -35,9 +35,14 @@
  * \brief Create preview listener updating an liste item once finished.
  */
 class DE_DLL_EXPORT igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeBrowseItemGDPreviewListener>;
+	
+	
 private:
-	igdeIconListBoxReference pIconListBox;
-	igdeListItemReference pListItem;
+	igdeIconListBox::Ref pIconListBox;
+	igdeListItem::Ref pListItem;
 	int pIconSize;
 	
 	
@@ -46,7 +51,7 @@ public:
 	/**  \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	igdeBrowseItemGDPreviewListener( igdeIconListBox *iconListBox, igdeListItem *listItem, int iconSize );
+	igdeBrowseItemGDPreviewListener(igdeIconListBox *iconListBox, igdeListItem *listItem, int iconSize);
 	
 protected:
 	/**
@@ -55,7 +60,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeBrowseItemGDPreviewListener();
+	~igdeBrowseItemGDPreviewListener() override;
 	/*@}*/
 	
 	
@@ -71,7 +76,7 @@ public:
 	 * manager release the reference to the listener. The subclass has to
 	 * add a reference to the image to hold it.
 	 */
-	virtual void ImageCreated( deImage *image );
+	void ImageCreated(deImage *image) override;
 	/*@}*/
 };
 

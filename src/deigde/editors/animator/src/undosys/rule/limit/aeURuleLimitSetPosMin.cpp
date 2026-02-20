@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetPosMin::aeURuleLimitSetPosMin( aeRuleLimit *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetPosMin::aeURuleLimitSetPosMin(aeRuleLimit *rule, const decVector &newMin){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Limit Set minimum translation" );
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumTranslation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleLimitSetPosMin::~aeURuleLimitSetPosMin(){
 ///////////////
 
 void aeURuleLimitSetPosMin::Undo(){
-	pRule->SetMinimumPosition( pOldMin );
+	pRule->SetMinimumPosition(pOldMin);
 }
 
 void aeURuleLimitSetPosMin::Redo(){
-	pRule->SetMinimumPosition( pNewMin );
+	pRule->SetMinimumPosition(pNewMin);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleLimitSetPosMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetPosMin::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

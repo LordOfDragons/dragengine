@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPSMOKEEMITTER_H_
 #define _DEBPSMOKEEMITTER_H_
 
-// includes
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsSmokeEmitter.h>
 
-// predefinitions
 class debpWorld;
 class debpForceField;
 class dePhysicsBullet;
@@ -60,9 +58,7 @@ private:
 	deSmokeEmitter *pSmokeEmitter;
 	debpWorld *pParentWorld;
 	
-	debpSmokeDensityPoint *pPoints;
-	int pPointCount;
-	int pPointSize;
+	decTList<debpSmokeDensityPoint> pPoints;
 	
 	//float pCastDensity;
 	
@@ -79,7 +75,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpSmokeEmitter( dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter );
+	debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter);
 	/** Cleans up the peer. */
 	virtual ~debpSmokeEmitter();
 	/*@}*/
@@ -94,28 +90,26 @@ public:
 	/** Retrieves the parent world. */
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the density points. */
-	inline debpSmokeDensityPoint *GetPoints() const{ return pPoints; }
-	/** Retrieves the number of density points. */
-	inline int GetDensityPointCount() const{ return pPointCount; }
+	inline const decTList<debpSmokeDensityPoint> GetPoints() const{ return pPoints; }
 	
 	/** Retrieves the emitter matrix. */
 	const decMatrix &GetEmitterMatrix();
 	
 	/** Prepare stepping. */
-	void PreparePoints( float elapsed );
+	void PreparePoints(float elapsed);
 	/** Steps the points. */
-	void StepPoints( float elapsed );
+	void StepPoints(float elapsed);
 	
 	/** Cast a point. */
 	void CastPoint();
 	/** Kill a point. */
-	void KillPoint( int index );
+	void KillPoint(int index);
 	
 	/** Applies forces caused by a force field. */
-	void ApplyForceField( debpForceField *forceField, float elapsed );
+	void ApplyForceField(debpForceField *forceField, float elapsed);
 	/*@}*/
 	
 	/** @name Notifications */
@@ -139,10 +133,6 @@ public:
 	/** Gravity changed. */
 	virtual void GravityChanged();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

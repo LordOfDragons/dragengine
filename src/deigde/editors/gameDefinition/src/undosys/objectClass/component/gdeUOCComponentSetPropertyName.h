@@ -27,10 +27,10 @@
 #define _GDEUOCCOMPONENTSETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class component set property name.
  */
 class gdeUOCComponentSetPropertyName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCComponentSetPropertyName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	gdeOCComponent::eProperties pProperty;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetPropertyName( gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponent::eProperties property, const char *newValue );
+	gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponent::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCComponentSetPropertyName();
+	~gdeUOCComponentSetPropertyName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

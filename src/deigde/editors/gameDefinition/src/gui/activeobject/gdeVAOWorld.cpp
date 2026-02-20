@@ -103,9 +103,6 @@ void gdeVAOWorld::pCleanUp(){
 	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if(pDDSCenter){
-		delete pDDSCenter;
-	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = nullptr;
@@ -116,12 +113,12 @@ void gdeVAOWorld::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-	pDDSCenter = new igdeWDebugDrawerShape;
+	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 	pDDSCenter->AddSphereShape(0.05f, decVector());
 	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	

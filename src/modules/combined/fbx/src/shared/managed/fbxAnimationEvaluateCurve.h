@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create curve evluator. */
-	fbxAnimationEvaluateCurve( const fbxAnimationMove &move, const fbxAnimationCurve *curv, float defaultValue );
+	fbxAnimationEvaluateCurve(const fbxAnimationMove &move, const fbxAnimationCurve *curv, float defaultValue);
 	
 	/** \brief Clean up move. */
 	~fbxAnimationEvaluateCurve();

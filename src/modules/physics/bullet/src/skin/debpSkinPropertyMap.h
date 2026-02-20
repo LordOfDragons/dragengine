@@ -70,7 +70,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the type for the given texture property number. */
-	int GetTypeFor( const char *type ) const;
+	int GetTypeFor(const char *type) const;
 	/*@}*/
 };
 

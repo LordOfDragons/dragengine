@@ -26,11 +26,11 @@
 #define _DEAINPOVERLAYSYSTEM_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-#include "deainpOverlayList.h"
+#include "deainpOverlay.h"
 
 class deAndroidInput;
-class deCanvasView;
 
 
 /**
@@ -40,16 +40,16 @@ class deainpOverlaySystem{
 private:
 	deAndroidInput &pAndroidInput;
 	
-	deainpOverlayList pOverlays;
+	deainpOverlay::List pOverlays;
 	
-	deCanvasView *pCanvas;
+	deCanvasView::Ref pCanvas;
 	bool pInHorizontalMode;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlays. */
-	deainpOverlaySystem( deAndroidInput &androidInput );
+	explicit deainpOverlaySystem(deAndroidInput &androidInput);
 	
 	/** \brief Clean up overlays. */
 	virtual ~deainpOverlaySystem();
@@ -60,11 +60,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Overlay list. */
-	deainpOverlayList GetOverlayList(){ return pOverlays; }
-	const deainpOverlayList &GetOverlayList() const{ return pOverlays; }
+	deainpOverlay::List GetOverlayList(){return pOverlays;}
+	const deainpOverlay::List &GetOverlayList() const{ return pOverlays; }
 	
 	/** \brief Overlays canvas. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Update canvas content. */
 	void UpdateContent();
@@ -79,7 +79,7 @@ public:
 	inline bool GetInHorizontalMode() const{ return pInHorizontalMode; }
 	
 	/** \brief Set if overlay is in horizontal mode. */
-	void SetInHorizontalMode( bool inHorizontalMode );
+	void SetInHorizontalMode(bool inHorizontalMode);
 	
 	/** \brief Update overlays from active layout mode. */
 	void UpdateFromLayout();
@@ -89,20 +89,20 @@ public:
 	 * \param[in] position Touch position.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	bool OnTouch( int pointerId, const decPoint &position );
+	bool OnTouch(int pointerId, const decPoint &position);
 	
 	/**
 	 * \brief Move event.
 	 * \param[in] position Touch position.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	bool OnMove( int pointerId, const decPoint &position );
+	bool OnMove(int pointerId, const decPoint &position);
 	
 	/**
 	 * \brief Release.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	bool OnRelease( int pointerId );
+	bool OnRelease(int pointerId);
 	/*@}*/
 	
 private:

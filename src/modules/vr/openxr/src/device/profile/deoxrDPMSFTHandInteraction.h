@@ -33,10 +33,12 @@
  */
 class deoxrDPMSFTHandInteraction : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPMSFTHandInteraction>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPMSFTHandInteraction( deoxrInstance &instance );
+	deoxrDPMSFTHandInteraction(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
@@ -47,7 +49,7 @@ protected:
 protected:
 	bool pProfileEnabled() const override;
 	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

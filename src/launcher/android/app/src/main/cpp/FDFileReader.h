@@ -14,6 +14,8 @@ private:
     FDProducer::Ref pProducer;
 
 public:
+    typedef deTObjectReference<FDFileReader> Ref;
+    
     FDFileReader(const char *filename, int fileDescriptor, long offset, long length,
                  const FDProducer::Ref &producer);
 
@@ -30,7 +32,7 @@ public:
     void MovePosition(int offset) override;
     void SetPositionEnd(int position) override;
     void Read(void *buffer, int size) override;
-    Ref Duplicate() override;
+    decBaseFileReader::Ref Duplicate() override;
     /*@}*/
 };
 

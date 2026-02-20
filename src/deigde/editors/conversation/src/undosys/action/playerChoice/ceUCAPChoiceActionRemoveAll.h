@@ -26,11 +26,11 @@
 #define _CEUCAPCHOICEACTIONREMOVEALL_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../conversation/action/ceConversationActionList.h"
+#include "../../../conversation/action/ceConversationAction.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 
 
 
@@ -38,30 +38,34 @@ class ceCAPlayerChoiceOption;
  * \brief Undo Action Player Choice Remove All Conversation Actions.
  */
 class ceUCAPChoiceActionRemoveAll : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAPChoiceActionRemoveAll>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
-	ceConversationActionList pActionList;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
+	ceConversationAction::List pActions;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceActionRemoveAll( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-		ceCAPlayerChoiceOption *option );
+	ceUCAPChoiceActionRemoveAll(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+		ceCAPlayerChoiceOption *option);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAPChoiceActionRemoveAll();
+	~ceUCAPChoiceActionRemoveAll() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

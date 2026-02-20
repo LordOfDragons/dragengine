@@ -49,8 +49,8 @@
 
 class deVROpenXR;
 
-typedef unsigned int GAOglFbo;
-typedef unsigned int GAOglImage;
+using GAOglFbo = unsigned int;
+using GAOglImage = unsigned int;
 
 /**
  * Oxr instance.
@@ -59,12 +59,13 @@ class deoxrGraphicApiOpenGL{
 public:
 	class Framebuffer : public deObject{
 	public:
-		typedef deTObjectReference<Framebuffer> Ref;
-		
-		Framebuffer( deoxrGraphicApiOpenGL &gaogl, unsigned int image );
+		using Ref = deTObjectReference<Framebuffer>;
+	
+	
+		Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image);
 		
 	protected:
-		virtual ~Framebuffer();
+		~Framebuffer() override;
 		
 	private:
 		deoxrGraphicApiOpenGL &pGAOgl;
@@ -106,7 +107,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create graphic api opengl. */
-	deoxrGraphicApiOpenGL( deVROpenXR &oxr );
+	deoxrGraphicApiOpenGL(deVROpenXR &oxr);
 	
 	/** Clean up instance. */
 	~deoxrGraphicApiOpenGL();
@@ -131,11 +132,11 @@ public:
 	GLXDrawable GetCurrentDrawable();
 	
 	/** Make current. */
-	void MakeCurrent( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+	void MakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx);
 	
 #elif defined OS_W32
 	/** Make current. */
-	void MakeCurrent( HDC hDc, HGLRC context );
+	void MakeCurrent(HDC hDc, HGLRC context);
 #endif
 	/*@}*/
 	
@@ -145,8 +146,8 @@ private:
 	void pCleanUp();
 	void pLoadLibrary();
 	void pGetFunctions();
-	void *pGetFunction( const char *name );
-	void pEnable( uint32_t capability, bool enable );
+	void *pGetFunction(const char *name);
+	void pEnable(uint32_t capability, bool enable);
 };
 
 #endif

@@ -12,11 +12,11 @@
 class detUnicodeStringList : public detCase{
 public:
 	detUnicodeStringList();
-	~detUnicodeStringList();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detUnicodeStringList() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestModify();

@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -41,26 +41,30 @@ class aeRule;
  * Undo to set a rule enabled.
  */
 class aeUSetRuleEnabled : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleEnabled>;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleEnabled( aeRule *rule );
+	aeUSetRuleEnabled(aeRule *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleEnabled();
+	~aeUSetRuleEnabled() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRSky.h"
 #include "deoglRSkyControllerTarget.h"
 #include "deoglRSkyInstance.h"
@@ -41,67 +38,44 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglRSkyControllerTarget::deoglRSkyControllerTarget( const deSkyControllerTarget &target ) :
-pLinks( NULL ),
-pLinkCount( 0 )
-{
-	const int linkCount = target.GetLinkCount();
-	if( linkCount == 0 ){
-		return;
-	}
-	
-	pLinks = new int[ linkCount ];
-	for( pLinkCount=0; pLinkCount<linkCount; pLinkCount++ ){
-		pLinks[ pLinkCount ] = target.GetLinkAt( pLinkCount );
-	}
+deoglRSkyControllerTarget::deoglRSkyControllerTarget(const deSkyControllerTarget &target) :
+pLinks(target.GetLinks()){
 }
 
-deoglRSkyControllerTarget::~deoglRSkyControllerTarget(){
-	if( pLinks ){
-		delete [] pLinks;
-	}
-}
+deoglRSkyControllerTarget::~deoglRSkyControllerTarget() = default;
 
 
 
 // Management
 ///////////////
 
-int deoglRSkyControllerTarget::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pLinks[ index ];
-}
-
-float deoglRSkyControllerTarget::GetValue( const deoglRSkyInstance &instance, float defaultValue ) const{
-	if( ! instance.GetRSky() ){
+float deoglRSkyControllerTarget::GetValue(const deoglRSkyInstance &instance, float defaultValue) const{
+	if(!instance.GetRSky()){
 		return defaultValue;
 	}
 	
 	const deoglRSky &sky = *instance.GetRSky();
 	float value = defaultValue;
 	bool firstValue = true;
-	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		if( pLinks[ i ] == -1 ){
-			continue;
+	pLinks.Visit([&](int linkIndex){
+		if(linkIndex == -1){
+			return;
 		}
 		
-		const deoglRSkyLink &link = sky.GetLinkAt( pLinks[ i ] );
-		if( link.IsDisabled() ){
-			continue;
+		const deoglRSkyLink &link = sky.GetLinkAt(linkIndex);
+		if(link.IsDisabled()){
+			return;
 		}
 		
-		if( firstValue ){
-			value = link.GetValue( instance );
+		if(firstValue){
+			value = link.GetValue(instance);
 			firstValue = false;
 			
 		}else{
-			value *= link.GetValue( instance );
+			value *= link.GetValue(instance);
 		}
-	}
+	});
 	
 	return value;
 }

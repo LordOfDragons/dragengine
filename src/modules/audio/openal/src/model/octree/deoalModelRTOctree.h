@@ -25,6 +25,7 @@
 #ifndef _DEOALMODELRTOCTREE_H_
 #define _DEOALMODELRTOCTREE_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -40,8 +41,8 @@ public:
 	struct sFace{
 		decVector normal;
 		decVector baseVertex;
-		decVector edgeNormal[ 3 ];
-		float edgeDistance[ 3 ];
+		decVector edgeNormal[3];
+		float edgeDistance[3];
 		int indexFace;
 		int indexTexture;
 	};
@@ -58,10 +59,8 @@ public:
 	
 	
 private:
-	sFace *pFaces;
-	int pFaceCount;
-	sNode *pNodes;
-	int pNodeCount;
+	decTList<sFace> pFaces;
+	decTList<sNode> pNodes;
 	
 	
 	
@@ -69,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create octree. */
-	deoalModelRTOctree( deoalModelOctree &octree );
+	deoalModelRTOctree(deoalModelOctree &octree);
 	
 	/** \brief Clean up octree. */
 	~deoalModelRTOctree();
@@ -80,22 +79,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Faces. */
-	inline const sFace *GetFaces() const{ return pFaces; }
+	inline const sFace *GetFaces() const{ return pFaces.GetArrayPointer(); }
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	
 	/** \brief Nodes. */
-	inline const sNode *GetNodes() const{ return pNodes; }
+	inline const sNode *GetNodes() const{ return pNodes.GetArrayPointer(); }
 	
 	/** \brief Node count. */
-	inline int GetNodeCount() const{ return pNodeCount; }
+	inline int GetNodeCount() const{ return pNodes.GetCount(); }
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

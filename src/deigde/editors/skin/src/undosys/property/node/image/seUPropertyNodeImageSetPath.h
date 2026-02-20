@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeImage;
+#include "../../../../skin/property/node/sePropertyNodeImage.h"
 
 
 
@@ -35,8 +35,12 @@ class sePropertyNodeImage;
  * \brief Undo action property node image set path.
  */
 class seUPropertyNodeImageSetPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeImageSetPath>;
+	
+	
 private:
-	sePropertyNodeImage *pNode;
+	sePropertyNodeImage::Ref pNode;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeImageSetPath( sePropertyNodeImage *node, const char *newValue );
+	seUPropertyNodeImageSetPath(sePropertyNodeImage *node, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeImageSetPath();
+	~seUPropertyNodeImageSetPath() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

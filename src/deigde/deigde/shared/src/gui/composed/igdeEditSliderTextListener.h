@@ -36,6 +36,12 @@ class igdeEditSliderText;
  * \brief IGDE UI EditSliderText Listener.
  */
 class DE_DLL_EXPORT igdeEditSliderTextListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditSliderTextListener>;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditSliderTextListener();
+	~igdeEditSliderTextListener() override;
 	/*@}*/
 	
 	
@@ -62,7 +68,7 @@ public:
 	/**
 	 * \brief EditSliderText value changed and has been accepted by user.
 	 */
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText );
+	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText);
 	
 	/**
 	 * \brief EditSliderText value is changing and has net been accepted by user.
@@ -70,7 +76,7 @@ public:
 	 * This is used for dragging the slider to allow continuous tracking. Once the user
 	 * finishes an OnSliderTextValueChanged() will be send with the final value.
 	 */
-	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText );
+	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText);
 	/*@}*/
 };
 

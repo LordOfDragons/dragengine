@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeReflectionMask::gdeUOCEnvMapProbeSetShapeReflectionMask( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decShapeList &newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCEnvMapProbeSetShapeReflectionMask::gdeUOCEnvMapProbeSetShapeReflectionMask(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decShape::List &newValue) :
+
+pEnvMapProbe(nullptr)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set shape reflection mask" );
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetShapeReflectionMask");
 	
 	pOldValue = envMapProbe->GetShapeListReflectionMask();
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetShapeReflectionMask::~gdeUOCEnvMapProbeSetShapeReflectionMask(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,10 +68,10 @@ gdeUOCEnvMapProbeSetShapeReflectionMask::~gdeUOCEnvMapProbeSetShapeReflectionMas
 
 void gdeUOCEnvMapProbeSetShapeReflectionMask::Undo(){
 	pEnvMapProbe->GetShapeListReflectionMask() = pOldValue;
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetShapeReflectionMask::Redo(){
 	pEnvMapProbe->GetShapeListReflectionMask() = pNewValue;
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

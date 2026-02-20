@@ -26,8 +26,8 @@
 #define _IGDEDIALOGCURVEBEZIERCLAMP_H_
 
 #include "../dialog/igdeDialog.h"
-#include "../igdeCheckBoxReference.h"
-#include "../composed/igdeEditVector2Reference.h"
+#include "../igdeCheckBox.h"
+#include "../composed/igdeEditVector2.h"
 
 
 
@@ -35,10 +35,15 @@
  * \brief Dialog bezier curve clamp parameters.
  */
 class DE_DLL_EXPORT igdeDialogCurveBezierClamp : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDialogCurveBezierClamp>;
+	
+	
 private:
-	igdeCheckBoxReference pChkClamp;
-	igdeEditVector2Reference pEditMinimum;
-	igdeEditVector2Reference pEditMaximum;
+	igdeCheckBox::Ref pChkClamp;
+	igdeEditVector2::Ref pEditMinimum;
+	igdeEditVector2::Ref pEditMaximum;
 	
 	
 	
@@ -46,17 +51,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierClamp( igdeEnvironment &environment );
+	igdeDialogCurveBezierClamp(igdeEnvironment &environment);
 	
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierClamp( igdeEnvironment &environment, bool clamp,
-		const decVector2 &minimum, const decVector2 &maximum );
+	igdeDialogCurveBezierClamp(igdeEnvironment &environment, bool clamp,
+		const decVector2 &minimum, const decVector2 &maximum);
 	
 	
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogCurveBezierClamp();
+	~igdeDialogCurveBezierClamp() override;
 	/*@}*/
 	
 	
@@ -68,25 +73,25 @@ public:
 	bool GetClamp() const;
 	
 	/** \brief Set clamp. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Minimum clamp. */
 	decVector2 GetClampMin() const;
 	
 	/** \brief Set minimum clamp. */
-	void SetClampMin( const decVector2 &minimum );
+	void SetClampMin(const decVector2 &minimum);
 	
 	/** \brief Maximum clamp. */
 	decVector2 GetClampMax() const;
 	
 	/** \brief Set maximum clamp. */
-	void SetClampMax( const decVector2 &maximum );
+	void SetClampMax(const decVector2 &maximum);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeEnvironment &environment );
+	void pCreateContent(igdeEnvironment &environment);
 };
 
 #endif

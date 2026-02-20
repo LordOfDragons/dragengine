@@ -26,21 +26,21 @@
 #define _GDEWPSOCBILLBOARD_H_
 
 #include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCBillboardListener.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCBillboard;
 class gdeWindowProperties;
-class gdeWPSOCBillboardListener;
 
 
 
@@ -48,26 +48,29 @@ class gdeWPSOCBillboardListener;
  * \brief Object class billboard property panel.
  */
 class gdeWPSOCBillboard : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCBillboard> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCBillboardListener *pListener;
+	gdeWPSOCBillboardListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPathSkin;
-	igdeEditVectorReference pEditAxis;
-	igdeEditVector2Reference pEditSize;
-	igdeEditVector2Reference pEditOffset;
-	igdeCheckBoxReference pChkLocked;
-	igdeCheckBoxReference pChkSpherical;
-	igdeCheckBoxReference pChkRelativeSize;
-	igdeCheckBoxReference pChkDoNotScale;
-	igdeCheckBoxReference pChkRenderEnvMap;
-	igdeCheckBoxReference pChkPartialHide;
-	igdeEditVectorReference pEditPosition;
-	igdeTextFieldReference pEditBoneName;
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeEditPath::Ref pEditPathSkin;
+	igdeEditVector::Ref pEditAxis;
+	igdeEditVector2::Ref pEditSize;
+	igdeEditVector2::Ref pEditOffset;
+	igdeCheckBox::Ref pChkLocked;
+	igdeCheckBox::Ref pChkSpherical;
+	igdeCheckBox::Ref pChkRelativeSize;
+	igdeCheckBox::Ref pChkDoNotScale;
+	igdeCheckBox::Ref pChkRenderEnvMap;
+	igdeCheckBox::Ref pChkPartialHide;
+	igdeEditVector::Ref pEditPosition;
+	igdeTextField::Ref pEditBoneName;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	
@@ -75,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCBillboard( gdeWindowProperties &windowMain );
+	gdeWPSOCBillboard(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -87,22 +90,22 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class billboard or \em NULL if not set. */
+	/** \brief Active object class billboard or \em nullptr if not set. */
 	gdeOCBillboard *GetBillboard() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCBillboard::eProperties GetPropertyName() const;
+	gdeOCBillboard::eProperties GetPropertyName() const;
 	
 	
 	

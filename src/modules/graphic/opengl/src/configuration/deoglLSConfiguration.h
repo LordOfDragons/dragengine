@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load/save configuration. */
-	deoglLSConfiguration( deGraphicOpenGl &ogl );
+	deoglLSConfiguration(deGraphicOpenGl &ogl);
 	
 	/** Clean up load/save configuration. */
 	~deoglLSConfiguration();
@@ -55,19 +55,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Load configuration from XML files. */
-	void LoadConfig( deoglConfiguration &configuration );
+	void LoadConfig(deoglConfiguration &configuration);
 	
 	/** Save configuration to XML file. */
-	void SaveConfig( const deoglConfiguration &configuration );
+	void SaveConfig(const deoglConfiguration &configuration);
 	/*@}*/
 	
 private:
-	void pLoadConfigOpenGL( deoglConfiguration &configuration, decBaseFileReader &file );
-	decXmlElementTag *pGetTagAt( decXmlElementTag *tag, int index );
-	decXmlAttValue *pFindAttribute( decXmlElementTag *tag, const char *name );
-	const char *pGetAttributeString( decXmlElementTag *tag, const char *name );
-	int pGetAttributeInt( decXmlElementTag *tag, const char *name );
-	float pGetAttributeFloat( decXmlElementTag *tag, const char *name );
+	void pLoadConfigOpenGL(deoglConfiguration &configuration, decBaseFileReader &file);
+	decXmlElementTag *pGetTagAt(decXmlElementTag *tag, int index);
+	decXmlAttValue *pFindAttribute(decXmlElementTag *tag, const char *name);
+	const char *pGetAttributeString(decXmlElementTag *tag, const char *name);
+	int pGetAttributeInt(decXmlElementTag *tag, const char *name);
+	float pGetAttributeFloat(decXmlElementTag *tag, const char *name);
 };
 
 #endif

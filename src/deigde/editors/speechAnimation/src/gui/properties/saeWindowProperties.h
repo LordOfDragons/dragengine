@@ -25,9 +25,13 @@
 #ifndef _SAEWINDOWPROPERTIES_H_
 #define _SAEWINDOWPROPERTIES_H_
 
+#include "saeWPSAnim.h"
+#include "saeWPView.h"
+#include "saeWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class saeWindowMain;
 class saeSAnimation;
@@ -38,12 +42,15 @@ class saeSAnimation;
  * Properties Panel.
  */
 class saeWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<saeWindowProperties>;
+	
 private:
 	saeWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelSAnimation;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	saeWPSAnim::Ref pPanelSAnimation;
+	saeWPView::Ref pPanelView;
+	saeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -51,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWindowProperties( saeWindowMain &windowMain );
+	saeWindowProperties(saeWindowMain &windowMain);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~saeWindowProperties();
+	~saeWindowProperties() override;
 	/*@}*/
 	
 	
@@ -67,7 +74,7 @@ public:
 	inline saeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Speech animation path changed. */
 	void OnSAnimationPathChanged();

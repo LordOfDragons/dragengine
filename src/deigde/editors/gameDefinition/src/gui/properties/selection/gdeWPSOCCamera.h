@@ -25,16 +25,16 @@
 #ifndef _GDEWPSOCCAMERA_H_
 #define _GDEWPSOCCAMERA_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCCamera;
 class gdeWindowProperties;
-class gdeWPSOCCameraListener;
+#include "gdeWPSOCCameraListener.h"
 
 
 
@@ -42,15 +42,18 @@ class gdeWPSOCCameraListener;
  * \brief Object class camera property panel.
  */
 class gdeWPSOCCamera : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCCamera> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCCameraListener *pListener;
+	gdeWPSOCCameraListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeTextFieldReference pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
-	igdeEditVectorReference pEditPosition, pEditRotation;
-	igdeComboBoxReference pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
+	igdeTextField::Ref pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
+	igdeEditVector::Ref pEditPosition, pEditRotation;
+	igdeComboBox::Ref pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
 	
 	
 	
@@ -58,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCCamera( gdeWindowProperties &windowMain );
+	gdeWPSOCCamera(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -70,18 +73,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class camera or \em NULL if not set. */
+	/** \brief Active object class camera or \em nullptr if not set. */
 	gdeOCCamera *GetCamera() const;
 	
 	

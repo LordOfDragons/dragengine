@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,19 +46,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACLogicRemoveCondition::ceWPTMACLogicRemoveCondition( ceWindowMain &windowMain,
+ceWPTMACLogicRemoveCondition::ceWPTMACLogicRemoveCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceConversationAction &action, ceCConditionLogic &logic, ceConversationCondition *condition ) :
-ceWPTMenuAction( windowMain, "Remove Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pAction( &action ),
-pLogic( &logic ),
-pCondition( condition )
+ceConversationAction &action, ceCConditionLogic &logic, ceConversationCondition *condition) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pAction(&action),
+pLogic(&logic),
+pCondition(condition)
 {
-	if( ! condition ){
-		DETHROW( deeInvalidParam );
+	if(!condition){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -68,7 +68,6 @@ pCondition( condition )
 ///////////////
 
 void ceWPTMACLogicRemoveCondition::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCCLogicRemove( pTopic, pAction, pLogic, pCondition ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCCLogicRemove::Ref::New(
+		pTopic, pAction, pLogic, pCondition));
 }

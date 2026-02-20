@@ -30,7 +30,7 @@
 #include "ceWPTTreeItemModel.h"
 
 #include <deigde/gui/igdeTreeList.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,18 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTreeItem::ceWPTTreeItem( igdeTreeList *treeList ) :
-igdeTreeItem( "" ),
-pTreeList( treeList ),
-pModel( NULL )
+ceWPTTreeItem::ceWPTTreeItem(igdeTreeList *treeList) :
+igdeTreeItem(""),
+pTreeList(treeList)
 {
-	if( ! treeList ){
-		DETHROW( deeInvalidParam );
+	if(!treeList){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 ceWPTTreeItem::~ceWPTTreeItem(){
-	SetModel( NULL );
+	SetModel(nullptr);
 }
 
 
@@ -58,122 +57,119 @@ ceWPTTreeItem::~ceWPTTreeItem(){
 // Management
 ///////////////
 
-void ceWPTTreeItem::SetModel( ceWPTTreeItemModel *model ){
-	if( pModel == model ){
+void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
+	if(pModel == model){
 		return;
 	}
 	
-	if( pModel ){
-		pModel->SetTreeItem( NULL );
-		pModel->FreeReference();
+	if(pModel){
+		pModel->SetTreeItem(nullptr);
 	}
 	
 	pModel = model;
 	
-	if( model ){
-		model->AddReference();
-		model->SetTreeItem( this );
+	if(model){
+		model->SetTreeItem(this);
 	}
 }
 
 
 
-void ceWPTTreeItem::AddItem( ceWPTTreeItemModel *model ){
-	if( ! pTreeList || ! model ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
+	if(!pTreeList || !model){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeTreeItemReference item;
-	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
-	pTreeList->AppendItem( this, item );
-	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( model );
+	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
+	pTreeList->AppendItem(this, item);
+	item->SetModel(model);
 }
 
-void ceWPTTreeItem::InsertItem( ceWPTTreeItemModel *model, int position ){
-	if( ! pTreeList || ! model || position < 0 || position > GetChildrenCount() ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
+	if(!pTreeList || !model || position < 0 || position > GetChildrenCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeTreeItem *beforeItem = NULL;
-	if( position < GetChildrenCount() ){
+	igdeTreeItem *beforeItem = nullptr;
+	if(position < GetChildrenCount()){
 		beforeItem = GetFirstChild();
-		while( position > 0 ){
+		while(position > 0){
 			beforeItem = beforeItem->GetNext();
 			position--;
 		}
 	}
 	
-	igdeTreeItemReference item;
-	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
+	const ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
 	
-	if( beforeItem ){
-		pTreeList->InsertItemBefore( beforeItem, item );
+	if(beforeItem){
+		pTreeList->InsertItemBefore(beforeItem, item);
 		
 	}else{
-		pTreeList->AppendItem( this, item );
+		pTreeList->AppendItem(this, item);
 	}
 	
-	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( model );
+	item->SetModel(model);
 }
 
-void ceWPTTreeItem::RemoveItem( ceWPTTreeItemModel *model ){
-	if( ! pTreeList || ! model ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
+	if(!pTreeList || !model){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ceWPTTreeItem * const item = model->GetTreeItem();
-	if( ! item ){
-		DETHROW( deeInvalidParam );
+	if(!item){
+		DETHROW(deeInvalidParam);
 	}
 	
-	item->SetModel( NULL );
-	pTreeList->RemoveItem( item );
+	item->SetModel(nullptr);
+	pTreeList->RemoveItem(item);
 }
 
 void ceWPTTreeItem::RemoveAllItems(){
-	if( ! pTreeList ){
-		DETHROW( deeInvalidParam );
+	if(!pTreeList){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( GetChildrenCount() == 0 ){
+	if(GetChildrenCount() == 0){
 		return;
 	}
 	
-	ceWPTTreeItem *item = ( ceWPTTreeItem* )GetFirstChild();
-	while( item ){
-		item->RemoveAllItems();
-		item->SetModel( NULL );
-		item = ( ceWPTTreeItem* )item->GetNext();
+	igdeTreeItem *item = GetFirstChild();
+	while(item){
+		ceWPTTreeItem &ti = *((ceWPTTreeItem*)item);
+		ti.RemoveAllItems();
+		ti.SetModel(nullptr);
+		item = item->GetNext();
 	}
 }
 
 void ceWPTTreeItem::SortItems(){
-	if( ! pTreeList ){
-		DETHROW( deeInvalidParam );
+	if(!pTreeList){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTreeList->SortItems( this );
+	pTreeList->SortItems(this);
 }
 
 void ceWPTTreeItem::SetAsCurrentItem(){
-	if( ! pTreeList ){
-		DETHROW( deeInvalidParam );
+	if(!pTreeList){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTreeList->SetSelection( this );
+	pTreeList->SetSelection(this);
 }
 
 
 
 void ceWPTTreeItem::OnSelected(){
-	if( pTreeList && pModel ){
+	if(pTreeList && pModel){
 		pModel->OnSelected();
 	}
 }
 
-void ceWPTTreeItem::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( pTreeList && pModel ){
-		pModel->OnContextMenu( contextMenu );
+void ceWPTTreeItem::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(pTreeList && pModel){
+		pModel->OnContextMenu(contextMenu);
 	}
 }
 
@@ -183,15 +179,15 @@ void ceWPTTreeItem::OnContextMenu( igdeMenuCascade &contextMenu ){
 /////////////////
 
 void ceWPTTreeItem::OnExpanded(){
-	if( pModel ){
-		pModel->SetExpanded( true );
+	if(pModel){
+		pModel->SetExpanded(true);
 		pModel->OnExpandedChanged();
 	}
 }
 
 void ceWPTTreeItem::OnCollapsed(){
-	if( pModel ){
-		pModel->SetExpanded( false );
+	if(pModel){
+		pModel->SetExpanded(false);
 		pModel->OnExpandedChanged();
 	}
 }

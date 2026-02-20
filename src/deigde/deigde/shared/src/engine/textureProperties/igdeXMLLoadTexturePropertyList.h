@@ -26,11 +26,9 @@
 #define _IGDEXMLLOADTEXTUREPROPERTYLIST_H_
 
 #include "../../utils/igdeBaseXML.h"
+#include "../../engine/textureProperties/igdeTextureProperty.h"
 
-class igdeTextureProperty;
-class igdeTexturePropertyList;
 class decBaseFileReader;
-
 
 
 /**
@@ -41,10 +39,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	igdeXMLLoadTexturePropertyList( deLogger *logger );
+	explicit igdeXMLLoadTexturePropertyList(deLogger *logger);
 	
 	/** \brief Clean up loader. */
-	virtual ~igdeXMLLoadTexturePropertyList();
+	~igdeXMLLoadTexturePropertyList() override;
 	/*@}*/
 	
 	
@@ -52,16 +50,16 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Load texture property list. */
-	void ReadFromFile( igdeTexturePropertyList &list, decBaseFileReader &file );
+	void ReadFromFile(igdeTextureProperty::List &list, decBaseFileReader &file);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadList( const decXmlElementTag &root, igdeTexturePropertyList &list );
-	void pReadProperty( const decXmlElementTag &root, igdeTexturePropertyList &list );
-	void pReadDefault( const decXmlElementTag &root, igdeTextureProperty &property );
-	void pReadAffects( const decXmlElementTag &root, igdeTextureProperty &property );
+	void pReadList(const decXmlElementTag &root, igdeTextureProperty::List &list);
+	void pReadProperty(const decXmlElementTag &root, igdeTextureProperty::List &list);
+	void pReadDefault(const decXmlElementTag &root, igdeTextureProperty &property);
+	void pReadAffects(const decXmlElementTag &root, igdeTextureProperty &property);
 };
 
 #endif

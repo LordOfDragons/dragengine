@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCForceFieldToggleEnabled::gdeUOCForceFieldToggleEnabled(
-	gdeObjectClass *objectClass, gdeOCForceField *forceField ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+	gdeObjectClass *objectClass, gdeOCForceField *forceField) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field toggle enabled" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldToggleEnabled");
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
 ///////////////
 
 void gdeUOCForceFieldToggleEnabled::Undo(){
-	pForceField->SetEnabled( ! pForceField->GetEnabled() );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetEnabled(!pForceField->GetEnabled());
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldToggleEnabled::Redo(){

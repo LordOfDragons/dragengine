@@ -52,24 +52,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAONavBlocker::gdeVAONavBlocker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCNavigationBlocker *ocnavblocker ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCNavBlocker( ocnavblocker ),
-pDDSBlocker( NULL )
+gdeVAONavBlocker::gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCNavigationBlocker *ocnavblocker) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCNavBlocker(ocnavblocker)
 {
-	if( ! ocnavblocker ){
-		DETHROW( deeInvalidParam );
+	if(!ocnavblocker){
+		DETHROW(deeInvalidParam);
 	}
-	ocnavblocker->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pBuildDDSBlocker();
 		pUpdateDDShapeColor();
 		UpdateDDVisibility();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -98,9 +95,9 @@ void gdeVAONavBlocker::SelectedObjectChanged(){
 void gdeVAONavBlocker::UpdateDDVisibility(){
 	const gdeGameDefinition &gameDefinition = *pView.GetGameDefinition();
 	
-	pDebugDrawer->SetVisible( pView.GetShowNavBlockers()
-		|| ( gameDefinition.GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-			&& gameDefinition.GetActiveOCNavigationBlocker() == pOCNavBlocker ) );
+	pDebugDrawer->SetVisible(pView.GetShowNavBlockers()
+		|| (gameDefinition.GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
+			&& gameDefinition.GetActiveOCNavigationBlocker() == pOCNavBlocker));
 }
 
 
@@ -109,17 +106,12 @@ void gdeVAONavBlocker::UpdateDDVisibility(){
 //////////////////////
 
 void gdeVAONavBlocker::pCleanUp(){
-	if( pDDSBlocker ){
-		pDDSBlocker->SetParentDebugDrawer( NULL );
-		delete pDDSBlocker;
+	if(pDDSBlocker){
+		pDDSBlocker->SetParentDebugDrawer(nullptr);
 	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer = NULL;
-	}
-	
-	if( pOCNavBlocker ){
-		pOCNavBlocker->FreeReference();
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -129,44 +121,44 @@ void gdeVAONavBlocker::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( false );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer->SetXRay(false);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// blocker
-	pDDSBlocker = new igdeWDebugDrawerShape;
-	pDDSBlocker->SetParentDebugDrawer( pDebugDrawer );
+	pDDSBlocker = igdeWDebugDrawerShape::Ref::New();
+	pDDSBlocker->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAONavBlocker::pBuildDDSBlocker(){
 	pDDSBlocker->RemoveAllShapes();
 	
-	const decShapeList &blockerShape = pOCNavBlocker->GetShapeList();
-	if( blockerShape.GetCount() == 0 ){
+	const decShape::List &blockerShape = pOCNavBlocker->GetShapeList();
+	if(blockerShape.GetCount() == 0){
 		return;
 	}
 	
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	pDDSBlocker->SetEdgeColor( decColor( config.GetColorNavigationBlocker(), 1.0f ) );
-	pDDSBlocker->SetFillColor( config.GetColorNavigationBlocker() );
-	pDDSBlocker->SetPosition( PropertyVector( pOCNavBlocker->GetPropertyName(
-		gdeOCNavigationBlocker::epAttachPosition ), pOCNavBlocker->GetPosition() ) );
-	pDDSBlocker->SetOrientation( PropertyQuaternion( pOCNavBlocker->GetPropertyName(
-		gdeOCNavigationBlocker::epAttachRotation ), pOCNavBlocker->GetRotation() ) );
-	pDDSBlocker->AddShapes( blockerShape );
+	pDDSBlocker->SetEdgeColor(decColor(config.GetColorNavigationBlocker(), 1.0f));
+	pDDSBlocker->SetFillColor(config.GetColorNavigationBlocker());
+	pDDSBlocker->SetPosition(PropertyVector(pOCNavBlocker->GetPropertyName(
+		gdeOCNavigationBlocker::epAttachPosition), pOCNavBlocker->GetPosition()));
+	pDDSBlocker->SetOrientation(PropertyQuaternion(pOCNavBlocker->GetPropertyName(
+		gdeOCNavigationBlocker::epAttachRotation), pOCNavBlocker->GetRotation()));
+	pDDSBlocker->AddShapes(blockerShape);
 }
 
 void gdeVAONavBlocker::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-	&& pView.GetGameDefinition()->GetActiveOCNavigationBlocker() == pOCNavBlocker ){
-		pDDSBlocker->SetEdgeColor( decColor( config.GetColorNavigationBlockerActive(), 1.0f ) );
-		pDDSBlocker->SetFillColor( config.GetColorNavigationBlockerActive() );
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
+	&& pView.GetGameDefinition()->GetActiveOCNavigationBlocker() == pOCNavBlocker){
+		pDDSBlocker->SetEdgeColor(decColor(config.GetColorNavigationBlockerActive(), 1.0f));
+		pDDSBlocker->SetFillColor(config.GetColorNavigationBlockerActive());
 		
 	}else{
-		pDDSBlocker->SetEdgeColor( decColor( config.GetColorNavigationBlocker(), 1.0f ) );
-		pDDSBlocker->SetFillColor( config.GetColorNavigationBlocker() );
+		pDDSBlocker->SetEdgeColor(decColor(config.GetColorNavigationBlocker(), 1.0f));
+		pDDSBlocker->SetFillColor(config.GetColorNavigationBlocker());
 	}
 }

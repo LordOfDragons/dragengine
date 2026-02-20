@@ -40,30 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerAdd::peeUControllerAdd( peeEmitter *emitter, peeController *controller ){
-	if( ! emitter || ! controller ){
-		DETHROW( deeInvalidParam );
+peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *controller){
+	if(!emitter || !controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitter = NULL;
-	pController = NULL;
+	pEmitter = nullptr;
+	pController = nullptr;
 	
-	SetShortInfo( "Add Controller" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.Add");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerAdd::~peeUControllerAdd(){
-	if( pController ){
-		pController->FreeReference();
-	}
-	if( pEmitter ){
-		pEmitter->FreeReference();
-	}
 }
 
 
@@ -72,10 +63,10 @@ peeUControllerAdd::~peeUControllerAdd(){
 ///////////////
 
 void peeUControllerAdd::Undo(){
-	pEmitter->RemoveController( pController );
+	pEmitter->RemoveController(pController);
 }
 
 void peeUControllerAdd::Redo(){
-	pEmitter->AddController( pController );
-	pEmitter->SetActiveController( pController );
+	pEmitter->AddController(pController);
+	pEmitter->SetActiveController(pController);
 }

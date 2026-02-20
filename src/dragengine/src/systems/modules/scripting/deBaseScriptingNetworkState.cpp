@@ -44,5 +44,5 @@ deBaseScriptingNetworkState::~deBaseScriptingNetworkState(){
 // Notifications
 //////////////////
 
-void deBaseScriptingNetworkState::StateValueChanged( int index ){
+void deBaseScriptingNetworkState::StateValueChanged(int index){
 }

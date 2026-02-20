@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLTREELIST_H_
 #define _IGDENATIVENULLTREELIST_H_
 
+#include "../../igdeTreeList.h"
+
 class igdeTreeList;
 class igdeTreeItem;
 
@@ -32,7 +34,7 @@ class igdeTreeItem;
 /**
  * Null tree list.
  */
-class igdeNativeNullTreeList{
+class igdeNativeNullTreeList : public igdeTreeList::cNativeTreeList{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -43,7 +45,7 @@ public:
 	virtual ~igdeNativeNullTreeList();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullTreeList *CreateNativeWidget( igdeTreeList &owner );
+	static igdeNativeNullTreeList *CreateNativeWidget(igdeTreeList &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -56,20 +58,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void BuildTree();
-	virtual void UpdateItem( igdeTreeItem *item );
-	virtual void MakeItemVisible( igdeTreeItem *item );
-	virtual void CreateAndInsertItem( igdeTreeItem *item );
-	virtual void CreateAndAppendItem( igdeTreeItem *item );
-	virtual void RemoveItem( igdeTreeItem *item );
-	virtual void RemoveAllItems( igdeTreeItem *parent );
-	virtual void ItemMoved( igdeTreeItem *item );
-	virtual void SelectItem( igdeTreeItem *item );
-	virtual void ItemsSortedIn( igdeTreeItem *item );
-	virtual void Focus();
-	virtual void UpdateEnabled();
-	virtual void UpdateRows();
-	virtual void UpdateDescription();
+	void BuildTree() override;
+	void UpdateItem(igdeTreeItem *item) override;
+	void MakeItemVisible(igdeTreeItem *item) override;
+	void CreateAndInsertItem(igdeTreeItem *item) override;
+	void CreateAndAppendItem(igdeTreeItem *item) override;
+	void RemoveItem(igdeTreeItem *item) override;
+	void RemoveAllItems(igdeTreeItem *parent) override;
+	void ItemMoved(igdeTreeItem *item) override;
+	void SelectItem(igdeTreeItem *item) override;
+	void ItemsSortedIn(igdeTreeItem *item) override;
+	void Focus() override;
+	void UpdateEnabled() override;
+	void UpdateRows() override;
+	void UpdateDescription() override;
 	/*@}*/
 };
 

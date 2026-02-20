@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -30,85 +30,6 @@
     <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\buffer\devkBuffer.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\buffer\devkGuardUnmapBuffer.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPool.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolPool.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolSlot.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSet.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayout.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutManager.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\deSharedVulkan.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkBasics.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDebug.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDevice.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkFormat.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkInstance.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkLoader.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImage.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImageConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImageView.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkDynamicState.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipeline.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineCompute.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineGraphic.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineManager.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkSpecialization.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkCommandBuffer.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkCommandPool.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkQueue.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPass.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPassConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModule.cpp" />
-    <ClCompile Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModuleManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\buffer\devkBuffer.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\buffer\devkGuardUnmapBuffer.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPool.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolPool.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolSlot.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSet.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayout.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutConfiguration.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutManager.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\deSharedVulkan.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkBasics.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDebug.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDevice.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFormat.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFunctionNames.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkInstance.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkLoader.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTestFormatConfig.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTPoolReference.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImage.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImageConfiguration.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImageView.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkDynamicState.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipeline.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineCompute.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineConfiguration.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineGraphic.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineManager.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkSpecialization.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkCommandBuffer.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkCommandPool.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkQueue.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPass.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPassConfiguration.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModule.h" />
-    <ClInclude Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModuleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="post_build.ps1" />
@@ -332,4 +253,83 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\buffer\devkBuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\buffer\devkGuardUnmapBuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\deSharedVulkan.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPool.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolPool.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolSlot.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSet.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayout.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutManager.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkBasics.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDebug.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDevice.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkFormat.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkInstance.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkLoader.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImage.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImageConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImageView.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkDynamicState.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipeline.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineCompute.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineGraphic.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineManager.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkSpecialization.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkCommandBuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkCommandPool.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkQueue.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPass.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPassConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModule.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModuleManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\buffer\devkBuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\buffer\devkGuardUnmapBuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\deSharedVulkan.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPool.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolPool.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolSlot.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSet.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayout.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutManager.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkBasics.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDebug.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDevice.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFormat.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFunctionNames.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkInstance.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkLoader.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTPoolReference.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTestFormatConfig.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImage.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImageConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImageView.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkDynamicState.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipeline.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineCompute.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineGraphic.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineManager.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkSpecialization.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkCommandBuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkCommandPool.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkQueue.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPass.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPassConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModule.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModuleManager.h" />
+  </ItemGroup>
 </Project>

@@ -25,73 +25,77 @@
 #ifndef _AEWPPLAYGROUND_H_
 #define _AEWPPLAYGROUND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeLabelReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include "aeWPPlaygroundListener.h"
+#include "../../animator/aeAnimator.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeLabel.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
+#include <dragengine/common/collection/decTList.h>
 
-class aeAnimator;
 class aeController;
 class aeWindowProperties;
 class aeAnimatorLocomotionLeg;
-class aeWPPlaygroundListener;
-
 
 
 /**
  * Playground Panel.
  */
 class aeWPPlayground : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<aeWPPlayground>;
+	
+	
 private:
 	struct sController{
 		aeController *controller;
-		igdeEditSliderTextReference slider;
+		igdeEditSliderText::WeakRef slider;
 	};
 	
 	
 	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPPlaygroundListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPPlaygroundListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
-	igdeContainerReference pFraContent;
-	sController *pControllers;
-	int pControllerCount;
+	igdeContainer::Ref pFraContent;
+	decTList<sController> pControllers;
 	
-	igdeComboBoxReference pCBLocomotionType;
+	igdeComboBox::Ref pCBLocomotionType;
 	
-	igdeTextFieldReference pEditLocoLimitDown;
-	igdeTextFieldReference pEditLocoLimitUp;
-	igdeTextFieldReference pEditLocoLimitLeft;
-	igdeTextFieldReference pEditLocoLimitRight;
-	igdeTextFieldReference pEditLocoSpeedWalk;
-	igdeTextFieldReference pEditLocoSpeedRun;
-	igdeTextFieldReference pEditLocoAdjTimeUD;
-	igdeTextFieldReference pEditLocoAdjTimeLR;
-	igdeTextFieldReference pEditLocoAdjTimeStance;
-	igdeTextFieldReference pEditLocoAdjTimeOrientation;
-	igdeTextFieldReference pEditLocoAdjTimeVelocity;
-	igdeTextFieldReference pEditLocoAdjTimeTurnIP;
+	igdeTextField::Ref pEditLocoLimitDown;
+	igdeTextField::Ref pEditLocoLimitUp;
+	igdeTextField::Ref pEditLocoLimitLeft;
+	igdeTextField::Ref pEditLocoLimitRight;
+	igdeTextField::Ref pEditLocoSpeedWalk;
+	igdeTextField::Ref pEditLocoSpeedRun;
+	igdeTextField::Ref pEditLocoAdjTimeUD;
+	igdeTextField::Ref pEditLocoAdjTimeLR;
+	igdeTextField::Ref pEditLocoAdjTimeStance;
+	igdeTextField::Ref pEditLocoAdjTimeOrientation;
+	igdeTextField::Ref pEditLocoAdjTimeVelocity;
+	igdeTextField::Ref pEditLocoAdjTimeTurnIP;
 	
-	igdeTextFieldReference pEditLocoLegBlendTime;
-	igdeSpinTextFieldReference pSpinLocoUseLegPairs;
-	igdeSpinTextFieldReference pSpinLocoLeg;
-	igdeEditVectorReference pEditLocoLegPDPosStand;
-	igdeEditVectorReference pEditLocoLegPDPosWalk;
-	igdeEditVectorReference pEditLocoLegPDPosRun;
-	igdeTextFieldReference pEditLocoLegLiftOffTime;
-	igdeTextFieldReference pEditLocoLegPutDownTime;
+	igdeTextField::Ref pEditLocoLegBlendTime;
+	igdeSpinTextField::Ref pSpinLocoUseLegPairs;
+	igdeSpinTextField::Ref pSpinLocoLeg;
+	igdeEditVector::Ref pEditLocoLegPDPosStand;
+	igdeEditVector::Ref pEditLocoLegPDPosWalk;
+	igdeEditVector::Ref pEditLocoLegPDPosRun;
+	igdeTextField::Ref pEditLocoLegLiftOffTime;
+	igdeTextField::Ref pEditLocoLegPutDownTime;
 	
-	igdeCheckBoxReference pChkLocoShowShapes;
-	igdeCheckBoxReference pChkLocoUseFoGIK;
+	igdeCheckBox::Ref pChkLocoShowShapes;
+	igdeCheckBox::Ref pChkLocoUseFoGIK;
 	
 	
 	
@@ -99,11 +103,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPPlayground( aeWindowProperties &windowProperties );
+	aeWPPlayground(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPPlayground();
+	~aeWPPlayground() override;
 	/*@}*/
 	
 	
@@ -112,28 +116,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Leg. */
 	aeAnimatorLocomotionLeg *GetLeg() const;
 	
-	/** Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/** Controller at index. */
-	sController &GetControllerAt( int index ) const;
+	/** Controllers. */
+	inline const decTList<sController> &GetControllers() const{ return pControllers; }
 	
 	/** Rebuild controllers list. */
 	void RebuildControllers();
 	
 	/** Update controller. */
-	void UpdateController( aeController *controller );
+	void UpdateController(aeController *controller);
 	
 	/** Update controller value. */
-	void UpdateControllerValue( aeController *controller );
+	void UpdateControllerValue(aeController *controller);
 	
 	/** Update locomotion. */
 	void UpdateLocomotion();

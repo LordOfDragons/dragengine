@@ -40,22 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintToggleIsRope::reUConstraintToggleIsRope( reRigConstraint *constraint ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintToggleIsRope::reUConstraintToggleIsRope(reRigConstraint *constraint){
+	if(!constraint || !constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
 	
-	SetShortInfo( "Constraint toggle is rope" );
-	
-	pConstraint->AddReference();
+	SetShortInfo("@Rig.Undo.ConstraintToggleRope");
 }
 
 reUConstraintToggleIsRope::~reUConstraintToggleIsRope(){
-	if( pConstraint ){
-		pConstraint->FreeReference();
-	}
 }
 
 
@@ -64,9 +59,9 @@ reUConstraintToggleIsRope::~reUConstraintToggleIsRope(){
 ///////////////
 
 void reUConstraintToggleIsRope::Undo(){
-	pConstraint->SetIsRope( ! pConstraint->GetIsRope() );
+	pConstraint->SetIsRope(!pConstraint->GetIsRope());
 }
 
 void reUConstraintToggleIsRope::Redo(){
-	pConstraint->SetIsRope( ! pConstraint->GetIsRope() );
+	pConstraint->SetIsRope(!pConstraint->GetIsRope());
 }

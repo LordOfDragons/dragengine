@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-#include "igdeGDClassReference.h"
+#include "igdeGDClass.h"
 
 class igdeGDClassManager;
 
@@ -40,13 +40,12 @@ class igdeGDClassManager;
 class DE_DLL_EXPORT igdeGDClassInherit : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDClassInherit> Ref;
-	
+	using Ref = deTObjectReference<igdeGDClassInherit>;
 	
 	
 private:
 	decString pName;
-	igdeGDClassReference pClass;
+	igdeGDClass::Ref pClass;
 	decString pPropertyPrefix;
 	decString pAutoPropertyPrefixId;
 	bool pUseAutoPropertyPrefixId;
@@ -57,16 +56,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create inherit object. */
-	igdeGDClassInherit( const char *name );
+	igdeGDClassInherit(const char *name);
 	
 	/** \brief Create copy of inherit object. */
-	igdeGDClassInherit( const igdeGDClassInherit &inherit );
+	igdeGDClassInherit(const igdeGDClassInherit &inherit);
 	
 	
 	
 protected:
 	/** \brief Clean up link. */
-	virtual ~igdeGDClassInherit();
+	~igdeGDClassInherit() override;
 	/*@}*/
 	
 	
@@ -78,16 +77,16 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Class if resolved. */
-	inline igdeGDClass *GetClass() const{ return pClass; }
+	inline const igdeGDClass::Ref &GetClass() const{ return pClass; }
 	
 	/** \brief Resolv class if possible. */
-	void ResolveClass( const igdeGDClassManager &classManager );
+	void ResolveClass(const igdeGDClassManager &classManager);
 	
 	/** \brief Prefix to add to properties defined in inherited class. */
 	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
-	void SetPropertyPrefix( const char *prefix );
+	void SetPropertyPrefix(const char *prefix);
 	
 	/** \brief Auto property prefix ID used only during resolving. */
 	inline const decString &GetAutoPropertyPrefixId() const{ return pAutoPropertyPrefixId; }
@@ -102,7 +101,7 @@ public:
 	void SetUseAutoPropertyPrefixId(bool use);
 	
 	/** \brief Auto prefix propertiues. */
-	decStringDictionary &GetAutoPrefixProperties(){ return pAutoPrefixProperties; }
+	decStringDictionary &GetAutoPrefixProperties(){return pAutoPrefixProperties;}
 	inline const decStringDictionary &GetAutoPrefixProperties() const{ return pAutoPrefixProperties; }
 	
 	/** \brief Add auto prefixed properties to class if possible. */

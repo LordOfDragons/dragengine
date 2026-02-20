@@ -25,11 +25,11 @@
 #ifndef _DETOUCHSENSORMANAGER_H_
 #define _DETOUCHSENSORMANAGER_H_
 
+#include "deTouchSensor.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deTouchSensor;
 
 
 /**
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new touch sensor resource manager linked to the given engine. */
-	deTouchSensorManager( deEngine *engine );
+	deTouchSensorManager(deEngine *engine);
 	
 	/** \brief Clean up touch sensor resource manager and reports leaking resources. */
-	virtual ~deTouchSensorManager();
+	~deTouchSensorManager() override;
 	/*@}*/
 	
 	
@@ -64,20 +64,20 @@ public:
 	deTouchSensor *GetRootTouchSensor() const;
 	
 	/** \brief Create new touch sensor. */
-	deTouchSensor *CreateTouchSensor();
+	deTouchSensor::Ref CreateTouchSensor();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	virtual void SystemPhysicsLoad();
-	virtual void SystemPhysicsUnload();
-	virtual void SystemScriptingLoad();
-	virtual void SystemScriptingUnload();
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
+	void SystemScriptingLoad() override;
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -88,7 +88,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

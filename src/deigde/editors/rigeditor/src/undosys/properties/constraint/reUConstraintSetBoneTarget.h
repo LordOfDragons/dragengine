@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigBone;
-class reRigConstraint;
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,11 +36,15 @@ class reRigConstraint;
  * \brief Set constraint target bone undo action.
  */
 class reUConstraintSetBoneTarget : public igdeUndo{
-private:
-	reRigConstraint *pConstraint;
+public:
+	using Ref = deTObjectReference<reUConstraintSetBoneTarget>;
 	
-	reRigBone *pOldBone;
-	reRigBone *pNewBone;
+	
+private:
+	reRigConstraint::Ref pConstraint;
+	
+	reRigBone::Ref pOldBone;
+	reRigBone::Ref pNewBone;
 	
 	
 	
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetBoneTarget( reRigConstraint *constraint, reRigBone *newBone );
+	reUConstraintSetBoneTarget(reRigConstraint *constraint, reRigBone *newBone);
 	
 protected:
 	/** \brief Clean up the undo. */
-	virtual ~reUConstraintSetBoneTarget();
+	~reUConstraintSetBoneTarget() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

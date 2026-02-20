@@ -53,8 +53,18 @@ public:
 	/** Create cluster. */
 	deoglCollideListHTSCluster();
 	
+	deoglCollideListHTSCluster(deoglHTViewSectorCluster *cluster);
+	
+	/** Copy. */
+	deoglCollideListHTSCluster(const deoglCollideListHTSCluster &cluster) = delete;
+	deoglCollideListHTSCluster &operator=(const deoglCollideListHTSCluster &cluster) = delete;
+	
+	/** Move. */
+	deoglCollideListHTSCluster(deoglCollideListHTSCluster &&other) noexcept;
+	deoglCollideListHTSCluster &operator=(deoglCollideListHTSCluster &&other) noexcept;
+	
 	/** Clean up cluster. */
-	~deoglCollideListHTSCluster();
+	~deoglCollideListHTSCluster() override = default;
 	/*@}*/
 	
 	
@@ -65,7 +75,7 @@ public:
 	inline deoglHTViewSectorCluster *GetCluster() const{ return pCluster; }
 	
 	/** Set cluster or nullptr. */
-	void SetCluster( deoglHTViewSectorCluster *cluster );
+	void SetCluster(deoglHTViewSectorCluster *cluster);
 	
 	/** Clear. */
 	void Clear();
@@ -82,19 +92,19 @@ public:
 	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set component is culled. */
-	void SetCulled( bool culled );
+	void SetCulled(bool culled);
 	
 	/** Cascade mask. */
 	inline int GetCascadeMask() const{ return pCascadeMask; }
 	
 	/** Set cascade mask. */
-	void SetCascadeMask( int mask );
+	void SetCascadeMask(int mask);
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	/*@}*/
 };
 

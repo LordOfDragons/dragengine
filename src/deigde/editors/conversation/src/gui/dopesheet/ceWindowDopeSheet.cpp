@@ -49,9 +49,10 @@
 #include "../../undosys/cameraShot/ceUCCShotSetParameter.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
@@ -64,7 +65,6 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
 #include <deigde/gui/theme/themeNames.h>
@@ -92,114 +92,127 @@ protected:
 	ceWindowDopeSheet &pWindow;
 	
 public:
-	cBaseAction( ceWindowDopeSheet &window, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pWindow( window ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(ceWindowDopeSheet &window, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pWindow(window){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pWindow.GetConversation();
-		if( conversation ){
-			OnAction( *conversation );
+		if(conversation){
+			OnAction(*conversation);
 		}
 	}
 	
-	virtual void OnAction( ceConversation &conversation ) = 0;
+	virtual void OnAction(ceConversation &conversation) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		ceConversation * const conversation = pWindow.GetConversation();
-		if( conversation ){
-			Update( *conversation );
+		if(conversation){
+			Update(*conversation);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const ceConversation &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 class cActionPlayAction : public cBaseAction{
 public:
-	cActionPlayAction( ceWindowDopeSheet &window ) : cBaseAction( window, "",
-		window.GetWindowMain().GetIconPlayAction(), "Play selected action" ){
+	using Ref = deTObjectReference<cActionPlayAction>;
+	
+public:
+	cActionPlayAction(ceWindowDopeSheet &window) : cBaseAction(window, "",
+		window.GetWindowMain().GetIconPlayAction(), "@Conversation.Action.DopeSheetPlay.ToolTip"){
 	}
 	
-	virtual void OnAction( ceConversation &conversation ){
+	void OnAction(ceConversation &conversation) override{
 		ceConversationAction * const action = pWindow.GetAction();
-		if( action ){
-			conversation.GetPlayback()->PlaySingleAction( action, 0.0f );
+		if(action){
+			conversation.GetPlayback()->PlaySingleAction(action, 0.0f);
 		}
 	}
 	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pWindow.GetAction() );
+	void Update(const ceConversation &) override{
+		SetEnabled(pWindow.GetAction());
 	}
 };
 
 class cActionPlayFromHere : public cBaseAction{
 public:
-	cActionPlayFromHere( ceWindowDopeSheet &window ) : cBaseAction( window, "",
-		window.GetWindowMain().GetIconPlayFromHere(), "Play onwards from selected action" ){
+	using Ref = deTObjectReference<cActionPlayFromHere>;
+	
+public:
+	cActionPlayFromHere(ceWindowDopeSheet &window) : cBaseAction(window, "",
+		window.GetWindowMain().GetIconPlayFromHere(), "@Conversation.Action.DopeSheetPlayFromHere.ToolTip"){
 	}
 	
-	virtual void OnAction( ceConversation & ){
-		pWindow.GetWindowMain().GetWindowProperties().GetPanelTopic().PlayActionFromHere();
+	void OnAction(ceConversation &) override{
+		pWindow.GetWindowMain().GetWindowProperties().GetPanelTopic()->PlayActionFromHere();
 	}
 	
-	virtual void Update( const ceConversation &conversation ){
-		SetEnabled( conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty() );
+	void Update(const ceConversation &conversation) override{
+		SetEnabled(conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty());
 	}
 };
 
 class cActionPause : public cBaseAction{
 public:
-	cActionPause( ceWindowDopeSheet &window ) : cBaseAction( window, "",
-		window.GetWindowMain().GetIconPlayPause(), "Pause/Resume playing" ){
+	using Ref = deTObjectReference<cActionPause>;
+	
+public:
+	cActionPause(ceWindowDopeSheet &window) : cBaseAction(window, "",
+		window.GetWindowMain().GetIconPlayPause(), "@Conversation.Action.DopeSheetPlayPause.ToolTip"){
 	}
 	
-	virtual void OnAction( ceConversation &conversation ){
-		if( pWindow.GetTopic() ){
-			conversation.GetPlayback()->SetPaused( ! conversation.GetPlayback()->GetPaused() );
+	void OnAction(ceConversation &conversation) override{
+		if(pWindow.GetTopic()){
+			conversation.GetPlayback()->SetPaused(!conversation.GetPlayback()->GetPaused());
 		}
 	}
 	
-	virtual void Update( const ceConversation &conversation ){
-		SetEnabled( conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty() );
-		SetSelected( conversation.GetPlayback()->GetPaused() );
+	void Update(const ceConversation &conversation) override{
+		SetEnabled(conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty());
+		SetSelected(conversation.GetPlayback()->GetPaused());
 	}
 };
 
 class cActionSelectCurAction : public cBaseAction{
 public:
-	cActionSelectCurAction( ceWindowDopeSheet &window ) : cBaseAction( window, "",
-		window.GetWindowMain().GetIconPlaySelectCurAction(), "Select currently played back action" ){
+	using Ref = deTObjectReference<cActionSelectCurAction>;
+	
+public:
+	cActionSelectCurAction(ceWindowDopeSheet &window) : cBaseAction(window, "",
+		window.GetWindowMain().GetIconPlaySelectCurAction(), "@Conversation.Action.DopeSheetSelectCurAction.ToolTip"){
 	}
 	
-	virtual void OnAction( ceConversation &conversation ){
+	void OnAction(ceConversation &conversation) override{
 		const cePlayback &playback = *conversation.GetPlayback();
 		ceConversationAction * const action = playback.GetLastPlayedAction();
 		ceConversationTopic * const topic = playback.GetLastPlayedActionTopic();
-		if( ! action || ! topic ){
+		if(!action || !topic){
 			return;
 		}
 		
 		ceConversationFile * const file = topic->GetFile();
-		if( ! file ){
+		if(!file){
 			return;
 		}
 		
-		conversation.SetActiveFile( file );
-		file->SetActiveTopic( topic );
+		conversation.SetActiveFile(file);
+		file->SetActiveTopic(topic);
 		
-		pWindow.GetWindowMain().GetWindowProperties().GetPanelTopic().LocateAction( action );
+		pWindow.GetWindowMain().GetWindowProperties().GetPanelTopic()->LocateAction(action);
 	}
 	
-	virtual void Update( const ceConversation &conversation ){
-		SetEnabled( conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty() );
+	void Update(const ceConversation &conversation) override{
+		SetEnabled(conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty());
 	}
 };
 
@@ -207,11 +220,12 @@ class cScrollTime : public igdeScrollBarListener{
 	ceWindowDopeSheet &pWindow;
 	
 public:
-	cScrollTime( ceWindowDopeSheet &window ) : pWindow( window ){ }
+	using Ref = deTObjectReference<cScrollTime>;
+	cScrollTime(ceWindowDopeSheet &window) : pWindow(window){}
 	
-	virtual void OnValueChanged( igdeScrollBar* ){
+	void OnValueChanged(igdeScrollBar*) override{
 		ceConversation * const conversation = pWindow.GetConversation();
-		if( conversation ){
+		if(conversation){
 			pWindow.OnTimeChanged();
 		}
 	}
@@ -221,12 +235,13 @@ class cComboTimeScale : public igdeComboBoxListener{
 	ceWindowDopeSheet &pWindow;
 	
 public:
-	cComboTimeScale( ceWindowDopeSheet &window ) : pWindow( window ){ }
+	using Ref = deTObjectReference<cComboTimeScale>;
+	cComboTimeScale(ceWindowDopeSheet &window) : pWindow(window){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversation * const conversation = pWindow.GetConversation();
-		if( conversation ){
-			pWindow.SetZoomTime( 0.01f * decMath::clamp( comboBox->GetText().ToInt(), 10, 800 ) );
+		if(conversation){
+			pWindow.SetZoomTime(0.01f * decMath::clamp(comboBox->GetText().ToInt(), 10, 800));
 		}
 	}
 };
@@ -235,63 +250,65 @@ public:
 
 class cMouseKeyListener : public igdeMouseKeyListener{
 	ceWindowDopeSheet &pWindow;
-	igdeMouseKeyListenerReference pDragListener;
+	igdeMouseKeyListener::Ref pDragListener;
 	
 public:
-	cMouseKeyListener( ceWindowDopeSheet &window ) : pWindow( window ){}
+	using Ref = deTObjectReference<cMouseKeyListener>;
 	
-	igdeMouseKeyListener *GetListenerAtPosition( const decPoint &position ) const{
-		if( position.y < pWindow.GetVAPreviewHeight() ){
-			return pWindow.GetVAPreview().GetMouseKeyListener();
+	cMouseKeyListener(ceWindowDopeSheet &window) : pWindow(window){}
+	
+	igdeMouseKeyListener *GetListenerAtPosition(const decPoint &position) const{
+		if(position.y < pWindow.GetVAPreviewHeight()){
+			return pWindow.GetVAPreview()->GetMouseKeyListener();
 			
 		}else{
-			ceWDSLane * const lane = pWindow.GetLaneAtPosition( position );
-			if( lane ){
+			ceWDSLane * const lane = pWindow.GetLaneAtPosition(position);
+			if(lane){
 				return lane->GetMouseKeyListener();
 			}
 		}
 		
-		return NULL;
+		return nullptr;
 	}
 	
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers ){
-		pDragListener = GetListenerAtPosition( position );
-		if( pDragListener){
-			pDragListener->OnButtonPress( widget, button, position, modifiers );
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
+		pDragListener = GetListenerAtPosition(position);
+		if(pDragListener){
+			pDragListener->OnButtonPress(widget, button, position, modifiers);
 		}
 	}
 	
-	virtual void OnButtonRelease( igdeWidget *widget, int button, const decPoint &position, int modifiers ){
-		if( pDragListener ){
-			pDragListener->OnButtonRelease( widget, button, position, modifiers );
-			pDragListener = NULL;
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
+		if(pDragListener){
+			pDragListener->OnButtonRelease(widget, button, position, modifiers);
+			pDragListener = nullptr;
 		}
 	}
 	
-	virtual void OnDoubleClicked( igdeWidget *widget, int button, const decPoint &position, int modifiers ){
-		pDragListener = GetListenerAtPosition( position );
-		if( pDragListener ){
-			pDragListener->OnDoubleClicked( widget, button, position, modifiers );
+	void OnDoubleClicked(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
+		pDragListener = GetListenerAtPosition(position);
+		if(pDragListener){
+			pDragListener->OnDoubleClicked(widget, button, position, modifiers);
 		}
 	}
 	
-	virtual void OnMouseMoved( igdeWidget *widget, const decPoint &position, int modifiers ){
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override{
 		igdeMouseKeyListener *listener = pDragListener;
-		if( ! listener ){
-			listener = GetListenerAtPosition( position );
+		if(!listener){
+			listener = GetListenerAtPosition(position);
 		}
-		if( listener ){
-			listener->OnMouseMoved( widget, position, modifiers );
+		if(listener){
+			listener->OnMouseMoved(widget, position, modifiers);
 		}
 	}
 	
-	virtual void OnMouseWheeled( igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers ){
+	void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override{
 		igdeMouseKeyListener *listener = pDragListener;
-		if( ! listener ){
-			listener = GetListenerAtPosition( position );
+		if(!listener){
+			listener = GetListenerAtPosition(position);
 		}
-		if( listener ){
-			listener->OnMouseWheeled( widget, position, change, modifiers );
+		if(listener){
+			listener->OnMouseWheeled(widget, position, change, modifiers);
 		}
 	}
 };
@@ -302,8 +319,8 @@ public:
 // class ceWindowDopeSheet::cDopeSheet
 ////////////////////////////////////////
 
-ceWindowDopeSheet::cDopeSheet::cDopeSheet( ceWindowDopeSheet &window ) :
-igdeViewRenderWindow( window.GetEnvironment() ), pWindow( window ){
+ceWindowDopeSheet::cDopeSheet::cDopeSheet(ceWindowDopeSheet &window) :
+igdeViewRenderWindow(window.GetEnvironment()), pWindow(window){
 }
 
 ceWindowDopeSheet::cDopeSheet::~cDopeSheet(){
@@ -311,8 +328,8 @@ ceWindowDopeSheet::cDopeSheet::~cDopeSheet(){
 
 void ceWindowDopeSheet::cDopeSheet::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
-	GetCanvasRenderWorld()->SetVisible( false );
-	pWindow.CreateDopeSheetCanvas( *this );
+	GetCanvasRenderWorld()->SetVisible(false);
+	pWindow.CreateDopeSheetCanvas(*this);
 }
 
 void ceWindowDopeSheet::cDopeSheet::OnResize(){
@@ -328,125 +345,104 @@ void ceWindowDopeSheet::cDopeSheet::OnResize(){
 // Constructor, destructor
 ////////////////////////////
 
-ceWindowDopeSheet::ceWindowDopeSheet( ceWindowMain &windowMain ) :
-igdeContainerFlow( windowMain.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2 ),
-pWindowMain( windowMain ),
-pListener( NULL ),
-pConversation( NULL ),
-pZoomTime( 1.0f ),
-pPixelPerSecond( 300.0f ),
-pSecondPerPixel( 1.0f / pPixelPerSecond ),
-pVAPreviewHeight( 40 ),
-pVAPreview( NULL )
+ceWindowDopeSheet::ceWindowDopeSheet(ceWindowMain &windowMain) :
+igdeContainerFlow(windowMain.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2),
+pWindowMain(windowMain),
+pZoomTime(1.0f),
+pPixelPerSecond(300.0f),
+pSecondPerPixel(1.0f / pPixelPerSecond),
+pVAPreviewHeight(40)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference panel, panel2, panel3, panel4, panel5;
-	int i;
+	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
 	
-	pListener = new ceWindowDopeSheetListener( *this );
+	pListener = ceWindowDopeSheetListener::Ref::New(*this);
 	
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pGetFontText();
 	
 	// actions
-	pActionPlayAction.TakeOver( new cActionPlayAction( *this ) );
-	pActionPlayFromhere.TakeOver( new cActionPlayFromHere( *this ) );
-	pActionPause.TakeOver( new cActionPause( *this ) );
-	pActionSelectCurAction.TakeOver( new cActionSelectCurAction( *this ) );
+	pActionPlayAction = cActionPlayAction::Ref::New(*this);
+	pActionPlayFromhere = cActionPlayFromHere::Ref::New(*this);
+	pActionPause = cActionPause::Ref::New(*this);
+	pActionSelectCurAction = cActionSelectCurAction::Ref::New(*this);
 	
 	
 	// lanes
-	deObjectReference lane;
-	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneGesture( *this, 2, "Gesture", "Gesture playback." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneBodyLookAt( *this, 3, "Body Look-At", "Body orientation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneHeadLookAt( *this, 4, "Head Look-At", "Head orientation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneEyesLookAt( *this, 5, "Eyes Look-At", "Eyes orientation. If empty uses Head Look-At." ) );
-	pLanes.Add( lane );
+	pLanes.Add(ceWDSLaneWord::Ref::New(*this, 0, "@Conversation.WindowDopeSheet.LaneWord", "@Conversation.WindowDopeSheet.LaneWordDesc"));
+	pLanes.Add(ceWDSLaneFacePose::Ref::New(*this, 1, "@Conversation.WindowDopeSheet.LaneFacePose", "@Conversation.WindowDopeSheet.LaneFacePoseDesc"));
+	pLanes.Add(ceWDSLaneGesture::Ref::New(*this, 2, "@Conversation.WindowDopeSheet.LaneGesture", "@Conversation.WindowDopeSheet.LaneGestureDesc"));
+	pLanes.Add(ceWDSLaneBodyLookAt::Ref::New(*this, 3, "@Conversation.WindowDopeSheet.LaneBodyLookAt", "@Conversation.WindowDopeSheet.LaneBodyLookAtDesc"));
+	pLanes.Add(ceWDSLaneHeadLookAt::Ref::New(*this, 4, "@Conversation.WindowDopeSheet.LaneHeadLookAt", "@Conversation.WindowDopeSheet.LaneHeadLookAtDesc"));
+	pLanes.Add(ceWDSLaneEyesLookAt::Ref::New(*this, 5, "@Conversation.WindowDopeSheet.LaneEyesLookAt", "@Conversation.WindowDopeSheet.LaneEyesLookAtDesc"));
 	
 	// voice audio preview
-	pVAPreview = new ceWDSVAPreview( *this );
+	pVAPreview = ceWDSVAPreview::Ref::New(*this);
 	
 	
 	// buttons on the left
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaYCenter, igdeContainerFlow::esNone ) );
-	helper.Button( panel, pBtnPlayAction, pActionPlayAction );
-	helper.Button( panel, pBtnPlayFromHere, pActionPlayFromhere );
-	helper.Button( panel, pBtnPlayPause, pActionPause );
-	helper.Button( panel, pBtnPlaySelectCurAction, pActionSelectCurAction );
-	AddChild( panel );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaYCenter, igdeContainerFlow::esNone);
+	helper.Button(panel, pBtnPlayAction, pActionPlayAction);
+	helper.Button(panel, pBtnPlayFromHere, pActionPlayFromhere);
+	helper.Button(panel, pBtnPlayPause, pActionPause);
+	helper.Button(panel, pBtnPlaySelectCurAction, pActionSelectCurAction);
+	AddChild(panel);
 	
 	// scroll bar, dope sheet lane titles and dope sheet content in the center
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 2 ) );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 2);
 	
-	panel2.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2 ) );
+	panel2 = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2);
 	
-	panel3.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast ) );
-	helper.Spacer( panel3, decPoint( 10, pVAPreviewHeight ) );
+	panel3 = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
+	helper.Spacer(panel3, decPoint(10, pVAPreviewHeight));
 	
-	panel4.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaY ) );
-	for( i=0; i<pLanes.GetCount(); i++ ){
-		const ceWDSLane &lane2 = *( ( ceWDSLane* )pLanes.GetAt( i ) );
-		panel5.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-		helper.Spacer( panel5, decPoint( 10, 2 ) );
-		helper.Label( panel5, lane2.GetLabel(), lane2.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
-		helper.Spacer( panel5, decPoint( 10, 2 ) );
-		panel4->AddChild( panel5 );
-	}
-	panel3->AddChild( panel4 );
-	panel2->AddChild( panel3 );
+	panel4 = igdeContainerBox::Ref::New(env, igdeContainerBox::eaY);
+	pLanes.Visit([&](const ceWDSLane &l){
+		panel5 = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+		helper.Spacer(panel5, decPoint(10, 2));
+		helper.Label(panel5, l.GetLabel(), l.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle);
+		helper.Spacer(panel5, decPoint(10, 2));
+		panel4->AddChild(panel5);
+	});
+	panel3->AddChild(panel4);
+	panel2->AddChild(panel3);
 	
-	pDopeSheet.TakeOver( new cDopeSheet( *this ) );
-	igdeMouseKeyListenerReference mklistener;
-	mklistener.TakeOver( new cMouseKeyListener( *this ) );
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).AddListener( mklistener );
-	panel2->AddChild( pDopeSheet );
+	pDopeSheet = cDopeSheet::Ref::New(*this);
+	pDopeSheet->AddListener(cMouseKeyListener::Ref::New(*this));
+	panel2->AddChild(pDopeSheet);
 	
-	panel->AddChild( panel2 );
+	panel->AddChild(panel2);
 	
 	// scroll and zoom frame on bottom
-	panel2.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2 ) );
+	panel2 = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2);
 	
-	helper.Label( panel2, "Time-Scale:", "Time scaling" );
-	helper.ComboBox( panel2, true, "Time scaling", pCBTimeScale, new cComboTimeScale( *this ) );
-	pCBTimeScale->AddItem( "12" );
-	pCBTimeScale->AddItem( "25" );
-	pCBTimeScale->AddItem( "33" );
-	pCBTimeScale->AddItem( "50" );
-	pCBTimeScale->AddItem( "66" );
-	pCBTimeScale->AddItem( "75" );
-	pCBTimeScale->AddItem( "100" );
-	pCBTimeScale->AddItem( "150" );
-	pCBTimeScale->AddItem( "200" );
-	pCBTimeScale->AddItem( "300" );
-	pCBTimeScale->AddItem( "400" );
-	pCBTimeScale->AddItem( "600" );
-	pCBTimeScale->AddItem( "800" );
-	pCBTimeScale->SetText( "100" );
+	helper.Label(panel2, "@Conversation.WindowDopeSheet.TimeScale", "@Conversation.WindowDopeSheet.TimeScale.ToolTip");
+	helper.ComboBox(panel2, true, "@Conversation.WindowDopeSheet.TimeScale.ToolTip", pCBTimeScale, cComboTimeScale::Ref::New(*this));
+	pCBTimeScale->AddItem("12");
+	pCBTimeScale->AddItem("25");
+	pCBTimeScale->AddItem("33");
+	pCBTimeScale->AddItem("50");
+	pCBTimeScale->AddItem("66");
+	pCBTimeScale->AddItem("75");
+	pCBTimeScale->AddItem("100");
+	pCBTimeScale->AddItem("150");
+	pCBTimeScale->AddItem("200");
+	pCBTimeScale->AddItem("300");
+	pCBTimeScale->AddItem("400");
+	pCBTimeScale->AddItem("600");
+	pCBTimeScale->AddItem("800");
+	pCBTimeScale->SetText("100");
 	
-	helper.ScrollBar( panel2, true, 0, 1, 1, 0, pSBTime, new cScrollTime( *this ) );
-	panel->AddChild( panel2 );
+	helper.ScrollBar(panel2, true, 0, 1, 1, 0, pSBTime, cScrollTime::Ref::New(*this));
+	panel->AddChild(panel2);
 	
-	AddChild( panel );
+	AddChild(panel);
 }
 
 ceWindowDopeSheet::~ceWindowDopeSheet(){
-	SetConversation( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
-	if( pVAPreview ){
-		delete pVAPreview;
-	}
+	SetConversation(nullptr);
 }
 
 
@@ -454,25 +450,22 @@ ceWindowDopeSheet::~ceWindowDopeSheet(){
 // Management
 ///////////////
 
-void ceWindowDopeSheet::SetConversation( ceConversation *conversation ){
-	if( conversation == pConversation ){
+void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
+	if(conversation == pConversation){
 		return;
 	}
 	
-	pVAPreview->SetSpeaker( NULL );
+	pVAPreview->SetSpeaker(nullptr);
 	
-	if( pConversation ){
-		pConversation->RemoveListener( pListener );
-		pConversation->FreeReference();
+	if(pConversation){
+		pConversation->RemoveListener(pListener);
 	}
 	
 	pConversation = conversation;
 	
-	if( conversation ){
-		conversation->AddListener( pListener );
-		conversation->AddReference();
-		
-		pVAPreview->SetSpeaker( conversation->GetEngineSpeakerVAPreview() );
+	if(conversation){
+		conversation->AddListener(pListener);
+		pVAPreview->SetSpeaker(conversation->GetEngineSpeakerVAPreview());
 	}
 	
 	OnPlaybackChanged();
@@ -482,35 +475,35 @@ void ceWindowDopeSheet::SetConversation( ceConversation *conversation ){
 
 
 ceConversationFile *ceWindowDopeSheet::GetFile() const{
-	return pConversation ? pConversation->GetActiveFile() : NULL;
+	return pConversation ? pConversation->GetActiveFile().Pointer() : nullptr;
 }
 
 ceConversationTopic *ceWindowDopeSheet::GetTopic() const{
 	ceConversationFile * const file = GetFile();
-	return file ? file->GetActiveTopic() : NULL;
+	return file ? file->GetActiveTopic().Pointer() : nullptr;
 }
 
 ceConversationAction *ceWindowDopeSheet::GetAction() const{
 	ceConversationTopic * const topic = GetTopic();
-	return topic ? topic->GetActiveAction() : NULL;
+	return topic ? topic->GetActiveAction().Pointer() : nullptr;
 }
 
 ceCAActorSpeak *ceWindowDopeSheet::GetActionASpeak() const{
 	ceConversationAction * const action = GetAction();
 	return action && action->GetType() == ceConversationAction::eatActorSpeak
-		? ( ceCAActorSpeak* )action : NULL;
+		? (ceCAActorSpeak*)action : nullptr;
 }
 
 ceCameraShot *ceWindowDopeSheet::GetCameraShot() const{
-	return pConversation ? pConversation->GetActiveCameraShot() : NULL;
+	return pConversation ? pConversation->GetActiveCameraShot().Pointer() : nullptr;
 }
 
 int ceWindowDopeSheet::GetScrollTime() const{
 	return pSBTime->GetValue();
 }
 
-void ceWindowDopeSheet::SetZoomTime( float zoom ){
-	if( fabsf( zoom - pZoomTime ) <= FLOAT_SAFE_EPSILON ){
+void ceWindowDopeSheet::SetZoomTime(float zoom){
+	if(fabsf(zoom - pZoomTime) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -521,83 +514,62 @@ void ceWindowDopeSheet::SetZoomTime( float zoom ){
 	pSecondPerPixel = 1.0f / pPixelPerSecond;
 	
 	decString text;
-	text.Format( "%d", ( int )( zoom * 100.0f + 0.5f ) );
-	pCBTimeScale->SetText( text );
+	text.Format("%d", (int)(zoom * 100.0f + 0.5f));
+	pCBTimeScale->SetText(text);
 	
 	pUpdateScrollbars();
 	OnTimeChanged();
-	if( pVAPreview ){
+	if(pVAPreview){
 		pVAPreview->InvalidatePreview();
 	}
 }
 
 float ceWindowDopeSheet::GetMaximumLinesTime() const{
-	const int laneCount = pLanes.GetCount();
-	float maxTime = 0.0f;
-	int i;
-	
-	for( i=0; i<laneCount; i++ ){
-		maxTime = decMath::max( maxTime, ( ( ceWDSLane* )pLanes.GetAt( i ) )->GetMaximumLineTime() );
-	}
-	
-	return maxTime;
+	return pLanes.Inject(0.0f, [](float t, const ceWDSLane &l){
+		return decMath::max(t, l.GetMaximumLineTime());
+	});
 }
 
-float ceWindowDopeSheet::GetTimeForX( int x ) const{
-	return pSecondPerPixel * ( pSBTime->GetValue() + x );
+float ceWindowDopeSheet::GetTimeForX(int x) const{
+	return pSecondPerPixel * (pSBTime->GetValue() + x);
 }
 
-int ceWindowDopeSheet::GetXForTime( float time ) const{
-	return ( int )( pPixelPerSecond * time + 0.5f ) - pSBTime->GetValue();
+int ceWindowDopeSheet::GetXForTime(float time) const{
+	return (int)(pPixelPerSecond * time + 0.5f) - pSBTime->GetValue();
 }
 
 
 
-ceWDSLane &ceWindowDopeSheet::GetLane( eLanes lane ) const{
-	return *( ( ceWDSLane* )pLanes.GetAt( lane ) );
+ceWDSLane &ceWindowDopeSheet::GetLane(eLanes lane) const{
+	return pLanes.GetAt(lane);
 }
 
-ceWDSLane *ceWindowDopeSheet::GetLaneAtPosition( const decPoint &position ) const{
-	const int laneCount = pLanes.GetCount();
-	int i;
-	
-	for( i=0; i<laneCount; i++ ){
-		ceWDSLane * const lane = ( ceWDSLane* )pLanes.GetAt( i );
-		deCanvasView * const canvas = lane->GetCanvas();
-		if( canvas && position >= canvas->GetPosition() && position < canvas->GetPosition() + canvas->GetSize() ){
-			return lane;
-		}
-	}
-	
-	return NULL;
+ceWDSLane *ceWindowDopeSheet::GetLaneAtPosition(const decPoint &position) const{
+	return pLanes.FindOrDefault([&](const ceWDSLane &l){
+		const deCanvasView * const c = l.GetCanvas();
+		return c && position.y >= c->GetPosition().y && position.y < c->GetPosition().y + c->GetSize().y;
+	});
 }
 
 decPoint ceWindowDopeSheet::GetSizeDopeSheet() const{
-	if( pDopeSheet ){
-		return ( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).GetRenderAreaSize();
-		
-	}else{
-		return decPoint( 100, 10 );
-	}
+	return pDopeSheet ? pDopeSheet->GetRenderAreaSize() : decPoint(100, 10);
 }
 
 int ceWindowDopeSheet::GetLaneHeight() const{
-	return decMath::max( ( GetSizeDopeSheet().y - pVAPreviewHeight ) / pLanes.GetCount(), 1 );
+	return decMath::max((GetSizeDopeSheet().y - pVAPreviewHeight) / pLanes.GetCount(), 1);
 }
 
 
 
 
 void ceWindowDopeSheet::OnActionChanged(){
-	const int laneCount = pLanes.GetCount();
-	int i;
-	for( i=0; i<laneCount; i++ ){
-		( ( ceWDSLane* )pLanes.GetAt( i ) )->OnActionChanged();
-	}
+	pLanes.Visit([&](ceWDSLane &l){
+		l.OnActionChanged();
+	});
 	
 	pUpdateScrollbars();
 	pRebuildTimeLinesAndLabels();
-	if( pVAPreview ){
+	if(pVAPreview){
 		pVAPreview->OnActionChanged();
 	}
 	pUpdateActions();
@@ -607,90 +579,85 @@ void ceWindowDopeSheet::OnPlaybackChanged(){
 	pUpdateActions();
 }
 
-void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
+void ceWindowDopeSheet::CreateDopeSheetCanvas(igdeViewRenderWindow &view){
 	igdeEnvironment &env = GetEnvironment();
-	const decColor colorBackground( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
-	const decColor colorBorder( env.GetSystemColor( igdeEnvironment::escWidgetShadow ) );
-	const decColor colorPreviewTime( 1.0f, 0.0f, 0.0f );
+	const decColor colorBackground(env.GetSystemColor(igdeEnvironment::escWidgetBackground));
+	const decColor colorBorder(env.GetSystemColor(igdeEnvironment::escWidgetShadow));
+	const decColor colorPreviewTime(1.0f, 0.0f, 0.0f);
 	
 	deCanvasManager &canvasManager = *GetEngine()->GetCanvasManager();
 	deCanvasView &content = *view.GetRenderWindowCanvas();
 	
-	pCanvasPanelDopeSheet.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasPanelDopeSheet->SetFillColor( colorBorder );
-	pCanvasPanelDopeSheet->SetThickness( 0 );
-	pCanvasPanelDopeSheet->SetOrder( ( float )content.GetCanvasCount() );
-	view.AddCanvas( pCanvasPanelDopeSheet );
+	pCanvasPanelDopeSheet = canvasManager.CreateCanvasPaint();
+	pCanvasPanelDopeSheet->SetFillColor(colorBorder);
+	pCanvasPanelDopeSheet->SetThickness(0);
+	pCanvasPanelDopeSheet->SetOrder((float)content.GetCanvasCount());
+	view.AddCanvas(pCanvasPanelDopeSheet);
 	
-	pCanvasPanelVAPreview.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasPanelVAPreview->SetFillColor( colorBackground );
-	pCanvasPanelVAPreview->SetThickness( 0 );
-	pCanvasPanelVAPreview->SetOrder( ( float )content.GetCanvasCount() );
-	view.AddCanvas( pCanvasPanelVAPreview );
+	pCanvasPanelVAPreview = canvasManager.CreateCanvasPaint();
+	pCanvasPanelVAPreview->SetFillColor(colorBackground);
+	pCanvasPanelVAPreview->SetThickness(0);
+	pCanvasPanelVAPreview->SetOrder((float)content.GetCanvasCount());
+	view.AddCanvas(pCanvasPanelVAPreview);
 	
-	pCanvasPanelVAPreviewLine.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasPanelVAPreviewLine->SetFillColor( colorBorder );
-	pCanvasPanelVAPreviewLine->SetThickness( 0 );
-	pCanvasPanelVAPreviewLine->SetOrder( ( float )content.GetCanvasCount() );
-	view.AddCanvas( pCanvasPanelVAPreviewLine );
+	pCanvasPanelVAPreviewLine = canvasManager.CreateCanvasPaint();
+	pCanvasPanelVAPreviewLine->SetFillColor(colorBorder);
+	pCanvasPanelVAPreviewLine->SetThickness(0);
+	pCanvasPanelVAPreviewLine->SetOrder((float)content.GetCanvasCount());
+	view.AddCanvas(pCanvasPanelVAPreviewLine);
 	
-	pCanvasTimeLines.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasTimeLines->SetOrder( ( float )content.GetCanvasCount() );
-	view.AddCanvas( pCanvasTimeLines );
+	pCanvasTimeLines = canvasManager.CreateCanvasView();
+	pCanvasTimeLines->SetOrder((float)content.GetCanvasCount());
+	view.AddCanvas(pCanvasTimeLines);
 	
-	pCanvasTimeLineLabels.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasTimeLineLabels->SetOrder( ( float )content.GetCanvasCount() );
-	view.AddCanvas( pCanvasTimeLineLabels );
+	pCanvasTimeLineLabels = canvasManager.CreateCanvasView();
+	pCanvasTimeLineLabels->SetOrder((float)content.GetCanvasCount());
+	view.AddCanvas(pCanvasTimeLineLabels);
 	
-	const int laneCount = pLanes.GetCount();
-	int i;
-	for( i=0; i<laneCount; i++ ){
-		ceWDSLane &lane = *( ( ceWDSLane* )pLanes.GetAt( i ) );
-		lane.CreateCanvas();
-		if( lane.GetCanvas() ){
-			lane.GetCanvas()->SetOrder( ( float )content.GetCanvasCount() );
-			view.AddCanvas( lane.GetCanvas() );
+	pLanes.Visit([&](ceWDSLane &l){
+		l.CreateCanvas();
+		if(l.GetCanvas()){
+			l.GetCanvas()->SetOrder((float)content.GetCanvasCount());
+			view.AddCanvas(l.GetCanvas());
 		}
-	}
+	});
 	
-	pCanvasVAPreviewTime.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasVAPreviewTime->SetFillColor( colorPreviewTime );
-	pCanvasVAPreviewTime->SetThickness( 0 );
-	pCanvasVAPreviewTime->SetOrder( ( float )content.GetCanvasCount() );
-	view.AddCanvas( pCanvasVAPreviewTime );
+	pCanvasVAPreviewTime = canvasManager.CreateCanvasPaint();
+	pCanvasVAPreviewTime->SetFillColor(colorPreviewTime);
+	pCanvasVAPreviewTime->SetThickness(0);
+	pCanvasVAPreviewTime->SetOrder((float)content.GetCanvasCount());
+	view.AddCanvas(pCanvasVAPreviewTime);
 	
 	ResizeDopeSheetCanvas();
 }
 
 void ceWindowDopeSheet::ResizeDopeSheetCanvas(){
-	const decPoint sizeDopeSheet( GetSizeDopeSheet() );
+	const decPoint sizeDopeSheet(GetSizeDopeSheet());
 	
-	if( pCanvasPanelDopeSheet ){
-		pCanvasPanelDopeSheet->SetPosition( decPoint( 0, pVAPreviewHeight ) );
-		pCanvasPanelDopeSheet->SetSize( decPoint( sizeDopeSheet.x, sizeDopeSheet.y - pVAPreviewHeight ) );
+	if(pCanvasPanelDopeSheet){
+		pCanvasPanelDopeSheet->SetPosition(decPoint(0, pVAPreviewHeight));
+		pCanvasPanelDopeSheet->SetSize(decPoint(sizeDopeSheet.x, sizeDopeSheet.y - pVAPreviewHeight));
 	}
-	if( pCanvasPanelVAPreview ){
-		pCanvasPanelVAPreview->SetPosition( decPoint( 0, 0 ) );
-		pCanvasPanelVAPreview->SetSize( decPoint( sizeDopeSheet.x, pVAPreviewHeight ) );
+	if(pCanvasPanelVAPreview){
+		pCanvasPanelVAPreview->SetPosition(decPoint(0, 0));
+		pCanvasPanelVAPreview->SetSize(decPoint(sizeDopeSheet.x, pVAPreviewHeight));
 	}
-	if( pCanvasPanelVAPreviewLine ){
-		pCanvasPanelVAPreviewLine->SetPosition( decPoint( 0, pVAPreviewHeight - 1 ) );
-		pCanvasPanelVAPreviewLine->SetSize( decPoint( sizeDopeSheet.x, 1 ) );
+	if(pCanvasPanelVAPreviewLine){
+		pCanvasPanelVAPreviewLine->SetPosition(decPoint(0, pVAPreviewHeight - 1));
+		pCanvasPanelVAPreviewLine->SetSize(decPoint(sizeDopeSheet.x, 1));
 	}
-	if( pCanvasTimeLines ){
-		pCanvasTimeLines->SetPosition( decPoint( 0, 0 ) );
-		pCanvasTimeLines->SetSize( decPoint( sizeDopeSheet.x, sizeDopeSheet.y ) );
+	if(pCanvasTimeLines){
+		pCanvasTimeLines->SetPosition(decPoint(0, 0));
+		pCanvasTimeLines->SetSize(decPoint(sizeDopeSheet.x, sizeDopeSheet.y));
 	}
-	if( pCanvasTimeLineLabels ){
-		pCanvasTimeLineLabels->SetPosition( decPoint( 0, 0 ) );
-		pCanvasTimeLineLabels->SetSize( decPoint( sizeDopeSheet.x, sizeDopeSheet.y ) );
+	if(pCanvasTimeLineLabels){
+		pCanvasTimeLineLabels->SetPosition(decPoint(0, 0));
+		pCanvasTimeLineLabels->SetSize(decPoint(sizeDopeSheet.x, sizeDopeSheet.y));
 	}
 	
-	const int laneCount = pLanes.GetCount();
-	int i;
-	for( i=0; i<laneCount; i++ ){
-		( ( ceWDSLane* )pLanes.GetAt( i ) )->RebuildCanvas();
-	}
+	pLanes.Visit([&](ceWDSLane &l){
+		l.RebuildCanvas();
+	});
 	
 	pUpdateScrollbars();
 	pRebuildTimeLinesAndLabels();
@@ -698,11 +665,9 @@ void ceWindowDopeSheet::ResizeDopeSheetCanvas(){
 }
 
 void ceWindowDopeSheet::OnTimeChanged(){
-	const int laneCount = pLanes.GetCount();
-	int i;
-	for( i=0; i<laneCount; i++ ){
-		( ( ceWDSLane* )pLanes.GetAt( i ) )->OnTimeChanged();
-	}
+	pLanes.Visit([&](ceWDSLane &l){
+		l.OnTimeChanged();
+	});
 	
 	pRebuildTimeLinesAndLabels();
 	pUpdateCanvasVAPreviewTime();
@@ -711,19 +676,19 @@ void ceWindowDopeSheet::OnTimeChanged(){
 
 
 void ceWindowDopeSheet::OnAfterEngineStart(){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).OnAfterEngineStart();
+	pDopeSheet->OnAfterEngineStart();
 }
 
 void ceWindowDopeSheet::OnBeforeEngineStop(){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).OnBeforeEngineStop();
+	pDopeSheet->OnBeforeEngineStop();
 }
 
-void ceWindowDopeSheet::OnFrameUpdate( float elapsed ){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).OnFrameUpdate( elapsed );
+void ceWindowDopeSheet::OnFrameUpdate(float elapsed){
+	pDopeSheet->OnFrameUpdate(elapsed);
 }
 
-void ceWindowDopeSheet::SetEnableRendering( bool enable ){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).SetEnableRendering( enable );
+void ceWindowDopeSheet::SetEnableRendering(bool enable){
+	pDopeSheet->SetEnableRendering(enable);
 }
 
 
@@ -734,26 +699,26 @@ void ceWindowDopeSheet::SetEnableRendering( bool enable ){
 void ceWindowDopeSheet::pGetFontText(){
 	const igdeGuiTheme &guitheme = *GetGuiTheme();
 	igdeFont::sConfiguration configuration;
-	GetEnvironment().GetApplicationFont( configuration );
+	GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::textFieldFontSizeAbsolute, 0 );
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::textFieldFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::textFieldFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSize ) ){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::textFieldFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::textFieldFontSize, 1.0f );
+			igdeGuiThemePropertyNames::textFieldFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	pFontText = GetEnvironment().GetSharedFont( configuration );
+	pFontText = GetEnvironment().GetSharedFont(configuration);
 }
 
 void ceWindowDopeSheet::pUpdateActions(){
@@ -768,13 +733,13 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 	
 	// speech time if an audio clip is loaded otherwise a default value
 	ceCAActorSpeak * const action = GetActionASpeak();
-	if( action && action->GetEngineSound() ){
+	if(action && action->GetEngineSound()){
 		playtime = action->GetEngineSound()->GetPlayTime();
 	}
 	
 	// maximum length of all lines
 	const float maxLineTime = GetMaximumLinesTime();
-	if( maxLineTime > playtime ){
+	if(maxLineTime > playtime){
 		playtime = maxLineTime;
 	}
 	
@@ -782,70 +747,68 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 	playtime += 2.0f;
 	
 	// update the scrollbars
-	if( pSBTime ){
-		const int range = decMath::max( ( int )( playtime * pPixelPerSecond ) - GetSizeDopeSheet().x, 0 );
-		const int page = decMath::max( GetSizeDopeSheet().x / 2, 1 );
-		pSBTime->SetUpper( range + page );
-		pSBTime->SetPageSize( page );
+	if(pSBTime){
+		const int range = decMath::max((int)(playtime * pPixelPerSecond) - GetSizeDopeSheet().x, 0);
+		const int page = decMath::max(GetSizeDopeSheet().x / 2, 1);
+		pSBTime->SetUpper(range + page);
+		pSBTime->SetPageSize(page);
 	}
 }
 
 void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
-	if( ! pCanvasTimeLines || ! pCanvasTimeLineLabels ){
+	if(!pCanvasTimeLines || !pCanvasTimeLineLabels){
 		return;
 	}
 	
 	pCanvasTimeLines->RemoveAllCanvas();
 	pCanvasTimeLineLabels->RemoveAllCanvas();
 	
-	const decPoint sizeDopeSheet( GetSizeDopeSheet() );
-	const int timeLast = ( int )GetTimeForX( sizeDopeSheet.x );
-	const int timeFirst = ( int )GetTimeForX( 0 );
+	const decPoint sizeDopeSheet(GetSizeDopeSheet());
+	const int timeLast = (int)GetTimeForX(sizeDopeSheet.x);
+	const int timeFirst = (int)GetTimeForX(0);
 	decString text;
 	int i;
 	
-	for( i=timeFirst; i<=timeLast; i++ ){
-		if( i - timeFirst == pTimeLines.GetCount() ){
-			deCanvasPaintReference canvas;
-			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
-			canvas->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
+	for(i=timeFirst; i<=timeLast; i++){
+		if(i - timeFirst == pTimeLines.GetCount()){
+			deCanvasPaint::Ref canvas(GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+			canvas->SetFillColor(decColor(0.0f, 0.0f, 0.0f));
 			//GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetShadow ) );
-			canvas->SetThickness( 0 );
-			pTimeLines.Add( ( deCanvasPaint* )canvas );
+			canvas->SetThickness(0);
+			pTimeLines.Add(canvas);
 		}
 		
-		if( i - timeFirst == pTimeLineLabels.GetCount() ){
+		if(i - timeFirst == pTimeLineLabels.GetCount()){
 			deFont * const font = pFontText->GetEngineFont();
 			
-			deCanvasTextReference canvas;
-			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
-			canvas->SetFont( font );
-			canvas->SetFontSize( ( float )font->GetLineHeight() );
-			canvas->SetColor( GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetForeground ) );
-			pTimeLineLabels.Add( ( deCanvasText* )canvas );
+			deCanvasText::Ref canvas(GetEngine()->GetCanvasManager()->CreateCanvasText());
+			canvas->SetFont(font);
+			canvas->SetFontSize((float)font->GetLineHeight());
+			canvas->SetColor(GetEnvironment().GetSystemColor(igdeEnvironment::escWidgetForeground));
+			pTimeLineLabels.Add(canvas);
 		}
 		
-		deCanvasPaint * const canvasLine = ( deCanvasPaint* )pTimeLines.GetAt( i - timeFirst );
-		canvasLine->SetPosition( decPoint( GetXForTime( ( float )i ), 0 ) );
-		canvasLine->SetSize( decPoint( 1, sizeDopeSheet.y ) );
-		canvasLine->SetOrder( ( float )pCanvasTimeLines->GetCanvasCount() );
-		pCanvasTimeLines->AddCanvas( canvasLine );
+		deCanvasPaint * const canvasLine = pTimeLines.GetAt(i - timeFirst);
+		canvasLine->SetPosition(decPoint(GetXForTime((float)i), 0));
+		canvasLine->SetSize(decPoint(1, sizeDopeSheet.y));
+		canvasLine->SetOrder((float)pCanvasTimeLines->GetCanvasCount());
+		pCanvasTimeLines->AddCanvas(canvasLine);
 		
-		deCanvasText * const canvasText = ( deCanvasText* )pTimeLineLabels.GetAt( i - timeFirst );
-		text.Format( "%ds", i );
-		canvasText->SetText( text );
-		canvasText->SetPosition( canvasLine->GetPosition() + decPoint( 2, 2 ) );
-		canvasText->SetSize( decPoint( 80, ( int )canvasText->GetFontSize() ) ); // TODO add method to get text size
-		canvasText->SetOrder( ( float )pCanvasTimeLines->GetCanvasCount() );
-		pCanvasTimeLines->AddCanvas( canvasText );
+		deCanvasText * const canvasText = pTimeLineLabels.GetAt(i - timeFirst);
+		text.Format("%ds", i);
+		canvasText->SetText(text);
+		canvasText->SetPosition(canvasLine->GetPosition() + decPoint(2, 2));
+		canvasText->SetSize(decPoint(80, (int)canvasText->GetFontSize())); // TODO add method to get text size
+		canvasText->SetOrder((float)pCanvasTimeLines->GetCanvasCount());
+		pCanvasTimeLines->AddCanvas(canvasText);
 	}
 }
 
 void ceWindowDopeSheet::pUpdateCanvasVAPreviewTime(){
-	if( ! pCanvasVAPreviewTime || ! pVAPreview ){
+	if(!pCanvasVAPreviewTime || !pVAPreview){
 		return;
 	}
 	
-	pCanvasVAPreviewTime->SetPosition( decPoint( GetXForTime( pVAPreview->GetCurTime() ), 0 ) );
-	pCanvasVAPreviewTime->SetSize( decPoint( 1, GetSizeDopeSheet().y ) );
+	pCanvasVAPreviewTime->SetPosition(decPoint(GetXForTime(pVAPreview->GetCurTime()), 0));
+	pCanvasVAPreviewTime->SetSize(decPoint(1, GetSizeDopeSheet().y));
 }

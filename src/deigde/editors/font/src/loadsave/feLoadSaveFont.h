@@ -27,6 +27,7 @@
 #define _FELOADSAVEFONT_H_
 
 // includes
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
@@ -41,7 +42,11 @@ class decBaseFileWriter;
  * @brief Load/Save Engine Font.
  * Loads and saves fonts using engine font modules.
  */
-class feLoadSaveFont{
+class feLoadSaveFont : public deObject{
+public:
+	typedef deTObjectReference<feLoadSaveFont> Ref;
+	
+	
 private:
 	deBaseFontModule *pModule;
 	
@@ -52,26 +57,30 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader for the given module. */
-	feLoadSaveFont( deBaseFontModule *module );
+	explicit feLoadSaveFont(deBaseFontModule *module);
+	
+protected:
 	/** Cleans up the loader. */
-	~feLoadSaveFont();
+	~feLoadSaveFont() override;
 	/*@}*/
-
+	
+	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** Loads the font from file. */
-	void LoadFont( const char *virtualPath, feFont *font, decBaseFileReader *file );
+	void LoadFont(const char *virtualPath, feFont *font, decBaseFileReader *file);
 	/** Saves the font to file. */
-	void SaveFont( const char *virtualPath, feFont *font, decBaseFileWriter *file );
+	void SaveFont(const char *virtualPath, feFont *font, decBaseFileWriter *file);
 	/*@}*/
 	
 private:

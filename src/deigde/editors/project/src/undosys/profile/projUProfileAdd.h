@@ -26,10 +26,10 @@
 #ifndef _PROJUPROFILEADD_H_
 #define _PROJUPROFILEADD_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/projProject.h"
+#include "../../project/profile/projProfile.h"
 
-class projProject;
-class projProfile;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -39,18 +39,23 @@ class projProfile;
 class projUProfileAdd : public igdeUndo{
 private:
 	projProject *pProject;
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProfileAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileAdd( projProject *project, projProfile *profile );
+	projUProfileAdd(projProject *project, projProfile *profile);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProfileAdd();
+protected:
+	~projUProfileAdd() override;
+public:
 	/*@}*/
 	
 	
@@ -58,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -25,15 +25,15 @@
 #ifndef _MEWINDOWVEGETATION_H_
 #define _MEWINDOWVEGETATION_H_
 
+#include "meWindowVegetationListener.h"
+#include "../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../world/meWorld.h"
+
 #include <deigde/gui/nodeview/igdeNVBoard.h>
 
 class meWindowMain;
-class meWindowVegetationListener;
 class meHTVRule;
 class meWVNode;
-
-class meHTVegetationLayer;
-class meWorld;
 
 
 
@@ -41,13 +41,16 @@ class meWorld;
  * \brief Vegetation Window.
  */
 class meWindowVegetation : public igdeNVBoard{
+public:
+	using Ref = deTObjectReference<meWindowVegetation>;
+	
 private:
 	meWindowMain &pWindowMain;
-	meWindowVegetationListener *pListener;
+	meWindowVegetationListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decPoint pSector;
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 	float pUnitsToPixel;
 	float pPixelToUnits;
@@ -58,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	meWindowVegetation( meWindowMain &windowMain );
+	meWindowVegetation(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~meWindowVegetation();
+	~meWindowVegetation() override;
 	/*@}*/
 	
 	
@@ -74,25 +77,25 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Sector coordinates. */
 	inline const decPoint &GetSector() const{ return pSector; }
 	
 	/** \brief Set sector coordinates. */
-	void SetSector( const decPoint &sector );
+	void SetSector(const decPoint &sector);
 	
 	/** \brief Vegetation layer. */
-	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
+	inline const meHTVegetationLayer::Ref &GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
-	void SetVLayer( meHTVegetationLayer *vlayer );
+	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** \brief Active vegetation layer rule. */
-	meHTVRule *GetVRule() const;
+	meHTVRule::Ref GetVRule() const;
 	
 	
 	
@@ -112,13 +115,18 @@ public:
 	inline float GetPixelToUnits() const{ return pPixelToUnits; }
 	
 	/** \brief Node with rule. */
-	meWVNode *GetNodeWithRule( meHTVRule *rule );
+	meWVNode *GetNodeWithRule(meHTVRule *rule);
 	
 	/** \brief Update node with rule. */
-	void UpdateNodeWithRule( meHTVRule *rule );
+	void UpdateNodeWithRule(meHTVRule *rule);
 	
 	/** \brief Node with rule moved. */
-	void NodeWithRuleMoved( meHTVRule *rule );
+	void NodeWithRuleMoved(meHTVRule *rule);
+	
+	
+	
+	/** \brief Game project game definition changed. */
+	void OnGameDefinitionChanged();
 	/*@}*/
 };
 

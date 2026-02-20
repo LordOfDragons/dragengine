@@ -27,12 +27,12 @@
 #define _GDEGDWPSETTYPE_H_
 
 #include "../../../gamedef/property/gdeProperty.h"
+#include "../../../gamedef/gdeGameDefinition.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
 
 
 
@@ -40,9 +40,13 @@ class gdeGameDefinition;
  * \brief Undo action object class property set description.
  */
 class gdeUGDWPSetType : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDWPSetType> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePropertyTypes pOldValue;
 	gdeProperty::ePropertyTypes pNewValue;
@@ -53,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPSetType( gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePropertyTypes newValue );
+	gdeUGDWPSetType(gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePropertyTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleVectorMath;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleVectorMath.h"
 
 
 
@@ -43,9 +43,15 @@ class meHTVRuleVectorMath;
  * Undo action to set the B vector of a height terrain vegetation rule vector math.
  */
 class meUHTVRuleVecMathSetVectorB : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleVecMathSetVectorB>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleVectorMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleVectorMath::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;
@@ -54,17 +60,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleVecMathSetVectorB( meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule, const decVector &nvector );
+	meUHTVRuleVecMathSetVectorB(meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule, const decVector &nvector);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleVecMathSetVectorB();
+
+protected:
+	~meUHTVRuleVecMathSetVectorB() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -25,7 +25,7 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKSUBINSTANCE_H_
 #define _DEOGLPERSISTENTRENDERTASKSUBINSTANCE_H_
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
@@ -38,7 +38,7 @@ class deoglPersistentRenderTaskInstance;
 class deoglPersistentRenderTaskSubInstance{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLInstance;
+	decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element pLLInstance;
 	
 	deoglPersistentRenderTaskInstance *pParentInstance;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task instance. */
-	deoglPersistentRenderTaskSubInstance( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskSubInstance(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up render task instance. */
 	~deoglPersistentRenderTaskSubInstance();
@@ -65,19 +65,19 @@ public:
 	inline deoglPersistentRenderTaskInstance *GetParentInstance() const{ return pParentInstance; }
 	
 	/** Set parent instance. */
-	void SetParentInstance( deoglPersistentRenderTaskInstance *instance );
+	void SetParentInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Instance index. */
 	inline int GetIndexInstance() const{ return pIndexInstance; }
 	
 	/** Set instance index. */
-	void SetIndexInstance( int indexInstance );
+	void SetIndexInstance(int indexInstance);
 	
 	/** Flags. */
 	inline int GetFlags() const{ return pFlags; }
 	
 	/** Set flags. */
-	void SetFlags( int flags );
+	void SetFlags(int flags);
 	
 	
 	
@@ -87,8 +87,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLInstance(){ return pLLInstance; }
-	inline const decPointerLinkedList::cListEntry &GetLLInstance() const{ return pLLInstance; }
+	inline decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element &GetLLInstance(){ return pLLInstance; }
+	inline const decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element &GetLLInstance() const{ return pLLInstance; }
 	/*@}*/
 };
 

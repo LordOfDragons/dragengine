@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 
@@ -35,8 +35,12 @@ class saePhoneme;
  * Undo Action Phoneme Set Length.
  */
 class saeUPhonemeSetLength : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUPhonemeSetLength>;
+	
+	
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	float pOldLength;
 	float pNewLength;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetLength( saePhoneme *phoneme, float newLength );
+	saeUPhonemeSetLength(saePhoneme *phoneme, float newLength);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUPhonemeSetLength();
+	~saeUPhonemeSetLength() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

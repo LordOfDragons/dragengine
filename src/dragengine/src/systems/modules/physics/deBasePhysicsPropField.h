@@ -57,22 +57,22 @@ public:
 	virtual void PositionChanged();
 	
 	/** \brief Type has been added. */
-	virtual void TypeAdded( int index, dePropFieldType *type );
+	virtual void TypeAdded(int index, dePropFieldType *type);
 	
 	/** \brief Type has been removed. */
-	virtual void TypeRemoved( int index, dePropFieldType *type );
+	virtual void TypeRemoved(int index, dePropFieldType *type);
 	
 	/** \brief All types have been removed. */
 	virtual void AllTypesRemoved();
 	
 	/** \brief Type changed. */
-	virtual void TypeChanged( int index, dePropFieldType *type );
+	virtual void TypeChanged(int index, dePropFieldType *type);
 	
 	/** \brief Instances changed. */
-	virtual void InstancesChanged( int index, dePropFieldType *type );
+	virtual void InstancesChanged(int index, dePropFieldType *type);
 	
 	/** \brief Project all instances to the given ground. */
-	virtual void ProjectInstances( const dePropFieldGround &ground, const decVector &direction );
+	virtual void ProjectInstances(const dePropFieldGround &ground, const decVector &direction);
 	/*@}*/
 };
 

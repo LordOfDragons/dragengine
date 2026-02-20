@@ -49,7 +49,7 @@ public:
 	deoalWOVRayBlocked();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVRayBlocked();
+	~deoalWOVRayBlocked() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline bool GetBlocked() const{ return pBlocked; }
 	
 	/** \brief Set if ray is blocked. */
-	void SetBlocked( bool blocked );
+	void SetBlocked(bool blocked);
 	
 	
 	/**
@@ -73,13 +73,13 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalWorldOctree &node );
+	void VisitNode(deoalWorldOctree &node) override;
 	
 	/** \brief Visit octree node. */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	void VisitNode(deoalDOctree *node, int intersection) override;
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	void VisitComponent(deoalAComponent *component) override;
 	/*@}*/
 };
 

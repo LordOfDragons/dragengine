@@ -34,8 +34,8 @@
 ////////////////////////////
 
 deAnimationKeyframeVertexPositionSet::deAnimationKeyframeVertexPositionSet() :
-pTime( 0.0f ),
-pWeight( 0.0f ){
+pTime(0.0f),
+pWeight(0.0f){
 }
 
 deAnimationKeyframeVertexPositionSet::~deAnimationKeyframeVertexPositionSet(){
@@ -46,10 +46,10 @@ deAnimationKeyframeVertexPositionSet::~deAnimationKeyframeVertexPositionSet(){
 // management
 ///////////////
 
-void deAnimationKeyframeVertexPositionSet::SetTime( float time ){
-	pTime = decMath::max( time, 0.0f );
+void deAnimationKeyframeVertexPositionSet::SetTime(float time){
+	pTime = decMath::max(time, 0.0f);
 }
 
-void deAnimationKeyframeVertexPositionSet::SetWeight( float weight ){
+void deAnimationKeyframeVertexPositionSet::SetWeight(float weight){
 	pWeight = weight;
 }

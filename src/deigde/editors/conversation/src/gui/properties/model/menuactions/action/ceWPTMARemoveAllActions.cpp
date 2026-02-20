@@ -36,7 +36,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -45,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMARemoveAllActions::ceWPTMARemoveAllActions( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Remove All Actions",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ){
+ceWPTMARemoveAllActions::ceWPTMARemoveAllActions(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveAllActions",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation){
 }
 
 
@@ -58,13 +58,11 @@ pConversation( &conversation ){
 ///////////////
 
 void ceWPTMARemoveAllActions::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( CreateUndo() );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(CreateUndo());
 }
 
-igdeUndo *ceWPTMARemoveAllActions::CreateUndo(){
+igdeUndo::Ref ceWPTMARemoveAllActions::CreateUndo(){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

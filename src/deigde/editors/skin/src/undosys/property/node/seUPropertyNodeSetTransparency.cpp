@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetTransparency::seUPropertyNodeSetTransparency( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetTransparency::seUPropertyNodeSetTransparency(sePropertyNode *node, float newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set transparency" );
+	SetShortInfo("@Skin.Undo.NodeSetTransparency");
 	
 	pOldValue = node->GetTransparency();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetTransparency::~seUPropertyNodeSetTransparency(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -65,14 +61,14 @@ seUPropertyNodeSetTransparency::~seUPropertyNodeSetTransparency(){
 // Management
 ///////////////
 
-void seUPropertyNodeSetTransparency::SetNewValue( float value ){
+void seUPropertyNodeSetTransparency::SetNewValue(float value){
 	pNewValue = value;
 }
 
 void seUPropertyNodeSetTransparency::Undo(){
-	pNode->SetTransparency( pOldValue );
+	pNode->SetTransparency(pOldValue);
 }
 
 void seUPropertyNodeSetTransparency::Redo(){
-	pNode->SetTransparency( pNewValue );
+	pNode->SetTransparency(pNewValue);
 }

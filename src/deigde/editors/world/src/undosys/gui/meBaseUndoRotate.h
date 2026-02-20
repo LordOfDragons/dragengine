@@ -22,13 +22,15 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEBASEUNDOROTATE_H_
 #define _MEBASEUNDOROTATE_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+
+class igdeEnvironment;
 
 
 
@@ -36,7 +38,13 @@
  * Base class for undo actions rotating things around.
  */
 class meBaseUndoRotate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meBaseUndoRotate>;
+	using List = decTObjectOrderedSet<meBaseUndoRotate>;
+	
+	
 private:
+igdeEnvironment &pEnvironment;
 	float pAngle;
 	decDVector pPivot;
 	decDVector pAxis;
@@ -46,31 +54,34 @@ private:
 	
 public:
 	// constructor, destructor
-	meBaseUndoRotate();
-	~meBaseUndoRotate();
+	meBaseUndoRotate(igdeEnvironment &environment);
 	
+protected:
+	~meBaseUndoRotate() override;
+	
+public:
 	// management
 	/** Retrieves the angle to rotate in degrees. */
 	inline float GetAngle() const{ return pAngle; }
 	/** Sets the angle to rotate in degrees. */
-	void SetAngle( float angle );
+	void SetAngle(float angle);
 	/** Retrieves the pivot point. */
 	inline const decDVector &GetPivot() const{ return pPivot; }
 	/** Sets the pivot point. */
-	void SetPivot( const decDVector &pivot );
+	void SetPivot(const decDVector &pivot);
 	/** Retrieves the rotation axis. */
 	inline const decDVector &GetAxis() const{ return pAxis; }
 	/** Sets the rotation axis. */
-	void SetAxis( const decDVector &axis );
+	void SetAxis(const decDVector &axis);
 	
 	/** Determines if the position has to be modified. */
 	inline bool GetModifyPosition() const{ return pModifyPosition; }
 	/** Sets if the position has to be modified. */
-	void SetModifyPosition( bool modifyPosition );
+	void SetModifyPosition(bool modifyPosition);
 	/** Determines if the orientation has to be modified. */
 	inline bool GetModifyOrientation() const{ return pModifyOrientation; }
 	/** Sets if the orientation has to be modified. */
-	void SetModifyOrientation( bool modifyOrientation );
+	void SetModifyOrientation(bool modifyOrientation);
 	
 	/** Retrieves the rotation matrix. */
 	inline const decDMatrix &GetRotationMatrix() const{ return pMatrix; }
@@ -81,7 +92,7 @@ public:
 	 * Convenience method to rotate one undo element. The position and
 	 * rotation are modified in place.
 	 */
-	void TransformElement( decDVector &position, decDVector &rotation );
+	void TransformElement(decDVector &position, decDVector &rotation);
 	
 	// undo and redo actions
 	virtual void ProgressiveRedo();

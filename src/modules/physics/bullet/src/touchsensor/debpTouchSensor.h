@@ -25,10 +25,11 @@
 #ifndef _DEBPTOUCHSENSOR_H_
 #define _DEBPTOUCHSENSOR_H_
 
-#include "../shape/debpShapeList.h"
+#include "../shape/debpShape.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsTouchSensor.h>
 
 class debpCollider;
@@ -36,7 +37,6 @@ class deTouchSensor;
 class debpWorld;
 class dePhysicsBullet;
 class debpGhostObject;
-class deDebugDrawer;
 class deDebugDrawerShape;
 
 
@@ -61,12 +61,12 @@ private:
 	bool pDirtyMatrix;
 	bool pDirtyExtends;
 	
-	debpShapeList pShape;
-	decPointerOrderedSet pTouchingColliders;
-	decPointerOrderedSet pLeavingColliders;
+	debpShape::List pShape;
+	decTOrderedSet<debpCollider*> pTouchingColliders;
+	decTOrderedSet<debpCollider*> pLeavingColliders;
 	debpGhostObject *pGhostObject;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
@@ -75,10 +75,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	debpTouchSensor( dePhysicsBullet &bullet, deTouchSensor &touchSensor );
+	debpTouchSensor(dePhysicsBullet &bullet, deTouchSensor &touchSensor);
 	
 	/** Clean up peer. */
-	virtual ~debpTouchSensor();
+	~debpTouchSensor() override;
 	/*@}*/
 	
 	
@@ -94,18 +94,18 @@ public:
 	
 	
 	/** Shape. */
-	inline const debpShapeList &GetShape() const{ return pShape; }
+	inline const debpShape::List &GetShape() const{ return pShape; }
 	
 	/** Retrieves the ghost object. */
 	inline debpGhostObject *GetGhostObject() const{ return pGhostObject; }
 	
 	/** Retrieves the list of touching colliders. */
-	inline decPointerOrderedSet &GetTouchingColliders(){ return pTouchingColliders; }
-	inline const decPointerOrderedSet &GetTouchingColliders() const{ return pTouchingColliders; }
+	inline decTOrderedSet<debpCollider*> &GetTouchingColliders(){ return pTouchingColliders; }
+	inline const decTOrderedSet<debpCollider*> &GetTouchingColliders() const{ return pTouchingColliders; }
 	
 	/** Retrieves the list of leaving colliders. */
-	inline decPointerOrderedSet &GetLeavingColliders(){ return pLeavingColliders; }
-	inline const decPointerOrderedSet &GetLeavingColliders() const{ return pLeavingColliders; }
+	inline decTOrderedSet<debpCollider*> &GetLeavingColliders(){ return pLeavingColliders; }
+	inline const decTOrderedSet<debpCollider*> &GetLeavingColliders() const{ return pLeavingColliders; }
 	
 	
 	
@@ -113,7 +113,7 @@ public:
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Minimum extend. */
 	const decDVector &GetMinimumExtend();
@@ -134,16 +134,16 @@ public:
 	void MarkGhostObjectDirty();
 	
 	/** Touch sensor and collider collide. */
-	bool Collides( const debpCollider &collider ) const;
+	bool Collides(const debpCollider &collider) const;
 	
 	/** Touch sensor and collider do not collide. */
-	bool CollidesNot( const debpCollider &collider ) const;
+	bool CollidesNot(const debpCollider &collider) const;
 	
 	/** Determines if a collider touches the shape. */
-	bool TestCollider( debpCollider *collider );
+	bool TestCollider(debpCollider *collider);
 	
 	/** Remove collider immediately. For use by debpCollider only during cleaning up. */
-	void RemoveColliderImmediately( debpCollider *collider );
+	void RemoveColliderImmediately(debpCollider *collider);
 	/*@}*/
 	
 	
@@ -151,37 +151,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** Ignore colliders changed. */
-	virtual void IgnoreCollidersChanged();
+	void IgnoreCollidersChanged() override;
 	
 	/** Track enter/leave changed. */
-	virtual void TrackEnterLeaveChanged();
+	void TrackEnterLeaveChanged() override;
 	
 	/** Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	
 	/** Touch sensor contains no colliders. */
-	virtual bool IsEmpty();
+	bool IsEmpty() override;
 	
 	/** Number of colliders in touch sensor. */
-	virtual int GetColliderCount();
+	int GetColliderCount() override;
 	
 	/**
 	 * Collider at index in touch sensor.
 	 * \param collider Index of the collider retrieve.
 	 */
-	virtual deCollider *GetColliderAt( int collider );
+	deCollider *GetColliderAt(int collider) override;
 	
 	/** Shape changed. */
-	virtual void ShapeChanged();
+	void ShapeChanged() override;
 	/*@}*/
 	
 	
@@ -189,14 +189,14 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** Test if a point is located inside the collider. */
-	virtual bool PointInside( const decDVector &point );
+	bool PointInside(const decDVector &point) override;
 	
 	/**
 	 * Visit all touching elements with listener.
 	 * 
 	 * To stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void AllHits( deBaseScriptingCollider *listener );
+	void AllHits(deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test ray for collision with the element in the given shape.
@@ -206,8 +206,8 @@ public:
 	 * The distance parameter in the collision response represents the actual distance to the
 	 * ray origin along the ray direction.
 	 */
-	virtual void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-	deBaseScriptingCollider *listener );
+	void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+	deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test collider for collision with scene elements.
@@ -216,7 +216,7 @@ public:
 	 * collider is called. To stop testing set StopTesting in the provided collision
 	 * information object to true.
 	 */
-	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test moving collider for collision with scene elements.
@@ -225,8 +225,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-	deBaseScriptingCollider *listener );
+	void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+	deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test rotating collider for collision with scene elements.
@@ -235,8 +235,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-	deBaseScriptingCollider *listener );
+	void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+	deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test moving and rotating collider for collision with scene elements.
@@ -245,8 +245,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-	const decVector &rotation, deBaseScriptingCollider *listener );
+	void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+	const decVector &rotation, deBaseScriptingCollider *listener) override;
 	/*@}*/
 	
 	
@@ -254,7 +254,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }

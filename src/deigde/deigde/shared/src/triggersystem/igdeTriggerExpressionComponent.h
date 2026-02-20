@@ -25,12 +25,13 @@
 #ifndef _IGDETRIGGEREXPRESSIONCOMPONENT_H_
 #define _IGDETRIGGEREXPRESSIONCOMPONENT_H_
 
+#include "igdeTriggerTarget.h"
+#include "igdeTriggerListener.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class igdeTriggerTarget;
-class igdeTriggerListener;
 class igdeTriggerTargetList;
 
 
@@ -39,6 +40,13 @@ class igdeTriggerTargetList;
  */
 class DE_DLL_EXPORT igdeTriggerExpressionComponent : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTriggerExpressionComponent>;
+	
+	/** \brief Trigger expression component list. */
+	using List = decTObjectOrderedSet<igdeTriggerExpressionComponent>;
+	
+	
 	/** \brief Component type. */
 	enum eComponentTypes{
 		/** \brief Target component. */
@@ -58,9 +66,9 @@ private:
 	bool pCurState;
 	eComponentTypes pType;
 	decString pTargetName;
-	igdeTriggerTarget *pTarget;
-	igdeTriggerListener *pTargetListener;
-	decObjectOrderedSet pChildred;
+	igdeTriggerTarget::Ref pTarget;
+	igdeTriggerListener::Ref pTargetListener;
+	List pChildren;
 	
 	
 	
@@ -74,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up trigger expression component. */
-	virtual ~igdeTriggerExpressionComponent();
+	~igdeTriggerExpressionComponent() override;
 	/*@}*/
 	
 	
@@ -86,40 +94,40 @@ public:
 	inline bool GetNegate() const{ return pNegate; }
 	
 	/** \brief Set if test result is negated. */
-	void SetNegate( bool negate );
+	void SetNegate(bool negate);
 	
 	/** \brief Current state is queried instead of testing if the trigger ever fired. */
 	inline bool GetCurState() const{ return pCurState; }
 	
 	/** \brief Set if current state is queried instead of testing if the trigger ever fired. */
-	void SetCurState( bool curState );
+	void SetCurState(bool curState);
 	
 	/** \brief Type of component. */
 	inline eComponentTypes GetType() const{ return pType; }
 	
 	/** \brief Set type of component. */
-	void SetType( eComponentTypes type );
+	void SetType(eComponentTypes type);
 	
 	/** \brief Target name. */
 	inline const decString &GetTargetName() const{ return pTargetName; }
 	
 	/** \brief Set target name. */
-	void SetTargetName( const char *name );
+	void SetTargetName(const char *name);
 	
-	/** \brief Trigger target or NULL. */
-	inline igdeTriggerTarget *GetTarget() const{ return pTarget; }
+	/** \brief Trigger target or nullptr. */
+	inline const igdeTriggerTarget::Ref &GetTarget() const{ return pTarget; }
 	
-	/** \brief Set trigger target or NULL. */
-	void SetTarget( igdeTriggerTarget *target );
+	/** \brief Set trigger target or nullptr. */
+	void SetTarget(igdeTriggerTarget *target);
 	
-	/** \brief Target listener or NULL. */
-	inline igdeTriggerListener *GetTargetListener() const{ return pTargetListener; }
+	/** \brief Target listener or nullptr. */
+	inline const igdeTriggerListener::Ref &GetTargetListener() const{ return pTargetListener; }
 	
-	/** \brief Set target listener or NULL. */
-	void SetTargetListener( igdeTriggerListener *listener );
+	/** \brief Set target listener or nullptr. */
+	void SetTargetListener(igdeTriggerListener *listener);
 	
 	/** \brief Link trigger targets using the given trigger table. */
-	void LinkTargets( igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener );
+	void LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener);
 	
 	/** \brief Unlink trigger targets. */
 	void UnlinkTargets();
@@ -132,23 +140,20 @@ public:
 	
 	/** \name Children */
 	/*@{*/
-	/** \brief Count of child components. */
-	int GetChildCount() const;
-	
-	/** \brief Child component at index. */
-	igdeTriggerExpressionComponent *GetChildAt( int index ) const;
+	/** \brief Children. */
+	const List &GetChildren() const{ return pChildren; }
 	
 	/** \brief Index of child component or -1 if not found. */
-	int IndexOfChild( igdeTriggerExpressionComponent *child ) const;
+	int IndexOfChild(igdeTriggerExpressionComponent *child) const;
 	
 	/** \brief Add child. */
-	void AddChild( igdeTriggerExpressionComponent *child );
+	void AddChild(igdeTriggerExpressionComponent *child);
 	
 	/** \brief Insert child before index. */
-	void InsertChild( igdeTriggerExpressionComponent *child, int index );
+	void InsertChild(igdeTriggerExpressionComponent *child, int index);
 	
 	/** \brief Remove child. */
-	void RemoveChild( igdeTriggerExpressionComponent *child );
+	void RemoveChild(igdeTriggerExpressionComponent *child);
 	
 	/** \brief Remove all children. */
 	void RemoveAllChildren();

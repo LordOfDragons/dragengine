@@ -25,14 +25,15 @@
 #ifndef _CEWPTTREEMODEL_H_
 #define _CEWPTTREEMODEL_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "ceWPTTreeModelListener.h"
+#include "../../../conversation/ceConversation.h"
 
-class ceConversation;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationAction;
 class ceConversationCondition;
 class ceWPTTIMAction;
 class ceWPTTIMCondition;
-class ceWPTTreeModelListener;
 class ceWPTTreeItem;
 class ceWPTTreeItemModel;
 class ceWindowMain;
@@ -47,14 +48,17 @@ class igdeMenuCascade;
  * 
  * Tree model is responsible to update the visual state and content of assigned tree list.
  */
-class ceWPTTreeModel{
+class ceWPTTreeModel : public deObject{
 public:
+	using Ref = deTObjectReference<ceWPTTreeModel>;
+	using ModelList = decTObjectOrderedSet<ceWPTTreeItemModel>;
+	
 	class PreventUpdateGuard{
 		ceWPTTreeModel &pModel;
 		bool pPrevPreventUpdate;
 		
 	public:
-		PreventUpdateGuard( ceWPTTreeModel &model );
+		PreventUpdateGuard(ceWPTTreeModel &model);
 		~PreventUpdateGuard();
 	};
 	
@@ -64,11 +68,11 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceConversation *pConversation;
-	ceWPTTreeModelListener *pListener;
+	ceConversation::Ref pConversation;
+	ceWPTTreeModelListener::Ref pListener;
 	ceConversationListener &pForwardListener;
 	
-	decObjectOrderedSet pChildren;
+	ModelList pChildren;
 	
 	igdeTreeList *pTreeList; // weak reference
 	bool pPreventUpdate;
@@ -79,11 +83,12 @@ public:
 	/** Constructors and Destructors */
 	/*@{*/
 	/** Create new tree model. */
-	ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
-		ceConversationListener &forwardListener );
+	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
+		ceConversationListener &forwardListener);
 	
+protected:
 	/** Clean up tree model. */
-	~ceWPTTreeModel();
+	~ceWPTTreeModel() override;
 	/*@}*/
 	
 	
@@ -95,24 +100,20 @@ public:
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game definition. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	
-	
-	/** Number of children. */
-	int GetChildCount() const;
-	
-	/** Child at index. */
-	ceWPTTreeItemModel *GetChildAt( int index ) const;
+	/** Child models. */
+	inline const ModelList &GetChildren() const{ return pChildren; }
 	
 	/** Add child. */
-	void AddChild( ceWPTTreeItemModel *child );
+	void AddChild(ceWPTTreeItemModel *child);
 	
 	/** Insert child at position. */
-	void InsertChild( ceWPTTreeItemModel *child, int position );
+	void InsertChild(ceWPTTreeItemModel *child, int position);
 	
 	/** Remove child. */
-	void RemoveChild( ceWPTTreeItemModel *child );
+	void RemoveChild(ceWPTTreeItemModel *child);
 	
 	/** Remove all children. */
 	void RemoveAllChildren();
@@ -120,17 +121,17 @@ public:
 	/**
 	 * Move child before or after another child.
 	 */
-	void MoveChild( ceWPTTreeItemModel *child, int to );
+	void MoveChild(ceWPTTreeItemModel *child, int to);
 	
 	/**
 	 * Move child before or after another child.
 	 */
-	void MoveChild( int from, int to );
+	void MoveChild(int from, int to);
 	
 	
 	
-	/** Child with action or \em NULL. */
-	ceWPTTIMAction *GetChildWith( ceConversationAction *action ) const;
+	/** Child with action or \em nullptr. */
+	ceWPTTIMAction *GetChildWith(ceConversationAction *action) const;
 	
 	
 	
@@ -138,32 +139,32 @@ public:
 	void UpdateActions();
 	
 	
-	/** Assigned tree list or \em NULL. */
+	/** Assigned tree list or \em nullptr. */
 	inline igdeTreeList *GetTreeList() const{ return pTreeList; }
 	
 	/**
-	 * Assign tree list or \em NULL.
+	 * Assign tree list or \em nullptr.
 	 * 
-	 * If tree list is not \em NULL fully updates tree with stored data.
+	 * If tree list is not \em nullptr fully updates tree with stored data.
 	 */
-	void SetTreeList( igdeTreeList *treeList );
+	void SetTreeList(igdeTreeList *treeList);
 	
 	
 	
 	/** User requests context menu for selected item. */
-	void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** User requests context menu for selected child action. */
-	void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
+	void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action);
 	
 	/** User requests context menu for topic specifi actions. */
-	void ContextMenuTopic( igdeMenuCascade &contextMenu );
+	void ContextMenuTopic(igdeMenuCascade &contextMenu);
 	
 	/** Deep find action. */
-	ceWPTTIMAction *DeepFindAction( ceConversationAction *action ) const;
+	ceWPTTIMAction *DeepFindAction(ceConversationAction *action) const;
 	
 	/** Deep find condition. */
-	ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition ) const;
+	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) const;
 	
 	/** Select topic active element. */
 	void SelectTopicActive();

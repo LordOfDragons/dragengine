@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetName::projUProfileSetName( projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetName::projUProfileSetName(projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set name" );
+	SetShortInfo("@Project.Undo.ProfileSetName");
 	
 	pOldValue = profile->GetName();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetName::~projUProfileSetName(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ projUProfileSetName::~projUProfileSetName(){
 ///////////////
 
 void projUProfileSetName::Undo(){
-	pProfile->SetName( pOldValue );
+	pProfile->SetName(pOldValue);
 }
 
 void projUProfileSetName::Redo(){
-	pProfile->SetName( pNewValue );
+	pProfile->SetName(pNewValue);
 }

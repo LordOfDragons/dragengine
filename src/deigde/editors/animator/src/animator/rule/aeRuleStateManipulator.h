@@ -34,7 +34,8 @@
  */
 class aeRuleStateManipulator : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleStateManipulator> Ref;
+	using Ref = deTObjectReference<aeRuleStateManipulator>;
+	
 	
 private:
 	decVector pMinPosition;
@@ -50,10 +51,10 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetPosition;
-	aeControllerTarget pTargetRotation;
-	aeControllerTarget pTargetSize;
-	aeControllerTarget pTargetVertexPositionSet;
+	aeControllerTarget::Ref pTargetPosition;
+	aeControllerTarget::Ref pTargetRotation;
+	aeControllerTarget::Ref pTargetSize;
+	aeControllerTarget::Ref pTargetVertexPositionSet;
 	
 	
 	
@@ -61,13 +62,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	aeRuleStateManipulator();
+	explicit aeRuleStateManipulator(const char *name);
 	
 	/** Create copy of rule. */
-	aeRuleStateManipulator( const aeRuleStateManipulator &copy );
+	aeRuleStateManipulator(const aeRuleStateManipulator &copy);
 	
 	/** Clean up rule. */
-	virtual ~aeRuleStateManipulator();
+protected:
+	~aeRuleStateManipulator() override;
+public:
 	/*@}*/
 	
 	
@@ -78,49 +81,49 @@ public:
 	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
 	
 	/** Set minimum position. */
-	void SetMinimumPosition( const decVector &position );
+	void SetMinimumPosition(const decVector &position);
 	
 	/** Maximum position. */
 	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
 	
 	/** Set maximum position. */
-	void SetMaximumPosition( const decVector &position );
+	void SetMaximumPosition(const decVector &position);
 	
 	/** Minimum rotation. */
 	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
 	/** Set minimum rotation. */
-	void SetMinimumRotation( const decVector &rotation );
+	void SetMinimumRotation(const decVector &rotation);
 	
 	/** Maximum rotation. */
 	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
 	/** Set maximum rotation. */
-	void SetMaximumRotation( const decVector &rotation );
+	void SetMaximumRotation(const decVector &rotation);
 	
 	/** Minimum size. */
 	inline const decVector &GetMinimumSize() const{ return pMinSize; }
 	
 	/** Set minimum size. */
-	void SetMinimumSize( const decVector &size );
+	void SetMinimumSize(const decVector &size);
 	
 	/** Maximum size. */
 	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
 	
 	/** Set maximum size. */
-	void SetMaximumSize( const decVector &size );
+	void SetMaximumSize(const decVector &size);
 	
 	/** Minimum vertex position set. */
 	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
 	
 	/** Set minimum vertex position set. */
-	void SetMinimumVertexPositionSet( float weight );
+	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Maximum vertex position set. */
 	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
 	
 	/** Set maximum vertex position set. */
-	void SetMaximumVertexPositionSet( float weight );
+	void SetMaximumVertexPositionSet(float weight);
 	
 	
 	
@@ -128,70 +131,66 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** Rotation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableRotation; }
 	
 	/** Set if rotation manipulation is enabled. */
-	void SetEnableRotation( bool enabled );
+	void SetEnableRotation(bool enabled);
 	
 	/** Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	
 	
 	/** Position target. */
-	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
-	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Rotation target. */
-	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
-	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
+	inline const aeControllerTarget::Ref &GetTargetRotation() const{ return pTargetRotation; }
 	
 	/** Size target. */
-	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
-	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
+	inline const aeControllerTarget::Ref &GetTargetSize() const{ return pTargetSize; }
 	
 	/** Vertex position set target. */
-	inline aeControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSet; }
-	inline const aeControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
+	inline const aeControllerTarget::Ref &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
 	
 	
 	
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Update targets. */
-	virtual void UpdateTargets();
+	void UpdateTargets() override;
 	
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	int CountLinkUsage(aeLink *link) const override;
 	
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	void RemoveLinkFromTargets(aeLink *link) override;
 	
 	/** Remove all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
+	void RemoveLinksFromAllTargets() override;
 	
 	
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule::Ref CreateCopy() const override;
 	
 	
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	
@@ -199,7 +198,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy another state manipulator rule to this state manipulator rule. */
-	virtual aeRuleStateManipulator &operator=( const aeRuleStateManipulator &copy );
+	virtual aeRuleStateManipulator &operator=(const aeRuleStateManipulator &copy);
 	/*@}*/
 };
 

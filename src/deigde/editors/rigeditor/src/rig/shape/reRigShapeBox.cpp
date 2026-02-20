@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeBox::reRigShapeBox( deEngine *engine ) : reRigShape( engine, estBox ){
-	pHalfExtends.Set( 0.5f, 0.5f, 0.5f );
+reRigShapeBox::reRigShapeBox(deEngine *engine) : reRigShape(engine, estBox){
+	pHalfExtends.Set(0.5f, 0.5f, 0.5f);
 }
 
 reRigShapeBox::~reRigShapeBox(){
@@ -60,37 +60,27 @@ reRigShapeBox::~reRigShapeBox(){
 // Management
 ///////////////
 
-void reRigShapeBox::SetHalfExtends( const decVector &halfExtends ){
-	if( ! halfExtends.IsEqualTo( pHalfExtends ) ){
+void reRigShapeBox::SetHalfExtends(const decVector &halfExtends){
+	if(!halfExtends.IsEqualTo(pHalfExtends)){
 		pHalfExtends = halfExtends;
 		NotifyShapeChanged();
 	}
 }
 
-reRigShape *reRigShapeBox::Duplicate() const{
-	reRigShapeBox *shape = NULL;
-	
-	try{
-		shape = new reRigShapeBox( GetEngine() );
-		if( ! shape ) DETHROW( deeOutOfMemory );
-		
-		shape->SetPosition( GetPosition() );
-		shape->SetOrientation( GetOrientation() );
-		shape->SetHalfExtends( GetHalfExtends() );
-		
-	}catch( const deException & ){
-		if( shape ) shape->FreeReference();
-		throw;
-	}
-	
+reRigShape::Ref reRigShapeBox::Duplicate() const{
+	const reRigShapeBox::Ref shape(reRigShapeBox::Ref::New(GetEngine()));
+	shape->SetPosition(GetPosition());
+	shape->SetOrientation(GetOrientation());
+	shape->SetHalfExtends(GetHalfExtends());
 	return shape;
 }
 
-void reRigShapeBox::Scale( float scale ){
-	SetPosition( GetPosition() * scale );
+void reRigShapeBox::Scale(float scale){
+	SetPosition(GetPosition() * scale);
 	pHalfExtends *= scale;
 }
 
-decShape *reRigShapeBox::CreateShape(){
-	return new decShapeBox( pHalfExtends, GetPosition(), decQuaternion::CreateFromEuler( GetOrientation() * DEG2RAD ) );
+decShape::Ref reRigShapeBox::CreateShape(){
+	return decShapeBox::Ref::New(pHalfExtends, GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

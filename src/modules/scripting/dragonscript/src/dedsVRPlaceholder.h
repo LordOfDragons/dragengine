@@ -39,7 +39,8 @@ class deScriptingDragonScript;
  */
 class dedsVRPlaceholder : public deObject{
 public:
-	typedef deTObjectReference<dedsVRPlaceholder> Ref;
+	using Ref = deTObjectReference<dedsVRPlaceholder>;
+	
 	
 private:
 	deScriptingDragonScript &pDS;

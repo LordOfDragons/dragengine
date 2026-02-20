@@ -35,6 +35,10 @@ class peeWPController;
  * \brief Controller Properties Panel Listener.
  */
 class peeWPControllerListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWPControllerListener>;
+	
 private:
 	peeWPController &pPanel;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWPControllerListener( peeWPController &panel );
+	peeWPControllerListener(peeWPController &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~peeWPControllerListener();
+protected:
+	~peeWPControllerListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,19 +61,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged ( peeEmitter *emitter );
+	void ControllerStructureChanged (peeEmitter *emitter) override;
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( peeEmitter *emitter, peeController *controller );
+	void ControllerChanged(peeEmitter *emitter, peeController *controller) override;
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( peeEmitter *emitter, peeController *controller );
+	void ControllerNameChanged(peeEmitter *emitter, peeController *controller) override;
 	
 	/** \brief Controller changed value. */
-	virtual void ControllerValueChanged( peeEmitter *emitter, peeController *controller );
+	void ControllerValueChanged(peeEmitter *emitter, peeController *controller) override;
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( peeEmitter *emitter );
+	void ActiveControllerChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

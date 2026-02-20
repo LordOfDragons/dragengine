@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRule;
-class aeAnimator;
+#include "../../animator/rule/aeRule.h"
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -42,28 +42,32 @@ class aeAnimator;
  * Undo object for adding a rule.
  */
 class aeUAddRule : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAddRule>;
+	
+	
 private:
 	aeAnimator *pAnimator;
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAddRule( aeAnimator *animator, aeRule *rule, int index );
+	aeUAddRule(aeAnimator *animator, aeRule *rule, int index);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAddRule();
+	~aeUAddRule() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

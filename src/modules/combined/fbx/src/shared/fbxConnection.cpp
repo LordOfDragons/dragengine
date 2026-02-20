@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxConnection::fbxConnection( int64_t source, int64_t target, const char *property ) :
-pSource( source ),
-pTarget( target ),
-pProperty( property ){
+fbxConnection::fbxConnection(int64_t source, int64_t target, const char *property) :
+pSource(source),
+pTarget(target),
+pProperty(property){
 }
 
 fbxConnection::~fbxConnection(){
@@ -53,33 +53,33 @@ fbxConnection::~fbxConnection(){
 // Management
 ///////////////
 
-int64_t fbxConnection::OtherID( int64_t id ) const{
-	if( id == pSource ){
+int64_t fbxConnection::OtherID(int64_t id) const{
+	if(id == pSource){
 		return pTarget;
 		
-	}else if( id == pTarget ){
+	}else if(id == pTarget){
 		return pSource;
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
-void fbxConnection::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
+void fbxConnection::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
 #if defined __MINGW32__ || defined __MINGW64__
 	#ifdef PRId64
 		#undef PRId64
 	#endif
 	#define PRId64 "I64u"
 #endif
-	if( pProperty.IsEmpty() ){
-		module.LogInfoFormat( "%sConnection: %" PRId64 " -> %" PRId64,
-			prefix.GetString(), pSource, pTarget );
+	if(pProperty.IsEmpty()){
+		module.LogInfoFormat("%sConnection: %" PRId64 " -> %" PRId64,
+			prefix.GetString(), pSource, pTarget);
 		
 	}else{
-		module.LogInfoFormat( "%sConnection: %" PRId64 " -> %" PRId64 " (%s)",
-			prefix.GetString(), pSource, pTarget, pProperty.GetString() );
+		module.LogInfoFormat("%sConnection: %" PRId64 " -> %" PRId64 " (%s)",
+			prefix.GetString(), pSource, pTarget, pProperty.GetString());
 	}
 }

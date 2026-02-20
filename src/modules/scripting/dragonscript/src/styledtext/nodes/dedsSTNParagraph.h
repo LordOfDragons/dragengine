@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEDSSTNPARAGRAPH_H_
 #define _DEDSSTNPARAGRAPH_H_
 
-// includes
 #include "dedsStyledTextNode.h"
 
-// predefinitions
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -38,10 +35,12 @@
  * Paragraph node in a styled text object storing a list of child nodes.
  */
 class dedsSTNParagraph : public dedsStyledTextNode{
+public:
+	using Ref = deTObjectReference<dedsSTNParagraph>;
+	
+	
 private:
-	dedsStyledTextNode **pNodes;
-	int pNodeCount;
-	int pNodeSize;
+	decTObjectOrderedSet<dedsStyledTextNode> pNodes;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -49,23 +48,18 @@ public:
 	/** Creates a new container node. */
 	dedsSTNParagraph();
 	/** Cleans up the styled text node. */
-	virtual ~dedsSTNParagraph();
+	~dedsSTNParagraph() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the number of child nodes. */
-	inline int GetNodeCount() const{ return pNodeCount; }
-	/** Retrieves the child node at the given index. */
-	dedsStyledTextNode *GetNodeAt( int index ) const;
-	/** Retrieves the index of a child node or -1 if not found. */
-	int IndexOfNode( dedsStyledTextNode *node ) const;
-	/** Determines if a child node exists in the container. */
-	bool HasNode( dedsStyledTextNode *node ) const;
+	/** Nodes. */
+	inline const decTObjectOrderedSet<dedsStyledTextNode>& GetNodes() const{ return pNodes; }
+	
 	/** Adds a child node. */
-	void AddNode( dedsStyledTextNode *node );
+	void AddNode(dedsStyledTextNode *node);
 	/** Removes a child node. */
-	void RemoveNode( dedsStyledTextNode *node );
+	void RemoveNode(dedsStyledTextNode *node);
 	/** Removes all child nodes. */
 	void RemoveAllNodes();
 	/*@}*/

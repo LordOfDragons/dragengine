@@ -25,11 +25,13 @@
 #ifndef _DEOALCOMPONENT_H_
 #define _DEOALCOMPONENT_H_
 
+#include "deoalAComponent.h"
+
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioComponent.h>
 
-class deoalAComponent;
 class deoalComponentDebug;
 class deoalComponentTexture;
 class deoalModel;
@@ -42,16 +44,15 @@ class deAudioOpenAL;
 
 
 /**
- * \brief Component resource peer.
+ * Component resource peer.
  */
 class deoalComponent : public deBaseAudioComponent{
 private:
 	deAudioOpenAL &pOal;
 	deComponent &pComponent;
-	deoalAComponent *pAComponent;
+	deoalAComponent::Ref pAComponent;
 	
-	deoalComponentTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoalComponentTexture> pTextures;
 	
 	deoalWorld *pParentWorld;
 	deoalModel *pModel;
@@ -76,75 +77,78 @@ private:
 	
 	deoalComponentDebug *pDebug;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoalComponent>::Element pLLSyncWorld;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component peer. */
-	deoalComponent( deAudioOpenAL &audioThread, deComponent &component );
+	/** Create component peer. */
+	deoalComponent(deAudioOpenAL &audioThread, deComponent &component);
 	
-	/** \brief Clean up component peer. */
-	virtual ~deoalComponent();
+	/** Clean up component peer. */
+	~deoalComponent() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
-	/** \brief Component. */
+	/** Component. */
 	inline deComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief Parent world or NULL. */
+	/** Parent world or NULL. */
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalWorld *world );
+	/** Set parent world or NULL. */
+	void SetParentWorld(deoalWorld *world);
 	
-	/** \brief Model or NULL. */
+	/** Model or NULL. */
 	inline deoalModel *GetModel() const{ return pModel; }
 	
-	/** \brief Skin or NULL. */
+	/** Skin or NULL. */
 	inline deoalSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Audio model or NULL. */
+	/** Audio model or NULL. */
 	inline deoalModel *GetAudioModel() const{ return pAudioModel; }
 	
-	/** \brief Audio component. */
-	inline deoalAComponent *GetAComponent() const{ return pAComponent; }
+	/** Audio component. */
+	inline const deoalAComponent::Ref &GetAComponent() const{ return pAComponent; }
 	
 	
 	
-	/** \brief Synchronize. */
+	/** Synchronize. */
 	void Synchronize();
 	
-	/** \brief Mark affects sound and octree dirty. */
+	/** Mark affects sound and octree dirty. */
 	void SetOctreeDirty();
 	
-	/** \brief Developer mode changed. */
+	/** Developer mode changed. */
 	void DevModeChanged();
 	
 	
-	/** \brief Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	/** Textures. */
+	inline const decTUniqueList<deoalComponentTexture> &GetTextures() const{ return pTextures; }
 	
-	/** \brief Texture at index. */
-	deoalComponentTexture &GetTextureAt( int index ) const;
+	/** Number of textures. */
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
+	
+	/** Texture at index. */
+	deoalComponentTexture &GetTextureAt(int index) const;
 	
 	
 	
-	/** \brief Dynamic skin needs sync. */
+	/** Dynamic skin needs sync. */
 	void DynamicSkinRequiresSync();
 	
-	/** \brief Texture dynamic skin needs sync. */
+	/** Texture dynamic skin needs sync. */
 	void TextureDynamicSkinRequiresSync();
 	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
+	/** Drop dynamic skin because it is about to be deleted. */
 	void DropDynamicSkin();
 	/*@}*/
 	
@@ -152,63 +156,63 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
-	virtual void PositionChanged();
+	/** Position changed. */
+	void PositionChanged() override;
 	
-	/** \brief Scaling changed. */
-	virtual void ScalingChanged();
+	/** Scaling changed. */
+	void ScalingChanged() override;
 	
-	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	/** Orientation changed. */
+	void OrientationChanged() override;
 	
-	/** \brief Model object changed. */
-	virtual void ModelChanged();
+	/** Model object changed. */
+	void ModelChanged() override;
 	
-	/** \brief Rig object changed. */
-	virtual void RigChanged();
+	/** Rig object changed. */
+	void RigChanged() override;
 	
-	/** \brief Skin object changed. */
-	virtual void SkinChanged();
+	/** Skin object changed. */
+	void SkinChanged() override;
 	
-	/** \brief Model and skin object changed. */
-	virtual void ModelAndSkinChanged();
+	/** Model and skin object changed. */
+	void ModelAndSkinChanged() override;
 	
-	/** \brief Audio model changed. */
-	virtual void AudioModelChanged();
+	/** Audio model changed. */
+	void AudioModelChanged() override;
 	
-	/** \brief Visitility changed. */
-	virtual void VisibilityChanged();
+	/** Visitility changed. */
+	void VisibilityChanged() override;
 	
-	/** \brief Extends changed. */
-	virtual void ExtendsChanged();
+	/** Extends changed. */
+	void ExtendsChanged() override;
 	
 	/**
-	 * \brief Mesh vertices have been invalidated.
+	 * Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
-	virtual void MeshDirty();
+	void MeshDirty() override;
 	
-	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	/** Layer mask changed. */
+	void LayerMaskChanged() override;
 	
-	/** \brief Parameter or hint changed. */
-	virtual void ParametersChanged();
+	/** Parameter or hint changed. */
+	void ParametersChanged() override;
 	
-	/** \brief Texture changed. */
-	virtual void TextureChanged( int index, deComponentTexture &texture );
+	/** Texture changed. */
+	void TextureChanged(int index, deComponentTexture &texture) override;
 	
-	/** \brief Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	/** Dynamic skin changed. */
+	void DynamicSkinChanged() override;
 	/*@}*/
 	
 	
 	
 	/** \name Linking */
 	/*@{*/
-	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	/** World syncing linked list. */
+	inline decTLinkedList<deoalComponent>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalComponent>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

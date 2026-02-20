@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "reCamera.h"
 #include "reRig.h"
 #include "bone/reRigBone.h"
@@ -35,20 +30,18 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class reCamera
 ///////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-reCamera::reCamera( reRig *rig, deEngine *engine ) : igdeCamera( engine ){
-	if( ! rig ) DETHROW( deeInvalidParam );
+reCamera::reCamera(reRig *rig, deEngine *engine) : igdeCamera(engine){
+	DEASSERT_NOTNULL(rig)
 	
 	pRig = rig;
 	
 	pFreeDistance = 0.0f;
-	pBone = NULL;
 	pDirty = false;
 	pAttachToBone = false;
 }
@@ -61,13 +54,9 @@ reCamera::~reCamera(){
 // Management
 ///////////////
 
-void reCamera::SetBone( reRigBone *bone ){
-	if( bone != pBone ){
-		if( pBone ) pBone->FreeReference();
-		
+void reCamera::SetBone(reRigBone *bone){
+	if(bone != pBone){
 		pBone = bone;
-		
-		if( bone ) bone->AddReference();
 		
 		pDirty = true;
 		
@@ -75,8 +64,8 @@ void reCamera::SetBone( reRigBone *bone ){
 	}
 }
 
-void reCamera::SetFreePosition( const decDVector &freePosition ){
-	if( ! freePosition.IsEqualTo( pFreePosition ) ){
+void reCamera::SetFreePosition(const decDVector &freePosition){
+	if(!freePosition.IsEqualTo(pFreePosition)){
 		pFreePosition = freePosition;
 		pDirty = true;
 		
@@ -84,8 +73,8 @@ void reCamera::SetFreePosition( const decDVector &freePosition ){
 	}
 }
 
-void reCamera::SetFreeOrientation( const decVector &freeOrientation ){
-	if( ! freeOrientation.IsEqualTo( pFreeOrientation ) ){
+void reCamera::SetFreeOrientation(const decVector &freeOrientation){
+	if(!freeOrientation.IsEqualTo(pFreeOrientation)){
 		pFreeOrientation = freeOrientation;
 		pDirty = true;
 		
@@ -93,8 +82,8 @@ void reCamera::SetFreeOrientation( const decVector &freeOrientation ){
 	}
 }
 
-void reCamera::SetFreeDistance( float freeDistance ){
-	if( fabsf( freeDistance - pFreeDistance ) > 1e-5f ){
+void reCamera::SetFreeDistance(float freeDistance){
+	if(fabsf(freeDistance - pFreeDistance) > 1e-5f){
 		pFreeDistance = freeDistance;
 		pDirty = true;
 		
@@ -102,8 +91,8 @@ void reCamera::SetFreeDistance( float freeDistance ){
 	}
 }
 
-void reCamera::SetRelativePosition( const decDVector &relativePosition ){
-	if( ! relativePosition.IsEqualTo( pRelPosition ) ){
+void reCamera::SetRelativePosition(const decDVector &relativePosition){
+	if(!relativePosition.IsEqualTo(pRelPosition)){
 		pRelPosition = relativePosition;
 		pDirty = true;
 		
@@ -111,8 +100,8 @@ void reCamera::SetRelativePosition( const decDVector &relativePosition ){
 	}
 }
 
-void reCamera::SetRelativeOrientation( const decVector &relativeOrientation ){
-	if( ! relativeOrientation.IsEqualTo( pRelOrientation ) ){
+void reCamera::SetRelativeOrientation(const decVector &relativeOrientation){
+	if(!relativeOrientation.IsEqualTo(pRelOrientation)){
 		pRelOrientation = relativeOrientation;
 		pDirty = true;
 		
@@ -120,8 +109,8 @@ void reCamera::SetRelativeOrientation( const decVector &relativeOrientation ){
 	}
 }
 
-void reCamera::SetAttachToBone( bool attachToBone ){
-	if( pAttachToBone != attachToBone ){
+void reCamera::SetAttachToBone(bool attachToBone){
+	if(pAttachToBone != attachToBone){
 		pAttachToBone = attachToBone;
 		pDirty = true;
 		
@@ -130,22 +119,22 @@ void reCamera::SetAttachToBone( bool attachToBone ){
 }
 
 void reCamera::Update(){
-	if( pDirty || pAttachToBone ){
-		if( pAttachToBone ){
-			decDMatrix matrix = decDMatrix::CreateRT( decDVector( pRelOrientation * DEG2RAD ), pRelPosition );
+	if(pDirty || pAttachToBone){
+		if(pAttachToBone){
+			decDMatrix matrix = decDMatrix::CreateRT(decDVector(pRelOrientation * DEG2RAD), pRelPosition);
 			
-			if( pBone ){
-				matrix *= decDMatrix( pBone->GetPoseMatrix() );
+			if(pBone){
+				matrix *= decDMatrix(pBone->GetPoseMatrix());
 			}
 			
-			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles().ToVector() / DEG2RAD );
-			SetDistance( 0.0f );
+			SetPosition(matrix.GetPosition());
+			SetOrientation(matrix.GetEulerAngles().ToVector() * RAD2DEG);
+			SetDistance(0.0f);
 			
 		}else{
-			SetPosition( pFreePosition );
-			SetOrientation( pFreeOrientation );
-			SetDistance( pFreeDistance );
+			SetPosition(pFreePosition);
+			SetOrientation(pFreeOrientation);
+			SetDistance(pFreeDistance);
 		}
 		
 		pDirty = false;
@@ -160,19 +149,16 @@ void reCamera::Reset(){
 	igdeCamera::Reset();
 	
 	pFreeDistance = 5.0f;
-	if( pBone ){
-		pBone->FreeReference();
-		pBone = NULL;
-	}
-	pFreePosition.Set( 0.0, 1.0, 0.0 );
-	pFreeOrientation.Set( 0.0f, 180.0f, 0.0f );
-	pRelPosition.Set( 0.0, 0.0, 0.0 );
-	pRelOrientation.Set( 0.0f, 0.0f, 0.0f );
+	pBone = nullptr;
+	pFreePosition.Set(0.0, 1.0, 0.0);
+	pFreeOrientation.Set(0.0f, 180.0f, 0.0f);
+	pRelPosition.Set(0.0, 0.0, 0.0);
+	pRelOrientation.Set(0.0f, 0.0f, 0.0f);
 	pAttachToBone = false;
 	
-	SetExposure( 1.0f );
-	SetLowestIntensity( 20.0f );
-	SetHighestIntensity( 20.0f );
+	SetExposure(1.0f);
+	SetLowestIntensity(20.0f);
+	SetHighestIntensity(20.0f);
 	
 	pDirty = true;
 	

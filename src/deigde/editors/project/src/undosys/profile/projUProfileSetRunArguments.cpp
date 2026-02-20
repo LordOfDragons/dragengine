@@ -40,24 +40,20 @@
 ////////////////////////////
 
 projUProfileSetRunArguments::projUProfileSetRunArguments(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( profile )
+	DEASSERT_NOTNULL(profile)
 	
-	SetShortInfo( "Profile set run arguments" );
+	SetShortInfo("@Project.Undo.ProfileSetRunArguments");
 	
 	pOldValue = profile->GetRunArguments();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetRunArguments::~projUProfileSetRunArguments(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ projUProfileSetRunArguments::~projUProfileSetRunArguments(){
 ///////////////
 
 void projUProfileSetRunArguments::Undo(){
-	pProfile->SetRunArguments( pOldValue );
+	pProfile->SetRunArguments(pOldValue);
 }
 
 void projUProfileSetRunArguments::Redo(){
-	pProfile->SetRunArguments( pNewValue );
+	pProfile->SetRunArguments(pNewValue);
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalSoundLevelMeter.h"
 #include "deoalASoundLevelMeter.h"
 #include "deoalASoundLevelMeterSpeaker.h"
@@ -49,42 +45,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSoundLevelMeter::deoalSoundLevelMeter( deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter ) :
-pOal( oal ),
-pSoundLevelMeter( soundLevelMeter ),
-pASoundLevelMeter( new deoalASoundLevelMeter( oal.GetAudioThread() ) ),
+deoalSoundLevelMeter::deoalSoundLevelMeter(deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter) :
+pOal(oal),
+pSoundLevelMeter(soundLevelMeter),
+pASoundLevelMeter(deoalASoundLevelMeter::Ref::New(oal.GetAudioThread())),
 
-pParentWorld( NULL ),
+pParentWorld(nullptr),
 
-pDirtyGeometry( true ),
-pDirtyOctreeNode( true ),
-pDirtyLayerMask( true ),
-pDirtyEnabled( true ),
+pDirtyGeometry(true),
+pDirtyOctreeNode(true),
+pDirtyLayerMask(true),
+pDirtyEnabled(true),
 
-pSpeakers( NULL ),
-pSpeakerCount( 0 ),
-pSpeakerSize( 0 ),
-
-pLLSyncWorld( this ){
+pLLSyncWorld(this){
 }
 
-deoalSoundLevelMeter::~deoalSoundLevelMeter(){
-	if( pASoundLevelMeter ){
-		pASoundLevelMeter->FreeReference();
-	}
-	
-	if( pSpeakers ){
-		delete [] pSpeakers;
-	}
-}
+deoalSoundLevelMeter::~deoalSoundLevelMeter() = default;
 
 
 
 // Management
 ///////////////
 
-void deoalSoundLevelMeter::SetParentWorld( deoalWorld *world ){
-	if( world == pParentWorld ){
+void deoalSoundLevelMeter::SetParentWorld(deoalWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
@@ -95,38 +79,12 @@ void deoalSoundLevelMeter::SetParentWorld( deoalWorld *world ){
 
 
 
-const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetSpeakerAt( int index ) const{
-	if( index < 0 || index >= pSpeakerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pSpeakers[ index ];
-}
-
-void deoalSoundLevelMeter::AddSpeaker( deSpeaker *speaker, float volume ){
-	if( pSpeakerCount == pSpeakerSize ){
-		const int newSize = pSpeakerSize + 5;
-		deSoundLevelMeter::cAudibleSpeaker * const newArray =
-			new deSoundLevelMeter::cAudibleSpeaker[ newSize ];
-		
-		if( pSpeakers ){
-			int i;
-			for( i=0; i<pSpeakerSize; i++ ){
-				newArray[ i ] = pSpeakers[ i ];
-			}
-			delete [] pSpeakers;
-		}
-		
-		pSpeakers = newArray;
-		pSpeakerSize = newSize;
-	}
-	
-	pSpeakers[ pSpeakerCount ].SetSpeaker( speaker );
-	pSpeakers[ pSpeakerCount ].SetVolume( volume );
-	pSpeakerCount++;
+void deoalSoundLevelMeter::AddSpeaker(deSpeaker *speaker, float volume){
+	pSpeakers.Add({speaker, volume});
 }
 
 void deoalSoundLevelMeter::RemoveAllSpeakers(){
-	pSpeakerCount = 0;
+	pSpeakers.RemoveAll();
 }
 
 
@@ -136,26 +94,26 @@ void deoalSoundLevelMeter::Synchronize(){
 	
 	pUpdateAudibleSpeakers();
 	
-	if( pDirtyGeometry ){
-		pASoundLevelMeter->SetType( pSoundLevelMeter.GetType() );
-		pASoundLevelMeter->SetGeometry( pSoundLevelMeter.GetPosition(),
-			pSoundLevelMeter.GetOrientation() );
-		pASoundLevelMeter->SetConeAngle( pSoundLevelMeter.GetConeAngle() );
-		pASoundLevelMeter->SetAudibleDistance( pSoundLevelMeter.GetAudibleDistance() );
+	if(pDirtyGeometry){
+		pASoundLevelMeter->SetType(pSoundLevelMeter.GetType());
+		pASoundLevelMeter->SetGeometry(pSoundLevelMeter.GetPosition(),
+			pSoundLevelMeter.GetOrientation());
+		pASoundLevelMeter->SetConeAngle(pSoundLevelMeter.GetConeAngle());
+		pASoundLevelMeter->SetAudibleDistance(pSoundLevelMeter.GetAudibleDistance());
 		pDirtyGeometry = false;
 	}
 	
-	if( pDirtyLayerMask ){
-		pASoundLevelMeter->SetLayerMask( pSoundLevelMeter.GetLayerMask() );
+	if(pDirtyLayerMask){
+		pASoundLevelMeter->SetLayerMask(pSoundLevelMeter.GetLayerMask());
 		pDirtyLayerMask = false;
 	}
 	
-	if( pDirtyEnabled ){
-		pASoundLevelMeter->SetEnabled( pSoundLevelMeter.GetEnabled() );
+	if(pDirtyEnabled){
+		pASoundLevelMeter->SetEnabled(pSoundLevelMeter.GetEnabled());
 		pDirtyEnabled = false;
 	}
 	
-	if( pDirtyOctreeNode ){
+	if(pDirtyOctreeNode){
 		pASoundLevelMeter->UpdateOctreeNode();
 		pDirtyOctreeNode = false;
 	}
@@ -163,8 +121,8 @@ void deoalSoundLevelMeter::Synchronize(){
 	// force synchronization the next time
 	// TODO is this reasonable to do this manual request syncing? sound level meters need to
 	//      be always synchronized if enabled so this seems like an overkill here
-	if( pParentWorld && pSoundLevelMeter.GetEnabled() ){
-		pParentWorld->AddSyncSoundLevelMeter( this );
+	if(pParentWorld && pSoundLevelMeter.GetEnabled()){
+		pParentWorld->AddSyncSoundLevelMeter(this);
 	}
 }
 
@@ -213,7 +171,7 @@ void deoalSoundLevelMeter::LayerMaskChanged(){
 	
 	pRequiresSync();
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->SetDirtyAllMicLayerMask();
 	}
 }
@@ -228,14 +186,11 @@ void deoalSoundLevelMeter::EnabledChanged(){
 
 
 int deoalSoundLevelMeter::GetAudibleSpeakerCount(){
-	return pSpeakerCount;
+	return pSpeakers.GetCount();
 }
 
-const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetAudibleSpeakerAt( int index ){
-	if( index < 0 || index >= pSpeakerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pSpeakers[ index ];
+const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetAudibleSpeakerAt(int index){
+	return pSpeakers[index];
 }
 
 
@@ -244,8 +199,8 @@ const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetAudibleSpeake
 //////////////////////
 
 void deoalSoundLevelMeter::pRequiresSync(){
-	if( ! pLLSyncWorld.GetList() && pParentWorld ){
-		pParentWorld->AddSyncSoundLevelMeter( this );
+	if(!pLLSyncWorld.GetList() && pParentWorld){
+		pParentWorld->AddSyncSoundLevelMeter(this);
 	}
 }
 
@@ -254,52 +209,46 @@ void deoalSoundLevelMeter::pUpdateAudibleSpeakers(){
 	int i, count;
 	
 	pOldSpeakers.RemoveAll();
-	for( i=0; i<pSpeakerCount; i++ ){
-		pOldSpeakers.Add( pSpeakers[ i ].GetSpeaker() );
-	}
+	pSpeakers.Visit([&](deSoundLevelMeter::cAudibleSpeaker &speaker){
+		pOldSpeakers.Add(speaker.GetSpeaker());
+	});
 	
 	// update the audible speaker list. it contains now all audible speakers
 	RemoveAllSpeakers();
 	
 	count = pASoundLevelMeter->GetSpeakerCount();
-	for( i=0; i<count; i++ ){
-		const deoalASoundLevelMeterSpeaker &speaker = pASoundLevelMeter->GetSpeakerAt( i );
-		if( speaker.GetVolume() < 1e-3f ){
+	for(i=0; i<count; i++){
+		const deoalASoundLevelMeterSpeaker &speaker = pASoundLevelMeter->GetSpeakerAt(i);
+		if(speaker.GetVolume() < 1e-3f){
 			continue;
 		}
 		
 		deoalSpeaker * const backlink = speaker.GetSpeaker()->GetBackLink();
-		if( ! backlink ){
+		if(!backlink){
 			continue;
 		}
 		
-		AddSpeaker( &backlink->GetSpeaker(), speaker.GetVolume() );
+		AddSpeaker(&backlink->GetSpeaker(), speaker.GetVolume());
 	}
 	
-	// notify scripting module about leaving speakers
-	count = pOldSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		deSpeaker * const engSpeaker = ( deSpeaker* )pOldSpeakers.GetAt( i );
-		const int index = pIndexOfSpeaker( engSpeaker );
-		if( index == -1 ){
-			pSoundLevelMeter.NotifySpeakerInaudible( engSpeaker );
+		// notify scripting module about leaving speakers
+	pOldSpeakers.Visit([&](deSpeaker *engSpeaker){
+		const int index = pIndexOfSpeaker(engSpeaker);
+		if(index == -1){
+			pSoundLevelMeter.NotifySpeakerInaudible(engSpeaker);
 		}
-	}
+	});
 	
 	// notify scripting module about entering speakers
-	for( i=0; i<pSpeakerCount; i++ ){
-		if( ! pOldSpeakers.Has( pSpeakers[ i ].GetSpeaker() ) ){
-			pSoundLevelMeter.NotifySpeakerAudible( pSpeakers[ i ] );
+	pSpeakers.Visit([&](deSoundLevelMeter::cAudibleSpeaker &speaker){
+		if(!pOldSpeakers.Has(speaker.GetSpeaker())){
+			pSoundLevelMeter.NotifySpeakerAudible(speaker);
 		}
-	}
+	});
 }
 
-int deoalSoundLevelMeter::pIndexOfSpeaker( deSpeaker *speaker ) const{
-	int i;
-	for( i=0; i<pSpeakerCount; i++ ){
-		if( pSpeakers[ i ].GetSpeaker() == speaker ){
-			return i;
-		}
-	}
-	return -1;
+int deoalSoundLevelMeter::pIndexOfSpeaker(deSpeaker *speaker) const{
+	return pSpeakers.IndexOfMatching([&](const deSoundLevelMeter::cAudibleSpeaker &s){
+		return s.GetSpeaker() == speaker;
+	});
 }

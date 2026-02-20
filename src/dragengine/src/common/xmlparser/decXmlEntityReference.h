@@ -33,6 +33,11 @@
  * \brief XML Entity Reference.
  */
 class DE_DLL_EXPORT decXmlEntityReference : public decXmlElement{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<decXmlEntityReference>;
+	
+	
 private:
 	decString pName;
 	
@@ -42,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml entity reference. */
-	decXmlEntityReference( const char *name );
+	decXmlEntityReference(const char *name);
 	
 protected:
 	/** \brief Clean up xml entity refernece. */
-	virtual ~decXmlEntityReference();
+	~decXmlEntityReference() override;
 	/*@}*/
 	
 	
@@ -58,22 +63,22 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToEntityReference() const;
-	virtual decXmlEntityReference *CastToEntityReference();
+	bool CanCastToEntityReference() const override;
+	decXmlEntityReference *CastToEntityReference() override;
 	/*@}*/
 };
 

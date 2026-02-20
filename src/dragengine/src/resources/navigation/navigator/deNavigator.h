@@ -25,14 +25,15 @@
 #ifndef _DENAVIGATOR_H_
 #define _DENAVIGATOR_H_
 
+#include "deNavigatorType.h"
 #include "../space/deNavigationSpace.h"
 #include "../../deResource.h"
+#include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
 
 class deCollider;
 class deBaseAINavigator;
 class deNavigatorManager;
-class deNavigatorType;
 class deNavigatorPath;
 class deWorld;
 
@@ -47,8 +48,7 @@ class deWorld;
 class DE_DLL_EXPORT deNavigator : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNavigator> Ref;
-	
+	using Ref = deTObjectReference<deNavigator>;
 	
 	
 private:
@@ -59,15 +59,12 @@ private:
 	float pDefFixCost;
 	float pDefCostPerMeter;
 	float pBlockingCost;
-	deNavigatorType *pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	decTList<deNavigatorType> pTypes;
 	
 	deBaseAINavigator *pPeerAI;
 	
 	deWorld *pParentWorld;
-	deNavigator *pLLWorldPrev;
-	deNavigator *pLLWorldNext;
+	decTObjectLinkedList<deNavigator>::Element pLLWorld;
 	
 	
 	
@@ -75,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create navigator. */
-	deNavigator( deNavigatorManager *manager );
+	deNavigator(deNavigatorManager *manager);
 	
 protected:
 	/**
@@ -84,7 +81,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deNavigator();
+	~deNavigator() override;
 	/*@}*/
 	
 	
@@ -96,13 +93,13 @@ public:
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	/** \brief Space type to navigate. */
 	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	
 	/** \brief Set space type to navigate. */
-	void SetSpaceType( deNavigationSpace::eSpaceTypes spaceType );
+	void SetSpaceType(deNavigationSpace::eSpaceTypes spaceType);
 	
 	/**
 	 * \brief Maximum distance the start and goal point are allowed to be outside any navigation space.
@@ -117,7 +114,7 @@ public:
 	 * 
 	 * If the start or goal point is outside the range path update returns an empty path.
 	 */
-	void SetMaxOutsideDistance( float maxDistance );
+	void SetMaxOutsideDistance(float maxDistance);
 	
 	
 	
@@ -125,51 +122,47 @@ public:
 	inline float GetDefaultFixCost() const{ return pDefFixCost; }
 	
 	/** \brief Set fix cost to use if no matching type is found. */
-	void SetDefaultFixCost( float cost );
+	void SetDefaultFixCost(float cost);
 	
 	/** \brief Cost per meter to use if no matching type is found. */
 	inline float GetDefaultCostPerMeter() const{ return pDefCostPerMeter; }
 	
 	/** \brief Set cost per meter to use if no matching type is found. */
-	void SetDefaultCostPerMeter( float costPerMeter );
+	void SetDefaultCostPerMeter(float costPerMeter);
 	
 	/** \brief Maximum cost beyond which a node or path is considered impassable. */
 	inline float GetBlockingCost() const{ return pBlockingCost; }
 	
 	/** \brief Set maximum cost beyond which a node or path is considered impassable. */
-	void SetBlockingCost( float cost );
+	void SetBlockingCost(float cost);
 	
 	
 	
-	/** \brief Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	/** \brief Types. */
+	inline const decTList<deNavigatorType> &GetTypes() const{ return pTypes; }
+	
+	/** \brief Count of types. */
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** \brief Type by index. */
-	deNavigatorType *GetTypeAt( int index ) const;
+	deNavigatorType &GetTypeAt(int index);
+	const deNavigatorType &GetTypeAt(int index) const;
 	
 	/** \brief Matching type or NULL if not found. */
-	deNavigatorType *GetTypeWith( int typeValue ) const;
-	
-	/** \brief Index of a type or -1 if not found. */
-	int IndexOfType( deNavigatorType *type ) const;
+	deNavigatorType *GetTypeWith(int typeValue);
+	const deNavigatorType *GetTypeWith(int typeValue) const;
 	
 	/** \brief Index of the type with the given type value or -1 if not found. */
-	int IndexOfTypeWith( int typeValue ) const;
-	
-	/** \brief Type exists. */
-	bool HasType( deNavigatorType *type ) const;
+	int IndexOfTypeWith(int typeValue) const;
 	
 	/** \brief Type with the given type value exists. */
-	bool HasTypeWith( int typeValue ) const;
+	bool HasTypeWith(int typeValue) const;
 	
 	/** \brief Add type if not existing returning the type. */
-	deNavigatorType *AddType( int type );
-	
-	/** \brief Remove type. */
-	void RemoveType( deNavigatorType *type );
+	deNavigatorType &AddType(int type);
 	
 	/** \brief Remove type if existing. */
-	void RemoveTypeWith( int typeValue );
+	void RemoveTypeWith(int typeValue);
 	
 	/** \brief Remove all types. */
 	void RemoveAllTypes();
@@ -188,7 +181,7 @@ public:
 	 * \param[in] start Start position of path.
 	 * \param[in] goal Goal position of path.
 	 */
-	void FindPath( deNavigatorPath &path, const decDVector &start, const decDVector &goal );
+	void FindPath(deNavigatorPath &path, const decDVector &start, const decDVector &goal);
 	/*@}*/
 	
 	
@@ -208,8 +201,8 @@ public:
 	 * \retval false No nearest point found inside \em radius around \em point.
 	 * \retval false There are no matching navigation spaces.
 	 */
-	bool NearestPoint( const decDVector &point, float radius, decDVector &nearestPoint,
-		int &nearestType ) const;
+	bool NearestPoint(const decDVector &point, float radius, decDVector &nearestPoint,
+		int &nearestType) const;
 	
 	/**
 	 * \brief Distance moving from point along direction before crossing navigation space boundaries.
@@ -226,7 +219,7 @@ public:
 	 * \retval false \em origin is not located in the navigation space.
 	 * \retval false No navigation space boundary is hit moving along line.
 	 */
-	bool LineCollide( const decDVector &origin, const decVector &direction, float &distance ) const;
+	bool LineCollide(const decDVector &origin, const decVector &direction, float &distance) const;
 	/*@}*/
 	
 	
@@ -242,8 +235,8 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	bool PathCollideRay( const deNavigatorPath &path, deCollider &collider,
-		int &hitAfterPoint, float &hitDistance ) const;
+	bool PathCollideRay(const deNavigatorPath &path, deCollider &collider,
+		int &hitAfterPoint, float &hitDistance) const;
 	
 	/**
 	 * \brief Test path for collision using ray test inside range.
@@ -259,9 +252,9 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	bool PathCollideRay( const deNavigatorPath &path, deCollider &collider,
+	bool PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 		const decDVector &startPosition, int nextPoint, float maxDistance,
-		int &hitAfterPoint, float &hitDistance ) const;
+		int &hitAfterPoint, float &hitDistance) const;
 	
 	/**
 	 * \brief Test path for collision using a collider moved along the path.
@@ -272,8 +265,8 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	bool PathCollideShape( const deNavigatorPath &path, deCollider &collider,
-		deCollider &agent, int &hitAfterPoint, float &hitDistance ) const;
+	bool PathCollideShape(const deNavigatorPath &path, deCollider &collider,
+		deCollider &agent, int &hitAfterPoint, float &hitDistance) const;
 	
 	/**
 	 * \brief Test path for collision using a collider moved along the path inside range.
@@ -289,9 +282,9 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	bool PathCollideShape( const deNavigatorPath &path, deCollider &collider,
+	bool PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 		deCollider &agent, const decDVector &startPosition, int nextPoint,
-		float maxDistance, int &hitAfterPoint, float &hitDistance ) const;
+		float maxDistance, int &hitAfterPoint, float &hitDistance) const;
 	/*@}*/
 	
 	
@@ -302,7 +295,7 @@ public:
 	inline deBaseAINavigator *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set AI system peer. */
-	void SetPeerAI( deBaseAINavigator *peer );
+	void SetPeerAI(deBaseAINavigator *peer);
 	/*@}*/
 	
 	
@@ -315,17 +308,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous navigator in the parent world linked list. */
-	inline deNavigator *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next navigator in the parent world linked list. */
-	void SetLLWorldPrev( deNavigator *navigator );
-	
-	/** \brief Next navigator in the parent world linked list. */
-	inline deNavigator *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next navigator in the parent world linked list. */
-	void SetLLWorldNext( deNavigator *navigator );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deNavigator>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

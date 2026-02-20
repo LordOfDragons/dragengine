@@ -38,7 +38,7 @@ pObjectClass(objectClass)
 {
 	DEASSERT_NOTNULL(objectClass)
 	
-	SetShortInfo("Object class toggle is attachable behavior");
+	SetShortInfo("@GameDefinition.Undo.OCToggleIsAttachableBehavior");
 }
 
 

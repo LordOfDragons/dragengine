@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "dearComponent.h"
 #include "dearComponentBoneState.h"
 #include "dearComponentVPSState.h"
@@ -44,27 +41,15 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearComponent::dearComponent( deDEAnimator &module, deComponent &component ) :
-pModule( module ),
-pComponent( component ),
-
-pBoneStates( nullptr ),
-pBoneStateCount( 0 ),
-
-pVPSStates( nullptr ),
-pVPSStateCount( 0 )
+dearComponent::dearComponent(deDEAnimator &module, deComponent &component) :
+pModule(module),
+pComponent(component)
 {
 	ModelChanged();
 	RigChanged();
 }
 
 dearComponent::~dearComponent(){
-	if( pVPSStates ){
-		delete [] pVPSStates;
-	}
-	if( pBoneStates ){
-		delete [] pBoneStates;
-	}
 }
 
 
@@ -72,52 +57,33 @@ dearComponent::~dearComponent(){
 // Management
 ///////////////
 
-dearComponentBoneState &dearComponent::GetBoneStateAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pBoneStateCount )
-	
-	return pBoneStates[ index ];
-}
-
-dearComponentVPSState &dearComponent::GetVPSStateAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pVPSStateCount )
-	
-	return pVPSStates[ index ];
-}
-
 void dearComponent::PrepareBones(){
-	int i;
-	
-	for( i=0; i<pBoneStateCount; i++ ){
-		dearComponentBoneState &bone = pBoneStates[ i ];
-		dearComponentBoneState * const parent = bone.GetParent();
+	pBoneStates.Visit([](dearComponentBoneState &state){
+		dearComponentBoneState * const parent = state.GetParent();
 		
-		if( parent ){
-			bone.SetMatrix( decMatrix::CreateWorld( bone.GetPosition(), bone.GetRotation(), bone.GetScale() )
-				.QuickMultiply( bone.GetOriginalMatrix() )
-				.QuickMultiply( parent->GetMatrix() ) );
+		if(parent){
+			state.SetMatrix(decMatrix::CreateWorld(state.GetPosition(), state.GetRotation(), state.GetScale())
+				.QuickMultiply(state.GetOriginalMatrix())
+				.QuickMultiply(parent->GetMatrix()));
 			
 		}else{
-			bone.SetMatrix( decMatrix::CreateWorld( bone.GetPosition(), bone.GetRotation(), bone.GetScale() )
-				.QuickMultiply( bone.GetOriginalMatrix() ) );
+			state.SetMatrix(decMatrix::CreateWorld(state.GetPosition(), state.GetRotation(), state.GetScale())
+				.QuickMultiply(state.GetOriginalMatrix()));
 		}
-	}
+	});
 }
 
 void dearComponent::UpdateFromComponent(){
-	int i;
+	pBoneStates.VisitIndexed([&](int i, dearComponentBoneState &state){
+		const deComponentBone &bone = pComponent.GetBoneAt(i);
+		state.SetPosition(bone.GetPosition());
+		state.SetRotation(bone.GetRotation());
+		state.SetScale(bone.GetScale());
+	});
 	
-	for( i=0; i<pBoneStateCount; i++ ){
-		const deComponentBone &bone = pComponent.GetBoneAt( i );
-		pBoneStates[ i ].SetPosition( bone.GetPosition() );
-		pBoneStates[ i ].SetRotation( bone.GetRotation() );
-		pBoneStates[ i ].SetScale( bone.GetScale() );
-	}
-	
-	for( i=0; i<pVPSStateCount; i++ ){
-		pVPSStates[ i ].SetWeight( pComponent.GetVertexPositionSetWeightAt( i ) );
-	}
+	pVPSStates.VisitIndexed([&](int i, dearComponentVPSState &state){
+		state.SetWeight(pComponent.GetVertexPositionSetWeights()[i]);
+	});
 	
 	pMatrix = pComponent.GetMatrix();
 }
@@ -127,26 +93,22 @@ void dearComponent::UpdateMatrixFromComponent(){
 }
 
 void dearComponent::UpdateComponent(){
-	int i;
+	pBoneStates.VisitIndexed([&](int i, const dearComponentBoneState &state){
+		deComponentBone &bone = pComponent.GetBoneAt(i);
+		bone.SetPosition(state.GetPosition());
+		bone.SetRotation(state.GetRotation());
+		bone.SetScale(state.GetScale());
+	});
 	
-	for( i=0; i<pBoneStateCount; i++ ){
-		deComponentBone &bone = pComponent.GetBoneAt( i );
-		bone.SetPosition( pBoneStates[ i ].GetPosition() );
-		bone.SetRotation( pBoneStates[ i ].GetRotation() );
-		bone.SetScale( pBoneStates[ i ].GetScale() );
-	}
-	
-	for( i=0; i<pVPSStateCount; i++ ){
-		pComponent.SetVertexPositionSetWeightAt( i, pVPSStates[ i ].GetWeight() );
-	}
+	pVPSStates.VisitIndexed([&](int i, const dearComponentVPSState &state){
+		pComponent.SetVertexPositionSetWeightAt(i, state.GetWeight());
+	});
 }
 
 void dearComponent::UpdateComponentPrepareBones(){
-	int i;
-	
-	for( i=0; i<pBoneStateCount; i++ ){
-		pComponent.GetBoneAt( i ).SetMatrix( pBoneStates[ i ].GetMatrix() );
-	}
+	pBoneStates.VisitIndexed([&](int i, const dearComponentBoneState &state){
+		pComponent.GetBoneAt(i).SetMatrix(state.GetMatrix());
+	});
 	
 	pComponent.ValidateBones();
 }
@@ -154,46 +116,28 @@ void dearComponent::UpdateComponentPrepareBones(){
 
 
 void dearComponent::ModelChanged(){
-	const int vpsCount = pComponent.GetVertexPositionSetCount();
-	if( vpsCount == pVPSStateCount ){
+	const int vpsCount = pComponent.GetVertexPositionSetWeights().GetCount();
+	if(vpsCount == pVPSStates.GetCount()){
 		return;
 	}
 	
-	if( pVPSStates ){
-		delete [] pVPSStates;
-		pVPSStates = nullptr;
-		pVPSStateCount = 0;
-	}
-	
-	if( vpsCount > 0 ){
-		pVPSStates = new dearComponentVPSState[ vpsCount ];
-		pVPSStateCount = vpsCount;
-	}
+	pVPSStates.SetAll(vpsCount, {});
 }
 
 void dearComponent::RigChanged(){
-	const int boneCount = pComponent.GetBoneCount();
-	if( boneCount == pBoneStateCount ){
+	const int boneCount = pComponent.GetBones().GetCount();
+	if(boneCount == pBoneStates.GetCount()){
 		return;
 	}
 	
-	if( pBoneStates ){
-		delete [] pBoneStates;
-		pBoneStates = nullptr;
-		pBoneStateCount = 0;
-	}
+	pBoneStates.SetAll(boneCount, {});
 	
-	if( boneCount > 0 ){
-		pBoneStates = new dearComponentBoneState[ boneCount ];
-		pBoneStateCount = boneCount;
-		
-		int i;
-		for( i=0; i<boneCount; i++ ){
-			const deComponentBone &bone = pComponent.GetBoneAt( i );
-			if( bone.GetParentBone() != -1 ){
-				pBoneStates[ i ].SetParent( pBoneStates + bone.GetParentBone() );
-			}
-			pBoneStates[ i ].SetOriginalMatrix( bone.GetOriginalMatrix() );
+	int i;
+	for(i=0; i<boneCount; i++){
+		const deComponentBone &bone = pComponent.GetBoneAt(i);
+		if(bone.GetParentBone() != -1){
+			pBoneStates[i].SetParent(&pBoneStates[bone.GetParentBone()]);
 		}
+		pBoneStates[i].SetOriginalMatrix(bone.GetOriginalMatrix());
 	}
 }

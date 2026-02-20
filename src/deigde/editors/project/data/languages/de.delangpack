@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='utf-8'?>
+<languagePack>
+	<identifier>de</identifier>
+	<name>Deutsch</name>
+	<description>Deutsch</description>
+	
+	<!-- Window Main -->
+	<translation name="Project.WindowMain.Tab.Profiles">Profil</translation>
+	<translation name="Project.WindowMain.Tab.TestRun">Testlauf</translation>
+	<translation name="Project.WindowMain.Tab.UndoHistory">Rückgängig</translation>
+	
+	<!-- Menu items -->
+	<translation name="Project.Menu.Project">Projekt</translation>
+	<translation name="Project.Menu.Edit">Bearbeiten</translation>
+	<translation name="Project.Menu.Profile">Profil</translation>
+	
+	<!-- Actions -->
+	<translation name="Project.Action.Save">Speichern</translation>
+	<translation name="Project.Action.Save.Description">Projekt speichern</translation>
+	<translation name="Project.Action.Cut">Ausschneiden</translation>
+	<translation name="Project.Action.Cut.Description">Ausgewählte Objekte ausschneiden</translation>
+	<translation name="Project.Action.Copy">Kopieren</translation>
+	<translation name="Project.Action.Copy.Description">Ausgewählte Objekte kopieren</translation>
+	<translation name="Project.Action.Paste">Einfügen</translation>
+	<translation name="Project.Action.Paste.Description">Objekte einfügen</translation>
+	<translation name="Project.Action.ProfileAdd">Hinzufügen...</translation>
+	<translation name="Project.Action.ProfileAdd.Description">Profil hinzufügen</translation>
+	<translation name="Project.Action.ProfileRemove">Entfernen</translation>
+	<translation name="Project.Action.ProfileRemove.Description">Ausgewähltes Profil entfernen</translation>
+	<translation name="Project.Action.ProfileDuplicate">Duplizieren</translation>
+	<translation name="Project.Action.ProfileDuplicate.Description">Profil duplizieren</translation>
+	<translation name="Project.Action.ProfileDistribute">DELGA erstellen...</translation>
+	<translation name="Project.Action.ProfileDistribute.Description">Erstellen Sie eine DELGA-Datei unter Verwendung des ausgewählten Profils.</translation>
+	<translation name="Project.Action.ProfileTestRun">Testlauf...</translation>
+	<translation name="Project.Action.ProfileTestRun.Description">Testlauf mit ausgewähltem Profil</translation>
+	<translation name="Project.Action.ShowDelga">Zeige DELGA</translation>
+	<translation name="Project.Action.ShowDelga.Description">Öffnet das DELGA-Verzeichnis im Dateimanager</translation>
+	<translation name="Project.Action.ShowContent">Zeige Inhalt</translation>
+	<translation name="Project.Action.ShowContent.Description">Öffnet das Projektverzeichnis im Dateimanager</translation>
+	<translation name="Project.Action.ShowConfig">Zeige Konfiguration</translation>
+	<translation name="Project.Action.ShowConfig.Description">Öffnet das Verzeichnis mit den Laufzeitkonfigurationen im Dateimanager</translation>
+	<translation name="Project.Action.ShowOverlay">Zeige Überlagerung</translation>
+	<translation name="Project.Action.ShowOverlay.Description">Öffnet das Verzeichnis mit den Laufzeit-Überlagerungen im Dateimanager</translation>
+	<translation name="Project.Action.ShowCapture">Zeige Ausgabe</translation>
+	<translation name="Project.Action.ShowCapture.Description">Öffnet das Verzeichnis mit den Laufzeit-Ausgaben im Dateimanager (z.B. Bildschirmfotos, Fehlersuche)</translation>
+	<translation name="Project.Action.ShowLogs">Zeige Protokolle</translation>
+	<translation name="Project.Action.ShowLogs.Description">Öffnet das Verzeichnis mit den Laufzeitprotokollen im Dateimanager</translation>
+	
+	<!-- Panel Profiles -->
+	<translation name="Project.PanelProfiles.Label.Profiles">Profil</translation>
+	<translation name="Project.PanelProfiles.Group.Content">Inhalt:</translation>
+	<translation name="Project.PanelProfiles.Group.TestRun">Testlauf:</translation>
+	<translation name="Project.PanelProfiles.Group.Distribution">Verteilen:</translation>
+	<translation name="Project.PanelProfiles.Field.Name">Name:</translation>
+	<translation name="Project.PanelProfiles.Field.Name.Description">Profilname.</translation>
+	<translation name="Project.PanelProfiles.Field.Description">Beschreibung:</translation>
+	<translation name="Project.PanelProfiles.Field.Description.Description">Beschreibung des Profils.</translation>
+	<translation name="Project.PanelProfiles.Group.GameParameters">Spielparameter:</translation>
+	<translation name="Project.PanelProfiles.Field.ScriptDirectory">Skriptverzeichnis:</translation>
+	<translation name="Project.PanelProfiles.Field.ScriptDirectory.Description">Verzeichnis im virtuellen Dateisystem, in dem sich die Spielskripte befinden.</translation>
+	<translation name="Project.PanelProfiles.Field.GameObject">Spielobjekt:</translation>
+	<translation name="Project.PanelProfiles.Field.GameObject.Description">Spielobjekt, das das Skriptmodul als Einstiegspunkt zum Ausführen des Spiels verwendet.</translation>
+	<translation name="Project.PanelProfiles.Field.PathConfig">Konfigurationspfad:</translation>
+	<translation name="Project.PanelProfiles.Field.PathConfig.Description">Verzeichnis im virtuellen Dateisystem, in dem das Spiel Konfigurationsdateien speichert.</translation>
+	<translation name="Project.PanelProfiles.Field.PathCapture">Pfad erfassen:</translation>
+	<translation name="Project.PanelProfiles.Field.PathCapture.Description">Verzeichnis im virtuellen Dateisystem, in dem das Spiel erfasste Dateien speichert.</translation>
+	<translation name="Project.PanelProfiles.Field.Identifier">Kennung:</translation>
+	<translation name="Project.PanelProfiles.Field.Identifier.Description">Eindeutige Kennung des Spiels (UUID), die von Startern verwendet wird. Eine Änderung dieser Kennung kann Probleme verursachen.</translation>
+	<translation name="Project.PanelProfiles.Field.AliasIdentifier">Alias-Kennung:</translation>
+	<translation name="Project.PanelProfiles.Field.AliasIdentifier.Description">Alias-Kennung des Spiels (lesbar), die von Startern verwendet wird, um das Spiel einfacher zu referenzieren.</translation>
+	<translation name="Project.PanelProfiles.Field.Title">Titel:</translation>
+	<translation name="Project.PanelProfiles.Field.Title.Description">Titel, der für das Spiel in Startern angezeigt werden soll.</translation>
+	<translation name="Project.PanelProfiles.Field.GameDescription">Beschreibung:</translation>
+	<translation name="Project.PanelProfiles.Field.GameDescription.Description">Beschreibung, die von Startern für das Spiel angezeigt werden soll.</translation>
+	<translation name="Project.PanelProfiles.Field.Creator">Autor:</translation>
+	<translation name="Project.PanelProfiles.Field.Creator.Description">Autor des Spiels.</translation>
+	<translation name="Project.PanelProfiles.Field.Website">Webseite:</translation>
+	<translation name="Project.PanelProfiles.Field.Website.Description">Webseite (oder ähnliches) des Projekts oder des Autors.</translation>
+	<translation name="Project.PanelProfiles.Field.WindowSize">Fenstergrösse:</translation>
+	<translation name="Project.PanelProfiles.Field.WindowSize.Description">Gewünschte Fenstergrösse oder 0 für Vollbildmodus.</translation>
+	<translation name="Project.PanelProfiles.Group.ProcessingParameters">Verarbeitungsparameter:</translation>
+	<translation name="Project.PanelProfiles.Group.Icons">Icon:</translation>
+	<translation name="Project.PanelProfiles.Field.IconPath">Pfad:</translation>
+	<translation name="Project.PanelProfiles.Field.IconPath.Description">Eine Reihe von Icons unterschiedlicher Grösse, die das Projekt darstellen.</translation>
+	<translation name="Project.PanelProfiles.Action.AddIcon.Description">Icon hinzufügen</translation>
+	<translation name="Project.PanelProfiles.Action.RemoveIcon.Description">Ausgewähltes Icon entfernen</translation>
+	<translation name="Project.PanelProfiles.Group.ExcludePatterns">Ausschlussmuster:</translation>
+	<translation name="Project.PanelProfiles.Field.ExcludePattern">Dateimuster:</translation>
+	<translation name="Project.PanelProfiles.Field.ExcludePattern.Description">Eine Reihe von Dateimuster, die vom Distributionsprozess ausgeschlossen werden sollen.</translation>
+	<translation name="Project.PanelProfiles.Action.AddExcludePattern.Description">Dateimuster hinzufügen</translation>
+	<translation name="Project.PanelProfiles.Action.RemoveExcludePattern.Description">Ausgewähltes Dateimuster entfernen</translation>
+	<translation name="Project.PanelProfiles.Group.RequiredExtensions">Dateierweiterungen:</translation>
+	<translation name="Project.PanelProfiles.Field.RequiredExtension">Dateierweiterung:</translation>
+	<translation name="Project.PanelProfiles.Field.RequiredExtension.Description">Liste von Dateierweiterungen (z. B. .webp), die für das Projekt erforderlich sind</translation>
+	<translation name="Project.PanelProfiles.Action.AddRequiredExtension.Description">Dateierweiterung hinzufügen</translation>
+	<translation name="Project.PanelProfiles.Action.RemoveRequiredExtension.Description">Ausgewählte Dateierweiterung entfernen</translation>
+	<translation name="Project.PanelProfiles.Group.DelgaParameters">DELGA-Parameter:</translation>
+	<translation name="Project.PanelProfiles.Field.DelgaFile">DELGA-Datei:</translation>
+	<translation name="Project.PanelProfiles.Field.DelgaFile.Description">Verzeichnis im virtuellen Dateisystem, in dem die DELGA-Datei abgelegt werden soll.</translation>
+	<translation name="Project.PanelProfiles.Field.Arguments">Argumente:</translation>
+	<translation name="Project.PanelProfiles.Field.Arguments.Description">Bei der Testausführung zu verwendende Argumente (Kommandozeilenargumente)</translation>
+	<translation name="Project.PanelProfiles.Action.GenerateIdentifier">Kennung generieren</translation>
+	<translation name="Project.PanelProfiles.Action.GenerateIdentifier.Description">Kennung generieren</translation>
+	<translation name="Project.PanelProfiles.Action.GenerateIdentifier.Confirm">Das Generieren einer neuen Kennung kann Probleme verursachen. Möchten Sie wirklich eine neue Kennung generieren?</translation>
+	<translation name="Project.PanelProfiles.Dialog.RenameProfile">Profil umbenennen</translation>
+	<translation name="Project.PanelProfiles.Dialog.RenameProfile.Error">Ein Profil mit diesem Namen ist bereits vorhanden.</translation>
+	<translation name="Project.PanelProfiles.Dialog.InvalidInput">Ungültige Eingabe</translation>
+	<translation name="Project.PanelProfiles.Dialog.InvalidInput.Identifier">Die Kennung muss eine gültige UUID sein im Format 8-4-4-4-6 Gruppen von hexadezimal codierten Werten.</translation>
+	<translation name="Project.PanelProfiles.Dialog.AddProfile">Profil hinzufügen</translation>
+	<translation name="Project.PanelProfiles.Dialog.AddProfile.Name">Name:</translation>
+	<translation name="Project.PanelProfiles.Dialog.AddProfile.Error">Ein Profil mit diesem Namen ist bereits vorhanden.</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile">Profil duplizieren</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile.Name">Name:</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile.Error">Ein Profil mit diesem Namen ist bereits vorhanden.</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile.NameCopy">{0} Kopieren</translation>
+	<translation name="Project.PanelProfiles.Dialog.Distribute.RequestSave">Es sind ungespeicherte Änderungen vorhanden. Es wird empfohlen, diese vor dem Fortfahren zu speichern.</translation>
+	
+	<!-- Panel Test Run -->
+	<translation name="Project.PanelTestRun.Action.Start">Start</translation>
+	<translation name="Project.PanelTestRun.Action.Start.Description">Projekt mit ausgewähltem Profil starten</translation>
+	<translation name="Project.PanelTestRun.Action.Stop">Stopp</translation>
+	<translation name="Project.PanelTestRun.Action.Stop.Description">Testlauf des Projekts beenden</translation>
+	<translation name="Project.PanelTestRun.Action.Kill">Stopp erzwingen</translation>
+	<translation name="Project.PanelTestRun.Action.Kill.Description">Beenden des Testlaufs des Projekts erzwingen</translation>
+	<translation name="Project.PanelTestRun.Label.Profile">Profil:</translation>
+	<translation name="Project.PanelTestRun.Field.Profile.Description">Auszuführendes Profil</translation>
+	<translation name="Project.PanelTestRun.Label.LaunchProfile">Startprofil:</translation>
+	<translation name="Project.PanelTestRun.Field.LaunchProfile.Description">Für den Test zu verwendendes Profil</translation>
+	<translation name="Project.PanelTestRun.Field.LaunchProfile.DefaultItem">&lt; IGDE Standard &gt;</translation>
+	<translation name="Project.PanelTestRun.Group.RemoteLaunching">Fernstart:</translation>
+	<translation name="Project.PanelTestRun.Field.Address">Adresse:</translation>
+	<translation name="Project.PanelTestRun.Field.Address.Description">IP-Adresse, die auf Verbindungsanfragen überwacht werden soll</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStartListen">Verbindung erlauben</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStartListen.Description">Warte auf Verbindungsanfragen von Fernklienten</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStopListen">Verbindungen schliessen</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStopListen.Description">Beendet bestehende Verbindunen und stoppt warten auf Verbindungsanfragen</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteSynchronizeAll">Alle synchronisieren</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteSynchronizeAll.Description">Alle Fernklienten synchronisieren</translation>
+	<translation name="Project.PanelTestRun.Group.LogsDebug">Protokolle/Diagnose:</translation>
+	<translation name="Project.PanelTestRun.Tab.Logs">Protokolle</translation>
+	<translation name="Project.PanelTestRun.Dialog.StartTestRunning.RequestSave">Es sind ungespeicherte Änderungen vorhanden. Um den Testlauf zu starten, wird empfohlen, diese zu speichern.</translation>
+	
+	<!-- Dialog Distribute -->
+	<translation name="Project.DialogDistribute.Title">Verteilen</translation>
+	<translation name="Project.DialogDistribute.Group.Delga">DELGA:</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaFile">DELGA-Datei:</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaFile.Description">DELGA-Datei wird erstellt.</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaSize">DELGA-Grösse:</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaSize.Description">Grösse der DELGA-Datei.</translation>
+	<translation name="Project.DialogDistribute.Field.Files">Dateien:</translation>
+	<translation name="Project.DialogDistribute.Field.Files.Description">Anzahl der verarbeiteten Dateien.</translation>
+	<translation name="Project.DialogDistribute.Field.Directories">Verzeichnisse:</translation>
+	<translation name="Project.DialogDistribute.Field.Directories.Description">Anzahl der verarbeiteten Verzeichnisse.</translation>
+	<translation name="Project.DialogDistribute.Group.Logs">Protokolle:</translation>
+	<translation name="Project.DialogDistribute.Field.Logs.Description">Erstellen von Protokollen.</translation>
+	<translation name="Project.DialogDistribute.Action.ShowInFileManager">Zeigen</translation>
+	<translation name="Project.DialogDistribute.Action.ShowInFileManager.Description">DELGA-Datei im Dateimanager anzeigen</translation>
+	<translation name="Project.DialogDistribute.Format.DelgaSize">{0} ({1} Bytes)</translation>
+	
+	<!-- Undo operations -->
+	<translation name="Project.Undo.ProfileAdd">Profil hinzufügen</translation>
+	<translation name="Project.Undo.ProfileRemove">Profil entfernen</translation>
+	<translation name="Project.Undo.ProfileSetName">Profil: Name festlegen</translation>
+	<translation name="Project.Undo.ProfileSetDescription">Profil: Beschreibung festlegen</translation>
+	<translation name="Project.Undo.ProfileSetScriptDirectory">Profil: Skriptverzeichnis festlegen</translation>
+	<translation name="Project.Undo.ProfileSetGameObject">Profil: Spielobjekt festlegen</translation>
+	<translation name="Project.Undo.ProfileSetPathConfig">Profil: Konfigurationspfad festlegen</translation>
+	<translation name="Project.Undo.ProfileSetPathCapture">Profil: Ausgabeverzeichnis festlegen</translation>
+	<translation name="Project.Undo.ProfileSetIdentifier">Profil: Kennung festlegen</translation>
+	<translation name="Project.Undo.ProfileSetAliasIdentifier">Profil: Alias-Kennung festlegen</translation>
+	<translation name="Project.Undo.ProfileSetTitle">Profil: Titel festlegen</translation>
+	<translation name="Project.Undo.ProfileSetGameDescription">Profil: Spielbeschreibung festlegen</translation>
+	<translation name="Project.Undo.ProfileSetCreator">Profil: Autor festlegen</translation>
+	<translation name="Project.Undo.ProfileSetWebsite">Profil: Webseite festlegen</translation>
+	<translation name="Project.Undo.ProfileSetWindowSize">Profil: Fenstergrösse festlegen</translation>
+	<translation name="Project.Undo.ProfileSetDelgaPath">Profil: Delga-Pfad festlegen</translation>
+	<translation name="Project.Undo.ProfileSetRunArguments">Profil: Ausführungsargumente festlegen</translation>
+	<translation name="Project.Undo.ProfileSetIcons">Profil: Icons festlegen</translation>
+	<translation name="Project.Undo.ProfileSetExcludePatterns">Profil: Ausschlussmuster festlegen</translation>
+	<translation name="Project.Undo.ProfileSetRequiredExtensions">Profil: Erforderliche Erweiterungen festlegen</translation>
+	<translation name="Project.Undo.ProjectSetScriptDirectory">Projekt: Skriptverzeichnis festlegen</translation>
+	<translation name="Project.Undo.ProjectSetGameObject">Projekt: Spielobjekt festlegen</translation>
+	<translation name="Project.Undo.ProjectSetPathConfig">Projekt: Konfigurationspfad festlegen</translation>
+	<translation name="Project.Undo.ProjectSetPathCapture">Projekt: Ausgabeverzeichnis festlegen</translation>
+	
+	<!-- Dialog Distribute -->
+	<translation name="Project.DialogDistribute.Button.Close">Schliessen</translation>
+	
+	<!-- Panel Profiles -->
+	<translation name="Project.PanelProfiles.Action.IdentifierMenu.Description">Kennungsmenü</translation>
+	
+	<!-- Panel Remote Client -->
+	<translation name="Project.PanelRemoteClient.Action.Disconnect">Trennen</translation>
+	<translation name="Project.PanelRemoteClient.Action.Disconnect.Description">Verbindung zu Fernklient beenden</translation>
+	<translation name="Project.PanelRemoteClient.Action.Synchronize">Synchronisieren</translation>
+	<translation name="Project.PanelRemoteClient.Action.Synchronize.Description">Synchronisiere profilspezifische Projektdaten mit dem Fernklient</translation>
+	<translation name="Project.PanelRemoteClient.Action.Start">Start</translation>
+	<translation name="Project.PanelRemoteClient.Action.Start.Description">Projekt mit ausgewähltem Profil testen</translation>
+	<translation name="Project.PanelRemoteClient.Action.Stop">Beenden</translation>
+	<translation name="Project.PanelRemoteClient.Action.Stop.Description">Projekt "Testlauf" beenden</translation>
+	<translation name="Project.PanelRemoteClient.Action.Kill">Stopp erzwingen</translation>
+	<translation name="Project.PanelRemoteClient.Action.Kill.Description">Beenden des Testlauf-Projekts erzwingen</translation>
+	<translation name="Project.PanelRemoteClient.GroupBox.Client">Fernklient:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Name">Name:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Name.ToolTip">Name des Fernklienten</translation>
+	<translation name="Project.PanelRemoteClient.Client.Address">Adresse:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Address.ToolTip">IP-Adresse des verbundenen Fernklienten</translation>
+	<translation name="Project.PanelRemoteClient.GroupBox.Synchronize">Synchronisieren:</translation>
+	<translation name="Project.PanelRemoteClient.Synchronize.State.ToolTip">Status synchronisieren</translation>
+	<translation name="Project.PanelRemoteClient.GroupBox.Launching">Starten:</translation>
+	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile">Startprofil:</translation>
+	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile.ToolTip">Profil zum Testen verwenden.</translation>
+	<translation name="Project.PanelRemoteClient.Tab.Logs">Protokolle</translation>
+	<translation name="Project.PanelRemoteClient.Dialog.StartTestRunning.Title">Testlauf starten</translation>
+	<translation name="Project.PanelRemoteClient.Dialog.StartTestRunning.Message">Es sind ungespeicherte Änderungen vorhanden. Um den Testlauf zu starten, wird empfohlen, diese zu speichern.</translation>
+	
+	<!-- Dialog Distribute Messages -->
+	
+	<!-- Window Main Messages -->
+	<translation name="Project.WindowMain.Default.ProfileName">Profil</translation>
+	<translation name="Project.WindowMain.Error.UnknownArgument">Unbekanntes Argument '{0}'</translation>
+	<translation name="Project.WindowMain.Error.UnknownProfile">Unbekanntes Profil '{0}'</translation>
+	<translation name="Project.WindowMain.Error.MissingArgumentProfile">Fehlendes Argument: Profil</translation>
+	<translation name="Project.WindowMain.Error.DistributeFailed">Verteilen fehlgeschlagen</translation>
+	<translation name="Project.WindowMain.Syntax1">   Erstelt eine DELGA-Datei (*.delga) für das Profil im Spielprojekt.</translation>
+	<translation name="Project.WindowMain.Syntax2">   Absoluter Pfad zur DELGA-Datei (*.delga).</translation>
+	<translation name="Project.WindowMain.Syntax3">   Listet alle Profile im Spielprojekt auf. Listet jeden Profilnamen in einer neuen Zeile auf.</translation>
+</languagePack>

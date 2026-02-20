@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetRotation::gdeUOCComponentSetRotation( gdeObjectClass *objectClass,
-gdeOCComponent *component, const decVector &newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetRotation::gdeUOCComponentSetRotation(gdeObjectClass *objectClass,
+gdeOCComponent *component, const decVector &newValue) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set orientation" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetRotation");
 	
 	pOldValue = component->GetRotation();
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetRotation::~gdeUOCComponentSetRotation(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCComponentSetRotation::~gdeUOCComponentSetRotation(){
 ///////////////
 
 void gdeUOCComponentSetRotation::Undo(){
-	pComponent->SetRotation( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetRotation(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetRotation::Redo(){
-	pComponent->SetRotation( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetRotation(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

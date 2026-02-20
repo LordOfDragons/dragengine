@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCNavigationSpace;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class navspace set position.
  */
 class gdeUOCNavSpaceSetPosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetPosition>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetPosition( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, const decVector &newValue );
+	gdeUOCNavSpaceSetPosition(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavSpaceSetPosition();
+	~gdeUOCNavSpaceSetPosition() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

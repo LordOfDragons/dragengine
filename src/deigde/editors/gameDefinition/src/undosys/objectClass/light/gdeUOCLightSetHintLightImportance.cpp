@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintLightImportance::gdeUOCLightSetHintLightImportance( gdeObjectClass *objectClass,
-gdeOCLight *light, int newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetHintLightImportance::gdeUOCLightSetHintLightImportance(gdeObjectClass *objectClass,
+gdeOCLight *light, int newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set hint light importance" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetHintLightImportance");
 	
 	pOldValue = light->GetHintLightImportance();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetHintLightImportance::~gdeUOCLightSetHintLightImportance(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetHintLightImportance::~gdeUOCLightSetHintLightImportance(){
 ///////////////
 
 void gdeUOCLightSetHintLightImportance::Undo(){
-	pLight->SetHintLightImportance( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintLightImportance(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetHintLightImportance::Redo(){
-	pLight->SetHintLightImportance( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintLightImportance(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

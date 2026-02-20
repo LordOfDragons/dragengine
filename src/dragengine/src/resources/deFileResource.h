@@ -28,8 +28,8 @@
 #include "deResource.h"
 #include "../common/string/decString.h"
 #include "../common/utils/decDateTime.h"
+#include "../filesystem/deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 class deFileResourceManager;
 
 
@@ -43,7 +43,7 @@ class deFileResourceManager;
  */
 class DE_DLL_EXPORT deFileResource : public deResource{
 private:
-	deVirtualFileSystem *pVirtualFileSystem;
+	deVirtualFileSystem::Ref pVirtualFileSystem;
 	decString pFilename;
 	TIME_SYSTEM pModificationTime;
 	bool pAsynchron;
@@ -52,11 +52,15 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deFileResource>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file resource. */
-	deFileResource( deFileResourceManager *resourceManager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deFileResource(deFileResourceManager *resourceManager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -65,7 +69,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deFileResource();
+	~deFileResource() override;
 	/*@}*/
 	
 	
@@ -74,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system or NULL if build from memory. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVirtualFileSystem; }
+	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVirtualFileSystem; }
 	
 	/** \brief Filename or empty string if build from memory. */
 	inline const decString &GetFilename() const{ return pFilename; }
@@ -86,13 +90,13 @@ public:
 	 * \brief Set modification time used to detect resources changing on disk while loaded.
 	 * \warning Internal Use Only. Do not call!
 	 */
-	void SetModificationTime( TIME_SYSTEM modificationTime );
+	void SetModificationTime(TIME_SYSTEM modificationTime);
 	
 	/** \brief Resource is asynchron. */
 	inline bool GetAsynchron() const{ return pAsynchron; }
 	
 	/** \brief Set if resource is asynchron. */
-	void SetAsynchron( bool asynchron );
+	void SetAsynchron(bool asynchron);
 	/*@}*/
 	
 	

@@ -41,33 +41,24 @@
 ////////////////////////////
 
 gdeUOCForceFieldSetFluctuationDirection::gdeUOCForceFieldSetFluctuationDirection(
-gdeObjectClass *objectClass, gdeOCForceField *forceField, float newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeObjectClass *objectClass, gdeOCForceField *forceField, float newValue) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set fluctuation direction" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetFluctuationDirection");
 	
 	pOldValue = forceField->GetFluctuationDirection();
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetFluctuationDirection::~gdeUOCForceFieldSetFluctuationDirection(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetFluctuationDirection::~gdeUOCForceFieldSetFluctuationDirectio
 ///////////////
 
 void gdeUOCForceFieldSetFluctuationDirection::Undo(){
-	pForceField->SetFluctuationDirection( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetFluctuationDirection(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetFluctuationDirection::Redo(){
-	pForceField->SetFluctuationDirection( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetFluctuationDirection(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

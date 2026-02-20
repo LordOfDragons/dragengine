@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCLight;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class light set hint shadow importance.
  */
 class gdeUOCLightSetHintShadowImportance : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCLightSetHintShadowImportance>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	int pOldValue;
 	int pNewValue;
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetHintShadowImportance( gdeObjectClass *objectClass, gdeOCLight *light, int newValue );
+	gdeUOCLightSetHintShadowImportance(gdeObjectClass *objectClass, gdeOCLight *light, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCLightSetHintShadowImportance();
+	~gdeUOCLightSetHintShadowImportance() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 
@@ -38,8 +39,10 @@
 class DE_DLL_EXPORT delEMParameter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEMParameter> Ref;
+	using Ref = deTObjectReference<delEMParameter>;
 	
+	/** \brief List type. */
+	using List = decTObjectOrderedSet<delEMParameter>;
 	
 	
 private:
@@ -53,13 +56,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info );
+	delEMParameter(int index, const deModuleParameter &info);
 	
 	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info, const char *value );
+	delEMParameter(int index, const deModuleParameter &info, const char *value);
 	
+protected:
 	/** \brief Clean up engine module parameter. */
-	virtual ~delEMParameter();
+	~delEMParameter() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -76,7 +82,7 @@ public:
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 };
 

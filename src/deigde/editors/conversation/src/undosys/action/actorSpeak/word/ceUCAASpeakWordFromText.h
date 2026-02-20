@@ -25,12 +25,12 @@
 #ifndef _CEUCAASPEAKWORDFROMTEXT_H_
 #define _CEUCAASPEAKWORDFROMTEXT_H_
 
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 class decUnicodeString;
 
 
@@ -42,32 +42,35 @@ class decUnicodeString;
  * after it has been created.
  */
 class ceUCAASpeakWordFromText : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakWordFromText>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pOldWords;
-	ceStripList pNewWords;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::List pOldWords, pNewWords;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakWordFromText( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakWordFromText();
+	~ceUCAASpeakWordFromText() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set words list from text using 0.1 as length for each letter in the word. */
-	void SetWordsFromText( const decUnicodeString &text, float letterDuration );
+	void SetWordsFromText(const decUnicodeString &text, float letterDuration);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

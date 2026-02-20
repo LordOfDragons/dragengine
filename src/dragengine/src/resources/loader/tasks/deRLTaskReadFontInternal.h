@@ -26,10 +26,10 @@
 #define _DERLTASKREADFONTINTERNAL_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../font/deFontReference.h"
+#include "deRLTaskReadFontInternal2.h"
+#include "../../font/deFont.h"
 
 class deRLTaskReadFont;
-class deRLTaskReadFontInternal2;
 
 
 /**
@@ -38,13 +38,18 @@ class deRLTaskReadFontInternal2;
  * \warning For internal use only.
  */
 class DE_DLL_EXPORT deRLTaskReadFontInternal : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadFontInternal>;
+	
+	
 private:
-	deFontReference pFont;
+	deFont::Ref pFont;
 	bool pSucceeded;
 	bool pAlreadyLoaded;
 	
 	deRLTaskReadFont *pParentTask;
-	deRLTaskReadFontInternal2 *pInternalTask;
+	deRLTaskReadFontInternal2::Ref pInternalTask;
 	
 	
 	
@@ -52,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadFontInternal( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deRLTaskReadFont *parentTask );
+	deRLTaskReadFontInternal(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deRLTaskReadFont *parentTask);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadFontInternal();
+	~deRLTaskReadFontInternal() override;
 	/*@}*/
 	
 	
@@ -64,19 +69,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Font has been already loaded. */
 	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
 	
 	/** \brief Second task or NULL. */
-	inline deRLTaskReadFontInternal2 *GetInternalTask() const{ return pInternalTask; }
+	inline const deRLTaskReadFontInternal2::Ref &GetInternalTask() const{ return pInternalTask; }
 	/*@}*/
 	
 	
@@ -84,7 +89,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

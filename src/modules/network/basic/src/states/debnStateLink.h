@@ -25,6 +25,9 @@
 #ifndef _DEBNSTATELINK_H_
 #define _DEBNSTATELINK_H_
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class debnState;
 class debnConnection;
 
@@ -34,6 +37,10 @@ class debnConnection;
  * \brief State link.
  */
 class debnStateLink{
+public:
+	/** State link list type. */
+	using List = decTOrderedSet<debnStateLink*>;
+	
 public:
 	/** \brief Link states. */
 	enum eLinkStates{
@@ -52,8 +59,7 @@ private:
 	debnConnection &pConnection;
 	bool pChanged;
 	
-	bool *pValueChanged;
-	int pValueCount;
+	decTList<bool> pValueChanged;
 	
 	debnStateLink *pPreviousLink;
 	debnStateLink *pNextLink;
@@ -64,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create state link. */
-	debnStateLink( debnState *bnState, debnConnection &connection );
+	debnStateLink(debnState *bnState, debnConnection &connection);
 	
 	/** \brief Clean up state link. */
 	~debnStateLink();
@@ -84,13 +90,13 @@ public:
 	inline int GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set unique identifier. */
-	void SetIdentifier( int identifier );
+	void SetIdentifier(int identifier);
 	
 	/** \brief Link state. */
 	inline int GetLinkState() const{ return pLinkState; }
 	
 	/** \brief Set link state. */
-	void SetLinkState( int linkState );
+	void SetLinkState(int linkState);
 	
 	/** \brief Connection. */
 	inline debnConnection &GetConnection() const{ return pConnection; }
@@ -99,13 +105,13 @@ public:
 	inline bool GetChanged() const{ return pChanged; }
 	
 	/** \brief Set if state link changed. */
-	void SetChanged( bool changed );
+	void SetChanged(bool changed);
 	
 	/** \brief Value changed. */
-	bool GetValueChangedAt( int index ) const;
+	bool GetValueChangedAt(int index) const;
 	
 	/** \brief Set if value changed. */
-	void SetValueChangedAt( int index, bool changed );
+	void SetValueChangedAt(int index, bool changed);
 	
 	/** \brief One or more values are marked changed. */
 	bool HasChangedValues() const;
@@ -119,15 +125,10 @@ public:
 	/** \name Linked List ( for debnLinkQueue only ) */
 	/*@{*/
 	inline debnStateLink *GetPreviousLink() const{ return pPreviousLink; }
-	void SetPreviousLink( debnStateLink *link );
+	void SetPreviousLink(debnStateLink *link);
 	inline debnStateLink *GetNextLink() const{ return pNextLink; }
-	void SetNextLink( debnStateLink *link );
+	void SetNextLink(debnStateLink *link);
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

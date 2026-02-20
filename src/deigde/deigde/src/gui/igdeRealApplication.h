@@ -28,7 +28,7 @@
 #include "../environment/igdeEnvironmentIGDE.h"
 
 #include <deigde/gui/igdeApplication.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 
 
 /**
@@ -47,7 +47,7 @@ public:
 	igdeRealApplication();
 	
 	/** \brief Clean up DEIGDE application. */
-	virtual ~igdeRealApplication();
+	~igdeRealApplication() override;
 	/*@}*/
 	
 	
@@ -68,10 +68,10 @@ protected:
 	 * \brief Initialize application.
 	 * \returns true to run application or false to abord.
 	 */
-	virtual bool Initialize( const decUnicodeStringList &arguments );
+	bool Initialize(const decUnicodeStringList &arguments) override;
 	
 	/** \brief Clean up application. */
-	virtual void CleanUp();
+	void CleanUp() override;
 };
 
 #endif

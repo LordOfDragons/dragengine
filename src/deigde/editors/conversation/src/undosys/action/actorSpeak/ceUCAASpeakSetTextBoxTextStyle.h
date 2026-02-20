@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo action actor speak conversation action set text box text style.
  */
 class ceUCAASpeakSetTextBoxTextStyle : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakSetTextBoxTextStyle>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldStyle;
 	decString pNewStyle;
 	
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetTextBoxTextStyle( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText );
+	ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakSetTextBoxTextStyle();
+	~ceUCAASpeakSetTextBoxTextStyle() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

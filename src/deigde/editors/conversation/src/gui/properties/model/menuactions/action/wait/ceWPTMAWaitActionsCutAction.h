@@ -49,12 +49,13 @@ protected:
 	ceWPTMAWaitActionsCutAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAWaitActionsCutAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsCutAction( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsCutAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, ceConversationAction *action );
+		ceCAWait &wait, ceConversationAction *action);
 	/*@}*/
 	
 	
@@ -73,7 +74,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

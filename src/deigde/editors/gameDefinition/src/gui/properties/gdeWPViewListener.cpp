@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPViewListener::gdeWPViewListener( gdeWPView &panel ) :
-pPanel( panel ){
+gdeWPViewListener::gdeWPViewListener(gdeWPView &panel) :
+pPanel(panel){
 }
 
 gdeWPViewListener::~gdeWPViewListener(){
@@ -51,14 +51,14 @@ gdeWPViewListener::~gdeWPViewListener(){
 // Management
 ///////////////
 
-void gdeWPViewListener::GameDefinitionChanged( gdeGameDefinition* ){
+void gdeWPViewListener::GameDefinitionChanged(gdeGameDefinition*){
 	pPanel.UpdateView();
 }
 
-void gdeWPViewListener::SkyChanged( gdeGameDefinition* ){
+void gdeWPViewListener::SkyChanged(gdeGameDefinition*){
 	pPanel.UpdateSky();
 }
 
-void gdeWPViewListener::CameraChanged( gdeGameDefinition* ){
+void gdeWPViewListener::CameraChanged(gdeGameDefinition*){
 	pPanel.UpdateCamera();
 }

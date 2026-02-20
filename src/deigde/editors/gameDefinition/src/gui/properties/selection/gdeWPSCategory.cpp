@@ -44,7 +44,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
@@ -57,7 +57,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -71,135 +71,136 @@
 
 namespace{
 
-class cTextName : public igdeTextFieldListener {
+class cTextName : public igdeTextFieldListener{
 	gdeWPSCategory &pPanel;
 	
 public:
-	cTextName( gdeWPSCategory &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cTextName> Ref;
+	cTextName(gdeWPSCategory &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeCategory * const category = pPanel.GetCategory();
-		if( ! category || textField->GetText() == category->GetName() ){
+		if(!category || textField->GetText() == category->GetName()){
 			return;
 		}
 		
-		if( category->GetParent()
-		&& category->GetParent()->GetCategories().HasNamed( textField->GetText() ) ){
-			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename category",
-				"A category with this name exists already." );
-			textField->SetText( category->GetName() );
+		if(category->GetParent()
+		&& category->GetParent()->GetCategories().FindNamed(textField->GetText())){
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(),
+				"@GameDefinition.WPSCategory.Dialog.RenameCategory",
+				"@GameDefinition.WPSCategory.Dialog.CategoryExists");
+			textField->SetText(category->GetName());
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new gdeUCategorySetName( pPanel.GetGameDefinition(),
-			category, pPanel.GetCategoryType(), textField->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUCategorySetName::Ref::New(
+			pPanel.GetGameDefinition(), category, pPanel.GetCategoryType(), textField->GetText()));
 	}
 };
 
-class cTextDescription : public igdeTextAreaListener {
+class cTextDescription : public igdeTextAreaListener{
 	gdeWPSCategory &pPanel;
 	
 public:
-	cTextDescription( gdeWPSCategory &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cTextDescription> Ref;
+	cTextDescription(gdeWPSCategory &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextArea *textArea ){
+	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeCategory * const category = pPanel.GetCategory();
-		if( ! category || textArea->GetText() == category->GetDescription() ){
+		if(!category || textArea->GetText() == category->GetDescription()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new gdeUCategorySetDescription( pPanel.GetGameDefinition(),
-			category, pPanel.GetCategoryType(), textArea->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUCategorySetDescription::Ref::New(
+			pPanel.GetGameDefinition(), category, pPanel.GetCategoryType(), textArea->GetText()));
 	}
 };
 
-class cEditAutoCategorizePattern : public gdeWPPatternList {
+class cEditAutoCategorizePattern : public gdeWPPatternList{
 	gdeWPSCategory &pPanel;
 	
 public:
-	cEditAutoCategorizePattern( gdeWPSCategory &panel ) : gdeWPPatternList(
-		panel.GetEnvironment().GetUIHelper(), 3, "Auto Categorize Pattern" ),
-		pPanel( panel ){ }
+	typedef deTObjectReference<cEditAutoCategorizePattern> Ref;
+	cEditAutoCategorizePattern(gdeWPSCategory &panel) : gdeWPPatternList(
+		panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPSCategory.AutoCategorizePattern"),
+		pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet( const decStringSet &patterns ){
+	igdeUndo::Ref UndoSet(const decStringSet &patterns) override{
 		gdeCategory * const category = pPanel.GetCategory();
-		if( ! category || category->GetAutoCategorizePattern() == patterns ){
-			return NULL;
+		if(!category || category->GetAutoCategorizePattern() == patterns){
+			return {};
 		}
-		return new gdeUCategorySetAutoCategorizePattern( pPanel.GetGameDefinition(),
-			category, pPanel.GetCategoryType(), patterns );
+		return gdeUCategorySetAutoCategorizePattern::Ref::New(pPanel.GetGameDefinition(),
+			category, pPanel.GetCategoryType(), patterns);
 	}
 };
 
-class cActionHidden : public igdeAction {
+class cActionHidden : public igdeAction{
 	gdeWPSCategory &pPanel;
 	
 public:
-	cActionHidden( gdeWPSCategory &panel ) : igdeAction( "Hidden", "Hide in browsers" ), pPanel( panel ){ }
+	typedef deTObjectReference<cActionHidden> Ref;
+	cActionHidden(gdeWPSCategory &panel) : igdeAction(
+		"@GameDefinition.WPSCategory.Hidden", "@GameDefinition.WPSCategory.Hidden.ToolTip"), pPanel(panel){}
 	
-	virtual void Update(){
+	void Update() override{
 		const gdeCategory * const category = pPanel.GetCategory();
-		SetEnabled( category );
-		SetSelected( category && category->GetHidden() );
+		SetEnabled(category);
+		SetSelected(category && category->GetHidden());
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeCategory * const category = pPanel.GetCategory();
-		if( ! category ){
+		if(!category){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new gdeUCategoryToggleHidden( pPanel.GetGameDefinition(),
-			category, pPanel.GetCategoryType() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUCategoryToggleHidden::Ref::New(
+			pPanel.GetGameDefinition(), category, pPanel.GetCategoryType()));
 	}
 };
 
-class cListElements : public igdeListBoxListener {
+class cListElements : public igdeListBoxListener{
 	gdeWPSCategory &pPanel;
 	
 public:
-	cListElements( gdeWPSCategory &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cListElements> Ref;
+	cListElements(gdeWPSCategory &panel) : pPanel(panel){}
 	
-	virtual void OnDoubleClickItem( igdeListBox *listBox, int index ){
-		JumpToElement( *listBox, index );
+	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
+		JumpToElement(*listBox, index);
 	}
 	
-	void JumpToElement( igdeListBox &listBox, int index ){
+	void JumpToElement(igdeListBox &listBox, int index){
 		gdeCategory * const category = pPanel.GetCategory();
-		if( ! category ){
+		if(!category){
 			return;
 		}
 		
-		const igdeListItem &item = *listBox.GetItemAt( index );
-		if( ! item.GetData() ){
+		const igdeListItem &item = listBox.GetItems().GetAt(index);
+		if(!item.GetData()){
 			return;
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		
-		switch( pPanel.GetCategoryType() ){
+		switch(pPanel.GetCategoryType()){
 		case gdeUCategoryBase::ectObjectClass:
-			gameDefinition.SetActiveObjectClass( ( gdeObjectClass* )item.GetData() );
-			gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			gameDefinition.SetActiveObjectClass((gdeObjectClass*)item.GetData());
+			gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 			break;
 			
 		case gdeUCategoryBase::ectSkin:
-			gameDefinition.SetActiveSkin( ( gdeSkin* )item.GetData() );
-			gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotSkin );
+			gameDefinition.SetActiveSkin((gdeSkin*)item.GetData());
+			gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotSkin);
 			break;
 			
 		case gdeUCategoryBase::ectSky:
 			break;
 			
 		case gdeUCategoryBase::ectParticleEmitter:
-			gameDefinition.SetActiveParticleEmitter( ( gdeParticleEmitter* )item.GetData() );
-			gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotParticleEmitter );
+			gameDefinition.SetActiveParticleEmitter((gdeParticleEmitter*)item.GetData());
+			gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotParticleEmitter);
 			break;
 			
 		default:
@@ -218,46 +219,42 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSCategory::gdeWPSCategory( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSCategory::gdeWPSCategory(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSCategoryListener( *this );
+	pListener = gdeWPSCategoryListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	// category
-	helper.GroupBox( content, groupBox, "Category:" );
-	helper.EditString( groupBox, "Name:", "Category name", pEditName, new cTextName( *this ) );
-	helper.EditString( groupBox, "Description:", "Category description",
-		pEditDescription, 15, 5, new cTextDescription( *this ) );
-	helper.CheckBox( groupBox, pChkHidden, new cActionHidden( *this ) );
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSCategory.GroupCategory");
+	helper.EditString(groupBox, "@GameDefinition.WPSCategory.Name",
+		"@GameDefinition.WPSCategory.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSCategory.Description",
+		"@GameDefinition.WPSCategory.Description.ToolTip",
+		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkHidden, cActionHidden::Ref::New(*this));
 	
 	// auto categorize
-	helper.GroupBoxFlow( content, groupBox, "Auto Categorize:" );
-	pAutoCategorizePattern.TakeOver( new cEditAutoCategorizePattern( *this ) );
-	groupBox->AddChild( pAutoCategorizePattern );
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPSCategory.GroupAutoCategorize");
+	pAutoCategorizePattern = cEditAutoCategorizePattern::Ref::New(*this);
+	groupBox->AddChild(pAutoCategorizePattern);
 	
 	// element listing
-	helper.GroupBoxFlow( content, groupBox, "Assigned Elements:" );
-	helper.ListBox( groupBox, 10, "Assigned Elements. Double click to jump to element",
-		pListElements, new cListElements( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPSCategory.GroupAssignedElements");
+	helper.ListBox(groupBox, 10, "@GameDefinition.WPSCategory.AssignedElements.ToolTip",
+		pListElements, cListElements::Ref::New(*this));
 	pListElements->SetDefaultSorter();
 }
 
 gdeWPSCategory::~gdeWPSCategory(){
-	SetGameDefinition( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -265,87 +262,84 @@ gdeWPSCategory::~gdeWPSCategory(){
 // Management
 ///////////////
 
-void gdeWPSCategory::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSCategory::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	gdeWPPatternList &pattern = ( gdeWPPatternList& )( igdeWidget& )pAutoCategorizePattern;
-	pattern.SetUndoSystem( NULL );
-	pattern.SetPatternList( NULL );
+	gdeWPPatternList &pattern = (gdeWPPatternList&)(igdeWidget&)pAutoCategorizePattern;
+	pattern.SetUndoSystem(nullptr);
+	pattern.SetPatternList(nullptr);
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
-		pGameDefinition->FreeReference();
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
-		gameDefinition->AddReference();
-		
-		pattern.SetUndoSystem( gameDefinition->GetUndoSystem() );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
+		pattern.SetUndoSystem(gameDefinition->GetUndoSystem());
 	}
 	
 	UpdateCategory();
 }
 
 gdeCategory *gdeWPSCategory::GetCategory() const{
-	return pGameDefinition ? pGameDefinition->GetActiveCategory() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveCategory().Pointer() : nullptr;
 }
 
 gdeUCategoryBase::eCategoryType gdeWPSCategory::GetCategoryType() const{
 	gdeCategory *category = GetCategory();
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(!category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	while( category->GetParent() ){
+	while(category->GetParent()){
 		category = category->GetParent();
 	}
 	
-	if( pGameDefinition->GetCategoriesObjectClass().Has( category ) ){
+	if(pGameDefinition->GetCategoriesObjectClass().Has(category)){
 		return gdeUCategoryBase::ectObjectClass;
 		
-	}else if( pGameDefinition->GetCategoriesSkin().Has( category ) ){
+	}else if(pGameDefinition->GetCategoriesSkin().Has(category)){
 		return gdeUCategoryBase::ectSkin;
 		
-	}else if( pGameDefinition->GetCategoriesSky().Has( category ) ){
+	}else if(pGameDefinition->GetCategoriesSky().Has(category)){
 		return gdeUCategoryBase::ectSky;
 		
-	}else if( pGameDefinition->GetCategoriesParticleEmitter().Has( category ) ){
+	}else if(pGameDefinition->GetCategoriesParticleEmitter().Has(category)){
 		return gdeUCategoryBase::ectParticleEmitter;
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
 void gdeWPSCategory::UpdateCategory(){
-	gdeWPPatternList &pattern = ( gdeWPPatternList& )( igdeWidget& )pAutoCategorizePattern;
+	gdeWPPatternList &pattern = (gdeWPPatternList&)(igdeWidget&)pAutoCategorizePattern;
 	const gdeCategory * const category = GetCategory();
 	
-	if( category ){
-		pEditName->SetText( category->GetName() );
-		pEditDescription->SetText( category->GetDescription() );
+	if(category){
+		pEditName->SetText(category->GetName());
+		pEditDescription->SetText(category->GetDescription());
 		
-		pattern.SetPatternList( &category->GetAutoCategorizePattern() );
+		pattern.SetPatternList(&category->GetAutoCategorizePattern());
 		pattern.UpdateList();
 		
 	}else{
 		pEditName->ClearText();
 		pEditDescription->ClearText();
-		pattern.SetPatternList( NULL );
+		pattern.SetPatternList(nullptr);
 	}
 	
 	pChkHidden->GetAction()->Update();
 	
-	const bool enabled = category != NULL;
-	pEditName->SetEnabled( enabled );
-	pEditDescription->SetEnabled( enabled );
+	const bool enabled = category != nullptr;
+	pEditName->SetEnabled(enabled);
+	pEditDescription->SetEnabled(enabled);
 	
 	UpdateListElements();
 }
@@ -354,33 +348,33 @@ void gdeWPSCategory::UpdateListElements(){
 	pListElements->RemoveAllItems();
 	
 	const gdeCategory * const category = GetCategory();
-	if( ! category || ! pGameDefinition ){
+	if(!category || !pGameDefinition){
 		return;
 	}
 	
-	const decString path( category->GetPath() );
+	const decString path(category->GetPath());
 	
-	switch( GetCategoryType() ){
+	switch(GetCategoryType()){
 	case gdeUCategoryBase::ectObjectClass:{
-		const gdeObjectClassList &list = pGameDefinition->GetObjectClasses();
+		const gdeObjectClass::List &list = pGameDefinition->GetObjectClasses();
 		const int count = list.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			gdeObjectClass * const oclass = list.GetAt( i );
-			if( oclass->GetCategory() == path ){
-				pListElements->AddItem( oclass->GetName(), NULL, oclass );
+		for(i=0; i<count; i++){
+			gdeObjectClass * const oclass = list.GetAt(i);
+			if(oclass->GetCategory() == path){
+				pListElements->AddItem(oclass->GetName(), nullptr, oclass);
 			}
 		}
 		}break;
 		
 	case gdeUCategoryBase::ectSkin:{
-		const gdeSkinList &list = pGameDefinition->GetSkins();
+		const gdeSkin::List &list = pGameDefinition->GetSkins();
 		const int count = list.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			gdeSkin * const skin = list.GetAt( i );
-			if( skin->GetCategory() == path ){
-				pListElements->AddItem( skin->GetName(), NULL, skin );
+		for(i=0; i<count; i++){
+			gdeSkin * const skin = list.GetAt(i);
+			if(skin->GetCategory() == path){
+				pListElements->AddItem(skin->GetName(), nullptr, skin);
 			}
 		}
 		}break;
@@ -389,13 +383,13 @@ void gdeWPSCategory::UpdateListElements(){
 		break;
 		
 	case gdeUCategoryBase::ectParticleEmitter:{
-		const gdeParticleEmitterList &list = pGameDefinition->GetParticleEmitters();
+		const gdeParticleEmitter::List &list = pGameDefinition->GetParticleEmitters();
 		const int count = list.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			gdeParticleEmitter * const pemitter = list.GetAt( i );
-			if( pemitter->GetCategory() == path ){
-				pListElements->AddItem( pemitter->GetName(), NULL, pemitter );
+		for(i=0; i<count; i++){
+			gdeParticleEmitter * const pemitter = list.GetAt(i);
+			if(pemitter->GetCategory() == path){
+				pListElements->AddItem(pemitter->GetName(), nullptr, pemitter);
 			}
 		}
 		}break;
@@ -405,7 +399,7 @@ void gdeWPSCategory::UpdateListElements(){
 	}
 	
 	pListElements->SortItems();
-	if( pListElements->GetItemCount() > 0 ){
-		pListElements->SetSelection( 0 );
+	if(pListElements->GetItems().IsNotEmpty()){
+		pListElements->SetSelection(0);
 	}
 }

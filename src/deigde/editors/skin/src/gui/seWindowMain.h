@@ -25,29 +25,30 @@
 #ifndef _SEWINDOWMAIN_H_
 #define _SEWINDOWMAIN_H_
 
+#include "constructed/seViewConstructed.h"
+#include "seViewSkin.h"
+#include "seWindowMainListener.h"
+#include "properties/seWindowProperties.h"
+#include "../skin/seSkin.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
+
+#include <dragengine/common/string/decStringList.h>
 
 class seConfiguration;
 class seEngineController;
 class seIGDEModule;
 class seLoadSaveSystem;
-class seSkin;
 class seTexture;
 class seMapped;
-class seViewConstructed;
-class seViewSkin;
-class seWindowMainListener;
-class seWindowProperties;
 class igdeStepableTask;
-
-class decStringList;
 
 
 
@@ -55,47 +56,51 @@ class decStringList;
  * \brief Main Application Window.
  */
 class seWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<seWindowMain>;
+	
+	
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileNewModel;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileNewModel;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
 	
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionMappedAdd;
-	igdeActionReference pActionMappedRemove;
+	igdeAction::Ref pActionMappedAdd;
+	igdeAction::Ref pActionMappedRemove;
 	
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
-	igdeActionReference pActionTextureImportFromGDef;
-	igdeActionReference pActionTextureImportFromFile;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
+	igdeAction::Ref pActionTextureImportFromGDef;
+	igdeAction::Ref pActionTextureImportFromFile;
 	
-	igdeActionReference pActionPropertyAdd;
-	igdeActionReference pActionPropertyRemove;
+	igdeAction::Ref pActionPropertyAdd;
+	igdeAction::Ref pActionPropertyRemove;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	seConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seWindowProperties *pWindowProperties;
+	seWindowProperties::Ref pWindowProperties;
 	
-	igdeTabBookReference pSwitcherViews;
-	seViewSkin *pViewSkin;
-	seViewConstructed *pViewConstructed;
+	igdeTabBook::Ref pSwitcherViews;
+	seViewSkin::Ref pViewSkin;
+	seViewConstructed::Ref pViewConstructed;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	
 	
@@ -108,11 +113,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
-	seWindowMain( seIGDEModule &module );
+	seWindowMain(seIGDEModule &module);
 	
 protected:
 	/** \brief Clean up main window. */
-	virtual ~seWindowMain();
+	~seWindowMain() override;
 	/*@}*/
 	
 	
@@ -137,56 +142,56 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set Skin. */
-	void SetSkin( seSkin *Skin );
+	void SetSkin(seSkin *Skin);
 	
 	/** \brief Create new skin. */
 	void CreateNewSkin();
 	
 	/** \brief Load skin. */
-	void LoadSkin( const char *filename );
+	void LoadSkin(const char *filename);
 	
 	/** \brief Save skin. */
-	void SaveSkin( const char *filename );
+	void SaveSkin(const char *filename);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionMappedAdd() const{ return pActionMappedAdd; }
-	inline igdeAction *GetActionMappedRemove() const{ return pActionMappedRemove; }
+	inline const igdeAction::Ref &GetActionMappedAdd() const{ return pActionMappedAdd; }
+	inline const igdeAction::Ref &GetActionMappedRemove() const{ return pActionMappedRemove; }
 	
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline igdeAction *GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
-	inline igdeAction *GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
+	inline const igdeAction::Ref &GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
 	
-	inline igdeAction *GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
+	inline const igdeAction::Ref &GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
+	inline const igdeAction::Ref &GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
 	
 	
 	
 	/** \brief Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** \brief Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** \brief Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** \brief Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** \brief Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -197,12 +202,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -212,12 +217,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * \brief Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * \brief The game project has changed.
@@ -227,7 +232,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * \brief Project game definition changed.
@@ -236,12 +241,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	
@@ -252,10 +257,10 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuSkin( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuMapped( igdeMenuCascade &menu );
-	void pCreateMenuTexture( igdeMenuCascade &menu );
+	void pCreateMenuSkin(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuMapped(igdeMenuCascade &menu);
+	void pCreateMenuTexture(igdeMenuCascade &menu);
 };
 
 #endif

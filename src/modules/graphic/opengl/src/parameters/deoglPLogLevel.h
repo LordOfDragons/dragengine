@@ -36,18 +36,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPLogLevel( deGraphicOpenGl &ogl );
+	deoglPLogLevel(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPLogLevel();
+	~deoglPLogLevel() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

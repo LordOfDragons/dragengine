@@ -26,9 +26,10 @@
 #define _SEUNODEDATA_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNode;
+#include "../../../../skin/property/node/sePropertyNode.h"
 
 
 
@@ -37,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeData : public deObject{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	decPoint3 pPosition;
 	decPoint3 pSize;
 	float pRotation;
@@ -47,14 +48,18 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<seUPropertyNodeData>;
+	using List = decTObjectOrderedSet<seUPropertyNodeData>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeData( sePropertyNode *node );
+	seUPropertyNodeData(sePropertyNode *node);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeData();
+	~seUPropertyNodeData() override;
 	/*@}*/
 	
 	
@@ -63,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Node. */
-	inline sePropertyNode *GetNode() const{ return pNode; }
+	inline const sePropertyNode::Ref &GetNode() const{ return pNode; }
 	
 	/** \brief Reference position. */
 	inline const decPoint3 &GetPosition() const{ return pPosition; }

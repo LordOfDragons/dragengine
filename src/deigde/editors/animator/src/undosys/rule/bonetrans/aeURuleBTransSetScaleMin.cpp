@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetScaleMin::aeURuleBTransSetScaleMin( aeRuleBoneTransformator *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetScaleMin::aeURuleBTransSetScaleMin(aeRuleBoneTransformator *rule, const decVector &newMin){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Bone transformator Set minimum scaling" );
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMinimumScaling");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleBTransSetScaleMin::~aeURuleBTransSetScaleMin(){
 ///////////////
 
 void aeURuleBTransSetScaleMin::Undo(){
-	pRule->SetMinimumScaling( pOldMin );
+	pRule->SetMinimumScaling(pOldMin);
 }
 
 void aeURuleBTransSetScaleMin::Redo(){
-	pRule->SetMinimumScaling( pNewMin );
+	pRule->SetMinimumScaling(pNewMin);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleBTransSetScaleMin::Redo(){
 //////////////////////
 
 void aeURuleBTransSetScaleMin::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

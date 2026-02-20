@@ -40,50 +40,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapesDelete::meUObjectShapesDelete( meObject *object, const char *property, const meObjectShapeList &list ){
-	if( list.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *property, const meObjectShape::List &list){
+	if(list.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!object || !property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(!object->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectShapeList &shapeList1 = object->GetWorld()->GetObjectShapes();
+	const meObjectShape::List &shapeList1 = object->GetWorld()->GetObjectShapes();
 	const int count = shapeList1.GetCount();
-	meObjectShapeList shapeList2;
+	meObjectShape::List shapeList2;
 	int i;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
-	SetShortInfo( "Object-Shape delete" );
-	SetLongInfo( "Object-Shape delete" );
+	SetShortInfo("@World.UObjectShapeDelete.ObjectShapeDelete");
+	SetLongInfo("@World.UObjectShapeDelete.ObjectShapeDelete");
 	
-	pPropertyExists = object->GetProperties().Has( property );
-	if( pPropertyExists ){
-		pOldValue = object->GetProperties().GetAt( property );
+	pPropertyExists = object->GetProperties().Has(property);
+	if(pPropertyExists){
+		pOldValue = object->GetProperties().GetAt(property);
 	}
 	
-	for( i=0; i<count; i++ ){
-		if( ! list.Has( shapeList1.GetAt( i ) ) ){
-			shapeList2.Add( shapeList1.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(!list.Has(shapeList1.GetAt(i))){
+			shapeList2.Add(shapeList1.GetAt(i));
 		}
 	}
 	
-	shapeList2.CreatePropertyString( pNewValue );
+	meObjectShape::CreatePropertyString(shapeList2, pNewValue);
 	shapeList2.RemoveAll();
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapesDelete::~meUObjectShapesDelete(){
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -94,11 +90,11 @@ meUObjectShapesDelete::~meUObjectShapesDelete(){
 void meUObjectShapesDelete::Undo(){
 	meWorld &world = *pObject->GetWorld();
 	
-	if( pPropertyExists ){
-		pObject->SetProperty( pProperty.GetString(), pOldValue.GetString() );
+	if(pPropertyExists){
+		pObject->SetProperty(pProperty.GetString(), pOldValue.GetString());
 		
 	}else{
-		pObject->RemoveProperty( pProperty.GetString() );
+		pObject->RemoveProperty(pProperty.GetString());
 	}
 	
 	world.GetSelectionObjectShape().Reset();
@@ -108,7 +104,7 @@ void meUObjectShapesDelete::Undo(){
 void meUObjectShapesDelete::Redo(){
 	meWorld &world = *pObject->GetWorld();
 	
-	pObject->SetProperty( pProperty.GetString(), pNewValue.GetString() );
+	pObject->SetProperty(pProperty.GetString(), pNewValue.GetString());
 	
 	world.GetSelectionObjectShape().Reset();
 	world.NotifyObjectShapeSelectionChanged();

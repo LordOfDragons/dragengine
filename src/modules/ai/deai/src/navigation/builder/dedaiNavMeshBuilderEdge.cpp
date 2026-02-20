@@ -41,16 +41,16 @@ dedaiNavMeshBuilderEdge::dedaiNavMeshBuilderEdge(){
 	pIndex = 0;
 	pVertex1 = 0;
 	pVertex2 = 0;
-	pFace1 = NULL;
-	pFace2 = NULL;
+	pFace1 = nullptr;
+	pFace2 = nullptr;
 }
 
-dedaiNavMeshBuilderEdge::dedaiNavMeshBuilderEdge( int vertex1, int vertex2 ){
+dedaiNavMeshBuilderEdge::dedaiNavMeshBuilderEdge(int vertex1, int vertex2){
 	pIndex = 0;
 	pVertex1 = vertex1;
 	pVertex2 = vertex2;
-	pFace1 = NULL;
-	pFace2 = NULL;
+	pFace1 = nullptr;
+	pFace2 = nullptr;
 }
 
 dedaiNavMeshBuilderEdge::~dedaiNavMeshBuilderEdge(){
@@ -61,22 +61,22 @@ dedaiNavMeshBuilderEdge::~dedaiNavMeshBuilderEdge(){
 // Management
 ///////////////
 
-void dedaiNavMeshBuilderEdge::SetIndex( int index ){
+void dedaiNavMeshBuilderEdge::SetIndex(int index){
 	pIndex = index;
 }
 
-void dedaiNavMeshBuilderEdge::SetVertex1( int vertex ){
+void dedaiNavMeshBuilderEdge::SetVertex1(int vertex){
 	pVertex1 = vertex;
 }
 
-void dedaiNavMeshBuilderEdge::SetVertex2( int vertex ){
+void dedaiNavMeshBuilderEdge::SetVertex2(int vertex){
 	pVertex2 = vertex;
 }
 
-void dedaiNavMeshBuilderEdge::SetFace1( dedaiNavMeshBuilderFace *face ){
+void dedaiNavMeshBuilderEdge::SetFace1(dedaiNavMeshBuilderFace *face){
 	pFace1 = face;
 }
 
-void dedaiNavMeshBuilderEdge::SetFace2( dedaiNavMeshBuilderFace *face ){
+void dedaiNavMeshBuilderEdge::SetFace2(dedaiNavMeshBuilderFace *face){
 	pFace2 = face;
 }

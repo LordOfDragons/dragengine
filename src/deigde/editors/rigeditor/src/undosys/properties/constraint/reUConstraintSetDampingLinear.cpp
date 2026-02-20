@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetDampingLinear::reUConstraintSetDampingLinear( reRigConstraint *constraint, float newDamping ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetDampingLinear::reUConstraintSetDampingLinear(reRigConstraint *constraint, float newDamping){
+	if(!constraint || !constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,15 +50,10 @@ reUConstraintSetDampingLinear::reUConstraintSetDampingLinear( reRigConstraint *c
 	pOldDamping = constraint->GetLinearDamping();
 	pNewDamping = newDamping;
 	
-	SetShortInfo( "Constraint set linear damping" );
-	
-	pConstraint->AddReference();
+	SetShortInfo("@Rig.Undo.ConstraintSetDampingLinear");
 }
 
 reUConstraintSetDampingLinear::~reUConstraintSetDampingLinear(){
-	if( pConstraint ){
-		pConstraint->FreeReference();
-	}
 }
 
 
@@ -67,9 +62,9 @@ reUConstraintSetDampingLinear::~reUConstraintSetDampingLinear(){
 ///////////////
 
 void reUConstraintSetDampingLinear::Undo(){
-	pConstraint->SetLinearDamping( pOldDamping );
+	pConstraint->SetLinearDamping(pOldDamping);
 }
 
 void reUConstraintSetDampingLinear::Redo(){
-	pConstraint->SetLinearDamping( pNewDamping );
+	pConstraint->SetLinearDamping(pNewDamping);
 }

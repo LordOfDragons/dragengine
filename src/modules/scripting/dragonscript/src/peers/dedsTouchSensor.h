@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsTouchSensor( deScriptingDragonScript &ds, deTouchSensor *collider );
+	dedsTouchSensor(deScriptingDragonScript &ds, deTouchSensor *collider);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsTouchSensor();
+	~dedsTouchSensor() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or \em NULL. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	/*@}*/
 	
 	
@@ -76,13 +76,13 @@ public:
 	 * \brief Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderEntered( deCollider *collider );
+	void ColliderEntered(deCollider *collider) override;
 	
 	/**
 	 * \brief Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderLeft( deCollider *collider );
+	void ColliderLeft(deCollider *collider) override;
 	/*@}*/
 };
 

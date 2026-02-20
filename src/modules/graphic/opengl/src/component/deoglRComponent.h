@@ -25,41 +25,42 @@
 #ifndef _DEOGLRCOMPONENT_H_
 #define _DEOGLRCOMPONENT_H_
 
+#include "deoglRComponentWCElement.h"
 #include "../deoglBasics.h"
-#include "../light/deoglLightList.h"
+#include "../envmap/deoglEnvironmentMap.h"
 #include "../model/deoglRModel.h"
+#include "../occlusiontest/mesh/deoglROcclusionMesh.h"
+#include "../skin/deoglRSkin.h"
 #include "../skin/rendered/deoglSkinRendered.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decIntList.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/component/deComponent.h>
 
 class deoglComponent;
 class deoglComponentListener;
+class deoglRComponentListener;
 class deoglDynamicOcclusionMesh;
-class deoglEnvironmentMap;
 class deoglRCamera;
 class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRDecal;
-class deoglRDynamicSkin;
-class deoglROcclusionMesh;
-class deoglRSkin;
+class deoglRLight;
 class deoglRWorld;
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderParameterBlock;
-class deoglSharedSPBElement;
-class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglWorldOctree;
@@ -73,6 +74,13 @@ class deComponent;
  */
 class deoglRComponent : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRComponent>;
+	
+	/** \brief List type. */
+	using List = decTOrderedSet<deoglRComponent*>;
+	
+	
 	/** Render modes. */
 	enum eRenderModes{
 		/** Render as static model. */
@@ -83,11 +91,13 @@ public:
 	};
 	
 private:
+	using LightList = decTObjectOrderedSet<deoglRLight>;
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	deoglRComponentWCElement::Ref pWorldComputeElement;
 	bool pHasEnteredWorld;
 	
 	
@@ -96,32 +106,31 @@ private:
 	decLayerMask pLayerMask;
 	int pGIImportance;
 	
-	decIntList pModelSkinMappings;
-	decIntList pModelRigMappings;
+	decTList<int> pModelSkinMappings;
+	decTList<int> pModelRigMappings;
 	deoglRModel::Ref pModel;
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	bool pStaticTextures;
 	bool pDirtyModelVBOs;
 	
-	deoglROcclusionMesh *pOcclusionMesh;
+	deoglROcclusionMesh::Ref pOcclusionMesh;
 	bool pDirtyOccMeshVBO;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
 	bool pDynOccMeshRequiresPrepareForRender;
-	deoglSharedSPBElement *pOccMeshSharedSPBElement;
+	deoglSharedSPBElement::Ref pOccMeshSharedSPBElement;
 	bool pValidOccMeshSharedSPBElement;
 	bool pDirtyOccMeshSharedSPBElement;
 	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBDoubleSided;
 	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBSingleSided;
 	
-	decObjectList pLODs;
+	decTObjectList<deoglRComponentLOD> pLODs;
 	float pLODErrorScaling;
 	bool pDirtyLODVBOs;
 	bool pDirtyLODRenderTaskConfigs;
 	
 	// dynamic model data
-	oglMatrix3x4 *pBoneMatrices;
-	int pBoneMatrixCount;
+	decTList<oglMatrix3x4> pBoneMatrices;
 	
 	// for world
 	bool pLit;
@@ -142,17 +151,17 @@ private:
 	eRenderModes pRenderMode;
 	float pSortDistance;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinRendered pSkinRendered;
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
 	
-	decObjectList pTextures;
+	decTObjectList<deoglRComponentTexture> pTextures;
 	bool pDirtyTextureTUCs;
 	bool pDirtyTextureParamBlocks;
 	int pOutlineTextureCount;
 	
-	decObjectList pDecals;
+	decTObjectList<deoglRDecal> pDecals;
 	bool pDirtyDecals;
 	bool pDirtyDecalsRenderRenderables;
 	
@@ -168,32 +177,30 @@ private:
 	float pCullSphereRadius;
 	bool pDirtyCulling;
 	
-	deoglLightList pLightList;
+	LightList pLightList;
 	
-	float *pVertexPositionSetWeights;
-	int pVertexPositionSetCount;
+	decTList<float> pVertexPositionSetWeights;
 	
 	unsigned int pUniqueKey;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<deoglComponentListener> pListeners;
 	int pListenerIndex;
 	
-	deoglEnvironmentMap *pRenderEnvMap;
-	deoglEnvironmentMap *pRenderEnvMapFade;
+	deoglEnvironmentMap::Ref pRenderEnvMap;
+	deoglEnvironmentMap::Ref pRenderEnvMapFade;
 	float pRenderEnvMapFadePerTime;
 	float pRenderEnvMapFadeFactor;
 	bool pDirtyRenderEnvMap;
 	
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	
 	uint32_t pCSOctreeIndex;
 	
 	bool pWorldMarkedRemove;
 	
-	deoglRComponent *pLLWorldPrev;
-	deoglRComponent *pLLWorldNext;
+	decTObjectLinkedList<deoglRComponent>::Element pLLWorld;
 	
-	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	decTLinkedList<deoglRComponent>::Element pLLPrepareForRenderWorld;
 	
 	
 	
@@ -201,14 +208,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render component. */
-	deoglRComponent( deoglRenderThread &renderThread );
+	deoglRComponent(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render component. */
-	virtual ~deoglRComponent();
+	~deoglRComponent() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -220,7 +228,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Component has entered world. */
 	void HasEnteredWorld();
@@ -232,7 +240,7 @@ public:
 	 * Set octree node or NULL if not inserted into the parent world octree.
 	 * \details This call is to be used only by deoglWorldOctree.
 	 */
-	void SetOctreeNode( deoglWorldOctree *octreeNode );
+	void SetOctreeNode(deoglWorldOctree *octreeNode);
 	
 	/**
 	 * Update octree position.
@@ -246,32 +254,32 @@ public:
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set component is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** Movement hint. */
 	inline deComponent::eMovementHints GetMovementHint() const{ return pMovementHint; }
 	
 	/** Set movement hint. */
-	void SetMovementHint( deComponent::eMovementHints hint );
+	void SetMovementHint(deComponent::eMovementHints hint);
 	
 	inline int GetGIImportance() const{ return pGIImportance; }
-	void SetGIImportance( int importance );
+	void SetGIImportance(int importance);
 	
 	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
 	/** Add plans for renderables in the component if existing and requiring one. */
-	void AddSkinStateRenderPlans( deoglRenderPlan &plan );
+	void AddSkinStateRenderPlans(deoglRenderPlan &plan);
 	
 	
 	
@@ -282,7 +290,7 @@ public:
 	inline const decDMatrix &GetInverseMatrix() const{ return pInverseMatrix; }
 	
 	/** Set matrices. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	
 	
@@ -296,7 +304,7 @@ public:
 	 * Update extends of dirty.
 	 * \warning Requires UpdateBoneMatrices() to be called first.
 	 */
-	void UpdateExtends( deComponent &component );
+	void UpdateExtends(deComponent &component);
 	
 	
 	
@@ -304,13 +312,13 @@ public:
 	inline bool GetMarked() const{ return pMarked; }
 	
 	/** Set marked flag. */
-	inline void SetMarked( bool marked ){ pMarked = marked; }
+	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	/** Sort distance. */
 	inline float GetSortDistance() const{ return pSortDistance; }
 	
 	/** Set sort distance. */
-	void SetSortDistance( float distance );
+	void SetSortDistance(float distance);
 	
 	
 	
@@ -318,31 +326,31 @@ public:
 	inline const deoglRModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Set model or NULL if not set. */
-	void SetModel( deoglRModel *model );
+	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Rig changed. */
 	void RigChanged();
 	
 	/** Dynamic skin or NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/**
 	 * Set dynamic skin or NULL if not set.
 	 * \note Called from main thread during synchronization.
 	 */
-	void SetDynamicSkin( deoglComponent &component, deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin);
 	
 	/** Occlusion mesh or NULL if not set. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Set occlusion mesh or NULL if not set. */
-	void SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh );
+	void SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh);
 	
 	/** Dynamic occlusion mesh or NULL if not set. */
 	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
@@ -351,10 +359,10 @@ public:
 	void DynOccMeshRequiresPrepareForRender();
 	
 	/** Occlusion mesh shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup( bool doubleSided ) const;
+	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup(bool doubleSided) const;
 	
 	/** Invalidate occlusion mesh shared SPB render task instance group. */
 	void InvalidateOccMeshSharedSPBRTIGroup();
@@ -365,17 +373,17 @@ public:
 	
 	
 	/** Model skin to mappings. */
-	inline const decIntList &GetModelSkinMappings() const{ return pModelSkinMappings; }
+	inline const decTList<int> &GetModelSkinMappings() const{ return pModelSkinMappings; }
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
-	void InitSkinStateStates( const deComponent &component );
-	void UpdateSkinStateBones( const deComponent &component );
+	void InitSkinStateStates(const deComponent &component);
+	void UpdateSkinStateBones(const deComponent &component);
 	void UpdateSkinStateStates();
 	
 	void DirtyPrepareSkinStateRenderables();
@@ -386,40 +394,34 @@ public:
 	void MarkOccMeshParamBlockDirty();
 	
 	/** Update occlusion mesh instance parameter block. */
-	void UpdateOccmeshInstanceParamBlock( deoglShaderParameterBlock &paramBlock, int element );
+	void UpdateOccmeshInstanceParamBlock(deoglShaderParameterBlock &paramBlock, int element);
 	
 	
 	
 	/** Bone matrices. */
-	inline oglMatrix3x4 *GetBoneMatrices() const{ return pBoneMatrices; }
-	
-	/** Number of bone matrices. */
-	inline int GetBoneMatrixCount() const{ return pBoneMatrixCount; }
+	inline const decTList<oglMatrix3x4> &GetBoneMatrices() const{ return pBoneMatrices; }
 	
 	/** Update the bone matrices if required. */
-	void UpdateBoneMatrices( const deComponent &component );
+	void UpdateBoneMatrices(const deComponent &component);
 	
 	
 	
 	/** Vertex position sets. */
-	inline float *GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
-	
-	/** Vertex position set count. */
-	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	inline const decTList<float> &GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
 	
 	/** Update vertex position sets. */
-	void UpdateVertexPositionSets( const deComponent &component );
+	void UpdateVertexPositionSets(const deComponent &component);
 	
 	
 	
 	/** Point offset. */
-	int GetPointOffset( int lodLevel ) const;
+	int GetPointOffset(int lodLevel) const;
 	
 	/** Index offset. */
-	int GetIndexOffset( int lodLevel ) const;
+	int GetIndexOffset(int lodLevel) const;
 	
 	/** VAO for the vertices of the given lod level. */
-	deoglVAO *GetVAO( int lodLevel ) const;
+	deoglVAO *GetVAO(int lodLevel) const;
 	
 	/** Invalidate VAO. */
 	void InvalidateVAO();
@@ -427,7 +429,7 @@ public:
 	
 	
 	/** Update skin. */
-	void UpdateSkin( float elapsed );
+	void UpdateSkin(float elapsed);
 	
 	
 	
@@ -435,13 +437,13 @@ public:
 	inline bool GetLit() const{ return pLit; }
 	
 	/** Set lit. */
-	void SetLit( bool lit );
+	void SetLit(bool lit);
 	
 	/** Occluded. */
 	inline bool GetOccluded() const{ return pOccluded; }
 	
 	/** Set occluded. */
-	void SetOccluded( bool occluded );
+	void SetOccluded(bool occluded);
 	
 	
 	
@@ -450,7 +452,7 @@ public:
 	inline eRenderModes GetRenderMode() const{ return pRenderMode; }
 	
 	/** Set render mode. */
-	void SetRenderMode( eRenderModes renderMode );
+	void SetRenderMode(eRenderModes renderMode);
 	
 	/** Component has no transparent faces. */
 	inline bool GetSolid() const{ return pSolid; }
@@ -468,7 +470,7 @@ public:
 	inline bool GetRenderStatic() const{ return pRenderStatic; }
 	
 	/** Set render static. */
-	void SetRenderStatic( bool isStatic );
+	void SetRenderStatic(bool isStatic);
 	
 	/** Reset render static. */
 	void ResetRenderStatic();
@@ -477,8 +479,8 @@ public:
 	bool IsGIStatic() const;
 	
 	/** Light list. */
-	inline deoglLightList &GetLightList(){ return pLightList; }
-	inline const deoglLightList &GetLightList() const{ return pLightList; }
+	inline LightList &GetLightList(){ return pLightList; }
+	inline const LightList &GetLightList() const{ return pLightList; }
 	
 	
 	
@@ -487,33 +489,33 @@ public:
 	
 	/** Compute shader octree index. */
 	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
-	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
+	void SetCSOctreeIndex(uint32_t index){pCSOctreeIndex = index;}
 	
 	
 	
 	/** Render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
-	void SetRenderEnvMap( deoglEnvironmentMap *envmap );
+	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
-	void SetRenderEnvMapFade( deoglEnvironmentMap *envmap );
+	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);
 	
 	/** Render environment map fade per time. */
 	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
 	
 	/** Set render environment map fade per time. */
-	void SetRenderEnvMapFadePerTime( float fadePerTime );
+	void SetRenderEnvMapFadePerTime(float fadePerTime);
 	
 	/** Render environment map fade factor. */
 	inline float GetRenderEnvMapFadeFactor() const{ return pRenderEnvMapFadeFactor; }
 	
 	/** Set render environment map fade factor. */
-	void SetRenderEnvMapFadeFactor( float factor );
+	void SetRenderEnvMapFadeFactor(float factor);
 	
 	/** World environment map layout changed. */
 	void WorldEnvMapLayoutChanged();
@@ -522,7 +524,7 @@ public:
 	void InvalidateRenderEnvMap();
 	
 	/** Invalidate render environment map. */
-	void InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap );
+	void InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap);
 	
 	/** The world reference point changed. */
 	void WorldReferencePointChanged();
@@ -530,10 +532,10 @@ public:
 	
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
-	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for render render. Called by deoglRWorld if registered previously. */
-	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
@@ -547,19 +549,19 @@ public:
 	int GetLODCount() const;
 	
 	/** LOD by index. Negative index counts from the end */
-	deoglRComponentLOD &GetLODAt( int index ) const;
+	deoglRComponentLOD &GetLODAt(int index) const;
 	
 	/** Remove all LODs. */
 	void RemoveAllLODs();
 	
 	/** Add LOD. */
-	void AddLOD( deoglRComponentLOD *lod );
+	void AddLOD(deoglRComponentLOD *lod);
 	
 	/** LOD error scaling factor. */
 	inline float GetLODErrorScaling() const{ return pLODErrorScaling; }
 	
 	/** Set LOD error scaling factor. */
-	void SetLODErrorScaling( float errorScaling );
+	void SetLODErrorScaling(float errorScaling);
 	
 	/** Mark LOD VBOs dirty requiring preparing. */
 	void DirtyLODVBOs();
@@ -579,13 +581,13 @@ public:
 	int GetTextureCount() const;
 	
 	/** Texture at index. */
-	deoglRComponentTexture &GetTextureAt( int index ) const;
+	deoglRComponentTexture &GetTextureAt(int index) const;
 	
 	/** Remove all textures. */
 	void RemoveAllTextures();
 	
 	/** Add texture. */
-	void AddTexture( deoglRComponentTexture *texture );
+	void AddTexture(deoglRComponentTexture *texture);
 	
 	/** Invalidate parameter blocks of all textures. */
 	void InvalidateAllTexturesParamBlocks();
@@ -604,7 +606,7 @@ public:
 	
 	/** Dynamic skin renderables changed. */
 	void DynamicSkinRenderablesChanged();
-	void TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture );
+	void TextureDynamicSkinRenderablesChanged(deoglRComponentTexture &texture);
 	
 	void UpdateRenderableMapping();
 	void UpdateTexturesUseSkin();
@@ -622,11 +624,8 @@ public:
 	
 	/** \name Decals */
 	/*@{*/
-	/** Number of decals. */
-	int GetDecalCount() const;
-	
-	/** Decal at index. */
-	deoglRDecal *GetDecalAt( int index ) const;
+	/** Decals. */
+	inline const decTObjectList<deoglRDecal> &GetDecals() const{ return pDecals; }
 	
 	/**
 	 * Synchronize decal references.
@@ -637,7 +636,7 @@ public:
 	 * 
 	 * \note Call this from main thread only during synchronization.
 	 */
-	void SyncDecalReferences( const deComponent &engComponent );
+	void SyncDecalReferences(const deComponent &engComponent);
 	
 	/** Mark parameter blocks of all attached decals dirty. */
 	void MarkAllDecalTexturesParamBlocksDirty();
@@ -665,10 +664,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglComponentListener *listener );
+	void AddListener(deoglComponentListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglComponentListener *listener );
+	void RemoveListener(deoglComponentListener *listener);
 	
 	/** Notify all that the boundaries changed. */
 	void NotifyBoundariesChanged();
@@ -726,25 +725,17 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	
 	
 	
-	/** Linked list world previous. */
-	inline deoglRComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** Set linked list world previous. */
-	void SetLLWorldPrev( deoglRComponent *component );
-	
-	/** Linked list world next. */
-	inline deoglRComponent *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** Set linked list world next. */
-	void SetLLWorldNext( deoglRComponent *component );
+	/** World linked list. */
+	inline decTObjectLinkedList<deoglRComponent>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deoglRComponent>::Element &GetLLWorld() const{ return pLLWorld; }
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decTLinkedList<deoglRComponent>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decTLinkedList<deoglRComponent>::Element &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	
@@ -756,9 +747,9 @@ private:
 	
 	void pUpdateModelSkinMappings();
 	void pResizeModelSkinMappings();
-	void pUpdateModelRigMappings( const deComponent &component );
+	void pUpdateModelRigMappings(const deComponent &component);
 	void pResizeModelRigMappings();
-	void pCheckRenderModifier( deoglRCamera *oglCamera );
+	void pCheckRenderModifier(deoglRCamera *oglCamera);
 	void pUpdateRenderMode();
 	void pUpdateCullSphere();
 	
@@ -767,14 +758,14 @@ private:
 	void pPrepareLODVBOs();
 	void pPrepareLODRenderTaskConfigs();
 	void pPrepareRenderEnvMap();
-	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
-	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *mask );
+	void pPrepareSkinStateRenderables(const deoglRenderPlanMasked *mask);
+	void pRenderSkinStateRenderables(const deoglRenderPlanMasked *mask);
 	void pPrepareSkinStateConstructed();
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
-	void pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
-	void pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void pPrepareDecals(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
+	void pPrepareDecalsRenderRenderables(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	void pPrepareOccMeshVBO();
 	void pPrepareOccMeshRTSInstances();
 	void pPrepareDynOccMesh();

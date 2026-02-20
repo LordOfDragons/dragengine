@@ -22,14 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deScriptSource.h"
-#include "dragengine/filesystem/deVirtualFileSystem.h"
-#include "dragengine/common/file/decBaseFileReader.h"
-#include <libdscript/exceptions.h>
 
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+
+#include <libdscript/exceptions.h>
 
 
 // Class deScriptSource
@@ -38,19 +36,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deScriptSource::deScriptSource( const deVirtualFileSystem &vfs, const decPath &path ) :
-pVFS( vfs ),
-pFileReader( NULL ),
-pPath( path ),
-pPathString( path.GetPathUnix() ),
-pPosition( 0 ),
-pLength( 0 ){
+deScriptSource::deScriptSource(const deVirtualFileSystem &vfs, const decPath &path) :
+pVFS(vfs),
+pPath(path),
+pPathString(path.GetPathUnix()),
+pPosition(0),
+pLength(0){
 }
 
 deScriptSource::~deScriptSource(){
-	if( pFileReader ){
-		pFileReader->FreeReference();
-	}
 }
 
 
@@ -63,26 +57,25 @@ const char *deScriptSource::GetName(){
 }
 
 void deScriptSource::Open(){
-	if( ! pFileReader ){
-		pFileReader = pVFS.OpenFileForReading( pPath );
-		if( ! pFileReader ) DSTHROW( dueOutOfMemory );
+	if(!pFileReader){
+		pFileReader = pVFS.OpenFileForReading(pPath);
 		
 	}else{
-		pFileReader->SetPosition( 0 );
+		pFileReader->SetPosition(0);
 	}
 	
 	pLength = pFileReader->GetLength();
 	pPosition = 0;
 }
 
-int deScriptSource::ReadData( char *buffer, int size ){
-	if( ! buffer || ! pFileReader ) DSTHROW( dueInvalidParam );
+int deScriptSource::ReadData(char *buffer, int size){
+	if(!buffer || !pFileReader) DSTHROW(dueInvalidParam);
 	
-	if( pPosition + size > pLength ){
+	if(pPosition + size > pLength){
 		size = pLength - pPosition;
 	}
 	
-	if( size > 0 ) pFileReader->Read( buffer, size );
+	if(size > 0) pFileReader->Read(buffer, size);
 	
 	pPosition += size;
 	
@@ -90,8 +83,5 @@ int deScriptSource::ReadData( char *buffer, int size ){
 }
 
 void deScriptSource::Close(){
-	if( pFileReader ){
-		pFileReader->FreeReference();
-		pFileReader = NULL;
-	}
+	pFileReader = nullptr;
 }

@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../animator/aeAnimator.h"
-#include "../../animator/controller/aeControllerList.h"
+#include "../../animator/controller/aeController.h"
 
 
 
@@ -36,30 +36,34 @@
  * Undo action paste controller.
  */
 class aeUControllerPaste : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerPaste>;
+	
+	
 private:
 	const aeAnimator::Ref pAnimator;
-	aeControllerList pControllerList;
+	aeController::List pControllerList;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeUControllerPaste( aeAnimator *animator, const aeControllerList &controllerList );
+	aeUControllerPaste(aeAnimator *animator, const aeController::List &controllerList);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerPaste();
+	~aeUControllerPaste() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

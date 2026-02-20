@@ -28,8 +28,9 @@
 #include "deainpInputBinding.h"
 #include "deainpOverlay.h"
 
-class deCanvasImage;
-class deCanvasText;
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
+
 class deFont;
 
 
@@ -40,6 +41,7 @@ class deainpOverlayActionButton : public deainpOverlay{
 public:
 	typedef deTObjectReference<deainpOverlayActionButton> Ref;
 	
+	
 private:
 	deainpInputBinding pBinding;
 	
@@ -48,8 +50,8 @@ private:
 	
 	bool pPressed;
 	
-	deCanvasImage *pCImage;
-	deCanvasText *pCLabel;
+	deCanvasImage::Ref pCImage;
+	deCanvasText::Ref pCLabel;
 	
 	bool pDirtyLabelSize;
 	
@@ -57,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlay action button. */
-	deainpOverlayActionButton( deAndroidInput &androidInput );
+	deainpOverlayActionButton(deAndroidInput &androidInput);
 	
 	/** \brief Clean up overlay action button. */
-	virtual ~deainpOverlayActionButton();
+	~deainpOverlayActionButton() override;
 	/*@}*/
 	
 	
@@ -71,7 +73,7 @@ public:
 	inline const deainpInputBinding &GetBinding() const{ return pBinding; }
 	
 	/** \brief Set binding. */
-	void SetBinding( const deainpInputBinding &binding );
+	void SetBinding(const deainpInputBinding &binding);
 	
 	
 	
@@ -79,13 +81,13 @@ public:
 	inline int GetRadius() const{ return pRadius; }
 	
 	/** \brief Set button radius in pixels. */
-	void SetRadius( int radius );
+	void SetRadius(int radius);
 	
 	/** \brief Center of button. */
 	inline const decPoint &GetCenter() const{ return pCenter; }
 	
 	/** \brief Set center of button. */
-	void SetCenter( const decPoint &center );
+	void SetCenter(const decPoint &center);
 	
 	
 	
@@ -93,19 +95,19 @@ public:
 	const decString &GetText() const;
 	
 	/** \brief Set button text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Button text color. */
 	const decColor &GetColor() const;
 	
 	/** \brief Set button text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Button text font or \em NULL if not set. */
 	deFont *GetFont() const;
 	
 	/** \brief Set button text font or \em NULL if not set. */
-	void SetFont( deFont *font );
+	void SetFont(deFont *font);
 	
 	
 	
@@ -113,15 +115,15 @@ public:
 	inline bool GetPressed() const{ return pPressed; }
 	
 	/** \brief Set if button is pressed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
 	
 	
 	/** \brief Update binding indices. */
-	virtual void UpdateBindingIndices();
+	void UpdateBindingIndices() override;
 	
 	/** \brief Update canvas content. */
-	virtual void UpdateContent();
+	void UpdateContent() override;
 	
 	/**
 	 * \brief Touch event.
@@ -130,16 +132,16 @@ public:
 	 * \param[in] position Touch position.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	virtual bool OnTouch( int pointerId, const decPoint &position );
+	bool OnTouch(int pointerId, const decPoint &position) override;
 	
 	/**
 	 * \brief Move event.
 	 * \param[in] position Move distance since last move event.
 	 */
-	virtual void OnMove( const decPoint &position );
+	void OnMove(const decPoint &position) override;
 	
 	/** \brief Release. */
-	virtual void OnRelease();
+	void OnRelease() override;
 	/*@}*/
 	
 private:

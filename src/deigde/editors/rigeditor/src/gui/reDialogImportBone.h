@@ -29,9 +29,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class reWindowMain;
@@ -41,15 +41,20 @@ class reWindowMain;
  * \brief Dialog for importing bones.
  */
 class reDialogImportBone : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<reDialogImportBone>;
+	
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	igdeTextFieldReference pEditPath;
-	igdeButtonReference pBtnPath;
-	igdeTextFieldReference pEditScaling;
-	igdeCheckBoxReference pChkImportBoneProperties;
-	igdeCheckBoxReference pChkImportShapes;
-	igdeCheckBoxReference pChkImportConstraints;
+	igdeTextField::Ref pEditPath;
+	igdeButton::Ref pBtnPath;
+	igdeTextField::Ref pEditScaling;
+	igdeCheckBox::Ref pChkImportBoneProperties;
+	igdeCheckBox::Ref pChkImportShapes;
+	igdeCheckBox::Ref pChkImportConstraints;
 	
 	
 	
@@ -57,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	reDialogImportBone( reWindowMain &windowMain );
+	reDialogImportBone(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~reDialogImportBone();
+	~reDialogImportBone() override;
 	/*@}*/
 	
 	
@@ -73,36 +78,36 @@ public:
 	const decString &GetPath() const;
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Scaling. */
 	float GetScaling() const;
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Bone properties are imported. */
 	bool GetImportBoneProperties() const;
 	
 	/** \brief Set if bone properties are imported. */
-	void SetImportBoneProperties( bool import );
+	void SetImportBoneProperties(bool import);
 	
 	/** \brief Shapes are imported. */
 	bool GetImportShapes() const;
 	
 	/** \brief Set if shapes are imported. */
-	void SetImportShapes( bool import );
+	void SetImportShapes(bool import);
 	
 	/** \brief Constraints are imported. */
 	bool GetImportConstraints() const;
 	
 	/** \brief Set if constraints are imported. */
-	void SetImportConstraints( bool import );
+	void SetImportConstraints(bool import);
 	
 	
 	
 	/** \brief Accept dialog. */
-	virtual bool Accept();
+	bool Accept() override;
 	/*@}*/
 };
 

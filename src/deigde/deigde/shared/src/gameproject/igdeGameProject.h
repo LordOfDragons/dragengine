@@ -25,12 +25,11 @@
 #ifndef _IGDEGAMEPROJECT_H_
 #define _IGDEGAMEPROJECT_H_
 
-#include "../gamedefinition/igdeGameDefinitionList.h"
+#include "../gamedefinition/igdeGameDefinition.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringList.h>
 
-class igdeGameDefinition;
 class igdeEnvironment;
 
 
@@ -45,6 +44,11 @@ class igdeEnvironment;
  *          to call the appropriate notification method in \ref igdeEnvironment.
  */
 class DE_DLL_EXPORT igdeGameProject : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGameProject> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	
@@ -60,11 +64,11 @@ private:
 	
 	decStringList pBaseGameDefinitionIDList;
 	decString pPathProjectGameDefinition;
-	igdeGameDefinitionList pBaseGameDefinitionList;
-	igdeGameDefinition *pProjectGameDefinition;
-	igdeGameDefinition *pXMLEClassGameDefinition;
-	igdeGameDefinition *pFoundGameDefinition;
-	igdeGameDefinition *pGameDefinition;
+	igdeGameDefinition::List pBaseGameDefinitionList;
+	igdeGameDefinition::Ref pProjectGameDefinition;
+	igdeGameDefinition::Ref pXMLEClassGameDefinition;
+	igdeGameDefinition::Ref pFoundGameDefinition;
+	igdeGameDefinition::Ref pGameDefinition;
 	
 	decString pScriptModule;
 	decString pScriptModuleVersion;
@@ -75,10 +79,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project. */
-	igdeGameProject( igdeEnvironment &environment );
+	explicit igdeGameProject(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up game definition. */
 	virtual ~igdeGameProject();
+	
+public:
 	/*@}*/
 	
 	
@@ -95,37 +102,37 @@ public:
 	inline const decString &GetFilePath() const{ return pPathFile; }
 	
 	/** \brief Set file path. */
-	void SetFilePath( const char *path );
+	void SetFilePath(const char *path);
 	
 	/** \brief Project name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set project name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Project description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set project description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Path to data relative to project directory. */
 	inline const decString &GetPathData() const{ return pPathData; }
 	
 	/** \brief Set path to data relative to project directory. */
-	void SetPathData( const char *path );
+	void SetPathData(const char *path);
 	
 	/** \brief Path to cache relative to project directory. */
 	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set path to cache relative to project directory. */
-	void SetPathCache( const char *path );
+	void SetPathCache(const char *path);
 	
 	/** \brief Path to local data relative to project directory. */
 	inline const decString &GetPathLocal() const{ return pPathLocal; }
 	
 	/** \brief Set path to local data relative to project directory. */
-	void SetPathLocal( const char *path );
+	void SetPathLocal(const char *path);
 	
 	
 	
@@ -137,11 +144,11 @@ public:
 	inline const decString &GetPathProjectGameDefinition() const{ return pPathProjectGameDefinition; }
 	
 	/** \brief Set project game definition path relative to project directory. */
-	void SetPathProjectGameDefinition( const char *path );
+	void SetPathProjectGameDefinition(const char *path);
 	
 	/** \brief Base game definition list. */
-	inline igdeGameDefinitionList &GetBaseGameDefinitionList(){ return pBaseGameDefinitionList; }
-	inline const igdeGameDefinitionList &GetBaseGameDefinitionList() const{ return pBaseGameDefinitionList; }
+	inline igdeGameDefinition::List &GetBaseGameDefinitionList(){ return pBaseGameDefinitionList; }
+	inline const igdeGameDefinition::List &GetBaseGameDefinitionList() const{ return pBaseGameDefinitionList; }
 	
 	/**
 	 * \brief Project game definition.
@@ -149,7 +156,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition path is not found set it to a default game definition instead.
 	 */
-	inline igdeGameDefinition *GetProjectGameDefinition() const{ return pProjectGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetProjectGameDefinition() const{ return pProjectGameDefinition; }
 	
 	/**
 	 * \brief Set project game definition.
@@ -157,7 +164,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition name is not found set it to a default game definition instead.
 	 */
-	void SetProjectGameDefinition( igdeGameDefinition *gameDefinition );
+	void SetProjectGameDefinition(igdeGameDefinition *gameDefinition);
 	
 	/**
 	 * \brief XML Element Class game definition.
@@ -167,12 +174,12 @@ public:
 	 * mappers to explicitly define object classes with specific extra parameters like snap
 	 * points for example. The XML Element Class will then overwrite the regular parameters.
 	 */
-	inline igdeGameDefinition *GetXMLEClassGameDefinition() const{ return pXMLEClassGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetXMLEClassGameDefinition() const{ return pXMLEClassGameDefinition; }
 	
 	/**
 	 * \brief Found file resources game definition.
 	 */
-	inline igdeGameDefinition *GetFoundGameDefinition() const{ return pFoundGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetFoundGameDefinition() const{ return pFoundGameDefinition; }
 	
 	/**
 	 * \brief Merged game definition.
@@ -182,7 +189,7 @@ public:
 	 * game definition with all the content of the respective game definitions has been
 	 * created. If possible use this game definition.
 	 */
-	inline igdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/**
 	 * \brief Update merged game definition.
@@ -200,13 +207,13 @@ public:
 	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** \brief Set name of script module to use. */
-	void SetScriptModule( const char *moduleName );
+	void SetScriptModule(const char *moduleName);
 	
 	/** \brief Minimum script module version or empty string. */
 	inline const decString &GetScriptModuleVersion() const{ return pScriptModuleVersion; }
 	
 	/** \brief Set minimum script module version or empty string. */
-	void SetScriptModuleVersion( const char *version );
+	void SetScriptModuleVersion(const char *version);
 	
 	
 	
@@ -218,7 +225,7 @@ public:
 	 * 
 	 * If this is different than the current changed state a notification is send to all listeners.
 	 */
-	void SetChanged( bool changed );
+	void SetChanged(bool changed);
 	
 	
 	

@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigationBlockerManager::deNavigationBlockerManager( deEngine *engine ) : deResourceManager( engine, ertNavigationBlocker ){
-	SetLoggingName( "navigation blocker" );
+deNavigationBlockerManager::deNavigationBlockerManager(deEngine *engine) : deResourceManager(engine, ertNavigationBlocker){
+	SetLoggingName("navigation blocker");
 }
 
 deNavigationBlockerManager::~deNavigationBlockerManager(){
@@ -62,25 +62,13 @@ int deNavigationBlockerManager::GetNavigationBlockerCount() const{
 }
 
 deNavigationBlocker *deNavigationBlockerManager::GetRootNavigationBlocker() const{
-	return ( deNavigationBlocker* )pBlockers.GetRoot();
+	return (deNavigationBlocker*)pBlockers.GetRoot();
 }
 
-deNavigationBlocker *deNavigationBlockerManager::CreateNavigationBlocker(){
-	deNavigationBlocker *blocker = NULL;
-	
-	try{
-		blocker = new deNavigationBlocker( this );
-		GetAISystem()->LoadNavigationBlocker( blocker );
-		
-		pBlockers.Add( blocker );
-		
-	}catch( const deException & ){
-		if( blocker ){
-			blocker->FreeReference();
-		}
-		throw;
-	}
-	
+deNavigationBlocker::Ref deNavigationBlockerManager::CreateNavigationBlocker(){
+	const deNavigationBlocker::Ref blocker(deNavigationBlocker::Ref::New(this));
+	GetAISystem()->LoadNavigationBlocker(blocker);
+	pBlockers.Add(blocker);
 	return blocker;
 }
 
@@ -89,8 +77,8 @@ deNavigationBlocker *deNavigationBlockerManager::CreateNavigationBlocker(){
 void deNavigationBlockerManager::ReleaseLeakingResources(){
 	const int count = GetNavigationBlockerCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking navigation blockers", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking navigation blockers", count);
 		pBlockers.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -101,26 +89,21 @@ void deNavigationBlockerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigationBlockerManager::SystemAILoad(){
-	deNavigationBlocker *blocker = ( deNavigationBlocker* )pBlockers.GetRoot();
 	deAISystem &aisys = *GetAISystem();
-	
-	while( blocker ){
-		if( ! blocker->GetPeerAI() ){
-			aisys.LoadNavigationBlocker( blocker );
+	pBlockers.GetResources().Visit([&](deResource *res){
+		deNavigationBlocker *blocker = static_cast<deNavigationBlocker*>(res);
+		if(!blocker->GetPeerAI()){
+			aisys.LoadNavigationBlocker(blocker);
 		}
-		blocker = ( deNavigationBlocker* )blocker->GetLLManagerNext();
-	}
+	});
 }
 
 void deNavigationBlockerManager::SystemAIUnload(){
-	deNavigationBlocker *blocker = ( deNavigationBlocker* )pBlockers.GetRoot();
-	
-	while( blocker ){
-		blocker->SetPeerAI( NULL );
-		blocker = ( deNavigationBlocker* )blocker->GetLLManagerNext();
-	}
+	pBlockers.GetResources().Visit([&](deResource *res){
+		static_cast<deNavigationBlocker*>(res)->SetPeerAI(nullptr);
+	});
 }
 
-void deNavigationBlockerManager::RemoveResource( deResource *resource ){
-	pBlockers.RemoveIfPresent( resource );
+void deNavigationBlockerManager::RemoveResource(deResource *resource){
+	pBlockers.RemoveIfPresent(resource);
 }

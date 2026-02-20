@@ -28,7 +28,7 @@
 #include "aeWPAPanelRule.h"
 #include "../../../animator/rule/aeRuleMirror.h"
 
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeListBox.h>
 
 
 
@@ -36,14 +36,18 @@
  * Mirror Rule Panel.
  */
 class aeWPAPanelRuleMirror : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleMirror>;
+	
+	
 private:
-	igdeComboBoxReference pCBMirrorAxis;
-	igdeComboBoxFilterReference pCBMirrorBone;
-	igdeListBoxReference pListMatchName;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBox::Ref pCBMirrorAxis;
+	igdeComboBoxFilter::Ref pCBMirrorBone;
+	igdeListBox::Ref pListMatchName;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -51,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleMirror( aeWPRule &wpRule );
+	aeWPAPanelRuleMirror(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleMirror();
+	~aeWPAPanelRuleMirror() override;
 	/*@}*/
 	
 	
@@ -64,13 +68,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Selected match name. */
-	aeRuleMirror::cMatchName *GetSelectedMatchBone() const;
+	aeRuleMirror::MatchName *GetSelectedMatchBone() const;
 	
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	/*@}*/
 };
 

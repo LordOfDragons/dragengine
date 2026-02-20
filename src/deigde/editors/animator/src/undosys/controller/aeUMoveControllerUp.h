@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeController;
-class aeAnimator;
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -42,28 +42,32 @@ class aeAnimator;
  * Undo object for moving a controller up.
  */
 class aeUMoveControllerUp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUMoveControllerUp>;
+	
+	
 private:
 	aeAnimator *pAnimator;
-	aeController *pController;
+	aeController::Ref pController;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUMoveControllerUp( aeAnimator *animator, aeController *controller );
+	aeUMoveControllerUp(aeAnimator *animator, aeController *controller);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUMoveControllerUp();
+	~aeUMoveControllerUp() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

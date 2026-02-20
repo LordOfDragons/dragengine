@@ -36,16 +36,17 @@ class dewiDeviceMouse : public dewiDevice{
 public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dewiDeviceMouse> Ref;
-
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	dewiDeviceMouse( deWindowsInput &module );
+	dewiDeviceMouse(deWindowsInput &module);
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~dewiDeviceMouse();
+	~dewiDeviceMouse() override;
 	/*@}*/
 	
 	
@@ -54,7 +55,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

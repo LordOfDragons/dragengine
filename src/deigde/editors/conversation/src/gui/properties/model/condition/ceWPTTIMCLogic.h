@@ -34,15 +34,18 @@
  */
 class ceWPTTIMCLogic : public ceWPTTIMConditions{
 public:
+	using Ref = deTObjectReference<ceWPTTIMCLogic>;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCLogic( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionLogic *condition );
+	ceWPTTIMCLogic(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionLogic *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCLogic();
+	~ceWPTTIMCLogic() override;
 	/*@}*/
 	
 	
@@ -52,23 +55,23 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionLogic *GetConditionLogic() const{
-		return ( ceCConditionLogic* )GetCondition();
+		return (ceCConditionLogic*)GetCondition().Pointer();
 	}
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText( ceCConditionLogic::eOperators anOperator );
+	decString GetOperatorText(ceCConditionLogic::eOperators anOperator) const;
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition) override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

@@ -25,11 +25,11 @@
 #ifndef _CECAIFELSECASE_H_
 #define _CECAIFELSECASE_H_
 
+#include "ceConversationAction.h"
+#include "../condition/ceConversationCondition.h"
+
 #include <dragengine/deObject.h>
-
-#include "ceConversationActionList.h"
-
-class ceConversationCondition;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -37,38 +37,42 @@ class ceConversationCondition;
  */
 class ceCAIfElseCase : public deObject{
 private:
-	ceConversationCondition *pCondition;
-	ceConversationActionList pActions;
-	bool pTIMExpanded;
-	bool pTIMConditionExpanded;
-	bool pTIMActionsExpanded;
+	ceConversationCondition::Ref pCondition;
+	ceConversationAction::List pActions;
+	bool pTIMExpanded, pTIMConditionExpanded, pTIMActionsExpanded;
 	
 public:
+	using Ref = deTObjectReference<ceCAIfElseCase>;
+	using List = decTObjectOrderedSet<ceCAIfElseCase>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create if else case. */
 	ceCAIfElseCase();
 	
 	/** \brief Create if else case. */
-	ceCAIfElseCase( const ceCAIfElseCase &ifcase );
+	ceCAIfElseCase(const ceCAIfElseCase &ifcase);
 	
 	/** \brief Clean up the if else case. */
-	virtual ~ceCAIfElseCase();
+protected:
+	~ceCAIfElseCase() override;
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Condition or \em NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	/** \brief Condition or \em nullptr if there is none. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
-	/** \brief Set condition or \em NULL if there is none. */
-	void SetCondition( ceConversationCondition *condition );
+	/** \brief Set condition or \em nullptr if there is none. */
+	void SetCondition(ceConversationCondition *condition);
 	
 	/** \brief List of actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/*@}*/
 	
 	
@@ -79,19 +83,19 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Condition tree list item expanded state. */
 	inline bool GetTIMConditionExpanded() const{ return pTIMConditionExpanded; }
 	
 	/** \brief Set condition tree list item expanded state. */
-	void SetTIMConditionExpanded( bool expanded );
+	void SetTIMConditionExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
 	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
-	void SetTIMActionsExpanded( bool expanded );
+	void SetTIMActionsExpanded(bool expanded);
 	/*@}*/
 };
 

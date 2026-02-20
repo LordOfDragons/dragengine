@@ -27,8 +27,8 @@
 #define _DEBPSHAPEGROUPEXTENDS_H_
 
 // includes
-#include "dragengine/common/shape/decShapeVisitor.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 class debpDCollisionVolume;
@@ -54,7 +54,7 @@ public:
 	/** Creates a new visitor. */
 	debpShapeGroupExtends();
 	/** Cleans up the visitor. */
-	virtual ~debpShapeGroupExtends();
+	~debpShapeGroupExtends() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -66,35 +66,35 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Sets the rotation to apply to shapes before calculating the extends. */
-	void SetRotation( const decQuaternion &rotation );
+	void SetRotation(const decQuaternion &rotation);
 	/** Sets the reference point. */
-	void SetReferencePoint( const decDVector &referencePoint );
+	void SetReferencePoint(const decDVector &referencePoint);
 	/*@}*/
 	
 	/** @name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 	
 private:
-	void pAddExtends( const decDVector &minExtend, const decDVector &maxExtend );
-	void pAddExtendsFrom( debpDCollisionVolume &volume );
+	void pAddExtends(const decDVector &minExtend, const decDVector &maxExtend);
+	void pAddExtendsFrom(debpDCollisionVolume &volume);
 };
 
 // end of include only once

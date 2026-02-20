@@ -35,7 +35,8 @@
  */
 class aeRuleTrackTo : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleTrackTo> Ref;
+	using Ref = deTObjectReference<aeRuleTrackTo>;
+	
 	
 private:
 	decString pTrackBone;
@@ -44,18 +45,20 @@ private:
 	deAnimatorRuleTrackTo::eUpTarget pUpTarget;
 	deAnimatorRuleTrackTo::eLockedAxis pLockedAxis;
 	
-	aeControllerTarget pTargetPosition;
-	aeControllerTarget pTargetUp;
+	aeControllerTarget::Ref pTargetPosition;
+	aeControllerTarget::Ref pTargetUp;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new track to rule. */
-	aeRuleTrackTo();
+	explicit aeRuleTrackTo(const char *name);
 	/** Create a copy of a track to rule. */
-	aeRuleTrackTo( const aeRuleTrackTo &copy );
+	aeRuleTrackTo(const aeRuleTrackTo &copy);
 	/** Clean up the animator rule. */
-	virtual ~aeRuleTrackTo();
+protected:
+	~aeRuleTrackTo() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -63,54 +66,52 @@ public:
 	/** Retrieve the name of the track bone or empty string to use none. */
 	inline const decString &GetTrackBone() const{ return pTrackBone; }
 	/** Set the name of the track bone or empty string to use none. */
-	void SetTrackBone( const char *boneName );
+	void SetTrackBone(const char *boneName);
 	/** Retrieve the track axis. */
 	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
 	/** Set the track axis. */
-	void SetTrackAxis( deAnimatorRuleTrackTo::eTrackAxis axis );
+	void SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up axis. */
 	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pUpAxis; }
 	/** Set the up axis. */
-	void SetUpAxis( deAnimatorRuleTrackTo::eTrackAxis axis );
+	void SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up target. */
 	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pUpTarget; }
 	/** Set the up target. */
-	void SetUpTarget( deAnimatorRuleTrackTo::eUpTarget target );
+	void SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target);
 	/** Retrieve the locked axis. */
 	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
 	/** Set the locked axis. */
-	void SetLockedAxis( deAnimatorRuleTrackTo::eLockedAxis axis );
+	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
 	
 	/** Retrieve the position target. */
-	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
-	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Retrieve the up target. */
-	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
-	inline const aeControllerTarget &GetTargetUp() const{ return pTargetUp; }
+	inline const aeControllerTarget::Ref &GetTargetUp() const{ return pTargetUp; }
 	
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
-	virtual void UpdateTargets();
+	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	int CountLinkUsage(aeLink *link) const override;
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	void RemoveLinkFromTargets(aeLink *link) override;
 	/** Remove all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
+	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another track to rule to this track to rule. */
-	virtual aeRuleTrackTo &operator=( const aeRuleTrackTo &copy );
+	virtual aeRuleTrackTo &operator=(const aeRuleTrackTo &copy);
 	/*@}*/
 };
 

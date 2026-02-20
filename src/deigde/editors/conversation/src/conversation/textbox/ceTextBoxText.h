@@ -26,10 +26,11 @@
 #define _CETEXTBOXTEXT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class ceTextBox;
 class deGraphicContext;
 
@@ -43,16 +44,22 @@ private:
 	decUnicodeString pName;
 	decUnicodeString pText;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
+	using Ref = deTObjectReference<ceTextBoxText>;
+	using List = decTObjectOrderedSet<ceTextBoxText>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box text. */
 	ceTextBoxText();
 	
 	/** \brief Clean up text box text. */
-	virtual ~ceTextBoxText();
+protected:
+	~ceTextBoxText() override;
+public:
 	/*@}*/
 	
 	
@@ -63,19 +70,19 @@ public:
 	inline const decUnicodeString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const decUnicodeString &name );
+	void SetName(const decUnicodeString &name);
 	
 	/** \brief Text. */
 	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Layout text. Create canvas if not existing. */
-	void Layout( const ceTextBox &textBox );
+	void Layout(const ceTextBox &textBox);
 	/*@}*/
 };
 

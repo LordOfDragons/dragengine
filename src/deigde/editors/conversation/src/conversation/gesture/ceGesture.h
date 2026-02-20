@@ -26,6 +26,7 @@
 #define _CEGESTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class ceConversation;
@@ -93,9 +94,8 @@ value during every frame update without having to worry about anything.
  */
 class ceGesture : public deObject{
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceGesture> Ref;
-	
+	using Ref = deTObjectReference<ceGesture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceGesture>,ceGesture>;
 	
 	
 private:
@@ -112,45 +112,47 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create gesture. */
-	ceGesture( const char *name = "Gesture" );
+	ceGesture(const char *name = "Gesture");
 	
 	/** Clean up gesture. */
-	virtual ~ceGesture();
+protected:
+	~ceGesture() override;
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Conversation or \em NULL if not set. */
+	/** Conversation or \em nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** Set conversation or \em NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	/** Set conversation or \em nullptr if not set. */
+	void SetConversation(ceConversation *conversation);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Name of animator to use. */
 	inline const decString &GetAnimator() const{ return pAnimator; }
 	
 	/** Set name of animator to use. */
-	void SetAnimator( const char *animator );
+	void SetAnimator(const char *animator);
 	
 	/** Hold gesture after finishing it. */
 	inline bool GetHold() const{ return pHold; }
 	
 	/** Set if gesture is hold after finishing it. */
-	void SetHold( bool hold );
+	void SetHold(bool hold);
 	
 	/** Duration in seconds. */
 	inline float GetDuration() const{ return pDuration; }
 	
 	/** Set duration in seconds. */
-	void SetDuration( float duration );
+	void SetDuration(float duration);
 	/*@}*/
 };
 

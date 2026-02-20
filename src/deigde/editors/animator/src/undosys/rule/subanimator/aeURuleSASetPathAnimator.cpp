@@ -40,32 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSASetPathAnimator::aeURuleSASetPathAnimator( aeRuleSubAnimator *rule, const char *newPath ) :
-pRule( NULL ),
-pNewPath( newPath )
+aeURuleSASetPathAnimator::aeURuleSASetPathAnimator(aeRuleSubAnimator *rule, const char *newPath) :
+pNewPath(newPath)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(rule)
 	
 	pOldPath = rule->GetPathSubAnimator();
+	pOldConnections = rule->GetConnections();
 	
-	const int count = rule->GetConnectionCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pOldConnections.Add( rule->GetControllerAt( i ) );
-	}
-	
-	SetShortInfo( "Sub-Animator: Set animator path" );
+	SetShortInfo("@Animator.Undo.RuleSubAnimatorSetPathAnimator");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleSASetPathAnimator::~aeURuleSASetPathAnimator(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -74,17 +62,15 @@ aeURuleSASetPathAnimator::~aeURuleSASetPathAnimator(){
 ///////////////
 
 void aeURuleSASetPathAnimator::Undo(){
-	pRule->SetPathSubAnimator( pOldPath );
+	pRule->SetPathSubAnimator(pOldPath);
 	pRule->LoadSubAnimator();
 	
-	const int count = pOldConnections.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pRule->SetControllerAt( i, ( aeController* )pOldConnections.GetAt( i ) );
-	}
+	pOldConnections.VisitIndexed([&](int index, aeController *controller){
+		pRule->SetControllerAt(index, controller);
+	});
 }
 
 void aeURuleSASetPathAnimator::Redo(){
-	pRule->SetPathSubAnimator( pNewPath );
+	pRule->SetPathSubAnimator(pNewPath);
 	pRule->LoadSubAnimator();
 }

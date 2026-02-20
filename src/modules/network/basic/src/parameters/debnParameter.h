@@ -25,6 +25,7 @@
 #ifndef _DEBNPARAMETER_H_
 #define _DEBNPARAMETER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -36,6 +37,27 @@ class deNetworkBasic;
  * itself and provides methods to retrieves or alter the current value.
  */
 class debnParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<debnParameter>{
+	public:
+		using decTUniqueList<debnParameter>::decTUniqueList;
+		
+		debnParameter &GetNamed(const char *name) const{
+			debnParameter * const found = FindOrNull([&](const debnParameter &p){
+				return p.GetName() == name;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const debnParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	deNetworkBasic &pNetwork;
 	
@@ -45,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	debnParameter( deNetworkBasic &network );
+	debnParameter(deNetworkBasic &network);
 	
 	/** Clean up parameter. */
 	virtual ~debnParameter();
@@ -59,7 +81,7 @@ public:
 	virtual decString GetParameterValue() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value ) = 0;
+	virtual void SetParameterValue(const char *value) = 0;
 	/*@}*/
 };
 

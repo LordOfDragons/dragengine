@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
-class peeEmitter;
+#include "../../emitter/peeType.h"
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -36,9 +36,13 @@ class peeEmitter;
  * \brief Undo Action Remove Type.
  */
 class peeUTypeRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeRemove>;
+	
+	
 private:
 	peeEmitter *pEmitter;
-	peeType *pType;
+	peeType::Ref pType;
 	int pIndex;
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	peeUTypeRemove( peeType *type );
+	peeUTypeRemove(peeType *type);
 	
 protected:
 	/** \brief Clean up the undo object. */
-	virtual ~peeUTypeRemove();
+	~peeUTypeRemove() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

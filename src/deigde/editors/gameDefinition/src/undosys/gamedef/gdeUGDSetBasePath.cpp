@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetBasePath::gdeUGDSetBasePath( gdeGameDefinition *gameDefinition, const char *newValue ) :
-pGameDefinition( NULL ),
-pNewValue( newValue )
+gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition *gameDefinition, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set base path" );
+	SetShortInfo("@GameDefinition.Undo.GDSetBasePath");
 	
 	pOldValue = gameDefinition->GetBasePath();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetBasePath::~gdeUGDSetBasePath(){
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ gdeUGDSetBasePath::~gdeUGDSetBasePath(){
 ///////////////
 
 void gdeUGDSetBasePath::Undo(){
-	pGameDefinition->SetBasePath( pOldValue );
+	pGameDefinition->SetBasePath(pOldValue);
 }
 
 void gdeUGDSetBasePath::Redo(){
-	pGameDefinition->SetBasePath( pNewValue );
+	pGameDefinition->SetBasePath(pNewValue);
 }

@@ -25,15 +25,18 @@
 #ifndef _DEDECAL_H_
 #define _DEDECAL_H_
 
+#include "deDecalBoneState.h"
 #include "../deResource.h"
-#include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/deSkin.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTLinkedList.h"
+#include "../../common/collection/decTList.h"
 
 class deDecalManager;
 class deComponent;
 class deHeightTerrainSector;
-class deDecalBoneState;
 class deBaseGraphicDecal;
 class deBasePhysicsDecal;
 class deBaseAudioDecal;
@@ -55,8 +58,10 @@ class deBaseAudioDecal;
 class DE_DLL_EXPORT deDecal : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDecal> Ref;
+	using Ref = deTObjectReference<deDecal>;
 	
+	/** \brief List typedef. */
+	using List = decTObjectOrderedSet<deDecal>;
 	
 	
 private:
@@ -65,22 +70,19 @@ private:
 	decVector pSize;
 	decTexMatrix2 pTransform;
 	
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	int pTexture;
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	bool pVisible;
 	
-	deDecalBoneState *pBoneStates;
-	int pBoneStateCount;
+	decTList<deDecalBoneState> pBoneStates;
 	
 	deComponent *pParentComponent;
-	deDecal *pLLComponentPrev;
-	deDecal *pLLComponentNext;
+	decTObjectLinkedList<deDecal>::Element pLLComponent;
 	
 	deHeightTerrainSector *pParentHeightTerrainSector;
-	deDecal *pLLHeightTerrainSectorPrev;
-	deDecal *pLLHeightTerrainSectorNext;
+	decTObjectLinkedList<deDecal>::Element pLLHeightTerrainSector;
 	
 	deBaseGraphicDecal *pPeerGraphic;
 	deBasePhysicsDecal *pPeerPhysics;
@@ -92,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create decal. */
-	deDecal( deDecalManager *manager );
+	deDecal(deDecalManager *manager);
 	
 protected:
 	/**
@@ -101,7 +103,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deDecal();
+	~deDecal() override;
 	/*@}*/
 	
 	
@@ -113,66 +115,69 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decVector &size );
+	void SetSize(const decVector &size);
 	
 	/** \brief Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Texture number in the skin. */
 	inline int GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture number in the skin. */
-	void SetTexture( int texture );
+	void SetTexture(int texture);
 	
 	/** \brief Dynamic skin or NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or NULL if not used. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Decal is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if decal is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	
 	
 	/** \name Bone States */
 	/*@{*/
+	/** \brief Bone states. */
+	inline const decTList<deDecalBoneState> &GetBoneStates() const{ return pBoneStates; }
+	
 	/** \brief Number of bone states. */
-	inline int GetBoneStateCount() const{ return pBoneStateCount; }
+	inline int GetBoneStateCount() const{ return pBoneStates.GetCount(); }
 	
 	/** \brief Set number of bone states. */
-	void SetBoneStateCount( int count );
+	void SetBoneStateCount(int count);
 	
 	/** \brief Bone state at the given index. */
-	deDecalBoneState &GetBoneStateAt( int index );
+	deDecalBoneState &GetBoneStateAt(int index);
 	
 	/** \brief Copy current bone state from the provided component. */
-	void SnapshotBoneStatesFrom( deComponent *component );
+	void SnapshotBoneStatesFrom(deComponent *component);
 	/*@}*/
 	
 	
@@ -183,25 +188,11 @@ public:
 	inline deComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/** \brief Set parent component or NULL. */
-	void SetParentComponent( deComponent *component );
+	void SetParentComponent(deComponent *component);
 	
-	/** \brief Previous decal in component linked list. */
-	inline deDecal *GetLLComponentPrev() const{ return pLLComponentPrev; }
-	
-	/**
-	 * \brief Set next decal in the component linked list.
-	 * \warning For use by deComponent only.
-	 */
-	void SetLLComponentPrev( deDecal *decal );
-	
-	/** \brief Next decal in the component linked list. */
-	inline deDecal *GetLLComponentNext() const{ return pLLComponentNext; }
-	
-	/**
-	 * \brief Set next decal in the component linked list.
-	 * \warning For use by deComponent only.
-	 */
-	void SetLLComponentNext( deDecal *decal );
+	/** \brief Component linked list. */
+	inline decTObjectLinkedList<deDecal>::Element &GetLLComponent(){ return pLLComponent; }
+	inline const decTObjectLinkedList<deDecal>::Element &GetLLComponent() const{ return pLLComponent; }
 	/*@}*/
 	
 	
@@ -212,25 +203,11 @@ public:
 	inline deHeightTerrainSector *GetParentHeightTerrainSector() const{ return pParentHeightTerrainSector; }
 	
 	/** \brief Set parent height terrain sector or NULL. */
-	void SetParentHeightTerrainSector( deHeightTerrainSector *sector );
+	void SetParentHeightTerrainSector(deHeightTerrainSector *sector);
 	
-	/** \brief Previous decal in height terrain sector linked list. */
-	inline deDecal *GetLLHeightTerrainSectorPrev() const{ return pLLHeightTerrainSectorPrev; }
-	
-	/**
-	 * \brief Set next decal in the height terrain sector linked list.
-	 * \warning For use by deHeightTerrainSector only.
-	 */
-	void SetLLHeightTerrainSectorPrev( deDecal *decal );
-	
-	/** \brief Next decal in the height terrain sector linked list. */
-	inline deDecal *GetLLHeightTerrainSectorNext() const{ return pLLHeightTerrainSectorNext; }
-	
-	/**
-	 * \brief Set next decal in the height terrain sector linked list.
-	 * \warning For use by deHeightTerrainSector only.
-	 */
-	void SetLLHeightTerrainSectorNext( deDecal *decal );
+	/** \brief Height terrain sector linked list. */
+	inline decTObjectLinkedList<deDecal>::Element &GetLLHeightTerrainSector(){ return pLLHeightTerrainSector; }
+	inline const decTObjectLinkedList<deDecal>::Element &GetLLHeightTerrainSector() const{ return pLLHeightTerrainSector; }
 	/*@}*/
 	
 	
@@ -241,19 +218,19 @@ public:
 	inline deBaseGraphicDecal *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicDecal *peer );
+	void SetPeerGraphic(deBaseGraphicDecal *peer);
 	
 	/** \brief Physics system peer. */
 	inline deBasePhysicsDecal *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerPhysics( deBasePhysicsDecal *peer );
+	void SetPeerPhysics(deBasePhysicsDecal *peer);
 	
 	/** \brief Audio system peer. */
 	inline deBaseAudioDecal *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer. */
-	void SetPeerAudio( deBaseAudioDecal *peer );
+	void SetPeerAudio(deBaseAudioDecal *peer);
 	/*@}*/
 	
 	

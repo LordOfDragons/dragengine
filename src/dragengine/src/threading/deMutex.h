@@ -93,7 +93,7 @@ public:
 	 * 
 	 * \param[in] timeout Timeout in milli-seconds.
 	 */
-	bool TryLock( int timeout );
+	bool TryLock(int timeout);
 	
 	/**
 	 * \brief Unlock the mutex.

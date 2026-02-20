@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableRotZMin::aeURuleLimitSetEnableRotZMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableRotZMin::aeURuleLimitSetEnableRotZMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum y rotation" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumZRotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotZMin::~aeURuleLimitSetEnableRotZMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableRotZMin::Undo(){
 }
 
 void aeURuleLimitSetEnableRotZMin::Redo(){
-	pRule->SetEnableRotationZMin( ! pRule->GetEnableRotationZMin() );
+	pRule->SetEnableRotationZMin(!pRule->GetEnableRotationZMin());
 }

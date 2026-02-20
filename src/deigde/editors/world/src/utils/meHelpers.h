@@ -25,9 +25,12 @@
 #ifndef _MEHELPERS_H_
 #define _MEHELPERS_H_
 
-#include <dragengine/common/math/decMath.h>
+#include "../world/object/texture/meObjectTexture.h"
 
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
+
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 class meObject;
@@ -36,98 +39,90 @@ class igdeGDCComponent;
 class igdeGDCamera;
 class igdeGDCLight;
 class igdeGDCCTexture;
-class igdeGDPropertyList;
 class igdeGDCNavigationSpace;
 class igdeGDCNavigationBlocker;
-
-class deObjectReference;
-class decString;
-class decStringList;
 
 
 namespace meHelpers{
 	/** \brief Find first game definition component. */
-	igdeGDCComponent *FindFirstComponent( const igdeGDClass *gdclass );
+	igdeGDCComponent *FindFirstComponent(const igdeGDClass *gdclass);
 	
 	/** \brief Find first game definition component. */
-	igdeGDCComponent *FindFirstComponent( const igdeGDClass &gdclass );
+	bool FindFirstComponent(const igdeGDClass &gdclass, igdeGDCComponent* &component);
 	
 	/** \brief Find first game definition component. */
-	bool FindFirstComponent( const igdeGDClass &gdclass, igdeGDCComponent* &component );
-	
-	/** \brief Find first game definition component. */
-	bool FindFirstComponent( const igdeGDClass &gdclass, decString &prefix, igdeGDCComponent* &component );
+	bool FindFirstComponent(const igdeGDClass &gdclass, decString &prefix, igdeGDCComponent* &component);
 	
 	
 	
 	/** \brief Find first game definition light. */
-	igdeGDCLight *FindFirstLight( const igdeGDClass *gdclass );
+	igdeGDCLight *FindFirstLight(const igdeGDClass *gdclass);
 	
 	/** \brief Find first game definition light. */
-	igdeGDCLight *FindFirstLight( const igdeGDClass &gdclass );
+	igdeGDCLight *FindFirstLight(const igdeGDClass &gdclass);
 	
 	/** \brief Find first game definition light. */
-	bool FindFirstLight( const igdeGDClass &gdclass, igdeGDCLight* &light );
+	bool FindFirstLight(const igdeGDClass &gdclass, igdeGDCLight* &light);
 	
 	/** \brief Find first game definition light. */
-	bool FindFirstLight( const igdeGDClass &gdclass, decString &prefix, igdeGDCLight* &light );
+	bool FindFirstLight(const igdeGDClass &gdclass, decString &prefix, igdeGDCLight* &light);
 	
 	
 	
 	/** \brief Find first game definition navigationSpace. */
-	igdeGDCNavigationSpace *FindFirstNavigationSpace( const igdeGDClass *gdclass );
+	igdeGDCNavigationSpace *FindFirstNavigationSpace(const igdeGDClass *gdclass);
 	
 	/** \brief Find first game definition navigationSpace. */
-	igdeGDCNavigationSpace *FindFirstNavigationSpace( const igdeGDClass &gdclass );
+	igdeGDCNavigationSpace *FindFirstNavigationSpace(const igdeGDClass &gdclass);
 	
 	/** \brief Find first game definition navigationSpace. */
-	bool FindFirstNavigationSpace( const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace );
+	bool FindFirstNavigationSpace(const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace);
 	
 	/** \brief Find first game definition navigationSpace. */
-	bool FindFirstNavigationSpace( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace );
+	bool FindFirstNavigationSpace(const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace);
 	
 	
 	
 	/** \brief Find first game definition navigationBlocker. */
-	igdeGDCNavigationBlocker *FindFirstNavigationBlocker( const igdeGDClass *gdclass );
+	igdeGDCNavigationBlocker *FindFirstNavigationBlocker(const igdeGDClass *gdclass);
 	
 	/** \brief Find first game definition navigationBlocker. */
-	igdeGDCNavigationBlocker *FindFirstNavigationBlocker( const igdeGDClass &gdclass );
+	igdeGDCNavigationBlocker *FindFirstNavigationBlocker(const igdeGDClass &gdclass);
 	
 	/** \brief Find first game definition navigationBlocker. */
-	bool FindFirstNavigationBlocker( const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker );
+	bool FindFirstNavigationBlocker(const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker);
 	
 	/** \brief Find first game definition navigationBlocker. */
-	bool FindFirstNavigationBlocker( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker );
+	bool FindFirstNavigationBlocker(const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker);
 	
 	
 	
 	/** \brief Find first game definition camera. */
-	igdeGDCamera *FindFirstCamera( const igdeGDClass *gdclass );
+	igdeGDCamera *FindFirstCamera(const igdeGDClass *gdclass);
 	
 	/** \brief Find first game definition camera. */
-	igdeGDCamera *FindFirstCamera( const igdeGDClass &gdclass );
+	igdeGDCamera *FindFirstCamera(const igdeGDClass &gdclass);
 	
 	/** \brief Find first game definition camera. */
-	bool FindFirstCamera( const igdeGDClass &gdclass, igdeGDCamera* &camera );
+	bool FindFirstCamera(const igdeGDClass &gdclass, igdeGDCamera* &camera);
 	
 	/** \brief Find first game definition camera. */
-	bool FindFirstCamera( const igdeGDClass &gdclass, decString &prefix, igdeGDCamera* &camera );
+	bool FindFirstCamera(const igdeGDClass &gdclass, decString &prefix, igdeGDCamera* &camera);
 	
 	
 	
 	/** \brief Get names of all path type properties matching pattern type. */
-	void GetPatternTypePropertyNames( const igdeGDClass &gdclass,
-		igdeGDProperty::ePathPatternTypes patternType, decStringList &names );
+	void GetPatternTypePropertyNames(const igdeGDClass &gdclass,
+		igdeGDProperty::ePathPatternTypes patternType, decStringList &names);
 	
 	
 	
 	/** \brief Create texture. */
-	void CreateTexture( deObjectReference &texture, meObject *object, const char *textureName );
+	void CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName);
 	
 	/** \brief Create texture. */
-	void CreateTexture( deObjectReference &texture, meObject *object, const char *textureName,
-		const igdeGDCCTexture * gdctexture );
+	void CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName,
+		const igdeGDCCTexture * gdctexture);
 };
 
 #endif

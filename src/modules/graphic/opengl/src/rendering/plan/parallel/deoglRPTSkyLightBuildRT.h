@@ -36,6 +36,11 @@ class deoglCollideList;
  * Parallel task building render tasks.
  */
 class deoglRPTSkyLightBuildRT : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoglRPTSkyLightBuildRT>;
+	
+	
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	deoglCollideList &pTempCollideList;
@@ -49,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightBuildRT( deoglRenderPlanSkyLight &plan,
-		deoglCollideList &tempCollideList, int fromLayer, int toLayer );
+	deoglRPTSkyLightBuildRT(deoglRenderPlanSkyLight &plan,
+		deoglCollideList &tempCollideList, int fromLayer, int toLayer);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTSkyLightBuildRT();
+	~deoglRPTSkyLightBuildRT() override;
 	/*@}*/
 	
 	
@@ -61,13 +66,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Information for updating render task. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
@@ -79,7 +84,7 @@ public:
 	
 	
 private:
-	void pFilter( int layerIndex );
+	void pFilter(int layerIndex);
 };
 
 #endif

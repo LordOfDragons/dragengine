@@ -36,6 +36,9 @@
  */
 class aeClipboardDataBones : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeClipboardDataBones>;
+	
 	/** Type name. */
 	static const char * const TYPE_NAME;
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataBones( const decStringSet &bones );
+	aeClipboardDataBones(const decStringSet &bones);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~aeClipboardDataBones();
+	~aeClipboardDataBones() override;
 	/*@}*/
 	
 	

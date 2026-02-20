@@ -40,26 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetBoneMaximum::aeULinkSetBoneMaximum( aeLink *link, float newBoneMaximum ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+aeULinkSetBoneMaximum::aeULinkSetBoneMaximum(aeLink *link, float newBoneMaximum){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
-	SetShortInfo( "Link set bone maximum" );
+	SetShortInfo("@Animator.Undo.LinkSetBoneMaximum");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetBoneMaximum();
 	pNewValue = newBoneMaximum;
 }
 
 aeULinkSetBoneMaximum::~aeULinkSetBoneMaximum(){
-	if( pLink ){
-		pLink->FreeReference();
-	}
 }
 
 
@@ -68,9 +63,9 @@ aeULinkSetBoneMaximum::~aeULinkSetBoneMaximum(){
 ///////////////
 
 void aeULinkSetBoneMaximum::Undo(){
-	pLink->SetBoneMaximum( pOldValue );
+	pLink->SetBoneMaximum(pOldValue);
 }
 
 void aeULinkSetBoneMaximum::Redo(){
-	pLink->SetBoneMaximum( pNewValue );
+	pLink->SetBoneMaximum(pNewValue);
 }

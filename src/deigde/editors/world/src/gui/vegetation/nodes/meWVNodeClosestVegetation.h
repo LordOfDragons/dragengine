@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECLOSESTVEGETATION_H_
 #define _MEWVNODECLOSESTVEGETATION_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeContainer.h>
 
 #include "meWVNode.h"
 
@@ -38,12 +38,15 @@ class meHTVRuleClosestVegetation;
  * \brief Vegetation Editing Window Node Closest Vegetation.
  */
 class meWVNodeClosestVegetation : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeClosestVegetation>;
+	
 private:
 	meHTVRuleClosestVegetation *pRuleCV;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditVegetationType;
-	igdeTextFieldReference pEditSearchRadius;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditVegetationType;
+	igdeTextField::Ref pEditSearchRadius;
 	
 	
 	
@@ -51,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNodeClosestVegetation( meWindowVegetation &windowVegetation, meHTVRuleClosestVegetation *rule );
+	meWVNodeClosestVegetation(meWindowVegetation &windowVegetation, meHTVRuleClosestVegetation *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeClosestVegetation();
+	~meWVNodeClosestVegetation() override;
 	/*@}*/
 	
 	
@@ -67,7 +70,7 @@ public:
 	inline meHTVRuleClosestVegetation *GetRuleClosestVegetation() const{ return pRuleCV; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

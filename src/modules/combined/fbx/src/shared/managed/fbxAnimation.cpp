@@ -37,7 +37,6 @@
 #include "../fbxProperty.h"
 #include "../property/fbxPropertyString.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
@@ -48,25 +47,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxAnimation::fbxAnimation( fbxScene &scene ) :
-pScene( scene )
+fbxAnimation::fbxAnimation(fbxScene &scene) :
+pScene(scene)
 {
-	decPointerList nodeStacks;
-	scene.FindNodesNamed( nodeStacks, "AnimationStack" );
+	decTList<fbxNode*> nodeStacks;
+	scene.FindNodesNamed(nodeStacks, "AnimationStack");
 	
-	const int nodeStackCount = nodeStacks.GetCount();
-	deObjectReference refMove;
-	int i;
+	nodeStacks.Visit([&](fbxNode *node){
+		pMoves.Add(fbxAnimationMove::Ref::New(*this, *node));
+	});
 	
-	for( i=0; i<nodeStackCount; i++ ){
-		refMove.TakeOver( new fbxAnimationMove( *this, *( ( fbxNode* )nodeStacks.GetAt( i ) ) ) );
-		pMoves.Add( refMove );
-	}
-	
-	const int moveCount = pMoves.GetCount();
-	for( i=0; i<moveCount; i++ ){
-		GetMoveAt( i )->Prepare();
-	}
+	pMoves.Visit([&](fbxAnimationMove &move){
+		move.Prepare();
+	});
 }
 
 fbxAnimation::~fbxAnimation(){
@@ -77,52 +70,26 @@ fbxAnimation::~fbxAnimation(){
 // Management
 ///////////////
 
-int fbxAnimation::GetMoveCount() const{
-	return pMoves.GetCount();
+void fbxAnimation::MatchRig(const fbxRig &rig){
+	pMoves.Visit([&](fbxAnimationMove &move){
+		move.MatchRig(rig);
+	});
 }
 
-fbxAnimationMove *fbxAnimation::GetMoveAt( int index ) const{
-	return ( fbxAnimationMove* )pMoves.GetAt( index );
-}
-
-fbxAnimationMove *fbxAnimation::GetMoveNamed( const char *name ) const{
-	const int count = pMoves.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		fbxAnimationMove * const move = ( fbxAnimationMove* )pMoves.GetAt( i );
-		if( move->GetName() == name ){
-			return move;
-		}
-	}
-	return NULL;
-}
-
-void fbxAnimation::MatchRig( const fbxRig &rig ){
-	const int count = pMoves.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( fbxAnimationMove* )( deObject* )pMoves.GetAt( i ) )->MatchRig( rig );
-	}
-}
-
-float fbxAnimation::ConvTime( int64_t time ){
+float fbxAnimation::ConvTime(int64_t time){
 	// time unit in FBX (FbxTime) is 1/46186158000 of one second
-	return ( float )( ( double )time / 46186158000.0 );
+	return (float)((double)time / 46186158000.0);
 }
 
 
 
-void fbxAnimation::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose ) const{
-	const int count = pMoves.GetCount();
-	int i;
+void fbxAnimation::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	module.LogInfoFormat("%sAnimation", prefix.GetString());
 	
-	module.LogInfoFormat( "%sAnimation", prefix.GetString() );
-	
-	const decString childPrefix( prefix + "  " );
-	for( i=0; i<count; i++ ){
-		GetMoveAt( i )->DebugPrintStructure( module, childPrefix, verbose );
-	}
+	const decString childPrefix(prefix + "  ");
+	pMoves.Visit([&](const fbxAnimationMove &move){
+		move.DebugPrintStructure(module, childPrefix, verbose);
+	});
 }
 
 

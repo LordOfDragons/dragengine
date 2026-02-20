@@ -40,104 +40,101 @@
 ////////////////////////////
 
 igdeAction::igdeAction() :
-pMnemonic( deInputEvent::ekcUndefined ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+pMnemonic(deInputEvent::ekcUndefined),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, const char *description ) :
-pText( text ),
-pDescription( description ),
-pMnemonic( deInputEvent::ekcUndefined ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, const char *description) :
+pText(text),
+pDescription(description),
+pMnemonic(deInputEvent::ekcUndefined),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, const char *description, const igdeHotKey &hotKey ) :
-pText( text ),
-pDescription( description ),
-pHotKey( hotKey ),
-pMnemonic( deInputEvent::ekcUndefined ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, const char *description, const igdeHotKey &hotKey) :
+pText(text),
+pDescription(description),
+pHotKey(hotKey),
+pMnemonic(deInputEvent::ekcUndefined),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, const char *description, deInputEvent::eKeyCodes mnemonic ) :
-pText( text ),
-pDescription( description ),
-pMnemonic( mnemonic ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, const char *description, deInputEvent::eKeyCodes mnemonic) :
+pText(text),
+pDescription(description),
+pMnemonic(mnemonic),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, const char *description,
-	deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey ) :
-pText( text ),
-pDescription( description ),
-pHotKey( hotKey ),
-pMnemonic( mnemonic ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, const char *description,
+	deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey) :
+pText(text),
+pDescription(description),
+pHotKey(hotKey),
+pMnemonic(mnemonic),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, igdeIcon *icon, const char *description ) :
-pText( text ),
-pDescription( description ),
-pMnemonic( deInputEvent::ekcUndefined ),
-pIcon( icon ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, igdeIcon *icon, const char *description) :
+pText(text),
+pDescription(description),
+pMnemonic(deInputEvent::ekcUndefined),
+pIcon(icon),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, igdeIcon *icon, const char *description,
-	const igdeHotKey &hotKey ) :
-pText( text ),
-pDescription( description ),
-pHotKey( hotKey ),
-pMnemonic( deInputEvent::ekcUndefined ),
-pIcon( icon ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, igdeIcon *icon, const char *description,
+	const igdeHotKey &hotKey) :
+pText(text),
+pDescription(description),
+pHotKey(hotKey),
+pMnemonic(deInputEvent::ekcUndefined),
+pIcon(icon),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, igdeIcon *icon, const char *description,
-	deInputEvent::eKeyCodes mnemonic ) :
-pText( text ),
-pDescription( description ),
-pMnemonic( mnemonic ),
-pIcon( icon ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, igdeIcon *icon, const char *description,
+	deInputEvent::eKeyCodes mnemonic) :
+pText(text),
+pDescription(description),
+pMnemonic(mnemonic),
+pIcon(icon),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
-igdeAction::igdeAction( const char *text, igdeIcon *icon, const char *description,
-	deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey ) :
-pText( text ),
-pDescription( description ),
-pHotKey( hotKey ),
-pMnemonic( mnemonic ),
-pIcon( icon ),
-pEnabled( true ),
-pSelected( false ),
-pDefault( false ){
+igdeAction::igdeAction(const char *text, igdeIcon *icon, const char *description,
+	deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey) :
+pText(text),
+pDescription(description),
+pHotKey(hotKey),
+pMnemonic(mnemonic),
+pIcon(icon),
+pEnabled(true),
+pSelected(false),
+pDefault(false){
 }
 
 igdeAction::~igdeAction(){
-	const decPointerOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeActionListener* )listeners.GetAt( i ) )->OnDestroyed( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeActionListener *l){
+		l->OnDestroyed(this);
+	});
 }
 
 
@@ -145,8 +142,8 @@ igdeAction::~igdeAction(){
 // Management
 ///////////////
 
-void igdeAction::SetText( const char *text ){
-	if( pText == text ){
+void igdeAction::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -154,8 +151,8 @@ void igdeAction::SetText( const char *text ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeAction::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -163,8 +160,8 @@ void igdeAction::SetDescription( const char *description ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetHotKey( const igdeHotKey &hotKey ){
-	if( pHotKey == hotKey ){
+void igdeAction::SetHotKey(const igdeHotKey &hotKey){
+	if(pHotKey == hotKey){
 		return;
 	}
 	
@@ -172,8 +169,8 @@ void igdeAction::SetHotKey( const igdeHotKey &hotKey ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetMnemonic( deInputEvent::eKeyCodes mnemonic ){
-	if( pMnemonic == mnemonic ){
+void igdeAction::SetMnemonic(deInputEvent::eKeyCodes mnemonic){
+	if(pMnemonic == mnemonic){
 		return;
 	}
 	
@@ -181,8 +178,8 @@ void igdeAction::SetMnemonic( deInputEvent::eKeyCodes mnemonic ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetIcon( igdeIcon *icon ){
-	if( pIcon == icon ){
+void igdeAction::SetIcon(igdeIcon *icon){
+	if(pIcon == icon){
 		return;
 	}
 	
@@ -190,8 +187,8 @@ void igdeAction::SetIcon( igdeIcon *icon ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeAction::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -199,8 +196,8 @@ void igdeAction::SetEnabled( bool enabled ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetSelected( bool selected ){
-	if( pSelected == selected ){
+void igdeAction::SetSelected(bool selected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -208,8 +205,8 @@ void igdeAction::SetSelected( bool selected ){
 	NotifyParametersChanged();
 }
 
-void igdeAction::SetDefault( bool isdefault ){
-	if( pDefault == isdefault ){
+void igdeAction::SetDefault(bool isdefault){
+	if(pDefault == isdefault){
 		return;
 	}
 	
@@ -219,25 +216,20 @@ void igdeAction::SetDefault( bool isdefault ){
 
 
 
-void igdeAction::AddListener( igdeActionListener *listener ){
-	if( ! listener || pListeners.Has( listener ) ){
-		DETHROW( deeInvalidParam );
-	}
-	pListeners.Add( listener );
+void igdeAction::AddListener(igdeActionListener *listener){
+	DEASSERT_NOTNULL(listener)
+	pListeners.Add(listener);
 }
 
-void igdeAction::RemoveListener( igdeActionListener *listener ){
-	pListeners.Remove( listener );
+void igdeAction::RemoveListener(igdeActionListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeAction::NotifyParametersChanged(){
-	const decPointerOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeActionListener* )listeners.GetAt( i ) )->OnParameterChanged( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeActionListener *l){
+		l->OnParameterChanged(this);
+	});
 }
 
 

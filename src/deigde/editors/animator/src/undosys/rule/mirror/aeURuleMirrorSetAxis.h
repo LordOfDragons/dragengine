@@ -35,6 +35,10 @@
  * Undo set rule mirror axis.
  */
 class aeURuleMirrorSetAxis : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorSetAxis>;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetAxis( aeRuleMirror *rule, deAnimatorRuleMirror::eMirrorAxis newValue );
+	aeURuleMirrorSetAxis(aeRuleMirror *rule, deAnimatorRuleMirror::eMirrorAxis newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorSetAxis();
+	~aeURuleMirrorSetAxis() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

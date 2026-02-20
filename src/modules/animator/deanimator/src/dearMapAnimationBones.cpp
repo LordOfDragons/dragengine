@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "dearAnimatorInstance.h"
 #include "dearBoneState.h"
 #include "dearBoneStateList.h"
@@ -42,15 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-dearMapAnimationBones::dearMapAnimationBones() :
-pIndices( nullptr ),
-pCount( 0 ){
+dearMapAnimationBones::dearMapAnimationBones(){
 }
 
 dearMapAnimationBones::~dearMapAnimationBones(){
-	if( pIndices ){
-		delete [] pIndices;
-	}
 }
 
 
@@ -59,50 +52,36 @@ dearMapAnimationBones::~dearMapAnimationBones(){
 ///////////////
 
 void dearMapAnimationBones::Clear(){
-	if( pIndices ){
-		delete [] pIndices;
-		pIndices = nullptr;
-	}
-	pCount = 0;
+	pIndices.RemoveAll();
 }
 
-void dearMapAnimationBones::Init( const dearRule &rule ){
+void dearMapAnimationBones::Init(const dearRule &rule){
 	Clear();
 	
 	const int count = rule.GetBoneMappingCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pIndices = new int[ count ];
+	pIndices.AddRange(count, -1);
 	
 	const dearAnimation * const animation = rule.GetUseAnimation();
 	
-	if( animation ){
+	if(animation){
 		const dearBoneStateList &boneStates = rule.GetInstance().GetBoneStateList();
 		const deAnimation &engAnimation = *animation->GetAnimation();
 		
-		for( pCount=0; pCount<count; pCount++ ){
-			const int ruleBoneIndex = rule.GetBoneMappingFor( pCount );
-			if( ruleBoneIndex != -1 ){
-				pIndices[ pCount ] = engAnimation.FindBone(
-					boneStates.GetStateAt( ruleBoneIndex )->GetRigBoneName() );
-				
-			}else{
-				pIndices[ pCount ] = -1;
+		int i;
+		for(i=0; i<count; i++){
+			const int ruleBoneIndex = rule.GetBoneMappingFor(i);
+			if(ruleBoneIndex != -1){
+				pIndices[i] = engAnimation.FindBone(
+					boneStates.GetStateAt(ruleBoneIndex).GetRigBoneName());
 			}
-		}
-		
-	}else{
-		for( pCount=0; pCount<count; pCount++ ){
-			pIndices[ pCount ] = -1;
 		}
 	}
 }
 
-int dearMapAnimationBones::GetAt( int ruleBoneIndex ) const{
-	DEASSERT_TRUE( ruleBoneIndex >= 0 )
-	DEASSERT_TRUE( ruleBoneIndex < pCount )
-	
-	return pIndices[ ruleBoneIndex ];
+int dearMapAnimationBones::GetAt(int ruleBoneIndex) const{
+	return pIndices[ruleBoneIndex];
 }

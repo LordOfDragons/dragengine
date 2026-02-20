@@ -8,23 +8,54 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "dragonscript-1.5-vc64"
+$ExpandedDir = "$ProjectDir\dragonscript-1.5.1"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-1.5-vc64.zip" -UrlPath "dragonscript"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-1.5.1.tar.xz" -UrlPath "dragonscript"
 
-Expand-Archive -Path "$ProjectDir\dragonscript-1.5-vc64.zip" -DestinationPath $ProjectDir
+Expand-TarXz -Path "$ProjectDir\dragonscript-1.5.1.tar.xz" -Destination $ProjectDir
 
-# visual studio expects *.dll, *.lib and *.pdb to be located in the same directory
-# the archive contains though the *.dll in the "bin" directory while the other
-# two files are located in the "lib". this is the correct layout for general
-# distribution and usage but visual studio freaks out about it. to solve this copy
-# the *.dll file to the "lib" directory
+# Build the downloaded Visual Studio solution in-place.
+# Locate MSBuild via vswhere if available, otherwise fall back to msbuild.exe in PATH.
+$slnPath = "$ExpandedDir\vs\dragonscript.sln"
 
-Copy-Files -SourceDir (Join-Path -Path $ExpandedDir -ChildPath "bin")`
-    -TargetDir (Join-Path -Path $ExpandedDir -ChildPath "lib") -Pattern "*.dll"
+function Get-MSBuildPath {
+	# try vswhere
+	$vswhere = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath "Microsoft Visual Studio\Installer\vswhere.exe"
+	if (Test-Path $vswhere) {
+		try {
+			$inst = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath 2>$null
+			if ($inst) {
+				$msbuildCandidate = Join-Path -Path $inst -ChildPath "MSBuild\Current\Bin\MSBuild.exe"
+				if (Test-Path $msbuildCandidate) { return $msbuildCandidate }
+				$msbuildCandidate = Join-Path -Path $inst -ChildPath "MSBuild\15.0\Bin\MSBuild.exe"
+				if (Test-Path $msbuildCandidate) { return $msbuildCandidate }
+			}
+		} catch { }
+	}
+	# fallback: rely on msbuild in PATH (e.g. Developer Command Prompt)
+	return "msbuild.exe"
+}
 
-Copy-Files -SourceDir (Join-Path -Path $ExpandedDir -ChildPath "pdb")`
-    -TargetDir (Join-Path -Path $ExpandedDir -ChildPath "lib") -Pattern "*.pdb"
+$msbuild = Get-MSBuildPath
+
+if (-not (Test-Path $slnPath)) {
+	Write-Error "Solution file $slnPath not found. Abort."
+	throw "Solution file not found: $slnPath"
+}
+
+Write-Host "Building solution: $slnPath"
+Write-Host "Using MSBuild: $msbuild"
+
+# Build arguments
+$configuration = "Release"
+$platform = "x64"
+
+# Run MSBuild and check Exitcode
+& $msbuild $slnPath /m /t:Build /p:Configuration=$configuration /p:Platform=$platform
+if ($LASTEXITCODE -ne 0) {
+	Write-Error "MSBuild failed with exit code $LASTEXITCODE"
+	throw "MSBuild failed with exit code $LASTEXITCODE"
+}

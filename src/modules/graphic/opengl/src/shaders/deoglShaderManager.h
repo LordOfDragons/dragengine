@@ -29,11 +29,14 @@
 #include "deoglShaderProgramUnit.h"
 #include "compiler/deoglShaderCompileListener.h"
 
-#include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
+#include "../deoglBasics.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
@@ -68,7 +71,7 @@ private:
 	private:
 		deoglShaderManager &pManager;
 		deoglShaderProgram::Ref pProgram;
-		decPointerList pListeners;
+		decTList<cGetProgramListener*> pListeners;
 		
 	public:
 		cCompileProgram(deoglShaderManager &manager, const deoglShaderProgram::Ref &program);
@@ -88,11 +91,13 @@ private:
 	
 	deoglShaderLanguage *pLanguage;
 	
-	decObjectDictionary pUnitSourceCodes, pSources;
+	decTObjectDictionary<deoglShaderUnitSourceCode> pUnitSourceCodes;
+	decTObjectDictionary<deoglShaderSources> pSources;
 	decStringDictionary pIncludableSources;
-	decObjectList pPrograms, pProgramUnits;
+	decTObjectList<deoglShaderProgram> pPrograms;
+	decTObjectList<deoglShaderProgramUnit> pProgramUnits;
 	
-	decPointerList pCompilePrograms;
+	decTList<cCompileProgram*> pCompilePrograms;
 	deMutex pMutexCompilePrograms, pMutexLogging;
 	deSemaphore pSemaphoreCompileFinished;
 	
@@ -106,7 +111,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglShaderManager( deoglRenderThread &renderThread );
+	deoglShaderManager(deoglRenderThread &renderThread);
+	
+	deoglShaderManager(const deoglShaderManager&) = delete;
+	deoglShaderManager& operator=(const deoglShaderManager&) = delete;
 	
 	/** Cleans up the shader manager object. */
 	~deoglShaderManager();
@@ -131,6 +139,9 @@ public:
 	
 	/** \name Unit Source Codes */
 	/*@{*/
+	/** Unit source codes. */
+	inline const decTObjectDictionary<deoglShaderUnitSourceCode> &GetUnitSourceCodes() const{ return pUnitSourceCodes; }
+	
 	/** Count of shader unit source codes. */
 	int GetUnitSourceCodeCount() const;
 	
@@ -156,17 +167,17 @@ public:
 	
 	/** \name Sources */
 	/*@{*/
+	/** Sources. */
+	inline const decTObjectDictionary<deoglShaderSources> &GetSources() const{ return pSources; }
+	
 	/** Count of shader sources. */
 	int GetSourcesCount() const;
 	
 	/** Named shader sources is exists. */
-	bool HasSourcesNamed( const char *name ) const;
+	bool HasSourcesNamed(const char *name) const;
 	
 	/** Named shader sources or nullptr. */
-	const deoglShaderSources *GetSourcesNamed( const char *name );
-	
-	/** Shader sources as list for debugging. */
-	decObjectList GetSourcesAsList() const;
+	const deoglShaderSources *GetSourcesNamed(const char *name);
 	
 	/**
 	 * Scan shader directory for shader files and loads them.
@@ -230,7 +241,7 @@ private:
 	
 	void pLoadUnitSourceCodesIn(const char *directory);
 	void pLoadIncludableSourcesIn(const char *directory);
-	void pLoadSourcesIn( const char *directory );
+	void pLoadSourcesIn(const char *directory);
 };
 
 #endif

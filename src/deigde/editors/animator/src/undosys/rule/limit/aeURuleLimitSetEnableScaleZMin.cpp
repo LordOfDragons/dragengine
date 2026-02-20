@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleZMin::aeURuleLimitSetEnableScaleZMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleZMin::aeURuleLimitSetEnableScaleZMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum z scaling" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumZScaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleZMin::~aeURuleLimitSetEnableScaleZMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableScaleZMin::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleZMin::Redo(){
-	pRule->SetEnableScalingZMin( ! pRule->GetEnableScalingZMin() );
+	pRule->SetEnableScalingZMin(!pRule->GetEnableScalingZMin());
 }

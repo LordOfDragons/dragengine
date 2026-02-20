@@ -50,84 +50,26 @@ igdeTriggerTargetList::~igdeTriggerTargetList(){
 // Management
 ///////////////
 
-int igdeTriggerTargetList::GetCount() const{
-	return pTargets.GetCount();
-}
-
-igdeTriggerTarget *igdeTriggerTargetList::GetAt( int position ) const{
-	return ( igdeTriggerTarget* )pTargets.GetAt( position );
-}
-
-igdeTriggerTarget *igdeTriggerTargetList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name){
+	igdeTriggerTarget * const findTarget = pTargets.FindNamed(name);
+	if(findTarget){
+		return findTarget;
 	}
 	
-	const int count = pTargets.GetCount();
-	igdeTriggerTarget *target;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		target = ( igdeTriggerTarget* )pTargets.GetAt( i );
-		if( target->GetName().Equals( name ) ){
-			return target;
-		}
-	}
-	
-	return NULL;
-}
-
-igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing( const char *name ){
-	igdeTriggerTarget *target = GetNamed( name );
-	
-	if( ! target ){
-		target = new igdeTriggerTarget( name );
-		pTargets.Add( target );
-		target->FreeReference();
-	}
-	
+	const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::New(name));
+	pTargets.Add(target);
 	return target;
 }
 
-int igdeTriggerTargetList::IndexOf( igdeTriggerTarget *target ) const{
-	return pTargets.IndexOf( target );
+void igdeTriggerTargetList::Add(igdeTriggerTarget *target){
+	DEASSERT_NOTNULL(target)
+	DEASSERT_FALSE(pTargets.HasNamed(target->GetName()))
+	
+	pTargets.Add(target);
 }
 
-bool igdeTriggerTargetList::Has( igdeTriggerTarget *target ) const{
-	return pTargets.Has( target );
-}
-
-bool igdeTriggerTargetList::HasNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int count = pTargets.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeTriggerTarget* )pTargets.GetAt( i ) )->GetName().Equals( name ) ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-void igdeTriggerTargetList::Add( igdeTriggerTarget *target ){
-	if( ! target || HasNamed( target->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTargets.Add( target );
-}
-
-void igdeTriggerTargetList::Remove( igdeTriggerTarget *target ){
-	if( ! target ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTargets.Remove( target );
+void igdeTriggerTargetList::Remove(igdeTriggerTarget *target){
+	pTargets.Remove(target);
 }
 
 void igdeTriggerTargetList::RemoveAll(){
@@ -135,13 +77,7 @@ void igdeTriggerTargetList::RemoveAll(){
 }
 
 void igdeTriggerTargetList::RemoveUnused(){
-	const int count = pTargets.GetCount();
-	int i;
-	
-	for( i=count-1; i>=0; i-- ){
-		igdeTriggerTarget * const target = ( igdeTriggerTarget* )pTargets.GetAt( i );
-		if( target->GetRefCount() == 1 ){
-			pTargets.Remove( target );
-		}
-	}
+	pTargets.RemoveIf([&](const igdeTriggerTarget &t){
+		return t.GetRefCount() == 1;
+	});
 }

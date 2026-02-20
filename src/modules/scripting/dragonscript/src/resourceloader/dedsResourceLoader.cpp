@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <libdscript/libdscript.h>
 #include <libdscript/exceptions.h>
 
@@ -51,19 +47,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsResourceLoader::dedsResourceLoader( deScriptingDragonScript *ds ){
-	if( ! ds ) DSTHROW( dueInvalidParam );
+dedsResourceLoader::dedsResourceLoader(deScriptingDragonScript *ds){
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
-	
-	pTasks = NULL;
-	pTaskCount = 0;
-	pTaskSize = 0;
 }
 
 dedsResourceLoader::~dedsResourceLoader(){
 	CancelAllRequests();
-	if( pTasks ) delete [] pTasks;
 }
 
 
@@ -82,96 +73,78 @@ void dedsResourceLoader::OnFrameUpdate(){
 	
 	timer.Reset();
 	
-	while( elapsedUpdateTime < maxUpdateTime && resourceLoader.NextFinishedRequest( info ) ){
-		task = pIndexOfTaskWith( info.GetPath(), info.GetResourceType() );
+	while(elapsedUpdateTime < maxUpdateTime && resourceLoader.NextFinishedRequest(info)){
+		task = pIndexOfTaskWith(info.GetPath(), info.GetResourceType());
 		
-		if( task != -1 ){
+		if(task != -1){
 			resource = info.GetResource();
 			
 			try{
-				if( resource ){
-					pTasks[ task ]->NotifyLoadingFinished( resource );
+				if(resource){
+					pTasks.GetAt(task)->NotifyLoadingFinished(resource);
 					
 				}else{
-					pTasks[ task ]->NotifyLoadingFailed();
+					pTasks.GetAt(task)->NotifyLoadingFailed();
 				}
 				
-			}catch( const duException &e ){
-				pDS->SetErrorTraceDS( e );
-				deErrorTracePoint * const tracePoint = pDS->AddErrorTracePoint(
-					"dedsResourceLoader::Update", __LINE__ );
-				tracePoint->AddValue( "resource", info.GetPath() );
-				pDS->pAddExceptionTrace( tracePoint );
+			}catch(const duException &e){
+				pDS->SetErrorTraceDS(e);
+				deErrorTracePoint &tracePoint = pDS->AddErrorTracePoint("dedsResourceLoader::Update", __LINE__);
+				tracePoint.AddValue("resource", info.GetPath());
+				pDS->pAddExceptionTrace(&tracePoint);
 				pDS->GetScriptEngine()->GetMainRunTime()->PrintExceptionTrace(); // really?
-				pDS->LogExceptionDS( e );
+				pDS->LogExceptionDS(e);
 				pDS->GetScriptEngine()->GetMainRunTime()->ClearExceptionTrace();
-				DETHROW( deeScriptError );
+				DETHROW(deeScriptError);
 				
-			}catch( const deException &e ){
-				pDS->SetErrorTrace( e );
-				deErrorTracePoint * const tracePoint = pDS->AddErrorTracePoint(
-					"dedsResourceLoader::Update", __LINE__ );
-				tracePoint->AddValue( "resource", info.GetPath() );
-				pDS->pAddExceptionTrace( tracePoint );
+			}catch(const deException &e){
+				pDS->SetErrorTrace(e);
+				deErrorTracePoint &tracePoint = pDS->AddErrorTracePoint("dedsResourceLoader::Update", __LINE__);
+				tracePoint.AddValue("resource", info.GetPath());
+				pDS->pAddExceptionTrace(&tracePoint);
 				pDS->GetScriptEngine()->GetMainRunTime()->PrintExceptionTrace(); // really?
 				pDS->GetScriptEngine()->GetMainRunTime()->ClearExceptionTrace();
-				pDS->LogException( e );
+				pDS->LogException(e);
 				throw;
 			}
 			
-			pRemoveTaskFrom( task );
+			pRemoveTaskFrom(task);
 		}
 		
 		elapsedUpdateTime += timer.GetElapsedTime();
 	}
 }
 
-void dedsResourceLoader::AddRequest( const char* filename,
-deResourceLoader::eResourceType resourceType, dsRealObject* listener ){
-	if( ! filename || ! listener ) DSTHROW( dueInvalidParam );
-	int index = pIndexOfTaskWith( filename, resourceType );
+void dedsResourceLoader::AddRequest(const char* filename,
+deResourceLoader::eResourceType resourceType, dsRealObject* listener){
+	if(!filename || !listener) DSTHROW(dueInvalidParam);
+	int index = pIndexOfTaskWith(filename, resourceType);
 	
-	if( index == -1 ){
-		if( pTaskCount == pTaskSize ){
-			int newSize = pTaskSize * 3 / 2 + 1;
-			dedsResourceLoaderTask **newArray = new dedsResourceLoaderTask*[ newSize ];
-			if( pTasks ){
-				memcpy( newArray, pTasks, sizeof( dedsResourceLoaderTask* ) * pTaskSize );
-				delete [] pTasks;
-			}
-			pTasks = newArray;
-			pTaskSize = newSize;
-		}
-		
-		pTasks[ pTaskCount ] = new dedsResourceLoaderTask( pDS, filename, resourceType );
-		if( ! pTasks[ pTaskCount ] ) DSTHROW( dueOutOfMemory );
-		index = pTaskCount++;
+	if(index == -1){
+		pTasks.Add(deTUniqueReference<dedsResourceLoaderTask>::New(pDS, filename, resourceType));
+		index = pTasks.GetCount() - 1;
 		
 		deEngine &engine = *pDS->GetGameEngine();
-		engine.GetResourceLoader()->AddLoadRequest( engine.GetVirtualFileSystem(),
-			filename, resourceType );
+		engine.GetResourceLoader()->AddLoadRequest(engine.GetVirtualFileSystem(), filename, resourceType);
 	}
 	
-	pTasks[ index ]->AddListener( listener );
+	pTasks.GetAt(index)->AddListener(listener);
 }
 
-void dedsResourceLoader::CancelRequest( const char* filename,
-deResourceLoader::eResourceType resourceType, dsRealObject* listener ){
-	if( ! filename || ! listener ) DSTHROW( dueInvalidParam );
-	int index = pIndexOfTaskWith( filename, resourceType );
-	if( index != -1 ){
-		pTasks[ index ]->RemoveListener( listener );
-		if( pTasks[ index ]->GetListenerCount() == 0 ){
-			pRemoveTaskFrom( index );
+void dedsResourceLoader::CancelRequest(const char* filename,
+deResourceLoader::eResourceType resourceType, dsRealObject* listener){
+	if(!filename || !listener) DSTHROW(dueInvalidParam);
+	int index = pIndexOfTaskWith(filename, resourceType);
+	if(index != -1){
+		pTasks.GetAt(index)->RemoveListener(listener);
+		if(pTasks.GetAt(index)->GetListenerCount() == 0){
+			pRemoveTaskFrom(index);
 		}
 	}
 }
 
 void dedsResourceLoader::CancelAllRequests(){
-	while( pTaskCount > 0 ){
-		pTaskCount--;
-		delete pTasks[ pTaskCount ];
-	}
+	pTasks.RemoveAll();
 }
 
 
@@ -179,25 +152,13 @@ void dedsResourceLoader::CancelAllRequests(){
 // Private Functions
 //////////////////////
 
-int dedsResourceLoader::pIndexOfTaskWith( const char* filename,
-deResourceLoader::eResourceType resourceType ) const{
-	int i;
-	
-	for( i=0; i<pTaskCount; i++ ){
-		if( pTasks[ i ]->Matches( filename, resourceType ) ){
-			return i;
-		}
-	}
-	
-	return -1;
+int dedsResourceLoader::pIndexOfTaskWith(const char* filename,
+deResourceLoader::eResourceType resourceType) const{
+	return pTasks.IndexOfMatching([&](const dedsResourceLoaderTask &t){
+		return t.Matches(filename, resourceType);
+	});
 }
 
-void dedsResourceLoader::pRemoveTaskFrom( int index ){
-	int i;
-	
-	delete pTasks[ index ];
-	for( i=index+1; i<pTaskCount; i++ ){
-		pTasks[ i - 1 ] = pTasks[ i ];
-	}
-	pTaskCount--;
+void dedsResourceLoader::pRemoveTaskFrom(int index){
+	pTasks.RemoveFrom(index);
 }

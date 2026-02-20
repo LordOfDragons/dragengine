@@ -50,9 +50,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -69,17 +67,17 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
-	cComboClass( meWVNodePropCount &node ) : pNode( node ){ }
+	typedef deTObjectReference<cComboClass> Ref;
+	cComboClass(meWVNodePropCount &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( comboBox->GetText() == pNode.GetRulePropCount()->GetPropClass() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(comboBox->GetText() == pNode.GetRulePropCount()->GetPropClass()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRulePCSetClass( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRulePropCount(), comboBox->GetText() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRulePCSetClass::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRulePropCount(), comboBox->GetText()));
 	}
 };
 
@@ -88,11 +86,12 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
-	cActionMenuClass( meWVNodePropCount &node ) : igdeActionContextMenu( "",
-		node.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Class menu" ),
-		pNode( node ){ }
+	typedef deTObjectReference<cActionMenuClass> Ref;
+	cActionMenuClass(meWVNodePropCount &node) : igdeActionContextMenu("",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WVNodePropCount.Menu.Class"),
+		pNode(node){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		// TODO
 	}
 };
@@ -102,18 +101,18 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
-	cTextSearchRadius( meWVNodePropCount &node ) : pNode( node ){ }
+	typedef deTObjectReference<cTextSearchRadius> Ref;
+	cTextSearchRadius(meWVNodePropCount &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRulePropCount()->GetSearchRadius() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRulePropCount()->GetSearchRadius()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRulePCSetRadius( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRulePropCount(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRulePCSetRadius::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRulePropCount(), value));
 	}
 };
 
@@ -127,36 +126,37 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodePropCount::meWVNodePropCount( meWindowVegetation &windowVegetation, meHTVRulePropCount *rule ) :
-meWVNode( windowVegetation, rule ),
-pRulePC( rule )
+meWVNodePropCount::meWVNodePropCount(meWindowVegetation &windowVegetation, meHTVRulePropCount *rule) :
+meWVNode(windowVegetation, rule),
+pRulePC(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Prop Count" );
+	SetTitle("@World.WVNodePropCount.Title");
 	
-	pActionMenuClass.TakeOver( new cActionMenuClass( *this ) );
+	pActionMenuClass = cActionMenuClass::Ref::New(*this);
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Distance", "Distance in meters from closest prop",
-		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodePropCount.Output.Count", "@World.WVNodePropCount.Output.Count.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst( pFraParameters, "Class:", "Select class name of prop to search for.", formLine );
-	helper.ComboBoxFilter( formLine, true, "Select class name of prop to search for.",
-		pCBPropClass, new cComboClass( *this ) );
-	helper.Button( formLine, pBtnPropClass, pActionMenuClass );
-	pActionMenuClass->SetWidget( pBtnPropClass );
+	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodePropCount.Class", "@World.WVNodePropCount.PropClass.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@World.WVNodePropCount.PropClass.ToolTip",
+		pCBPropClass, cComboClass::Ref::New(*this));
+	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
+	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat( pFraParameters, "Radius:", "Set search radius in meters.",
-		pEditSearchRadius, new cTextSearchRadius( *this ) );
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.Radius.ToolTip",
+		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
+	
+	UpdateClassLists();
 }
 
 meWVNodePropCount::~meWVNodePropCount(){
@@ -170,28 +170,28 @@ meWVNodePropCount::~meWVNodePropCount(){
 void meWVNodePropCount::Update(){
 	meWVNode::Update();
 	
-	pCBPropClass->SetText( pRulePC->GetPropClass() );
-	pEditSearchRadius->SetFloat( pRulePC->GetSearchRadius() );
+	pCBPropClass->SetText(pRulePC->GetPropClass());
+	pEditSearchRadius->SetFloat(pRulePC->GetSearchRadius());
 }
 
 void meWVNodePropCount::UpdateClassLists(){
-	const decString selection( pCBPropClass->GetText() );
+	const decString selection(pCBPropClass->GetText());
 	
 	pCBPropClass->RemoveAllItems();
 	
-	const igdeGDClassManager &classes = *GetWindowVegetation().GetWorld()->GetGameDefinition()->GetClassManager();
-	const int count = classes.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const igdeGDClass &objectClass = *classes.GetAt( i );
-		if( objectClass.GetCanInstantiate() ){
-			pCBPropClass->AddItem( objectClass.GetName() );
+	GetWindowVegetation().GetWorld()->GetGameDefinition()->GetClassManager()->GetClasses().Visit([&](const igdeGDClass &c){
+		if(c.GetCanInstantiate()){
+			pCBPropClass->AddItem(c.GetName());
 		}
-	}
+	});
 	
 	pCBPropClass->SortItems();
 	pCBPropClass->StoreFilterItems();
 	
-	pCBPropClass->SetText( selection );
+	pCBPropClass->SetText(selection);
+}
+
+
+void meWVNodePropCount::OnGameDefinitionChanged(){
+	UpdateClassLists();
 }

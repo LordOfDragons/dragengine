@@ -41,7 +41,8 @@ igdeNativeNullColorBox::igdeNativeNullColorBox(){
 igdeNativeNullColorBox::~igdeNativeNullColorBox(){
 }
 
-igdeNativeNullColorBox *igdeNativeNullColorBox::CreateNativeWidget( igdeColorBox& ){
+igdeNativeNullColorBox *igdeNativeNullColorBox::CreateNativeWidget(igdeColorBox&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullColorBox;
 }
 
@@ -66,7 +67,7 @@ void igdeNativeNullColorBox::UpdateDescription(){
 void igdeNativeNullColorBox::UpdateEnabled(){
 }
 
-void igdeNativeNullColorBox::ClipboardPutColor( const decColor &color ){
+void igdeNativeNullColorBox::ClipboardPutColor(const decColor &color){
 	igdeNativeNullColorBox::vCopyColor = color;
 }
 

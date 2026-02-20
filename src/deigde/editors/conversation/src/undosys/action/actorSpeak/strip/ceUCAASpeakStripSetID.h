@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,10 +37,14 @@ class ceStrip;
  * \brief Undo action actor speak conversation action set strip identifier.
  */
 class ceUCAASpeakStripSetID : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakStripSetID>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	decString pOldID;
 	decString pNewID;
 	
@@ -48,18 +52,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetID( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, const char *newID );
+	ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, const char *newID);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripSetID();
+protected:
+	~ceUCAASpeakStripSetID() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

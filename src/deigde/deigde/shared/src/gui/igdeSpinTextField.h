@@ -28,18 +28,33 @@
 #include <stdlib.h>
 
 #include "igdeWidget.h"
+#include "event/igdeSpinTextFieldListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-
-
-class igdeSpinTextFieldListener;
 
 
 /**
  * \brief IGDE UI SpinTextField.
  */
 class DE_DLL_EXPORT igdeSpinTextField : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeSpinTextField>;
+	
+	
+	class cNativeSpinTextField{
+	public:
+		virtual ~cNativeSpinTextField() = default;
+		virtual void Focus() = 0;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateDescription() = 0;
+	};
+	
+	
 private:
 	bool pEnabled;
 	int pColumns;
@@ -48,16 +63,19 @@ private:
 	int pValue;
 	decString pDescription;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeSpinTextFieldListener> pListeners;
 	
+	
+protected:
+	cNativeSpinTextField *pNativeSpinTextField;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeSpinTextField( igdeEnvironment &environment, int lower, int upper,
-		int columns, const char *description = "" );
+	igdeSpinTextField(igdeEnvironment &environment, int lower, int upper,
+		int columns, const char *description = "");
 	
 	
 	
@@ -68,7 +86,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeSpinTextField();
+	~igdeSpinTextField() override;
 	/*@}*/
 	
 	
@@ -80,7 +98,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
 	inline int GetColumns() const{ return pColumns; }
@@ -89,7 +107,7 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -100,7 +118,7 @@ public:
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Range lower value. */
 	inline int GetLower() const{ return pLower; }
@@ -109,15 +127,15 @@ public:
 	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeSpinTextFieldListener *listener );
+	void AddListener(igdeSpinTextFieldListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeSpinTextFieldListener *listener );
+	void RemoveListener(igdeSpinTextFieldListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	virtual void NotifyValueChanged();
@@ -134,14 +152,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -156,6 +179,9 @@ protected:
 	
 	/** \brief Description changed. */
 	virtual void OnDescriptionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

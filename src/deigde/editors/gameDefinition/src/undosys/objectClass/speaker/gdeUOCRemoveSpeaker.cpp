@@ -41,34 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker( gdeObjectClass *objectClass, gdeOCSpeaker *speaker ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetSpeakers().Has( speaker ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetSpeakers().Has(speaker)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove speaker" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveSpeaker");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveSpeaker::~gdeUOCRemoveSpeaker(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ gdeUOCRemoveSpeaker::~gdeUOCRemoveSpeaker(){
 ///////////////
 
 void gdeUOCRemoveSpeaker::Undo(){
-	pObjectClass->GetSpeakers().Add( pSpeaker );
+	pObjectClass->GetSpeakers().Add(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
 }
 
 void gdeUOCRemoveSpeaker::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCSpeaker() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCSpeaker()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSpeaker( NULL );
+		gameDefinition->SetActiveOCSpeaker(nullptr);
 	}
 	
-	pObjectClass->GetSpeakers().Remove( pSpeaker );
+	pObjectClass->GetSpeakers().Remove(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
 }

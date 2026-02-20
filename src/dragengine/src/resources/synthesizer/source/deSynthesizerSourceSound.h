@@ -26,7 +26,7 @@
 #define _DESYNTHESIZERSOURCESOUND_H_
 
 #include "deSynthesizerSource.h"
-#include "../../sound/deSoundReference.h"
+#include "../../sound/deSound.h"
 
 
 /**
@@ -35,12 +35,11 @@
 class DE_DLL_EXPORT deSynthesizerSourceSound : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceSound> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerSourceSound>;
 	
 	
 private:
-	deSoundReference pSound;
+	deSound::Ref pSound;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -64,7 +63,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSourceSound();
+	~deSynthesizerSourceSound() override;
 	/*@}*/
 	
 	
@@ -73,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound or NULL if silent. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline const deSound::Ref &GetSound() const{ return pSound; }
 	
 	/** \brief Set sound or NULL if silent. */
-	void SetSound( deSound *sound );
+	void SetSound(deSound *sound);
 	
 	
 	
@@ -94,7 +93,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	void SetMinSpeed( float speed );
+	void SetMinSpeed(float speed);
 	
 	/**
 	 * \brief Maximum play speed.
@@ -110,13 +109,13 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	void SetMaxSpeed( float speed );
+	void SetMaxSpeed(float speed);
 	
 	/** \brief Sound is played back looping. */
 	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set if sound is played back looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	
 	
@@ -141,7 +140,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	void Visit(deSynthesizerSourceVisitor &visitor) override;
 	/*@}*/
 };
 

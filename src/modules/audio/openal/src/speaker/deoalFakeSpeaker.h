@@ -42,14 +42,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalFakeSpeaker>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker peer. */
-	deoalFakeSpeaker( deoalAudioThread &audioThread );
+	deoalFakeSpeaker(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up speaker peer. */
-	virtual ~deoalFakeSpeaker() override;
+	~deoalFakeSpeaker() override;
 	/*@}*/
 	
 	

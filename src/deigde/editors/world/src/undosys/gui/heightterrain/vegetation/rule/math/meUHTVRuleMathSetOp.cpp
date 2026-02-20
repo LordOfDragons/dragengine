@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMathSetOp::meUHTVRuleMathSetOp( meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleMathSetOp::meUHTVRuleMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
-	SetShortInfo( "Vegetation Layer Rule Math Set Operator" );
-	SetMemoryConsumption( sizeof( meUHTVRuleMathSetOp ) );
+	SetShortInfo("@World.UHTVRuleMathSetOp.VegetationLayerRuleMathSetOperator");
+	SetMemoryConsumption(sizeof(meUHTVRuleMathSetOp));
 	
 	pOldOp = rule->GetOperator();
 	pNewOp = nop;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMathSetOp::~meUHTVRuleMathSetOp(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -68,11 +64,11 @@ meUHTVRuleMathSetOp::~meUHTVRuleMathSetOp(){
 ///////////////
 
 void meUHTVRuleMathSetOp::Undo(){
-	pRule->SetOperator( pOldOp );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetOperator(pOldOp);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleMathSetOp::Redo(){
-	pRule->SetOperator( pNewOp );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetOperator(pNewOp);
+	pVLayer->NotifyRuleChanged(pRule);
 }

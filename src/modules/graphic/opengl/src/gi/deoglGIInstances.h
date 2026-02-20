@@ -25,10 +25,14 @@
 #ifndef _DEOGLGIINSTANCES_H_
 #define _DEOGLGIINSTANCES_H_
 
-#include <dragengine/deObjectReference.h>
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include "../deoglBasics.h"
+
+#include <dragengine/common/collection/decTList.h>
+
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglCollideList;
@@ -48,8 +52,7 @@ class deoglRenderThread;
 class deoglGIInstances{
 public:
 	struct sBox{
-		decVector minExtend;
-		decVector maxExtend;
+		decVector minExtend, maxExtend;
 	};
 	
 	
@@ -57,23 +60,19 @@ public:
 private:
 	deoglGIState &pGIState;
 	
-	decObjectList pInstances;
-	decPointerList pEmptyInstances;
-	decPointerDictionaryExt pElementInstanceMap;
+	decTObjectList<deoglGIInstance> pInstances;
+	decTList<deoglGIInstance*> pEmptyInstances;
+	decTDictionary<unsigned int,deoglGIInstance*> pElementInstanceMap;
 	
-	sBox *pDynamicBoxes;
-	int pDynamicBoxCount;
-	int pDynamicBoxSize;
-	
-	decPointerList pChangedInstances;
-	
+	decTList<sBox> pDynamicBoxes;
+	decTList<deoglGIInstance*> pChangedInstances;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIInstances( deoglGIState &giState );
+	deoglGIInstances(deoglGIState &giState);
 	
 	/** Clean up global illumination ray tracing. */
 	~deoglGIInstances();
@@ -87,20 +86,20 @@ public:
 	inline deoglGIState &GetGIState() const{ return pGIState; }
 	
 	/** Classify content. */
-	static bool IsComponentStatic( const deoglRComponent &component );
-	static bool IsDecalStatic( const deoglRDecal &decal );
+	static bool IsComponentStatic(const deoglRComponent &component);
+	static bool IsDecalStatic(const deoglRDecal &decal);
 	
 	/** Count of available instance slots. */
 	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
 	
 	/** Instance at slot. */
-	deoglGIInstance &GetInstanceAt( int slot ) const;
+	deoglGIInstance &GetInstanceAt(int slot) const;
 	
 	/** Instance with component or NULL. */
-	deoglGIInstance *GetInstanceWithComponent( deoglRComponent *component ) const;
+	deoglGIInstance *GetInstanceWithComponent(deoglRComponent *component) const;
 	
 	/** Instance with decal or NULL. */
-	deoglGIInstance *GetInstanceWithDecal( deoglRDecal *decal ) const;
+	deoglGIInstance *GetInstanceWithDecal(deoglRDecal *decal) const;
 	
 	/** Add instance slot. */
 	deoglGIInstance &AddInstance();
@@ -109,31 +108,29 @@ public:
 	deoglGIInstance &NextFreeSlot();
 	
 	/** Register instance element. */
-	void RegisterElement( deoglRComponent *component, deoglGIInstance *instance );
-	void RegisterElement( deoglRDecal *decal, deoglGIInstance *instance );
-	void RegisterElement( void *element, unsigned int hash, deoglGIInstance *instance );
+	void RegisterElement(const deoglRComponent &component, deoglGIInstance *instance);
+	void RegisterElement(const deoglRDecal &decal, deoglGIInstance *instance);
+	void RegisterElement(unsigned int uniqueKey, deoglGIInstance *instance);
 	
 	/** Unregister instance element. */
-	void UnregisterElement( deoglRComponent *component );
-	void UnregisterElement( deoglRDecal *decal );
-	void UnregisterElement( void *element, unsigned int hash );
+	void UnregisterElement(const deoglRComponent &component);
+	void UnregisterElement(const deoglRDecal &decal);
+	void UnregisterElement(unsigned int uniqueKey);
 	
 	
 	
-	/** Dynamic boxes list. */
-	inline const sBox * const GetDynamicBoxes() const{ return pDynamicBoxes; }
 	
-	/** Count of dynamic boxes. */
-	inline int GetDynamicBoxCount() const{ return pDynamicBoxCount; }
-	
+	/** Dynamic boxes. */
+	inline const decTList<sBox> &GetDynamicBoxes() const{ return pDynamicBoxes; }
+
 	/** Update dynamic boxes list from dynamic instances while enlarging boxes. */
-	void UpdateDynamicBoxes( const decDVector &offset, const decVector &enlarge );
+	void UpdateDynamicBoxes(const decDVector &offset, const decVector &enlarge);
 	
 	/** One or more dynamic boxes contains point. */
-	bool DynamicBoxesContain( const decVector &point ) const;
+	bool DynamicBoxesContain(const decVector &point) const;
 	
 	/** Count of dynamic boxes contains point. */
-	int CountDynamicBoxesContaining( const decVector &point ) const;
+	int CountDynamicBoxesContaining(const decVector &point) const;
 	
 	
 	
@@ -144,39 +141,39 @@ public:
 	void ApplyChanges();
 	
 	/** Add component. */
-	void AddComponent( deoglRComponent *component, bool invalidate );
+	void AddComponent(deoglRComponent *component, bool invalidate);
 	
 	/** Add components. */
-	void AddComponents( const deoglCollideList &list, bool invalidate );
+	void AddComponents(const deoglCollideList &list, bool invalidate);
 	
 	/** Add decal. */
-	void AddDecal( deoglRDecal *decal, bool invalidate );
+	void AddDecal(deoglRDecal *decal, bool invalidate);
 	
 	/** Add decals. */
-	void AddDecals( const deoglRComponent &component, bool invalidate );
+	void AddDecals(const deoglRComponent &component, bool invalidate);
 	
 	/** Remove component. */
-	void RemoveComponent( deoglRComponent *component );
+	void RemoveComponent(deoglRComponent *component);
 	
 	/** Remove components. */
-	void RemoveComponents( const deoglCollideList &list );
+	void RemoveComponents(const deoglCollideList &list);
 	
 	/** Remove decal. */
-	void RemoveDecal( deoglRDecal *decal );
+	void RemoveDecal(deoglRDecal *decal);
 	
 	/** Remove decals. */
-	void RemoveDecals( const deoglRComponent &component );
+	void RemoveDecals(const deoglRComponent &component);
 	
 	/** Mark components. */
-	void MarkComponents( bool marked );
+	void MarkComponents(bool marked);
 	
 	
 	
 	/** Remove instance. */
-	void RemoveInstance( deoglGIInstance &instance );
+	void RemoveInstance(deoglGIInstance &instance);
 	
 	/** Instance changed. */
-	void InstanceChanged( deoglGIInstance &instance );
+	void InstanceChanged(deoglGIInstance &instance);
 	
 	
 	
@@ -187,8 +184,7 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	void pInvalidateAddInstance( const deoglGIInstance &instance );
+	void pInvalidateAddInstance(const deoglGIInstance &instance);
 };
 
 #endif

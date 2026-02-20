@@ -36,6 +36,9 @@ class ceCAPlayerChoiceOption;
  * \brief Menu action set condition to wait.
  */
 class ceWPTMAPChoiceOptionSetCondition : public ceWPTMACreateCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionSetCondition>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -51,10 +54,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionSetCondition( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionSetCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option,
-		ceConversationCondition::eConditionTypes conditionType );
+		ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	igdeUndo::Ref CreateUndo(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

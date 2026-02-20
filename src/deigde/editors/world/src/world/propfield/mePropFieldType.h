@@ -22,22 +22,21 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEPROPFIELDTYPE_H_
 #define _MEPROPFIELDTYPE_H_
 
-// includes
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/propfield/dePropFieldType.h>
 
-// predefinitions
 class mePropField;
 
-class deSkin;
-class deModel;
 class deEngine;
-class dePropFieldType;
 class dePropFieldInstance;
 
 
@@ -55,57 +54,64 @@ private:
 	dePropFieldType *pEngPFType;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotPerForceX;
 	float pRotPerForceZ;
 	
-	dePropFieldInstance *pInstances;
-	int pInstanceCount;
+	decTList<dePropFieldInstance> pInstances;
 	
 public:
+	using Ref = deTObjectReference<mePropFieldType>;
+	using List = decTObjectOrderedSet<mePropFieldType>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	mePropFieldType( deEngine *engine );
+	explicit mePropFieldType(deEngine *engine);
+	
+protected:
 	/** Cleans up the object. */
-	virtual ~mePropFieldType();
+	~mePropFieldType() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the prop field or NULL. */
+	/** Retrieves the prop field or nullptr. */
 	inline mePropField *GetPropField() const{ return pPropField; }
-	/** Sets the prop field or NULL. */
-	void SetPropField( mePropField *propField );
+	/** Sets the prop field or nullptr. */
+	void SetPropField(mePropField *propField);
 	
-	/** Retrieves the engine prop field type or NULL. */
+	/** Retrieves the engine prop field type or nullptr. */
 	inline dePropFieldType *GetEnginePFType() const{ return pEngPFType; }
-	/** Sets the engine prop field type or NULL. */
-	void SetEnginePFType( dePropFieldType *engPFType );
+	/** Sets the engine prop field type or nullptr. */
+	void SetEnginePFType(dePropFieldType *engPFType);
 	
 	/** Creates an engine prop field type. */
-	dePropFieldType *CreateEnginePFType();
+	dePropFieldType::Ref CreateEnginePFType();
 	/** Updates the engine prop field type. */
 	void UpdateEnginePFType();
 	
 	/** Retrieves the model path. */
 	inline const decString &GetPathModel() const{ return pPathModel; }
 	/** Sets the model path. */
-	void SetPathModel( const char *path );
+	void SetPathModel(const char *path);
 	/** Retrieves the skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
-	void SetPathSkin( const char *path );
+	void SetPathSkin(const char *path);
 	/** Retrieves the rotation per force around the X axis. */
 	inline float GetRotationPerForceX() const{ return pRotPerForceX; }
 	/** Sets the rotation per force aorund the X axis. */
-	void SetRotationPerForceX( float rotPerForce );
+	void SetRotationPerForceX(float rotPerForce);
 	/** Retrieves the rotation per force around the Z axis. */
 	inline float GetRotationPerForceZ() const{ return pRotPerForceZ; }
 	/** Sets the rotation per force aorund the Z axis. */
-	void SetRotationPerForceZ( float rotPerForce );
+	void SetRotationPerForceZ(float rotPerForce);
 	
 	/** Rebuild instances. */
 	void RebuildInstances();

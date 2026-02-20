@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\eossdk\src\module.xml" />
   </ItemGroup>
@@ -14,72 +14,72 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosResourceUrl.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdk.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkPendingRequest.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkServiceEos.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.h">
-      <Filter>Sources</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosResourceUrl.h">
-      <Filter>Sources</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdk.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.h">
-      <Filter>Sources</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkPendingRequest.h">
-      <Filter>Sources</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\deEosSdkServiceEos.h">
-      <Filter>Sources</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowAuthLogout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowGetStatsAndAchievements.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowInit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\eossdk\src\flow\deEosSdkFlowSetStatsAndAchievements.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

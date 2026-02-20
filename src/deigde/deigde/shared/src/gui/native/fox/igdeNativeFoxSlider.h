@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXSLIDER_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeSlider.h"
+#include "../../resources/igdeFont.h"
 
 class igdeSlider;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native slider.
  */
-class igdeNativeFoxSlider : public FXSlider{
-	FXDECLARE( igdeNativeFoxSlider )
+class igdeNativeFoxSlider : public FXSlider, public igdeSlider::cNativeSlider{
+	FXDECLARE(igdeNativeFoxSlider)
 	
 protected:
 	igdeNativeFoxSlider();
@@ -57,13 +58,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxSlider( igdeSlider &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxSlider(igdeSlider &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxSlider();
+	~igdeNativeFoxSlider() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSlider* CreateNativeWidget( igdeSlider &owner );
+	static igdeNativeFoxSlider* CreateNativeWidget(igdeSlider &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -76,25 +77,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateScale();
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
+	void Focus() override;
+	void UpdateScale() override;
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
 	
-	static int SliderFlags( const igdeSlider &owner );
+	static int SliderFlags(const igdeSlider &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxSlider igdeNativeSlider;
+using igdeNativeSlider = igdeNativeFoxSlider;
 
 #endif

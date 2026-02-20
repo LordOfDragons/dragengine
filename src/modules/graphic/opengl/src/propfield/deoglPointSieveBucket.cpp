@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglPointSieveBucket.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,43 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPointSieveBucket::deoglPointSieveBucket(){
-	pIndices = NULL;
-	pIndexCount = 0;
-	pIndexSize = 0;
-}
-
-deoglPointSieveBucket::~deoglPointSieveBucket(){
-	if( pIndices ) delete [] pIndices;
-}
+deoglPointSieveBucket::deoglPointSieveBucket() = default;
+deoglPointSieveBucket::~deoglPointSieveBucket() = default;
 
 
 
 // Management
 ///////////////
 
-int deoglPointSieveBucket::GetIndexAt( int position ) const{
-	if( position < 0 || position >= pIndexCount ) DETHROW( deeInvalidParam );
-	
-	return pIndices[ position ];
-}
-
-void deoglPointSieveBucket::AddIndex( int index ){
-	if( pIndexCount == pIndexSize ){
-		int newSize = pIndexSize * 3 / 2 + 1;
-		int *newArray = new int[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pIndices ){
-			memcpy( newArray, pIndices, sizeof( int ) * pIndexSize );
-			delete [] pIndices;
-		}
-		pIndices = newArray;
-		pIndexSize = newSize;
-	}
-	
-	pIndices[ pIndexCount++ ] = index;
+void deoglPointSieveBucket::AddIndex(int index){
+	pIndices.Add(index);
 }
 
 void deoglPointSieveBucket::RemoveAllIndices(){
-	pIndexCount = 0;
+	pIndices.RemoveAll();
 }

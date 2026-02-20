@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureSetAnimator::ceUCGestureSetAnimator( ceGesture *gesture, const char *newAnimator ){
-	if( ! gesture || ! newAnimator ) DETHROW( deeInvalidParam );
+ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *newAnimator){
+	if(!gesture || !newAnimator) DETHROW(deeInvalidParam);
 	
-	pGesture = NULL;
+	pGesture = nullptr;
 	
-	SetShortInfo( "Gesture Set Animator" );
+	SetShortInfo("@Conversation.Undo.GestureSetAnimator");
 	
 	pOldAnimator = gesture->GetAnimator();
 	pNewAnimator = newAnimator;
 	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureSetAnimator::~ceUCGestureSetAnimator(){
-	if( pGesture ){
-		pGesture->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCGestureSetAnimator::~ceUCGestureSetAnimator(){
 ///////////////
 
 void ceUCGestureSetAnimator::Undo(){
-	pGesture->SetAnimator( pOldAnimator.GetString() );
+	pGesture->SetAnimator(pOldAnimator.GetString());
 }
 
 void ceUCGestureSetAnimator::Redo(){
-	pGesture->SetAnimator( pNewAnimator.GetString() );
+	pGesture->SetAnimator(pNewAnimator.GetString());
 }

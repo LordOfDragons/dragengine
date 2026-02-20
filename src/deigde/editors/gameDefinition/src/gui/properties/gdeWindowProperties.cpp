@@ -34,7 +34,7 @@
 #include "../gdeWindowMain.h"
 #include "../../gamedef/gdeGameDefinition.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -48,25 +48,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWindowProperties::gdeWindowProperties( gdeWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+gdeWindowProperties::gdeWindowProperties(gdeWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelGameDefinition.TakeOver( new gdeWPGameDefinition( *this ) );
-	AddChild( pPanelGameDefinition, "Game Definition" );
+	pPanelGameDefinition = gdeWPGameDefinition::Ref::New(*this);
+	AddChild(pPanelGameDefinition, "@GameDefinition.WindowProperties.TabGameDefinition");
 	
-	pPanelSelection.TakeOver( new gdeWPSelection( *this ) );
-	AddChild( pPanelSelection, "Selection" );
+	pPanelSelection = gdeWPSelection::Ref::New(*this);
+	AddChild(pPanelSelection, "@GameDefinition.WindowProperties.TabSelection");
 	
-	pPanelView.TakeOver( new gdeWPView( *this ) );
-	AddChild( pPanelView, "View" );
+	pPanelView = gdeWPView::Ref::New(*this);
+	AddChild(pPanelView, "@GameDefinition.WindowProperties.TabView");
 	
-	pPanelUndoHistory.TakeOver( new gdeWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory = gdeWPUndoHistory::Ref::New(GetEnvironment());
+	AddChild(pPanelUndoHistory, "@GameDefinition.WindowProperties.TabUndo");
 	
-	SetActivePanel( 1 ); // selection
+	SetActivePanel(1); // selection
 }
 
 gdeWindowProperties::~gdeWindowProperties(){
@@ -77,13 +77,13 @@ gdeWindowProperties::~gdeWindowProperties(){
 // Management
 ///////////////
 
-void gdeWindowProperties::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	( ( gdeWPGameDefinition& )( igdeWidget& )pPanelGameDefinition ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSelection& )( igdeWidget& )pPanelSelection ).SetGameDefinition( gameDefinition );
-	( ( gdeWPView& )( igdeWidget& )pPanelView ).SetGameDefinition( gameDefinition );
-	( ( gdeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetGameDefinition( gameDefinition );
+void gdeWindowProperties::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	pPanelGameDefinition.DynamicCast<gdeWPGameDefinition>()->SetGameDefinition(gameDefinition);
+	pPanelSelection.DynamicCast<gdeWPSelection>()->SetGameDefinition(gameDefinition);
+	pPanelView.DynamicCast<gdeWPView>()->SetGameDefinition(gameDefinition);
+	pPanelUndoHistory.DynamicCast<gdeWPUndoHistory>()->SetGameDefinition(gameDefinition);
 }
 
 gdeWPSelection &gdeWindowProperties::GetPanelSelection() const{
-	return ( gdeWPSelection& )( igdeWidget& )pPanelSelection;
+	return pPanelSelection.DynamicCast<gdeWPSelection>();
 }

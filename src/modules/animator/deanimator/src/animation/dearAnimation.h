@@ -25,10 +25,11 @@
 #ifndef _DEARANIMATION_H_
 #define _DEARANIMATION_H_
 
-#include <dragengine/systems/modules/animator/deBaseAnimatorAnimation.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include "dearAnimationMove.h"
 
-class dearAnimationMove;
+#include <dragengine/systems/modules/animator/deBaseAnimatorAnimation.h>
+#include <dragengine/common/collection/decTList.h>
+
 class deDEAnimator;
 class deAnimation;
 
@@ -43,15 +44,15 @@ private:
 	
 	deAnimation *pAnimation;
 	
-	decObjectList pMoves;
+	dearAnimationMove::List pMoves;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	dearAnimation( deDEAnimator *module, deAnimation *animation );
+	dearAnimation(deDEAnimator *module, deAnimation *animation);
 	/** Cleans up the peer. */
-	virtual ~dearAnimation();
+	~dearAnimation() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -61,12 +62,8 @@ public:
 	/** Retrieve the animation. */
 	inline deAnimation *GetAnimation() const{ return pAnimation; }
 	
-	/** Retrieve the number of moves. */
-	int GetMoveCount() const;
-	/** Retrieve move by index. */
-	dearAnimationMove *GetMoveAt( int index ) const;
-	/** Retrieve move by name or NULL if not found. */
-	dearAnimationMove *GetMoveNamed( const char *name ) const;
+	/** Moves. */
+	inline const dearAnimationMove::List &GetMoves() const{ return pMoves; }
 	/*@}*/
 	
 private:

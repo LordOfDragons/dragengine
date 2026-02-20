@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddEnvMapProbe::gdeUOCAddEnvMapProbe( gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCAddEnvMapProbe::gdeUOCAddEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) :
+
+pEnvMapProbe(nullptr)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add environment map probe" );
+	SetShortInfo("@GameDefinition.Undo.OCAddEnvMapProbe");
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddEnvMapProbe::~gdeUOCAddEnvMapProbe(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -74,18 +65,23 @@ gdeUOCAddEnvMapProbe::~gdeUOCAddEnvMapProbe(){
 
 void gdeUOCAddEnvMapProbe::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCEnvMapProbe() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCEnvMapProbe()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCEnvMapProbe( NULL );
+		gameDefinition->SetActiveOCEnvMapProbe(nullptr);
 	}
 	
-	pObjectClass->GetEnvMapProbes().Remove( pEnvMapProbe );
+	pObjectClass->GetEnvMapProbes().Remove(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
 }
 
 void gdeUOCAddEnvMapProbe::Redo(){
-	pObjectClass->GetEnvMapProbes().Add( pEnvMapProbe );
+	pObjectClass->GetEnvMapProbes().Add(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCEnvMapProbe(pEnvMapProbe);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCEnvMapProbe);
 }

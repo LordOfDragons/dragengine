@@ -47,14 +47,14 @@ deOcclusionMeshVertex::~deOcclusionMeshVertex(){
 // Management
 ///////////////
 
-void deOcclusionMeshVertex::SetWeightSet( int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
+void deOcclusionMeshVertex::SetWeightSet(int index){
+	if(index < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWeightSet = index;
 }
 
-void deOcclusionMeshVertex::SetPosition( const decVector &position ){
+void deOcclusionMeshVertex::SetPosition(const decVector &position){
 	pPosition = position;
 }

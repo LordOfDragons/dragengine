@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetPhonetics::saeUWordSetPhonetics( saeWord *word, const decUnicodeString &newPhonetics ){
-	if( ! word ) DETHROW( deeInvalidParam );
+saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics){
+	if(!word) DETHROW(deeInvalidParam);
 	
-	pWord = NULL;
+	pWord = nullptr;
 	
-	SetShortInfo( "Word Set Phonetics" );
+	SetShortInfo("@SpeechAnimation.Undo.WordSetPhonetics");
 	
 	pOldPhonetics = word->GetPhonetics();
 	pNewPhonetics = newPhonetics;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetPhonetics::~saeUWordSetPhonetics(){
-	if( pWord ){
-		pWord->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUWordSetPhonetics::~saeUWordSetPhonetics(){
 ///////////////
 
 void saeUWordSetPhonetics::Undo(){
-	pWord->SetPhonetics( pOldPhonetics );
+	pWord->SetPhonetics(pOldPhonetics);
 }
 
 void saeUWordSetPhonetics::Redo(){
-	pWord->SetPhonetics( pNewPhonetics );
+	pWord->SetPhonetics(pNewPhonetics);
 }

@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXCHECKBOX_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
+#include "../../igdeCheckBox.h"
 
 class igdeCheckBox;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native button.
  */
-class igdeNativeFoxCheckBox : public FXCheckButton{
-	FXDECLARE( igdeNativeFoxCheckBox )
+class igdeNativeFoxCheckBox : public FXCheckButton, public igdeCheckBox::cNativeCheckBox{
+	FXDECLARE(igdeNativeFoxCheckBox)
 	
 protected:
 	igdeNativeFoxCheckBox();
@@ -50,20 +51,20 @@ public:
 	
 private:
 	igdeCheckBox *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxCheckBox( igdeCheckBox &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxCheckBox(igdeCheckBox &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxCheckBox();
+	~igdeNativeFoxCheckBox() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxCheckBox* CreateNativeWidget( igdeCheckBox &owner );
+	static igdeNativeFoxCheckBox* CreateNativeWidget(igdeCheckBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -76,34 +77,35 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
-	virtual void UpdateChecked();
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void Focus() override;
+	void UpdateChecked() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
-	static const char *CheckBoxText( const igdeCheckBox &owner );
-	static FXIcon *CheckBoxIcon( const igdeCheckBox &owner );
-	static int CheckBoxFlags( const igdeCheckBox &owner );
-	static igdeFont *CheckBoxFont( const igdeCheckBox &owner, const igdeGuiTheme &guitheme );
-	static int CheckBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int CheckBoxPadRight( const igdeGuiTheme &guitheme );
-	static int CheckBoxPadTop( const igdeGuiTheme &guitheme );
-	static int CheckBoxPadBottom( const igdeGuiTheme &guitheme );
+	static FXString CheckBoxText(const igdeCheckBox &owner);
+	static FXIcon *CheckBoxIcon(const igdeCheckBox &owner);
+	static int CheckBoxFlags(const igdeCheckBox &owner);
+	static igdeFont *CheckBoxFont(const igdeCheckBox &owner, const igdeGuiTheme &guitheme);
+	static int CheckBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int CheckBoxPadRight(const igdeGuiTheme &guitheme);
+	static int CheckBoxPadTop(const igdeGuiTheme &guitheme);
+	static int CheckBoxPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxCheckBox igdeNativeCheckBox;
+using igdeNativeCheckBox = igdeNativeFoxCheckBox;
 
 #endif

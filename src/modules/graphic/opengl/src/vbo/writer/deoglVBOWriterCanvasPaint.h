@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vbo writer. */
-	deoglVBOWriterCanvasPaint( deoglRenderThread &renderThread );
+	deoglVBOWriterCanvasPaint(deoglRenderThread &renderThread);
 	
 	/** Clean up vbo writer. */
 	~deoglVBOWriterCanvasPaint();
@@ -64,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set data pointer to start. */
-	void Reset( deoglSharedVBOBlock *vboBlock );
+	void Reset(deoglSharedVBOBlock *vboBlock);
 	
 	/** Write point and advance pointer for the next write. */
-	void WritePoint( const decVector2 &position );
+	void WritePoint(const decVector2 &position);
 	/*@}*/
 };
 

@@ -47,5 +47,5 @@ deoglDOctreeVisitor::~deoglDOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoglDOctreeVisitor::VisitNode( deoglDOctree *node, int intersection ){
+void deoglDOctreeVisitor::VisitNode(deoglDOctree *node, int intersection){
 }

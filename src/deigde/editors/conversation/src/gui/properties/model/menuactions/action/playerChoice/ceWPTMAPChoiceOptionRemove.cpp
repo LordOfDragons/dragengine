@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,18 +50,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionRemove::ceWPTMAPChoiceOptionRemove( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionRemove::ceWPTMAPChoiceOptionRemove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option ) :
-ceWPTMenuAction( windowMain, "Remove Option",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( option )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveOption",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(option)
 {
-	if( ! option ){
-		DETHROW( deeInvalidParam );
+	if(!option){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -71,18 +71,17 @@ pOption( option )
 ///////////////
 
 void ceWPTMAPChoiceOptionRemove::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAPChoiceOptionRemove( pTopic, pPlayerChoice, pOption ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAPChoiceOptionRemove::Ref::New(
+		pTopic, pPlayerChoice, pOption));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAPlayerChoice * const modelPlayerChoice = ( ceWPTTIMAPlayerChoice* )model.DeepFindAction( pPlayerChoice );
-	if( ! modelPlayerChoice ){
+	ceWPTTIMAPlayerChoice * const modelPlayerChoice = (ceWPTTIMAPlayerChoice*)model.DeepFindAction(pPlayerChoice);
+	if(!modelPlayerChoice){
 		return;
 	}
 	

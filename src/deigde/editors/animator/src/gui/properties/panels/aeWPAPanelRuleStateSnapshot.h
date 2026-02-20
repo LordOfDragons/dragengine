@@ -32,17 +32,21 @@
  * State Snapshot Rule Panel.
  */
 class aeWPAPanelRuleStateSnapshot : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleStateSnapshot>;
+	
+	
 private:
-	igdeCheckBoxReference pChkUseLastState;
-	igdeButtonReference pBtnSnapshot;
-	igdeTextFieldReference pEditID;
-	igdeComboBoxFilterReference pCBMoveName;
-	igdeTextFieldReference pEditMoveTime;
-	igdeButtonReference pBtnGetFrame;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeCheckBox::Ref pChkUseLastState;
+	igdeButton::Ref pBtnSnapshot;
+	igdeTextField::Ref pEditID;
+	igdeComboBoxFilter::Ref pCBMoveName;
+	igdeTextField::Ref pEditMoveTime;
+	igdeButton::Ref pBtnGetFrame;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleStateSnapshot( aeWPRule &wpRule );
+	aeWPAPanelRuleStateSnapshot(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleStateSnapshot();
+	~aeWPAPanelRuleStateSnapshot() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update animation move list. */
-	virtual void UpdateAnimMoveList();
+	void UpdateAnimMoveList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Move combo box text. */
 	const decString &GetCBMoveNameText() const;

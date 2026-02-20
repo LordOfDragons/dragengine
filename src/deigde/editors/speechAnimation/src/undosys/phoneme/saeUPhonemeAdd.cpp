@@ -40,28 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeAdd::saeUPhonemeAdd( saeSAnimation *sanimation, saePhoneme *phoneme ){
-	if( ! sanimation || ! phoneme ) DETHROW( deeInvalidParam );
+saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
+	if(!sanimation || !phoneme) DETHROW(deeInvalidParam);
 	
-	pSAnimation = NULL;
-	pPhoneme = NULL;
+	pSAnimation = nullptr;
+	pPhoneme = nullptr;
 	
-	SetShortInfo( "Add Phoneme" );
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeAdd");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeAdd::~saeUPhonemeAdd(){
-	if( pPhoneme ){
-		pPhoneme->FreeReference();
-	}
-	if( pSAnimation ){
-		pSAnimation->FreeReference();
-	}
 }
 
 
@@ -70,10 +61,10 @@ saeUPhonemeAdd::~saeUPhonemeAdd(){
 ///////////////
 
 void saeUPhonemeAdd::Undo(){
-	pSAnimation->RemovePhoneme( pPhoneme );
+	pSAnimation->RemovePhoneme(pPhoneme);
 }
 
 void saeUPhonemeAdd::Redo(){
-	pSAnimation->AddPhoneme( pPhoneme );
-	pSAnimation->SetActivePhoneme( pPhoneme );
+	pSAnimation->AddPhoneme(pPhoneme);
+	pSAnimation->SetActivePhoneme(pPhoneme);
 }

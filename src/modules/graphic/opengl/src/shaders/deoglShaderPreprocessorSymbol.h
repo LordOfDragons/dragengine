@@ -41,20 +41,25 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglShaderPreprocessorSymbol>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader preprocessor symbol. */
 	deoglShaderPreprocessorSymbol();
 	
 	/** Create shader preprocessor symbol. */
-	deoglShaderPreprocessorSymbol( const char *name, const char *value );
+	deoglShaderPreprocessorSymbol(const char *name, const char *value);
 	
+protected:
 	/** Clean up shader preprocessor. */
-	virtual ~deoglShaderPreprocessorSymbol();
+	~deoglShaderPreprocessorSymbol() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */

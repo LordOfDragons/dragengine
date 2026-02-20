@@ -36,17 +36,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPLODMaxPixelError( deGraphicOpenGl &ogl );
+	deoglPLODMaxPixelError(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPLODMaxPixelError();
+	~deoglPLODMaxPixelError() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual int GetParameterInt();
+	int GetParameterInt() override;
 	/** Sets the current value. */
-	virtual void SetParameterInt( int value );
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

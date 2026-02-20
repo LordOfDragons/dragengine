@@ -43,15 +43,15 @@ deBaseAIWorld::~deBaseAIWorld(){
 // Notifications
 //////////////////
 
-void deBaseAIWorld::Update( float elapsed ){
+void deBaseAIWorld::Update(float elapsed){
 }
 
 
 
-void deBaseAIWorld::NavigationSpaceAdded( deNavigationSpace *navspace ){
+void deBaseAIWorld::NavigationSpaceAdded(deNavigationSpace *navspace){
 }
 
-void deBaseAIWorld::NavigationSpaceRemoved( deNavigationSpace *navspace ){
+void deBaseAIWorld::NavigationSpaceRemoved(deNavigationSpace *navspace){
 }
 
 void deBaseAIWorld::AllNavigationSpacesRemoved(){
@@ -59,10 +59,10 @@ void deBaseAIWorld::AllNavigationSpacesRemoved(){
 
 
 
-void deBaseAIWorld::NavigationBlockerAdded( deNavigationBlocker *blocker ){
+void deBaseAIWorld::NavigationBlockerAdded(deNavigationBlocker *blocker){
 }
 
-void deBaseAIWorld::NavigationBlockerRemoved( deNavigationBlocker *blocker ){
+void deBaseAIWorld::NavigationBlockerRemoved(deNavigationBlocker *blocker){
 }
 
 void deBaseAIWorld::AllNavigationBlockersRemoved(){
@@ -70,10 +70,10 @@ void deBaseAIWorld::AllNavigationBlockersRemoved(){
 
 
 
-void deBaseAIWorld::NavigatorAdded( deNavigator *navigator ){
+void deBaseAIWorld::NavigatorAdded(deNavigator *navigator){
 }
 
-void deBaseAIWorld::NavigatorRemoved( deNavigator *navigator ){
+void deBaseAIWorld::NavigatorRemoved(deNavigator *navigator){
 }
 
 void deBaseAIWorld::AllNavigatorsRemoved(){

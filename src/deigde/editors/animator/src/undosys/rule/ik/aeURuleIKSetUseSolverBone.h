@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -41,26 +41,30 @@ class aeRuleInverseKinematic;
  * Undo to set if the inverse kinematic rule uses a solver bone.
  */
 class aeURuleIKSetUseSolverBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleIKSetUseSolverBone>;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetUseSolverBone( aeRuleInverseKinematic *rule );
+	aeURuleIKSetUseSolverBone(aeRuleInverseKinematic *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleIKSetUseSolverBone();
+	~aeURuleIKSetUseSolverBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

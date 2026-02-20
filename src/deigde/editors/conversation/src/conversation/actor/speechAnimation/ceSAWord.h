@@ -26,6 +26,7 @@
 #define _CESAWORD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
@@ -40,12 +41,18 @@ private:
 	decUnicodeString pPhonetics;
 	
 public:
+	using Ref = deTObjectReference<ceSAWord>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceSAWord>,ceSAWord>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new word. */
-	ceSAWord( const char *name );
+	explicit ceSAWord(const char *name);
 	/** Cleans up the word. */
-	virtual ~ceSAWord();
+protected:
+	~ceSAWord() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -55,7 +62,7 @@ public:
 	/** Retrieves the phonetics. */
 	inline const decUnicodeString &GetPhonetics() const{ return pPhonetics; }
 	/** Sets the phonetics. */
-	void SetPhonetics( const decUnicodeString &phonetics );
+	void SetPhonetics(const decUnicodeString &phonetics);
 	/*@}*/
 };
 

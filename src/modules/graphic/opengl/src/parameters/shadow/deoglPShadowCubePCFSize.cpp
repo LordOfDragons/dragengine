@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPShadowCubePCFSize::deoglPShadowCubePCFSize( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPShadowCubePCFSize::deoglPShadowCubePCFSize(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "shadowCubePCFSize" );
-	SetDescription( "Sets the size of pcf taps for shadow cube maps." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Shadow Cube PCV Size" );
-	SetDefaultValue( "1" );
+	SetName("shadowCubePCFSize");
+	SetDescription("Sets the size of pcf taps for shadow cube maps.");
+	SetCategory(ecExpert);
+	SetDisplayName("Shadow Cube PCV Size");
+	SetDefaultValue("1");
 }
 
 deoglPShadowCubePCFSize::~deoglPShadowCubePCFSize(){
@@ -62,6 +62,6 @@ float deoglPShadowCubePCFSize::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetShadowCubePCFSize();
 }
 
-void deoglPShadowCubePCFSize::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetShadowCubePCFSize( value );
+void deoglPShadowCubePCFSize::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetShadowCubePCFSize(value);
 }

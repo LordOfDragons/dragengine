@@ -25,9 +25,9 @@
 #ifndef _DEOGLEFFECT_H_
 #define _DEOGLEFFECT_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicEffect.h>
+#include "render/deoglREffect.h"
 
-class deoglREffect;
+#include <dragengine/systems/modules/graphic/deBaseGraphicEffect.h>
 
 class deEffect;
 class deGraphicOpenGl;
@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEffect &pEffect;
 	
-	deoglREffect *pREffect;
+	deoglREffect::Ref pREffect;
 	
 	bool pDirtyEnabled;
 	
@@ -50,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffect( deGraphicOpenGl &ogl, const deEffect &effect );
+	deoglEffect(deGraphicOpenGl &ogl, const deEffect &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffect();
+	~deoglEffect() override;
 	/*@}*/
 	
 	
@@ -69,7 +69,7 @@ public:
 	
 	
 	/** Render effect. */
-	inline deoglREffect *GetREffect() const{ return pREffect; }
+	inline const deoglREffect::Ref &GetREffect() const{ return pREffect; }
 	
 	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
@@ -80,11 +80,11 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Enabled state changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	/*@}*/
 	
 protected:
-	void InitREffect( deoglREffect *reffect );
+	void InitREffect(deoglREffect *reffect);
 };
 
 #endif

@@ -25,12 +25,14 @@
 #ifndef _DEOALRAYCACHERAY_H_
 #define _DEOALRAYCACHERAY_H_
 
-#include <dragengine/common/math/decMath.h>
+#include "../../environment/raytrace/deoalRayTraceHitElement.h"
 
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class deoalRayCacheOctree;
 class deoalRayCacheRayHit;
-class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 
 
@@ -38,34 +40,35 @@ class deoalRayTraceResult;
  * \brief Model ray cache ray.
  */
 class deoalRayCacheRay{
+public:
+	using Ref = deTUniqueReference<deoalRayCacheRay>;
+	
+private:
 	decVector pOrigin;
 	decVector pDirection;
 	float pLength;
 	
-	deoalRayCacheRayHit *pHits;
-	int pHitCount;
+	decTList<deoalRayCacheRayHit> pHits;
 	
 	deoalRayCacheOctree *pOctreeNode;
 	
-	deoalRayCacheRay *pLLPrev;
-	deoalRayCacheRay *pLLNext;
-	
+	decTUniqueLinkedList<deoalRayCacheRay>::Element pLLRays;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model ray cache ray. */
-	deoalRayCacheRay( const decVector &origin, const decVector &direction,
-		float length, const deoalRayTraceHitElementList &elements );
+	deoalRayCacheRay(const decVector &origin, const decVector &direction,
+		float length, const deoalRayTraceHitElement::List &elements);
 	
 	/** \brief Create model ray cache ray. */
-	deoalRayCacheRay( const decVector &origin, const decVector &direction,
-		float length, const deoalRayTraceResult &result );
+	deoalRayCacheRay(const decVector &origin, const decVector &direction,
+		float length, const deoalRayTraceResult &result);
 	
 	/** \brief Create model ray cache ray. */
-	deoalRayCacheRay( const decVector &origin, const decVector &direction,
-		float length, const deoalRayTraceResult &result, int elementCount );
+	deoalRayCacheRay(const decVector &origin, const decVector &direction,
+		float length, const deoalRayTraceResult &result, int elementCount);
 	
 	/** \brief Clean up model ray cache ray. */
 	~deoalRayCacheRay();
@@ -85,10 +88,10 @@ public:
 	inline float GetLength() const{ return pLength; }
 	
 	/** \brief Number of hits. */
-	inline int GetHitCount() const{ return pHitCount; }
+	inline int GetHitCount() const{ return pHits.GetCount(); }
 	
 	/** \brief Hit at index. */
-	const deoalRayCacheRayHit &GetHitAt( int index ) const;
+	const deoalRayCacheRayHit &GetHitAt(int index) const;
 	/*@}*/
 	
 	
@@ -99,19 +102,11 @@ public:
 	inline deoalRayCacheOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** \brief Set octree node. */
-	void SetOctreeNode( deoalRayCacheOctree *node );
+	void SetOctreeNode(deoalRayCacheOctree *node);
 	
-	/** \brief Previous ray in cache. */
-	inline deoalRayCacheRay *GetLLPrev() const{ return pLLPrev; }
-	
-	/** \brief Set previous ray in cache. */
-	void SetLLPrev( deoalRayCacheRay *ray );
-	
-	/** \brief Next ray in cache. */
-	inline deoalRayCacheRay *GetLLNext() const{ return pLLNext; }
-	
-	/** \brief Set next ray in cache. */
-	void SetLLNext( deoalRayCacheRay *ray );
+	/** \brief Linked list element. */
+	inline decTUniqueLinkedList<deoalRayCacheRay>::Element &GetLLRays(){ return pLLRays; }
+	inline const decTUniqueLinkedList<deoalRayCacheRay>::Element &GetLLRays() const{ return pLLRays; }
 	/*@}*/
 };
 

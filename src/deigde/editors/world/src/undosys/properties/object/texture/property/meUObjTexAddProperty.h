@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -37,8 +37,12 @@ class meObjectTexture;
  * \brief Undo action object texture add property.
  */
 class meUObjTexAddProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjTexAddProperty>;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	
 	decString pKey;
 	decString pValue;
@@ -49,11 +53,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjTexAddProperty( meObjectTexture *texture, const char *key, const char *value );
+	meUObjTexAddProperty(meObjectTexture *texture, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjTexAddProperty();
+
+protected:
+	~meUObjTexAddProperty() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,22 +70,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

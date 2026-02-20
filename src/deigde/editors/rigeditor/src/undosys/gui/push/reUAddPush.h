@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigPush;
+#include "../../../rig/reRig.h"
+#include "../../../rig/push/reRigPush.h"
 
 
 
@@ -36,9 +36,13 @@ class reRigPush;
  * \brief Undo Add Push.
  */
 class reUAddPush : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUAddPush>;
+	
+	
 private:
 	reRig *pRig;
-	reRigPush *pPush;
+	reRigPush::Ref pPush;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUAddPush( reRig *rig, reRigPush *push );
+	reUAddPush(reRig *rig, reRigPush *push);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUAddPush();
+	~reUAddPush() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

@@ -47,11 +47,11 @@
 // WARNING DO NOT ENABLE FOR THE TIME BEING!!!
 int deoglDRDepthMinMax::USAGE_VERSION = -1; // 0=2pixel, 1=2texture, 2=splitTexture, -1=disabled
 
-deoglDRDepthMinMax::deoglDRDepthMinMax( deoglRenderThread &renderThread,
-int width, int height, int layerCount, int maxLevelCount ) :
-pRenderThread( renderThread){
-	if( width < 1 || height < 1 || layerCount < 1 || maxLevelCount < 0 ){
-		DETHROW( deeInvalidParam );
+deoglDRDepthMinMax::deoglDRDepthMinMax(deoglRenderThread &renderThread,
+int width, int height, int layerCount, int maxLevelCount) :
+pRenderThread(renderThread){
+	if(width < 1 || height < 1 || layerCount < 1 || maxLevelCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexture = nullptr;
@@ -68,7 +68,7 @@ pRenderThread( renderThread){
 		pCreateTextures();
 		pCreateFBOs();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -83,16 +83,16 @@ deoglDRDepthMinMax::~deoglDRDepthMinMax(){
 // Management
 ///////////////
 
-deoglFramebuffer *deoglDRDepthMinMax::GetFBOAt( int level ){
-	return (deoglFramebuffer*)pFBOs[level];
+deoglFramebuffer *deoglDRDepthMinMax::GetFBOAt(int level){
+	return pFBOs[level];
 }
 
-deoglFramebuffer *deoglDRDepthMinMax::GetFBOMinAt( int level ){
-	return (deoglFramebuffer*)pFBOMin[level];
+deoglFramebuffer *deoglDRDepthMinMax::GetFBOMinAt(int level){
+	return pFBOMin[level];
 }
 
-deoglFramebuffer *deoglDRDepthMinMax::GetFBOMaxAt( int level ){
-	return (deoglFramebuffer*)pFBOMax[level];
+deoglFramebuffer *deoglDRDepthMinMax::GetFBOMaxAt(int level){
+	return pFBOMax[level];
 }
 
 
@@ -102,17 +102,17 @@ deoglFramebuffer *deoglDRDepthMinMax::GetFBOMaxAt( int level ){
 
 void deoglDRDepthMinMax::pCleanUp(){
 	pFBOMax.RemoveAll();
-	if( pTextureMax ){
+	if(pTextureMax){
 		delete pTextureMax;
 	}
 	
 	pFBOMin.RemoveAll();
-	if( pTextureMin ){
+	if(pTextureMin){
 		delete pTextureMin;
 	}
 	
 	pFBOs.RemoveAll();
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -120,48 +120,48 @@ void deoglDRDepthMinMax::pCleanUp(){
 void deoglDRDepthMinMax::pCreateTextures(){
 	int largestSize;
 	pLevelCount = 1;
-	for( largestSize=decMath::max( pWidth, pHeight ); largestSize>2; largestSize>>=1 ){
+	for(largestSize=decMath::max(pWidth, pHeight); largestSize>2; largestSize>>=1){
 		pLevelCount++;
 	}
 	
-	if( pLevelCount > pMaxLevelCount ){
+	if(pLevelCount > pMaxLevelCount){
 		//pLevelCount = pMaxLevelCount;
 	}
 	
-	if( USAGE_VERSION == 0 ){
-		pTexture = new deoglArrayTexture( pRenderThread );
-		pTexture->SetSize( pWidth, pHeight, pLayerCount );
+	if(USAGE_VERSION == 0){
+		pTexture = new deoglArrayTexture(pRenderThread);
+		pTexture->SetSize(pWidth, pHeight, pLayerCount);
 		//pTexture->SetFBOFormat( 2, true );
-		pTexture->SetFormatMappingByNumber( deoglCapsFmtSupport::eutfRG32F ); // on the laptop eutfRG16 is faster
-		pTexture->SetMipMapped( true );
-		pTexture->SetMipMapLevelCount( pLevelCount );
+		pTexture->SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRG32F); // on the laptop eutfRG16 is faster
+		pTexture->SetMipMapped(true);
+		pTexture->SetMipMapLevelCount(pLevelCount);
 		pTexture->CreateTexture();
 		
-	}else if( USAGE_VERSION == 1 ){
-		pTextureMin = new deoglArrayTexture( pRenderThread );
-		pTextureMin->SetSize( pWidth, pHeight, pLayerCount );
-		pTextureMin->SetDepthFormat( false, false );
-		pTextureMin->SetMipMapped( true );
-		pTextureMin->SetMipMapLevelCount( pLevelCount - 1 );
+	}else if(USAGE_VERSION == 1){
+		pTextureMin = new deoglArrayTexture(pRenderThread);
+		pTextureMin->SetSize(pWidth, pHeight, pLayerCount);
+		pTextureMin->SetDepthFormat(false, false);
+		pTextureMin->SetMipMapped(true);
+		pTextureMin->SetMipMapLevelCount(pLevelCount - 1);
 		pTextureMin->CreateTexture();
 		
-		pTextureMax = new deoglArrayTexture( pRenderThread );
-		pTextureMax->SetSize( pWidth, pHeight, pLayerCount );
-		pTextureMax->SetDepthFormat( false, false );
-		pTextureMax->SetMipMapped( true );
-		pTextureMax->SetMipMapLevelCount( pLevelCount - 1 );
+		pTextureMax = new deoglArrayTexture(pRenderThread);
+		pTextureMax->SetSize(pWidth, pHeight, pLayerCount);
+		pTextureMax->SetDepthFormat(false, false);
+		pTextureMax->SetMipMapped(true);
+		pTextureMax->SetMipMapLevelCount(pLevelCount - 1);
 		pTextureMax->CreateTexture();
 		
-	}else if( USAGE_VERSION == 2 ){
-		pTexture = new deoglArrayTexture( pRenderThread );
-		pTexture->SetSize( pWidth << 1, pHeight, pLayerCount );
-		pTexture->SetDepthFormat( false, false );
-		pTexture->SetMipMapped( true );
-		pTexture->SetMipMapLevelCount( pLevelCount - 1 );
+	}else if(USAGE_VERSION == 2){
+		pTexture = new deoglArrayTexture(pRenderThread);
+		pTexture->SetSize(pWidth << 1, pHeight, pLayerCount);
+		pTexture->SetDepthFormat(false, false);
+		pTexture->SetMipMapped(true);
+		pTexture->SetMipMapLevelCount(pLevelCount - 1);
 		pTexture->CreateTexture();
 		
 	}else{
-		DETHROW_INFO( deeInvalidParam, "Disabled" );
+		DETHROW_INFO(deeInvalidParam, "Disabled");
 	}
 }
 
@@ -174,7 +174,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 			
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachColorArrayTextureLevel(0, pTexture, i);
@@ -191,7 +191,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			
 			// min
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachDepthArrayTextureLevel(pTextureMin, i);
@@ -205,7 +205,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			
 			// max
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachDepthArrayTextureLevel(pTextureMax, i);
@@ -221,7 +221,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			const GLenum buffers[1] = {GL_NONE};
 			
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachDepthArrayTextureLevel(pTexture, i);
@@ -234,7 +234,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			}
 			
 		}else{
-			DETHROW_INFO( deeInvalidParam, "Disabled" );
+			DETHROW_INFO(deeInvalidParam, "Disabled");
 		}
 	}
 }

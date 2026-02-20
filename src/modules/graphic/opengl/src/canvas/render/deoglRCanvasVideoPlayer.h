@@ -26,16 +26,20 @@
 #define _DEOGLRCANVASVIDEOPLAYER_H_
 
 #include "deoglRCanvas.h"
-
-class deoglRVideoPlayer;
+#include "../../video/deoglRVideoPlayer.h"
 
 
 /**
  * Render canvas video player.
  */
 class deoglRCanvasVideoPlayer : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRCanvasVideoPlayer>;
+	
+	
 private:
-	deoglRVideoPlayer *pVideoPlayer;
+	deoglRVideoPlayer::Ref pVideoPlayer;
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
@@ -44,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasVideoPlayer( deoglRenderThread &renderThread );
+	deoglRCanvasVideoPlayer(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasVideoPlayer();
+	~deoglRCanvasVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -55,36 +59,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Video player or \em NULL if not set. */
-	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player or \em NULL if not set. */
-	void SetVideoPlayer( deoglRVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
-	void SetTCTransform( const decTexMatrix2 &transform );
+	void SetTCTransform(const decTexMatrix2 &transform);
 	
 	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
 	/** Set texture coordinates clamp minimum. */
-	void SetTCClampMinimum( const decVector2 &clamp );
+	void SetTCClampMinimum(const decVector2 &clamp);
 	
 	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
 	/** Set texture coordinates clamp maximum. */
-	void SetTCClampMaximum( const decVector2 &clamp );
+	void SetTCClampMaximum(const decVector2 &clamp);
 	
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 };
 

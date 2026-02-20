@@ -27,6 +27,29 @@
 #include "../exceptions.h"
 
 
+// Class decShape::List
+//////////////////////////
+
+decShape::List::List(const List &list) : decTUniqueList<decShape>(){
+	list.Visit([&](const decShape &s){
+		Add(s.Copy());
+	});
+}
+
+decShape::List& decShape::List::operator=(const List &list){
+	RemoveAll();
+	list.Visit([&](const decShape &s){
+		Add(s.Copy());
+	});
+	return *this;
+}
+
+void decShape::List::Visit(decShapeVisitor &visitor){
+	Visit([&](decShape &s){
+		s.Visit(visitor);
+	});
+}
+
 
 // Class decShape
 ///////////////////
@@ -34,38 +57,30 @@
 // Constructors, destructors
 //////////////////////////////
 
-decShape::decShape(){
+decShape::decShape() = default;
+
+decShape::decShape(const decVector &position) :
+pPosition(position){
 }
 
-decShape::decShape( const decVector &position ) :
-pPosition( position ){
+decShape::decShape(const decVector &position, const decQuaternion &orientation) :
+pPosition(position),
+pOrientation(orientation){
 }
 
-decShape::decShape( const decVector &position, const decQuaternion &orientation ) :
-pPosition( position ),
-pOrientation( orientation ){
-}
-
-decShape::~decShape(){
-}
+decShape::~decShape() = default;
 
 
 
 // Management
 ///////////////
 
-void decShape::SetPosition( const decVector &position ){
+void decShape::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void decShape::SetOrientation( const decQuaternion &orientation ){
+void decShape::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
-}
-
-
-
-decShape *decShape::Copy() const{
-	return new decShape( pPosition, pOrientation );
 }
 
 
@@ -73,6 +88,6 @@ decShape *decShape::Copy() const{
 // Visiting
 /////////////
 
-void decShape::Visit( decShapeVisitor &visitor ){
-	visitor.VisitShape( *this );
+void decShape::Visit(decShapeVisitor &visitor){
+	visitor.VisitShape(*this);
 }

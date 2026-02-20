@@ -26,6 +26,8 @@
 #define _GDELOADSAVEXMLECLASS_H_
 
 #include "../gamedef/property/gdeProperty.h"
+#include "../gamedef/objectClass/gdeObjectClass.h"
+#include "../gamedef/objectClass/component/gdeOCComponentTexture.h"
 
 #include <deigde/utils/igdeBaseXML.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
@@ -33,10 +35,7 @@
 #include <dragengine/common/string/decString.h>
 
 class gdeGameDefinition;
-class gdeObjectClass;
 class gdeLoadSaveSystem;
-class gdeOCComponentTexture;
-class gdeOCComponentTextureList;
 
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -60,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save. */
-	gdeLoadSaveXmlEClass( gdeLoadSaveSystem &loadSaveSystem, deLogger *logger,
-		const char *loggerSource );
+	gdeLoadSaveXmlEClass(gdeLoadSaveSystem &loadSaveSystem, deLogger *logger,
+		const char *loggerSource);
 	/*@}*/
 	
 	
@@ -77,35 +76,35 @@ public:
 	
 	
 	/** \brief Load object class from xml element class file. */
-	gdeObjectClass *LoadXmlEClass( decBaseFileReader &reader );
+	gdeObjectClass::Ref LoadXmlEClass(decBaseFileReader &reader);
 	
 	/** \brief Save object class as xml element class file. */
-	void SaveXmlEClass( const gdeGameDefinition &gameDefinition,
-		const gdeObjectClass &objectClass, decBaseFileWriter &writer );
+	void SaveXmlEClass(const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass, decBaseFileWriter &writer);
 	/*@}*/
 	
 	
 	
 private:
-	gdeObjectClass *pReadElementClass( const decXmlElementTag &root );
+	gdeObjectClass::Ref pReadElementClass(const decXmlElementTag &root);
 	
-	void pWriteElementClass( decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
-		const gdeObjectClass &objectClass );
+	void pWriteElementClass(decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass);
 	
-	void pCollectTextures( const gdeGameDefinition &gameDefinition,
-		const gdeObjectClass &objectClass, gdeOCComponentTextureList &list );
+	void pCollectTextures(const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass, gdeOCComponentTexture::List &list);
 	
-	void pWritePropertyValue( decXmlWriter &writer, const gdeObjectClass &objectClass,
-		bool isMapEntry, const char *name, const decString &value );
+	void pWritePropertyValue(decXmlWriter &writer, const gdeObjectClass &objectClass,
+		bool isMapEntry, const char *name, const decString &value);
 	
-	void pWritePropertyValue( decXmlWriter &writer, gdeProperty::ePropertyTypes type,
-		bool isMapEntry, const char *name, const decString &value );
+	void pWritePropertyValue(decXmlWriter &writer, gdeProperty::ePropertyTypes type,
+		bool isMapEntry, const char *name, const decString &value);
 	
-	void pWritePropertyValueType( decXmlWriter &writer, bool isMapEntry,
-		const char *tagName, const char *name, const decString &value );
+	void pWritePropertyValueType(decXmlWriter &writer, bool isMapEntry,
+		const char *tagName, const char *name, const decString &value);
 	
-	void pWritePropertyTextureReplacement( decXmlWriter &writer, const gdeObjectClass &objectClass,
-		const gdeOCComponentTexture &texture );
+	void pWritePropertyTextureReplacement(decXmlWriter &writer, const gdeObjectClass &objectClass,
+		const gdeOCComponentTexture &texture);
 };
 
 #endif

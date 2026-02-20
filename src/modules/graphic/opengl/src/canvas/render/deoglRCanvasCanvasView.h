@@ -26,16 +26,20 @@
 #define _DEOGLRCANVASCANVASVIEW_H_
 
 #include "deoglRCanvas.h"
-
-class deoglRCanvasView;
+#include "deoglRCanvasView.h"
 
 
 /**
  * Render canvas render target.
  */
 class deoglRCanvasCanvasView : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRCanvasCanvasView>;
+	
+	
 private:
-	deoglRCanvasView *pCanvasView;
+	deoglRCanvasView::Ref pCanvasView;
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
@@ -44,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasCanvasView( deoglRenderThread &renderThread );
+	deoglRCanvasCanvasView(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasCanvasView();
+	~deoglRCanvasCanvasView() override;
 	/*@}*/
 	
 	
@@ -55,39 +59,39 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Canvas view or \em NULL if not set. */
-	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deoglRCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view or \em NULL if not set. */
-	void SetCanvasView( deoglRCanvasView *canvasView );
+	void SetCanvasView(deoglRCanvasView *canvasView);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
-	void SetTCTransform( const decTexMatrix2 &transform );
+	void SetTCTransform(const decTexMatrix2 &transform);
 	
 	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
 	/** Set texture coordinates clamp minimum. */
-	void SetTCClampMinimum( const decVector2 &clamp );
+	void SetTCClampMinimum(const decVector2 &clamp);
 	
 	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
 	/** Set texture coordinates clamp maximum. */
-	void SetTCClampMaximum( const decVector2 &clamp );
+	void SetTCClampMaximum(const decVector2 &clamp);
 	
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Prepare for rendering render. */
-	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 };
 

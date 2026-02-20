@@ -75,6 +75,29 @@ public:
 	}
 };
 
+bool deoglShaderLanguage::sCompileTotals::operator==(const sCompileTotals &other) const{
+	return units == other.units
+		&& stage[0] == other.stage[0]
+		&& stage[1] == other.stage[1]
+		&& stage[2] == other.stage[2]
+		&& stage[3] == other.stage[3]
+		&& stage[4] == other.stage[4]
+		&& stage[5] == other.stage[5]
+		&& shaders == other.shaders;
+}
+
+deoglShaderLanguage::sCompileTotals &deoglShaderLanguage::sCompileTotals::operator=(const sCompileTotals &other){
+	units = other.units;
+	stage[0] = other.stage[0];
+	stage[1] = other.stage[1];
+	stage[2] = other.stage[2];
+	stage[3] = other.stage[3];
+	stage[4] = other.stage[4];
+	stage[5] = other.stage[5];
+	shaders = other.shaders;
+	return *this;
+}
+
 
 // Class deoglShaderLanguage
 //////////////////////////////
@@ -90,23 +113,14 @@ pHasLoadingShader(false),
 pCompilingShaderCount(0),
 pHasCompilingShader(false),
 pCompiler(nullptr),
-pCompilerThreads(nullptr),
-pCompilerThreadCount(0),
-pCompilingTaskCount(0),
-pTotalCompiledUnits(0),
-pTotalCompiledShaders(0)
+pCompilingTaskCount(0)
 {
-	int i;
-	for(i=0; i<6; i++){
-		pTotalCompiledStage[i] = 0;
-	}
-	
-	deoglExtensions &ext = renderThread.GetExtensions();
+	const deoglExtensions &ext = renderThread.GetExtensions();
 	
 	// determine the required shader language version
-	if( ext.GetGLESVersion() == deoglExtensions::evglesUnsupported ){
-		if( ext.GetGLVersion() < deoglExtensions::evgl3p3 ){
-			switch( ext.GetGLVersion() ){
+	if(ext.GetGLESVersion() == deoglExtensions::evglesUnsupported){
+		if(ext.GetGLVersion() < deoglExtensions::evgl3p3){
+			switch(ext.GetGLVersion()){
 			case deoglExtensions::evgl3p2:
 				pGLSLVersion = "150";
 				pGLSLVersionNumber = 150;
@@ -133,18 +147,18 @@ pTotalCompiledShaders(0)
 			}
 			
 		}else{
-			pGLSLVersion.Format( "%d%0d0 core", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+			pGLSLVersion.Format("%d%0d0 core", ext.GetGLVersionMajor(), ext.GetGLVersionMinor());
 			pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 		}
 		
 	}else{
-		pGLSLVersion.Format( "%d%0d0 es", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+		pGLSLVersion.Format("%d%0d0 es", ext.GetGLVersionMajor(), ext.GetGLVersionMinor());
 		pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 	}
 	
 	// some extensions provide functionality which is not present in the supported GLSL
 	// version. add the required extension declarations
-	if( ext.GetGLESVersion() == deoglExtensions::evglesUnsupported ){
+	if(ext.GetGLESVersion() == deoglExtensions::evglesUnsupported){
 		// opengl extensions have a "in core" and "core since" version. some drivers seem to
 		// fail if "core since" version is used. using thus "in core" to be on the safe side.
 		// 
@@ -153,47 +167,47 @@ pTotalCompiledShaders(0)
 		// like Intel needs "in core". what a huge mess
 		const bool useCoreSince = true;
 		
-		#define GLSL_EXT_CHECK(v,cs,ci) ( (v) < ( useCoreSince ? deoglExtensions:: cs : deoglExtensions:: ci ) )
+		#define GLSL_EXT_CHECK(v,cs,ci) ((v) < (useCoreSince ? deoglExtensions:: cs : deoglExtensions:: ci))
 		
 		// core since: 3.1 , in core: 4.6
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_uniform_buffer_object )
-		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl3p1, evgl4p6 ) ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_uniform_buffer_object)
+		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl3p1, evgl4p6)){
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p0
-			pGLSLExtensions.Add( "GL_ARB_uniform_buffer_object" );
+			pGLSLExtensions.Add("GL_ARB_uniform_buffer_object");
 		}
 		
 		// core since: 3.1 , in core: 4.6
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_texture_buffer_object )
-		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl3p1, evgl4p6 ) ){
-			pGLSLExtensions.Add( "GL_ARB_texture_buffer_object" );
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_texture_buffer_object)
+		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl3p1, evgl4p6)){
+			pGLSLExtensions.Add("GL_ARB_texture_buffer_object");
 		}
 		
 		// core since: 4.3 , in core: 4.6
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
-		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p3, evgl4p6 ) ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
+		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl4p3, evgl4p6)){
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
-			pGLSLExtensions.Add( "GL_ARB_shader_storage_buffer_object" );
+			pGLSLExtensions.Add("GL_ARB_shader_storage_buffer_object");
 		}
 		
 		// required for intel drivers. keyword "readonly" is added in
 		// GL_ARB_shader_image_load_store extension. if extension is not
 		// included intel drivers can fail to compile shader
 		// core since: 4.2 , in core: 4.6
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_image_load_store )
-		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_image_load_store)
+		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl4p2, evgl4p6)){
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
-			pGLSLExtensions.Add( "GL_ARB_shader_image_load_store" );
+			pGLSLExtensions.Add("GL_ARB_shader_image_load_store");
 		}
 		
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shading_language_420pack )
-		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shading_language_420pack)
+		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl4p2, evgl4p6)){
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
-			pGLSLExtensions.Add( "GL_ARB_shading_language_420pack" );
+			pGLSLExtensions.Add("GL_ARB_shading_language_420pack");
 		}
 		
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_atomic_counters )
-		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
-			pGLSLExtensions.Add( "GL_ARB_shader_atomic_counters" );
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_atomic_counters)
+		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl4p2, evgl4p6)){
+			pGLSLExtensions.Add("GL_ARB_shader_atomic_counters");
 		}
 	}
 	
@@ -222,7 +236,7 @@ void deoglShaderLanguage::CompileShader(deoglShaderProgram &program){
 	// 	program.GetCacheId().GetString(), program.GetCacheId().GetLength());
 	const deMutexGuard guard(pMutexTasks);
 	
-	pTotalCompiledShaders++;
+	pCompileTotals.shaders++;
 	pCompiler->LoadCachedShader(program);
 	if(!program.ready){
 		pCompiler->CompileShader(program);
@@ -248,10 +262,10 @@ deoglShaderCompileListener *listener){
 		program->GetUnitFragment()};
 	int i;
 	
-	if(pCompilerThreadCount > 0 /*|| pglMaxShaderCompilerThreads*/){
+	if(pCompilerThreads.IsNotEmpty() /*|| pglMaxShaderCompilerThreads*/){
 		{
 		const deMutexGuard guard(pMutexTasks);
-		pLoadTasksPending.Add(deoglShaderLoadTask::Ref::New(new deoglShaderLoadTask(program, listener)));
+		pLoadTasksPending.Add(deoglShaderLoadTask::Ref::New(program, listener));
 		}
 		pSemaphoreNewTasks.Signal();
 		
@@ -265,14 +279,14 @@ deoglShaderCompileListener *listener){
 						continue;
 					}
 					
-					pTotalCompiledUnits++;
-					pTotalCompiledStage[i]++;
+					pCompileTotals.units++;
+					pCompileTotals.stage[i]++;
 					
 					pCompiler->CompileShaderUnit(*u);
 					pCompiler->FinishCompileShaderUnit(*u);
 				}
 				
-				pTotalCompiledShaders++;
+				pCompileTotals.shaders++;
 				pCompiler->CompileShader(*program);
 			}
 			pCompiler->FinishCompileShader(*program);
@@ -352,14 +366,14 @@ deoglShaderCompileUnitTask::Ref &unitTask, deoglShaderLoadTask::Ref &loadTask){
 	const deMutexGuard guard(pMutexTasks);
 	
 	if(pLoadTasksPending.GetCount() > 0){
-		loadTask = (deoglShaderLoadTask*)pLoadTasksPending.GetAt(0);
+		loadTask = pLoadTasksPending.GetAt(0);
 		pLoadTasksPending.RemoveFrom(0);
 		pCompilingTaskCount++;
 		return;
 	}
 	
 	if(pUnitTasksPending.GetCount() > 0){
-		unitTask = (deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(0);
+		unitTask = pUnitTasksPending.GetAt(0);
 		pUnitTasksPending.RemoveFrom(0);
 		pCompilingTaskCount++;
 		return;
@@ -457,11 +471,10 @@ void deoglShaderLanguage::FinishTask(deoglShaderLoadTask::Ref &task){
 				continue;
 			}
 			
-			pTotalCompiledUnits++;
-			pTotalCompiledStage[i]++;
+			pCompileTotals.units++;
+			pCompileTotals.stage[i]++;
 			
-			pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(
-				new deoglShaderCompileUnitTask(u)));
+			pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(u));
 			
 			// this method can be called from the resource loader thread instead of the render
 			// thread. for this reason CompileShaderUnit() can not be called here. the task
@@ -473,9 +486,8 @@ void deoglShaderLanguage::FinishTask(deoglShaderLoadTask::Ref &task){
 			*/
 		}
 		
-		pTotalCompiledShaders++;
-		pTasksPending.Add(deoglShaderCompileTask::Ref::New(
-			new deoglShaderCompileTask(program, task->TakeOutListener())));
+		pCompileTotals.shaders++;
+		pTasksPending.Add(deoglShaderCompileTask::Ref::New(program, task->TakeOutListener()));
 	}
 	
 	DEASSERT_TRUE(pCompilingTaskCount > 0)
@@ -502,7 +514,7 @@ void deoglShaderLanguage::WaitAllTasksFinished(){
 	if(pglMaxShaderCompilerThreads){
 		int i, count = pUnitTasksPending.GetCount();
 		for(i=0; i<count; i++){
-			deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
+			deoglShaderCompileUnitTask &task = pUnitTasksPending.GetAt(i);
 			pCompiler->FinishCompileShaderUnit(*task.GetUnit());
 			task.GetUnit()->isCompiling = false;
 		}
@@ -557,7 +569,7 @@ void deoglShaderLanguage::Update(){
 	
 	int i, count = pLoadTasksPending.GetCount();
 	for(i=0; i<count; i++){
-		deoglShaderLoadTask &task = *((deoglShaderLoadTask*)pLoadTasksPending.GetAt(i));
+		deoglShaderLoadTask &task = pLoadTasksPending.GetAt(i);
 		deoglShaderProgram * const program = task.GetProgram();
 		
 		try{
@@ -581,16 +593,14 @@ void deoglShaderLanguage::Update(){
 						continue;
 					}
 					
-					pTotalCompiledUnits++;
-					pTotalCompiledStage[j]++;
+					pCompileTotals.units++;
+					pCompileTotals.stage[j]++;
 					
-					pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(
-						new deoglShaderCompileUnitTask(u)));
+					pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(u));
 				}
 				
-				pTotalCompiledShaders++;
-				pTasksPending.Add(deoglShaderCompileTask::Ref::New(
-					new deoglShaderCompileTask(program, task.TakeOutListener())));
+				pCompileTotals.shaders++;
+				pTasksPending.Add(deoglShaderCompileTask::Ref::New(program, task.TakeOutListener()));
 			}
 			
 		}catch(const deException &e){
@@ -604,7 +614,7 @@ void deoglShaderLanguage::Update(){
 	
 	count = pUnitTasksPending.GetCount();
 	for(i=0; i<count; i++){
-		deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
+		deoglShaderCompileUnitTask &task = pUnitTasksPending.GetAt(i);
 		
 		if(task.pending){
 			task.pending = false;
@@ -683,19 +693,19 @@ void deoglShaderLanguage::Update(){
 //////////////////////
 
 void deoglShaderLanguage::pCleanUp(){
-	int i;
-	for(i=0; i<pCompilerThreadCount; i++){
-		pCompilerThreads[i]->RequestExit();
-	}
-	
-	pSemaphoreNewTasks.SignalAll();
-	pSemaphoreTasksFinished.SignalAll();
-	
-	for(i=0; i<pCompilerThreadCount; i++){
-		pRenderThread.GetLogger().LogInfoFormat("Wait exit shader compile thread %d", i);
-		pCompilerThreads[i]->WaitForExit();
-		pRenderThread.GetLogger().LogInfoFormat("Shader compile thread %d exited", i);
-		delete pCompilerThreads[i];
+	if(pCompilerThreads.IsNotEmpty()){
+		pCompilerThreads.Visit([](deoglShaderCompilerThread &t){
+			t.RequestExit();
+		});
+		
+		pSemaphoreNewTasks.SignalAll();
+		pSemaphoreTasksFinished.SignalAll();
+		
+		pCompilerThreads.VisitIndexed([&](int i, deoglShaderCompilerThread &t){
+			pRenderThread.GetLogger().LogInfoFormat("Wait exit shader compile thread %d", i);
+			t.WaitForExit();
+			pRenderThread.GetLogger().LogInfoFormat("Shader compile thread %d exited", i);
+		});
 	}
 	
 	if(pCompiler){
@@ -717,28 +727,26 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 	// count = 1;
 #endif
 	
-	pCompilerThreads = new deoglShaderCompilerThread*[count];
-	
 	int i;
 	if(pglMaxShaderCompilerThreads){
-		pCompilerThreads[0] = new deoglShaderCompilerThread(
+		auto t = deTUniqueReference<deoglShaderCompilerThread>::New(
 			*this, 0, deoglShaderCompilerThread::Type::glparallel);
-		pCompilerThreadCount = 1;
-		pCompilerThreads[0]->Start();
+		t->Start();
+		pCompilerThreads.Add(std::move(t));
 		pRenderThread.GetContext().DropCompileContexts(1);
 		
 	}else{
 		for(i=0; i<count; i++){
-			pCompilerThreads[i] = new deoglShaderCompilerThread(
+			auto t = deTUniqueReference<deoglShaderCompilerThread>::New(
 				*this, i, deoglShaderCompilerThread::Type::single);
-			pCompilerThreadCount = i + 1;
-			pCompilerThreads[i]->Start();
+			t->Start();
+			pCompilerThreads.Add(std::move(t));
 		}
 	}
 	
-	for(i=0; i<count; i++){
+	pCompilerThreads.Visit([](deoglShaderCompilerThread &t){
 		while(true){
-			const deoglShaderCompilerThread::State state = pCompilerThreads[i]->GetState();
+			const auto state = t.GetState();
 			DEASSERT_FALSE(state == deoglShaderCompilerThread::State::failed)
 			if(state == deoglShaderCompilerThread::State::ready){
 				break;
@@ -747,13 +755,19 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 			decTimer timer;
 			while(timer.PeekElapsedTime() < 0.001f);
 		}
-	}
+	});
 }
 
 void deoglShaderLanguage::pLogTotalsLocked(){
+	if(pCompileTotals == pLastCompileTotals){
+		return;
+	}
+	
+	pLastCompileTotals = pCompileTotals;
+	
 	pRenderThread.GetLogger().LogInfoFormat(
 		"ShaderCompileTotal: shaders=%d units=%d (c=%d v=%d tc=%d te=%d g=%d f=%d)",
-		pTotalCompiledShaders, pTotalCompiledUnits, pTotalCompiledStage[0],
-		pTotalCompiledStage[1], pTotalCompiledStage[2], pTotalCompiledStage[3],
-		pTotalCompiledStage[4], pTotalCompiledStage[5]);
+		pCompileTotals.shaders, pCompileTotals.units, pCompileTotals.stage[0],
+		pCompileTotals.stage[1], pCompileTotals.stage[2], pCompileTotals.stage[3],
+		pCompileTotals.stage[4], pCompileTotals.stage[5]);
 }

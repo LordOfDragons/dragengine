@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionGameCommand;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionGameCommand.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,28 +37,34 @@ class ceConversationTopic;
  * \brief Undo game command conversation condition toggle negate.
  */
 class ceUCCGameCmdToggleNegate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCGameCmdToggleNegate>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionGameCommand *pGameCommand;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionGameCommand::Ref pGameCommand;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCGameCmdToggleNegate( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionGameCommand *gameCommand );
+	ceUCCGameCmdToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionGameCommand *gameCommand);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCCGameCmdToggleNegate();
+protected:
+	~ceUCCGameCmdToggleNegate() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

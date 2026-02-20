@@ -28,9 +28,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,10 +38,14 @@ class gdeObjectClass;
  * \brief Undo action object class component remove texture.
  */
 class gdeUOCCRemoveTexture : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCCRemoveTexture> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	
 	
@@ -49,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCRemoveTexture( gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture );
+	gdeUOCCRemoveTexture(gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -25,6 +25,7 @@
 #ifndef _MEPATHFINDTESTTYPE_H_
 #define _MEPATHFINDTESTTYPE_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
 
@@ -34,39 +35,52 @@
  * @brief Path Find Test Type.
  */
 class mePathFindTestType : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<mePathFindTestType>;
+	
+	/** \brief List type. */
+	using List = decTObjectOrderedSet<mePathFindTestType>;
+	
+	
 private:
 	decString pName;
 	int pTypeNumber;
 	float pFixCost;
 	float pCostPerMeter;
 	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new path find test type. */
-	mePathFindTestType( int typeNumber );
+	explicit mePathFindTestType(int typeNumber);
+	
+protected:
 	/** Cleans up the path find test type. */
-	virtual ~mePathFindTestType();
+	~mePathFindTestType() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the type number. */
 	inline int GetTypeNumber() const{ return pTypeNumber; }
 	/** Sets the type number. */
-	void SetTypeNumber( int typeNumber );
+	void SetTypeNumber(int typeNumber);
 	/** Retrieves the name of the type. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name of the type. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the fix cost. */
 	inline float GetFixCost() const{ return pFixCost; }
 	/** Sets the fix cost. */
-	void SetFixCost( float fixCost );
+	void SetFixCost(float fixCost);
 	/** Retrieves the cost per meter. */
 	inline float GetCostPerMeter() const{ return pCostPerMeter; }
 	/** Sets the cost per meter. */
-	void SetCostPerMeter( float costPerMeter );
+	void SetCostPerMeter(float costPerMeter);
 	/*@}*/
 };
 

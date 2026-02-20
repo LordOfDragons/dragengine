@@ -25,12 +25,13 @@
 #ifndef _DEAINPDEVICEMANAGER_H_
 #define _DEAINPDEVICEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "deainpDeviceMouse.h"
+#include "deainpDeviceKeyboard.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deAndroidInput;
 class deainpDevice;
-class deainpDeviceMouse;
-class deainpDeviceKeyboard;
 
 
 
@@ -41,10 +42,10 @@ class deainpDeviceManager{
 private:
 	deAndroidInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<deainpDevice> pDevices;
 	
-	deainpDeviceMouse *pMouse;
-	deainpDeviceKeyboard *pKeyboard;
+	deainpDeviceMouse::Ref pMouse;
+	deainpDeviceKeyboard::Ref pKeyboard;
 	
 	
 	
@@ -52,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device list. */
-	deainpDeviceManager( deAndroidInput &module );
+	deainpDeviceManager(deAndroidInput &module);
 	
 	/** \brief Clean up device list. */
 	~deainpDeviceManager();
@@ -67,25 +68,22 @@ public:
 	
 	
 	
-	/** \brief Number of devices. */
-	int GetCount() const;
-	
-	/** \brief Device at index. */
-	deainpDevice *GetAt( int index ) const;
+	/** \brief Devices. */
+	inline const decTObjectOrderedSet<deainpDevice> &GetDevices() const{ return pDevices; }
 	
 	/** \brief Device with identifier or \em NULL if absent. */
-	deainpDevice *GetWithID( const char *id ) const;
+	deainpDevice *GetWithID(const char *id) const;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	
 	
 	/** \brief  mouse device. */
-	inline deainpDeviceMouse *GetMouse() const{ return pMouse; }
+	inline const deainpDeviceMouse::Ref &GetMouse() const{ return pMouse; }
 	
 	/** \brief  keyboard device. */
-	inline deainpDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	inline const deainpDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
 	
 	
 	

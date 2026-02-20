@@ -26,12 +26,12 @@
 #define _GDEVAOCOMPONENT_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/component/gdeOCComponent.h"
 
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
-class gdeOCComponent;
 class gdeOCComponentTexture;
 
 class deComponentTexture;
@@ -42,12 +42,17 @@ class deComponentTexture;
  * \brief Game definition active object component for edit view.
  */
 class gdeVAOComponent : public gdeVAOSubObject{
-private:
-	gdeOCComponent *pOCComponent;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOComponent> Ref;
 	
-	deColliderReference pCollider;
-	deComponentReference pComponent;
-	deAnimatorInstanceReference pAnimator;
+	
+private:
+	gdeOCComponent::Ref pOCComponent;
+	
+	deCollider::Ref pCollider;
+	deComponent::Ref pComponent;
+	deAnimatorInstance::Ref pAnimator;
 	bool pPlayback;
 	
 	
@@ -56,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOComponent( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCComponent *occomponent );
+	gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCComponent *occomponent);
 	
 protected:
 	/**
@@ -66,7 +71,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOComponent();
+	~gdeVAOComponent() override;
 	/*@}*/
 	
 	
@@ -75,28 +80,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pOCComponent; }
+	inline const gdeOCComponent::Ref &GetOCComponent() const{ return pOCComponent; }
 	
-	/** \brief Component or \em NULL if not present. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	/** \brief Component or \em nullptr if not present. */
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
-	/** \brief Collider or \em NULL if not present. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	/** \brief Collider or \em nullptr if not present. */
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Rebuild resources. */
-	virtual void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Update texture. */
-	void UpdateTexture( gdeOCComponentTexture *texture );
+	void UpdateTexture(gdeOCComponentTexture *texture);
 	
 	/** \brief Selected object changed. */
-	virtual void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Extends. */
-	virtual void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	virtual void GetExtends(decVector &minExtend, decVector &maxExtend) const;
 	/*@}*/
 	
 	
@@ -106,8 +111,8 @@ private:
 	
 	void pCreateComponent();
 	void pCreateComponentTextures();
-	void pUpdateComponentTexture( const gdeOCComponentTexture *texture,
-		deComponentTexture &engTexture, int engTextureIndex );
+	void pUpdateComponentTexture(const gdeOCComponentTexture *texture,
+		deComponentTexture &engTexture, int engTextureIndex);
 	void pCreateCollider();
 	void pCreateAnimator();
 	void pAttachComponent();

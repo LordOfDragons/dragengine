@@ -31,7 +31,6 @@
 #include "deoglSharedVBOBlock.h"
 #include "deoglVBOAttribute.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -42,20 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBOList::deoglSharedVBOList( deoglRenderThread &renderThread,
-const deoglVBOLayout &layout, GLenum drawType, int maxSize, int maxIndexSize ) :
-pRenderThread( renderThread ),
-pLayout( layout ),
-pDrawType( drawType )
+deoglSharedVBOList::deoglSharedVBOList(deoglRenderThread &renderThread,
+const deoglVBOLayout &layout, GLenum drawType, int maxSize, int maxIndexSize) :
+pRenderThread(renderThread),
+pLayout(layout),
+pDrawType(drawType)
 {
-	if( maxSize < 0 || maxIndexSize < 0 ){
-		DETHROW( deeInvalidParam );
+	if(maxSize < 0 || maxIndexSize < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMaxSize = maxSize - maxSize % layout.GetStride();
 	pMaxPointCount = pMaxSize / layout.GetStride();
 	
-	if( layout.GetIndexSize() > 0 ){
+	if(layout.GetIndexSize() > 0){
 		pMaxIndexSize = maxIndexSize - maxIndexSize % layout.GetIndexSize();
 		pMaxIndexCount = pMaxIndexSize / layout.GetIndexSize();
 		
@@ -73,7 +72,7 @@ deoglSharedVBOList::~deoglSharedVBOList(){
 // Management
 ///////////////
 
-bool deoglSharedVBOList::Matches( const deoglVBOLayout &layout, GLenum drawType ) const{
+bool deoglSharedVBOList::Matches(const deoglVBOLayout &layout, GLenum drawType) const{
 	return drawType == pDrawType && layout == pLayout;
 }
 
@@ -81,45 +80,45 @@ int deoglSharedVBOList::GetCount() const{
 	return pVBOs.GetCount();
 }
 
-deoglSharedVBO *deoglSharedVBOList::GetAt( int index ) const{
-	return ( deoglSharedVBO* )pVBOs.GetAt( index );
+deoglSharedVBO *deoglSharedVBOList::GetAt(int index) const{
+	return pVBOs.GetAt(index);
 }
 
-deoglSharedVBOBlock *deoglSharedVBOList::AddData( int size, int indexCount ){
-	if( size < 1 || indexCount < 0 ){
-		DETHROW( deeInvalidParam );
+deoglSharedVBOBlock::Ref deoglSharedVBOList::AddData(int size, int indexCount){
+	if(size < 1 || indexCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pVBOs.GetCount();
-	deoglSharedVBOBlock *block;
+	deoglSharedVBOBlock::Ref block;
 	int i;
 	
 	// if there is a vbo able to host the data add it there
-	for( i=0; i<count; i++ ){
-		block = ( ( deoglSharedVBO* )pVBOs.GetAt( i ) )->AddBlock( size, indexCount );
-		if( block ){
+	for(i=0; i<count; i++){
+		block = pVBOs.GetAt(i)->AddBlock(size, indexCount);
+		if(block){
 			return block;
 		}
 	}
 	
 	// otherwise create a new vbo to add the data there
-	deObjectReference vbo;
+	deoglSharedVBO::Ref vbo;
 	
-	if( size > pMaxPointCount || indexCount > pMaxIndexCount ){
+	if(size > pMaxPointCount || indexCount > pMaxIndexCount){
 		// a little hack to deal with very large models. often they do not fit into the VBOs
 		// we have so for this case we create an oversized VBO for the time being. has to be
 		// made better later on
-		vbo.TakeOver( new deoglSharedVBO( this, size, indexCount ) );
+		vbo = deoglSharedVBO::Ref::New(this, size, indexCount);
 		
 	}else{
-		vbo.TakeOver( new deoglSharedVBO( this, pMaxPointCount, pMaxIndexCount ) );
+		vbo = deoglSharedVBO::Ref::New(this, pMaxPointCount, pMaxIndexCount);
 	}
 	
-	pVBOs.Add( vbo );
+	pVBOs.Add(vbo);
 	
-	block = ( ( deoglSharedVBO* )pVBOs.GetAt( pVBOs.GetCount() - 1 ) )->AddBlock( size, indexCount );
-	if( ! block ){
-		DETHROW( deeInvalidAction );
+	block = pVBOs.GetAt(pVBOs.GetCount() - 1)->AddBlock(size, indexCount);
+	if(!block){
+		DETHROW(deeInvalidAction);
 	}
 	
 	return block;
@@ -131,7 +130,7 @@ void deoglSharedVBOList::PrepareVBOs(){
 	const int count = pVBOs.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglSharedVBO* )pVBOs.GetAt( i ) )->Prepare();
+	for(i=0; i<count; i++){
+		pVBOs.GetAt(i)->Prepare();
 	}
 }

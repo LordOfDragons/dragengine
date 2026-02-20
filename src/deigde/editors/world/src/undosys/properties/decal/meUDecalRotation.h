@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -37,8 +37,12 @@ class meDecal;
  * \brief Undo Action Set Decal Rotation.
  */
 class meUDecalRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalRotation>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decVector pOldRotation;
 	decVector pNewRotation;
@@ -47,20 +51,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalRotation( meDecal *decal, const decVector &newRotation );
+	meUDecalRotation(meDecal *decal, const decVector &newRotation);
 	
 protected:
 	/** \brief Clean up undo object. */
-	~meUDecalRotation();
+	~meUDecalRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

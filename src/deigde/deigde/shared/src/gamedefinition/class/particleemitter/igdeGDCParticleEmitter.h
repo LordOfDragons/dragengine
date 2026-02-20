@@ -27,6 +27,7 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 
@@ -36,6 +37,13 @@
  */
 class DE_DLL_EXPORT igdeGDCParticleEmitter : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDCParticleEmitter>;
+	
+	/** \brief Type holding list of objects. */
+	using List = decTObjectOrderedSet<igdeGDCParticleEmitter>;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epPath,
@@ -58,8 +66,8 @@ private:
 	decString pBoneName;
 	bool pCasting;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
-	decString pTriggerNames[ etCasting + 1 ];
+	decString pPropertyNames[epAttachRotation + 1];
+	decString pTriggerNames[etCasting + 1];
 	
 	
 	
@@ -70,11 +78,11 @@ public:
 	igdeGDCParticleEmitter();
 	
 	/** \brief Create copy of a game definition class particle emitter. */
-	igdeGDCParticleEmitter( const igdeGDCParticleEmitter &emitter );
+	igdeGDCParticleEmitter(const igdeGDCParticleEmitter &emitter);
 	
 protected:
 	/** \brief Clean up class particle emitter. */
-	virtual ~igdeGDCParticleEmitter();
+	~igdeGDCParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -86,56 +94,56 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path of the particle emitter to use. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone to attach to or empty string. */
-	void SetBoneName( const char *boneName );
+	void SetBoneName(const char *boneName);
 	
 	/** \brief Casting. */
 	inline bool GetCasting() const{ return pCasting; }
 	
 	/** \brief Set if casting. */
-	void SetCasting( bool casting );
+	void SetCasting(bool casting);
 	
 	
 	
 	/** \brief Property name is set (not empty string). */
-	bool IsPropertySet( eProperties property ) const;
+	bool IsPropertySet(eProperties property) const;
 	
 	/** \brief Name of property. */
-	const decString &GetPropertyName( eProperties property ) const;
+	const decString &GetPropertyName(eProperties property) const;
 	
 	/** \brief Set name of property. */
-	void SetPropertyName( eProperties property, const char *name );
+	void SetPropertyName(eProperties property, const char *name);
 	
 	/** \brief One or more properties use name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	
 	
 	
 	/** \brief Trigger name is set (not empty string). */
-	bool IsTriggerSet( eTriggers trigger ) const;
+	bool IsTriggerSet(eTriggers trigger) const;
 	
 	/** \brief Name of trigger. */
-	const decString &GetTriggerName( eTriggers trigger ) const;
+	const decString &GetTriggerName(eTriggers trigger) const;
 	
 	/** \brief Set name of trigger. */
-	void SetTriggerName( eTriggers trigger, const char *name );
+	void SetTriggerName(eTriggers trigger, const char *name);
 	/*@}*/
 };
 

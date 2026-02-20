@@ -33,13 +33,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionGPUUse::deoglMemoryConsumptionGPUUse( deoglMemoryConsumptionGPU &tracker ) :
-pTracker( tracker ),
-pConsumption( 0 ){
+deoglMemoryConsumptionGPUUse::deoglMemoryConsumptionGPUUse(deoglMemoryConsumptionGPU &tracker) :
+pTracker(tracker),
+pConsumption(0){
 }
 
 deoglMemoryConsumptionGPUUse::~deoglMemoryConsumptionGPUUse(){
-	SetConsumption( 0 );
+	SetConsumption(0);
 }
 
 
@@ -47,40 +47,40 @@ deoglMemoryConsumptionGPUUse::~deoglMemoryConsumptionGPUUse(){
 // Management
 ///////////////
 
-void deoglMemoryConsumptionGPUUse::SetConsumption( unsigned long long consumption ){
-	if( consumption > pConsumption ){
-		IncrementConsumption( consumption - pConsumption );
+void deoglMemoryConsumptionGPUUse::SetConsumption(unsigned long long consumption){
+	if(consumption > pConsumption){
+		IncrementConsumption(consumption - pConsumption);
 		
-	}else if( consumption < pConsumption ){
-		DecrementConsumption( pConsumption - consumption );
+	}else if(consumption < pConsumption){
+		DecrementConsumption(pConsumption - consumption);
 	}
 }
 
-void deoglMemoryConsumptionGPUUse::IncrementConsumption( unsigned long long consumption ){
-	if( consumption == 0 ){
+void deoglMemoryConsumptionGPUUse::IncrementConsumption(unsigned long long consumption){
+	if(consumption == 0){
 		return;
 	}
 	
-	pTracker.IncrementConsumption( consumption );
+	pTracker.IncrementConsumption(consumption);
 	
-	if( pConsumption == 0 ){
+	if(pConsumption == 0){
 		pTracker.IncrementCount();
 	}
 	
 	pConsumption += consumption;
 }
 
-void deoglMemoryConsumptionGPUUse::DecrementConsumption( unsigned long long consumption ){
-	if( consumption == 0 ){
+void deoglMemoryConsumptionGPUUse::DecrementConsumption(unsigned long long consumption){
+	if(consumption == 0){
 		return;
 	}
 	
-	if( consumption < pConsumption ){
-		pTracker.DecrementConsumption( consumption );
+	if(consumption < pConsumption){
+		pTracker.DecrementConsumption(consumption);
 		pConsumption -= consumption;
 		
 	}else{
-		pTracker.DecrementConsumption( pConsumption );
+		pTracker.DecrementConsumption(pConsumption);
 		pTracker.DecrementCount();
 		pConsumption = 0;
 	}
@@ -91,17 +91,17 @@ void deoglMemoryConsumptionGPUUse::DecrementConsumption( unsigned long long cons
 // Operators
 //////////////
 
-deoglMemoryConsumptionGPUUse &deoglMemoryConsumptionGPUUse::operator=( unsigned long long consumption ){
-	SetConsumption( consumption );
+deoglMemoryConsumptionGPUUse &deoglMemoryConsumptionGPUUse::operator=(unsigned long long consumption){
+	SetConsumption(consumption);
 	return *this;
 }
 
-deoglMemoryConsumptionGPUUse &deoglMemoryConsumptionGPUUse::operator+=( unsigned long long consumption ){
-	IncrementConsumption( consumption );
+deoglMemoryConsumptionGPUUse &deoglMemoryConsumptionGPUUse::operator+=(unsigned long long consumption){
+	IncrementConsumption(consumption);
 	return *this;
 }
 
-deoglMemoryConsumptionGPUUse &deoglMemoryConsumptionGPUUse::operator-=( unsigned long long consumption ){
-	DecrementConsumption( consumption );
+deoglMemoryConsumptionGPUUse &deoglMemoryConsumptionGPUUse::operator-=(unsigned long long consumption){
+	DecrementConsumption(consumption);
 	return *this;
 }

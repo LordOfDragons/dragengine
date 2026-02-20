@@ -25,10 +25,11 @@
 #ifndef _IGDETEXTUREPROPERTY_H_
 #define _IGDETEXTUREPROPERTY_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
-
 
 
 /**
@@ -36,8 +37,13 @@
  * 
  * Stores the definition of a texture property.
  */
-class DE_DLL_EXPORT igdeTextureProperty{
+class DE_DLL_EXPORT igdeTextureProperty : public deObject{
 public:
+	using Ref = deTObjectReference<igdeTextureProperty>;
+	
+	/** \brief List of properties. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeTextureProperty>,igdeTextureProperty>;
+	
 	/** \brief Value types. */
 	enum ePropertyTypes{
 		/** \brief Single value. */
@@ -67,14 +73,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create texture property. */
-	igdeTextureProperty( const char *name );
+	igdeTextureProperty(const char *name);
 	
+protected:
 	/** \brief Clean up texture property. */
-	~igdeTextureProperty();
+	~igdeTextureProperty() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
@@ -84,31 +91,31 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Type. */
 	inline ePropertyTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( ePropertyTypes type );
+	void SetType(ePropertyTypes type);
 	
 	/** \brief Number of components. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Set number of components. */
-	void SetComponentCount( int count );
+	void SetComponentCount(int count);
 	
 	/** \brief Default value. */
 	inline float GetDefaultValue() const{ return pDefaultValue; }
 	
 	/** \brief Set default value. */
-	void SetDefaultValue( float value );
+	void SetDefaultValue(float value);
 	
 	/** \brief Default color. */
 	inline const decColor &GetDefaultColor() const{ return pDefaultColor; }
 	
 	/** \brief Set default color. */
-	void SetDefaultColor( const decColor &color );
+	void SetDefaultColor(const decColor &color);
 	
 	/** \brief List of affected modules. */
 	inline decStringSet &GetAffectedModules(){ return pAffectedModules; }

@@ -35,19 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneIKLimitsUpper::reUSetBoneIKLimitsUpper( reRigBone *bone, const decVector &ikLimitsUpper ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneIKLimitsUpper::reUSetBoneIKLimitsUpper(reRigBone *bone, const decVector &ikLimitsUpper){
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldIKLimitsUpper = bone->GetIKLimitsUpper();
 	pNewIKLimitsUpper = ikLimitsUpper;
 	
 	try{
-		SetShortInfo( "Set Bone IK Limits Upper" );
+		SetShortInfo("@Rig.Undo.BoneSetIkLimitsUpper");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +61,11 @@ reUSetBoneIKLimitsUpper::~reUSetBoneIKLimitsUpper(){
 ///////////////
 
 void reUSetBoneIKLimitsUpper::Undo(){
-	pBone->SetIKLimitsUpper( pOldIKLimitsUpper );
+	pBone->SetIKLimitsUpper(pOldIKLimitsUpper);
 }
 
 void reUSetBoneIKLimitsUpper::Redo(){
-	pBone->SetIKLimitsUpper( pNewIKLimitsUpper );
+	pBone->SetIKLimitsUpper(pNewIKLimitsUpper);
 }
 
 
@@ -76,5 +74,4 @@ void reUSetBoneIKLimitsUpper::Redo(){
 //////////////////////
 
 void reUSetBoneIKLimitsUpper::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

@@ -25,34 +25,36 @@
 #ifndef _CEWINDOWDOPESHEET_H_
 #define _CEWINDOWDOPESHEET_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include "ceWindowDopeSheetListener.h"
+#include "ceWDSVAPreview.h"
+#include "../../conversation/ceConversation.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeScrollBar.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/resources/igdeFontReference.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/resources/igdeFont.h>
 
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/sound/deSpeakerReference.h>
-#include <dragengine/resources/sound/deSoundReference.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/sound/deSound.h>
 
 
-class ceWindowDopeSheetListener;
 class ceViewDopeSheet;
 class ceWindowMain;
-class ceConversation;
 class ceCameraShot;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;
 class ceCAActorSpeak;
 class ceWDSLane;
-class ceWDSVAPreview;
 
 
 
@@ -61,6 +63,8 @@ class ceWDSVAPreview;
  */
 class ceWindowDopeSheet : public igdeContainerFlow{
 public:
+	using Ref = deTObjectReference<ceWindowDopeSheet>;
+	
 	/** \brief Lanes. */
 	enum eLanes{
 		elWord,
@@ -73,60 +77,65 @@ public:
 	
 	/** \brief Dope sheet view. */
 	class cDopeSheet : public igdeViewRenderWindow{
+	public:
+		using Ref = deTObjectReference<cDopeSheet>;
+		
 	private:
 		ceWindowDopeSheet &pWindow;
 		
 	public:
-		cDopeSheet( ceWindowDopeSheet &window );
+		cDopeSheet(ceWindowDopeSheet &window);
 		
 	protected:
-		virtual ~cDopeSheet();
+protected:
+		~cDopeSheet() override;
+public:
 		
 	public:
-		virtual void OnResize();
-		virtual void CreateCanvas();
+		void OnResize() override;
+		void CreateCanvas() override;
 	};
 	
 	
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceWindowDopeSheetListener *pListener;
-	ceConversation *pConversation;
+	ceWindowDopeSheetListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
-	igdeActionReference pActionPlayAction;
-	igdeActionReference pActionPlayFromhere;
-	igdeActionReference pActionPause;
-	igdeActionReference pActionSelectCurAction;
+	igdeAction::Ref pActionPlayAction;
+	igdeAction::Ref pActionPlayFromhere;
+	igdeAction::Ref pActionPause;
+	igdeAction::Ref pActionSelectCurAction;
 	
-	igdeButtonReference pBtnPlayAction;
-	igdeButtonReference pBtnPlayFromHere;
-	igdeButtonReference pBtnPlayPause;
-	igdeButtonReference pBtnPlaySelectCurAction;
+	igdeButton::Ref pBtnPlayAction;
+	igdeButton::Ref pBtnPlayFromHere;
+	igdeButton::Ref pBtnPlayPause;
+	igdeButton::Ref pBtnPlaySelectCurAction;
 	
-	igdeScrollBarReference pSBTime;
-	igdeComboBoxReference pCBTimeScale;
-	igdeWidgetReference pDopeSheet;
+	igdeScrollBar::Ref pSBTime;
+	igdeComboBox::Ref pCBTimeScale;
+	cDopeSheet::Ref pDopeSheet;
 	
-	decObjectList pTimeLineLabels;
-	decObjectList pTimeLines;
+	decTObjectList<deCanvasText> pTimeLineLabels;
+	decTObjectList<deCanvasPaint> pTimeLines;
 	
-	deCanvasViewReference pCanvasTimeLines;
-	deCanvasViewReference pCanvasTimeLineLabels;
-	deCanvasPaintReference pCanvasPanelDopeSheet;
-	deCanvasPaintReference pCanvasPanelVAPreview;
-	deCanvasPaintReference pCanvasPanelVAPreviewLine;
-	deCanvasPaintReference pCanvasVAPreviewTime;
+	deCanvasView::Ref pCanvasTimeLines;
+	deCanvasView::Ref pCanvasTimeLineLabels;
+	deCanvasPaint::Ref pCanvasPanelDopeSheet;
+	deCanvasPaint::Ref pCanvasPanelVAPreview;
+	deCanvasPaint::Ref pCanvasPanelVAPreviewLine;
+	deCanvasPaint::Ref pCanvasVAPreviewTime;
 	
 	float pZoomTime;
 	float pPixelPerSecond;
 	float pSecondPerPixel;
 	int pVAPreviewHeight;
 	
-	decObjectList pLanes;
-	ceWDSVAPreview *pVAPreview;
+	decTObjectList<ceWDSLane> pLanes;
+	ceWDSVAPreview::Ref pVAPreview;
 	
-	igdeFontReference pFontText;
+	igdeFont::Ref pFontText;
 	
 	
 	
@@ -134,11 +143,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	ceWindowDopeSheet( ceWindowMain &windowMain );
+	ceWindowDopeSheet(ceWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~ceWindowDopeSheet();
+	~ceWindowDopeSheet() override;
 	/*@}*/
 	
 	
@@ -152,10 +161,10 @@ public:
 	
 	
 	/** \brief Conversation to monitor. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Active file. */
 	ceConversationFile *GetFile() const;
@@ -185,27 +194,27 @@ public:
 	inline float GetZoomTime() const{ return pZoomTime; }
 	
 	/** \brief Set time zoom factor. */
-	void SetZoomTime( float zoom );
+	void SetZoomTime(float zoom);
 	
 	/** \brief Maximum time of all lines. */
 	float GetMaximumLinesTime() const;
 	
 	/** \brief Time in seconds for a given x position. */
-	float GetTimeForX( int x ) const;
+	float GetTimeForX(int x) const;
 	
 	/** \brief X position for time in seconds. */
-	int GetXForTime( float time ) const;
+	int GetXForTime(float time) const;
 	
 	
 	
 	/** \brief Lane. */
-	ceWDSLane &GetLane( eLanes lane ) const;
+	ceWDSLane &GetLane(eLanes lane) const;
 	
 	/** \brief Lane at position. */
-	ceWDSLane *GetLaneAtPosition( const decPoint &position ) const;
+	ceWDSLane *GetLaneAtPosition(const decPoint &position) const;
 	
 	/** \brief Voice audio preview. */
-	inline ceWDSVAPreview &GetVAPreview() const{ return *pVAPreview; }
+	inline const ceWDSVAPreview::Ref &GetVAPreview() const{ return pVAPreview; }
 	
 	
 	
@@ -219,10 +228,10 @@ public:
 	int GetLaneHeight() const;
 	
 	/** \brief Dope sheet panel. */
-	inline cDopeSheet &GetDopeSheet() const{ return ( cDopeSheet& )( igdeWidget& )pDopeSheet; }
+	inline cDopeSheet &GetDopeSheet() const{ return (cDopeSheet&)(igdeWidget&)pDopeSheet; }
 	
 	/** \brief Text font. */
-	inline igdeFont *GetFontText() const{ return pFontText; }
+	inline const igdeFont::Ref &GetFontText() const{ return pFontText; }
 	
 	
 	
@@ -233,7 +242,7 @@ public:
 	void OnPlaybackChanged();
 	
 	/** \brief Create and add lane canvas. */
-	void CreateDopeSheetCanvas( igdeViewRenderWindow &view );
+	void CreateDopeSheetCanvas(igdeViewRenderWindow &view);
 	
 	/** \brief Resize dope sheet canvas and lanes. */
 	void ResizeDopeSheetCanvas();
@@ -250,10 +259,10 @@ public:
 	void OnBeforeEngineStop();
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	/*@}*/
 	
 	

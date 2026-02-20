@@ -25,11 +25,9 @@
 #ifndef _MEUROTATEOBJECT_H_
 #define _MEUROTATEOBJECT_H_
 
+#include "meUndoDataObject.h"
 #include "../meBaseUndoRotate.h"
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class meObjectList;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -37,23 +35,25 @@ class meWorld;
  * Undo action for rotating a set of objects.
  */
 class meURotateObject : public meBaseUndoRotate{
+public:
+	using Ref = deTObjectReference<meURotateObject>;
+	
 private:
 	meWorld *pWorld;
-	decObjectOrderedSet pObjects;
+	meUndoDataObject::List pObjects;
 	
 public:
 	// constructor, destructor
-	meURotateObject( meWorld *world, const meObjectList &objects );
-	virtual ~meURotateObject();
+	meURotateObject(meWorld *world, const meObject::List &objects);
 	
+protected:
+	~meURotateObject() override;
+	
+public:
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
-	virtual void ProgressiveRedo();
-	
-private:
-	void pCleanUp();
+	void Undo() override;
+	void Redo() override;
+	void ProgressiveRedo() override;
 };
 
-// end of include only once
 #endif

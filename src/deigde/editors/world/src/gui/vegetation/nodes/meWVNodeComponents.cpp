@@ -40,9 +40,7 @@
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -59,17 +57,17 @@ protected:
 	meWVNodeComponents &pNode;
 	
 public:
-	cEditVector( meWVNodeComponents &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cEditVector>;
+	cEditVector(meWVNodeComponents &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
-		if( editVector->GetVector().IsEqualTo( pNode.GetRuleComponents()->GetVector() ) ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
+		if(editVector->GetVector().IsEqualTo(pNode.GetRuleComponents()->GetVector())){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleCompSetVector( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleComponents(), editVector->GetVector() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCompSetVector::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleComponents(), editVector->GetVector()));
 	}
 };
 
@@ -83,38 +81,38 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeComponents::meWVNodeComponents( meWindowVegetation &windowVegetation, meHTVRuleComponents *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleComponents( rule )
+meWVNodeComponents::meWVNodeComponents(meWindowVegetation &windowVegetation, meHTVRuleComponents *rule) :
+meWVNode(windowVegetation, rule),
+pRuleComponents(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Components" );
+	SetTitle("@World.WVNodeComponents.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "X", "X component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeComponents.Output.X", "@World.WVNodeComponents.Output.X.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeComponents.Output.Y", "@World.WVNodeComponents.Output.Y.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Z", "Z component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeComponents.Output.Z", "@World.WVNodeComponents.Output.Z.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector to decompose",
-		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector ) );
-	helper.EditVector( slot, "Input vector.", pEditVector, new cEditVector( *this ) );
-	AddSlot( slot );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeComponents.Input.Vector", "@World.WVNodeComponents.Input.Vector.ToolTip",
+		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
+	helper.EditVector(slot, "@World.WVNodeComponents.InputVector", pEditVector, cEditVector::Ref::New(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 }
 
 meWVNodeComponents::~meWVNodeComponents(){
@@ -128,5 +126,5 @@ meWVNodeComponents::~meWVNodeComponents(){
 void meWVNodeComponents::Update(){
 	meWVNode::Update();
 	
-	pEditVector->SetVector( pRuleComponents->GetVector() );
+	pEditVector->SetVector(pRuleComponents->GetVector());
 }

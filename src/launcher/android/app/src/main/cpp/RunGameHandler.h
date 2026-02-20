@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include "GameActivityHandler.h"
+#include <delauncher/engine/delEngineInstanceDirect.h>
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameRunParams.h>
 #include <dragengine/common/file/decMemoryFile.h>

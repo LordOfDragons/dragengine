@@ -35,6 +35,10 @@ class aeWindowMain;
  * Main window listener.
  */
 class aeWindowMainListener : public aeAnimatorNotifier{
+public:
+	using Ref = deTObjectReference<aeWindowMainListener>;
+	
+	
 private:
 	aeWindowMain &pWindowMain;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWindowMainListener( aeWindowMain &windowMain );
+	aeWindowMainListener(aeWindowMain &windowMain);
 	
 	/** Clean up listener. */
-	virtual ~aeWindowMainListener();
+protected:
+	~aeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,40 +61,40 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( aeAnimator *animator );
+	void StateChanged(aeAnimator *animator) override;
 	
 	/** Undos changed. */
-	virtual void UndoChanged( aeAnimator *animator );
+	void UndoChanged(aeAnimator *animator) override;
 	
 	/** Animator changed. */
-	virtual void AnimatorChanged( aeAnimator *animator );
+	void AnimatorChanged(aeAnimator *animator) override;
 	
 	/** View changed. */
-	virtual void ViewChanged( aeAnimator *animator );
+	void ViewChanged(aeAnimator *animator) override;
 	
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	void ModelChanged(aeAnimator *animator) override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	void AnimationChanged(aeAnimator *animator) override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( aeAnimator *animator, aeController *controller );
+	void ControllerChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( aeAnimator *animator );
+	void ControllerStructureChanged(aeAnimator *animator) override;
 	
 	/** Active rule changed. */
-	virtual void ActiveRuleChanged( aeAnimator *animator, aeRule *rule );
+	void ActiveRuleChanged(aeAnimator *animator, aeRule *rule) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged( aeAnimator *animator, aeRule *rule );
+	void RuleChanged(aeAnimator *animator, aeRule *rule) override;
 	
 	/** Rule name changed. */
-	virtual void RuleNameChanged( aeAnimator *animator, aeRule *rule );
+	void RuleNameChanged(aeAnimator *animator, aeRule *rule) override;
 	
 	/** Rule count or order changed. */
-	virtual void RuleStructureChanged( aeAnimator *animator );
+	void RuleStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

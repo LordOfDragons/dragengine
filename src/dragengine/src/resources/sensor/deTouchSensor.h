@@ -26,10 +26,10 @@
 #define _DETOUCHSENSOR_H_
 
 #include "../deResource.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deTouchSensorManager;
 class deBasePhysicsTouchSensor;
@@ -65,8 +65,7 @@ class deCollider;
 class DE_DLL_EXPORT deTouchSensor : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deTouchSensor> Ref;
-	
+	using Ref = deTObjectReference<deTouchSensor>;
 	
 	
 private:
@@ -75,19 +74,18 @@ private:
 	decVector pDirection;
 	
 	decCollisionFilter pCollisionFilter;
-	decObjectOrderedSet pIgnoreColliders;
+	decTObjectOrderedSet<deCollider> pIgnoreColliders;
 	
 	bool pTrackEnterLeave;
 	bool pEnabled;
 	
-	decShapeList pShape;
+	decShape::List pShape;
 	
 	deBasePhysicsTouchSensor *pPeerPhysics;
 	deBaseScriptingTouchSensor *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deTouchSensor *pLLWorldPrev;
-	deTouchSensor *pLLWorldNext;
+	decTObjectLinkedList<deTouchSensor>::Element pLLWorld;
 	
 	
 	
@@ -95,8 +93,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create touch sensor. */
-	deTouchSensor( deTouchSensorManager *manager );
+	deTouchSensor(deTouchSensorManager *manager);
 	
+	deTouchSensor(const deTouchSensor&) = delete;
+	deTouchSensor& operator=(const deTouchSensor&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up lumimeter.
@@ -104,7 +105,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deTouchSensor();
+	~deTouchSensor() override;
 	/*@}*/
 	
 	
@@ -116,37 +117,37 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &collisionFilter );
+	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Touch sensor tracks objects entering and leaving shapes. */
 	inline bool GetTrackEnterLeave() const{ return pTrackEnterLeave; }
 	
 	/** \brief Set if touch sensor tracks objects entering and leaving shapes. */
-	void SetTrackEnterLeave( bool trackEnterLeave );
+	void SetTrackEnterLeave(bool trackEnterLeave);
 	
 	/** \brief Touch sensor is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if touch sensor is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape( const decShapeList &shape );
+	void SetShape(const decShape::List &shape);
 	
 	
 	
@@ -160,49 +161,39 @@ public:
 	 * \brief Collider at index in touch sensor.
 	 * \param collider Index of the collider retrieve from the shape.
 	 */
-	deCollider *GetColliderAt( int collider ) const;
+	deCollider *GetColliderAt(int collider) const;
 	
 	/**
 	 * \brief Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	void NotifyColliderEntered( deCollider *collider );
+	void NotifyColliderEntered(deCollider *collider);
 	
 	/**
 	 * \brief Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	void NotifyColliderLeft( deCollider *collider );
+	void NotifyColliderLeft(deCollider *collider);
 	/*@}*/
 	
 	
 	
 	/** \name Ignore colliders */
 	/*@{*/
-	/** \brief Number of colliders to ignore. */
-	int GetIgnoreColliderCount() const;
-	
-	/**
-	 * \brief Collider to ignore at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
-	 */
-	deCollider *GetIgnoreColliderAt( int index ) const;
-	
-	/** \brief Collider to ignore is present. */
-	bool HasIgnoreCollider( deCollider *collider ) const;
+	/** \brief Ignore colliders. */
+	inline const decTObjectOrderedSet<deCollider> &GetIgnoreColliders() const{ return pIgnoreColliders; }
 	
 	/**
 	 * \brief Add collider to ignore.
 	 * \throws deeInvalidParam \em collider is present.
 	 */
-	void AddIgnoreCollider( deCollider *collider );
+	void AddIgnoreCollider(deCollider *collider);
 	
 	/**
 	 * \brief Remove collider to ignore.
 	 * \throws deeInvalidParam \em collider is absent.
 	 */
-	void RemoveIgnoreCollider( deCollider *collider );
+	void RemoveIgnoreCollider(deCollider *collider);
 	
 	/** \brief Remove all colliders to ignore. */
 	void RemoveAllIgnoreColliders();
@@ -213,14 +204,14 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** \brief Test if a point is located inside the touch sensor. */
-	bool PointInside( const decDVector &point );
+	bool PointInside(const decDVector &point);
 	
 	/**
 	 * \brief Visit all touching elements with listener.
 	 * 
 	 * To stop testing set StopTesting in the provided collision information object to true.
 	 */
-	void AllHits( deBaseScriptingCollider *listener );
+	void AllHits(deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test ray for collision with the element in the given shape.
@@ -230,8 +221,8 @@ public:
 	 * The distance parameter in the collision response represents the actual distance to the
 	 * ray origin along the ray direction.
 	 */
-	void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-	deBaseScriptingCollider *listener );
+	void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test collider for collision with scene elements.
@@ -240,7 +231,7 @@ public:
 	 * collider is called. To stop testing set StopTesting in the provided collision
 	 * information object to true.
 	 */
-	void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving collider for collision with scene elements.
@@ -249,8 +240,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-	deBaseScriptingCollider *listener );
+	void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test rotating collider for collision with scene elements.
@@ -259,8 +250,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-	deBaseScriptingCollider *listener );
+	void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving and rotating collider for collision with scene elements.
@@ -269,8 +260,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-	const decVector &rotation, deBaseScriptingCollider *listener );
+	void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+	const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 	
@@ -281,13 +272,13 @@ public:
 	inline deBasePhysicsTouchSensor *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerPhysics( deBasePhysicsTouchSensor *peer );
+	void SetPeerPhysics(deBasePhysicsTouchSensor *peer);
 	
 	/** \brief Scripting system peer. */
 	inline deBaseScriptingTouchSensor *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer. */
-	void SetPeerScripting( deBaseScriptingTouchSensor *peer );
+	void SetPeerScripting(deBaseScriptingTouchSensor *peer);
 	/*@}*/
 	
 	
@@ -300,17 +291,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous touch sensor in the parent world linked list. */
-	inline deTouchSensor *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next touch sensor in the parent world linked list. */
-	void SetLLWorldPrev( deTouchSensor *touchSensor );
-	
-	/** \brief Next touch sensor in the parent world linked list. */
-	inline deTouchSensor *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next touch sensor in the parent world linked list. */
-	void SetLLWorldNext( deTouchSensor *touchSensor );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deTouchSensor>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

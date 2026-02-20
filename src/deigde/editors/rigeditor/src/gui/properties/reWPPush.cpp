@@ -40,10 +40,10 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -52,7 +52,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -68,17 +68,18 @@ protected:
 	reWPPush &pPanel;
 	
 public:
-	cBaseTextFieldListener( reWPPush &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(reWPPush &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigPush * const push = pPanel.GetPush();
-		if( rig && push ){
-			OnChanged( textField, rig, push );
+		if(rig && push){
+			OnChanged(textField, rig, push);
 		}
 	}
 	
-	virtual void OnChanged( igdeTextField *textField, reRig *rig, reRigPush *push ) = 0;
+	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -86,17 +87,18 @@ protected:
 	reWPPush &pPanel;
 	
 public:
-	cBaseEditVectorListener( reWPPush &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
+	cBaseEditVectorListener(reWPPush &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigPush * const push = pPanel.GetPush();
-		if( rig && push ){
-			OnChanged( editVector->GetVector(), rig, push );
+		if(rig && push){
+			OnChanged(editVector->GetVector(), rig, push);
 		}
 	}
 	
-	virtual void OnChanged( const decVector &vector, reRig *rig, reRigPush *push ) = 0;
+	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -104,75 +106,82 @@ protected:
 	reWPPush &pPanel;
 	
 public:
-	cBaseComboBoxListener( reWPPush &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
+	cBaseComboBoxListener(reWPPush &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigPush * const push = pPanel.GetPush();
-		if( rig && push ){
-			OnTextChanged( comboBox, rig, push );
+		if(rig && push){
+			OnTextChanged(comboBox, rig, push);
 		}
 	}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox, reRig *rig, reRigPush *push ) = 0;
+	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push) = 0;
 };
 
 
 
 class cComboType : public cBaseComboBoxListener{
 public:
-	cComboType( reWPPush &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboType>;
+	cComboType(reWPPush &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox, reRig *rig, reRigPush *push ){
+	void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if( selection ){
-			push->SetType( ( reRigPush::ePushTypes )( intptr_t )selection->GetData() );
+		if(selection){
+			push->SetType((reRigPush::ePushTypes)(intptr_t)selection->GetData());
 		}
 	}
 };
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
-	cEditPosition( reWPPush &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditPosition>;
+	cEditPosition(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged( const decVector &vector, reRig *rig, reRigPush *push ){
-		push->SetPosition( vector );
+	void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) override{
+		push->SetPosition(vector);
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	cEditRotation( reWPPush &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditRotation>;
+	cEditRotation(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged( const decVector &vector, reRig *rig, reRigPush *push ){
-		push->SetOrientation( vector );
+	void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) override{
+		push->SetOrientation(vector);
 	}
 };
 
 class cTextImpuls : public cBaseTextFieldListener{
 public:
-	cTextImpuls( reWPPush &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextImpuls>;
+	cTextImpuls(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, reRig *rig, reRigPush *push ){
-		push->SetImpuls( textField->GetFloat() );
+	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
+		push->SetImpuls(textField->GetFloat());
 	}
 };
 
 class cTextRayCount : public cBaseTextFieldListener{
 public:
-	cTextRayCount( reWPPush &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextRayCount>;
+	cTextRayCount(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, reRig *rig, reRigPush *push ){
-		push->SetRayCount( textField->GetInteger() );
+	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
+		push->SetRayCount(textField->GetInteger());
 	}
 };
 
 class cTextConeAngle : public cBaseTextFieldListener{
 public:
-	cTextConeAngle( reWPPush &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextConeAngle>;
+	cTextConeAngle(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, reRig *rig, reRigPush *push ){
-		push->SetConeAngle( textField->GetFloat() );
+	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
+		push->SetConeAngle(textField->GetFloat());
 	}
 };
 
@@ -186,49 +195,43 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPPush::reWPPush( reWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pRig( NULL ),
-pPush( NULL ),
-pListener( NULL )
+reWPPush::reWPPush(reWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPPushListener( *this );
+	pListener = reWPPushListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// structure
-	helper.GroupBox( content, groupBox, "Geometry:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelPush.GroupBox.Geometry");
 	
-	helper.ComboBox( groupBox, "Type:", "Type of the push.", pCBType, new cComboType( *this ) );
-	pCBType->AddItem( "Simple Push", NULL, ( void* )( intptr_t )reRigPush::eptSimple );
-	pCBType->AddItem( "Explosion", NULL, ( void* )( intptr_t )reRigPush::eptExplosion );
+	helper.ComboBox(groupBox, "@Rig.PanelPush.Geometry.Type", "@Rig.PanelPush.Geometry.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@Rig.PanelPush.Type.SimplePush", nullptr, (void*)(intptr_t)reRigPush::eptSimple);
+	pCBType->AddItem("@Rig.PanelPush.Type.Explosion", nullptr, (void*)(intptr_t)reRigPush::eptExplosion);
 	
-	helper.EditVector( groupBox, "Position:", "Position the push originates from.",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the push determining the push direction.",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Position", "@Rig.PanelPush.Geometry.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Rotation", "@Rig.PanelPush.Geometry.Rotation.ToolTip",
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditFloat( groupBox, "Impuls:", "Power of the push in Ns.",
-		pEditImpuls, new cTextImpuls( *this ) );
-	helper.EditInteger( groupBox, "Ray Count:", "Number of rays to shoot.",
-		pEditRayCount, new cTextRayCount( *this ) );
-	helper.EditFloat( groupBox, "Cone:", "Cone angle in degrees if required by the push type.",
-		pEditConeAngle, new cTextConeAngle( *this ) );
+	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Impuls", "@Rig.PanelPush.Geometry.Impuls.ToolTip",
+		pEditImpuls, cTextImpuls::Ref::New(*this));
+	helper.EditInteger(groupBox, "@Rig.PanelPush.Geometry.RayCount", "@Rig.PanelPush.Geometry.RayCount.ToolTip",
+		pEditRayCount, cTextRayCount::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Cone", "@Rig.PanelPush.Geometry.Cone.ToolTip",
+		pEditConeAngle, cTextConeAngle::Ref::New(*this));
 }
 
 reWPPush::~reWPPush(){
-	SetRig( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -236,70 +239,57 @@ reWPPush::~reWPPush(){
 // Management
 ///////////////
 
-void reWPPush::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reWPPush::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	SetPush( NULL );
+	SetPush(nullptr);
 	
-	if( pRig ){
-		pRig->RemoveNotifier( pListener );
-		pRig->FreeReference();
-		pRig = NULL;
+	if(pRig){
+		pRig->RemoveNotifier(pListener);
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
-		rig->AddNotifier( pListener );
-		rig->AddReference();
-		
-		SetPush( rig->GetSelectionPushes()->GetActivePush() );
+	if(rig){
+		rig->AddNotifier(pListener);
+		SetPush(rig->GetSelectionPushes()->GetActivePush());
 	}
 }
 
-void reWPPush::SetPush( reRigPush *push ){
-	if( push == pPush ){
+void reWPPush::SetPush(reRigPush *push){
+	if(push == pPush){
 		return;
 	}
-	
-	if( pPush ){
-		pPush->FreeReference();
-	}
-	
 	pPush = push;
-	
-	if( push ){
-		push->AddReference();
-	}
-	
 	UpdatePush();
 }
 
 void reWPPush::UpdatePush(){
-	if( pPush ){
-		pCBType->SetSelection( pCBType->IndexOfItemWithData( ( void* )( intptr_t )pPush->GetType() ) );
-		pEditPosition->SetVector( pPush->GetPosition() );
-		pEditRotation->SetVector( pPush->GetOrientation() );
-		pEditImpuls->SetFloat( pPush->GetImpuls() );
-		pEditRayCount->SetInteger( pPush->GetRayCount() );
-		pEditConeAngle->SetFloat( pPush->GetConeAngle() );
+	if(pPush){
+		pCBType->SetSelection(pCBType->IndexOfItemWithData((void*)(intptr_t)pPush->GetType()));
+		pEditPosition->SetVector(pPush->GetPosition());
+		pEditRotation->SetVector(pPush->GetOrientation());
+		pEditImpuls->SetFloat(pPush->GetImpuls());
+		pEditRayCount->SetInteger(pPush->GetRayCount());
+		pEditConeAngle->SetFloat(pPush->GetConeAngle());
 		
 	}else{
-		pCBType->SetSelection( pCBType->IndexOfItemWithData( ( void* )( intptr_t )reRigPush::eptSimple ) );
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pCBType->SetSelection(pCBType->IndexOfItemWithData((void*)(intptr_t)reRigPush::eptSimple));
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pEditImpuls->ClearText();
 		pEditRayCount->ClearText();
 		pEditConeAngle->ClearText();
 	}
 	
-	const bool enabled = pPush != NULL;
-	pCBType->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditImpuls->SetEnabled( enabled );
-	pEditRayCount->SetEnabled( enabled );
-	pEditConeAngle->SetEnabled( enabled );
+	const bool enabled = pPush.IsNotNull();
+	pCBType->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditImpuls->SetEnabled(enabled);
+	pEditRayCount->SetEnabled(enabled);
+	pEditConeAngle->SetEnabled(enabled);
 }

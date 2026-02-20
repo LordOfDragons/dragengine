@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decString.h>
 
-class lpeLangPack;
+#include "../../langpack/lpeLangPack.h"
 
 
 
@@ -37,6 +37,10 @@ class lpeLangPack;
  * Undo action language pack set identifier.
  */
 class lpeULangPackSetIdentifier : public igdeUndo{
+public:
+	using Ref = deTObjectReference<lpeULangPackSetIdentifier>;
+	
+	
 private:
 	lpeLangPack *pLangPack;
 	
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	lpeULangPackSetIdentifier( lpeLangPack *langpack, const char *newIdentifier );
+	lpeULangPackSetIdentifier(lpeLangPack *langpack, const char *newIdentifier);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~lpeULangPackSetIdentifier();
+	~lpeULangPackSetIdentifier() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

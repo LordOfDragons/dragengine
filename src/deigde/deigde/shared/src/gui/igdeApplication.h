@@ -27,10 +27,12 @@
 
 
 #include "../environment/igdeEnvironment.h"
-#include "igdeWidgetReference.h"
+#include "igdeWidget.h"
+#include "igdeMainWindow.h"
 
 #include <dragengine/dragengine_configuration.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
@@ -41,15 +43,22 @@
 #endif
 
 
-class decUnicodeStringList;
-class igdeMainWindow;
 class igdeWindow;
 
 
 /**
  * \brief IGDE UI Application.
  */
-class DE_DLL_EXPORT igdeApplication{
+class DE_DLL_EXPORT igdeApplication{	
+private:
+	void pSharedRun(decUnicodeStringList &arguments);
+	
+	void *pNativeApplication;
+	igdeMainWindow::Ref pMainWindow;
+	static igdeApplication *pApp;
+	
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -66,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	igdeMainWindow *GetMainWindow() const;
+	inline const igdeMainWindow::Ref &GetMainWindow() const{ return pMainWindow; }
 	
 	/**
 	 * \brief Run application.
@@ -76,7 +85,7 @@ public:
 	 * is thrown. In case of exception CleanUp() is called properly.
 	 */
 #ifdef OS_UNIX
-	void Run( int argCount, char **args );
+	void Run(int argCount, char **args);
 #elif defined OS_W32
 	void Run();
 #else
@@ -84,19 +93,42 @@ public:
 #endif
 	
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Get main app font config. */
-	void GetAppFontConfig( igdeFont::sConfiguration &config );
+	void GetAppFontConfig(igdeFont::sConfiguration &config);
 	
 	/** \brief Application instance. */
 	static igdeApplication &app();
 	
 	/** \brief Show window modal while keeping engine properly updating. */
-	void RunModalWhileShown( igdeWindow &window );
+	void RunModalWhileShown(igdeWindow &window);
 	
 	/** \brief For internal use only. */
 	inline void *GetNativeApplication() const{ return pNativeApplication; }
+	
+	
+	/**
+	 * \brief Global display scaling factor for display.
+	 * 
+	 * Value of 100 represents scaling of 100%. Value step size is 25.
+	 */
+	int GetDisplayScaleFactor();
+	
+	/** \brief Display scaling factor for display as scale factor. */
+	float GetDisplayScaleFactorFloat();
+	
+	/** \brief Scalar scaled display scaling factor. */
+	float DisplayScaled(float scalar);
+	
+	/** \brief Scalar scaled display scaling factor. */
+	int DisplayScaled(int value);
+	
+	/** \brief Point scaled display scaling factor. */
+	decPoint DisplayScaled(const decPoint &point);
+	
+	/** \brief Vector scaled display scaling factor. */
+	decVector2 DisplayScaled(const decVector2 &vector);
 	/*@}*/
 	
 	
@@ -106,22 +138,13 @@ protected:
 	 * \brief Initialize application.
 	 * \returns true to run application or false to abord.
 	 */
-	virtual bool Initialize( const decUnicodeStringList &arguments ) = 0;
+	virtual bool Initialize(const decUnicodeStringList &arguments) = 0;
 	
 	/** \brief Set main window. */
-	void SetMainWindow( igdeMainWindow *mainWindow, bool takeOver );
+	void SetMainWindow(igdeMainWindow *mainWindow);
 	
 	/** \brief Clean up application. */
 	virtual void CleanUp();
-	
-	
-	
-private:
-	void pSharedRun( decUnicodeStringList &arguments );
-	
-	void *pNativeApplication;
-	igdeWidgetReference pMainWindow;
-	static igdeApplication *pApp;
 };
 
 #endif

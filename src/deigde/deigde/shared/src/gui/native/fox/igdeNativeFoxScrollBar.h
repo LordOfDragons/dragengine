@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXSCROLLBAR_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeScrollBar.h"
+#include "../../resources/igdeFont.h"
 
 class igdeScrollBar;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native scroll bar.
  */
-class igdeNativeFoxScrollBar : public FXScrollBar{
-	FXDECLARE( igdeNativeFoxScrollBar )
+class igdeNativeFoxScrollBar : public FXScrollBar, public igdeScrollBar::cNativeScrollBar{
+	FXDECLARE(igdeNativeFoxScrollBar)
 	
 protected:
 	igdeNativeFoxScrollBar();
@@ -55,13 +56,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxScrollBar( igdeScrollBar &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxScrollBar(igdeScrollBar &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxScrollBar();
+	~igdeNativeFoxScrollBar() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxScrollBar* CreateNativeWidget( igdeScrollBar &owner );
+	static igdeNativeFoxScrollBar* CreateNativeWidget(igdeScrollBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -74,23 +75,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
 	
-	static int ScrollBarFlags( const igdeScrollBar &owner );
+	static int ScrollBarFlags(const igdeScrollBar &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxScrollBar igdeNativeScrollBar;
+using igdeNativeScrollBar = igdeNativeFoxScrollBar;
 
 #endif

@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetUseSolverBone::aeURuleIKSetUseSolverBone( aeRuleInverseKinematic *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeURuleIKSetUseSolverBone::aeURuleIKSetUseSolverBone(aeRuleInverseKinematic *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicUseSolverBone");
 		
-		SetShortInfo( "Set inverse kinematic rule use solver bone" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeURuleIKSetUseSolverBone::~aeURuleIKSetUseSolverBone(){
 ///////////////
 
 void aeURuleIKSetUseSolverBone::Undo(){
-	pRule->SetUseSolverBone( ! pRule->GetUseSolverBone() );
+	pRule->SetUseSolverBone(!pRule->GetUseSolverBone());
 }
 
 void aeURuleIKSetUseSolverBone::Redo(){
-	pRule->SetUseSolverBone( ! pRule->GetUseSolverBone() );
+	pRule->SetUseSolverBone(!pRule->GetUseSolverBone());
 }
 
 
@@ -79,5 +77,4 @@ void aeURuleIKSetUseSolverBone::Redo(){
 //////////////////////
 
 void aeURuleIKSetUseSolverBone::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

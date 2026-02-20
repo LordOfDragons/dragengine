@@ -34,16 +34,20 @@
  */
 class debiDeviceKeyboard : public debiDevice{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceKeyboard> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceKeyboard( deBeOSInput &module );
+	debiDeviceKeyboard(deBeOSInput &module);
 	
 	
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~debiDeviceKeyboard();
+	~debiDeviceKeyboard() override;
 	/*@}*/
 	
 	
@@ -52,7 +56,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Get button best matching a character. */
-	int ButtonMatchingKeyChar( int keyChar ) const;
+	int ButtonMatchingKeyChar(int keyChar) const;
 	/*@}*/
 };
 

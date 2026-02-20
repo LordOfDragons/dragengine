@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create collision test instance. */
-	debpBulletShapeCollision( dePhysicsBullet &bullet );
+	debpBulletShapeCollision(dePhysicsBullet &bullet);
 	
 	/** \brief Clean up collision test instance. */
 	~debpBulletShapeCollision();
@@ -77,18 +77,18 @@ public:
 	 * and processes the collision using either drag[en]gine accelerated collision
 	 * testing or slower bullet collision testing where not possible.
 	 */
-	void ShapeCast( const btConvexShape *castShape, const btTransform &castFromTrans,
+	void ShapeCast(const btConvexShape *castShape, const btTransform &castFromTrans,
 	const btTransform &castToTrans, const btCollisionObjectWrapper *colObjWrap,
-	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration );
+	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration);
 	
 	/**
 	 * \brief Test for collision between two a convex shape and a compound shape.
 	 * 
 	 * Tests each child with an individual call to castShape.
 	 */
-	void ShapeCastCompound( const btConvexShape *castShape, const btTransform &castFromTrans,
+	void ShapeCastCompound(const btConvexShape *castShape, const btTransform &castFromTrans,
 	const btTransform &castToTrans, const btCollisionObjectWrapper *colObjWrap,
-	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration );
+	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration);
 	
 	/**
 	 * \brief Test for collision between two convex shapes.
@@ -96,9 +96,9 @@ public:
 	 * Uses drag[en]gine accelerated collision if possible or else falling back to
 	 * slower bullet collision testing.
 	 */
-	void ShapeCastConvex( const btConvexShape *castShape, const btTransform &castFromTrans,
+	void ShapeCastConvex(const btConvexShape *castShape, const btTransform &castFromTrans,
 	const btTransform &castToTrans, const btCollisionObjectWrapper *colObjWrap,
-	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration );
+	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration);
 	
 	
 	
@@ -110,7 +110,7 @@ public:
 	 * This method provide this functionality by checking the type of the shape and calling
 	 * the appropriate method simulating it if absent.
 	 */
-	bool IsPointInside( const btCollisionObject &shape, const btVector3 &position ) const;
+	bool IsPointInside(const btCollisionObject &shape, const btVector3 &position) const;
 	
 	/**
 	 * \brief Test if point is inside collision shape.
@@ -120,27 +120,27 @@ public:
 	 * This method provide this functionality by checking the type of the shape and calling
 	 * the appropriate method simulating it if absent.
 	 */
-	bool IsPointInside( const btCollisionShape &shape, const btVector3 &position ) const;
+	bool IsPointInside(const btCollisionShape &shape, const btVector3 &position) const;
 	/*@}*/
 	
 	
 	
 	/** \brief Determine if a start to end matrix transformation contains rotation. */
-	bool HasTransformRotation( const btTransform &castFromTrans,
-		const btTransform &castToTrans ) const;
+	bool HasTransformRotation(const btTransform &castFromTrans,
+		const btTransform &castToTrans) const;
 	
 	/** \brief Create box collision volume from bullet box shape. */
-	void BoxVolumeFromBoxShape( debpDCollisionBox &boxVolume, btBoxShape &boxShape,
-		const btTransform &shapeTransform ) const;
+	void BoxVolumeFromBoxShape(debpDCollisionBox &boxVolume, btBoxShape &boxShape,
+		const btTransform &shapeTransform) const;
 	
 	/** \brief Create sphere collision volume from bullet sphere shape. */
-	void SphereVolumeFromSphereShape( debpDCollisionSphere &sphereVolume,
-		btSphereShape &sphereShape, const btTransform &shapeTransform ) const;
+	void SphereVolumeFromSphereShape(debpDCollisionSphere &sphereVolume,
+		btSphereShape &sphereShape, const btTransform &shapeTransform) const;
 	
 	/** \brief Test for collision using two collision volumes. */
-	void VolumeCastVolume( debpDCollisionVolume *castVolume, debpDCollisionVolume *hitVolume,
+	void VolumeCastVolume(debpDCollisionVolume *castVolume, debpDCollisionVolume *hitVolume,
 		const btCollisionObjectWrapper *colObjWrap, const btTransform &castFromTrans,
-		const btTransform &castToTrans, btCollisionWorld::ConvexResultCallback &resultCallback ) const;
+		const btTransform &castToTrans, btCollisionWorld::ConvexResultCallback &resultCallback) const;
 };
 
 #endif

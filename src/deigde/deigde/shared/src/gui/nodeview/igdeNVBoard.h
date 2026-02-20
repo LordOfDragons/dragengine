@@ -25,43 +25,67 @@
 #ifndef _IGDENVBOARD_H_
 #define _IGDENVBOARD_H_
 
+#include "igdeNVNode.h"
+#include "igdeNVLink.h"
+#include "igdeNVBoardListener.h"
 #include "../igdeContainer.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 
-#include <dragengine/deObjectReference.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeNVNode;
-class igdeNVLink;
 class igdeNVSlot;
-class igdeNVBoardListener;
 
 
 /**
  * \brief IGDE UI NodeView Board.
  */
 class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeNVBoard>;
+	
+	using NodesList = decTObjectOrderedSet<igdeNVNode>;
+	using LinksList = decTObjectOrderedSet<igdeNVLink>;
+	
+	
+	class cNativeNVBoard{
+	public:
+		virtual ~cNativeNVBoard() = default;
+		virtual decPoint GetSize() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateColors() = 0;
+		virtual void UpdateNodes() = 0;
+		virtual void UpdateLinks() = 0;
+		virtual void UpdateOffset() = 0;
+		virtual igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const = 0;
+		virtual const igdeNVLink::Ref &GetHoverLink() const = 0;
+	};
+	
+	
 private:
 	decColor pBgColor;
 	bool pEnabled;
 	decPoint pOffset;
 	
-	decObjectOrderedSet pNodes;
-	decObjectOrderedSet pLinks;
-	deObjectReference pActiveNode;
+	NodesList pNodes;
+	LinksList pLinks;
+	igdeNVNode::Ref pActiveNode;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeNVBoardListener> pListeners;
 	
+	
+protected:
+	cNativeNVBoard *pNativeNVBoard;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeNVBoard( igdeEnvironment &environment );
+	explicit igdeNVBoard(igdeEnvironment &environment);
 	
 	
 	
@@ -72,7 +96,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeNVBoard();
+	~igdeNVBoard() override;
 	/*@}*/
 	
 	
@@ -84,13 +108,13 @@ public:
 	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	
 	/** \brief Button is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -101,88 +125,76 @@ public:
 	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset of board content relative to board center. */
-	void SetOffset( const decPoint &offset );
+	void SetOffset(const decPoint &offset);
 	
 	/** \brief Clear board. */
 	void Clear();
 	
 	
 	
-	/** \brief Number of nodes. */
-	int GetNodeCount() const;
-	
-	/** \brief Node at index. */
-	igdeNVNode *GetNodeAt( int index ) const;
-	
-	/** \brief Has node. */
-	bool HasNode( igdeNVNode *node ) const;
+	/** \brief Nodes. */
+	const NodesList &GetNodes() const{ return pNodes; }
 	
 	/** \brief Add node. */
-	void AddNode( igdeNVNode *node );
+	void AddNode(igdeNVNode *node);
 	
 	/** \brief Remove node. */
-	void RemoveNode( igdeNVNode *node );
+	void RemoveNode(igdeNVNode *node);
 	
 	/** \brief Remove all nodes. */
 	void RemoveAllNodes();
 	
-	/** \brief Active node. or NULL */
-	inline igdeNVNode *GetActiveNode() const{ return ( igdeNVNode* )( deObject* )pActiveNode; }
+	/** \brief Active node. or nullptr */
+	inline igdeNVNode *GetActiveNode() const{ return (igdeNVNode*)(deObject*)pActiveNode; }
 	
-	/** \brief Set active node or NULL. */
-	void SetActiveNode( igdeNVNode *node );
+	/** \brief Set active node or nullptr. */
+	void SetActiveNode(igdeNVNode *node);
 	
 	
 	
-	/** \brief Number of links. */
-	int GetLinkCount() const;
+	/** \brief Links. */
+	const LinksList &GetLinks() const{ return pLinks; }
 	
-	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt( int index ) const;
-	
-	/** \brief Link between source and target or NULL if not linked. */
-	igdeNVLink *GetLinkBetween( igdeNVSlot *source, igdeNVSlot *target ) const;
-	
-	/** \brief Has link. */
-	bool HasLink( igdeNVLink *link ) const;
+	/** \brief Link between source and target or nullptr if not linked. */
+	igdeNVLink *GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
 	
 	/** \brief Has link between source and target. */
-	bool HasLinkBetween( igdeNVSlot *source, igdeNVSlot *target ) const;
+	bool HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
 	
 	/** \brief Can link. */
-	bool CanLink( igdeNVSlot *source, igdeNVSlot *target );
+	bool CanLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Add link. */
-	igdeNVLink *AddLink( igdeNVSlot *source, igdeNVSlot *target );
+	igdeNVLink::Ref AddLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Remove link. */
-	void RemoveLink( igdeNVLink *link );
+	void RemoveLink(igdeNVLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
 	/** \brief Remove all links with sockets belonging to node. */
-	void RemoveAllNodeLinks( igdeNVNode *node );
+	void RemoveAllNodeLinks(igdeNVNode *node);
 	
-	/** \brief Link closest to position inside range in board coordinate system or NULL. */
-	igdeNVLink *ClosestLinkNear( const decPoint &position, float range = 6.0f ) const;
+	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
+	igdeNVLink *ClosestLinkNear(const decPoint &position, float range = 6.0f) const;
 	
 	/** \brief Show context menu at position. */
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeNVBoardListener *listener );
+	void AddListener(igdeNVBoardListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeNVBoardListener *listener );
+	void RemoveListener(igdeNVBoardListener *listener);
 	
 	/** \brief Notify link added. */
-	void NotifyLinkAdded( igdeNVLink *link );
+	void NotifyLinkAdded(igdeNVLink *link);
 	
 	/** \brief Notify link removed. */
-	void NotifyLinkRemoved( igdeNVSlot *source, igdeNVSlot *target );
+	void NotifyLinkRemoved(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Notify all links removed. */
 	void NotifyAllLinksRemoved();
@@ -205,20 +217,27 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
+	
 	
 	/**
 	 * \brief Notify nodes board offset changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	void NotifyNodesOffsetChanged();
-	
 	
 	
 protected:

@@ -35,6 +35,9 @@ class ceCAPlayerChoice;
  * \brief Menu action copy all topic actions.
  */
 class ceWPTMAPChoiceActionsCopyActions : public ceWPTMACopyActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceActionsCopyActions>;
+	
 protected:
 	/** \brief FOX constructor. */
 	ceWPTMAPChoiceActionsCopyActions();
@@ -43,8 +46,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsCopyActions( ceWindowMain &windowMain,
-		const ceCAPlayerChoice &playerChoice );
+	ceWPTMAPChoiceActionsCopyActions(ceWindowMain &windowMain,
+		const ceCAPlayerChoice &playerChoice);
 	/*@}*/
 };
 

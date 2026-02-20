@@ -31,7 +31,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModioParameter::deModioParameter( deModio &module ) : pModule( module ){
+deModioParameter::deModioParameter(deModio &module) : pModule(module){
 }
 
 deModioParameter::~deModioParameter(){

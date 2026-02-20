@@ -26,8 +26,7 @@
 #define _DEOGLRENDERWORLDINFO_H_
 
 #include "deoglRenderBase.h"
-
-class deoglDebugInformation;
+#include "../debug/deoglDebugInformation.h"
 
 
 
@@ -80,10 +79,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create info. */
-	deoglRenderWorldInfo( deoglRenderThread &renderThread );
+	deoglRenderWorldInfo(deoglRenderThread &renderThread);
 	
 	/** Clean up info. */
-	virtual ~deoglRenderWorldInfo();
+	~deoglRenderWorldInfo() override;
 	/*@}*/
 	
 	
@@ -94,10 +93,10 @@ public:
 	void ClearAll();
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

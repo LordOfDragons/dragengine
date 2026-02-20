@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotRatio::gdeUOCLightSetSpotRatio( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetSpotRatio::gdeUOCLightSetSpotRatio(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set spot ratio" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotRatio");
 	
 	pOldValue = light->GetSpotRatio();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetSpotRatio::~gdeUOCLightSetSpotRatio(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetSpotRatio::~gdeUOCLightSetSpotRatio(){
 ///////////////
 
 void gdeUOCLightSetSpotRatio::Undo(){
-	pLight->SetSpotRatio( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotRatio(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetSpotRatio::Redo(){
-	pLight->SetSpotRatio( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotRatio(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

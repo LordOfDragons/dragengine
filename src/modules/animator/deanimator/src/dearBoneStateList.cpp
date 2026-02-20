@@ -31,7 +31,7 @@
 #include "component/dearComponent.h"
 #include "component/dearComponentBoneState.h"
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -49,20 +49,36 @@
 ////////////////////////////
 
 dearBoneStateList::dearBoneStateList(){
-	pStates = NULL;
-	pStateCount = 0;
-	pStateSize = 0;
+}
+
+dearBoneStateList::dearBoneStateList(const dearBoneStateList& other) {
+	*this = other;
+}
+
+dearBoneStateList& dearBoneStateList::operator=(const dearBoneStateList& other){
+	pStates = decTList<dearBoneState>(other.pStates.GetCount(), dearBoneState());
+	
+	other.pStates.VisitIndexed([&](int i, const dearBoneState &stateFrom){
+		dearBoneState &stateTo = pStates.GetAt(i);
+		
+		stateTo.SetRigBone(stateFrom.GetRigBone());
+		stateTo.SetRigBoneName(stateFrom.GetRigBoneName());
+		stateTo.SetIndex(stateFrom.GetIndex());
+		if(stateFrom.GetParentState()){
+			stateTo.SetParentState(&pStates.GetAt(stateFrom.GetParentState()->GetIndex()));
+		}
+		stateTo.SetRigLocalMatrix(stateFrom.GetRigLocalMatrix());
+		stateTo.SetDirty(true);
+		
+		stateFrom.GetChildStates().Visit([&](dearBoneState *cs){
+			stateTo.AddChildState(&pStates.GetAt(cs->GetIndex()));
+		});
+	});
+	
+	return *this;
 }
 
 dearBoneStateList::~dearBoneStateList(){
-	if( pStates ){
-		while( pStateCount > 0 ){
-			delete pStates[ pStateCount - 1 ];
-			pStateCount--;
-		}
-		
-		delete [] pStates;
-	}
 }
 
 
@@ -70,437 +86,345 @@ dearBoneStateList::~dearBoneStateList(){
 // Management
 ///////////////
 
-void dearBoneStateList::SetStateCount( int count ){
-	if( count > pStateSize ){
-		dearBoneState ** const newArray = new dearBoneState*[ count ];
-		
-		if( pStates ){
-			int i;
-			
-			for( i=0; i<pStateSize; i++ ){
-				newArray[ i ] = pStates[ i ];
-			}
-			
-			delete [] pStates;
-		}
-		
-		pStates = newArray;
-		
-		while( pStateSize < count ){
-			pStates[ pStateSize ] = new dearBoneState;
-			pStateSize++;
-		}
+void dearBoneStateList::SetStateCount(int count){
+	if(count == pStates.GetCount()){
+		return;
 	}
 	
-	pStateCount = count;
+	pStates = decTList<dearBoneState>(count, dearBoneState());
 }
 
-dearBoneState *dearBoneStateList::GetStateAt( int index ) const{
-	if( index < 0 || index >= pStateCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pStates[ index ];
+dearBoneState &dearBoneStateList::GetStateAt(int index){
+	return pStates.GetAt(index);
 }
 
-int dearBoneStateList::IndexOfStateNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const char *rigBoneName;
-	int s;
-	
-	for( s=0; s<pStateCount; s++ ){
-		rigBoneName = pStates[ s ]->GetRigBoneName();
-		
-		if( rigBoneName && strcmp( rigBoneName, name ) == 0 ){
-			return s;
-		}
-	}
-	
-	return -1;
+const dearBoneState &dearBoneStateList::GetStateAt(int index) const{
+	return pStates.GetAt(index);
+}
+
+int dearBoneStateList::IndexOfStateNamed(const char *name) const{
+	DEASSERT_NOTNULL(name)
+	return pStates.IndexOfMatching([&](const dearBoneState &state){
+		return state.GetRigBoneName() && strcmp(state.GetRigBoneName(), name) == 0;
+	});
 }
 
 
 
 dearBoneStateList *dearBoneStateList::CreateCopy() const{
-	dearBoneStateList * const stalist = new dearBoneStateList;
-	int s, c, childCount;
-	
-	try{
-		stalist->SetStateCount( pStateCount );
-		
-		for( s=0; s<pStateCount; s++ ){
-			const dearBoneState &stateFrom = *pStates[ s ];
-			dearBoneState &stateTo = *stalist->GetStateAt( s );
-			
-			stateTo.SetRigBone( stateFrom.GetRigBone() );
-			stateTo.SetRigBoneName( stateFrom.GetRigBoneName() );
-			stateTo.SetIndex( stateFrom.GetIndex() );
-			if( stateFrom.GetParentState() ){
-				stateTo.SetParentState( stalist->GetStateAt( stateFrom.GetParentState()->GetIndex() ) );
-			}
-			stateTo.SetRigLocalMatrix( stateFrom.GetRigLocalMatrix() );
-			stateTo.SetDirty( true );
-			
-			childCount = stateFrom.GetChildStateCount();
-			for( c=0; c<childCount; c++ ){
-				stateTo.AddChildState( stalist->GetStateAt( stateFrom.GetChildStateAt( c )->GetIndex() ) );
-			}
-		}
-		
-	}catch( const deException & ){
-		delete stalist;
-		throw;
-	}
-	
-	return stalist;
+	return new dearBoneStateList(*this);
 }
 
-void dearBoneStateList::SetFrom( const dearBoneStateList &stateList ){
-	int s, c, childCount;
-	
-	SetStateCount( stateList.pStateCount );
-	
-	for( s=0; s<stateList.pStateCount; s++ ){
-		const dearBoneState &stateFrom = *stateList.GetStateAt( s );
-		dearBoneState &stateTo = *pStates[ s ];
-		
-		stateTo.SetRigBone( stateFrom.GetRigBone() );
-		stateTo.SetRigBoneName( stateFrom.GetRigBoneName() );
-		stateTo.SetIndex( stateFrom.GetIndex() );
-		if( stateFrom.GetParentState() ){
-			stateTo.SetParentState( pStates[ stateFrom.GetParentState()->GetIndex() ] );
-		}
-		stateTo.SetRigLocalMatrix( stateFrom.GetRigLocalMatrix() );
-		stateTo.SetDirty( true );
-		
-		childCount = stateFrom.GetChildStateCount();
-		for( c=0; c<childCount; c++ ){
-			stateTo.AddChildState( pStates[ stateFrom.GetChildStateAt( c )->GetIndex() ] );
-		}
-	}
+void dearBoneStateList::SetFrom(const dearBoneStateList &stateList){
+	*this = stateList;
 }
 
 
 
 void dearBoneStateList::UpdateStates(){
-	int s;
-	
-	for( s=0; s<pStateCount; s++ ){
-		pStates[ s ]->UpdateMatrices();
-	}
+	pStates.Visit([](dearBoneState &state){
+		state.UpdateMatrices();
+	});
 }
 
 void dearBoneStateList::MarkDirty(){
-	int s;
-	
-	for( s=0; s<pStateCount; s++ ){
-		pStates[ s ]->SetDirty( true );
-	}
+	pStates.Visit([](dearBoneState &state){
+		state.SetDirty(true);
+	});
 }
 
 
 
-void dearBoneStateList::UpdateMappings( const deAnimator &animator ){
+void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 	deRig * const rig = animator.GetRig();
-	if( ! rig ){
-		SetStateCount( 0 );
+	if(!rig){
+		SetStateCount(0);
 		return;
 	}
 	
 	const decStringSet &bones = animator.GetListBones();
 	int boneCount = bones.GetCount();
-	int boneIndex;
-	int s, parent;
 	
-	for( s=0; s<pStateCount; s++ ){
-		pStates[ s ]->RemoveAllChildStates();
-	}
+	pStates.Visit([](dearBoneState &state){
+		state.RemoveAllChildStates();
+	});
 	
-	if( boneCount == 0 ){
+	if(boneCount == 0){
 		boneCount = rig->GetBoneCount();
 		
-		if( boneCount != pStateCount ){
-			SetStateCount( boneCount );
+		if(boneCount != pStates.GetCount()){
+			SetStateCount(boneCount);
 		}
 		
-		for( s=0; s<pStateCount; s++ ){
-			deRigBone &rigBone = rig->GetBoneAt( s );
-			parent = rigBone.GetParent();
+		pStates.VisitIndexed([&](int s, dearBoneState &state){
+			deRigBone &rigBone = rig->GetBoneAt(s);
+			const int parent = rigBone.GetParent();
 			
-			pStates[ s ]->SetIndex( s );
-			pStates[ s ]->SetRigIndex( s );
-			pStates[ s ]->SetRigBone( &rigBone );
-			pStates[ s ]->SetRigBoneName( rigBone.GetName() );
-			pStates[ s ]->SetRigLocalMatrix( decMatrix::CreateRT(
-				rigBone.GetRotation(), rigBone.GetPosition() ) );
+			state.SetIndex(s);
+			state.SetRigIndex(s);
+			state.SetRigBone(&rigBone);
+			state.SetRigBoneName(rigBone.GetName());
+			state.SetRigLocalMatrix(decMatrix::CreateRT(rigBone.GetRotation(), rigBone.GetPosition()));
 			
-			if( parent == -1 ){
-				pStates[ s ]->SetParentState( NULL );
+			if(parent == -1){
+				state.SetParentState(nullptr);
 				
 			}else{
-				pStates[ s ]->SetParentState( pStates[ parent ] );
-				pStates[ parent ]->AddChildState( pStates[ s ] );
+				state.SetParentState(&pStates.GetAt(parent));
+				pStates.GetAt(parent).AddChildState(&state);
 			}
-			pStates[ s ]->SetProtected( false );
-		}
+			state.SetProtected(false);
+		});
 		
 	}else{
-		decIntList foundBones;
+		decTList<int> foundBones;
 		
-		for( s=0; s<boneCount; s++ ){
-			boneIndex = rig->IndexOfBoneNamed( bones.GetAt( s ) );
-			if( boneIndex != -1 ){
-				foundBones.Add( boneIndex );
+		bones.Visit([&](const decString &boneName){
+			const int boneIndex = rig->IndexOfBoneNamed(boneName);
+			if(boneIndex != -1){
+				foundBones.Add(boneIndex);
 			}
-		}
+		});
 		boneCount = foundBones.GetCount();
 		
-		if( boneCount != pStateCount ){
-			SetStateCount( boneCount );
+		if(boneCount != pStates.GetCount()){
+			SetStateCount(boneCount);
 		}
 		
-		for( s=0; s<pStateCount; s++ ){
-			boneIndex = foundBones.GetAt( s );
-			deRigBone &rigBone = rig->GetBoneAt( boneIndex );
-			parent = rigBone.GetParent();
+		pStates.VisitIndexed([&](int s, dearBoneState &state){
+			const int boneIndex = foundBones.GetAt(s);
+			deRigBone &rigBone = rig->GetBoneAt(boneIndex);
+			int parent = rigBone.GetParent();
 			
-			pStates[ s ]->SetIndex( s );
-			pStates[ s ]->SetRigIndex( boneIndex );
-			pStates[ s ]->SetRigBone( &rigBone );
-			pStates[ s ]->SetRigBoneName( rigBone.GetName() );
-			pStates[ s ]->SetRigLocalMatrix( decMatrix::CreateRT(
-				rigBone.GetRotation(), rigBone.GetPosition() ) );
+			state.SetIndex(s);
+			state.SetRigIndex(boneIndex);
+			state.SetRigBone(&rigBone);
+			state.SetRigBoneName(rigBone.GetName());
+			state.SetRigLocalMatrix(decMatrix::CreateRT(
+				rigBone.GetRotation(), rigBone.GetPosition()));
 			
-			if( parent != -1 ){
-				parent = foundBones.IndexOf( parent );
+			if(parent != -1){
+				parent = foundBones.IndexOf(parent);
 			}
 			
-			if( parent == -1 ){
-				pStates[ s ]->SetParentState( NULL );
+			if(parent == -1){
+				state.SetParentState(nullptr);
 				
 			}else{
-				pStates[ s ]->SetParentState( pStates[ parent ] );
-				pStates[ parent ]->AddChildState( pStates[ s ] );
+				state.SetParentState(&pStates.GetAt(parent));
+				pStates.GetAt(parent).AddChildState(&state);
 			}
-			pStates[ s ]->SetProtected( false );
-		}
+			state.SetProtected(false);
+		});
 	}
 }
 
 
 
-void dearBoneStateList::ApplyToComponent( deComponent *component ) const{
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void dearBoneStateList::ApplyToComponent(deComponent *component) const{
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int s;
-	
-	for( s=0; s<pStateCount; s++ ){
-		if( pStates[ s ]->GetRigIndex() == -1 ){
-			continue;
+	pStates.Visit([&](const dearBoneState &state){
+		if(state.GetRigIndex() == -1){
+			return;
 		}
-		if( pStates[ s ]->GetProtected() ){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
-		//pStates[ s ]->UpdateMatrices(); // only required if matrices are set
+		//state.UpdateMatrices(); // only required if matrices are set
 		
-		const decVector &nposition = pStates[ s ]->GetPosition();
-		const decQuaternion &nrotation = pStates[ s ]->GetOrientation();
-		decVector nscale = pStates[ s ]->GetScale();
+		const decVector &nposition = state.GetPosition();
+		const decQuaternion &nrotation = state.GetOrientation();
+		decVector nscale = state.GetScale();
 		
-		deComponentBone &componentBone = component->GetBoneAt( pStates[ s ]->GetRigIndex() );
-		componentBone.SetPosition( nposition );
-		componentBone.SetRotation( nrotation );
+		deComponentBone &componentBone = component->GetBoneAt(state.GetRigIndex());
+		componentBone.SetPosition(nposition);
+		componentBone.SetRotation(nrotation);
 		
 		// apply a little threshold around unit scaling to obtain pure unit scaling in the case
 		// of small numerical instability. this should prevent problems with lazy modules
-		if( fabsf( 1.0f - nscale.x ) < 1e-5f ){
+		if(fabsf(1.0f - nscale.x) < 1e-5f){
 			nscale.x = 1.0f;
 		}
-		if( fabsf( 1.0f - nscale.y ) < 1e-5f ){
+		if(fabsf(1.0f - nscale.y) < 1e-5f){
 			nscale.y = 1.0f;
 		}
-		if( fabsf( 1.0f - nscale.z ) < 1e-5f ){
+		if(fabsf(1.0f - nscale.z) < 1e-5f){
 			nscale.z = 1.0f;
 		}
 		
-		componentBone.SetScale( nscale );
-	}
+		componentBone.SetScale(nscale);
+	});
 	
 	component->InvalidateBones();
 }
 
-void dearBoneStateList::ApplyToComponent( deComponent *component, deAnimatorRule::eBlendModes blendMode, float blendFactor ) const{
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void dearBoneStateList::ApplyToComponent(deComponent *component, deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decVector scale;
-	int s;
 	
-	for( s=0; s<pStateCount; s++ ){
-		if( pStates[ s ]->GetRigIndex() == -1 ){
-			continue;
+	pStates.Visit([&](const dearBoneState &state){
+		if(state.GetRigIndex() == -1){
+			return;
 		}
-		if( pStates[ s ]->GetProtected() ){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
-		//pStates[ s ]->UpdateMatrices(); // only required if matrices are set
+		//state.UpdateMatrices(); // only required if matrices are set
 		
-		const decVector &nposition = pStates[ s ]->GetPosition();
-		const decQuaternion &nrotation = pStates[ s ]->GetOrientation();
-		const decVector &nscale = pStates[ s ]->GetScale();
+		const decVector &nposition = state.GetPosition();
+		const decQuaternion &nrotation = state.GetOrientation();
+		const decVector &nscale = state.GetScale();
 		
-		deComponentBone &componentBone = component->GetBoneAt( pStates[ s ]->GetRigIndex() );
+		deComponentBone &componentBone = component->GetBoneAt(state.GetRigIndex());
 		
-		if( blendMode == deAnimatorRule::ebmBlend ){
-			componentBone.SetPosition( componentBone.GetPosition() * ( 1.0f - blendFactor ) + nposition * blendFactor );
-			componentBone.SetRotation( componentBone.GetRotation().Slerp( nrotation, blendFactor ) );
-			scale = componentBone.GetScale() * ( 1.0f - blendFactor ) + nscale * blendFactor;
+		if(blendMode == deAnimatorRule::ebmBlend){
+			componentBone.SetPosition(componentBone.GetPosition() * (1.0f - blendFactor) + nposition * blendFactor);
+			componentBone.SetRotation(componentBone.GetRotation().Slerp(nrotation, blendFactor));
+			scale = componentBone.GetScale() * (1.0f - blendFactor) + nscale * blendFactor;
 			
-		}else if( blendMode == deAnimatorRule::ebmOverlay ){
-			componentBone.SetPosition( componentBone.GetPosition() + nposition * blendFactor );
-			componentBone.SetRotation( componentBone.GetRotation() * decQuaternion().Slerp( nrotation, blendFactor ) );
+		}else if(blendMode == deAnimatorRule::ebmOverlay){
+			componentBone.SetPosition(componentBone.GetPosition() + nposition * blendFactor);
+			componentBone.SetRotation(componentBone.GetRotation() * decQuaternion().Slerp(nrotation, blendFactor));
 			scale = componentBone.GetScale() + nscale * blendFactor;
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
 		// apply a little threshold around unit scaling to obtain pure unit scaling in the case
 		// of small numerical instability. this should prevent problems with lazy modules
-		if( fabsf( 1.0f - scale.x ) < 1e-5f ){
+		if(fabsf(1.0f - scale.x) < 1e-5f){
 			scale.x = 1.0f;
 		}
-		if( fabsf( 1.0f - scale.y ) < 1e-5f ){
+		if(fabsf(1.0f - scale.y) < 1e-5f){
 			scale.y = 1.0f;
 		}
-		if( fabsf( 1.0f - scale.z ) < 1e-5f ){
+		if(fabsf(1.0f - scale.z) < 1e-5f){
 			scale.z = 1.0f;
 		}
 		
-		componentBone.SetScale( scale );
+		componentBone.SetScale(scale);
 		
 		/*
-		componentBone.SetMatrix( pStates[ i ]->GetGlobalMatrix() );
-		componentBone.SetInverseMatrix( pStates[ i ]->GetInverseGlobalMatrix() );
-		componentBone.SetWeightMatrix( pStates[ i ]->GetRigWeightMatrix().QuickMultiply( pStates[ i ]->GetGlobalMatrix() ) );
-		componentBone.SetUpdated( true );
+		componentBone.SetMatrix(state.GetGlobalMatrix());
+		componentBone.SetInverseMatrix(state.GetInverseGlobalMatrix());
+		componentBone.SetWeightMatrix(state.GetRigWeightMatrix().QuickMultiply(state.GetGlobalMatrix()));
+		componentBone.SetUpdated(true);
 		*/
-	}
+	});
 	
 	component->InvalidateBones();
 }
 
-void dearBoneStateList::ApplyToComponent( dearComponent &component ) const{
-	dearComponentBoneState *boneStates = component.GetBoneStates();
-	const int boneStateCount = component.GetBoneStateCount();
-	int i;
+void dearBoneStateList::ApplyToComponent(dearComponent &component) const{
+	decTList<dearComponentBoneState> &boneStates = component.GetBoneStates();
+	const int boneStateCount = boneStates.GetCount();
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
 	are different although they belong to the same bone. check boneIndex against
 	boneStateCount instead to make sure the index is valid.
-	if( boneStateCount != pStateCount ){
+	if(boneStateCount != pStateCount){
 		return; // not matching
 	}
 	*/
 	
-	for( i=0; i<pStateCount; i++ ){
-		const int boneIndex = pStates[ i ]->GetRigIndex();
-		if( boneIndex < 0 || boneIndex >= boneStateCount ){
-			continue;
+	pStates.Visit([&](const dearBoneState &state){
+		const int boneIndex = state.GetRigIndex();
+		if(boneIndex < 0 || boneIndex >= boneStateCount){
+			return;
 		}
-		if( pStates[ i ]->GetProtected() ){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
-		dearComponentBoneState &boneState = boneStates[ boneIndex ];
+		dearComponentBoneState &boneState = boneStates[boneIndex];
 		
-		boneState.SetPosition( pStates[ i ]->GetPosition() );
-		boneState.SetRotation( pStates[ i ]->GetOrientation() );
+		boneState.SetPosition(state.GetPosition());
+		boneState.SetRotation(state.GetOrientation());
 		
 		// apply a little threshold around unit scaling to obtain pure unit scaling in the case
 		// of small numerical instability. this should prevent problems with lazy modules
-		decVector nscale = pStates[ i ]->GetScale();
+		decVector nscale = state.GetScale();
 		
-		if( fabsf( 1.0f - nscale.x ) < 1e-5f ){
+		if(fabsf(1.0f - nscale.x) < 1e-5f){
 			nscale.x = 1.0f;
 		}
-		if( fabsf( 1.0f - nscale.y ) < 1e-5f ){
+		if(fabsf(1.0f - nscale.y) < 1e-5f){
 			nscale.y = 1.0f;
 		}
-		if( fabsf( 1.0f - nscale.z ) < 1e-5f ){
+		if(fabsf(1.0f - nscale.z) < 1e-5f){
 			nscale.z = 1.0f;
 		}
 		
-		boneState.SetScale( nscale );
-	}
+		boneState.SetScale(nscale);
+	});
 }
 
-void dearBoneStateList::ApplyToComponent( dearComponent &component,
-deAnimatorRule::eBlendModes blendMode, float blendFactor ) const{
-	dearComponentBoneState *boneStates = component.GetBoneStates();
-	const int boneStateCount = component.GetBoneStateCount();
-	int i;
+void dearBoneStateList::ApplyToComponent(dearComponent &component,
+deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
+	decTList<dearComponentBoneState> &boneStates = component.GetBoneStates();
+	const int boneStateCount = boneStates.GetCount();
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
 	are different although they belong to the same bone. check boneIndex against
 	boneStateCount instead to make sure the index is valid.
-	if( boneStateCount != pStateCount ){
+	if(boneStateCount != pStateCount){
 		return; // not matching
 	}
 	*/
 	
-	for( i=0; i<pStateCount; i++ ){
-		const int boneIndex = pStates[ i ]->GetRigIndex();
-		if( boneIndex < 0 || boneIndex >= boneStateCount ){
-			continue;
+	pStates.Visit([&](const dearBoneState &state){
+		const int boneIndex = state.GetRigIndex();
+		if(boneIndex < 0 || boneIndex >= boneStateCount){
+			return;
 		}
-		if( pStates[ i ]->GetProtected() ){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
-		dearComponentBoneState &boneState = boneStates[ boneIndex ];
+		dearComponentBoneState &boneState = boneStates[boneIndex];
 		
-		const decVector &nposition = pStates[ i ]->GetPosition();
-		const decQuaternion &nrotation = pStates[ i ]->GetOrientation();
-		const decVector &nscale = pStates[ i ]->GetScale();
+		const decVector &nposition = state.GetPosition();
+		const decQuaternion &nrotation = state.GetOrientation();
+		const decVector &nscale = state.GetScale();
 		decVector scale;
 		
-		if( blendMode == deAnimatorRule::ebmBlend ){
-			boneState.SetPosition( boneState.GetPosition() * ( 1.0f - blendFactor ) + nposition * blendFactor );
-			boneState.SetRotation( boneState.GetRotation().Slerp( nrotation, blendFactor ) );
-			scale = boneState.GetScale() * ( 1.0f - blendFactor ) + nscale * blendFactor;
+		if(blendMode == deAnimatorRule::ebmBlend){
+			boneState.SetPosition(boneState.GetPosition() * (1.0f - blendFactor) + nposition * blendFactor);
+			boneState.SetRotation(boneState.GetRotation().Slerp(nrotation, blendFactor));
+			scale = boneState.GetScale() * (1.0f - blendFactor) + nscale * blendFactor;
 			
-		}else if( blendMode == deAnimatorRule::ebmOverlay ){
-			boneState.SetPosition( boneState.GetPosition() + nposition * blendFactor );
-			boneState.SetRotation( boneState.GetRotation() * decQuaternion().Slerp( nrotation, blendFactor ) );
+		}else if(blendMode == deAnimatorRule::ebmOverlay){
+			boneState.SetPosition(boneState.GetPosition() + nposition * blendFactor);
+			boneState.SetRotation(boneState.GetRotation() * decQuaternion().Slerp(nrotation, blendFactor));
 			scale = boneState.GetScale() + nscale * blendFactor;
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
 		// apply a little threshold around unit scaling to obtain pure unit scaling in the case
 		// of small numerical instability. this should prevent problems with lazy modules
-		if( fabsf( 1.0f - scale.x ) < 1e-5f ){
+		if(fabsf(1.0f - scale.x) < 1e-5f){
 			scale.x = 1.0f;
 		}
-		if( fabsf( 1.0f - scale.y ) < 1e-5f ){
+		if(fabsf(1.0f - scale.y) < 1e-5f){
 			scale.y = 1.0f;
 		}
-		if( fabsf( 1.0f - scale.z ) < 1e-5f ){
+		if(fabsf(1.0f - scale.z) < 1e-5f){
 			scale.z = 1.0f;
 		}
 		
-		boneState.SetScale( scale );
-	}
+		boneState.SetScale(scale);
+	});
 }

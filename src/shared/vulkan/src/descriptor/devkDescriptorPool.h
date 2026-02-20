@@ -27,13 +27,13 @@
 
 #include "devkDescriptorPoolPool.h"
 #include "devkDescriptorSetLayout.h"
+#include "devkDescriptorPoolSlot.h"
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDevice;
-class devkDescriptorPoolSlot;
 
 
 /**
@@ -45,8 +45,7 @@ class devkDescriptorPoolSlot;
 class devkDescriptorPool : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDescriptorPool> Ref;
-	
+	using Ref = deTObjectReference<devkDescriptorPool>;
 	
 	
 private:
@@ -56,7 +55,7 @@ private:
 	VkDescriptorPoolCreateInfo pPoolCreateInfo;
 	devkDescriptorSetLayout::Ref pLayout;
 	
-	decObjectList pPools;
+	decTObjectList<devkDescriptorPoolPool> pPools;
 	
 	
 	
@@ -64,12 +63,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create command pool. */
-	devkDescriptorPool( devkDevice &device, VkDescriptorType type,
-		devkDescriptorSetLayout *layout, int maxSetCount = 1000 );
+	devkDescriptorPool(devkDevice &device, VkDescriptorType type,
+		devkDescriptorSetLayout *layout, int maxSetCount = 1000);
 	
 protected:
 	/** Clean up queue. */
-	virtual ~devkDescriptorPool();
+	~devkDescriptorPool() override;
 	/*@}*/
 	
 	
@@ -81,10 +80,10 @@ public:
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Layout. */
-	inline devkDescriptorSetLayout *GetLayout() const{ return pLayout; }
+	inline const devkDescriptorSetLayout::Ref &GetLayout() const{ return pLayout; }
 	
 	/** Get next free slot. */
-	devkDescriptorPoolSlot *Get();
+	devkDescriptorPoolSlot::Ref Get();
 	/*@}*/
 };
 

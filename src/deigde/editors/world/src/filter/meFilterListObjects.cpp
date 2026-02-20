@@ -31,18 +31,14 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class meFilterListObjects
 //////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meFilterListObjects::meFilterListObjects(){
-	pFilters = NULL;
-	pFilterCount = 0;
-	
-	pAcceptAny = true;
+meFilterListObjects::meFilterListObjects() :
+pAcceptAny(true){
 }
 
 meFilterListObjects::~meFilterListObjects(){
@@ -50,66 +46,35 @@ meFilterListObjects::~meFilterListObjects(){
 }
 
 
-
 // Management
 ///////////////
 
-void meFilterListObjects::SetAcceptAny( bool acceptAny ){
+void meFilterListObjects::SetAcceptAny(bool acceptAny){
 	pAcceptAny = acceptAny;
 }
 
 
-
-void meFilterListObjects::AddFilter( meFilterObjects *filter ){
-	if( ! filter ) DETHROW( deeInvalidParam );
-	
-	meFilterObjects **newArray = new meFilterObjects*[ pFilterCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
-	if( pFilters ){
-		memcpy( newArray, pFilters, sizeof( meFilterObjects* ) * pFilterCount );
-		delete [] pFilters;
-	}
-	pFilters = newArray;
-	
-	pFilters[ pFilterCount ] = filter;
-	pFilterCount++;
+void meFilterListObjects::AddFilter(meFilterObjects *filter){
+	DEASSERT_NOTNULL(filter)
+	pFilters.Add(filter);
 }
 
 void meFilterListObjects::RemoveAllFilters(){
-	if( pFilters ){
-		while( pFilterCount > 0 ){
-			pFilterCount--;
-			delete pFilters[ pFilterCount ];
-		}
-		
-		delete [] pFilters;
-		pFilters = NULL;
-	}
+	pFilters.RemoveAll();
 }
 
 
-
-bool meFilterListObjects::AcceptObject( meObject *object ) const{
-	if( ! object ) DETHROW( deeInvalidParam );
+bool meFilterListObjects::AcceptObject(meObject *object) const{
+	DEASSERT_NOTNULL(object)
 	
-	int f;
-	
-	if( pAcceptAny ){
-		for( f=0; f<pFilterCount; f++ ){
-			if( pFilters[ f ]->AcceptObject( object ) ){
-				return true;
-			}
-		}
-		
-		return false;
+	if(pAcceptAny){
+		return pFilters.HasMatching([&](const meFilterObjects &f){
+			return f.AcceptObject(object);
+		});
 		
 	}else{
-		for( f=0; f<pFilterCount; f++ ){
-			if( ! pFilters[ f ]->AcceptObject( object ) ){
-				return false;
-			}
-		}
-		
-		return true;
+		return pFilters.AllMatching([&](const meFilterObjects &f){
+			return f.AcceptObject(object);
+		});
 	}
 }

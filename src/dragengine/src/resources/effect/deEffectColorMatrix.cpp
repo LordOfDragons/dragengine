@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEffectColorMatrix::deEffectColorMatrix( deEffectManager *manager ) : deEffect( manager ){
+deEffectColorMatrix::deEffectColorMatrix(deEffectManager *manager) : deEffect(manager){
 }
 
 deEffectColorMatrix::~deEffectColorMatrix(){
@@ -50,12 +50,12 @@ deEffectColorMatrix::~deEffectColorMatrix(){
 // Management
 ///////////////
 
-void deEffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix ){
-	if( ! colorMatrix.IsEqualTo( pColorMatrix ) ){
+void deEffectColorMatrix::SetColorMatrix(const decColorMatrix &colorMatrix){
+	if(!colorMatrix.IsEqualTo(pColorMatrix)){
 		pColorMatrix = colorMatrix;
 		
 		deBaseGraphicEffect *graEffect = GetPeerGraphic();
-		if( graEffect ) graEffect->ColorMatrixChanged();
+		if(graEffect) graEffect->ColorMatrixChanged();
 	}
 }
 
@@ -64,6 +64,6 @@ void deEffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix ){
 // visiting
 /////////////
 
-void deEffectColorMatrix::Visit( deEffectVisitor &visitor ){
-	visitor.VisitColorMatrix( *this );
+void deEffectColorMatrix::Visit(deEffectVisitor &visitor){
+	visitor.VisitColorMatrix(*this);
 }

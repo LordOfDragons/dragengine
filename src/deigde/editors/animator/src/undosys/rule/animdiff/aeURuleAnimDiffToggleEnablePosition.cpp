@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleAnimDiffToggleEnablePosition::aeURuleAnimDiffToggleEnablePosition( aeRuleAnimationDifference *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleAnimDiffToggleEnablePosition::aeURuleAnimDiffToggleEnablePosition(aeRuleAnimationDifference *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleAnimationDifferenceToggleEnablePosition");
 		
-		SetShortInfo( "Rule animation difference toggle enable position" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleAnimDiffToggleEnablePosition::~aeURuleAnimDiffToggleEnablePosition(){
 ///////////////
 
 void aeURuleAnimDiffToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleAnimDiffToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleAnimDiffToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnablePosition::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

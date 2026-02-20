@@ -36,6 +36,9 @@ class ceCAPlayerChoiceOption;
  * \brief Menu action paste condition to wait.
  */
 class ceWPTMAPChoiceOptionPasteCondition : public ceWPTMAPasteCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionPasteCondition>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -51,9 +54,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionPasteCondition( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionPasteCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option );
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option);
 	/*@}*/
 	
 	
@@ -70,7 +73,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions) override;
 	/*@}*/
 };
 

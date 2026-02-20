@@ -35,6 +35,10 @@
  * Undo set rule mirror enable size.
  */
 class aeURuleMirrorSetEnableSize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorSetEnableSize>;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetEnableSize( aeRuleMirror *rule );
+	aeURuleMirrorSetEnableSize(aeRuleMirror *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorSetEnableSize();
+	~aeURuleMirrorSetEnableSize() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

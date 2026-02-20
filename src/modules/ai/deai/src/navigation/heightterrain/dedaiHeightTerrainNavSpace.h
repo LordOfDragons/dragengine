@@ -26,6 +26,7 @@
 #define _DEDAIHEIGHTTERRAINNAVSPACE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dedaiHeightTerrainSector;
 class dedaiSpace;
@@ -40,9 +41,12 @@ class deNavigationSpaceFace;
  */
 class dedaiHeightTerrainNavSpace : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<dedaiHeightTerrainNavSpace>;
+	
+	
 	struct sEdge{
-		unsigned short vertex1;
-		unsigned short vertex2;
+		unsigned short vertex1, vertex2;
 	};
 	
 	
@@ -51,19 +55,10 @@ private:
 	dedaiHeightTerrainSector &pSector;
 	const deHeightTerrainNavSpace &pNavigationSpace;
 	
-	unsigned int *pVertices;
-	int pVertexCount;
-	int pVertexSize;
-	
-	sEdge *pEdges;
-	
-	unsigned short *pCorners;
-	int pCornerCount;
-	int pCornerSize;
-	
-	deNavigationSpaceFace *pFaces;
-	int pFaceCount;
-	int pFaceSize;
+	decTList<unsigned int> pVertices;
+	decTList<sEdge> pEdges;
+	decTList<unsigned short> pCorners;
+	decTList<deNavigationSpaceFace> pFaces;
 	
 	dedaiSpace *pSpace;
 	
@@ -73,12 +68,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiHeightTerrainNavSpace( dedaiHeightTerrainSector &sector,
-		const deHeightTerrainNavSpace &navigationSpace );
+	dedaiHeightTerrainNavSpace(dedaiHeightTerrainSector &sector,
+		const deHeightTerrainNavSpace &navigationSpace);
 	
 protected:
 	/** \brief Clean up peer. */
-	virtual ~dedaiHeightTerrainNavSpace();
+	~dedaiHeightTerrainNavSpace() override;
 	/*@}*/
 	
 	
@@ -95,25 +90,16 @@ public:
 	
 	
 	/** \brief Vertices in grid coordinates. */
-	inline const unsigned int *GetVertices() const{ return pVertices; }
-	
-	/** \brief Number of grid vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline const decTList<unsigned int> &GetVertices() const{ return pVertices; }
 	
 	/** \brief Edges mapping to grid vertices. */
-	inline const sEdge *GetEdges() const{ return pEdges; }
+	inline const decTList<sEdge> &GetEdges() const{ return pEdges; }
 	
 	/** \brief Corners mapping to grid vertices. */
-	inline const unsigned short *GetCorners() const{ return pCorners; }
-	
-	/** \brief Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
+	inline const decTList<unsigned short> &GetCorners() const{ return pCorners; }
 	
 	/** \brief Faces. */
-	inline const deNavigationSpaceFace * const GetFaces() const{ return pFaces; }
-	
-	/** \brief Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline const decTList<deNavigationSpaceFace> &GetFaces() const{ return pFaces; }
 	
 	
 	
@@ -129,7 +115,7 @@ public:
 	void ParentWorldChanged();
 	
 	/** \brief Sector heights changed. */
-	void HeightChanged( const decPoint &from, const decPoint &to );
+	void HeightChanged(const decPoint &from, const decPoint &to);
 	
 	/** \brief Layer changed. */
 	void LayerChanged();

@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetOffCamTo::ceUCCShotSetOffCamTo( ceCameraShot *cameraShot, const decVector &newPos ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetOffCamTo::ceUCCShotSetOffCamTo(ceCameraShot *cameraShot, const decVector &newPos){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set End Camera Position" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndCameraPosition");
 	
 	pOldPos = cameraShot->GetOffsetCameraTo();
 	pNewPos = newPos;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetOffCamTo::~ceUCCShotSetOffCamTo(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetOffCamTo::~ceUCCShotSetOffCamTo(){
 ///////////////
 
 void ceUCCShotSetOffCamTo::Undo(){
-	pCameraShot->SetOffsetCameraTo( pOldPos );
+	pCameraShot->SetOffsetCameraTo(pOldPos);
 }
 
 void ceUCCShotSetOffCamTo::Redo(){
-	pCameraShot->SetOffsetCameraTo( pNewPos );
+	pCameraShot->SetOffsetCameraTo(pNewPos);
 }

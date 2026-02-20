@@ -25,9 +25,11 @@
 #ifndef _IGDETRIGGEREXPRESSION_H_
 #define _IGDETRIGGEREXPRESSION_H_
 
+#include "igdeTriggerExpressionComponent.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
-class igdeTriggerExpressionComponent;
 class igdeTriggerTargetList;
 class igdeTriggerListener;
 
@@ -37,8 +39,17 @@ class igdeTriggerListener;
  * \brief Trigger Expression.
  */
 class DE_DLL_EXPORT igdeTriggerExpression : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTriggerExpression>;
+	
+	/** \brief List of trigger expressions. */
+	using List = decTObjectOrderedSet<igdeTriggerExpression>;
+	
+	
 private:
-	igdeTriggerExpressionComponent *pRootComponent;
+	igdeTriggerExpressionComponent::Ref pRootComponent;
 	bool pResult;
 	bool pEnabled;
 	
@@ -50,37 +61,40 @@ public:
 	/** \brief Create trigger expression. */
 	igdeTriggerExpression();
 	
+protected:
 	/** \brief Clean up trigger expression. */
-	virtual ~igdeTriggerExpression();
+	~igdeTriggerExpression() override;
+	
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Root expression component or null if not set. */
-	inline igdeTriggerExpressionComponent *GetRootComponent() const{ return pRootComponent; }
+	/** \brief Root expression component or nullptr if not set. */
+	inline const igdeTriggerExpressionComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
-	/** \brief Set root expression component or null if not set. */
-	void SetRootComponent( igdeTriggerExpressionComponent *component );
+	/** \brief Set root expression component or nullptr if not set. */
+	void SetRootComponent(igdeTriggerExpressionComponent *component);
 	
-	/** \brief Determines if the expression is empty hence root component is null. */
+	/** \brief Determines if the expression is empty hence root component is nullptr. */
 	bool IsEmpty() const;
 	
-	/** \brief Determines if the expression is not empty hence root component is not null. */
+	/** \brief Determines if the expression is not empty hence root component is not nullptr. */
 	bool IsNotEmpty() const;
 	
 	/** \brief Result of the expression. */
 	inline bool GetResult() const{ return pResult; }
 	
 	/** \brief Set result of the expression. */
-	void SetResult( bool result );
+	void SetResult(bool result);
 	
 	/** \brief Determines if the expression is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set expression is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/**
 	 * \brief Link trigger targets using the given trigger table.
@@ -88,7 +102,7 @@ public:
 	 * The given listener is registered for all targets. A previously existing listener
 	 * is removed first. After linking the expression is evaluated.
 	 */
-	void LinkTriggerTargets( igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener );
+	void LinkTriggerTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener);
 	
 	/** \brief Unlink trigger targets. A previously existing listener is removed first. */
 	void UnlinkTriggerTargets();

@@ -27,8 +27,8 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 
 class meHTVRuleCurve;
 
@@ -38,11 +38,14 @@ class meHTVRuleCurve;
  * \brief Vegetation Editing Window Node Curve.
  */
 class meWVNodeCurve : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeCurve>;
+	
 private:
 	meHTVRuleCurve *pRuleCurve;
 	
-	igdeContainerReference pFraParameters;
-	igdeViewCurveBezierReference pCurve;
+	igdeContainer::Ref pFraParameters;
+	igdeViewCurveBezier::Ref pCurve;
 	
 	
 	
@@ -50,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeCurve( meWindowVegetation &windowVegetation, meHTVRuleCurve *rule );
+	meWVNodeCurve(meWindowVegetation &windowVegetation, meHTVRuleCurve *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeCurve();
+	~meWVNodeCurve() override;
 	/*@}*/
 	
 	
@@ -66,7 +69,7 @@ public:
 	inline meHTVRuleCurve *GetRuleCurve() const{ return pRuleCurve; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

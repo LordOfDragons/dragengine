@@ -34,14 +34,16 @@
  */
 class aeUSetRuleRemoveAllBones : public aeUSetRuleBones{
 public:
+	using Ref = deTObjectReference<aeUSetRuleRemoveAllBones>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleRemoveAllBones( aeRule *rule );
+	aeUSetRuleRemoveAllBones(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleRemoveAllBones();
+	~aeUSetRuleRemoveAllBones() override;
 	/*@}*/
 };
 

@@ -14,7 +14,7 @@ public:
 
     [[nodiscard]] inline const FDVFSContainer::Ref &GetFDContainer() const{ return pFDContainer; }
 
-    delGameList ReadDelgaGames(const decString &path);
+    delGame::List ReadDelgaGames(const decString &path);
 
     void Dispose(JNIEnv *env);
 };

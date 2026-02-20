@@ -40,30 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeAdd::meUHTNavSpaceTypeAdd( meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type ) :
-pNavSpace( NULL ),
-pType( NULL )
+meUHTNavSpaceTypeAdd::meUHTNavSpaceTypeAdd(meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type) :
+
+pType(nullptr)
 {
-	if( ! navspace || ! type ){
-		DETHROW( deeInvalidParam );
+	if(!navspace || !type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Height terrain nav-space add type" );
+	SetShortInfo("@World.UHTNavSpaceTypeAdd.HeightTerrainNavSpaceAddType");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 meUHTNavSpaceTypeAdd::~meUHTNavSpaceTypeAdd(){
-	if( pType ){
-		pType->FreeReference();
-	}
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
 }
 
 
@@ -72,10 +63,10 @@ meUHTNavSpaceTypeAdd::~meUHTNavSpaceTypeAdd(){
 ///////////////
 
 void meUHTNavSpaceTypeAdd::Undo(){
-	pNavSpace->RemoveType( pType );
+	pNavSpace->RemoveType(pType);
 }
 
 void meUHTNavSpaceTypeAdd::Redo(){
-	pNavSpace->AddType( pType );
-	pNavSpace->SetActiveType( pType );
+	pNavSpace->AddType(pType);
+	pNavSpace->SetActiveType(pType);
 }

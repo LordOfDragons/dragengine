@@ -46,11 +46,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -67,18 +67,18 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemRemove &pPanel;
 	
 public:
-	cComboCoordSystemID( ceWPACoordSystemRemove &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboCoordSystemID>;
+	cComboCoordSystemID(ceWPACoordSystemRemove &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemRemove * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetCoordSystemID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetCoordSystemID()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCACoordSysRemoveSetCoordSysID( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACoordSysRemoveSetCoordSysID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -92,13 +92,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPACoordSystemRemove::ceWPACoordSystemRemove( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPACoordSystemRemove::ceWPACoordSystemRemove(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Coord System:", true, "ID of the coordinate system to remove from conversation",
-		pCBCoordSystemID, new cComboCoordSystemID( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemRemove.CoordSystem", true, "@Conversation.CoordSystemToRemove.ToolTip",
+		pCBCoordSystemID, cComboCoordSystemID::Ref::New(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 }
 
@@ -113,11 +113,11 @@ ceWPACoordSystemRemove::~ceWPACoordSystemRemove(){
 ceCACoordSystemRemove *ceWPACoordSystemRemove::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatCoordSystemRemove ){
-		return ( ceCACoordSystemRemove* )action;
+	if(action && action->GetType() == ceConversationAction::eatCoordSystemRemove){
+		return (ceCACoordSystemRemove*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -126,8 +126,8 @@ void ceWPACoordSystemRemove::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBCoordSystemID->SetText( action->GetCoordSystemID() );
+	if(action){
+		pCBCoordSystemID->SetText(action->GetCoordSystemID());
 		
 	}else{
 		pCBCoordSystemID->ClearText();
@@ -137,5 +137,5 @@ void ceWPACoordSystemRemove::UpdateAction(){
 
 
 void ceWPACoordSystemRemove::UpdateConvoCoordSysIDLists(){
-	UpdateComboBoxWithConvoCoordSysIDList( pCBCoordSystemID );
+	UpdateComboBoxWithConvoCoordSysIDList(pCBCoordSystemID);
 }

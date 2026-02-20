@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlAttValue::decXmlAttValue( const char *name ){
-	SetName( name );
+decXmlAttValue::decXmlAttValue(const char *name){
+	SetName(name);
 }
 
 decXmlAttValue::~decXmlAttValue(){
@@ -51,32 +51,32 @@ decXmlAttValue::~decXmlAttValue(){
 // Management
 ///////////////
 
-void decXmlAttValue::SetName( const char *name ){
+void decXmlAttValue::SetName(const char *name){
 	pName = name;
 	
-	const decStringList parts( pName.Split( ':' ) );
+	const decStringList parts(pName.Split(':'));
 	
-	if( parts.GetCount() == 2 ){
-		pNamespace = parts.GetAt( 0 );
-		pLocalName = parts.GetAt( 1 );
+	if(parts.GetCount() == 2){
+		pNamespace = parts.GetAt(0);
+		pLocalName = parts.GetAt(1);
 		
-	}else if( parts.GetCount() < 2 ){
+	}else if(parts.GetCount() < 2){
 		pNamespace.Empty();
 		pLocalName = pName;
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void decXmlAttValue::SetValue( const char *value ){
+void decXmlAttValue::SetValue(const char *value){
 	pValue = value;
 }
 
 
 
-void decXmlAttValue::Visit( decXmlVisitor &visitor ){
-	visitor.VisitAttValue( *this );
+void decXmlAttValue::Visit(decXmlVisitor &visitor){
+	visitor.VisitAttValue(*this);
 }
 
 

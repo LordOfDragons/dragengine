@@ -27,10 +27,10 @@
 #define _GDEUOCFORCEFIELDSETTRIGGERNAME_H_
 
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class particle emitter set trigger name.
  */
 class gdeUOCForceFieldSetTriggerName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCForceFieldSetTriggerName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	gdeOCForceField::eTriggers pTrigger;
 	decString pOldValue;
@@ -52,13 +56,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetTriggerName( gdeObjectClass *objectClass,
+	gdeUOCForceFieldSetTriggerName(gdeObjectClass *objectClass,
 		gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger,
-		const char *newValue );
+		const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCForceFieldSetTriggerName();
+	~gdeUOCForceFieldSetTriggerName() override;
 	/*@}*/
 	
 	
@@ -67,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

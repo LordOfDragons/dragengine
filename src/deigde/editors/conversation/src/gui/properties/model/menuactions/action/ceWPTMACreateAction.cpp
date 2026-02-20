@@ -33,7 +33,7 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../conversation/ceConversation.h"
-#include "../../../../../conversation/action/ceConversationActionReference.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
 #include "../../../../../conversation/action/ceCAActorAdd.h"
 #include "../../../../../conversation/action/ceCAActorCommand.h"
 #include "../../../../../conversation/action/ceCAActorRemove.h"
@@ -57,7 +57,7 @@
 #include "../../../../../conversation/action/ceCAWait.h"
 
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -66,14 +66,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACreateAction::ceWPTMACreateAction( ceWindowMain &windowMain,
+ceWPTMACreateAction::ceWPTMACreateAction(ceWindowMain &windowMain,
 ceConversation &conversation,
-ceConversationAction::eActionTypes actionType ) :
-ceWPTMenuAction( windowMain,
-	ActionTypeText( windowMain, actionType ),
-	ActionTypeIcon( windowMain, actionType ) ),
-pConversation( &conversation ),
-pActionType( actionType ){
+ceConversationAction::eActionTypes actionType) :
+ceWPTMenuAction(windowMain,
+	ActionTypeText(windowMain, actionType),
+	ActionTypeIcon(windowMain, actionType)),
+pConversation(&conversation),
+pActionType(actionType){
 }
 
 
@@ -82,194 +82,155 @@ pActionType( actionType ){
 ///////////////
 
 void ceWPTMACreateAction::OnAction(){
-	ceConversationActionReference action;
-	action.TakeOver( CreateAction() );
-	
-	igdeUndoReference undo;
-	undo.TakeOver( CreateUndo( action ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(CreateUndo(CreateAction()));
 }
 
-igdeUndo *ceWPTMACreateAction::CreateUndo( ceConversationAction* ){
+igdeUndo::Ref ceWPTMACreateAction::CreateUndo(ceConversationAction*){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 
 
-ceConversationAction *ceWPTMACreateAction::CreateAction(){
-	switch( pActionType ){
+ceConversationAction::Ref ceWPTMACreateAction::CreateAction(){
+	switch(pActionType){
 	case ceConversationAction::eatCameraShot:
-		return new ceCACameraShot;
+		return ceCACameraShot::Ref::New();
 		
 	case ceConversationAction::eatMusic:
-		return new ceCAMusic;
+		return ceCAMusic::Ref::New();
 		
 	case ceConversationAction::eatActorSpeak:
-		return new ceCAActorSpeak( pConversation->GetEngine() );
+		return ceCAActorSpeak::Ref::New(pConversation->GetEngine());
 		
 	case ceConversationAction::eatSetVariable:
-		return new ceCASetVariable;
+		return ceCASetVariable::Ref::New();
 		
 	case ceConversationAction::eatSetActorParameter:
-		return new ceCASetActorParameter;
+		return ceCASetActorParameter::Ref::New();
 		
 	case ceConversationAction::eatTrigger:
-		return new ceCATrigger;
+		return ceCATrigger::Ref::New();
 		
 	case ceConversationAction::eatIfElse:{
-		ceCAIfElse *ifElse = NULL;
-		ceCAIfElseCase *ifCase = NULL;
-		
-		try{
-			ifElse = new ceCAIfElse;
-			ifCase = new ceCAIfElseCase;
-			ifElse->GetCases().Add( ifCase );
-			ifCase->FreeReference();
-			
-		}catch( const deException & ){
-			if( ifCase ){
-				ifCase->FreeReference();
-			}
-			if( ifElse ){
-				ifElse->FreeReference();
-			}
-			throw;
-		}
-		
+		const ceCAIfElse::Ref ifElse(ceCAIfElse::Ref::New());
+		ifElse->GetCases().Add(ceCAIfElseCase::Ref::New());
 		return ifElse;
 		}
 		
 	case ceConversationAction::eatPlayerChoice:{
-		ceCAPlayerChoice *playerChoice = NULL;
-		ceCAPlayerChoiceOption *option = NULL;
-		
-		try{
-			playerChoice = new ceCAPlayerChoice;
-			option = new ceCAPlayerChoiceOption;
-			playerChoice->GetOptions().Add( option );
-			option->FreeReference();
-			
-		}catch( const deException & ){
-			if( option ){
-				option->FreeReference();
-			}
-			if( playerChoice ){
-				playerChoice->FreeReference();
-			}
-			throw;
-		}
-		
+		const ceCAPlayerChoice::Ref playerChoice(ceCAPlayerChoice::Ref::New());
+		playerChoice->GetOptions().Add(ceCAPlayerChoiceOption::Ref::New());
 		return playerChoice;
 		}
 		
 	case ceConversationAction::eatWait:
-		return new ceCAWait;
+		return ceCAWait::Ref::New();
 		
 	case ceConversationAction::eatSnippet:
-		return new ceCASnippet;
+		return ceCASnippet::Ref::New();
 		
 	case ceConversationAction::eatStopConversation:
-		return new ceCAStopConversation;
+		return ceCAStopConversation::Ref::New();
 		
 	case ceConversationAction::eatStopTopic:
-		return new ceCAStopTopic;
+		return ceCAStopTopic::Ref::New();
 		
 	case ceConversationAction::eatActorCommand:
-		return new ceCAActorCommand;
+		return ceCAActorCommand::Ref::New();
 		
 	case ceConversationAction::eatGameCommand:
-		return new ceCAGameCommand;
+		return ceCAGameCommand::Ref::New();
 		
 	case ceConversationAction::eatActorAdd:
-		return new ceCAActorAdd;
+		return ceCAActorAdd::Ref::New();
 		
 	case ceConversationAction::eatActorRemove:
-		return new ceCAActorRemove;
+		return ceCAActorRemove::Ref::New();
 		
 	case ceConversationAction::eatCoordSystemAdd:
-		return new ceCACoordSystemAdd;
+		return ceCACoordSystemAdd::Ref::New();
 		
 	case ceConversationAction::eatCoordSystemRemove:
-		return new ceCACoordSystemRemove;
+		return ceCACoordSystemRemove::Ref::New();
 		
 	case ceConversationAction::eatComment:
-		return new ceCAComment;
+		return ceCAComment::Ref::New();
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 }
 
-const char *ceWPTMACreateAction::ActionTypeText( ceWindowMain &windowMain,
-ceConversationAction::eActionTypes actionType ){
-	switch( actionType ){
+decString ceWPTMACreateAction::ActionTypeText(ceWindowMain &windowMain,
+ceConversationAction::eActionTypes actionType){
+	switch(actionType){
 	case ceConversationAction::eatCameraShot:
-		return "Camera Shot";
+		return windowMain.Translate("Conversation.ActionType.CameraShot").ToUTF8();
 		
 	case ceConversationAction::eatMusic:
-		return "Music";
+		return windowMain.Translate("Conversation.ActionType.Music").ToUTF8();
 		
 	case ceConversationAction::eatActorSpeak:
-		return "Actor Speak";
+		return windowMain.Translate("Conversation.ActionType.ActorSpeak").ToUTF8();
 		
 	case ceConversationAction::eatSetVariable:
-		return "Set Variable";
+		return windowMain.Translate("Conversation.ActionType.SetVariable").ToUTF8();
 		
 	case ceConversationAction::eatSetActorParameter:
-		return "Set Actor Parameter";
+		return windowMain.Translate("Conversation.ActionType.SetActorParameter").ToUTF8();
 		
 	case ceConversationAction::eatTrigger:
-		return "Trigger";
+		return windowMain.Translate("Conversation.ActionType.Trigger").ToUTF8();
 		
 	case ceConversationAction::eatIfElse:
-		return "If-Else";
+		return windowMain.Translate("Conversation.ActionType.IfElse").ToUTF8();
 		
 	case ceConversationAction::eatPlayerChoice:
-		return "Player Choice";
+		return windowMain.Translate("Conversation.ActionType.PlayerChoice").ToUTF8();
 		
 	case ceConversationAction::eatWait:
-		return "Wait";
+		return windowMain.Translate("Conversation.ActionType.Wait").ToUTF8();
 		
 	case ceConversationAction::eatSnippet:
-		return "Snippet";
+		return windowMain.Translate("Conversation.ActionType.Snippet").ToUTF8();
 		
 	case ceConversationAction::eatStopConversation:
-		return "Stop Conversation";
+		return windowMain.Translate("Conversation.ActionType.StopConversation").ToUTF8();
 		
 	case ceConversationAction::eatStopTopic:
-		return "Stop Topic";
+		return windowMain.Translate("Conversation.ActionType.StopTopic").ToUTF8();
 		
 	case ceConversationAction::eatActorCommand:
-		return "Actor Command";
+		return windowMain.Translate("Conversation.ActionType.ActorCommand").ToUTF8();
 		
 	case ceConversationAction::eatGameCommand:
-		return "Game Command";
+		return windowMain.Translate("Conversation.ActionType.GameCommand").ToUTF8();
 		
 	case ceConversationAction::eatActorAdd:
-		return "Actor Add";
+		return windowMain.Translate("Conversation.ActionType.ActorAdd").ToUTF8();
 		
 	case ceConversationAction::eatActorRemove:
-		return "Actor Remove";
+		return windowMain.Translate("Conversation.ActionType.ActorRemove").ToUTF8();
 		
 	case ceConversationAction::eatCoordSystemAdd:
-		return "Coordinate System Add";
+		return windowMain.Translate("Conversation.ActionType.CoordSystemAdd").ToUTF8();
 		
 	case ceConversationAction::eatCoordSystemRemove:
-		return "Coordinate System Remove";
+		return windowMain.Translate("Conversation.ActionType.CoordSystemRemove").ToUTF8();
 		
 	case ceConversationAction::eatComment:
-		return "Comment";
+		return windowMain.Translate("Conversation.ActionType.Comment").ToUTF8();
 		
 	default:
 		return "??";
 	}
 }
 
-igdeIcon *ceWPTMACreateAction::ActionTypeIcon( ceWindowMain &windowMain,
-ceConversationAction::eActionTypes actionType ){
-	switch( actionType ){
+igdeIcon *ceWPTMACreateAction::ActionTypeIcon(ceWindowMain &windowMain,
+ceConversationAction::eActionTypes actionType){
+	switch(actionType){
 	case ceConversationAction::eatCameraShot:
 		return windowMain.GetIconActionCameraShot();
 		
@@ -328,6 +289,6 @@ ceConversationAction::eActionTypes actionType ){
 		return windowMain.GetIconActionComment();
 		
 	default:
-		return NULL;
+		return nullptr;
 	}
 }

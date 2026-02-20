@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMENUOPTION_H_
 
 #include "../foxtoolkit.h"
+#include "../../../menu/igdeMenuOption.h"
 
 class igdeMenuOption;
 
@@ -33,8 +34,8 @@ class igdeMenuOption;
 /**
  * FOX native widget.
  */
-class igdeNativeFoxMenuOption : public FXMenuRadio{
-	FXDECLARE( igdeNativeFoxMenuOption )
+class igdeNativeFoxMenuOption : public FXMenuRadio, public igdeMenuOption::cNativeMenuOption{
+	FXDECLARE(igdeNativeFoxMenuOption)
 	
 protected:
 	igdeNativeFoxMenuOption();
@@ -51,13 +52,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuOption( igdeMenuOption &owner, FXComposite *parent );
+	igdeNativeFoxMenuOption(igdeMenuOption &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuOption();
+	~igdeNativeFoxMenuOption() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuOption* CreateNativeWidget( igdeMenuOption &owner );
+	static igdeNativeFoxMenuOption* CreateNativeWidget(igdeMenuOption &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -70,20 +71,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateSelected();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
-	static FXString BuildConstrText( igdeMenuOption &owner );
+	void UpdateSelected() override;
+	
+	static FXString BuildConstrText(igdeMenuOption &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onMenuAction( FXObject*, FXSelector, void* );
-	long updateMenuAction( FXObject*, FXSelector, void* );
+	long onMenuAction(FXObject*, FXSelector, void*);
+	long updateMenuAction(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuOption igdeNativeMenuOption;
+using igdeNativeMenuOption = igdeNativeFoxMenuOption;
 
 #endif

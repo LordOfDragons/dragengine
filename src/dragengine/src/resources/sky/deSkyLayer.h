@@ -25,12 +25,13 @@
 #ifndef _DESKYLAYER_H_
 #define _DESKYLAYER_H_
 
+#include "deSkyLayerBody.h"
 #include "deSkyControllerTarget.h"
-#include "../skin/deSkinReference.h"
+#include "../skin/deSkin.h"
+#include "../../deObject.h"
 #include "../../common/math/decMath.h"
 
 class deSkyLayerVisitor;
-class deSkyLayerBody;
 
 
 /**
@@ -108,8 +109,11 @@ class deSkyLayerBody;
  * Therefor all images for all bodies inside the same layer have to be stored in
  * the same skin.
  */
-class DE_DLL_EXPORT deSkyLayer{
+class DE_DLL_EXPORT deSkyLayer : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deSkyLayer>;
+	
 	/** \brief Targets. */
 	enum eTargets{
 		etOffsetX,
@@ -141,20 +145,19 @@ private:
 	decColor pColor;
 	float pIntensity;
 	float pTransparency;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	
 	decQuaternion pLightOrientation;
 	decColor pLightColor;
 	float pLightIntensity;
 	float pAmbientIntensity;
 	
-	deSkyLayerBody *pBodies;
-	int pBodyCount;
+	decTList<deSkyLayerBody> pBodies;
 	
 	bool pMulBySkyLight;
 	bool pMulBySkyColor;
 	
-	deSkyControllerTarget pTargets[ etAmbientIntensity + 1 ];
+	deSkyControllerTarget pTargets[etAmbientIntensity + 1];
 	
 	
 	
@@ -164,49 +167,55 @@ public:
 	/** \brief Create sky layer. */
 	deSkyLayer();
 	
-	/** \brief Clean up sky layer. */
-	~deSkyLayer();
+protected:
+	/**
+	 * \brief Clean up sky layer.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deSkyLayer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Relative offset of layer center. */
 	inline const decVector &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set relative offset of layer center. */
-	void SetOffset( const decVector &offset );
+	void SetOffset(const decVector &offset);
 	
 	/** \brief Orientation. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Tint color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set tint color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
 	/** \brief Set intensity. */
-	void SetIntensity( float intensity );
+	void SetIntensity(float intensity);
 	
 	/** \brief Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** \brief Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** \brief Skin or NULL to use background color only. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL to use background color only. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	
 	
@@ -214,60 +223,48 @@ public:
 	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
 	
 	/** \brief Set light orientation. */
-	void SetLightOrientation( const decQuaternion &orientation );
+	void SetLightOrientation(const decQuaternion &orientation);
 	
 	/** \brief Light color. */
 	inline const decColor &GetLightColor() const{ return pLightColor; }
 	
 	/** \brief Set light color. */
-	void SetLightColor( const decColor &color );
+	void SetLightColor(const decColor &color);
 	
 	/** \brief Direct light intensity. */
 	inline float GetLightIntensity() const{ return pLightIntensity; }
 	
 	/** \brief Set direct light intensity. */
-	void SetLightIntensity( float intensity );
+	void SetLightIntensity(float intensity);
 	
 	/** \brief Diffuse ambient light intensity. */
 	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
 	/** \brief Set diffuse ambient light intensity. */
-	void SetAmbientIntensity( float intensity );
+	void SetAmbientIntensity(float intensity);
 	
 	
-	
-	/** \brief Number of bodies. */
-	inline int GetBodyCount() const{ return pBodyCount; }
-	
-	/**
-	 * \brief Set number of bodies.
-	 * 
-	 * Sets all bodies to default vaules.
-	 */
-	void SetBodyCount( int count );
-	
-	/** \brief Body at index. */
-	deSkyLayerBody &GetBodyAt( int index ) const;
-	
+	/** \brief Bodies. */
+	inline decTList<deSkyLayerBody> &GetBodies(){ return pBodies; }
+	inline const decTList<deSkyLayerBody> &GetBodies() const{ return pBodies; }
 	
 	
 	/** \brief Controller target. */
-	const deSkyControllerTarget &GetTarget( eTargets target ) const;
-	deSkyControllerTarget &GetTarget( eTargets target );
-	
+	const deSkyControllerTarget &GetTarget(eTargets target) const;
+	deSkyControllerTarget &GetTarget(eTargets target);
 	
 	
 	/** \brief Layer intensity is multiplied by total sky light intensity. */
 	inline bool GetMuliplyBySkyLight() const{ return pMulBySkyLight; }
 	
 	/** \brief Set if layer intensity is multiplied by total sky light intensity. */
-	void SetMultiplyBySkyLight( bool multiply );
+	void SetMultiplyBySkyLight(bool multiply);
 	
 	/** \brief Layer color is multiplied by total sky light color. */
 	inline bool GetMuliplyBySkyColor() const{ return pMulBySkyColor; }
 	
 	/** \brief Set if layer color is multiplied by total sky light color. */
-	void SetMultiplyBySkyColor( bool multiply );
+	void SetMultiplyBySkyColor(bool multiply);
 	/*@}*/
 };
 

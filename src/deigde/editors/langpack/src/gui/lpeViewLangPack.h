@@ -28,9 +28,9 @@
 #include "../langpack/lpeLangPack.h"
 #include "../langpack/lpeLangPackListener.h"
 
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class lpeLangPackEntry;
@@ -42,6 +42,9 @@ class lpeWindowMain;
  * Language pack view.
  */
 class lpeViewLangPack : public igdeContainerBorder{
+public:
+	using Ref = deTObjectReference<lpeViewLangPack>;
+	
 private:
 	lpeWindowMain &pWindowMain;
 	lpeLangPackListener::Ref pListener;
@@ -49,11 +52,11 @@ private:
 	lpeLangPack::Ref pLangPack;
 	lpeLangPack::Ref pRefLangPack;
 	
-	igdeTextFieldReference pEditFilter;
-	igdeIconListBoxReference pListEntries;
-	igdeTextFieldReference pEditEntryName;
-	igdeTextAreaReference pEditEntryText;
-	igdeTextFieldReference pEditRefText;
+	igdeTextField::Ref pEditFilter;
+	igdeIconListBox::Ref pListEntries;
+	igdeTextField::Ref pEditEntryName;
+	igdeTextArea::Ref pEditEntryText;
+	igdeTextField::Ref pEditRefText;
 	
 	
 	
@@ -66,11 +69,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view. */
-	lpeViewLangPack( lpeWindowMain &windowMain );
+	lpeViewLangPack(lpeWindowMain &windowMain);
 	
 protected:
 	/** Cleanup view. */
-	virtual ~lpeViewLangPack() override;
+	~lpeViewLangPack() override;
 	/*@}*/
 	
 	
@@ -82,13 +85,13 @@ public:
 	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack or nullptr. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** Reference language pack or nullptr. */
 	inline const lpeLangPack::Ref &GetReferenceLangPack() const{ return pRefLangPack; }
 	
 	/** Set reference language pack or nullptr. */
-	void SetReferenceLangPack( lpeLangPack *langpack );
+	void SetReferenceLangPack(lpeLangPack *langpack);
 	
 	/** Retrieves the active entry or nullptr if there is none. */
 	lpeLangPackEntry *GetActiveEntry() const;
@@ -105,10 +108,10 @@ public:
 	void SelectActiveEntry();
 	
 	/** Select entry with name. */
-	void SelectEntryNamed( const char *name );
+	void SelectEntryNamed(const char *name);
 	
 	/** Select entry. */
-	void SelectEntry( lpeLangPackEntry *entry );
+	void SelectEntry(lpeLangPackEntry *entry);
 	
 	/** Select next missing. */
 	void SelectNextMissingEntry();
@@ -120,7 +123,7 @@ public:
 	void UpdateEntrySelection();
 	
 	/** Update a specific entry. */
-	void UpdateEntry( lpeLangPackEntry *entry );
+	void UpdateEntry(lpeLangPackEntry *entry);
 	/*@}*/
 };
 

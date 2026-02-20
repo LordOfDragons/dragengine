@@ -37,10 +37,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	saeIGDEModule( igdeEnvironment *environment );
+	saeIGDEModule(igdeEnvironment *environment);
 	
 	/** Clean up module. */
-	virtual ~saeIGDEModule();
+	~saeIGDEModule() override;
 	/*@}*/
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

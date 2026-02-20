@@ -1,6 +1,8 @@
 #include "GameActivityHandler.h"
 #include "GameRunParams.h"
 #include "Launcher.h"
+#include "RunGameHandler.h"
+
 #include <thread>
 #include <android/log.h>
 #include <unordered_map>
@@ -12,7 +14,6 @@
 #include <dragengine/logger/deLoggerConsole.h>
 #include <dragengine/logger/deLoggerFile.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include "RunGameHandler.h"
 
 JavaVM *vJavaVM = nullptr;
 
@@ -103,10 +104,8 @@ void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
             "APP_CMD_INIT_WINDOW: savedState(%d bytes)", (int)size);
 
         if(size > 0 && data){
-            pSavedState.TakeOver(new decMemoryFile("savedState"));
-            decMemoryFileWriter::Ref::New(
-                new decMemoryFileWriter(pSavedState, false))
-                    ->Write(data, (int)size);
+            pSavedState = decMemoryFile::Ref::New("savedState");
+            decMemoryFileWriter::Ref::New(pSavedState, false)->Write(data, (int)size);
         }
         }break;
 
@@ -182,15 +181,14 @@ void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
     pSetState(State::gameRunning);
 
     const delEngineInstanceDirect::Factory::Ref factory(
-        delEngineInstanceDirect::Factory::Ref::New(
-            new delEngineInstanceDirect::Factory()));
+        delEngineInstanceDirect::Factory::Ref::New());
     pInitEngineInstanceFactory(factory);
 
     deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
     //osConfig.nativeWindow = adapter.GetNativeWindow();
     factory->SetConfig(osConfig);
 
-    pGame->SetVFSDelgaContainer((deVFSContainer *) pLauncher->GetFDContainer());
+    pGame->SetVFSDelgaContainer(pLauncher->GetFDContainer());
     pInitGameForRun();
 
     pGame->StartGame(pRunParams, factory);
@@ -257,8 +255,8 @@ void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const 
 }
 
 void RunGameHandler::pCreateEngineLogger() {
-    pEngineLogger.TakeOver(new deLoggerChain);
-    pEngineLogger->AddLogger(deLogger::Ref::New(new deLoggerConsole));
+    pEngineLogger = deLoggerChain::Ref::New();
+    pEngineLogger->AddLogger(deLoggerConsole::Ref::New());
 
     decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));
     diskPath.AddUnixPath(pGame->GetLogFile());
@@ -268,12 +266,9 @@ void RunGameHandler::pCreateEngineLogger() {
 
     diskPath.RemoveLastComponent();
 
-    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(
-            new deVFSDiskDirectory(diskPath)));
+    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(diskPath));
 
-    pEngineLogger->AddLogger(deLogger::Ref::New(
-            new deLoggerFile(decBaseFileWriter::Ref::New(
-                    diskDir->OpenFileForWriting(filePath)))));
+    pEngineLogger->AddLogger(deLoggerFile::Ref::New(diskDir->OpenFileForWriting(filePath)));
 }
 
 

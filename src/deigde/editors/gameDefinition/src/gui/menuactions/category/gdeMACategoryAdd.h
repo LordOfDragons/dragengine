@@ -26,11 +26,8 @@
 #define _GDEMACATEGORYADD_H_
 
 #include "../../gdeBaseAction.h"
+#include "../../../gamedef/category/gdeCategory.h"
 #include "../../../undosys/category/gdeUCategoryBase.h"
-
-
-class gdeCategory;
-class gdeCategoryList;
 
 
 /**
@@ -38,26 +35,27 @@ class gdeCategoryList;
  */
 class gdeMACategoryAdd : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeMACategoryAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMACategoryAdd( gdeWindowMain &windowMain );
+	gdeMACategoryAdd(gdeWindowMain &windowMain);
 	
 	/** \brief Create menu actions. */
-	gdeMACategoryAdd( gdeWindowMain &windowMain, const char *text, igdeIcon *icon, const char *description );
+	gdeMACategoryAdd(gdeWindowMain &windowMain, const char *text, igdeIcon *icon, const char *description);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	
 	/** \brief Add category. */
-	igdeUndo *AddCategory( gdeGameDefinition &gameDefinition,
-		gdeCategory *parent, const gdeCategoryList &list,
-		gdeUCategoryBase::eCategoryType categoryType ) const;
+	igdeUndo::Ref AddCategory(gdeGameDefinition &gameDefinition,
+		gdeCategory *parent, const gdeCategory::List &list,
+		gdeUCategoryBase::eCategoryType categoryType) const;
 	/*@}*/
 };
 

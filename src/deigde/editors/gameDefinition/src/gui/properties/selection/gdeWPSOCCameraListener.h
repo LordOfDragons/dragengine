@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCCameraListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCCameraListener( gdeWPSOCCamera &panel );
+	gdeWPSOCCameraListener(gdeWPSOCCamera &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCCameraListener();
+protected:
+	~gdeWPSOCCameraListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,29 +58,29 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	
 	/** \brief Object class cameras changed. */
-	virtual void OCCamerasChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCCamerasChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class camera changed. */
-	virtual void OCCameraChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCCamera *camera );
+	void OCCameraChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCCamera *camera) override;
 	
 	/** \brief Active object class camera changed. */
-	virtual void ActiveOCCameraChanged( gdeGameDefinition *gameDefinition );
+	void ActiveOCCameraChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

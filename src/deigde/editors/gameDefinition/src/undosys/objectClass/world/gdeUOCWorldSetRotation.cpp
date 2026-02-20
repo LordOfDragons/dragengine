@@ -41,7 +41,7 @@ pWorld(world)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("World set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCWorldSetRotation");
 	
 	pOldValue = world->GetRotation();
 	pNewValue = newValue;

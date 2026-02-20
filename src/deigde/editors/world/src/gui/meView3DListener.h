@@ -35,6 +35,9 @@ class meView3D;
  * \brief View 3D Listener
  */
 class meView3DListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meView3DListener>;
+	
 private:
 	meView3D &pView3D;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meView3DListener( meView3D &view3D );
+	meView3DListener(meView3D &view3D);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meView3DListener();
+	~meView3DListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,10 +61,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( meWorld *world );
+	void ModeChanged(meWorld *world) override;
 	
 	/** \brief Active camera changed. */
-	virtual void ActiveCameraChanged( meWorld *world );
+	void ActiveCameraChanged(meWorld *world) override;
 	/*@}*/
 };
 

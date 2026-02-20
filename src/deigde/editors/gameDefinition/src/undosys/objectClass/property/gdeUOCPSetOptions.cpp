@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetOptions::gdeUOCPSetOptions( gdeObjectClass *objectClass,
-gdeProperty *property, const decStringList &newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetOptions::gdeUOCPSetOptions(gdeObjectClass *objectClass,
+gdeProperty *property, const decStringList &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set options" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetOptions");
 	
 	pOldValue = property->GetOptions();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetOptions::~gdeUOCPSetOptions(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,10 +67,10 @@ gdeUOCPSetOptions::~gdeUOCPSetOptions(){
 
 void gdeUOCPSetOptions::Undo(){
 	pProperty->GetOptions() = pOldValue;
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetOptions::Redo(){
 	pProperty->GetOptions() = pNewValue;
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

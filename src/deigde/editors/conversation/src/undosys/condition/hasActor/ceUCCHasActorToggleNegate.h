@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionHasActor;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionHasActor.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,28 +37,32 @@ class ceConversationTopic;
  * \brief Undo Has Actor Conversation Condition Toggle Negate.
  */
 class ceUCCHasActorToggleNegate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCHasActorToggleNegate>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionHasActor *pHasActor;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionHasActor::Ref pHasActor;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCHasActorToggleNegate( ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor );
+	ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCHasActorToggleNegate();
+	~ceUCCHasActorToggleNegate() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

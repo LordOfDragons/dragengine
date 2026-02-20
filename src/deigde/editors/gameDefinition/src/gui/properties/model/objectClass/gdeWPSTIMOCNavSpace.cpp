@@ -37,7 +37,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -47,29 +47,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCNavSpace::gdeWPSTIMOCNavSpace( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCNavigationSpace *navSpace, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassNavigationSpace, objectClass, index ),
-pNavSpace( NULL )
+gdeWPSTIMOCNavSpace::gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCNavigationSpace *navSpace, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassNavigationSpace, objectClass, index)
 {
-	if( ! navSpace ){
-		DETHROW( deeInvalidParam );
+	if(!navSpace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Navigation Space #%d", index + 1 );
-	SetText( text );
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.NavigationSpaceNumber").ToUTF8(), index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pNavSpace = navSpace;
-	navSpace->AddReference();
 }
 
 gdeWPSTIMOCNavSpace::~gdeWPSTIMOCNavSpace(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
 }
 
 
@@ -78,16 +73,16 @@ gdeWPSTIMOCNavSpace::~gdeWPSTIMOCNavSpace(){
 ///////////////
 
 void gdeWPSTIMOCNavSpace::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
 bool gdeWPSTIMOCNavSpace::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if( ! pNavSpace->GetPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pNavSpace->GetPath() ) ) ){
+	if(!pNavSpace->GetPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pNavSpace->GetPath()))){
 		return false;
 	}
 	
@@ -101,20 +96,20 @@ void gdeWPSTIMOCNavSpace::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCNavSpace::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCNavigationSpace( pNavSpace );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCNavigationSpace );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCNavigationSpace(pNavSpace);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCNavigationSpace);
 }
 
-void gdeWPSTIMOCNavSpace::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCNavSpace::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavSpaceAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavSpaceRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavSpaceAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavSpaceRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavSpaceCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavSpaceCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavSpacePaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavSpaceCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavSpaceCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavSpacePaste());
 }

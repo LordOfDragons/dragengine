@@ -52,17 +52,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigPush::reRigPush( deEngine *engine ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
+reRigPush::reRigPush(deEngine *engine){
+	DEASSERT_NOTNULL(engine)
 	
 	pEngine = engine;
-	pRig = NULL;
+	pRig = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSPush = NULL;
-	pCollider = NULL;
+	pDebugDrawer = nullptr;
+	pDDSPush = nullptr;
+	pCollider = nullptr;
 	
 	pType = reRigPush::eptSimple;
 	pImpuls = 1.0f;
@@ -74,37 +72,37 @@ reRigPush::reRigPush( deEngine *engine ){
 	
 	try{
 		pCollider = engine->GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(deCollider::ertKinematic);
+		pCollider->SetUseLocalGravity(true);
 		
 		decLayerMask layerMask;
-		layerMask.SetBit( reRig::eclmPushes );
+		layerMask.SetBit(reRig::eclmPushes);
 		
-		pCollider->SetCollisionFilter( decCollisionFilter( layerMask ) );
+		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
-		pDDSPush = new igdeWDebugDrawerShape;
+		pDDSPush = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDPushGeometry();
-		pDDSPush->SetVisible( true );
-		pDDSPush->SetParentDebugDrawer( pDebugDrawer );
+		pDDSPush->SetVisible(true);
+		pDDSPush->SetParentDebugDrawer(pDebugDrawer);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-reRigPush::reRigPush( const reRigPush &push ){
+reRigPush::reRigPush(const reRigPush &push){
 	pEngine = push.pEngine;
-	pRig = NULL;
+	pRig = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSPush = NULL;
-	pCollider = NULL;
+	pDebugDrawer = nullptr;
+	pDDSPush = nullptr;
+	pCollider = nullptr;
 	
 	pType = push.pType;
 	pPosition = push.pPosition;
@@ -118,25 +116,25 @@ reRigPush::reRigPush( const reRigPush &push ){
 	
 	try{
 		pCollider = pEngine->GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(deCollider::ertKinematic);
+		pCollider->SetUseLocalGravity(true);
 		
 		decLayerMask layerMask;
-		layerMask.SetBit( reRig::eclmPushes );
+		layerMask.SetBit(reRig::eclmPushes);
 		
-		pCollider->SetCollisionFilter( decCollisionFilter( layerMask ) );
+		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
 		pDebugDrawer = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
-		pDDSPush = new igdeWDebugDrawerShape;
+		pDDSPush = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDPushGeometry();
-		pDDSPush->SetVisible( true );
-		pDDSPush->SetParentDebugDrawer( pDebugDrawer );
+		pDDSPush->SetVisible(true);
+		pDDSPush->SetParentDebugDrawer(pDebugDrawer);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -151,17 +149,17 @@ reRigPush::~reRigPush(){
 // Management
 ///////////////
 
-void reRigPush::SetRig( reRig *rig ){
-	if( pRig ){
-		pRig->GetEngineWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pRig->GetEngineWorld()->RemoveCollider( pCollider );
+void reRigPush::SetRig(reRig *rig){
+	if(pRig){
+		pRig->GetEngineWorld()->RemoveDebugDrawer(pDebugDrawer);
+		pRig->GetEngineWorld()->RemoveCollider(pCollider);
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
-		rig->GetEngineWorld()->AddCollider( pCollider );
-		rig->GetEngineWorld()->AddDebugDrawer( pDebugDrawer );
+	if(rig){
+		rig->GetEngineWorld()->AddCollider(pCollider);
+		rig->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
 	}
 	
 	pUpdateDDPush();
@@ -170,90 +168,90 @@ void reRigPush::SetRig( reRig *rig ){
 
 
 
-void reRigPush::SetType( reRigPush::ePushTypes type ){
-	if( type == pType ){
+void reRigPush::SetType(reRigPush::ePushTypes type){
+	if(type == pType){
 		return;
 	}
 	
 	pType = type;
 	
-	if( pRig ){
-		pRig->NotifyPushChanged( this );
+	if(pRig){
+		pRig->NotifyPushChanged(this);
 	}
 }
 
-void reRigPush::SetPosition( const decVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void reRigPush::SetPosition(const decVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pRig ){
-		pRig->NotifyPushChanged( this );
+	if(pRig){
+		pRig->NotifyPushChanged(this);
 	}
 	
-	pDebugDrawer->SetPosition( position );
+	pDebugDrawer->SetPosition(position);
 	pUpdateColliderShape();
 }
 
-void reRigPush::SetOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void reRigPush::SetOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( pRig ){
-		pRig->NotifyPushChanged( this );
+	if(pRig){
+		pRig->NotifyPushChanged(this);
 	}
 	
-	pDebugDrawer->SetOrientation( decQuaternion::CreateFromEuler( orientation * DEG2RAD ) );
+	pDebugDrawer->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
 	pUpdateColliderShape();
 }
 
-void reRigPush::SetImpuls( float impuls ){
-	if( fabs( impuls - pImpuls ) < FLOAT_SAFE_EPSILON ){
+void reRigPush::SetImpuls(float impuls){
+	if(fabs(impuls - pImpuls) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pImpuls = impuls;
 	
-	if( pRig ){
-		pRig->NotifyPushChanged( this );
+	if(pRig){
+		pRig->NotifyPushChanged(this);
 	}
 }
 
-void reRigPush::SetRayCount( int rayCount ){
-	if( rayCount < 1 ){
-		DETHROW( deeInvalidParam );
+void reRigPush::SetRayCount(int rayCount){
+	if(rayCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( rayCount != pRayCount ){
+	if(rayCount != pRayCount){
 		pRayCount = rayCount;
 		
-		if( pRig ){
-			pRig->NotifyPushChanged( this );
+		if(pRig){
+			pRig->NotifyPushChanged(this);
 		}
 	}
 }
 
-void reRigPush::SetConeAngle( float angle ){
-	if( fabsf( angle - pConeAngle ) < FLOAT_SAFE_EPSILON ){
+void reRigPush::SetConeAngle(float angle){
+	if(fabsf(angle - pConeAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pConeAngle = angle;
 	
-	if( pRig ){
-		pRig->NotifyPushChanged( this );
+	if(pRig){
+		pRig->NotifyPushChanged(this);
 	}
 }
 
 
 
-void reRigPush::SetSelected( bool selected ){
-	if( selected == pSelected ){
+void reRigPush::SetSelected(bool selected){
+	if(selected == pSelected){
 		return;
 	}
 	
@@ -262,8 +260,8 @@ void reRigPush::SetSelected( bool selected ){
 	pUpdateDDPush();
 }
 
-void reRigPush::SetActive( bool active ){
-	if( active == pActive ){
+void reRigPush::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
@@ -277,13 +275,13 @@ void reRigPush::SetActive( bool active ){
 void reRigPush::ShowStateChanged(){
 	pUpdateDDPush();
 	
-	pCollider->SetEnabled( IsVisible() );
+	pCollider->SetEnabled(IsVisible());
 }
 
 
 
 bool reRigPush::IsVisible() const{
-	if( pRig ){
+	if(pRig){
 		return pRig->GetShowRigPushes();
 		
 	}else{
@@ -297,66 +295,46 @@ bool reRigPush::IsVisible() const{
 //////////////////////
 
 void reRigPush::pCleanUp(){
-	SetRig( NULL );
-	
-	if( pCollider ){
-		pCollider->FreeReference();
-	}
-	
-	if( pDDSPush ){
-		delete pDDSPush;
-	}
-	if( pDebugDrawer ){
-		pDebugDrawer->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 void reRigPush::pUpdateDDPush(){
-	pDebugDrawer->SetVisible( IsVisible() );
+	pDebugDrawer->SetVisible(IsVisible());
 	
-	if( pActive ){
-		pDDSPush->SetEdgeColor( decColor( 0.0f, 0.8f, 0.0f, 1.0 ) );
-		pDDSPush->SetFillColor( decColor( 0.0f, 0.8f, 0.0f, 0.25 ) );
+	if(pActive){
+		pDDSPush->SetEdgeColor(decColor(0.0f, 0.8f, 0.0f, 1.0));
+		pDDSPush->SetFillColor(decColor(0.0f, 0.8f, 0.0f, 0.25));
 		
-	}else if( pSelected ){
-		pDDSPush->SetEdgeColor( decColor( 0.5f, 0.8f, 1.0f, 1.0 ) );
-		pDDSPush->SetFillColor( decColor( 0.5f, 0.8f, 1.0f, 0.25 ) );
+	}else if(pSelected){
+		pDDSPush->SetEdgeColor(decColor(0.5f, 0.8f, 1.0f, 1.0));
+		pDDSPush->SetFillColor(decColor(0.5f, 0.8f, 1.0f, 0.25));
 		
 	}else{
-		pDDSPush->SetEdgeColor( decColor( 0.0f, 0.5f, 0.0f, 1.0f ) );
-		pDDSPush->SetFillColor( decColor( 0.0f, 0.5f, 0.0f, 0.25f ) );
+		pDDSPush->SetEdgeColor(decColor(0.0f, 0.5f, 0.0f, 1.0f));
+		pDDSPush->SetFillColor(decColor(0.0f, 0.5f, 0.0f, 0.25f));
 	}
 }
 
 void reRigPush::pUpdateDDPushGeometry(){
 	igdeShapeBuilder builder;
 	
-	builder.CreateArrow( *pDDSPush, decVector( 0.0f, 0.0f, -0.5f ), decVector(), 0.05f, 0.08f, 0.01f );
+	builder.CreateArrow(*pDDSPush, decVector(0.0f, 0.0f, -0.5f), decVector(), 0.05f, 0.08f, 0.01f);
 }
 
 void reRigPush::pUpdateColliderShape(){
-	if( pCollider && pRig ){
-		decMatrix matrix = decMatrix::CreateRotation( pOrientation * DEG2RAD );
-		decShapeBox *box = NULL;
+	if(pCollider && pRig){
+		decMatrix matrix = decMatrix::CreateRotation(pOrientation * DEG2RAD);
 		decVector arrowStart;
-		decShapeList shapeList;
+		decShape::List shapeList;
 		
 		arrowStart = pPosition - matrix.TransformView() * 0.5f;
 		
-		pCollider->SetPosition( ( arrowStart + pPosition ) * 0.5f );
-		pCollider->SetOrientation( matrix.ToQuaternion() );
-		pCollider->SetEnabled( IsVisible() );
+		pCollider->SetPosition((arrowStart + pPosition) * 0.5f);
+		pCollider->SetOrientation(matrix.ToQuaternion());
+		pCollider->SetEnabled(IsVisible());
 		
-		try{
-			box = new decShapeBox( decVector( 0.05f, 0.05f, 0.5f ) );
-			shapeList.Add( box );
-			
-		}catch( const deException & ){
-			if( box ){
-				delete box;
-			}
-		}
+		shapeList.Add(decShapeBox::Ref::New(decVector(0.05f, 0.05f, 0.5f)));
 		
-		pCollider->SetShapes( shapeList );
+		pCollider->SetShapes(shapeList);
 	}
 }

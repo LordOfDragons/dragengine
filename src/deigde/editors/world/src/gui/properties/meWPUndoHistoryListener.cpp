@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPUndoHistoryListener::meWPUndoHistoryListener( meWPUndoHistory &panel ) :
-pPanel( panel ){
+meWPUndoHistoryListener::meWPUndoHistoryListener(meWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 meWPUndoHistoryListener::~meWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ meWPUndoHistoryListener::~meWPUndoHistoryListener(){
 // Notifications
 //////////////////
 
-void meWPUndoHistoryListener::UndoChanged( meWorld* ){
+void meWPUndoHistoryListener::UndoChanged(meWorld*){
 	pPanel.UpdateUndo();
 }

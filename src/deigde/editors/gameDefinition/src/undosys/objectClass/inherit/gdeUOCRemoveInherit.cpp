@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveInherit::gdeUOCRemoveInherit( gdeObjectClass *objectClass, gdeOCInherit *inherit ) :
-pObjectClass( NULL ),
-pInherit( NULL )
+gdeUOCRemoveInherit::gdeUOCRemoveInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! inherit ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !inherit){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetInherits().Has( inherit ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetInherits().Has(inherit)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove inherit" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveInherit");
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveInherit::~gdeUOCRemoveInherit(){
-	if( pInherit ){
-		pInherit->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCRemoveInherit::~gdeUOCRemoveInherit(){
 ///////////////
 
 void gdeUOCRemoveInherit::Undo(){
-	pObjectClass->GetInherits().Add( pInherit );
+	pObjectClass->GetInherits().Add(pInherit);
 	pObjectClass->NotifyInheritsChanged();
 }
 
 void gdeUOCRemoveInherit::Redo(){
-	pObjectClass->GetInherits().Remove( pInherit );
+	pObjectClass->GetInherits().Remove(pInherit);
 	pObjectClass->NotifyInheritsChanged();
 }

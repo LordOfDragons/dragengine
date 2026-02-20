@@ -72,17 +72,16 @@
 
 #ifdef PRINT_SHADERS_SPECIAL_MODE
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 class cSpecialPrintShader{
 public:
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	decString sourceVertex;
 	decString sourceGeometry;
 	decString sourceFragment;
 	int count;
 	
 	cSpecialPrintShader() : count(0){
-		writer.TakeOver(new decDiskFileWriter("specialPrintShader.h", false));
+		writer = decDiskFileWriter::Ref::New("specialPrintShader.h", false);
 		writer->WriteString("#pragma once\n");
 		writer->WriteString("#include <stddef.h>\n");
 		writer->WriteString("\n");
@@ -95,7 +94,7 @@ public:
 		writer->WriteString("extern const sShaderSource vShaderSources[];\n");
 		writer->WriteString("extern const unsigned int vShaderSourceCount;\n");
 		
-		writer.TakeOver(new decDiskFileWriter("specialPrintShader.cpp", false));
+		writer = decDiskFileWriter::Ref::New("specialPrintShader.cpp", false);
 		writer->WriteString("#include \"specialPrintShader.h\"\n");
 		writer->WriteString("\n");
 		writer->WriteString("const sShaderSource vShaderSources[] = {");
@@ -120,7 +119,7 @@ public:
 		writer->WriteString("      .fragment = R\"(");
 		writer->WriteString(sourceFragment ? sourceFragment : "");
 		writer->WriteString(")\"\n");
-		writer->WriteString("   }");
+		writer->WriteString("}");
 		count++;
 		sourceVertex.Empty();
 		sourceGeometry.Empty();
@@ -147,11 +146,11 @@ static const char * const vPsfDefines[] = {
 	NULL
 };
 
-static bool psfMatchesDefines( const deoglShaderProgram &program ){
+static bool psfMatchesDefines(const deoglShaderProgram &program){
 	#ifndef PRINT_ALL_SHADERS
-	const char **nextDefine = ( const char** )&vPsfDefines;
-	while( *nextDefine ){
-		if( ! program.GetDefines().HasDefineNamed( *nextDefine ) ){
+	const char **nextDefine = (const char**)&vPsfDefines;
+	while(*nextDefine){
+		if(!program.GetDefines().HasDefineNamed(*nextDefine)){
 			return false;
 		}
 		nextDefine++;
@@ -159,18 +158,18 @@ static bool psfMatchesDefines( const deoglShaderProgram &program ){
 	
 	const int count = program.GetDefines().GetDefineCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		const char * const defineName = program.GetDefines().GetDefineNameAt( i );
+	for(i=0; i<count; i++){
+		const char * const defineName = program.GetDefines().GetDefineNameAt(i);
 		
-		nextDefine = ( const char** )&vPsfDefines;
-		while( *nextDefine ){
-			if( strcmp( *nextDefine, defineName ) == 0 ){
+		nextDefine = (const char**)&vPsfDefines;
+		while(*nextDefine){
+			if(strcmp(*nextDefine, defineName) == 0){
 				break;
 			}
 			nextDefine++;
 		}
 		
-		if( ! *nextDefine ){
+		if(!*nextDefine){
 			return false;
 		}
 	}
@@ -178,36 +177,36 @@ static bool psfMatchesDefines( const deoglShaderProgram &program ){
 	return true;
 }
 
-static bool psfMatchesFragment( const deoglShaderProgram &program ){
-	if( ! program.GetFragmentSourceCode() ){
+static bool psfMatchesFragment(const deoglShaderProgram &program){
+	if(!program.GetFragmentSourceCode()){
 		return false;
 	}
 	#ifndef PRINT_ALL_SHADERS
-	if( strcmp( program.GetFragmentSourceCode()->GetFilePath(), vPsfFragment ) != 0 ){
+	if(strcmp(program.GetFragmentSourceCode()->GetFilePath(), vPsfFragment) != 0){
 		return false;
 	}
 	#endif
-	return psfMatchesDefines( program );
+	return psfMatchesDefines(program);
 }
 
-static bool psfMatchesVertex( const deoglShaderProgram &program ){
-	if( ! program.GetVertexSourceCode() ){
+static bool psfMatchesVertex(const deoglShaderProgram &program){
+	if(!program.GetVertexSourceCode()){
 		return false;
 	}
 	#ifndef PRINT_ALL_SHADERS
-	if( strcmp( program.GetVertexSourceCode()->GetFilePath(), vPsfVertex ) != 0 ){
+	if(strcmp(program.GetVertexSourceCode()->GetFilePath(), vPsfVertex) != 0){
 		return false;
 	}
 	#endif
-	return psfMatchesDefines( program );
+	return psfMatchesDefines(program);
 }
 
-static bool psfMatchesLink( const deoglShaderProgram &program ){
+static bool psfMatchesLink(const deoglShaderProgram &program){
 	#ifndef PRINT_ALL_SHADERS
-	if( strlen( vPsfFragment ) > 0 && ! psfMatchesFragment( program ) ){
+	if(strlen(vPsfFragment) > 0 && !psfMatchesFragment(program)){
 		return false;
 	}
-	if( strlen( vPsfVertex ) > 0 && ! psfMatchesVertex( program ) ){
+	if(strlen(vPsfVertex) > 0 && !psfMatchesVertex(program)){
 		return false;
 	}
 	#endif
@@ -276,7 +275,7 @@ void deoglShaderCompiler::cCacheShader::Run(){
 	decBaseFileWriter::Ref writer;
 	{
 	const deMutexGuard guard(caches.GetMutex());
-	writer.TakeOver(cacheShaders.Write(pCacheId));
+	writer = cacheShaders.Write(pCacheId);
 	}
 	
 	writer->WriteByte(SHADER_CACHE_REVISION);
@@ -343,13 +342,10 @@ decString deoglShaderCompiler::cCacheShaderTask::GetDebugDetails() const{
 deoglShaderCompiler::deoglShaderCompiler(deoglShaderLanguage &language, int contextIndex) :
 pLanguage(language),
 pContextIndex(contextIndex),
-pErrorLog(nullptr),
 pPreprocessor(language.GetRenderThread()){
 }
 
-deoglShaderCompiler::~deoglShaderCompiler(){
-	pCleanUp();
-}
+deoglShaderCompiler::~deoglShaderCompiler() = default;
 
 
 
@@ -455,12 +451,6 @@ void deoglShaderCompiler::FinishCompileShader(deoglShaderProgram &program){
 // Private Functions
 //////////////////////
 
-void deoglShaderCompiler::pCleanUp(){
-	if(pErrorLog){
-		delete [] pErrorLog;
-	}
-}
-
 void deoglShaderCompiler::pCompileShaderUnit(deoglShaderProgramUnit &unit){
 	const deMutexGuard guard(pMutexCompile);
 	const deoglShaderUnitSourceCode * const sources = unit.GetSources();
@@ -518,7 +508,7 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 	deoglRTLogger &logger = renderThread.GetLogger();
 	
 	const bool result = pFinishCompileObject(unit.GetHandle());
-	if(result && !pErrorLog){
+	if(result && !pErrorLog.IsEmpty()){
 		#ifdef WITH_DEBUG
 		const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
 		logger.LogInfoFormat("CompileShaderUnit %d: Compiled shader unit for '%s...' in %.2fms",
@@ -532,14 +522,16 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 	if(!result){
 		logger.LogError("Shader unit compilation failed:");
 		
-	}else{
-		logger.LogError("Shader unit compilation succeeded with logs:");
+	}else if(!pErrorLog.IsEmpty()){
+		logger.LogError("Shader unit compilation succeeded:");
 	}
 	
-	logger.LogErrorFormat("  shader unit = %s", unit.GetSources()->GetName().GetString());
+	if(!result || !pErrorLog.IsEmpty()){
+		logger.LogErrorFormat("  shader unit = %s", unit.GetSources()->GetName().GetString());
+	}
 	
-	if(pErrorLog){
-		logger.LogErrorFormat("  compile logs: %s", pErrorLog);
+	if(!pErrorLog.IsEmpty()){
+		logger.LogErrorFormat("  compile logs: %s", pErrorLog.GetArrayPointer());
 	}
 	
 	if(!result){
@@ -656,7 +648,7 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 	
 	try{
 		const bool result = pFinishLinkShader(handleShader);
-		if(!result || pErrorLog){
+		if(!result || !pErrorLog.IsEmpty()){
 			const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
 			if(!result){
 				logger.LogError("Shader linking failed:");
@@ -674,8 +666,8 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 						units[i]->GetSources()->GetName().GetString());
 				}
 			}
-			if(pErrorLog){
-				logger.LogErrorFormat("  link logs: %s", pErrorLog);
+			if(!pErrorLog.IsEmpty()){
+				logger.LogErrorFormat("  link logs: %s", pErrorLog.GetArrayPointer());
 			}
 			pLogFailedShader(program);
 			if(!result){
@@ -724,22 +716,20 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 	// we can not touch the shader tracker here since we do not know if this call has
 	// been done from inside the render thread or not
 	GLuint restoreShader;
-	SC_OGL_CHECK( renderThread, glGetIntegerv( GL_CURRENT_PROGRAM, ( GLint* )&restoreShader ) );
+	SC_OGL_CHECK(renderThread, glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&restoreShader));
 	
 	try{
 		// renderThread.GetShader().ActivateShader( nullptr ); // nope, see above comment
 		// compiled.Activate();
-		SC_OGL_CHECK( renderThread, pglUseProgram( compiled.GetHandleShader() ) );
+		SC_OGL_CHECK(renderThread, pglUseProgram(compiled.GetHandleShader()));
 		
 		// bind textures
-		const deoglShaderBindingList &textureList = sources.GetTextureList();
-		count = textureList.GetCount();
-		for( i=0; i<count; i++ ){
-			location = pglGetUniformLocation( handleShader, textureList.GetNameAt( i ) );
-			if( location != -1 ){
-				SC_OGL_CHECK( renderThread, pglUniform1i( location, textureList.GetTargetAt( i ) ) );
+		sources.GetTextureList().Visit([&](const deoglShaderBinding &binding){
+			location = pglGetUniformLocation(handleShader, binding.GetName());
+			if(location != -1){
+				SC_OGL_CHECK(renderThread, pglUniform1i(location, binding.GetTarget()));
 			}
-		}
+		});
 		
 		// resolve parameters
 		const decStringList &parameterList = sources.GetParameterList();
@@ -747,7 +737,7 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 		compiled.SetParameterCount(count);
 		
 		#ifdef USE_EXPLICIT_UNIFORM_LOCATIONS
-			const decIntList &parameterLocations = sources.GetParameterLocations();
+			const decTList<int> &parameterLocations = sources.GetParameterLocations();
 			
 			for(i=0; i<count; i++){
 				compiled.SetParameterAt(i, parameterLocations.GetAt(i));
@@ -760,10 +750,10 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 			}
 		#endif
 		
-		SC_OGL_CHECK( renderThread, pglUseProgram( restoreShader ) );
+		SC_OGL_CHECK(renderThread, pglUseProgram(restoreShader));
 		
-	}catch( const deException & ){
-		SC_OGL_CHECK( renderThread, pglUseProgram( restoreShader ) );
+	}catch(const deException &){
+		SC_OGL_CHECK(renderThread, pglUseProgram(restoreShader));
 		throw;
 	}
 }
@@ -806,7 +796,7 @@ void deoglShaderCompiler::pCacheLoadShader(deoglShaderProgram &program){
 		decBaseFileReader::Ref reader;
 		{
 		const deMutexGuard guard(caches.GetMutex());
-		reader.TakeOver(cacheShaders.Read(program.GetCacheId()));
+		reader = cacheShaders.Read(program.GetCacheId());
 		}
 		
 		// read parameters
@@ -893,7 +883,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 		
 		/*
 		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::New(
-			new cCacheShaderTask(renderThread, pContextIndex, program, compiled)));
+			renderThread, pContextIndex, program, compiled));
 		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
 		*/
 		
@@ -1117,15 +1107,15 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	
 	// add version
 	decString line;
-	line.Format( "#version %s\n", pLanguage.GetGLSLVersion().GetString() );
-	pPreprocessor.SourcesAppend( line, false );
+	line.Format("#version %s\n", pLanguage.GetGLSLVersion().GetString());
+	pPreprocessor.SourcesAppend(line, false);
 	
 	// add required extensions
 	const int extCount = pLanguage.GetGLSLExtensions().GetCount();
 	int i;
 	
 	for(i=0; i<extCount; i++){
-		line.Format("#extension %s : require\n", pLanguage.GetGLSLExtensions().GetAt( i ).GetString());
+		line.Format("#extension %s : require\n", pLanguage.GetGLSLExtensions().GetAt(i).GetString());
 		pPreprocessor.SourcesAppend(line, false);
 	}
 	
@@ -1147,7 +1137,7 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 		break;
 		
 	case GL_GEOMETRY_SHADER:
-		#if ! defined OS_ANDROID && ! defined WITH_OPENGLES
+		#if !defined OS_ANDROID && !defined WITH_OPENGLES
 		if(ext.SupportsGSInstancing()){
 			pPreprocessor.SourcesAppend("#extension GL_ARB_gpu_shader5 : require\n", false);
 		}
@@ -1156,15 +1146,15 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	}
 	
 	// add version selection defines
-	if( pLanguage.GetGLSLVersionNumber() >= 450 ){
-		pPreprocessor.SetSymbol( "GLSL_450", "1" );
+	if(pLanguage.GetGLSLVersionNumber() >= 450){
+		pPreprocessor.SetSymbol("GLSL_450", "1");
 	}
 	
 	// add symbols
-	pPreprocessor.SetSymbolsFromDefines( defines );
+	pPreprocessor.SetSymbolsFromDefines(defines);
 	
-	if( ! defines.HasDefineNamed( "HIGHP" ) ){
-		pPreprocessor.SetSymbol( "HIGHP", "highp" );
+	if(!defines.GetDefines().Has("HIGHP")){
+		pPreprocessor.SetSymbol("HIGHP", "highp");
 	}
 	
 	if(renderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
@@ -1254,22 +1244,20 @@ bool deoglShaderCompiler::pFinishCompileObject(GLuint handle){
 	GLint result;
 	SC_OGL_CHECK(renderThread, pglGetShaderiv(handle, GL_COMPILE_STATUS, &result));
 	
-	if(pErrorLog){
-		delete [] pErrorLog;
-		pErrorLog = nullptr;
-	}
+	pErrorLog.SetCountDiscard(0);
 	
 	GLint blen = 0;
 	SC_OGL_CHECK(renderThread, pglGetShaderiv(handle, GL_INFO_LOG_LENGTH , &blen));
 	
 	if(blen > 1){
-		pErrorLog = new char[blen + 1];
-		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(handle, blen, nullptr, pErrorLog));
+		pErrorLog.SetCountDiscard(blen);
+		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(
+			handle, blen, nullptr, pErrorLog.GetArrayPointer()));
 		pErrorLog[blen] = 0;
 		
-		if(result == GL_TRUE && strncmp(pErrorLog, "Success", 7) == 0){
-			delete [] pErrorLog;
-			pErrorLog = nullptr;
+		if(result == GL_TRUE && strncmp(pErrorLog.GetArrayPointer(), "Success", 7) == 0){
+			pErrorLog.SetCountDiscard(0);
+			pErrorLog[0] = 0;
 		}
 	}
 	
@@ -1282,22 +1270,20 @@ bool deoglShaderCompiler::pFinishLinkShader(GLuint handle){
 	
 	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_LINK_STATUS, &result));
 	
-	if(pErrorLog){
-		delete [] pErrorLog;
-		pErrorLog = nullptr;
-	}
+	pErrorLog.SetCountDiscard(0);
 	
 	GLint blen = 0;
 	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_INFO_LOG_LENGTH, &blen));
 	
 	if(blen > 1){
-		pErrorLog = new char[blen + 1];
-		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(handle, blen, nullptr, pErrorLog));
+		pErrorLog.SetCountDiscard(blen);
+		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(
+			handle, blen, nullptr, pErrorLog.GetArrayPointer()));
 		pErrorLog[blen] = 0;
 		
-		if(result == GL_TRUE && strncmp(pErrorLog, "Success", 7) == 0){
-			delete [] pErrorLog;
-			pErrorLog = nullptr;
+		if(result == GL_TRUE && strncmp(pErrorLog.GetArrayPointer(), "Success", 7) == 0){
+			pErrorLog.SetCountDiscard(0);
+			pErrorLog[0] = 0;
 		}
 	}
 	
@@ -1316,7 +1302,7 @@ void deoglShaderCompiler::pLogFailedShaderSources(const deoglShaderProgramUnit &
 	
 	for(i=0; i<count; i++){
 		const deoglShaderSourceLocation * const location =
-			pPreprocessor.ResolveSourceLocation(unit.GetProcessedSourceLocations(), i + 1 );
+			pPreprocessor.ResolveSourceLocation(unit.GetProcessedSourceLocations(), i + 1);
 		int mapLine = -1;
 		
 		if(location){

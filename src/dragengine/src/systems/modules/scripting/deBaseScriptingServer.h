@@ -51,7 +51,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Client connected. */
-	virtual void ClientConnected( deConnection *connection );
+	virtual void ClientConnected(deConnection *connection);
 	/*@}*/
 };
 

@@ -24,7 +24,7 @@
 
 #include "reUSetShapeCapsuleHalfHeight.h"
 #include "../../../rig/shape/reRigShapeCapsule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,21 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight( reRigShapeCapsule *shape, float halfHeight ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *shape, float halfHeight){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
 	pOldHalfHeight = shape->GetHalfHeight();
 	pNewHalfHeight = halfHeight;
 	
-	SetShortInfo( "Set Capsule Shape Half Height" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeCapsuleSetHalfHeight");
 }
 
 reUSetShapeCapsuleHalfHeight::~reUSetShapeCapsuleHalfHeight(){
-	pShape->FreeReference();
 }
 
 
@@ -57,9 +54,9 @@ reUSetShapeCapsuleHalfHeight::~reUSetShapeCapsuleHalfHeight(){
 ///////////////
 
 void reUSetShapeCapsuleHalfHeight::Undo(){
-	pShape->SetHalfHeight( pOldHalfHeight );
+	pShape->SetHalfHeight(pOldHalfHeight);
 }
 
 void reUSetShapeCapsuleHalfHeight::Redo(){
-	pShape->SetHalfHeight( pNewHalfHeight );
+	pShape->SetHalfHeight(pNewHalfHeight);
 }

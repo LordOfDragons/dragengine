@@ -55,50 +55,50 @@ typedef int GLint;
 #define GL_TEXTURE_2D 0x0DE1
 
 #ifdef OS_UNIX_X11
-	typedef GLXDrawable ( *PFNGLXGETCURRENTDRAWABLE )();
-	typedef Bool ( *PFNGLXMAKECURRENT )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+	typedef GLXDrawable (*PFNGLXGETCURRENTDRAWABLE)();
+	typedef Bool (*PFNGLXMAKECURRENT)(Display *dpy, GLXDrawable drawable, GLXContext ctx);
 #elif defined OS_W32
-	typedef BOOL ( *PFNWGLMAKECURRENTPROC )( HDC hDc, HGLRC newContext );
+	typedef BOOL (*PFNWGLMAKECURRENTPROC)(HDC hDc, HGLRC newContext);
 #endif
-typedef void ( *PFNGLGET )( GLenum mode );
-typedef void ( *PFNGLENABLE )( GLenum cap );
-typedef void ( *PFNGLDISABLE )( GLenum cap );
-typedef GLboolean ( *PFNGLISENABLED )( GLenum cap );
+typedef void (*PFNGLGET)(GLenum mode);
+typedef void (*PFNGLENABLE)(GLenum cap);
+typedef void (*PFNGLDISABLE)(GLenum cap);
+typedef GLboolean (*PFNGLISENABLED)(GLenum cap);
 
-typedef void ( *PFNGLBINDFRAMEBUFFERPROC )( GLenum target, GLuint framebuffer );
-typedef void ( *PFNGLDELETEFRAMEBUFFERSPROC )( GLsizei n, const GLuint *framebuffers );
-typedef void ( *PFNGLGENFRAMEBUFFERSPROC )( GLsizei n, GLuint *framebuffers );
-typedef void ( *PFNGLBLITFRAMEBUFFERPROC )( GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
-	GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter );
-typedef void ( *PFNGLFRAMEBUFFERTEXTURE2DPROC )( GLenum target, GLenum attachment,
-	GLenum textarget, GLuint texture, GLint level );
-typedef void ( *PFNGLGETINTEGERV )( GLenum pname, GLint *params );
-typedef void ( *PFNGLDRAWBUFFERSPROC )( GLsizei n, const GLenum *bufs );
+typedef void (*PFNGLBINDFRAMEBUFFERPROC)(GLenum target, GLuint framebuffer);
+typedef void (*PFNGLDELETEFRAMEBUFFERSPROC)(GLsizei n, const GLuint *framebuffers);
+typedef void (*PFNGLGENFRAMEBUFFERSPROC)(GLsizei n, GLuint *framebuffers);
+typedef void (*PFNGLBLITFRAMEBUFFERPROC)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
+	GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+typedef void (*PFNGLFRAMEBUFFERTEXTURE2DPROC)(GLenum target, GLenum attachment,
+	GLenum textarget, GLuint texture, GLint level);
+typedef void (*PFNGLGETINTEGERV)(GLenum pname, GLint *params);
+typedef void (*PFNGLDRAWBUFFERSPROC)(GLsizei n, const GLenum *bufs);
 
 
 // class deoxrGraphicApiOpenGL::Framebuffer
 /////////////////////////////////////////////
 
-deoxrGraphicApiOpenGL::Framebuffer::Framebuffer( deoxrGraphicApiOpenGL &gaogl, unsigned int image ) :
-pGAOgl( gaogl ),
-pFBO( 0 )
+deoxrGraphicApiOpenGL::Framebuffer::Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image) :
+pGAOgl(gaogl),
+pFBO(0)
 {
 	GLint prevFbo;
-	( ( PFNGLGETINTEGERV )pGAOgl.pFuncGetIntegerv )( GL_FRAMEBUFFER_BINDING, &prevFbo );
+	((PFNGLGETINTEGERV)pGAOgl.pFuncGetIntegerv)(GL_FRAMEBUFFER_BINDING, &prevFbo);
 	
-	( ( PFNGLGENFRAMEBUFFERSPROC )pGAOgl.pFuncGenFramebuffers )( 1, &pFBO );
-	( ( PFNGLBINDFRAMEBUFFERPROC )pGAOgl.pFuncBindFramebuffer )( GL_FRAMEBUFFER, pFBO );
-	( ( PFNGLFRAMEBUFFERTEXTURE2DPROC )pGAOgl.pFuncFramebufferTexture2D )(
-		GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, image, 0 );
+	((PFNGLGENFRAMEBUFFERSPROC)pGAOgl.pFuncGenFramebuffers)(1, &pFBO);
+	((PFNGLBINDFRAMEBUFFERPROC)pGAOgl.pFuncBindFramebuffer)(GL_FRAMEBUFFER, pFBO);
+	((PFNGLFRAMEBUFFERTEXTURE2DPROC)pGAOgl.pFuncFramebufferTexture2D)(
+		GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, image, 0);
 	const GLenum buffers = GL_COLOR_ATTACHMENT0;
-	( ( PFNGLDRAWBUFFERSPROC )pGAOgl.pFuncDrawBuffers )( 1, &buffers );
+	((PFNGLDRAWBUFFERSPROC)pGAOgl.pFuncDrawBuffers)(1, &buffers);
 	
-	( ( PFNGLBINDFRAMEBUFFERPROC )pGAOgl.pFuncBindFramebuffer )( GL_FRAMEBUFFER, prevFbo );
+	((PFNGLBINDFRAMEBUFFERPROC)pGAOgl.pFuncBindFramebuffer)(GL_FRAMEBUFFER, prevFbo);
 }
 
 deoxrGraphicApiOpenGL::Framebuffer::~Framebuffer(){
-	if( pFBO ){
-		( ( PFNGLDELETEFRAMEBUFFERSPROC )pGAOgl.pFuncDeleteFramebuffers )( 1, &pFBO );
+	if(pFBO){
+		((PFNGLDELETEFRAMEBUFFERSPROC)pGAOgl.pFuncDeleteFramebuffers)(1, &pFBO);
 	}
 }
 
@@ -106,26 +106,26 @@ deoxrGraphicApiOpenGL::Framebuffer::~Framebuffer(){
 // class deoxrGraphicApiOpenGL
 ////////////////////////////////
 
-deoxrGraphicApiOpenGL::deoxrGraphicApiOpenGL( deVROpenXR &oxr ) :
-pOxr( oxr ),
+deoxrGraphicApiOpenGL::deoxrGraphicApiOpenGL(deVROpenXR &oxr) :
+pOxr(oxr),
 #ifdef OS_BEOS
-pLibHandle( 0 ),
+pLibHandle(0),
 #else
-pLibHandle( nullptr ),
+pLibHandle(nullptr),
 #endif
-pFuncGetCurrentDrawable( nullptr ),
-pFuncMakeCurrent( nullptr ),
-pFuncGetIntegerv( nullptr ),
-pFuncEnable( nullptr ),
-pFuncDisable( nullptr ),
-pFuncIsEnabled( nullptr ),
+pFuncGetCurrentDrawable(nullptr),
+pFuncMakeCurrent(nullptr),
+pFuncGetIntegerv(nullptr),
+pFuncEnable(nullptr),
+pFuncDisable(nullptr),
+pFuncIsEnabled(nullptr),
 
-pFuncGenFramebuffers( nullptr ),
-pFuncBindFramebuffer( nullptr ),
-pFuncDeleteFramebuffers( nullptr ),
-pFuncBlitFramebuffer( nullptr ),
-pFuncFramebufferTexture2D( nullptr ),
-pFuncDrawBuffers( nullptr )
+pFuncGenFramebuffers(nullptr),
+pFuncBindFramebuffer(nullptr),
+pFuncDeleteFramebuffers(nullptr),
+pFuncBlitFramebuffer(nullptr),
+pFuncFramebufferTexture2D(nullptr),
+pFuncDrawBuffers(nullptr)
 {
 }
 
@@ -139,7 +139,7 @@ deoxrGraphicApiOpenGL::~deoxrGraphicApiOpenGL(){
 ///////////////
 
 void deoxrGraphicApiOpenGL::Load(){
-	if( pLibHandle ){
+	if(pLibHandle){
 		return;
 	}
 	
@@ -148,45 +148,45 @@ void deoxrGraphicApiOpenGL::Load(){
 }
 
 void deoxrGraphicApiOpenGL::Unload(){
-	if( ! pLibHandle ){
+	if(!pLibHandle){
 		return;
 	}
 	
 #ifdef OS_BEOS
-	unload_add_on( pLibHandle );
+	unload_add_on(pLibHandle);
 	pLibHandle = 0;
 	
 #elif defined HAS_LIB_DL
-	dlclose( pLibHandle );
+	dlclose(pLibHandle);
 	pLibHandle = nullptr;
 	
 #elif defined OS_W32
-	FreeLibrary( pLibHandle );
+	FreeLibrary(pLibHandle);
 	pLibHandle = nullptr;
 #endif
 }
 
 #ifdef OS_UNIX_X11
 GLXDrawable deoxrGraphicApiOpenGL::GetCurrentDrawable(){
-	if( ! pFuncGetCurrentDrawable ){
-		DETHROW( deeInvalidParam );
+	if(!pFuncGetCurrentDrawable){
+		DETHROW(deeInvalidParam);
 	}
-	return ( ( PFNGLXGETCURRENTDRAWABLE )pFuncGetCurrentDrawable )();
+	return ((PFNGLXGETCURRENTDRAWABLE)pFuncGetCurrentDrawable)();
 }
 
-void deoxrGraphicApiOpenGL::MakeCurrent( Display *dpy, GLXDrawable drawable, GLXContext ctx ){
-	if( ! pFuncMakeCurrent ){
-		DETHROW( deeInvalidParam );
+void deoxrGraphicApiOpenGL::MakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx){
+	if(!pFuncMakeCurrent){
+		DETHROW(deeInvalidParam);
 	}
-	( ( PFNGLXMAKECURRENT )pFuncMakeCurrent )( dpy, drawable, ctx );
+	((PFNGLXMAKECURRENT)pFuncMakeCurrent)(dpy, drawable, ctx);
 }
 
 #elif defined OS_W32
-void deoxrGraphicApiOpenGL::MakeCurrent( HDC hDc, HGLRC context ){
-	if( ! pFuncMakeCurrent ){
-		DETHROW( deeInvalidParam );
+void deoxrGraphicApiOpenGL::MakeCurrent(HDC hDc, HGLRC context){
+	if(!pFuncMakeCurrent){
+		DETHROW(deeInvalidParam);
 	}
-	( ( PFNWGLMAKECURRENTPROC )pFuncMakeCurrent )( hDc, context );
+	((PFNWGLMAKECURRENTPROC)pFuncMakeCurrent)(hDc, context);
 }
 #endif
 
@@ -201,9 +201,9 @@ void deoxrGraphicApiOpenGL::pCleanUp(){
 
 void deoxrGraphicApiOpenGL::pLoadLibrary(){
 #ifdef OS_BEOS
-	pLibHandle = load_add_on( "opengl" );
-	if( pLibHandle < 0 ){
-		DETHROW_INFO( deeInvalidAction, "Load OpenGL image failed" );
+	pLibHandle = load_add_on("opengl");
+	if(pLibHandle < 0){
+		DETHROW_INFO(deeInvalidAction, "Load OpenGL image failed");
 	}
 	
 #elif defined HAS_LIB_DL
@@ -247,7 +247,7 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 	
 #elif defined OS_W32
 	pOxr.LogInfo("GraphicApiOpenGL: Try loading OpenGL32.dll");
-	pLibHandle = LoadLibrary( L"OpenGL32" );
+	pLibHandle = LoadLibrary(L"OpenGL32");
 	if(pLibHandle){
 		pOxr.LogInfo("GraphicApiOpenGL: Loading OpenGL32.dll succeeded");
 		
@@ -268,15 +268,15 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 
 void deoxrGraphicApiOpenGL::pGetFunctions(){
 	#ifdef OS_UNIX_X11
-		pFuncGetCurrentDrawable = pGetFunction( "glXGetCurrentDrawable" );
-		pFuncMakeCurrent = pGetFunction( "glXMakeCurrent" );
+		pFuncGetCurrentDrawable = pGetFunction("glXGetCurrentDrawable");
+		pFuncMakeCurrent = pGetFunction("glXMakeCurrent");
 	#elif defined OS_W32
-		pFuncMakeCurrent = pGetFunction( "wglMakeCurrent" );
+		pFuncMakeCurrent = pGetFunction("wglMakeCurrent");
 	#endif
-	pFuncGetIntegerv = pGetFunction( "glGetIntegerv" );
-	pFuncEnable = pGetFunction( "glEnable" );
-	pFuncDisable = pGetFunction( "glDisable" );
-	pFuncIsEnabled = pGetFunction( "glIsEnabled" );
+	pFuncGetIntegerv = pGetFunction("glGetIntegerv");
+	pFuncEnable = pGetFunction("glEnable");
+	pFuncDisable = pGetFunction("glDisable");
+	pFuncIsEnabled = pGetFunction("glIsEnabled");
 	
 // 	pFuncGenFramebuffers = pGetFunction( "glGenFramebuffers" );
 // 	pFuncBindFramebuffer = pGetFunction( "glBindFramebuffer" );
@@ -286,38 +286,38 @@ void deoxrGraphicApiOpenGL::pGetFunctions(){
 // 	pFuncDrawBuffers = pGetFunction( "glDrawBuffers" );
 }
 
-void *deoxrGraphicApiOpenGL::pGetFunction( const char *name ){
+void *deoxrGraphicApiOpenGL::pGetFunction(const char *name){
 	void *func = nullptr;
 #ifdef OS_BEOS
-	if( get_image_symbol( pLibHandle, name, B_SYMBOL_TYPE_TEXT, &func ) != B_OK ){
+	if(get_image_symbol(pLibHandle, name, B_SYMBOL_TYPE_TEXT, &func) != B_OK){
 		func = nullptr;
 	}
 	
 #elif defined HAS_LIB_DL
-	func = dlsym( pLibHandle, name );
+	func = dlsym(pLibHandle, name);
 	
 #elif defined OS_W32
-	func = ( LPVOID )GetProcAddress( pLibHandle, name );
+	func = (LPVOID)GetProcAddress(pLibHandle, name);
 #endif
 	
-	if( ! func ){
-		DETHROW_INFO( deeInvalidAction, decString( "Function not found: " ) + name );
+	if(!func){
+		DETHROW_INFO(deeInvalidAction, decString("Function not found: ") + name);
 	}
 	
 	return func;
 }
 
-void deoxrGraphicApiOpenGL::pEnable( uint32_t capability, bool enable ){
-	if( enable ){
-		if( ! pFuncEnable ){
-			DETHROW( deeInvalidParam );
+void deoxrGraphicApiOpenGL::pEnable(uint32_t capability, bool enable){
+	if(enable){
+		if(!pFuncEnable){
+			DETHROW(deeInvalidParam);
 		}
-		( ( PFNGLENABLE )pFuncEnable )( capability );
+		((PFNGLENABLE)pFuncEnable)(capability);
 		
 	}else{
-		if( ! pFuncDisable ){
-			DETHROW( deeInvalidParam );
+		if(!pFuncDisable){
+			DETHROW(deeInvalidParam);
 		}
-		( ( PFNGLDISABLE )pFuncDisable )( capability );
+		((PFNGLDISABLE)pFuncDisable)(capability);
 	}
 }

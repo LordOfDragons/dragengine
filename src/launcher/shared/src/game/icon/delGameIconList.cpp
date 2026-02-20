@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "delGameIcon.h"
 #include "delGameIconList.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,164 +33,84 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGameIconList::delGameIconList(){
+delGameIconList::delGameIconList(const delGameIconList &list) :
+decTObjectOrderedSet<delGameIcon>(list){
 }
-
-delGameIconList::~delGameIconList(){
-	RemoveAll();
-}
-
 
 
 // Management
 ///////////////
 
-int delGameIconList::GetCount() const{
-	return pIcons.GetCount();
+delGameIcon *delGameIconList::GetWithSize(int size) const{
+	return FindOrDefault([&](const delGameIcon &icon){
+		return icon.GetSize() == size;
+	});
 }
 
-delGameIcon *delGameIconList::GetAt( int index ) const{
-	return ( delGameIcon* )pIcons.GetAt( index );
-}
-
-delGameIcon *delGameIconList::GetWithSize( int size ) const{
-	const int count = pIcons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( icon->GetSize() == size ){
-			return icon;
-		}
-	}
-	
-	return nullptr;
-}
-
-delGameIcon *delGameIconList::GetLargest( int size ) const{
-	const int count = pIcons.GetCount();
+delGameIcon *delGameIconList::GetLargest(int size) const{
 	delGameIcon *bestIcon = nullptr;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( icon->GetSize() > size ){
-			continue;
+	Visit([&](delGameIcon *icon){
+		if(icon->GetSize() > size){
+			return;
 		}
 		
-		if( ! bestIcon || icon->GetSize() > bestIcon->GetSize() ){
+		if(!bestIcon || icon->GetSize() > bestIcon->GetSize()){
 			bestIcon = icon;
 		}
-	}
+	});
 	
 	return bestIcon;
 }
 
-delGameIcon *delGameIconList::GetSmallest( int size ) const{
-	const int count = pIcons.GetCount();
+delGameIcon *delGameIconList::GetSmallest(int size) const{
 	delGameIcon *bestIcon = nullptr;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( icon->GetSize() < size ){
-			continue;
+	Visit([&](delGameIcon *icon){
+		if(icon->GetSize() < size){
+			return;
 		}
 		
-		if( ! bestIcon || icon->GetSize() < bestIcon->GetSize() ){
+		if(!bestIcon || icon->GetSize() < bestIcon->GetSize()){
 			bestIcon = icon;
 		}
-	}
+	});
 	
 	return bestIcon;
 }
 
 delGameIcon *delGameIconList::GetLargest() const{
-	const int count = pIcons.GetCount();
 	delGameIcon *bestIcon = nullptr;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( ! bestIcon || icon->GetSize() > bestIcon->GetSize() ){
+	Visit([&](delGameIcon *icon){
+		if(!bestIcon || icon->GetSize() > bestIcon->GetSize()){
 			bestIcon = icon;
 		}
-	}
+	});
 	
 	return bestIcon;
 }
 
 delGameIcon *delGameIconList::GetSmallest() const{
-	const int count = pIcons.GetCount();
 	delGameIcon *bestIcon = nullptr;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( ! bestIcon || icon->GetSize() < bestIcon->GetSize() ){
+	Visit([&](delGameIcon *icon){
+		if(!bestIcon || icon->GetSize() < bestIcon->GetSize()){
 			bestIcon = icon;
 		}
-	}
+	});
 	
 	return bestIcon;
 }
 
-bool delGameIconList::Has( delGameIcon *icon ) const{
-	return pIcons.Has( icon );
+bool delGameIconList::HasWithSize(int size) const{
+	return HasMatching([&](const delGameIcon &icon){
+		return icon.GetSize() == size;
+	});
 }
 
-bool delGameIconList::HasWithSize( int size ) const{
-	const int count = pIcons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( icon->GetSize() == size ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int delGameIconList::IndexOf( delGameIcon *icon ) const{
-	return pIcons.IndexOf( icon );
-}
-
-int delGameIconList::IndexOfWithSize( int size ) const{
-	const int count = pIcons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
-		if( icon->GetSize() == size ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void delGameIconList::Add( delGameIcon *icon ){
-	if( ! icon ){
-		DETHROW_INFO( deeNullPointer, "icon" );
-	}
-	if( HasWithSize( icon->GetSize() ) ){
-		DETHROW_INFO( deeInvalidParam, "icon with size is present" );
-	}
-	
-	pIcons.Add( icon );
-}
-
-void delGameIconList::Remove( delGameIcon *icon ){
-	const int index = IndexOf( icon );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "icon is absent" );
-	}
-	
-	pIcons.RemoveFrom( index );
-}
-
-void delGameIconList::RemoveAll(){
-	pIcons.RemoveAll();
+int delGameIconList::IndexOfWithSize(int size) const{
+	return IndexOfMatching([&](const delGameIcon &icon){
+		return icon.GetSize() == size;
+	});
 }

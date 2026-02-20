@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetPosition::gdeUOCNavBlockerSetPosition( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, const decVector &newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetPosition::gdeUOCNavBlockerSetPosition(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker set position" );
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetPosition");
 	
 	pOldValue = navblocker->GetPosition();
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetPosition::~gdeUOCNavBlockerSetPosition(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCNavBlockerSetPosition::~gdeUOCNavBlockerSetPosition(){
 ///////////////
 
 void gdeUOCNavBlockerSetPosition::Undo(){
-	pNavBlocker->SetPosition( pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetPosition(pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetPosition::Redo(){
-	pNavBlocker->SetPosition( pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetPosition(pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

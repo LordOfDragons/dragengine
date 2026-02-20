@@ -26,8 +26,8 @@
 #define _DEARANIMATIONKEYFRAMEVPSLIST_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
 
-class deAnimationKeyframeVertexPositionSetList;
 class dearAnimationKeyframeVPS;
 
 
@@ -37,8 +37,7 @@ class dearAnimationKeyframeVPS;
  */
 class dearAnimationKeyframeVPSList{
 private:
-	dearAnimationKeyframeVPS *pKeyframes;
-	int pKeyframeCount;
+	decTList<dearAnimationKeyframeVPS> pKeyframes;
 	
 	
 	
@@ -46,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create keyframe list. */
-	dearAnimationKeyframeVPSList( const deAnimationKeyframeVertexPositionSetList &list );
+	explicit dearAnimationKeyframeVPSList(const deAnimationKeyframeVertexPositionSet::List &list);
 	
 	/** Clean up keyframe list. */
 	~dearAnimationKeyframeVPSList();
@@ -56,14 +55,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Count of keyframes. */
-	inline int GetCount() const{ return pKeyframeCount; }
-	
-	/** Keyframe at index. */
-	dearAnimationKeyframeVPS &GetAt( int index ) const;
+	/** Keyframes. */
+	inline decTList<dearAnimationKeyframeVPS> &GetKeyframes(){ return pKeyframes; }
+	inline const decTList<dearAnimationKeyframeVPS> &GetKeyframes() const{ return pKeyframes; }
 	
 	/** Keyframe with range containing time in seconds or nullptr if absent. */
-	dearAnimationKeyframeVPS *GetWithTime( float time ) const;
+	const dearAnimationKeyframeVPS *GetWithTime(float time) const;
 	/*@}*/
 	
 	
@@ -71,7 +68,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframes( const deAnimationKeyframeVertexPositionSetList &list );
+	void pCreateKeyframes(const deAnimationKeyframeVertexPositionSet::List &list);
 };
 
 #endif

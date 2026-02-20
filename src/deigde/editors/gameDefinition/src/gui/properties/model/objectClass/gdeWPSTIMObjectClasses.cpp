@@ -28,6 +28,7 @@
 
 #include "gdeWPSTIMObjectClass.h"
 #include "gdeWPSTIMObjectClasses.h"
+#include "../gdeWPSTreeModel.h"
 #include "../../../gdeWindowMain.h"
 #include "../../../../gamedef/gdeGameDefinition.h"
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
@@ -37,7 +38,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,11 +47,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMObjectClasses::gdeWPSTIMObjectClasses( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etObjectClasses )
+gdeWPSTIMObjectClasses::gdeWPSTIMObjectClasses(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etObjectClasses)
 {
-	SetText( "Object Classes" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.ObjectClasses").ToUTF8());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMObjectClasses::~gdeWPSTIMObjectClasses(){
@@ -61,44 +62,57 @@ gdeWPSTIMObjectClasses::~gdeWPSTIMObjectClasses(){
 // Management
 ///////////////
 
-gdeWPSTIMObjectClass *gdeWPSTIMObjectClasses::GetChildWith( gdeObjectClass *objectClass ) const{
-	gdeWPSTIMObjectClass *child = ( gdeWPSTIMObjectClass* )GetFirstChild();
+gdeWPSTIMObjectClass *gdeWPSTIMObjectClasses::GetChildWith(gdeObjectClass *objectClass) const{
+	gdeWPSTIMObjectClass *child = GetFirstChild().DynamicCast<gdeWPSTIMObjectClass>();
 	
-	while( child ){
-		if( child->GetObjectClass() == objectClass ){
+	while(child){
+		if(child->GetObjectClass() == objectClass){
 			return child;
 		}
-		child = ( gdeWPSTIMObjectClass* )child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMObjectClass>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void gdeWPSTIMObjectClasses::StructureChanged(){
-	const gdeObjectClassList &list = GetGameDefinition().GetObjectClasses();
+	/*
+	igdeTreeItem *selection = GetTree().GetTreeList().GetSelection();
+	while(selection && selection->GetParent() != this){
+		selection = selection->GetParent();
+	}
+	if(selection){
+		selection = selection->GetNext() ? selection->GetNext() : selection->GetPrevious();
+		if(!selection){
+			selection = this;
+		}
+	}
+	*/
+	
+	const gdeObjectClass::List &list = GetGameDefinition().GetObjectClasses();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
-	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeObjectClass * const objectClass = list.GetAt( i );
-		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith( objectClass );
+	// update existing and add new classes
+	for(i=0; i<count; i++){
+		gdeObjectClass * const objectClass = list.GetAt(i);
+		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith(objectClass);
 		
-		if( ! modelObjectClass ){
-			item.TakeOver( new gdeWPSTIMObjectClass( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+		if(!modelObjectClass){
+			item = gdeWPSTIMObjectClass::Ref::New(GetTree(), list.GetAt(i));
+			AppendModel(item);
 		}
 	}
 	
-	// remove no more existing categories
+	// remove no more existing classes
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMObjectClass * const modelObjectClass = ( gdeWPSTIMObjectClass* )child;
+	while(child){
+		gdeWPSTIMObjectClass * const modelObjectClass = (gdeWPSTIMObjectClass*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelObjectClass->GetObjectClass() ) ){
-			RemoveModel( modelObjectClass );
+		if(!list.Has(modelObjectClass->GetObjectClass())){
+			RemoveModel(modelObjectClass);
 		}
 	}
 	
@@ -107,76 +121,83 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 	
 	// validate
 	ValidateObjectClassName();
+	
+	// update selection
+	/*
+	if(selection){
+		GetTree().GetTreeList().SetSelection(selection);
+	}
+	*/
 }
 
 void gdeWPSTIMObjectClasses::ValidateObjectClassName(){
-	gdeWPSTIMObjectClass *child = ( gdeWPSTIMObjectClass* )GetFirstChild();
-	while( child ){
+	gdeWPSTIMObjectClass *child = GetFirstChild().DynamicCast<gdeWPSTIMObjectClass>();
+	while(child){
 		child->ValidateObjectClassName();
-		child = ( gdeWPSTIMObjectClass* )child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMObjectClass>();
 	}
 }
 
 void gdeWPSTIMObjectClasses::ValidateCategoryName(){
-	gdeWPSTIMObjectClass *child = ( gdeWPSTIMObjectClass* )GetFirstChild();
-	while( child ){
+	gdeWPSTIMObjectClass *child = GetFirstChild().DynamicCast<gdeWPSTIMObjectClass>();
+	while(child){
 		child->ValidateCategoryName();
-		child = ( gdeWPSTIMObjectClass* )child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMObjectClass>();
 	}
 }
 
 
 
 void gdeWPSTIMObjectClasses::OnAddedToTree(){
-	const gdeObjectClassList &list = GetGameDefinition().GetObjectClasses();
+	const gdeObjectClass::List &list = GetGameDefinition().GetObjectClasses();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMObjectClass( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item = gdeWPSTIMObjectClass::Ref::New(GetTree(), list.GetAt(i));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMObjectClasses::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMObjectClasses::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionObjectClassAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionObjectClassPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionObjectClassAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionObjectClassPaste());
 }
 
-void gdeWPSTIMObjectClasses::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMObjectClasses::SelectBestMatching(const char *string){
+	if(!string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
-	gdeObjectClass *bestObjectClass = NULL;
+	gdeObjectClass *bestObjectClass = nullptr;
 	decString bestName;
 	
-	while( child ){
-		gdeObjectClass * const objectClass = ( ( gdeWPSTIMObjectClass* )child )->GetObjectClass();
+	while(child){
+		gdeObjectClass * const objectClass = ((gdeWPSTIMObjectClass*)child)->GetObjectClass();
 		child = child->GetNext();
 		
-		const decString name( objectClass->GetName().GetLower() );
+		const decString name(objectClass->GetName().GetLower());
 		
-		if( name == searchString ){
+		if(name == searchString){
 			// exact match is always best
 			bestObjectClass = objectClass;
 			break;
 		}
 		
-		if( name.FindString( searchString ) == -1 ){
+		if(name.FindString(searchString) == -1){
 			continue;
 		}
 		
 		// partial matching. best match is the one earlier in the alphabet
-		if( bestObjectClass && bestName < name ){
+		if(bestObjectClass && bestName < name){
 			continue;
 		}
 		
@@ -184,8 +205,8 @@ void gdeWPSTIMObjectClasses::SelectBestMatching( const char *string ){
 		bestName = name;
 	}
 
-	if( bestObjectClass ){
-		GetGameDefinition().SetActiveObjectClass( bestObjectClass );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(bestObjectClass){
+		GetGameDefinition().SetActiveObjectClass(bestObjectClass);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 	}
 }

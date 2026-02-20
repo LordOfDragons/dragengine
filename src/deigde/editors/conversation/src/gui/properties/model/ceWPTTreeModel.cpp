@@ -55,8 +55,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -65,8 +64,8 @@
 // ceWPTTreeModel::PreventUpdateGuard
 ///////////////////////////////////////
 
-ceWPTTreeModel::PreventUpdateGuard::PreventUpdateGuard( ceWPTTreeModel &model ) :
-pModel( model ), pPrevPreventUpdate( model.pPreventUpdate ){
+ceWPTTreeModel::PreventUpdateGuard::PreventUpdateGuard(ceWPTTreeModel &model) :
+pModel(model), pPrevPreventUpdate(model.pPreventUpdate){
 	model.pPreventUpdate = true;
 }
 
@@ -79,30 +78,18 @@ ceWPTTreeModel::PreventUpdateGuard::~PreventUpdateGuard(){
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTreeModel::ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
-	ceConversationListener &forwardListener ) :
-pWindowMain( windowMain ),
-pConversation( NULL ),
-pListener( NULL ),
-pForwardListener( forwardListener ),
-pTreeList( NULL ),
-pPreventUpdate( false )
+ceWPTTreeModel::ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
+	ceConversationListener &forwardListener) :
+pWindowMain(windowMain),
+pForwardListener(forwardListener),
+pTreeList(nullptr),
+pPreventUpdate(false)
 {
-	if( ! conversation ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(conversation)
 	
-	try{
-		pListener = new ceWPTTreeModelListener( *this );
-		conversation->AddListener( pListener );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
-	
+	pListener = ceWPTTreeModelListener::Ref::New(*this);
+	conversation->AddListener(pListener);
 	pConversation = conversation;
-	conversation->AddReference();
 }
 
 ceWPTTreeModel::~ceWPTTreeModel(){
@@ -114,415 +101,378 @@ ceWPTTreeModel::~ceWPTTreeModel(){
 // Management
 ///////////////
 
-void ceWPTTreeModel::SetTreeList( igdeTreeList *treeList ){
-	if( pTreeList == treeList ){
+void ceWPTTreeModel::SetTreeList(igdeTreeList *treeList){
+	if(pTreeList == treeList){
 		return;
 	}
 	
-	if( pTreeList ){
+	if(pTreeList){
 		RemoveAllChildren();
 	}
 	
 	pTreeList = treeList;
 	
-	if( treeList ){
+	if(treeList){
 		UpdateActions();
-		      SelectTopicActive();
+		SelectTopicActive();
 	}
 }
 
 
 
-int ceWPTTreeModel::GetChildCount() const{
-	return pChildren.GetCount();
-}
-
-ceWPTTreeItemModel *ceWPTTreeModel::GetChildAt( int index ) const{
-	return ( ceWPTTreeItemModel* )pChildren.GetAt( index );
-}
-
-void ceWPTTreeModel::AddChild( ceWPTTreeItemModel *child ){
-	if( ! pTreeList || ! child || child->GetParent() || child->GetTree() ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeModel::AddChild(ceWPTTreeItemModel *child){
+	if(!pTreeList || !child || child->GetParent() || child->GetTree()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Add( child );
-	child->SetTree( this );
+	pChildren.AddOrThrow(child);
+	child->SetTree(this);
 	
-	igdeTreeItemReference item;
-	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
-	pTreeList->AppendItem( NULL, item );
-	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( child );
+	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
+	pTreeList->AppendItem(nullptr, item);
+	item->SetModel(child);
 }
 
-void ceWPTTreeModel::InsertChild( ceWPTTreeItemModel *child, int position ){
-	if( ! pTreeList || ! child || child->GetParent() || position < 0 || position > pChildren.GetCount() ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeModel::InsertChild(ceWPTTreeItemModel *child, int position){
+	if(!pTreeList || !child || child->GetParent() || position < 0 || position > pChildren.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Insert( child, position );
-	child->SetTree( this );
+	pChildren.InsertOrThrow(child, position);
+	child->SetTree(this);
 	
-	igdeTreeItem *beforeItem = NULL;
-	if( position < pChildren.GetCount() ){
+	igdeTreeItem *beforeItem = nullptr;
+	if(position < pChildren.GetCount()){
 		beforeItem = pTreeList->GetFirstChild();
-		while( position > 0 ){
+		while(position > 0){
 			beforeItem = beforeItem->GetNext();
 			position--;
 		}
 	}
 	
-	igdeTreeItemReference item;
-	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
+	const ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
 	
-	if( beforeItem ){
-		pTreeList->InsertItemBefore( beforeItem, item );
+	if(beforeItem){
+		pTreeList->InsertItemBefore(beforeItem, item);
 		
 	}else{
-		pTreeList->AppendItem( NULL, item );
+		pTreeList->AppendItem(nullptr, item);
 	}
 	
-	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( child );
+	item->SetModel(child);
 }
 
-void ceWPTTreeModel::RemoveChild( ceWPTTreeItemModel *child ){
-	if( ! pTreeList ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeModel::RemoveChild(ceWPTTreeItemModel *child){
+	if(!pTreeList){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! child || child->GetTree() != this ){
-		DETHROW( deeInvalidParam );
+	if(!child || child->GetTree() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ceWPTTreeItem * const item = child->GetTreeItem();
-	if( ! item ){
-		DETHROW( deeInvalidParam );
+	if(!item){
+		DETHROW(deeInvalidParam);
 	}
 	
-	item->SetModel( NULL );
-	pTreeList->RemoveItem( item );
+	item->SetModel(nullptr);
+	pTreeList->RemoveItem(item);
 	
-	child->SetTree( NULL );
-	pChildren.Remove( child );
+	child->SetTree(nullptr);
+	pChildren.Remove(child);
 }
 
 void ceWPTTreeModel::RemoveAllChildren(){
-	if( ! pTreeList ){
-		DETHROW( deeInvalidParam );
+	if(!pTreeList){
+		DETHROW(deeInvalidParam);
 	}
 	
-	ceWPTTreeItem *item = ( ceWPTTreeItem* )pTreeList->GetFirstChild();
-	while( item ){
+	ceWPTTreeItem *item = (ceWPTTreeItem*)pTreeList->GetFirstChild().Pointer();
+	while(item){
 		item->RemoveAllItems();
-		item->SetModel( NULL );
-		item = ( ceWPTTreeItem* )item->GetNext();
+		item->SetModel(nullptr);
+		item = (ceWPTTreeItem*)item->GetNext().Pointer();
 	}
 	pTreeList->RemoveAllItems();
 	
-	const int count = pChildren.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( ceWPTTreeItemModel* )pChildren.GetAt( i ) )->SetTree( NULL );
-	}
-	
+	pChildren.Visit([](ceWPTTreeItemModel &c){ c.SetTree(nullptr); });
 	pChildren.RemoveAll();
 }
 
-void ceWPTTreeModel::MoveChild( ceWPTTreeItemModel *child, int to ){
-	if( ! child ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeModel::MoveChild(ceWPTTreeItemModel *child, int to){
+	if(!child){
+		DETHROW(deeInvalidParam);
 	}
 	
-	MoveChild( pChildren.IndexOf( child ), to );
+	MoveChild(pChildren.IndexOf(child), to);
 }
 
-void ceWPTTreeModel::MoveChild( int from, int to ){
-	if( ! pTreeList ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeModel::MoveChild(int from, int to){
+	if(!pTreeList){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pChildren.GetCount();
-	if( from < 0 || from >= count || to < 0 || to > count ){
-		DETHROW( deeInvalidParam );
+	if(from < 0 || from >= count || to < 0 || to > count){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( from == to ){
+	if(from == to){
 		return;
 	}
 	
-	ceWPTTreeItemModel * const child = ( ceWPTTreeItemModel* )pChildren.GetAt( from );
+	ceWPTTreeItemModel * const child = pChildren.GetAt(from);
 	
-	ceWPTTreeItemModel *otherChild = NULL;
-	if( to < count ){
-		otherChild = ( ceWPTTreeItemModel* )pChildren.GetAt( to );
+	ceWPTTreeItemModel *otherChild = nullptr;
+	if(to < count){
+		otherChild = pChildren.GetAt(to);
 	}
 	
-	pChildren.Move( child, to );
+	pChildren.Move(child, to);
 	
-	igdeTreeItem *otherItem = NULL;
-	if( otherChild ){
+	igdeTreeItem *otherItem = nullptr;
+	if(otherChild){
 		otherItem = otherChild->GetTreeItem();
 	}
 	
-	pTreeList->MoveItemBefore( child->GetTreeItem(), otherItem );
+	pTreeList->MoveItemBefore(child->GetTreeItem(), otherItem);
 }
 
 
 
-ceWPTTIMAction *ceWPTTreeModel::GetChildWith( ceConversationAction *action ) const{
-	const int count = GetChildCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTIMAction * const child = ( ceWPTTIMAction* )GetChildAt( i );
-		if( child->GetAction() == action ){
+ceWPTTIMAction *ceWPTTreeModel::GetChildWith(ceConversationAction *action) const{
+	for(const auto &c : pChildren){
+		ceWPTTIMAction * const child = c.DynamicCast<ceWPTTIMAction>();
+		if(child && child->GetAction() == action){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 
 
 void ceWPTTreeModel::UpdateActions(){
-	if( ! pTreeList ){
+	if(!pTreeList){
 		return;
 	}
 	
-	const PreventUpdateGuard preventUpdate( *this );
+	const PreventUpdateGuard preventUpdate(*this);
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
-	if( ! file ){
+	if(!file){
 		RemoveAllChildren();
 		return;
 	}
 	
 	const ceConversationTopic * const topic = file->GetActiveTopic();
-	if( ! topic ){
+	if(!topic){
 		RemoveAllChildren();
 		return;
 	}
 	
-	const ceConversationActionList &actions = topic->GetActionList();
+	const ceConversationAction::List &actions = topic->GetActions();
 	const int count = actions.GetCount();
 	int i, j;
 	
-	for( i=0; i<count; i++ ){
-		ceConversationAction * const action = actions.GetAt( i );
+	for(i=0; i<count; i++){
+		ceConversationAction * const action = actions.GetAt(i);
 		
 		// find item matching action if present
-		ceWPTTIMAction *model = NULL;
-		const int childCount = GetChildCount();
-		for( j=i; j<childCount; j++ ){
-			ceWPTTIMAction * const child = ( ceWPTTIMAction* )GetChildAt( j );
-			if( child->GetAction() == action ){
-				model = child;
+		ceWPTTIMAction *findModel = nullptr;
+		const int childCount = GetChildren().GetCount();
+		for(j=i; j<childCount; j++){
+			const ceWPTTIMAction::Ref child(GetChildren().GetAt(j).DynamicCast<ceWPTTIMAction>());
+			if(child->GetAction() == action){
+				findModel = child;
 				break;
 			}
 		}
 		
 		// if model exists move it to the right location if required and update it.
 		// if model does not exist create it and add it at the current location.
-		if( model ){
-			if( j != i ){
-				MoveChild( j, i );
+		if(findModel){
+			if(j != i){
+				MoveChild(j, i);
 			}
-			model->Update();
+			findModel->Update();
 			
 		}else{
-			model = ceWPTTIMActions::CreateActionModel( pWindowMain, *pConversation, action );
-			
-			try{
-				InsertChild( model, i );
-				model->Update();
-				
-			}catch( const deException & ){
-				model->FreeReference();
-				throw;
-			}
-			
-			model->FreeReference();
+			const ceWPTTIMAction::Ref model(ceWPTTIMActions::CreateActionModel(pWindowMain, *pConversation, action));
+			InsertChild(model, i);
+			model->Update();
 		}
 	}
 	
 	// remove non-matching nodes
-	while( GetChildCount() > count ){
-		RemoveChild( GetChildAt( GetChildCount() - 1 ) );
+	while(pChildren.GetCount() > count){
+		RemoveChild(pChildren.Last());
 	}
 }
 
 
-void ceWPTTreeModel::OnContextMenu( igdeMenuCascade &contextMenu ){
-	ContextMenuTopic( contextMenu );
+void ceWPTTreeModel::OnContextMenu(igdeMenuCascade &contextMenu){
+	ContextMenuTopic(contextMenu);
 }
 
-void ceWPTTreeModel::ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeModel::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action){
+	if(!action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pConversation ){
+	if(!pConversation){
 		return;
 	}
 	
 	ceConversationFile * const file = pConversation->GetActiveFile();
-	ceConversationTopic * const topic = file ? file->GetActiveTopic() : NULL;
-	if( ! topic ){
+	ceConversationTopic * const topic = file ? file->GetActiveTopic().Pointer() : nullptr;
+	if(!topic){
 		return;
 	}
 	
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
-	const ceConversationActionList &actions = topic->GetActionList();
-	const int indexAction = action ? actions.IndexOf( action ) : -1;
-	igdeMenuCascadeReference subMenu;
+	const int indexAction = action ? topic->GetActions().IndexOf(action) : -1;
+	igdeMenuCascade::Ref subMenu;
 	int i;
 	
 	// child action specific
-	helper.MenuCommand( contextMenu, new ceWPTMATopicMoveAction( pWindowMain, *pConversation,
-		*topic, action, indexAction - 1, "Move Action Up",
-		pWindowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ) ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicMoveAction( pWindowMain, *pConversation,
-		*topic, action, indexAction + 1, "Move Action Down",
-		pWindowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ) ), true );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, ceWPTMATopicMoveAction::Ref::New(pWindowMain, *pConversation,
+		*topic, action, indexAction - 1, "@Conversation.TreeModel.MoveActionUp",
+		pWindowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
+	helper.MenuCommand(contextMenu, ceWPTMATopicMoveAction::Ref::New(pWindowMain, *pConversation,
+		*topic, action, indexAction + 1, "@Conversation.TreeModel.MoveActionDown",
+		pWindowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, new ceWPTMACopyAction( pWindowMain, action ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicCutAction(
-		pWindowMain, *pConversation, *topic, action ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteActions( pWindowMain, *pConversation,
-		*topic, indexAction, "Paste Actions Before" ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteActions( pWindowMain, *pConversation,
-		*topic, indexAction + 1, "Paste Actions After" ), true );
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteSnippet(
-		pWindowMain, *pConversation, *topic, indexAction + 1 ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACopyAction::Ref::New(pWindowMain, action));
+	helper.MenuCommand(contextMenu, ceWPTMATopicCutAction::Ref::New(
+		pWindowMain, *pConversation, *topic, action));
+	helper.MenuCommand(contextMenu, ceWPTMATopicPasteActions::Ref::New(
+		pWindowMain, *pConversation, *topic, indexAction, "@Conversation.TreeModel.PasteActionsBefore"));
+	helper.MenuCommand(contextMenu, ceWPTMATopicPasteActions::Ref::New(
+		pWindowMain, *pConversation, *topic, indexAction + 1, "@Conversation.TreeModel.PasteActionsAfter"));
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, ceWPTMATopicPasteSnippet::Ref::New(
+		pWindowMain, *pConversation, *topic, indexAction + 1));
 	
-	helper.MenuCommand( contextMenu, new ceWPTMATopicRemoveAction(
-		pWindowMain, *pConversation, *topic, action ), true );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, ceWPTMATopicRemoveAction::Ref::New(
+		pWindowMain, *pConversation, *topic, action));
+	helper.MenuSeparator(contextMenu);
 	
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Insert Action Before",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
-	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMATopicAddAction( pWindowMain, *pConversation, *topic,
-			ceWPTTIMAction::ListAddMenuActions[ i ], indexAction ), true );
+	subMenu = igdeMenuCascade::Ref::New(environment, "@Conversation.WPTTreeModel.InsertActionBefore",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
+	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
+		helper.MenuCommand(subMenu, ceWPTMATopicAddAction::Ref::New(
+			pWindowMain, *pConversation, *topic,
+			ceWPTTIMAction::ListAddMenuActions[i], indexAction));
 	}
-	contextMenu.AddChild( subMenu );
+	contextMenu.AddChild(subMenu);
 	
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Insert Action After",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
-	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMATopicAddAction( pWindowMain, *pConversation, *topic,
-			ceWPTTIMAction::ListAddMenuActions[ i ], indexAction + 1 ), true );
+	subMenu = igdeMenuCascade::Ref::New(environment, "@Conversation.WPTTreeModel.InsertActionAfter",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
+	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
+		helper.MenuCommand(subMenu, ceWPTMATopicAddAction::Ref::New(
+			pWindowMain, *pConversation, *topic,
+			ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1));
 	}
-	contextMenu.AddChild( subMenu );
-	helper.MenuSeparator( contextMenu );
+	contextMenu.AddChild(subMenu);
+	helper.MenuSeparator(contextMenu);
 	
 	// topic specific
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Topic", NULL ) );
-	ContextMenuTopic( subMenu );
-	contextMenu.AddChild( subMenu );
+	subMenu = igdeMenuCascade::Ref::New(environment, "@Conversation.WPTTreeModel.Topic", nullptr);
+	ContextMenuTopic(subMenu);
+	contextMenu.AddChild(subMenu);
 }
 
-void ceWPTTreeModel::ContextMenuTopic( igdeMenuCascade &contextMenu ){
-	if( ! pConversation ){
+void ceWPTTreeModel::ContextMenuTopic(igdeMenuCascade &contextMenu){
+	if(!pConversation){
 		return;
 	}
 	
 	ceConversationFile * const file = pConversation->GetActiveFile();
-	ceConversationTopic * const topic = file ? file->GetActiveTopic() : NULL;
-	if( ! topic ){
+	ceConversationTopic * const topic = file ? file->GetActiveTopic().Pointer() : nullptr;
+	if(!topic){
 		return;
 	}
 	
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
-	const int indexAppend = topic->GetActionList().GetCount();
-	igdeMenuCascadeReference subMenu;
+	const int indexAppend = topic->GetActions().GetCount();
+	igdeMenuCascade::Ref subMenu;
 	int i;
 	
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Action",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
-	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMATopicAddAction( pWindowMain, *pConversation, *topic,
-			ceWPTTIMAction::ListAddMenuActions[ i ], indexAppend ), true );
+	subMenu = igdeMenuCascade::Ref::New(environment, "@Conversation.WPTTreeModel.AddAction",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
+	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
+		helper.MenuCommand(subMenu, ceWPTMATopicAddAction::Ref::New(pWindowMain, *pConversation, *topic,
+			ceWPTTIMAction::ListAddMenuActions[i], indexAppend));
 	}
-	contextMenu.AddChild( subMenu );
+	contextMenu.AddChild(subMenu);
 	
-	helper.MenuCommand( contextMenu, new ceWPTMATopicCopyActions( pWindowMain, *topic ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteActions(
-		pWindowMain, *pConversation, *topic, indexAppend ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteSnippet(
-		pWindowMain, *pConversation, *topic, indexAppend ), true );
+	helper.MenuCommand(contextMenu, ceWPTMATopicCopyActions::Ref::New(pWindowMain, *topic));
+	helper.MenuCommand(contextMenu, ceWPTMATopicPasteActions::Ref::New(
+		pWindowMain, *pConversation, *topic, indexAppend));
+	helper.MenuCommand(contextMenu, ceWPTMATopicPasteSnippet::Ref::New(
+		pWindowMain, *pConversation, *topic, indexAppend));
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMATopicRemoveAllActions(
-		pWindowMain, *pConversation, *topic ), true );
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, ceWPTMATopicRemoveAllActions::Ref::New(
+		pWindowMain, *pConversation, *topic));
 }
 
-ceWPTTIMAction *ceWPTTreeModel::DeepFindAction( ceConversationAction *action ) const{
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTIMAction * const child = ( ( ceWPTTreeItemModel* )
-			pChildren.GetAt( i ) )->DeepFindAction( action );
-		if( child ){
+ceWPTTIMAction *ceWPTTreeModel::DeepFindAction(ceConversationAction *action) const{
+	for(const auto &c : pChildren){
+		ceWPTTIMAction * const child = c->DeepFindAction(action);
+		if(child){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
-ceWPTTIMCondition *ceWPTTreeModel::DeepFindCondition( ceConversationCondition *condition ) const{
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTIMCondition * const child = ( ( ceWPTTreeItemModel* )
-			pChildren.GetAt( i ) )->DeepFindCondition( condition );
-		if( child ){
+ceWPTTIMCondition *ceWPTTreeModel::DeepFindCondition(ceConversationCondition *condition) const{
+	for(const auto &c : pChildren){
+		ceWPTTIMCondition * const child = c->DeepFindCondition(condition);
+		if(child){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTreeModel::SelectTopicActive(){
-	if( ! pTreeList ){
+	if(!pTreeList){
 		return;
 	}
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
-	if( ! file ){
+	if(!file){
 		return;
 	}
 	
 	const ceConversationTopic * const topic = file->GetActiveTopic();
-	if( ! topic ){
+	if(!topic){
 		return;
 	}
 	
 	ceConversationCondition * const condition = topic->GetActiveCondition();
-	if( condition ){
-		ceWPTTIMCondition * const model = DeepFindCondition( condition );
-		if( model ){
+	if(condition){
+		ceWPTTIMCondition * const model = DeepFindCondition(condition);
+		if(model){
 			model->SetAsCurrentItem();
-			pWindowMain.GetWindowProperties().GetPanelTopic().SelectActivePanel();
+			pWindowMain.GetWindowProperties().GetPanelTopic()->SelectActivePanel();
 			return;
 		}
 	}
 	
 	ceConversationAction * const action = topic->GetActiveAction();
-	if( action ){
-		ceWPTTIMAction * const model = DeepFindAction( action );
-		if( model ){
+	if(action){
+		ceWPTTIMAction * const model = DeepFindAction(action);
+		if(model){
 			model->SetAsCurrentItem();
-			pWindowMain.GetWindowProperties().GetPanelTopic().SelectActivePanel();
+			pWindowMain.GetWindowProperties().GetPanelTopic()->SelectActivePanel();
 		}
 	}
 }
@@ -533,16 +483,9 @@ void ceWPTTreeModel::SelectTopicActive(){
 //////////////////////
 
 void ceWPTTreeModel::pCleanUp(){
-	SetTreeList( NULL );
+	SetTreeList(nullptr);
 	
-	if( pListener ){
-		if( pConversation ){
-			pConversation->RemoveListener( pListener );
-		}
-		delete pListener;
-	}
-	
-	if( pConversation ){
-		pConversation->FreeReference();
+	if(pListener && pConversation){
+		pConversation->RemoveListener(pListener);
 	}
 }

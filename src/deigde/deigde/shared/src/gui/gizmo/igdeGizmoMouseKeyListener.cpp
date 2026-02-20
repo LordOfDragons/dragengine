@@ -36,10 +36,10 @@
 ////////////////////////////
 
 igdeGizmoMouseKeyListener::igdeGizmoMouseKeyListener(
-	igdeGizmoManager &gizmoManager, igdeViewRenderWindow &view ) :
-pGizmoManager( gizmoManager ),
-pView( view ),
-pCamera( nullptr ){
+	igdeGizmoManager &gizmoManager, igdeViewRenderWindow &view) :
+pGizmoManager(gizmoManager),
+pView(view),
+pCamera(nullptr){
 }
 
 igdeGizmoMouseKeyListener::~igdeGizmoMouseKeyListener(){
@@ -50,43 +50,43 @@ igdeGizmoMouseKeyListener::~igdeGizmoMouseKeyListener(){
 // Management
 ///////////////
 
-void igdeGizmoMouseKeyListener::SetCamera( igdeCamera *camera ){
+void igdeGizmoMouseKeyListener::SetCamera(igdeCamera *camera){
 	pCamera = camera;
 }
 
 
 
-void igdeGizmoMouseKeyListener::OnButtonPress( igdeWidget*, int button,
-const decPoint &position, int modifiers ){
-	if( pCamera ){
-		pGizmoManager.OnButtonPress( pView, *pCamera, button, position, modifiers );
+void igdeGizmoMouseKeyListener::OnButtonPress(igdeWidget*, int button,
+const decPoint &position, int modifiers){
+	if(pCamera){
+		pGizmoManager.OnButtonPress(pView, *pCamera, button, position, modifiers);
 	}
 }
 
-void igdeGizmoMouseKeyListener::OnButtonRelease( igdeWidget*, int button,
-const decPoint &position, int modifiers ){
-	if( pCamera ){
-		pGizmoManager.OnButtonRelease( pView, *pCamera, button, position, modifiers );
+void igdeGizmoMouseKeyListener::OnButtonRelease(igdeWidget*, int button,
+const decPoint &position, int modifiers){
+	if(pCamera){
+		pGizmoManager.OnButtonRelease(pView, *pCamera, button, position, modifiers);
 	}
 }
 
-void igdeGizmoMouseKeyListener::OnMouseMoved( igdeWidget*, const decPoint &position, int modifiers ){
-	if( pCamera ){
-		pGizmoManager.OnMouseMoved( pView, *pCamera, position, modifiers );
+void igdeGizmoMouseKeyListener::OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers){
+	if(pCamera){
+		pGizmoManager.OnMouseMoved(pView, *pCamera, position, modifiers);
 	}
 }
 
-void igdeGizmoMouseKeyListener::OnMouseWheeled( igdeWidget*, const decPoint &position,
-const decPoint &change, int modifiers ){
-	if( pCamera ){
-		pGizmoManager.OnMouseWheeled( pView, *pCamera, position, change, modifiers );
+void igdeGizmoMouseKeyListener::OnMouseWheeled(igdeWidget*, const decPoint &position,
+const decPoint &change, int modifiers){
+	if(pCamera){
+		pGizmoManager.OnMouseWheeled(pView, *pCamera, position, change, modifiers);
 	}
 }
 
-void igdeGizmoMouseKeyListener::OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int key ){
-	pGizmoManager.OnKeyPress( keyCode, key );
+void igdeGizmoMouseKeyListener::OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int key){
+	pGizmoManager.OnKeyPress(keyCode, key);
 }
 
-void igdeGizmoMouseKeyListener::OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int key ){
-	pGizmoManager.OnKeyRelease( keyCode, key );
+void igdeGizmoMouseKeyListener::OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes keyCode, int key){
+	pGizmoManager.OnKeyRelease(keyCode, key);
 }

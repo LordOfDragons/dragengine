@@ -25,19 +25,20 @@
 #ifndef _AEUCONTROLLERTOGGLEFROZEN_H_
 #define _AEUCONTROLLERTOGGLEFROZEN_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
  * Undo action controller toggle frozen.
  */
 class aeUControllerToggleFrozen : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerToggleFrozen>;
+	
+	
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	
 	
 	
@@ -45,11 +46,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerToggleFrozen( aeController *controller );
+	aeUControllerToggleFrozen(aeController *controller);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerToggleFrozen();
+	~aeUControllerToggleFrozen() override;
 	/*@}*/
 	
 	
@@ -58,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

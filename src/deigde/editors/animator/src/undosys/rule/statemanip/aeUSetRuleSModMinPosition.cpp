@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModMinPosition::aeUSetRuleSModMinPosition( aeRuleStateManipulator *rule, const decVector &newMin ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModMinPosition::aeUSetRuleSModMinPosition(aeRuleStateManipulator *rule, const decVector &newMin){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Set state manipulator rule minimum" );
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimum");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleSModMinPosition::~aeUSetRuleSModMinPosition(){
 ///////////////
 
 void aeUSetRuleSModMinPosition::Undo(){
-	pRule->SetMinimumPosition( pOldMin );
+	pRule->SetMinimumPosition(pOldMin);
 }
 
 void aeUSetRuleSModMinPosition::Redo(){
-	pRule->SetMinimumPosition( pNewMin );
+	pRule->SetMinimumPosition(pNewMin);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleSModMinPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinPosition::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderableImage::deoglRDSRenderableImage( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( etImage, dynamicSkin )
+deoglRDSRenderableImage::deoglRDSRenderableImage(deoglRDynamicSkin &dynamicSkin) :
+deoglRDSRenderable(etImage, dynamicSkin)
 {
-	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableImage );
+	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableImage);
 }
 
 deoglRDSRenderableImage::~deoglRDSRenderableImage(){
-	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableImage );
+	LEAK_CHECK_FREE(GetDynamicSkin().GetRenderThread(), DSRenderableImage);
 }
 
 
@@ -55,12 +55,12 @@ deoglRDSRenderableImage::~deoglRDSRenderableImage(){
 // Management
 ///////////////
 
-void deoglRDSRenderableImage::SetImage( deoglRImage *image ){
+void deoglRDSRenderableImage::SetImage(deoglRImage *image){
 	pImage = image;
 }
 
-void deoglRDSRenderableImage::PrepareForRender( const deoglRenderPlanMasked * ){
-	if( pImage ){
+void deoglRDSRenderableImage::PrepareForRender(const deoglRenderPlanMasked *){
+	if(pImage){
 		pImage->PrepareForRender();
 	}
 }

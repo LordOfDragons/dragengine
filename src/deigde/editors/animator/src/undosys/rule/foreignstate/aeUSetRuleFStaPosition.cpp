@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaPosition::aeUSetRuleFStaPosition( aeRuleForeignState *rule, float newScale ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaPosition::aeUSetRuleFStaPosition(aeRuleForeignState *rule, float newScale){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldScale = rule->GetScalePosition();
 		pNewScale = newScale;
 		
-		SetShortInfo( "Set foreign state rule position scale" );
+		SetShortInfo("@Animator.Undo.SetRuleForeignStatePosition");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleFStaPosition::~aeUSetRuleFStaPosition(){
 ///////////////
 
 void aeUSetRuleFStaPosition::Undo(){
-	pRule->SetScalePosition( pOldScale );
+	pRule->SetScalePosition(pOldScale);
 }
 
 void aeUSetRuleFStaPosition::Redo(){
-	pRule->SetScalePosition( pNewScale );
+	pRule->SetScalePosition(pNewScale);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleFStaPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaPosition::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

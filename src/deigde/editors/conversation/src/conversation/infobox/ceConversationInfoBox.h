@@ -26,12 +26,11 @@
 #define _CECONVERSATIONINFOBOX_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/string/decStringList.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class deGraphicContext;
 class ceConversation;
 
@@ -40,7 +39,10 @@ class ceConversation;
 /**
  * \brief Shows an information box for special actions in a conversation playback.
  */
-class ceConversationInfoBox{
+class ceConversationInfoBox : public deObject{
+public:
+	using Ref = deTObjectReference<ceConversationInfoBox>;
+	
 private:
 	ceConversation &pConversation;
 	
@@ -58,18 +60,20 @@ private:
 	decString pText;
 	
 	decStringList pLayoutTexts;
-	decIntList pLayoutWidths;
+	decTList<int> pLayoutWidths;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create info box. */
-	ceConversationInfoBox( ceConversation &conversation );
+	ceConversationInfoBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
-	~ceConversationInfoBox();
+protected:
+	~ceConversationInfoBox() override;
+public:
 	/*@}*/
 	
 	
@@ -89,43 +93,43 @@ public:
 	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
-	void SetPathFont( const char *path );
+	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
 	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
 	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
-	void SetTextSize( int size );
+	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
 	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Text or an empty string to hide the box. */
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text or an empty string to hide the box. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Clear info box. */
 	void Clear();
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/**
 	 * \brief Update canvas.

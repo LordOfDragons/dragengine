@@ -188,6 +188,10 @@
       <Outputs>$(ProjectDir)build\install\lib\OpenAL32.lib</Outputs>
     </CustomBuildStep>
     <Lib />
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -212,6 +216,10 @@
       <Outputs>$(ProjectDir)build\install\lib\OpenAL32.lib</Outputs>
     </CustomBuildStep>
     <Lib />
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <ClCompile>
@@ -236,6 +244,10 @@
       <Outputs>$(ProjectDir)build\install\lib\OpenAL32.lib</Outputs>
     </CustomBuildStep>
     <Lib />
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="build.ps1" />

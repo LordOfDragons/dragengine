@@ -35,6 +35,9 @@ class saeWPUndoHistory;
  * Undo History Properties Panel Listener.
  */
 class saeWPUndoHistoryListener : public saeSAnimationListener{
+public:
+	using Ref = deTObjectReference<saeWPUndoHistoryListener>;
+	
 private:
 	saeWPUndoHistory &pPanel;
 	
@@ -44,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	saeWPUndoHistoryListener( saeWPUndoHistory &panel );
+	saeWPUndoHistoryListener(saeWPUndoHistory &panel);
 	
 	/** Clean up listener. */
-	virtual ~saeWPUndoHistoryListener();
+	~saeWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo changed. */
-	virtual void UndoChanged( saeSAnimation *sanimation );
+	void UndoChanged(saeSAnimation *sanimation) override;
 	/*@}*/
 };
 

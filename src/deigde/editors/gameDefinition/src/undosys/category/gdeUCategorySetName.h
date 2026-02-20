@@ -34,8 +34,13 @@
  * \brief Undo action category set name.
  */
 class gdeUCategorySetName : public gdeUCategoryBase{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUCategorySetName> Ref;
+	
+	
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -46,12 +51,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategorySetName( gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type, const char *newValue );
+	gdeUCategorySetName(gdeGameDefinition *gameDefintiion,
+		gdeCategory *category, eCategoryType type, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategorySetName();
+	~gdeUCategorySetName() override;
 	/*@}*/
 	
 	

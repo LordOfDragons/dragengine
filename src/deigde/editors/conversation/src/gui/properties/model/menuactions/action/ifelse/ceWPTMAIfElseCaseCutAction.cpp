@@ -38,7 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseCutAction::ceWPTMAIfElseCaseCutAction( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseCutAction::ceWPTMAIfElseCaseCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, ceConversationAction *action ) :
-ceWPTMACopyAction( windowMain, action, "Cut Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ){
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, ceConversationAction *action) :
+ceWPTMACopyAction(windowMain, action, "@Conversation.MenuAction.CutAction",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase){
 }
 
 
@@ -66,8 +66,8 @@ pIfCase( &ifCase ){
 void ceWPTMAIfElseCaseCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAIfElseRemove( pTopic, pIfElse, pIfCase, GetAction() ) );
-	undo->SetShortInfo( "Cut Action" );
-	pConversation->GetUndoSystem()->Add( undo );
+	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::New(
+		pTopic, pIfElse, pIfCase, GetAction()));
+	undo->SetShortInfo("@Conversation.Undo.CutAction");
+	pConversation->GetUndoSystem()->Add(undo);
 }

@@ -66,34 +66,34 @@ devkCommandPool::~devkCommandPool(){
 // Management
 ///////////////
 
-devkCommandBuffer *devkCommandPool::GetCommandBuffer(){
+devkCommandBuffer::Ref devkCommandPool::GetCommandBuffer(){
 	// return next free command buffer not require waiting if present. the linked list is
 	// searched form the front. this way the oldest command buffer is checked first.
 	// if this command buffer is not finished yet all command buffers after it will not
 	// be finished either. this works since submitted command buffers are added to the
 	// end of the list
-	if(pFreeCommandBuffers.GetCount() > 0){
-		devkCommandBuffer * const commandBuffer =
-			(devkCommandBuffer*)pFreeCommandBuffers.GetAt(0)->GetOwner();
-		if(commandBuffer->IsFinished(true)){
-			commandBuffer->AddReference(); // caller holds reference
-			pFreeCommandBuffers.Remove(&commandBuffer->GetLLPool());
+	if(pFreeCommandBuffers.IsNotEmpty()){
+		devkCommandBuffer * const findCommandBuffer = static_cast<devkCommandBuffer*>(
+			pFreeCommandBuffers.GetRoot()->GetOwner());
+		
+		if(findCommandBuffer->IsFinished(true)){
+			devkCommandBuffer::Ref commandBuffer(findCommandBuffer);
+			pFreeCommandBuffers.Remove(&findCommandBuffer->GetLLPool());
 			return commandBuffer;
 		}
 	}
 	
 	// no free command buffer not require waiting. allocate a new one
-	return new devkCommandBuffer(*this);
+	return devkCommandBuffer::Ref::New(*this);
 }
 
 void devkCommandPool::ReturnCommandBuffer(devkCommandBuffer *commandBuffer){
-	DEASSERT_NOTNULL(commandBuffer )
+	DEASSERT_NOTNULL(commandBuffer)
 	if(&commandBuffer->GetPool() != this){
 		DETHROW_INFO(deeInvalidParam, "commandBuffer pool mismatch");
 	}
 	
 	pFreeCommandBuffers.Add(&commandBuffer->GetLLPool());
-	commandBuffer->FreeReference(); // caller held reference
 }
 
 

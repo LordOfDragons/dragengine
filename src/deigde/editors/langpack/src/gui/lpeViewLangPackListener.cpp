@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeViewLangPackListener::lpeViewLangPackListener( lpeViewLangPack &panel ) :
-pPanel( panel ){
+lpeViewLangPackListener::lpeViewLangPackListener(lpeViewLangPack &panel) :
+pPanel(panel){
 }
 
 lpeViewLangPackListener::~lpeViewLangPackListener(){
@@ -53,8 +53,8 @@ lpeViewLangPackListener::~lpeViewLangPackListener(){
 // Management
 ///////////////
 
-void lpeViewLangPackListener::LangPackChanged( lpeLangPack *langpack ){
-	if( pPanel.GetLangPack() != langpack ){
+void lpeViewLangPackListener::LangPackChanged(lpeLangPack *langpack){
+	if(pPanel.GetLangPack() != langpack){
 		return;
 	}
 	
@@ -63,53 +63,53 @@ void lpeViewLangPackListener::LangPackChanged( lpeLangPack *langpack ){
 
 
 
-void lpeViewLangPackListener::EntryStructureChanged( lpeLangPack *langpack ){
-	if( pPanel.GetLangPack() != langpack ){
+void lpeViewLangPackListener::EntryStructureChanged(lpeLangPack *langpack){
+	if(pPanel.GetLangPack() != langpack){
 		return;
 	}
 	
 	pPanel.UpdateEntries();
 }
 
-void lpeViewLangPackListener::EntryChanged( lpeLangPack *langpack, lpeLangPackEntry *entry ){
-	if( pPanel.GetLangPack() != langpack ){
+void lpeViewLangPackListener::EntryChanged(lpeLangPack *langpack, lpeLangPackEntry *entry){
+	if(pPanel.GetLangPack() != langpack){
 		return;
 	}
 	
-	if( entry->GetActive() ){
+	if(entry->GetActive()){
 		pPanel.UpdateActiveEntry();
 		
 	}else{
-		pPanel.UpdateEntry( entry );
+		pPanel.UpdateEntry(entry);
 	}
 }
 
-void lpeViewLangPackListener::EntryNameChanged( lpeLangPack *langpack, lpeLangPackEntry *entry ){
-	if( pPanel.GetLangPack() != langpack ){
+void lpeViewLangPackListener::EntryNameChanged(lpeLangPack *langpack, lpeLangPackEntry *entry){
+	if(pPanel.GetLangPack() != langpack){
 		return;
 	}
 	
-	if( pPanel.GetReferenceLangPack() ){
+	if(pPanel.GetReferenceLangPack()){
 		pPanel.UpdateEntries();
 		
 	}else{
-		if( entry->GetActive() ){
+		if(entry->GetActive()){
 			pPanel.UpdateActiveEntry();
 		}
 		pPanel.SortEntries();
 	}
 }
 
-void lpeViewLangPackListener::EntrySelectionChanged( lpeLangPack *langpack ){
-	if( pPanel.GetLangPack() != langpack ){
+void lpeViewLangPackListener::EntrySelectionChanged(lpeLangPack *langpack){
+	if(pPanel.GetLangPack() != langpack){
 		return;
 	}
 	
 	pPanel.UpdateEntrySelection();
 }
 
-void lpeViewLangPackListener::ActiveEntryChanged( lpeLangPack *langpack ){
-	if( pPanel.GetLangPack() != langpack ){
+void lpeViewLangPackListener::ActiveEntryChanged(lpeLangPack *langpack){
+	if(pPanel.GetLangPack() != langpack){
 		return;
 	}
 	
