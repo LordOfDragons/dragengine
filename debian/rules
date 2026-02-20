@@ -47,16 +47,16 @@ override_dh_auto_build:
 override_dh_auto_test:
 	
 override_dh_auto_install:
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE) install_engine_runtime
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE_DEV) dragengine_develop
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_CON) launcher_console
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_GUI) launcher_gui
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE) deigde_shared_runtime
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE_DEV) deigde_shared_develop
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_igde_runtime
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DATA) deigde_data
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBLAUNCH) delauncher_runtime
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBLAUNCH_DEV) delauncher_develop
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LIBDE) install_engine_runtime
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LIBDE_DEV) dragengine_develop
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LAUNCH_CON) launcher_console
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LAUNCH_GUI) launcher_gui
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LIBIGDE) deigde_shared_runtime
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LIBIGDE_DEV) deigde_shared_develop
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_IGDE) install_igde_runtime
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_IGDE_DATA) deigde_data
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LIBLAUNCH) delauncher_runtime
+	scons $(SCONS_OPTIONS) --config=auto $(SANDBOX_LIBLAUNCH_DEV) delauncher_develop
 	
 	# under debian the games group is known at package build time. we can create
 	# the required directories. this is not done in scons since the generic build
